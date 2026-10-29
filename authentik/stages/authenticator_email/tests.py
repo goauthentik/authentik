@@ -151,7 +151,7 @@ class TestAuthenticatorEmailStage(APIFlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 2)
         sent_mail = mail.outbox[1]
-        self.assertEqual(sent_mail.subject, self.stage.subject)
+        self.assertRegex(sent_mail.subject, r"^Your verification code is \d+$")
         self.assertEqual(sent_mail.to, [f"{self.user} <{self.user.email}>"])
         self.assertNotIn("test@example.com", str(sent_mail.to))
         # Get from_address from global email config to test if global settings are being used
@@ -208,7 +208,7 @@ class TestAuthenticatorEmailStage(APIFlowTestCase):
         message = self.device._compose_email()
 
         self.assertIsInstance(message, TemplateEmailMessage)
-        self.assertEqual(message.subject, self.stage.subject)
+        self.assertEqual(message.subject, f"Your verification code is {self.device.token}")
         self.assertEqual(message.to, [f"{self.user.name} <{self.device.email}>"])
         self.assertTrue(self.device.token in message.body)
 
@@ -368,7 +368,7 @@ class TestAuthenticatorEmailStage(APIFlowTestCase):
         # Test EmailDevice _compose_email method
         message = self.device._compose_email()
         self.assertIsInstance(message, TemplateEmailMessage)
-        self.assertEqual(message.subject, self.stage.subject)
+        self.assertEqual(message.subject, f"Your verification code is {self.device.token}")
         self.assertEqual(message.to, [f"{self.user.name} <{self.device.email}>"])
         self.assertTrue(self.device.token in message.body)
 

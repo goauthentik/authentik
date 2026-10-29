@@ -1,12 +1,16 @@
+from urllib.parse import urlsplit
+
 from django.contrib.auth import get_user_model
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
-from django.template import TemplateSyntaxError
+from django.http import HttpRequest
+from django.template import Context, Template, TemplateSyntaxError
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.brands.utils import get_brand_for_request
 from authentik.core.types import UserSettingSerializer
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import StageInvalidException
@@ -44,7 +48,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         validators=[timedelta_string_validator],
         help_text=_("Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."),
     )
-    subject = models.TextField(default="authentik Sign-in code")
+    subject = models.TextField(default="Your verification code is {{ token }}")
     template = models.TextField(default=EmailTemplates.EMAIL_OTP)
 
     @property
@@ -100,12 +104,12 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
             timeout=self.timeout,
         )
 
-    def send(self, device: EmailDevice):
+    def send(self, device: EmailDevice, request: HttpRequest | None = None):
         # Lazy import here to avoid circular import
         from authentik.stages.email.tasks import send_mails
 
         # Compose the message using templates
-        message = device._compose_email()
+        message = device._compose_email(request)
         return send_mails(device.stage, message)
 
     def __str__(self):
@@ -144,30 +148,43 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
 
         return verified
 
-    def _compose_email(self) -> TemplateEmailMessage:
+    def _compose_email(self, request: HttpRequest | None = None) -> TemplateEmailMessage:
+        """Compose the code email, with the code in the subject and an OTP-Token header."""
+        user = self.user
+        stage = self.stage
+        headers = {}
+        if origin := otp_token_origin(request):
+            # https://datatracker.ietf.org/doc/html/draft-goto-otp-token-01
+            headers["OTP-Token"] = f'"{self.token}"; origin="{origin}"'
         try:
-            pending_user = self.user
-            stage = self.stage
-            email = self.email
-
-            message = TemplateEmailMessage(
-                subject=_(stage.subject),
-                to=[(pending_user.name, email)],
+            # The subject is admin-editable, so it only gets plain values, not model instances.
+            subject_context = Context(
+                {"token": self.token, "username": user.username},
+                autoescape=False,
+            )
+            return TemplateEmailMessage(
+                subject=Template(str(_(stage.subject))).render(subject_context),
+                to=[(user.name, self.email)],
+                language=user.locale(request),
                 template_name=stage.template,
                 template_context={
-                    "user": pending_user,
+                    "user": user,
                     "expires": self.valid_until,
                     "token": self.token,
                 },
+                headers=headers,
                 sensitive_values=[self.token],
             )
-            return message
         except TemplateSyntaxError as exc:
-            Event.new(
+            event = Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
                 template=stage.template,
-            ).with_exception(exc).from_http(self.request)
+            ).with_exception(exc)
+            if request:
+                event.from_http(request)
+            else:
+                event.save()
             raise StageInvalidException from exc
 
     def __str__(self):
@@ -179,3 +196,17 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
         verbose_name = _("Email Device")
         verbose_name_plural = _("Email Devices")
         unique_together = (("user", "email"),)
+
+
+def otp_token_origin(request: HttpRequest | None) -> str | None:
+    """The origin of the request, if it is https and its host matches its brand's domain."""
+    if not request or not request.is_secure():
+        return None
+    brand = getattr(request, "brand", None) or get_brand_for_request(request)
+    host = urlsplit(f"//{request.get_host()}")
+    hostname = (host.hostname or "").rstrip(".")
+    domain = brand.domain.lower()
+    if hostname != domain and not hostname.endswith(f".{domain}"):
+        return None
+    port = f":{host.port}" if host.port not in (None, 443) else ""
+    return f"https://{hostname}{port}"
