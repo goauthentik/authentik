@@ -205,4 +205,5 @@ class AccountExpirationSyncTests(TestCase):
         with self.assertRaises(StopSync) as raised:
             self.syncer.sync(page)
         self.assertIn("accountExpires", raised.exception.detail())
+        self.assertEqual(str(raised.exception), raised.exception.detail())
         self.assertFalse(User.objects.get(username="expiry-user").is_active)

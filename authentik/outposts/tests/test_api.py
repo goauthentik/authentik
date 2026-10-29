@@ -10,6 +10,7 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
+from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.outposts.api.outposts import OutpostSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST
@@ -150,3 +151,18 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
         user.assign_perms_to_managed_role("authentik_outposts.change_outpost", outpost)
         response = self.client.post(url)
         self.assertEqual(response.status_code, 204)
+
+    def test_default_settings(self):
+        """Test default outpost config"""
+        response = self.client.get(reverse("authentik_api:outpost-default-settings"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["config"]["authentik_host"], "http://testserver/")
+
+    def test_default_settings_web_path(self):
+        """Test default outpost config, with authentik served under a web path"""
+        with CONFIG.patch("web.path", "/authentik/"):
+            response = self.client.get(reverse("authentik_api:outpost-default-settings"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()["config"]["authentik_host"], "http://testserver/authentik/"
+        )

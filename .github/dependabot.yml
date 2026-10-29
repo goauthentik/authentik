@@ -310,6 +310,12 @@ updates:
       opentelemetry:
         patterns:
           - opentelemetry-*
+    ignore:
+      # Without this rule no 5.2.x patch PR gets opened.
+      # TODO: Remove this rule when moving to Django 6.
+      - dependency-name: "django"
+        update-types:
+          - "version-update:semver-major"
 
   #endregion
 

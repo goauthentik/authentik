@@ -11,6 +11,7 @@ from authentik.enterprise.lifecycle.review.models import (
     ReviewState,
 )
 from authentik.enterprise.tests import enterprise_test
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 
 
@@ -325,6 +326,13 @@ class TestReviewAPI(APITestCase):
         self.assertEqual(response.data["iteration"], iteration.pk)
         self.assertEqual(response.data["note"], "Reviewed and approved")
         self.assertEqual(response.data["reviewer"]["pk"], self.user.pk)
+        event = Event.objects.get(
+            action=EventAction.REVIEW_ATTESTED,
+            context__lifecycle_iteration=iteration.pk.hex,
+        )
+        self.assertEqual(event.user["pk"], self.user.pk)
+        self.assertEqual(event.context["note"], "Reviewed and approved")
+        self.assertEqual(event.context["target"]["pk"], self.app.pk.hex)
 
     def test_create_review_completes_iteration(self):
         rule = LifecycleRule.objects.create(
