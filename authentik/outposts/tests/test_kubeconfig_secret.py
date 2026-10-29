@@ -93,7 +93,7 @@ class TestKubeconfigSecret(APITestCase):
 
     def test_unrelated_update_skips_validation(self):
         """A stored kubeconfig is only checked when the connection's credentials change."""
-        with patch("authentik.outposts.api.service_connections.validate_kubeconfig") as validate:
+        with patch("authentik.outposts.controllers.k8s.utils.validate_kubeconfig") as validate:
             response = self.client.patch(
                 reverse(
                     "authentik_api:kubernetesserviceconnection-detail",

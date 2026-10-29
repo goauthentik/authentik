@@ -1,14 +1,11 @@
 """k8s utils"""
 
-from pathlib import Path
-
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from kubernetes.client.configuration import Configuration
 from kubernetes.client.models.v1_container_port import V1ContainerPort
 from kubernetes.client.models.v1_service_port import V1ServicePort
 from kubernetes.config.config_exception import ConfigException
-from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 from kubernetes.config.kube_config import load_kube_config_from_dict
 
 from authentik.outposts.controllers.k8s.triggers import NeedsRecreate
@@ -20,15 +17,6 @@ def validate_kubeconfig(kubeconfig: dict) -> None:
         load_kube_config_from_dict(kubeconfig, client_configuration=Configuration())
     except ConfigException, ValueError, AttributeError, TypeError:
         raise ValidationError(_("Invalid kubeconfig")) from None
-
-
-def get_namespace() -> str:
-    """Get the namespace if we're running in a pod, otherwise default to default"""
-    path = Path(SERVICE_TOKEN_FILENAME.replace("token", "namespace"))
-    if path.exists():
-        with open(path, encoding="utf8") as _namespace_file:
-            return _namespace_file.read()
-    return "default"
 
 
 def compare_port(
