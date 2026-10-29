@@ -13,7 +13,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
-import { AndNext } from "#common/api/config";
+import { withNext } from "#common/api/config";
 import { isResponseErrorLike } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -148,8 +148,10 @@ export class FlowViewPage extends AKElement {
                                                             slug: this.flow.slug,
                                                         })
                                                         .then((link) => {
-                                                            const finalURL = `${link.link}${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
-                                                            window.open(finalURL, "_blank");
+                                                            window.open(
+                                                                withNext(link.link),
+                                                                "_blank",
+                                                            );
                                                         });
                                                 }}
                                             >
@@ -166,8 +168,16 @@ export class FlowViewPage extends AKElement {
                                                             slug: this.flow.slug,
                                                         })
                                                         .then((link) => {
-                                                            const finalURL = `${link.link}?${encodeURI(`inspector=open&next=/#${window.location.hash}`)}`;
-                                                            window.open(finalURL, "_blank");
+                                                            const url = new URL(
+                                                                withNext(link.link),
+                                                            );
+
+                                                            url.searchParams.set(
+                                                                "inspector",
+                                                                "open",
+                                                            );
+
+                                                            window.open(url, "_blank");
                                                         })
                                                         .catch(async (error: unknown) => {
                                                             if (isResponseErrorLike(error)) {
