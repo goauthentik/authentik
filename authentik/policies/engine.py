@@ -7,7 +7,7 @@ from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
 
 from django.core.cache import cache
-from django.db.models import Count, Q, QuerySet
+from django.db.models import Q, QuerySet
 from django.http import HttpRequest
 from django.utils.timezone import now
 from structlog.stdlib import BoundLogger, get_logger
@@ -262,40 +262,31 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
 
     def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
         """Check static bindings if possible"""
-        aggrs = {
-            "total": Count(
-                "pk",
-                filter=Q(
-                    Q(group__isnull=False) | Q(user__isnull=False),
-                    policy=None,
-                    dry_run=False,
-                ),
-            ),
-        }
-        if self.request.user.pk:
-            all_groups = self.request.user.all_groups()
-            aggrs["passing"] = Count(
-                "pk",
-                filter=Q(
-                    Q(
-                        Q(user=self.request.user) | Q(group__in=all_groups),
-                        negate=False,
-                    )
-                    | Q(
-                        Q(~Q(user=self.request.user), user__isnull=False)
-                        | Q(~Q(group__in=all_groups), group__isnull=False),
-                        negate=True,
-                    ),
-                    Q(expiring=False) | Q(expiring=True, expires__gte=now()),
-                    enabled=True,
-                    dry_run=False,
-                ),
-            )
-        matched_bindings = bindings.aggregate(**aggrs)
-        passing = False
-        if matched_bindings["total"] == 0 and matched_bindings.get("passing", 0) == 0:
+        # Evaluated in Python on the (cached) bindings queryset, as an aggregate query
+        # is expensive to build and most objects have no static bindings at all
+        static = [
+            binding
+            for binding in bindings
+            if (binding.group_id or binding.user_id)
+            and not binding.policy_id
+            and not binding.dry_run
+        ]
+        if not static:
             # If we didn't find any static bindings, do nothing
             return
+        matched_bindings = {"total": len(static)}
+        if self.request.user.pk:
+            group_pks = set()
+            if any(binding.group_id for binding in static):
+                group_pks = set(self.request.user.all_groups().values_list("pk", flat=True))
+            matched_bindings["passing"] = sum(
+                1
+                for binding in static
+                if (binding.user_id == self.request.user.pk or binding.group_id in group_pks)
+                != binding.negate
+                and (not binding.expiring or binding.expires >= now())
+            )
+        passing = False
         self.logger.debug("P_ENG: Found static bindings", **matched_bindings)
         if self.mode == PolicyEngineMode.MODE_ANY:
             if matched_bindings.get("passing", 0) > 0:
