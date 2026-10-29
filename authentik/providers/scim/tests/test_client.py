@@ -8,6 +8,7 @@ from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
@@ -25,7 +26,7 @@ class SCIMClientTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            token=generate_id(),
+            token_ref=create_test_secret(generate_id()),
         )
         self.app: Application = Application.objects.create(
             name=generate_id(),
@@ -38,6 +39,17 @@ class SCIMClientTests(TestCase):
         self.provider.property_mappings_group.add(
             SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/group")
         )
+
+    def test_empty_token(self):
+        """A provider without a token still sends its request."""
+        self.provider.token_ref = None
+        self.provider.save()
+        with Mocker() as mock:
+            mock.get("https://localhost/ServiceProviderConfig", json={})
+            mock.get("https://localhost/Users", json={})
+            client = SCIMClient(self.provider)
+            self.assertEqual(client._request("GET", "/Users"), {})
+            self.assertEqual(mock.last_request.headers["Authorization"], "Bearer ")
 
     def test_config(self):
         """Test valid config:

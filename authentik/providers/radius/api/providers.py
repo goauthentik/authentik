@@ -4,11 +4,13 @@ from base64 import b64encode
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from pyrad.dictionary import Attribute, Dictionary
 from pyrad.packet import AuthPacket
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
@@ -21,6 +23,7 @@ from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
+from authentik.crypto.secrets.models import Secret
 from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.exceptions import ControlFlowException
@@ -42,18 +45,25 @@ class RadiusProviderSerializer(
 
     outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
+    def validate_shared_secret_ref(self, secret: Secret | None) -> Secret | None:
+        # The outpost picks the provider whose shared secret matches the request, so two
+        # providers sharing a secret would make the choice ambiguous.
+        others = RadiusProvider.objects.filter(shared_secret_ref=secret)
+        if self.instance:
+            others = others.exclude(pk=self.instance.pk)
+        if secret and others.exists():
+            raise ValidationError(_("Another RADIUS provider already uses this secret."))
+        return secret
+
     class Meta:
         model = RadiusProvider
         fields = ProviderSerializer.Meta.fields + [
             "client_networks",
-            # Shared secret is not a write-only field, as
-            # an admin might have to view it
-            "shared_secret",
+            "shared_secret_ref",
             "outpost_set",
             "mfa_support",
             "certificate",
         ]
-        secret_fields = ["shared_secret"]
         extra_kwargs = {
             **ProviderSerializer.Meta.extra_write_kwargs,
             "certificate": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
@@ -80,6 +90,7 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
 
     application_slug = CharField(source="application.slug")
     auth_flow_slug = CharField(source="authorization_flow.slug")
+    shared_secret = CharField(source="shared_secret_ref.secret_value", read_only=True)
 
     class Meta:
         model = RadiusProvider
@@ -98,7 +109,9 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
 class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
     """RadiusProvider Viewset"""
 
-    queryset = RadiusProvider.objects.filter(application__isnull=False)
+    queryset = RadiusProvider.objects.filter(application__isnull=False).select_related(
+        "shared_secret_ref"
+    )
     serializer_class = RadiusOutpostConfigSerializer
     permission_classes = [IsOutpostServiceAccount]
     ordering = ["name"]
@@ -122,7 +135,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         )
 
         packet = AuthPacket()
-        packet.secret = provider.shared_secret
+        packet.secret = provider.shared_secret_ref.secret_value
         packet.dict = dict
 
         def define_attribute(

@@ -194,4 +194,6 @@ class TestOutpostConfig(APITestCase):
         self.assertEqual(res.status_code, 200)
         body = loads(res.content)
         self.assertEqual(body["pagination"]["count"], 1)
-        self.assertEqual(body["results"][0]["shared_secret"], provider.shared_secret)
+        self.assertEqual(
+            body["results"][0]["shared_secret"], provider.shared_secret_ref.secret_value
+        )
