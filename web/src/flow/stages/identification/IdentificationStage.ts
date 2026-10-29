@@ -144,6 +144,8 @@ export class IdentificationStage extends BaseStage<
             this.defaultUserIdentification = pendingUserIdentifier;
 
             if (this.rememberMeController) {
+                // `removeController` does not notify the controller, so unbind its listener here.
+                this.rememberMeController.hostDisconnected();
                 this.removeController(this.rememberMeController);
                 this.rememberMeController = null;
             }

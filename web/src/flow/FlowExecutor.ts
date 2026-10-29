@@ -10,13 +10,15 @@ import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
-import { globalAK } from "#common/global";
+import { FlowMeta, globalAK } from "#common/global";
 import { applyBackgroundImageProperty, resolveThemedUrl } from "#common/theme";
 
 import { Interface } from "#elements/Interface";
@@ -25,6 +27,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
+import { createSlot } from "#elements/utils/slots";
 
 import {
     AKFlowAdvanceEvent,
@@ -34,6 +37,7 @@ import {
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { flowMessages } from "#flow/messages";
 import { BaseStage } from "#flow/stages/base";
+import { CAPTCHA_SLOT } from "#flow/stages/captcha/shared";
 import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
 import { submitAutosubmitChallenge } from "#flow/utils/autosubmit";
 
@@ -48,10 +52,10 @@ import {
 } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
-import { match, P } from "ts-pattern";
+import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -59,6 +63,14 @@ import { until } from "lit/directives/until.js";
 import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
 
 /// <reference types="../../types/lit.d.ts" />
+
+const { flow } = globalAK();
+
+const DefaultFlowMeta: FlowMeta = {
+    ...flow,
+    layout: flow?.layout || FlowLayoutEnum.Stacked,
+    title: flow?.title ?? "",
+};
 
 /**
  * An executor for authentik flows.
@@ -71,7 +83,8 @@ import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
  * @part footer - The footer container.
  * @part locale-select - The locale select component.
  * @part branding - The branding element, used for the background image in some layouts.
- * @part loading-overlay - The loading overlay element.
+ * @slot overlay-card - Loading overlay placed over the card.
+ * @slot overlay-viewport - Loading overlay placed over the viewport, used on small screens and sidebar layouts.
  * @part challenge-additional-actions - Container in stages which have additional actions.
  * @part challenge-footer-band - Container for the stage footer, used for additional actions in some stages.
  * @part locale-select-label - The label of the locale select component.
@@ -79,18 +92,19 @@ import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
  */
 @customElement("ak-flow-executor")
 export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
-    public static readonly DefaultLayout: FlowLayoutEnum =
-        globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+    public static readonly DefaultLayout: FlowLayoutEnum = DefaultFlowMeta.layout;
 
     //#region Styles
 
     static styles: CSSResult[] = [
+        PFEmptyState,
         PFLogin,
         PFDrawer,
         PFButton,
         PFTitle,
         PFList,
         PFBackgroundImage,
+        PFSpinner,
         Styles,
     ];
 
@@ -105,7 +119,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     public challenge: ChallengeTypes | null = null;
 
     @property({ type: Boolean })
-    public loading = false;
+    public loading = true;
 
     @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
     public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
@@ -123,6 +137,14 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     // Listen for authentik state-change events from other tabs
     #flowMultitabController = new FlowMultitabController(this);
+
+    //#endregion
+
+    // #region Slots
+
+    #overlayCardSlot = createSlot("overlay-card", this.ownerDocument);
+    #overlayViewportSlot = createSlot("overlay-viewport", this.ownerDocument);
+    #footerSlot = createSlot("footer", this.ownerDocument);
 
     //#endregion
 
@@ -238,13 +260,15 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         });
     }
 
+    protected synchronizeTitle(): void {
+        this.setTitle(this.challenge?.flowInfo?.title);
+    }
+
     // DOM post-processing has to happen after the render.
     protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        document.title = match(this.challenge?.flowInfo?.title)
-            .with(P.nullish, () => this.brandingTitle)
-            .otherwise((title) => `${title} - ${this.brandingTitle}`);
+        this.synchronizeTitle();
 
         if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
@@ -361,7 +385,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 .exhaustive(),
         );
 
-        return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
+        // Forwarded so a stage can project light-DOM content of ours into its own shadow
+        // root. A stage whose shadow root has no matching slot simply renders nothing here.
+        return staticHTML`<${unsafeStatic(tag)} ${props}>
+            <slot name="${unsafeStatic(CAPTCHA_SLOT)}" slot="${unsafeStatic(CAPTCHA_SLOT)}"></slot>
+        </${unsafeStatic(tag)}>`;
     }
 
     protected renderChallengeError(error: unknown): SlottedTemplateResult {
@@ -384,7 +412,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     //#region Render
 
     protected renderLoading(): SlottedTemplateResult {
-        return html`<slot name="placeholder"></slot>`;
+        return html`<ak-flow-card loading>
+            <span slot="title">${DefaultFlowMeta.title}</span>
+        </ak-flow-card>`;
     }
 
     protected renderFrameBackground(): SlottedTemplateResult {
@@ -393,7 +423,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
             const src = this.challenge?.flowInfo?.background;
 
-            if (!src) return nothing;
+            if (!src) return null;
 
             return html`
                 <div class="ak-c-login__content" part="content">
@@ -418,13 +448,14 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                     this.layout === FlowLayoutEnum.Stacked ? "pf-m-dark" : ""
                 }"
             >
-                <slot name="footer"></slot>
+                ${this.#footerSlot}
             </footer>`;
         });
     }
 
     protected override render(): SlottedTemplateResult {
         const { challenge, loading } = this;
+        const overlaysVisible = loading && challenge;
 
         return html`<div class="pf-c-login" data-layout=${this.layout} part="login">
             <ak-locale-select
@@ -451,14 +482,14 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                         themedUrls: this.brandingLogoThemedUrls,
                     })}
                 </div>
-                ${loading && challenge ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing}
+                ${overlaysVisible ? this.#overlayCardSlot : null}
                 ${guard([challenge], () => {
                     return challenge?.component
                         ? until(this.renderChallenge(challenge))
                         : this.renderLoading();
                 })}
             </main>
-            ${this.renderFooter()}
+            ${overlaysVisible ? this.#overlayViewportSlot : null} ${this.renderFooter()}
         </div>`;
     }
 

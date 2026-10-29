@@ -4,6 +4,8 @@ title: Errors when uploading icons
 
 There are two common causes for icon and image upload problems when authentik uses local file storage.
 
+First, verify that your deployment meets the [File storage requirements](../customize/files.mdx#storage-requirements).
+
 ## 1. Permissions problems
 
 :::info
@@ -39,7 +41,7 @@ Examples:
 # Docker Compose
 volumes:
     - ./data:/data
-    - ./data/custom-templates:/templates
+    - ./custom-templates:/templates
 ```
 
 For Kubernetes deployments, mount your persistent storage at `/data` instead of `/media`.

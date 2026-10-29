@@ -32,6 +32,7 @@ class SourceType:
     verbose_name: str = "Default source type"
 
     urls_customizable = False
+    requires_client_secret = True
 
     request_token_url: str | None = None
     authorization_url: str | None = None

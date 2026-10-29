@@ -10,9 +10,8 @@ import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
 import { AKElement } from "#elements/Base";
+import { setPageDetails } from "#elements/router/meta";
 import { Timestamp } from "#elements/table/shared";
-
-import { setPageDetails } from "#components/ak-page-navbar";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 

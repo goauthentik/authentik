@@ -90,32 +90,54 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     }
 
     async redirect() {
-        console.debug(
-            "authentik/stages/redirect: redirecting to url from server",
-            this.challenge?.to,
-        );
+        const challenge = this.challenge;
+
+        if (!challenge) {
+            return;
+        }
+
+        console.debug("authentik/stages/redirect: redirecting to url from server", challenge.to);
 
         // `final_redirect` marks the terminal redirect out of a completed flow. Only then do we
         // resume other continuous-login tabs; intermediate hops (source stages, the same-origin
         // SAML resume re-entry) skip orchestration entirely.
-        const finalRedirect = this.challenge?.finalRedirect ?? false;
+        const finalRedirect = challenge.finalRedirect ?? false;
 
+        // Coordinating other tabs is best-effort. Nothing it does may keep this tab from
+        // redirecting; otherwise the flow is done server-side but the page spins forever.
         if (finalRedirect) {
-            await multiTabOrchestrateResume();
+            try {
+                await multiTabOrchestrateResume();
+            } catch (error: unknown) {
+                this.logger.error("Failed to resume other tabs, redirecting anyway", error);
+            }
         }
 
-        // A foreign final redirect means we're leaving authentik for good, so signal our exit.
-        // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
-        const url = new URL(this.challenge!.to, window.location.origin);
+        try {
+            // A foreign final redirect means we're leaving authentik for good, so signal our exit.
+            // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
+            const url = new URL(challenge.to, window.location.origin);
 
-        if (finalRedirect && url.origin !== window.location.origin) {
-            multiTabOrchestrateLeave();
-        } else {
-            suppressNextExitForSameOriginNavigation();
+            if (finalRedirect && url.origin !== window.location.origin) {
+                multiTabOrchestrateLeave();
+            } else {
+                suppressNextExitForSameOriginNavigation();
+            }
+        } catch (error: unknown) {
+            this.logger.error("Failed to update multi-tab state, redirecting anyway", error);
         }
 
-        window.location.assign(this.challenge!.to);
+        this.navigate(challenge.to);
         this.startedRedirect = true;
+    }
+
+    /**
+     * Navigate this document's browsing context to the given URL.
+     *
+     * @param to The URL to navigate to.
+     */
+    public navigate(to: string): void {
+        window.location.assign(to);
     }
 
     renderLoading(): TemplateResult {
@@ -125,7 +147,9 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // handler, which the browser will show a popup for.
         // As this wouldn't really be a redirect, show a message that the page can be closed
         // and try to close it ourselves
-        if (!url.protocol.startsWith("http")) {
+        // Apple Platform SSO redirects to a custom protocol, but takes a moment to finish,
+        // so keep showing the spinner instead of a misleading "close" message.
+        if (!url.protocol.startsWith("http") && url.protocol !== "com.apple.platformsso:") {
             return html`<ak-flow-card .challenge=${this.challenge}>
                 <ak-empty-state icon="fas fa-check"
                     ><span>${msg("You may close this page now.")}</span>

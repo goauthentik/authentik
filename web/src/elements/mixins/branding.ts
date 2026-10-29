@@ -1,5 +1,6 @@
 import { DefaultBrand } from "#common/ui/config";
 
+import { DocumentTitleSegment, setTitle } from "#elements/router/meta";
 import { createMixin } from "#elements/types";
 
 import type { CurrentBrand, FooterLink, ThemedUrls } from "@goauthentik/api";
@@ -70,6 +71,13 @@ export interface BrandingMixin {
      * @see {@linkcode DefaultBrand.brandingMapTiles}
      */
     readonly brandingMapTiles: string;
+
+    /**
+     * Sets the document title using the provided segments.
+     *
+     * @param segments Prepended segments to include in the document title.
+     */
+    setTitle(...segments: DocumentTitleSegment[]): void;
 }
 
 /**
@@ -116,6 +124,10 @@ export const WithBrandConfig = createMixin<BrandingMixin>(
 
             public get brandingMapTiles(): string {
                 return this.brand.brandingMapTiles ?? DefaultBrand.brandingMapTiles;
+            }
+
+            public setTitle(...segments: DocumentTitleSegment[]): void {
+                return setTitle(this.brandingTitle, ...segments);
             }
         }
 

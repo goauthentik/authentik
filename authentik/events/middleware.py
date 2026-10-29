@@ -3,7 +3,6 @@
 from collections.abc import Callable
 from contextlib import contextmanager
 from contextvars import ContextVar
-from functools import partial
 from threading import Thread
 from typing import Any
 
@@ -20,6 +19,7 @@ from authentik.blueprints.v1.importer import excluded_models
 from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
+from authentik.lib.middleware import SignalMiddleware
 from authentik.lib.models import InternallyManagedMixin
 from authentik.lib.tracing.exceptions import should_ignore_exception
 from authentik.lib.utils.errors import exception_to_dict
@@ -38,7 +38,6 @@ IGNORED_MODELS = tuple(
 
 _CTX_OVERWRITE_USER = ContextVar[User | None]("authentik_events_log_overwrite_user", default=None)
 _CTX_IGNORE = ContextVar[bool]("authentik_events_log_ignore", default=False)
-_CTX_REQUEST = ContextVar[HttpRequest | None]("authentik_events_log_request", default=None)
 
 
 def should_log_model(model: Model) -> bool:
@@ -94,16 +93,20 @@ class EventNewThread(Thread):
         Event.new(self.action, **self.kwargs).from_http(self.request, user=self.user)
 
 
-class AuditMiddleware:
-    """Register handlers for duration of request-response that log creation/update/deletion
-    of models"""
+class AuditMiddleware(SignalMiddleware):
+    """Log creation/update/deletion of models during a request"""
 
-    get_response: Callable[[HttpRequest], HttpResponse]
+    signal_handlers = {
+        post_save: "post_save_handler",
+        pre_delete: "pre_delete_handler",
+        m2m_changed: "m2m_changed_handler",
+    }
+
     anonymous_user: User = None
     logger: BoundLogger
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
-        self.get_response = get_response
+        super().__init__(get_response)
         self.logger = get_logger().bind()
 
     def _ensure_fallback_user(self):
@@ -124,48 +127,13 @@ class AuditMiddleware:
             return self.anonymous_user
         return user
 
-    def connect(self, request: HttpRequest):
-        """Connect signal for automatic logging"""
-        if not hasattr(request, "request_id"):
-            return
-        post_save.connect(
-            partial(self.post_save_handler, request=request),
-            dispatch_uid=request.request_id,
-            weak=False,
-        )
-        pre_delete.connect(
-            partial(self.pre_delete_handler, request=request),
-            dispatch_uid=request.request_id,
-            weak=False,
-        )
-        m2m_changed.connect(
-            partial(self.m2m_changed_handler, request=request),
-            dispatch_uid=request.request_id,
-            weak=False,
-        )
-
-    def disconnect(self, request: HttpRequest):
-        """Disconnect signals"""
-        if not hasattr(request, "request_id"):
-            return
-        post_save.disconnect(dispatch_uid=request.request_id)
-        pre_delete.disconnect(dispatch_uid=request.request_id)
-        m2m_changed.disconnect(dispatch_uid=request.request_id)
-
-    def __call__(self, request: HttpRequest) -> HttpResponse:
-        _CTX_REQUEST.set(request)
-        self.connect(request)
-
-        response = self.get_response(request)
-
-        self.disconnect(request)
-        _CTX_REQUEST.set(None)
-        return response
+    def is_current_request(self, request: HttpRequest) -> bool:
+        """Only handle signals for the request this middleware is currently handling"""
+        current_request = self.current_request()
+        return current_request is not None and request.request_id == current_request.request_id
 
     def process_exception(self, request: HttpRequest, exception: Exception):
-        """Disconnect handlers in case of exception"""
-        self.disconnect(request)
-
+        """Create an event for unhandled exceptions"""
         if settings.DEBUG:
             return
         # Special case for SuspiciousOperation, we have a special event action for that
@@ -200,8 +168,7 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        current_request = _CTX_REQUEST.get()
-        if current_request is None or request.request_id != current_request.request_id:
+        if not self.is_current_request(request):
             return
         user = self.get_user(request)
 
@@ -216,8 +183,7 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        current_request = _CTX_REQUEST.get()
-        if current_request is None or request.request_id != current_request.request_id:
+        if not self.is_current_request(request):
             return
         user = self.get_user(request)
 
@@ -244,8 +210,7 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        current_request = _CTX_REQUEST.get()
-        if current_request is None or request.request_id != current_request.request_id:
+        if not self.is_current_request(request):
             return
         user = self.get_user(request)
 
@@ -254,5 +219,5 @@ class AuditMiddleware:
             request,
             user=user,
             model=model_to_dict(instance),
-            **thread_kwargs,
+            **(thread_kwargs or {}),
         ).run()

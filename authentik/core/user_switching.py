@@ -8,12 +8,14 @@ from django.http.request import HttpRequest
 from django.utils import timezone
 from jwt import PyJWTError, decode, encode
 
-from authentik.core.models import AuthenticatedSession, UserSwitchingSession
+from authentik.core.models import AuthenticatedSession, UserSwitchingSession, UserTypes
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.crypto import get_cookie_signing_key
 from authentik.policies.types import PolicyRequest
 
 TOKEN_LENGTH = 32
+# Set while the browser runs "Add user", so a source login started from that flow adds a user.
+SESSION_KEY_ADD_USER = "authentik/core/user_switching/add_user"
 
 _SIGNING_HASH = get_cookie_signing_key()
 
@@ -97,11 +99,12 @@ def reconcile_session(request: HttpRequest) -> None:
 
 
 def live_sessions(token: str) -> QuerySet:
-    """Return active users' unexpired logins for a browser token."""
+    """Return active internal users' unexpired logins for a browser token."""
     return AuthenticatedSession.objects.filter(
         user_switching_session_id=token,
         session__expires__gt=timezone.now(),
         user__is_active=True,
+        user__type=UserTypes.INTERNAL,
     )
 
 

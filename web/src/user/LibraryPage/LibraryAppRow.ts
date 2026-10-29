@@ -1,5 +1,5 @@
 import "#elements/AppIcon";
-import "#user/LibraryApplication/RACLaunchEndpointModal";
+import "#user/LibraryApplication/RACLaunchDeviceModal";
 import { PFSize } from "#common/enums";
 
 import { modalInvoker } from "#elements/dialogs";
@@ -7,7 +7,7 @@ import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { CardMenu } from "#user/LibraryApplication/CardMenu";
-import { RACLaunchEndpointLaunch } from "#user/LibraryApplication/RACLaunchEndpointModal";
+import { RACLaunchDeviceLaunch } from "#user/LibraryApplication/RACLaunchDeviceModal";
 
 import { Application } from "@goauthentik/api";
 
@@ -59,8 +59,6 @@ export const LibraryAppRow: LitFC<LibraryAppRowProps> = ({
 
     if (application.metaPublisher) metaParts.push(application.metaPublisher);
 
-    if (application.slug) metaParts.push(application.slug);
-
     const linkProps = {
         "aria-label": msg(str`Open "${application.name}"`, {
             id: "library.application.row.aria-label",
@@ -99,7 +97,7 @@ export const LibraryAppRow: LitFC<LibraryAppRowProps> = ({
         ? html`<div
               ${primaryRef}
               role="button"
-              ${modalInvoker(RACLaunchEndpointLaunch, { app: application })}
+              ${modalInvoker(RACLaunchDeviceLaunch, { app: application })}
               ${spread(linkProps)}
           >
               ${inner}

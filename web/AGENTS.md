@@ -35,6 +35,7 @@ npm run build-locales  # Compile i18n translations
 ```bash
 npm test               # Vitest: unit tests (Node) + browser tests (Chromium/Playwright)
 npm run test:e2e       # Playwright E2E tests against a running authentik instance
+npm run test:visual    # Screenshot diffs against the base branch (see test/visual/AGENTS.md)
 ```
 
 To run a single test file:

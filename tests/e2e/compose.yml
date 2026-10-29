@@ -1,6 +1,6 @@
 services:
   chromium:
-    image: ghcr.io/goauthentik/selenium:152.0-ak-0.62.0@sha256:8288fc4ec6f3810b88121ca87fc41203c18759d939402953929b02ea28a7dded
+    image: ghcr.io/goauthentik/selenium:155.0-ak-0.72.5@sha256:dbae9b434a5751bdd1f6af32178d9cbac607dd0697b6f4e84e17f3821b26808a
     shm_size: 2g
     network_mode: host
     restart: always
@@ -13,7 +13,7 @@ services:
     environment:
       VIDEO_READY_PORT: 9912
   mailpit:
-    image: docker.io/axllent/mailpit:v1.31.2
+    image: docker.io/axllent/mailpit:v1.32.0
     ports:
       - 1025:1025
       - 8025:8025
@@ -40,7 +40,7 @@ services:
     image: ghcr.io/beryju/saml-test-sp:1.1
     profiles: [pin-only]
   dex:
-    image: ghcr.io/dexidp/dex:v2.45.1
+    image: ghcr.io/dexidp/dex:v2.46.1
     profiles: [pin-only]
   oauth1-test-server:
     image: ghcr.io/beryju/oauth1-test-server:v1.1
@@ -58,10 +58,13 @@ services:
     image: ghcr.io/beryju/test-samba-dc:v1.0
     profiles: [pin-only]
   openldap:
-    image: docker.io/osixia/openldap:2.6.10-alpha@sha256:80a577d7d4471c4db662195111e5709665b6fcbd6679094d05402b8c620e2607
+    image: docker.io/osixia/openldap:2.6.15-alpha@sha256:de37b295c8f11f6654a2376f7b5f9d5e9d028bd2f50713751f99ed270f7abbec
     profiles: [pin-only]
   openssh-server:
     image: ghcr.io/linuxserver/openssh-server:10.3_p1-r1-ls236
+    profiles: [pin-only]
+  platform-ssh:
+    image: ghcr.io/goauthentik/platform-ssh:26.04-ak-0.72.5@sha256:e039915874e60432ec880e031704d8a763ffc872845d0d6a530717e215f6505b
     profiles: [pin-only]
   traefik:
     image: docker.io/library/traefik:v3.7
@@ -70,7 +73,7 @@ services:
     image: docker.io/library/nginx:1.31
     profiles: [pin-only]
   envoy:
-    image: docker.io/envoyproxy/envoy:v1.39-latest
+    image: docker.io/envoyproxy/envoy:v1.40-latest
     profiles: [pin-only]
   caddy:
     image: docker.io/library/caddy:2.11
