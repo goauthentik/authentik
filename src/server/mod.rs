@@ -78,10 +78,10 @@ pub(crate) fn socket_path() -> PathBuf {
 pub(crate) fn is_connect_not_found(err: &dyn std::error::Error) -> bool {
     let mut source = err.source();
     while let Some(e) = source {
-        if let Some(io_err) = e.downcast_ref::<std::io::Error>() {
-            if io_err.kind() == std::io::ErrorKind::NotFound {
-                return true;
-            }
+        if let Some(io_err) = e.downcast_ref::<std::io::Error>()
+            && io_err.kind() == std::io::ErrorKind::NotFound
+        {
+            return true;
         }
         source = e.source();
     }
