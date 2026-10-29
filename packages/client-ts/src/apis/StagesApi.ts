@@ -656,7 +656,6 @@ export interface StagesAuthenticatorEmailListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    password?: string;
     port?: number;
     /**
      * A search term.
@@ -4166,10 +4165,6 @@ export class StagesApi extends runtime.BaseAPI {
 
         if (requestParameters["pageSize"] != null) {
             queryParameters["page_size"] = requestParameters["pageSize"];
-        }
-
-        if (requestParameters["password"] != null) {
-            queryParameters["password"] = requestParameters["password"];
         }
 
         if (requestParameters["port"] != null) {
