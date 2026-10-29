@@ -134,8 +134,6 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     --mount=type=bind,target=packages/ak-common,src=packages/ak-common \
     --mount=type=bind,target=packages/client-rust,src=packages/client-rust \
     --mount=type=bind,target=authentik/lib/default.yml,src=authentik/lib/default.yml \
-    # Required otherwise workspace discovery fails
-    --mount=type=bind,target=website/scripts/docsmg/,src=website/scripts/docsmg/ \
     --mount=type=cache,id=cargo-git-db-$TARGETARCH$TARGETVARIANT,target=/root/.cargo/git/db/ \
     --mount=type=cache,id=cargo-registry-$TARGETARCH$TARGETVARIANT,target=/root/.cargo/registry/ \
     --mount=type=cache,id=rust-target-$TARGETARCH$TARGETVARIANT,target=/build/target/ \
