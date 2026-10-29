@@ -18,7 +18,11 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.tests.utils import load_fixture
+<<<<<<< HEAD
 from authentik.tenants.models import Tenant
+=======
+from authentik.tasks.models import Task, TaskStatus
+>>>>>>> a96ef0eb3 (lib/sync/outgoing: report conflicting objects instead of failing sync (#27287))
 
 domains_list_v1_mock = load_fixture("fixtures/domains_list_v1.json")
 
@@ -85,6 +89,90 @@ class GoogleWorkspaceUserTests(TestCase):
             self.assertIsNotNone(google_user)
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             self.assertEqual(len(http.requests()), 2)
+
+    def _test_user_create_conflict(self, uid: str, remote_user: dict) -> User:
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
+            method="POST",
+            body={"error": {"code": 409, "message": "Entity already exists."}},
+            meta={"status": "409"},
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}&alt=json",
+            body=remote_user,
+        )
+        with patch(
+            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        ):
+            return User.objects.create(
+                username=uid,
+                name=f"{uid} {uid}",
+                email=f"{uid}@goauthentik.io",
+            )
+
+    def test_user_create_conflict(self):
+        """A user that already exists in Google Workspace is linked"""
+        uid = generate_id()
+        remote_user = {"id": generate_id(), "primaryEmail": f"{uid}@goauthentik.io"}
+        user = self._test_user_create_conflict(uid, remote_user)
+        google_user = GoogleWorkspaceProviderUser.objects.get(provider=self.provider, user=user)
+        self.assertEqual(google_user.google_id, f"{uid}@goauthentik.io")
+        self.assertEqual(google_user.attributes, remote_user)
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
+
+    def test_user_create_conflict_alias(self):
+        """A user whose email address is another user's alias is reported"""
+        uid = generate_id()
+        remote_user = {"id": generate_id(), "primaryEmail": f"{generate_id()}@goauthentik.io"}
+        user = self._test_user_create_conflict(uid, remote_user)
+        self.assertFalse(
+            GoogleWorkspaceProviderUser.objects.filter(provider=self.provider, user=user).exists()
+        )
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
+        log = Task.objects.get(
+            _uid=f"{self.provider.name}:user:{user.pk}:direct",
+        ).tasklogs.get(log_level=TaskStatus.WARNING)
+        self.assertIn(f"Failed to sync {user}", log.event)
+        self.assertIn("Entity already exists.", log.event)
+
+    def test_user_create_bad_request(self):
+        """A user that Google Workspace rejects is reported with Google's error"""
+        uid = generate_id()
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users?key={self.api_key}&alt=json",
+            method="POST",
+            body={"error": {"code": 400, "message": "Invalid Input: primary_user_email"}},
+            meta={"status": "400"},
+        )
+        with patch(
+            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        ):
+            user = User.objects.create(
+                username=uid,
+                name=f"{uid} {uid}",
+                email=f"{uid}@goauthentik.io",
+            )
+        self.assertFalse(
+            GoogleWorkspaceProviderUser.objects.filter(provider=self.provider, user=user).exists()
+        )
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
+        log = Task.objects.get(
+            _uid=f"{self.provider.name}:user:{user.pk}:direct",
+        ).tasklogs.get(log_level=TaskStatus.WARNING)
+        self.assertIn(f"Failed to sync {user}", log.event)
+        self.assertIn("Invalid Input: primary_user_email", log.event)
 
     def test_user_not_created(self):
         """Test without property mappings, no group is created"""

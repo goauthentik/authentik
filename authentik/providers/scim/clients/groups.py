@@ -5,7 +5,11 @@ from itertools import batched
 from typing import Any
 
 from django.db import transaction
+<<<<<<< HEAD
 from django.utils.http import urlencode
+=======
+from django.db.models import QuerySet
+>>>>>>> a96ef0eb3 (lib/sync/outgoing: report conflicting objects instead of failing sync (#27287))
 from pydantic import ValidationError
 
 from authentik.core.models import Group
@@ -100,22 +104,16 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             try:
                 response = self._request("POST", "/Groups", json=payload)
             except ObjectExistsSyncException as exc:
-                if not self._config.filter.supported:
-                    raise exc
-                groups = self.lower_case_keys(
-                    self._request(
-                        "GET",
-                        f"/Groups?{urlencode({'filter': f'displayName eq "{group.name}"'})}",
-                    )
+                remote_group = self.find_conflicting(
+                    "/Groups", "displayName", scim_group.displayName
                 )
-                groups_res = groups.get("resources", [])
-                if len(groups_res) < 1:
+                if not remote_group:
                     raise exc
                 connection = SCIMProviderGroup.objects.create(
                     provider=self.provider,
                     group=group,
-                    scim_id=groups_res[0]["id"],
-                    attributes=groups_res[0],
+                    scim_id=remote_group["id"],
+                    attributes=remote_group,
                 )
             else:
                 scim_id = response.get("id")
