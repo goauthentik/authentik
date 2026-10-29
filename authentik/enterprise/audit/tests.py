@@ -12,7 +12,7 @@ from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.audit.apps import AuditIncludeExpandedDiff
 from authentik.enterprise.audit.middleware import EnterpriseAuditMiddleware
-from authentik.events.middleware import _CTX_REQUEST
+from authentik.events.middleware import AuditMiddleware
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import sanitize_item
 from authentik.lib.generators import generate_id
@@ -289,24 +289,22 @@ class TestEnterpriseAudit(APITestCase):
 class TestEnterpriseAuditLifecycle(SimpleTestCase):
     """Enterprise audit callbacks stay scoped to their request."""
 
-    def test_disconnect_without_license_lookup(self):
-        """Disconnect even if licensing is unavailable after connecting."""
+    def test_post_init_connected_lazily(self):
+        """post_init fires for every model instance, so only connect it once licensed"""
+        middleware = EnterpriseAuditMiddleware(Mock())
         request = RequestFactory().get("/")
         request.request_id = generate_id()
-        middleware = EnterpriseAuditMiddleware(Mock())
-        baseline = len(post_init.receivers)
-        with patch.object(
-            EnterpriseAuditMiddleware, "enabled", new_callable=PropertyMock, return_value=True
-        ) as enabled:
-            middleware.connect(request)
-            self.assertEqual(len(post_init.receivers), baseline + 1)
-            try:
-                enabled.side_effect = AssertionError("cleanup must not query licensing")
-                middleware.disconnect(request)
-                self.assertEqual(len(post_init.receivers), baseline)
-            finally:
-                enabled.side_effect = None
-                middleware.disconnect(request)
+        with (
+            patch.object(EnterpriseAuditMiddleware, "connect") as connect,
+            patch.object(
+                EnterpriseAuditMiddleware, "enabled", new_callable=PropertyMock, return_value=False
+            ) as enabled,
+        ):
+            middleware(request)
+            connect.assert_not_called()
+            enabled.return_value = True
+            middleware(request)
+            connect.assert_called_once_with(post_init, "post_init_handler")
 
     def test_foreign_request_handlers(self):
         """Another request's callbacks must not query licensing or serialize models."""
@@ -317,7 +315,7 @@ class TestEnterpriseAuditLifecycle(SimpleTestCase):
         other.request_id = generate_id()
         for current in (None, other):
             with self.subTest(current=current):
-                token = _CTX_REQUEST.set(current)
+                token = AuditMiddleware._current.set((middleware, current) if current else None)
                 try:
                     with (
                         patch.object(
@@ -335,4 +333,4 @@ class TestEnterpriseAuditLifecycle(SimpleTestCase):
                         enabled.assert_not_called()
                         serialize.assert_not_called()
                 finally:
-                    _CTX_REQUEST.reset(token)
+                    AuditMiddleware._current.reset(token)
