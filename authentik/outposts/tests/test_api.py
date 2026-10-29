@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import PropertyMapping
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.outposts.api.outposts import OutpostSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST
@@ -110,3 +111,18 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
             }
         )
         self.assertTrue(valid.is_valid())
+
+    def test_default_settings(self):
+        """Test default outpost config"""
+        response = self.client.get(reverse("authentik_api:outpost-default-settings"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["config"]["authentik_host"], "http://testserver/")
+
+    def test_default_settings_web_path(self):
+        """Test default outpost config, with authentik served under a web path"""
+        with CONFIG.patch("web.path", "/authentik/"):
+            response = self.client.get(reverse("authentik_api:outpost-default-settings"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()["config"]["authentik_host"], "http://testserver/authentik/"
+        )

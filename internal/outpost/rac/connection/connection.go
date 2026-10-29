@@ -2,18 +2,11 @@ package connection
 
 import (
 	"context"
-	"crypto/tls"
-	"fmt"
 	"net"
-	"net/http"
-	"strings"
-	"time"
 
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"github.com/wwt/guac"
-	"goauthentik.io/internal/config"
-	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
 )
 
@@ -54,26 +47,7 @@ func NewConnection(ac *ak.APIController, forChannel string, cfg *guac.Config) (*
 }
 
 func (c *Connection) initSocket(forChannel string) error {
-	pathTemplate := "%s://%s/ws/outpost_rac/%s/"
-	scheme := strings.ReplaceAll(c.ac.Client.GetConfig().Scheme, "http", "ws")
-
-	authHeader := fmt.Sprintf("Bearer %s", c.ac.Token())
-
-	header := http.Header{
-		"Authorization": []string{authHeader},
-		"User-Agent":    []string{constants.UserAgentOutpost()},
-	}
-
-	dialer := websocket.Dialer{
-		Proxy:            http.ProxyFromEnvironment,
-		HandshakeTimeout: 10 * time.Second,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: config.Get().AuthentikInsecure,
-		},
-	}
-
-	url := fmt.Sprintf(pathTemplate, scheme, c.ac.Client.GetConfig().Host, forChannel)
-	ws, _, err := dialer.Dial(url, header)
+	ws, err := c.ac.DialWebsocket(nil, "ws/outpost_rac/", forChannel, "/")
 	if err != nil {
 		c.log.WithError(err).Warning("failed to connect websocket")
 		return err
