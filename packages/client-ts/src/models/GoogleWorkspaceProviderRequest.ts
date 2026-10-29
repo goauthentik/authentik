@@ -30,7 +30,7 @@ export interface GoogleWorkspaceProviderRequest {
      */
     propertyMappingsGroup?: Array<string>;
     delegatedSubject: string;
-    credentials: { [key: string]: any };
+    credentialsRef: string;
     scopes?: string;
     excludeUsersServiceAccount?: boolean;
     filterGroup?: string | null;
@@ -69,7 +69,13 @@ export function instanceOfGoogleWorkspaceProviderRequest(
             (value as Record<string, any>)["delegated_subject"] === undefined)
     )
         return false;
-    if (!("credentials" in value) || value["credentials"] === undefined) return false;
+    if (
+        (!("credentialsRef" in (value as Record<string, any>)) &&
+            !("credentials_ref" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["credentialsRef"] === undefined &&
+            (value as Record<string, any>)["credentials_ref"] === undefined)
+    )
+        return false;
     if (
         (!("defaultGroupEmailDomain" in (value as Record<string, any>)) &&
             !("default_group_email_domain" in (value as Record<string, any>))) ||
@@ -97,7 +103,7 @@ export function GoogleWorkspaceProviderRequestFromJSONTyped(
         propertyMappingsGroup:
             json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
         delegatedSubject: json["delegated_subject"],
-        credentials: json["credentials"],
+        credentialsRef: json["credentials_ref"],
         scopes: json["scopes"] == null ? undefined : json["scopes"],
         excludeUsersServiceAccount:
             json["exclude_users_service_account"] == null
@@ -142,7 +148,7 @@ export function GoogleWorkspaceProviderRequestToJSONTyped(
         property_mappings: value["propertyMappings"],
         property_mappings_group: value["propertyMappingsGroup"],
         delegated_subject: value["delegatedSubject"],
-        credentials: value["credentials"],
+        credentials_ref: value["credentialsRef"],
         scopes: value["scopes"],
         exclude_users_service_account: value["excludeUsersServiceAccount"],
         filter_group: value["filterGroup"],
