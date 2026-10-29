@@ -4,7 +4,7 @@ from copy import deepcopy
 from typing import Any
 
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.utils.http import urlencode
 from pydantic import ValidationError
 
@@ -122,20 +122,22 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         connection.save()
 
     def discover(self):
+        users = self.provider.get_object_qs(User)
         for user in self.paginate_resources("/Users"):
             try:
-                self._discover_user_single(user)
+                self._discover_user_single(user, users)
             except ValidationError:
                 self.logger.warning("failed to discover user", scim_user=user.get("externalId"))
 
-    def _discover_user_single(self, user: dict):
+    def _discover_user_single(self, user: dict, users: QuerySet[User]):
         scim_user = SCIMUserSchema.model_validate(user)
         if SCIMProviderUser.objects.filter(scim_id=scim_user.id, provider=self.provider).exists():
             return
         user_query = Q(username=scim_user.userName)
         for email in scim_user.emails or []:
             user_query |= Q(username=email.value) | Q(email=email.value)
-        ak_user = User.objects.filter(user_query).first()
+        # Only adopt accounts that this provider is configured to manage.
+        ak_user = users.filter(user_query).first()
         if not ak_user:
             return
         SCIMProviderUser.objects.create(

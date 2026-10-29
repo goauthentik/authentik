@@ -1,0 +1,65 @@
+/**
+ * @file Loading overlays for the flow executor.
+ *
+ * - Both overlays are slotted light DOM from `flow.html` and use document styles.
+ * - The executor only renders their slots while a challenge reloads.
+ * - This file picks which overlay shows.
+ * - Breakpoints mirror `layout.css`.
+ */
+
+:root {
+    --ak-c-flow-overlay--Card--Display: none;
+    --ak-c-flow-overlay--Main--Display: none;
+    --ak-c-flow-overlay--Main--GridColumn: main;
+}
+
+.ak-c-flow-overlay {
+    z-index: var(--ak-c-flow-overlay--ZIndex, var(--pf-global--ZIndex--lg));
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    opacity: 0.75;
+    background-color: var(
+        --ak-c-flow-overlay--BackgroundColor,
+        var(--pf-global--BackgroundColor--dark-transparent-200)
+    );
+
+    /* Slotted inside `.pf-c-login__main`, a card with a dynamic height and position. */
+    &[slot="overlay-card"] {
+        display: var(--ak-c-flow-overlay--Card--Display);
+        position: absolute;
+        inset: 0;
+    }
+
+    /* A full-height cell of the `.pf-c-login` grid. The width is defined by the grid column. */
+    &[slot="overlay-viewport"] {
+        display: var(--ak-c-flow-overlay--Main--Display);
+        grid-row: 1 / -1;
+        grid-column: var(--ak-c-flow-overlay--Main--GridColumn);
+    }
+}
+
+/* We cover the card when it fills the screen on a smaller viewport. */
+@media (width <= 36.25rem) or (height <= 27.5rem) {
+    :root {
+        --ak-c-flow-overlay--Main--Display: flex;
+        --ak-c-flow-overlay--Main--GridColumn: 1 / -1;
+    }
+}
+
+/* A larger viewport where the card floats over the background. */
+@media (width > 36.25rem) and (height > 27.5rem) {
+    :root {
+        --ak-c-flow-overlay--Card--Display: flex;
+        --ak-c-flow-overlay--Main--GridColumn: main;
+    }
+}
+
+/* On sidebar layouts (where there's room to render as a sidebar), the overlay becomes a full-height column. */
+@media (width >= 70rem) and (height > 27.5rem) {
+    ak-flow-executor[data-layout^="sidebar"] {
+        --ak-c-flow-overlay--Card--Display: none;
+        --ak-c-flow-overlay--Main--Display: flex;
+    }
+}
