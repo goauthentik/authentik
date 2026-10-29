@@ -1,3 +1,4 @@
+import "#admin/sidebar/Bookmarks/Bookmark";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
@@ -52,6 +53,12 @@ import {
 
 import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
+import {
+    BookmarkController,
+    BookmarkContext,
+    type Bookmark,
+} from "#admin/sidebar/Bookmarks/BookmarkController";
+import { bookmarksToSidebar } from "#admin/sidebar/Bookmarks/bookmarkToSidebar";
 import { BreadcrumbController } from "#admin/sidebar/BreadcrumbController";
 import { createAdminSidebarEntries } from "#admin/sidebar/constants";
 import {
@@ -63,12 +70,12 @@ import {
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
+import { consume } from "@lit/context";
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
-
 let lastRoutePath: string | null = null;
 let lastRouteName: string | null = null;
 
@@ -108,11 +115,13 @@ export class AdminInterface extends WithLicenseSummary(
 
         const entries = createAdminSidebarEntries(canEnterprise);
 
-        return resolveSidebarEntries(entries, {
+        const result = resolveSidebarEntries(entries, {
             canEnterprise,
             // Assume licensed until the summary loads so the notice doesn't flash.
             licensed: !this.licenseSummary || this.hasEnterpriseLicense,
         });
+
+        return bookmarksToSidebar(result, this.bookmarkManager.bookmarks ?? []);
     }
 
     //#endregion
@@ -141,6 +150,7 @@ export class AdminInterface extends WithLicenseSummary(
     };
 
     private _breadcrumbManager = new BreadcrumbController(this);
+    private bookmarkManager = new BookmarkController(this);
 
     /**
      * The current `location.pathname`, tracked so the navbar's section follows
@@ -317,6 +327,7 @@ export class AdminInterface extends WithLicenseSummary(
                     ${this.renderCommandPaletteButton()}
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
+                    <ak-ui-bookmark slot="bookmark"></ak-ui-bookmark>
                 </ak-page-navbar>
 
                 <ak-sidebar

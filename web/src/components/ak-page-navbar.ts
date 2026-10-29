@@ -182,7 +182,9 @@ export class AKPageNavbar
                                   >`
                                 : nothing
                         }
-                        <span id="page-navbar-heading">${this.header}</span>
+                        <span id="page-navbar-heading"
+                            >${this.header}<slot name="bookmark"></slot
+                        ></span>
                     </h1>
                 </div>
                 ${
