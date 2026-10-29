@@ -9,14 +9,12 @@
  */
 
 import "monaco-editor/features/bracketMatching/register";
-import "monaco-editor/features/clipboard/register";
 import "monaco-editor/features/comment/register";
 import "monaco-editor/features/cursorUndo/register";
 import "monaco-editor/features/find/register";
 import "monaco-editor/features/folding/register";
 import "monaco-editor/features/indentation/register";
 import "monaco-editor/features/linesOperations/register";
-import "monaco-editor/features/multicursor/register";
 import "monaco-editor/features/readOnlyMessage/register";
 import "monaco-editor/features/toggleTabFocusMode/register";
 import "monaco-editor/features/wordOperations/register";
