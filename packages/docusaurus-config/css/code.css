@@ -10,3 +10,32 @@ html[data-theme="dark"] {
 .theme-code-block pre code {
     font-weight: 500;
 }
+
+.theme-doc-markdown :not(pre) > code {
+    font-size: 0.9em;
+    padding: 0.1em 0.3em;
+    border-radius: 0.25rem;
+    overflow-wrap: anywhere;
+}
+
+.theme-doc-markdown .theme-code-block {
+    --ifm-code-font-size: 0.9375rem;
+    --ifm-pre-line-height: 1.55;
+    border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.theme-doc-markdown .theme-code-block pre code {
+    font-weight: 400;
+}
+
+/* Keep both existing code controls discoverable on touch and keyboard input. */
+.theme-doc-markdown .theme-code-block button.clean-btn {
+    opacity: 1;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+}
+
+.theme-doc-markdown .theme-code-block button.clean-btn:focus-visible {
+    outline: 2px solid var(--prism-color);
+    outline-offset: 2px;
+}
