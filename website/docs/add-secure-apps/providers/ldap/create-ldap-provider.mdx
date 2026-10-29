@@ -90,14 +90,17 @@ If you followed the optional [Create an LDAP authentication flow](#create-an-lda
 Create a service account to bind to LDAP with.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Users** and click **New User**.
-3. Provide a name for the service account (e.g. `ldapservice`) and click **Create**.
-4. Click the name of the newly created service account.
-5. Under **Recovery**, click **Set password**, provide a secure password for the account, and click **Update password**.
+2. Navigate to **Directory** > **Users**, click **New User**, select **Service Account**, and click **Next**.
+3. Enter a **Username** (e.g. `ldapservice`), configure the app password's expiration settings, and click **Next**.
+4. Copy the generated **Password**, store it securely, and click **Close**.
+
+Ensure that the password stage used by the LDAP provider's **Bind Flow** includes **User database + app passwords** in **Backends**. See [Bind with an app password](./index.mdx#bind-with-an-app-password).
 
 :::info Default DN of service account
 The default DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
 :::
+
+Use the service account's bind DN and generated app password in your LDAP client's bind configuration.
 
 ### Assign the LDAP search permission to the service account
 
@@ -123,6 +126,7 @@ The LDAP provider requires the deployment of an LDAP [Outpost](../../outposts/in
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Outposts**, click **New Outpost** and set the following required configurations:
+
     - Provide a **Name** for the outpost (e.g. `LDAP Outpost').
     - Set the **Type** as `LDAP`.
     - Set **Integration** to match your deployment method or manually deploy an outpost via [Docker-Compose](../../outposts/manual-deploy-docker-compose.mdx) or [Kubernetes](../../outposts/manual-deploy-kubernetes.mdx). For more information, refer to the [Outpost documentation](../../outposts/index.mdx).
