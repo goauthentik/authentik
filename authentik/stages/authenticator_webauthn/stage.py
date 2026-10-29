@@ -11,7 +11,6 @@ from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
-from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.cose import COSEAlgorithmIdentifier
 from webauthn.helpers.exceptions import WebAuthnException
@@ -22,7 +21,6 @@ from webauthn.helpers.structs import (
     AuthenticatorAttachment,
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
-    PublicKeyCredentialDescriptor,
     PublicKeyCredentialHint,
     ResidentKeyRequirement,
     UserVerificationRequirement,
@@ -69,6 +67,7 @@ PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/at
 @dataclass
 class VerifiedRegistrationData:
     registration: VerifiedRegistration
+    transports: list[str]
     attest_cert: str | None = None
     attest_cert_fingerprint: str | None = None
 
@@ -109,7 +108,10 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 "Registration failed. Please contact your administrator."
             ) from None
 
-        registration_data = VerifiedRegistrationData(registration)
+        transports = response["response"].get("transports", [])
+        if not isinstance(transports, list) or not all(isinstance(t, str) for t in transports):
+            raise ValidationError("Invalid credential transports.")
+        registration_data = VerifiedRegistrationData(registration, transports=transports)
         stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         att_obj = parse_attestation_object(registration.attestation_object)
@@ -200,12 +202,10 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         # user. Only confirmed devices count; an unconfirmed one is not usable and must not block
         # re-enrolling the same authenticator.
         exclude_credentials = [
-            PublicKeyCredentialDescriptor(id=base64url_to_bytes(credential_id))
-            for credential_id in WebAuthnDevice.objects.filter(
-                user=user, rp_id=rp_id, confirmed=True
-            )
+            device.descriptor
+            for device in WebAuthnDevice.objects.filter(user=user, rp_id=rp_id, confirmed=True)
             .order_by("pk")
-            .values_list("credential_id", flat=True)
+            .only("credential_id", "transports")
         ]
 
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
@@ -220,15 +220,17 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 authenticator_attachment=authenticator_attachment,
             ),
             attestation=AttestationConveyancePreference.DIRECT,
-            exclude_credentials=exclude_credentials,
             hints=hints,
             supported_pub_key_algs=SUPPORTED_PUB_KEY_ALGS,
         )
 
         self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = registration_options.challenge
+        registration = options_to_json_dict(registration_options)
+        # py_webauthn's descriptor serializer only supports known transport enum values.
+        registration["excludeCredentials"] = exclude_credentials
         return AuthenticatorWebAuthnChallenge(
             data={
-                "registration": options_to_json_dict(registration_options),
+                "registration": registration,
             }
         )
 
@@ -272,6 +274,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             credential_id=bytes_to_base64url(webauthn_credential.registration.credential_id),
             sign_count=webauthn_credential.registration.sign_count,
             rp_id=get_rp_id(self.request),
+            transports=webauthn_credential.transports,
             device_type=device_type,
             aaguid=webauthn_credential.registration.aaguid,
             attestation_certificate_pem=webauthn_credential.attest_cert,

@@ -8,8 +8,6 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer, Serializer
-from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
@@ -158,6 +156,7 @@ class WebAuthnDevice(SerializerModel, Device):
     public_key = models.TextField()
     sign_count = models.IntegerField(default=0)
     rp_id = models.CharField(max_length=253)
+    transports = ArrayField(models.TextField(), default=list, blank=True)
 
     created_on = models.DateTimeField(auto_now_add=True)
     last_t = models.DateTimeField(default=now)
@@ -170,9 +169,12 @@ class WebAuthnDevice(SerializerModel, Device):
     )
 
     @property
-    def descriptor(self) -> PublicKeyCredentialDescriptor:
-        """Get a publickeydescriptor for this device"""
-        return PublicKeyCredentialDescriptor(id=base64url_to_bytes(self.credential_id))
+    def descriptor(self) -> dict[str, str | list[str]]:
+        """Get a JSON credential descriptor, preserving unknown transport values."""
+        descriptor: dict[str, str | list[str]] = {"id": self.credential_id, "type": "public-key"}
+        if self.transports:
+            descriptor["transports"] = self.transports
+        return descriptor
 
     @property
     def attestation_certificate(self) -> Certificate | None:

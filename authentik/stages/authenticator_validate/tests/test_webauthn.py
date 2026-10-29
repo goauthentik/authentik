@@ -85,16 +85,23 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
         )
 
     def test_device_challenge_webauthn(self):
-        """Test webauthn"""
+        """Return reported transports while leaving legacy credentials unrestricted."""
         request = self.request_factory.get("/")
         request.user = self.user
 
         webauthn_device = WebAuthnDevice.objects.create(
             user=self.user,
+            name="1-phone",
+            transports=["hybrid", "future-transport"],
             public_key=bytes_to_base64url(b"qwerqwerqre"),
             credential_id=bytes_to_base64url(b"foobarbaz"),
             sign_count=0,
             rp_id=generate_id(),
+        )
+        WebAuthnDevice.objects.create(
+            user=self.user,
+            name="2-legacy",
+            credential_id=bytes_to_base64url(b"legacy"),
         )
         stage = AuthenticatorValidateStage.objects.create(
             name=generate_id(),
@@ -116,7 +123,9 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
                     {
                         "id": "Zm9vYmFyYmF6",
                         "type": "public-key",
-                    }
+                        "transports": ["hybrid", "future-transport"],
+                    },
+                    {"id": "bGVnYWN5", "type": "public-key"},
                 ],
                 "rpId": "testserver",
                 "timeout": 60000,
