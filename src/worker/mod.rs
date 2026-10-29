@@ -34,9 +34,9 @@ use tokio::{
     sync::Mutex,
     time::{Duration, interval},
 };
-use tracing::{info, instrument, trace, warn};
+use tracing::{debug, info, instrument, trace, warn};
 
-use crate::server::socket_path;
+use crate::server::{is_connect_not_found, socket_path};
 
 mod healthcheck;
 mod worker_status;
@@ -148,7 +148,13 @@ impl Worker {
             .client
             .request(req)
             .await
-            .inspect_err(|err| warn!(?err, "failed to send health live request to worker"))?
+            .inspect_err(|err| {
+                if is_connect_not_found(err) {
+                    debug!(?err, "worker socket not yet ready (health live)");
+                } else {
+                    warn!(?err, "failed to send health live request to worker");
+                }
+            })?
             .status()
             .is_success())
     }
