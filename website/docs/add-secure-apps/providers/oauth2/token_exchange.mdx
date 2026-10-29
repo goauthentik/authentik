@@ -110,7 +110,7 @@ The provider used to issue the token determines the identifiers for `sub` and `a
 
 A provider can exchange a token for a SAML response issued by a [SAML provider](../saml/index.mdx). This lets a service call an API that accepts SAML responses, such as AWS `AssumeRoleWithSAML`, as the user identified by the subject token, without a browser-based SAML login.
 
-Set `requested_token_type` to `urn:ietf:params:oauth:token-type:saml2`, and set `audience` to the slug or `pbm_uuid` of the application to which the SAML provider is bound:
+Set `requested_token_type` to `urn:ietf:params:oauth:token-type:saml2`, and set `audience` to the slug or the UUID of the application to which the SAML provider is bound:
 
 ```http
 POST /application/o/token/ HTTP/1.1
