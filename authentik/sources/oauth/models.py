@@ -37,28 +37,24 @@ class OAuthSource(NonCreatableType, Source):
     """Login using a Generic OAuth provider."""
 
     provider_type = models.CharField(max_length=255)
-    request_token_url = models.CharField(
+    request_token_url = models.TextField(
         null=True,
-        max_length=255,
         verbose_name=_("Request Token URL"),
         help_text=_(
             "URL used to request the initial token. This URL is only required for OAuth 1."
         ),
     )
-    authorization_url = models.CharField(
-        max_length=255,
+    authorization_url = models.TextField(
         null=True,
         verbose_name=_("Authorization URL"),
         help_text=_("URL the user is redirect to to conest the flow."),
     )
-    access_token_url = models.CharField(
-        max_length=255,
+    access_token_url = models.TextField(
         null=True,
         verbose_name=_("Access Token URL"),
         help_text=_("URL used by authentik to retrieve tokens."),
     )
-    profile_url = models.CharField(
-        max_length=255,
+    profile_url = models.TextField(
         null=True,
         verbose_name=_("Profile URL"),
         help_text=_("URL used by authentik to get user information."),
@@ -67,7 +63,7 @@ class OAuthSource(NonCreatableType, Source):
         default="", blank=True, verbose_name=_("Additional Scopes")
     )
     consumer_key = models.TextField()
-    consumer_secret = models.TextField()
+    consumer_secret = models.TextField(blank=True, default="")
 
     oidc_well_known_url = models.TextField(default="", blank=True)
     oidc_jwks_url = models.TextField(default="", blank=True)
@@ -307,6 +303,8 @@ class WeChatOAuthSource(CreatableType, OAuthSource):
 
 class OAuthSourcePropertyMapping(PropertyMapping):
     """Map OAuth properties to User or Group object attributes"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

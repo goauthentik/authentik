@@ -2,7 +2,8 @@ import { renderForm } from "./SAMLProviderFormForm.js";
 
 import { aki } from "#common/api/client";
 
-import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
 import {
@@ -11,6 +12,7 @@ import {
     SAMLBindingsEnum,
     SAMLLogoutMethods,
     SAMLProvider,
+    CertificateKeyPair,
 } from "@goauthentik/api";
 
 import { customElement, state } from "lit/decorators.js";
@@ -19,6 +21,9 @@ import { customElement, state } from "lit/decorators.js";
 export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     @state()
     protected hasSigningKp = false;
+
+    @state()
+    protected hasEncryptionKp = false;
 
     @state()
     protected hasSlsUrl = false;
@@ -33,6 +38,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         super.reset();
 
         this.hasSigningKp = false;
+        this.hasEncryptionKp = false;
         this.hasSlsUrl = false;
         this.hasPostBinding = false;
         this.logoutMethod = SAMLLogoutMethods.FrontchannelIframe;
@@ -45,10 +51,13 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         const provider = await aki(ProvidersApi).providersSamlRetrieve({
             id: pk,
         });
+
         this.hasSigningKp = !!provider.signingKp;
+        this.hasEncryptionKp = !!provider.encryptionKp;
         this.hasSlsUrl = !!provider.slsUrl;
         this.hasPostBinding = provider.slsBinding === SAMLBindingsEnum.Post;
         this.logoutMethod = provider.logoutMethod ?? SAMLLogoutMethods.FrontchannelIframe;
+
         return provider;
     }
 
@@ -67,21 +76,25 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                 sAMLProviderRequest: data,
             });
         }
+
         return aki(ProvidersApi).providersSamlCreate({
             sAMLProviderRequest: data,
         });
     }
 
     renderForm() {
-        const setHasSigningKp = (ev: InputEvent) => {
-            const target = ev.target as AkCryptoCertificateSearch;
-            if (!target) return;
-            this.hasSigningKp = !!target.selectedKeypair;
-            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
+        const setHasSigningKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasSigningKp = !!detail.value;
+            this.signingKeyType = detail.value?.keyType ?? KeyTypeEnum.Rsa;
+        };
+
+        const setHasEncryptionKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasEncryptionKp = !!detail.value;
         };
 
         const setHasSlsUrl = (ev: Event) => {
             const akTextInput = ev.currentTarget as HTMLElement & { value?: string };
+
             if (!akTextInput) return;
 
             const value = akTextInput.value || "";
@@ -111,6 +124,8 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             setHasSigningKp,
             hasSigningKp: this.hasSigningKp,
             signingKeyType: this.signingKeyType,
+            setHasEncryptionKp,
+            hasEncryptionKp: this.hasEncryptionKp,
             setHasSlsUrl,
             hasSlsUrl: this.hasSlsUrl,
             setSlsBinding,

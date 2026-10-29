@@ -1,17 +1,17 @@
 """OAuth errors"""
 
-from urllib.parse import quote, urlparse
+from urllib.parse import quote, urlencode, urlparse, urlsplit, urlunsplit
 
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
 
 from authentik.events.models import Event, EventAction
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.views import bad_request_message
 from authentik.providers.oauth2.models import GrantType, RedirectURI, ResponseMode
 
 
-class OAuth2Error(SentryIgnoredException):
+class OAuth2Error(TracingIgnoredException):
     """Base class for all OAuth2 Errors"""
 
     error: str
@@ -189,27 +189,37 @@ class AuthorizeError(OAuth2Error):
                 "if/oauth_form_post.html",
                 {"redirect_uri": self.redirect_uri, "attrs": attrs},
             )
-        return HttpResponseRedirect(self.create_uri())
+        # Deferred import, utils imports BearerTokenError from this module
+        from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
+
+        # Like OAuthFulfillmentStage, allow the redirect URI's own scheme so that native apps
+        # with a private-use scheme (RFC 8252) get the error instead of a bare 400.
+        # The redirect URI is already validated against the provider when this is raised.
+        return HttpResponseRedirectScheme(
+            self.create_uri(), allowed_schemes=[urlparse(self.redirect_uri).scheme]
+        )
 
     def create_uri(self) -> str:
         """Get a redirect URI with the error message"""
-        description = quote(str(self.description))
+        uri = urlsplit(self.redirect_uri)
+        response_mode = self.response_mode
+        if response_mode not in ResponseMode.values:
+            response_mode = (
+                ResponseMode.FRAGMENT
+                if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID]
+                else ResponseMode.QUERY
+            )
 
-        # See:
-        # http://openid.net/specs/openid-connect-core-1_0.html#ImplicitAuthError
-        fragment_or_query = (
-            "#" if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID] else "?"
-        )
+        params = {"error": self.error, "error_description": str(self.description)}
+        if self.state:
+            params["state"] = self.state
 
-        uri = (
-            f"{self.redirect_uri}{fragment_or_query}error="
-            f"{self.error}&error_description={description}"
-        )
-
-        # Add state if present.
-        uri = uri + (f"&state={self.state}" if self.state else "")
-
-        return uri
+        encoded = urlencode(params, quote_via=quote)
+        if response_mode == ResponseMode.FRAGMENT:
+            return urlunsplit(uri._replace(fragment=encoded))
+        # Preserve the callback query, including its original encoding.
+        query = f"{uri.query}&{encoded}" if uri.query else encoded
+        return urlunsplit(uri._replace(query=query))
 
 
 class TokenError(OAuth2Error):
@@ -243,6 +253,26 @@ class TokenError(OAuth2Error):
 
     def __init__(self, error: str):
         super().__init__()
+        self.error = error
+        self.description = self.errors[error]
+
+
+class TokenExchangeError(TokenError):
+    """
+    Token exchange errors
+    See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.2
+    Can also use codes from TokenError
+    """
+
+    errors = TokenError.errors | {
+        "invalid_target": (
+            "The authorization server is unable to issue a token for the target service "
+            "indicated by the 'resource' or 'audience' parameter"
+        ),
+    }
+
+    def __init__(self, error: str):
+        super().__init__(error)
         self.error = error
         self.description = self.errors[error]
 
@@ -290,6 +320,15 @@ class DeviceCodeError(TokenError):
             'A variant of "authorization_pending", the authorization request is'
             "still pending and polling should continue, but the interval MUST"
             "be increased by 5 seconds for this and all subsequent requests."
+        ),
+        "invalid_dpop_jkt": (
+            'The "dpop_jkt" parameter is not a valid base64url-encoded SHA-256 JWK thumbprint'
+        ),
+        "dpop_jkt_required": (
+            'The "dpop_jkt" parameter is required when the "bound_key" scope is requested'
+        ),
+        "dpop_jkt_not_allowed": (
+            'The "dpop_jkt" parameter must not be set unless the "bound_key" scope is requested'
         ),
     }
 

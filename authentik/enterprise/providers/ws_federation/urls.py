@@ -11,6 +11,11 @@ urlpatterns = [
         WSFedEntryView.as_view(),
         name="wsfed",
     ),
+    path(
+        "<slug:application_slug>/",
+        WSFedEntryView.as_view(),
+        name="wsfed-app-specific",
+    ),
     # Metadata
     path(
         "<slug:application_slug>/metadata/",

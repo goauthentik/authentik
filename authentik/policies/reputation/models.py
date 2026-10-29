@@ -11,9 +11,8 @@ from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
-from authentik.core.models import ExpiringModel
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.root.middleware import ClientIPMiddleware

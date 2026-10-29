@@ -54,7 +54,7 @@ values={[
 
 <RedirectURI20265Note />
 
-To support the integration of Nextcloud with authentik over OIDC, you need to create an application/provider pair. If you want authentik to send Nextcloud storage quotas, group membership, or existing Nextcloud user IDs, also create a custom scope mapping.
+To support the integration of Nextcloud with authentik over OIDC, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair). If you want authentik to send Nextcloud storage quotas, group membership, or existing Nextcloud user IDs, also create a custom [scope mapping](/docs/add-secure-apps/providers/oauth2/#scope-mappings).
 
 ### Create a scope mapping
 
@@ -164,7 +164,7 @@ Administrators can still use Nextcloud's built-in authentication with `https://n
 
 <SAMLProvider20265Warning />
 
-To support the integration of Nextcloud with authentik over SAML, you need to create an application/provider pair. If you want authentik to send Nextcloud storage quotas or group memberships, also create SAML property mappings.
+To support the integration of Nextcloud with authentik over SAML, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair). If you want authentik to send Nextcloud storage quotas or group memberships, also create SAML [property mappings](/docs/add-secure-apps/providers/property-mappings/).
 
 ### Create SAML property mappings
 
@@ -211,6 +211,9 @@ This mapping reads Nextcloud-specific groups from application entitlements. Afte
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://nextcloud.company/apps/user_saml/saml/acs`.
         - Set the **Audience** to `https://nextcloud.company/apps/user_saml/saml/metadata`.
+        - Set the **SLS URL** to `https://nextcloud.company/apps/user_saml/saml/sls`.
+        - Set the **SLS Binding** to `Redirect`.
+        - Set the **Logout Method** to `Front-channel (Iframe)`.
         - Under **Advanced protocol settings**, select an available **Signing certificate**.
         - If you created SAML property mappings for Nextcloud, add them to **Property mappings**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
@@ -252,7 +255,7 @@ Using the UID attribute as username is not recommended because of its mutable na
 </TabItem>
 <TabItem value="ldap">
 
-To support the integration of Nextcloud with authentik over LDAP, you need to create an application/provider pair and deploy an LDAP outpost.
+To support the integration of Nextcloud with authentik over LDAP, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) and deploy an LDAP [outpost](/docs/add-secure-apps/outposts/).
 
 ### Create an application and provider
 

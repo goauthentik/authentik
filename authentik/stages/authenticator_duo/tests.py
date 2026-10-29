@@ -1,20 +1,22 @@
 """Test duo stage"""
 
+from ssl import SSLCertVerificationError, SSLError
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
+from django.db.models.deletion import ProtectedError
 from django.test.client import RequestFactory
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
-class AuthenticatorDuoStageTests(FlowTestCase):
+class AuthenticatorDuoStageTests(APIFlowTestCase):
     """Test duo stage"""
 
     def setUp(self) -> None:
@@ -36,6 +38,22 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage.admin_integration_key = ""
         with self.assertRaises(ValueError):
             self.assertEqual(stage.admin_client().ikey, stage.admin_integration_key)
+
+    def test_stage_deletion_is_protected(self):
+        """A setup stage with enrolled devices cannot be deleted."""
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+        )
+        device = DuoDevice.objects.create(user=self.user, stage=stage)
+
+        with self.assertRaises(ProtectedError):
+            stage.delete()
+
+        self.assertTrue(AuthenticatorDuoStage.objects.filter(pk=stage.pk).exists())
+        self.assertTrue(DuoDevice.objects.filter(pk=device.pk).exists())
 
     def test_api_enrollment_invalid(self):
         """Test `enrollment_status`"""
@@ -166,6 +184,120 @@ class AuthenticatorDuoStageTests(FlowTestCase):
                 response.content,
                 {
                     "error": "An internal error occurred while importing devices.",
+                    "count": 0,
+                },
+            )
+
+    def test_api_import_automatic_tls_failure(self):
+        """test `import_devices_automatic` when the Duo API certificate doesn't verify
+
+        Regression test for #22896: `SSLCertVerificationError` is an `OSError`,
+        not a `RuntimeError`, so it escaped the handler entirely instead of
+        producing the documented 400 with a descriptive error.
+        """
+        self.client.force_login(self.user)
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+            admin_integration_key=generate_id(),
+            admin_secret_key=generate_id(),
+        )
+        ssl_error = SSLCertVerificationError(
+            1,
+            "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: "
+            "unable to get local issuer certificate (_ssl.c:1081)",
+        )
+        with patch(
+            "duo_client.admin.Admin.get_users_iterator",
+            MagicMock(side_effect=ssl_error),
+        ):
+            response = self.client.post(
+                reverse(
+                    "authentik_api:authenticatorduostage-import-devices-automatic",
+                    kwargs={
+                        "pk": str(stage.pk),
+                    },
+                ),
+            )
+            self.assertEqual(response.status_code, 400)
+            self.assertJSONEqual(
+                response.content,
+                {
+                    "error": "Failed to connect to Duo: TLS certificate verification failed.",
+                    "count": 0,
+                },
+            )
+
+    def test_api_import_automatic_tls_error(self):
+        """test `import_devices_automatic` on a non-certificate TLS failure
+
+        A generic `SSLError` must be reported as a TLS error rather than
+        claiming certificate verification specifically failed.
+        """
+        self.client.force_login(self.user)
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+            admin_integration_key=generate_id(),
+            admin_secret_key=generate_id(),
+        )
+        with patch(
+            "duo_client.admin.Admin.get_users_iterator",
+            MagicMock(side_effect=SSLError("handshake failure")),
+        ):
+            response = self.client.post(
+                reverse(
+                    "authentik_api:authenticatorduostage-import-devices-automatic",
+                    kwargs={
+                        "pk": str(stage.pk),
+                    },
+                ),
+            )
+            self.assertEqual(response.status_code, 400)
+            self.assertJSONEqual(
+                response.content,
+                {
+                    "error": "Failed to connect to Duo: TLS error.",
+                    "count": 0,
+                },
+            )
+
+    def test_api_import_automatic_connection_failure(self):
+        """test `import_devices_automatic` when the Duo API is unreachable
+
+        A non-TLS `OSError` must also surface as a descriptive 400 rather than
+        escaping the handler.
+        """
+        self.client.force_login(self.user)
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+            admin_integration_key=generate_id(),
+            admin_secret_key=generate_id(),
+        )
+        with patch(
+            "duo_client.admin.Admin.get_users_iterator",
+            MagicMock(side_effect=OSError("connection refused")),
+        ):
+            response = self.client.post(
+                reverse(
+                    "authentik_api:authenticatorduostage-import-devices-automatic",
+                    kwargs={
+                        "pk": str(stage.pk),
+                    },
+                ),
+            )
+            self.assertEqual(response.status_code, 400)
+            self.assertJSONEqual(
+                response.content,
+                {
+                    "error": "Failed to connect to Duo.",
                     "count": 0,
                 },
             )

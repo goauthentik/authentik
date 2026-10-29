@@ -7,10 +7,18 @@ from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import HttpRequest
 from django.test import RequestFactory as BaseRequestFactory
+from django.urls import ResolverMatch
 from django.utils.text import slugify
 
 from authentik.brands.models import Brand
-from authentik.core.models import Group, User
+from authentik.core.models import (
+    AuthenticatedSession,
+    Group,
+    Session,
+    User,
+    UserSwitchingSession,
+)
+from authentik.core.sessions import SessionStore
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation
@@ -39,6 +47,28 @@ def create_test_user(name: str | None = None, **kwargs) -> User:
     user.set_password(uid)
     user.save()
     return user
+
+
+def create_test_session(
+    user: User, user_switching_token: str | None = None, is_current: bool = True
+) -> AuthenticatedSession:
+    """Create a live login for the given user."""
+    store = SessionStore()
+    store.create()
+    switching_session = None
+    if user_switching_token:
+        switching_session, _ = UserSwitchingSession.objects.get_or_create(
+            token=user_switching_token
+        )
+    authenticated_session = AuthenticatedSession.objects.create(
+        session=Session.objects.get(session_key=store.session_key),
+        user=user,
+        user_switching_session=switching_session,
+    )
+    if switching_session and is_current:
+        switching_session.current_session = authenticated_session
+        switching_session.save(update_fields=["current_session"])
+    return authenticated_session
 
 
 def create_test_admin_user(name: str | None = None, **kwargs) -> User:
@@ -75,7 +105,6 @@ def dummy_get_response(request: HttpRequest):  # pragma: no cover
 
 
 class RequestFactory(BaseRequestFactory):
-
     def generic(
         self,
         method: str,
@@ -107,5 +136,10 @@ class RequestFactory(BaseRequestFactory):
         middleware = MessageMiddleware(dummy_get_response)
         middleware.process_request(request)
         request.session.save()
+
+        # Not explicitly required for testing, however a `ResolverMatch` instance
+        # cannot be pickled, which has caused numerous issues in the past
+        # and as such we always inject this here.
+        request.resolver_match = ResolverMatch(dummy_get_response, (), {})
 
         return request

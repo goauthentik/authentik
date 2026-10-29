@@ -9,7 +9,12 @@ from django.utils import translation
 from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.common.oauth.constants import SCOPE_OFFLINE_ACCESS, SCOPE_OPENID, TOKEN_TYPE
+from authentik.common.oauth.constants import (
+    SCOPE_BOUND_KEY,
+    SCOPE_OFFLINE_ACCESS,
+    SCOPE_OPENID,
+    TOKEN_TYPE,
+)
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
@@ -26,6 +31,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
+    ResponseMode,
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
@@ -61,6 +67,158 @@ class TestAuthorize(OAuthTestCase):
             )
             OAuthAuthorizationParams.from_request(request)
         self.assertEqual(cm.exception.error, "invalid_request")
+
+    def test_error_custom_scheme(self):
+        """Test error is returned to a redirect URI with a private-use scheme"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            grant_types=[],
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "app.invalid:/callback")],
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "redirect_uri": "app.invalid:/callback",
+            },
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            OAuthAuthorizationParams.from_request(request)
+        response = cm.exception.get_response(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("app.invalid:/callback?error=invalid_request&"))
+
+    def test_error_response_routing_and_encoding(self):
+        """Errors honor response modes and preserve callback parameters and opaque state."""
+        redirect_uri = (
+            "https://app.example/cb?tenant=one&tag=a&tag=b&empty=&flag&x=a%20b&sig=AbC%2f%3d"
+        )
+        state = "value &=# +%&iss=https://other.example/"
+        description = "Rejected: A & B = C # + % /"
+        callback_params = {
+            "tenant": ["one"],
+            "tag": ["a", "b"],
+            "empty": [""],
+            "flag": [""],
+            "x": ["a b"],
+            "sig": ["AbC/="],
+        }
+        error_params = {
+            "error": ["invalid_request"],
+            "error_description": [description],
+            "state": [state],
+        }
+        for grant_type, response_mode, expected_mode in [
+            (GrantType.AUTHORIZATION_CODE, None, ResponseMode.QUERY),
+            (GrantType.AUTHORIZATION_CODE, ResponseMode.QUERY, ResponseMode.QUERY),
+            (GrantType.AUTHORIZATION_CODE, ResponseMode.FRAGMENT, ResponseMode.FRAGMENT),
+            (GrantType.IMPLICIT, None, ResponseMode.FRAGMENT),
+            (GrantType.HYBRID, None, ResponseMode.FRAGMENT),
+        ]:
+            with self.subTest(grant_type=grant_type, response_mode=response_mode):
+                error = AuthorizeError(
+                    redirect_uri,
+                    "invalid_request",
+                    grant_type,
+                    state,
+                    response_mode=response_mode,
+                    description=description,
+                )
+                response = error.get_response(self.factory.get("/"))
+                self.assertEqual(response.status_code, 302)
+                uri = urlparse(response.url)
+                self.assertEqual(
+                    (uri.scheme, uri.netloc, uri.path), ("https", "app.example", "/cb")
+                )
+                if expected_mode == ResponseMode.FRAGMENT:
+                    self.assertEqual(uri.query, urlparse(redirect_uri).query)
+                    self.assertEqual(parse_qs(uri.fragment), error_params)
+                else:
+                    self.assertEqual(uri.fragment, "")
+                    self.assertTrue(uri.query.startswith(f"{urlparse(redirect_uri).query}&"))
+                    self.assertEqual(
+                        parse_qs(uri.query, keep_blank_values=True),
+                        callback_params | error_params,
+                    )
+                response_params = (
+                    uri.fragment if expected_mode == ResponseMode.FRAGMENT else uri.query
+                )
+                self.assertIn("error_description=Rejected%3A%20A%20%26%20B", response_params)
+                self.assertIn("state=value%20%26%3D%23%20%2B%25%26iss%3D", response_params)
+
+    def test_error_without_state(self):
+        """An absent state is omitted from query and fragment errors."""
+        for response_mode in [ResponseMode.QUERY, ResponseMode.FRAGMENT]:
+            with self.subTest(response_mode=response_mode):
+                error = AuthorizeError(
+                    "https://app.example/cb",
+                    "invalid_request",
+                    GrantType.AUTHORIZATION_CODE,
+                    "",
+                    response_mode=response_mode,
+                )
+                uri = urlparse(error.get_response(self.factory.get("/")).url)
+                params = parse_qs(
+                    uri.query if response_mode == ResponseMode.QUERY else uri.fragment
+                )
+                self.assertEqual(params["error"], ["invalid_request"])
+                self.assertNotIn("state", params)
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_key_binding_errors_form_post(self):
+        """All key-binding validation errors use the requested form_post response mode."""
+        redirect_uri = "https://app.example/cb?tenant=one"
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, redirect_uri)],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(scope_name__in=[SCOPE_OPENID, SCOPE_BOUND_KEY])
+        )
+        state = "value &=# +%&iss=https://other.example/"
+        for scope, dpop_jkt, description in [
+            (
+                f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}",
+                "",
+                "dpop_jkt is required when bound_key scope is requested",
+            ),
+            (
+                SCOPE_OPENID,
+                "n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg",
+                "dpop_jkt is set when bound_key scope is not requested",
+            ),
+            (
+                f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}",
+                "too-short",
+                "dpop_jkt must be a base64url-encoded SHA-256 JWK thumbprint",
+            ),
+        ]:
+            with self.subTest(scope=scope, dpop_jkt=dpop_jkt):
+                response = self.client.get(
+                    reverse("authentik_providers_oauth2:authorize"),
+                    data={
+                        "client_id": provider.client_id,
+                        "redirect_uri": redirect_uri,
+                        "response_type": "code",
+                        "response_mode": ResponseMode.FORM_POST,
+                        "state": state,
+                        "scope": scope,
+                        "dpop_jkt": dpop_jkt,
+                    },
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertTemplateUsed(response, "if/oauth_form_post.html")
+                self.assertEqual(response.context_data["redirect_uri"], redirect_uri)
+                self.assertEqual(
+                    response.context_data["attrs"],
+                    {"error": "invalid_request", "error_description": description, "state": state},
+                )
 
     def test_invalid_grant_type(self):
         """Test with invalid grant type"""
@@ -819,3 +977,124 @@ class TestAuthorize(OAuthTestCase):
         self.assertEqual(response.status_code, 302)
         plan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER], "foo")
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_dpop_jkt_persisted(self):
+        """Test that dpop_jkt is persisted in the authorization code"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-bound_key",
+                ]
+            )
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        dpop_jkt = "n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg"
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                "scope": f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}",
+                "dpop_jkt": dpop_jkt,
+            },
+        )
+        code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
+        self.assertIsNotNone(code)
+        self.assertEqual(code.dpop_jkt, dpop_jkt)
+        self.assertEqual(
+            response.url,
+            f"foo://localhost?code={code.code}&state={state}",
+        )
+
+    def test_dpop_jkt_without_bound_key_rejected(self):
+        """dpop_jkt supplied without bound_key scope must be rejected, not 500"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test-dpop-nobk",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": provider.client_id,
+                "redirect_uri": "http://local.invalid/Foo",
+                "scope": SCOPE_OPENID,
+                "dpop_jkt": "n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg",
+            },
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "invalid_request")
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_bound_key_without_dpop_jkt_rejected(self):
+        """bound_key scope without dpop_jkt must be rejected"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test-bk-nojkt",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-bound_key",
+                ]
+            )
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": provider.client_id,
+                "redirect_uri": "http://local.invalid/Foo",
+                "scope": f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}",
+            },
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "invalid_request")
+
+    def test_malformed_dpop_jkt_rejected(self):
+        """dpop_jkt that isn't a 43-char base64url thumbprint must be rejected"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test-bad-jkt",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": provider.client_id,
+                "redirect_uri": "http://local.invalid/Foo",
+                "scope": f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}",
+                "dpop_jkt": "too-short",
+            },
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "invalid_request")

@@ -225,6 +225,10 @@ class TestEvents(TestCase):
 
         new_count = Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk).count()
         self.assertEqual(new_count, old_count + 1)
+        event = Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk).latest(
+            "created"
+        )
+        self.assertNotIn("hasher_defaults_overridden", event.context)
 
     def test_log_deprecation(self):
         """Test Event.log_deprecation"""

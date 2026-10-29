@@ -7,12 +7,12 @@ from django.urls import reverse
 from authentik.brands.models import Brand
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
-class TestApplicationsViews(FlowTestCase):
+class TestApplicationsViews(APIFlowTestCase):
     """Test applications Views"""
 
     def setUp(self) -> None:

@@ -16,6 +16,7 @@ class TestOAuthSourceAPI(APITestCase):
             authorization_url="",
             profile_url="",
             consumer_key=generate_id(),
+            consumer_secret=generate_id(),
         )
         self.user = create_test_admin_user()
 
@@ -30,6 +31,27 @@ class TestOAuthSourceAPI(APITestCase):
             },
         )
         self.assertEqual(res.status_code, 200)
+
+    def test_patch_long_url(self):
+        """URL fields are TextField, so URLs longer than 255 chars (e.g. an
+        authorization URL carrying many static query parameters) must save."""
+        self.client.force_login(self.user)
+        long_url = "https://cilogon.org/authorize?idphint=" + ",".join(
+            f"https://idp{i}.institution.example.org/idp/shibboleth" for i in range(10)
+        )
+        self.assertGreater(len(long_url), 255)
+        res = self.client.patch(
+            reverse("authentik_api:oauthsource-detail", kwargs={"slug": self.source.slug}),
+            {
+                "authorization_url": long_url,
+                "profile_url": f"https://{generate_id()}",
+                "access_token_url": f"https://{generate_id()}",
+            },
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.source.refresh_from_db()
+        self.assertEqual(self.source.authorization_url, long_url)
 
     @Mocker()
     def test_disable_source_invalid_well_known_url(self, mock: Mocker):
@@ -52,3 +74,46 @@ class TestOAuthSourceAPI(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         self.assertEqual(mock.call_count, 0)
+
+    def test_create_public_client(self):
+        """Public clients (no secret) must use PKCE"""
+        self.client.force_login(self.user)
+        data = {
+            "name": generate_id(),
+            "slug": generate_id(),
+            "provider_type": "openidconnect",
+            "consumer_key": generate_id(),
+            "authorization_url": f"https://{generate_id()}",
+            "profile_url": f"https://{generate_id()}",
+            "access_token_url": f"https://{generate_id()}",
+        }
+        res = self.client.post(
+            reverse("authentik_api:oauthsource-list"), data, content_type="application/json"
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("pkce", res.json())
+        res = self.client.post(
+            reverse("authentik_api:oauthsource-list"),
+            {**data, "pkce": "S256"},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 201)
+
+    def test_create_secret_required(self):
+        """Source types that require a secret reject a missing one"""
+        self.client.force_login(self.user)
+        for provider_type in ["discord", "apple"]:
+            with self.subTest(provider_type):
+                res = self.client.post(
+                    reverse("authentik_api:oauthsource-list"),
+                    {
+                        "name": generate_id(),
+                        "slug": generate_id(),
+                        "provider_type": provider_type,
+                        "consumer_key": generate_id(),
+                        "pkce": "S256",
+                    },
+                    content_type="application/json",
+                )
+                self.assertEqual(res.status_code, 400)
+                self.assertIn("consumer_secret", res.json())

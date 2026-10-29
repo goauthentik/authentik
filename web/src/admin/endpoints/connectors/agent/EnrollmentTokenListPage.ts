@@ -5,7 +5,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/ak-status-label";
-
 import { aki } from "#common/api/client";
 
 import { IconEnrollmentTokenCopyButton } from "#elements/buttons/IconEnrollmentTokenCopyButton";

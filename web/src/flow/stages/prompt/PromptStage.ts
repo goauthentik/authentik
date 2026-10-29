@@ -1,5 +1,14 @@
 import "#elements/Divider";
 import "#flow/components/ak-flow-card";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCheck from "@patternfly/patternfly/components/Check/check.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { SlottedTemplateResult } from "#elements/types";
@@ -23,21 +32,11 @@ import { css, CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCheck from "@patternfly/patternfly/components/Check/check.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 // Fixes horizontal rule <hr> warning in select dropdowns.
 
 /**
- * @prop {PromptChallenge} challenge - The challenge provided to this stage.
- * @prop {StageHost} host - The host managing this stage.
+ * @property {PromptChallenge} challenge - The challenge provided to this stage.
+ * @property {StageHost} host - The host managing this stage.
  */
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
@@ -112,8 +111,7 @@ export class PromptStage extends WithCapabilitiesConfig(
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                 >
-${prompt.initialValue}</textarea
-                >`;
+${prompt.initialValue}</textarea>`;
             case PromptTypeEnum.TextReadOnly:
                 return html`<input
                     type="text"
@@ -132,8 +130,7 @@ ${prompt.initialValue}</textarea
                     class="pf-c-form-control"
                     readonly
                 >
-${prompt.initialValue}</textarea
-                >`;
+${prompt.initialValue}</textarea>`;
             case PromptTypeEnum.Username:
                 return html`<input
                     type="text"
@@ -240,6 +237,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.RadioButtonGroup:
                 return html`${(prompt.choices || []).map((choice) => {
                     const id = `${prompt.fieldKey}-${choice.value}`;
+
                     return html`<div class="pf-c-check">
                         <input
                             type="radio"
@@ -297,12 +295,15 @@ ${prompt.initialValue}</textarea
                     ?required=${prompt.required}
                 />
                 <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
-                ${prompt.required
-                    ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
-                    : null}
+                ${
+                    prompt.required
+                        ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
+                        : null
+                }
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }
+
         if (this.shouldRenderInWrapper(prompt)) {
             const errors = this.challenge?.responseErrors?.[prompt.fieldKey];
 
@@ -318,6 +319,7 @@ ${prompt.initialValue}</textarea
                 ${AKFormErrors({ errors })}
             </div>`;
         }
+
         return html`${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
 

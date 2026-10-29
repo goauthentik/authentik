@@ -1,7 +1,6 @@
 """authentik LDAP Authentication Backend"""
 
 from django.http import HttpRequest
-from ldap3.core.exceptions import LDAPException, LDAPInvalidCredentialsResult
 from structlog.stdlib import get_logger
 
 from authentik.core.auth import InbuiltBackend
@@ -38,6 +37,8 @@ class LDAPBackend(InbuiltBackend):
         if LDAP_DISTINGUISHED_NAME not in user.attributes:
             LOGGER.debug("User doesn't have DN set, assuming not LDAP imported.", user=user)
             return None
+        if not self.user_can_authenticate(user):
+            return None
         # Either has unusable password,
         # or has a password, but couldn't be authenticated by ModelBackend.
         # This means we check with a bind to see if the LDAP password has changed
@@ -55,15 +56,14 @@ class LDAPBackend(InbuiltBackend):
     def auth_user_by_bind(self, source: LDAPSource, user: User, password: str) -> User | None:
         """Attempt authentication by binding to the LDAP server as `user`. This
         method should be avoided as its slow to do the bind."""
+        from ldap3.core.exceptions import LDAPException, LDAPInvalidCredentialsResult
+
         # Try to bind as new user
         LOGGER.debug("Attempting to bind as user", user=user)
         try:
-            # source.connection also attempts to bind
-            source.connection(
-                connection_kwargs={
-                    "user": user.attributes.get(LDAP_DISTINGUISHED_NAME),
-                    "password": password,
-                }
+            source.connection_as_user(
+                user.attributes.get(LDAP_DISTINGUISHED_NAME),
+                password,
             )
             return user
         except LDAPInvalidCredentialsResult as exc:

@@ -4,7 +4,6 @@ from typing import Any
 
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from ldap3.core.exceptions import LDAPOperationResult
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -47,17 +46,23 @@ def ldap_sync_password(sender, user: User, password: str, **_):
         return
     if not LDAPPasswordChanger.should_check_user(user):
         return
+    from ldap3.core.exceptions import LDAPException, LDAPOperationResult
+
     try:
         changer = LDAPPasswordChanger(source)
         changer.change_password(user, password)
-    except LDAPOperationResult as exc:
+    except LDAPException as exc:
         LOGGER.warning("failed to set LDAP password", exc=exc)
-        Event.new(
-            EventAction.CONFIGURATION_ERROR,
-            message=(
+        if isinstance(exc, LDAPOperationResult):
+            message = (
                 "Failed to change password in LDAP source due to remote error: "
                 f"{exc.result}, {exc.message}, {exc.description}"
-            ),
+            )
+        else:
+            message = f"Failed to change password in LDAP source: {type(exc).__name__}: {exc}"
+        Event.new(
+            EventAction.CONFIGURATION_ERROR,
+            message=message,
             source=source,
         ).set_user(user).save()
         raise ValidationError("Failed to set password") from exc

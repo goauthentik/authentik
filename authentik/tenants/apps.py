@@ -1,35 +1,16 @@
 """authentik tenants app"""
 
-from django.db import DEFAULT_DB_ALIAS
-from django.db.models.signals import post_migrate
-from django_tenants.utils import get_public_schema_name
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 
-def ensure_default_tenant(*args, using=DEFAULT_DB_ALIAS, **kwargs):
-    """Make sure default tenant exists"""
-    from django_tenants.utils import schema_context
-
-    from authentik.tenants.models import Tenant
-
-    with schema_context(get_public_schema_name()):
-        Tenant.objects.using(using).update_or_create(
-            defaults={"name": "Default", "ready": True},
-            schema_name=get_public_schema_name(),
-        )
-
-
 class AuthentikTenantsConfig(ManagedAppConfig):
-    """authentik tenants app"""
+    """Retained so that migrations depending on this app's history keep resolving.
 
+    The multi-tenancy feature was removed in 2026.11; the tables are dropped in a
+    later release.
+    """
+
+    default = True
     name = "authentik.tenants"
     label = "authentik_tenants"
     verbose_name = "authentik Tenants"
-    default = True
-
-    @ManagedAppConfig.reconcile_global
-    def default_tenant(self):
-        """Make sure default tenant exists, especially after a migration"""
-        post_migrate.connect(ensure_default_tenant)
-        ensure_default_tenant()

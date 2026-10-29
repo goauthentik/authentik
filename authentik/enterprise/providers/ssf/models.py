@@ -2,8 +2,6 @@ from datetime import datetime
 from functools import cached_property
 from uuid import uuid4
 
-from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -12,9 +10,14 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 
-from authentik.core.models import BackchannelProvider, ExpiringModel, Token
+from authentik.core.models import BackchannelProvider, Token
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import CreatedUpdatedModel, InternallyManagedMixin
+from authentik.lib.models import (
+    CreatedUpdatedModel,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
 from authentik.tasks.models import TasksModel
@@ -90,7 +93,9 @@ class SSFProvider(TasksModel, BackchannelProvider):
 
     push_verify_certificates = models.BooleanField(default=True)
 
-    oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
+    oidc_auth_providers = models.ManyToManyField(
+        OAuth2Provider, blank=True, default=None, through="SSFProviderOIDCAuthProvider"
+    )
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
 
@@ -104,11 +109,7 @@ class SSFProvider(TasksModel, BackchannelProvider):
         """Get either the configured certificate or the client secret"""
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
-        if isinstance(private_key, RSAPrivateKey):
-            return private_key, JWTAlgorithms.RS256
-        if isinstance(private_key, EllipticCurvePrivateKey):
-            return private_key, JWTAlgorithms.ES256
-        raise ValueError(f"Invalid private key type: {type(private_key)}")
+        return private_key, JWTAlgorithms.from_private_key(private_key)
 
     @property
     def service_account_identifier(self) -> str:
@@ -136,6 +137,29 @@ class SSFProvider(TasksModel, BackchannelProvider):
             # as the user requesting to add a stream must have the permission on the provider
             ("add_stream", _("Add stream to SSF provider")),
         ]
+
+
+class SSFProviderOIDCAuthProvider(SimpleThroughModel):
+    ssf_provider = models.ForeignKey(
+        SSFProvider, on_delete=models.CASCADE, db_column="ssfprovider_id"
+    )
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        db_column="oauth2provider_id",
+    )
+
+    class Meta:
+        db_table = "authentik_providers_ssf_ssfprovider_oidc_auth_providers"
+        unique_together = (("ssf_provider", "oauth2_provider"),)
+        verbose_name = _("SSF Provider OIDC Auth Provider")
+        verbose_name_plural = _("SSF Provider OIDC Auth Providers")
+
+    def __str__(self):
+        return (
+            f"SSFProviderOIDCAuthProvider for SSFProvider {self.ssf_provider_id} "
+            f"and OAuth2Provider {self.oauth2_provider_id}."
+        )
 
 
 class Stream(models.Model):

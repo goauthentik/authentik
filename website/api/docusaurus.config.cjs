@@ -1,4 +1,4 @@
 /**
- * @type {import('@docusaurus/types').DocusaurusConfig}
+ * @type {import("@docusaurus/types").DocusaurusConfig}
  */
 module.exports = import("./docusaurus.config.esm.mjs").then(($) => $.default);

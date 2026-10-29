@@ -3,6 +3,11 @@ import "#components/ak-textarea-input";
 import "#elements/forms/ModalForm";
 import "#elements/timestamp/ak-timestamp";
 import "#admin/lifecycle/ObjectReviewForm";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
@@ -21,12 +26,6 @@ import { match, P } from "ts-pattern";
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-object-review-iteration")
 export class ObjectReviewIteration extends Table<Review> {

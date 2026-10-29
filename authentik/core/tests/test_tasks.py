@@ -9,6 +9,8 @@ from rest_framework.test import APITestCase
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
+    Actor,
+    ActorPolicyInheritance,
     Token,
     TokenIntents,
     User,
@@ -39,6 +41,15 @@ class TestTasks(APITestCase):
         clean_expired_models.send()
         token.refresh_from_db()
         self.assertNotEqual(key, token.key)
+
+    def test_token_expire_actor(self):
+        """Test Token expire task deletes (rather than rotates) an actor's token"""
+        actor = Actor.for_user(None, ActorPolicyInheritance.NONE)
+        token: Token = Token.objects.create(
+            expires=now(), user=actor, intent=TokenIntents.INTENT_API
+        )
+        clean_expired_models.send()
+        self.assertFalse(Token.objects.filter(pk=token.pk).exists())
 
     def test_clean_temporary_users(self):
         """Test clean_temporary_users task"""

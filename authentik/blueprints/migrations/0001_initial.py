@@ -73,6 +73,11 @@ class Migration(migrations.Migration):
 
     dependencies = [("authentik_flows", "0001_initial")]
 
+    # migration_blueprint_import below treats "a flow already exists" as "this is an existing
+    # install". That only holds if we run before any migration that creates a flow, which is
+    # otherwise up to how Django happens to order the plan.
+    run_before = [("authentik_core", "0040_provider_invalidation_flow")]
+
     operations = [
         migrations.CreateModel(
             name="BlueprintInstance",

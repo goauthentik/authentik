@@ -1,6 +1,6 @@
 """SAML Provider signals"""
 
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
 from django.urls import reverse
@@ -216,40 +216,6 @@ def user_session_deleted_saml_logout(sender, instance: AuthenticatedSession, **_
         LOGGER.info(
             "Triggering backchannel SAML logout for deleted user session",
             user=saml_session.user,
-            provider=saml_session.provider.name,
-            session_index=saml_session.session_index,
-        )
-
-        send_saml_logout_request.send(
-            provider_pk=saml_session.provider.pk,
-            sls_url=saml_session.provider.sls_url,
-            name_id=saml_session.name_id,
-            name_id_format=saml_session.name_id_format,
-            session_index=saml_session.session_index,
-            issuer=saml_session.issuer,
-        )
-
-
-@receiver(post_save, sender=User)
-def user_deactivated_saml_logout(sender, instance: User, **kwargs):
-    """Send SAML backchannel logout requests when user is deactivated"""
-    if instance.is_active:
-        return
-
-    backchannel_saml_sessions = (
-        SAMLSession.objects.filter(
-            user=instance,
-            provider__logout_method=SAMLLogoutMethods.BACKCHANNEL,
-            provider__sls_binding=SAMLBindings.POST,
-        )
-        .exclude(provider__sls_url="")
-        .select_related("provider")
-    )
-
-    for saml_session in backchannel_saml_sessions:
-        LOGGER.info(
-            "Triggering backchannel SAML logout for deactivated user",
-            user=instance,
             provider=saml_session.provider.name,
             session_index=saml_session.session_index,
         )

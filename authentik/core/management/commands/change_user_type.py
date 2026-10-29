@@ -1,10 +1,11 @@
 """Change user type"""
 
+from django.core.management.base import BaseCommand
+
 from authentik.core.models import User, UserTypes
-from authentik.tenants.management import TenantCommand
 
 
-class Command(TenantCommand):
+class Command(BaseCommand):
     """Change user type"""
 
     def add_arguments(self, parser):
@@ -12,7 +13,7 @@ class Command(TenantCommand):
         parser.add_argument("--all", action="store_true", default=False)
         parser.add_argument("usernames", nargs="*", type=str)
 
-    def handle_per_tenant(self, **options):
+    def handle(self, **options):
         new_type = UserTypes(options["type"])
         qs = (
             User.objects.exclude_anonymous()

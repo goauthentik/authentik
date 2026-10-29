@@ -7,7 +7,6 @@ from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django_countries.fields import CountryField
-from geopy import distance
 from rest_framework.serializers import BaseSerializer
 
 from authentik.events.context_processors.geoip import GeoIPDict
@@ -113,6 +112,8 @@ class GeoIPPolicy(Policy):
     def passes_distance(self, request: PolicyRequest) -> PolicyResult:
         """Check if current policy execution is out of distance range compared
         to previous authentication requests"""
+        from geopy import distance
+
         # Get previous login event and GeoIP data
         previous_logins = Event.objects.filter(
             action=EventAction.LOGIN,

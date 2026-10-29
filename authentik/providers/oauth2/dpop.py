@@ -1,0 +1,270 @@
+"""DPoP (Demonstrating Proof-of-Possession) utils"""
+
+import hashlib
+import re
+import time
+from hmac import compare_digest
+from urllib.parse import urlparse
+
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
+from django.core.cache import cache
+from django.db import transaction
+from jwcrypto.jwk import JWK
+from jwt import PyJWK
+from jwt import decode as jwt_decode
+from jwt import decode_complete as jwt_decode_complete
+from jwt.exceptions import InvalidTokenError, PyJWTError
+from structlog.stdlib import get_logger
+
+LOGGER = get_logger()
+
+
+# DPoP JWT type header value
+DPOP_JWT_TYPE = "dpop+jwt"
+
+# Supported asymmetric key types for DPoP
+DPOP_SUPPORTED_KTYS = {"EC", "RSA"}
+
+DPOP_SUPPORTED_EC_CURVES = {"P-256", "P-384", "P-521"}
+
+# RSA key size limits for DPoP (bits)
+DPOP_RSA_MIN_KEY_SIZE = 2048
+DPOP_RSA_MAX_KEY_SIZE = 8192
+
+DPOP_JKT_RE = re.compile(r"^[A-Za-z0-9_-]{43}$")
+
+# Supported asymmetric signature algorithms for DPoP
+DPOP_SUPPORTED_ALGS = {
+    "ES256",
+    "ES384",
+    "ES512",
+    "RS256",
+    "RS384",
+    "RS512",
+    "PS256",
+    "PS384",
+    "PS512",
+}
+
+# Required JWK members per RFC 7638, by key type. These are exactly the
+# members the thumbprint is computed over, so a JWK rebuilt from only these
+# has the same thumbprint and carries no additional user supplied extra
+# claims (kid, alg, use, key_ops, x5c, x5u, jku, or unknown members).
+JWK_REQUIRED_CLAIMS = {
+    "EC": ("crv", "kty", "x", "y"),
+    "RSA": ("e", "kty", "n"),
+}
+
+# Clock skew tolerance in seconds for `iat` validation
+DPOP_IAT_CLOCK_SKEW = 60
+
+# JTI replay protection window in seconds. Must cover the iat validity window
+# (DPOP_IAT_CLOCK_SKEW) so a proof can never fall out of the replay cache
+# while still being iat fresh. To avoid edge cases we use
+# 3 * DPOP_IAT_CLOCK_SKEW rather than 2 * DPOP_IAT_CLOCK_SKEW.
+DPOP_JTI_REPLAY_WINDOW = 3 * DPOP_IAT_CLOCK_SKEW
+
+# Cache key template for tracked JTIs
+CACHE_KEY_DPOP_JTI = "authentik_providers_oauth2_dpop_jti_%s"
+
+
+def jwk_thumbprint(jwk: dict) -> str:
+    """Compute the SHA-256 JWK Thumbprint per RFC 7638"""
+    return JWK(**jwk).thumbprint()
+
+
+def is_valid_jkt(value: str) -> bool:
+    """True if value is a well-formed base64url SHA-256 JWK thumbprint."""
+    return bool(DPOP_JKT_RE.fullmatch(value))
+
+
+def canonical_public_jwk(jwk: dict) -> dict:
+    """Return a JWK containing only the RFC 7638 required public members."""
+    kty = jwk.get("kty")
+    members = JWK_REQUIRED_CLAIMS.get(kty)
+    if members is None:
+        raise DPoPError(f"Cannot canonicalize JWK of type {kty}")
+    missing = [m for m in members if m not in jwk]
+    if missing:
+        raise DPoPError(f"JWK missing required members: {missing}")
+    return {m: jwk[m] for m in members}
+
+
+class DPoPError(Exception):
+    """Raised when DPoP proof validation fails"""
+
+
+class DPoPValidator:
+    """Validates DPoP proof JWTs per RFC 9449 Section 5"""
+
+    def validate(
+        self,
+        dpop_proof: str,
+        expected_htm: str,
+        expected_htu: str,
+        expected_jkt: str | None = None,
+        expected_c_s256: str | None = None,
+    ) -> dict:
+        """Validate a DPoP proof JWT.
+
+        :param dpop_proof: The DPoP proof JWT string
+        :param expected_htm: Expected HTTP method (e.g., "POST")
+        :param expected_htu: Expected token endpoint URL
+        :param expected_jkt: Expected JWK thumbprint (from auth request)
+        :param expected_c_s256: Expected c_s256 hash (of code or device_code)
+        :return: The validated public key JWK dict
+        :raises DPoPError: If validation fails
+        """
+        header = self._extract_header(dpop_proof)
+        jwk, key = self._get_and_validate_jwk(header)
+        jwk = canonical_public_jwk(jwk)
+        alg = self._get_and_validate_alg(header)
+        payload = self._verify_signature(dpop_proof, jwk, alg, key)
+        jti = self._validate_payload_claims(payload, expected_htm, expected_htu)
+        self._check_jti_replay(jti)
+        self._validate_optional_claims(payload, expected_c_s256, expected_jkt, jwk)
+        return jwk
+
+    def _extract_header(self, dpop_proof: str) -> dict:
+        """Extract and return the unverified JOSE header."""
+        try:
+            unverified = jwt_decode_complete(
+                dpop_proof,
+                options={"verify_signature": False, "verify_exp": False, "verify_iat": False},
+            )
+            header = unverified.get("header", {})
+        except PyJWTError as exc:
+            raise DPoPError("Invalid DPoP proof JWT") from exc
+
+        if header.get("typ") != DPOP_JWT_TYPE:
+            raise DPoPError(f"Invalid DPoP typ header: {header.get('typ')}")
+        return header
+
+    def _get_and_validate_jwk(self, header: dict) -> tuple[dict, PyJWK | None]:
+        """Extract jwk from header and validate it.
+
+        Returns the raw jwk dict together with the PyJWK already constructed
+        while validating an RSA key (or None for EC), so `_verify_signature`
+        can reuse it instead of re-parsing the same key material.
+        """
+        jwk = header.get("jwk")
+        if not isinstance(jwk, dict):
+            raise DPoPError("Missing jwk in DPoP header")
+        key = self._validate_jwk(jwk)
+        return jwk, key
+
+    def _get_and_validate_alg(self, header: dict) -> str:
+        """Extract and validate the alg header."""
+        alg = header.get("alg")
+        if not alg:
+            raise DPoPError("Missing alg in DPoP header")
+        if alg not in DPOP_SUPPORTED_ALGS:
+            raise DPoPError(f"Unsupported DPoP algorithm: {alg}")
+        return alg
+
+    def _verify_signature(
+        self, dpop_proof: str, jwk: dict, alg: str, key: PyJWK | None = None
+    ) -> dict:
+        """Verify the DPoP proof signature and return the payload."""
+        try:
+            key = key or PyJWK.from_dict(jwk)
+            return jwt_decode(dpop_proof, key.key, algorithms=[alg], options={"verify_iat": False})
+        except (PyJWTError, InvalidTokenError, TypeError, ValueError) as exc:
+            raise DPoPError("DPoP proof signature verification failed") from exc
+
+    def _validate_payload_claims(self, payload: dict, expected_htm: str, expected_htu: str) -> str:
+        """Validate htm, htu, iat, jti claims. Return the jti value."""
+        if payload.get("htm") != expected_htm:
+            raise DPoPError(f"DPoP htm mismatch: expected {expected_htm}, got {payload.get('htm')}")
+
+        payload_htu = payload.get("htu")
+        if not payload_htu:
+            raise DPoPError("DPoP proof missing htu claim")
+        if not self._htu_matches(payload_htu, expected_htu):
+            raise DPoPError(f"DPoP htu mismatch: expected {expected_htu}, got {payload_htu}")
+
+        iat = payload.get("iat")
+        if not isinstance(iat, int):
+            raise DPoPError("DPoP proof missing or invalid iat claim")
+        now = int(time.time())
+        if abs(now - iat) > DPOP_IAT_CLOCK_SKEW:
+            raise DPoPError("DPoP proof iat outside acceptable clock skew")
+
+        jti = payload.get("jti")
+        if not jti:
+            raise DPoPError("DPoP proof missing jti claim")
+
+        return jti
+
+    def _check_jti_replay(self, jti: str) -> None:
+        """Check if the jti has been seen before (replay protection)."""
+
+        # Only store the hash of the JTI to prevent memory-exhaustion attacks
+        # Recommended by RFC 9449 11.1
+        jti_hash = hashlib.sha256(jti.encode("utf-8")).hexdigest()
+        cache_key = CACHE_KEY_DPOP_JTI % jti_hash
+        # `cache.add()` is atomic set-if-not-exists. Wrap so when the cache
+        # backend is DB-backed (as in tests), a duplicate-key insert does not
+        # break the surrounding transaction.
+        with transaction.atomic():
+            added = cache.add(cache_key, True, timeout=DPOP_JTI_REPLAY_WINDOW)
+        if not added:
+            raise DPoPError("DPoP proof jti replay detected")
+
+    def _validate_optional_claims(
+        self,
+        payload: dict,
+        expected_c_s256: str | None,
+        expected_jkt: str | None,
+        jwk: dict,
+    ) -> None:
+        """Validate optional c_s256 and jkt claims if expected."""
+        if expected_c_s256 is not None:
+            proof_c_s256 = payload.get("c_s256")
+            if proof_c_s256 is None:
+                raise DPoPError("DPoP proof missing required c_s256 claim")
+            if not compare_digest(proof_c_s256, expected_c_s256):
+                raise DPoPError("DPoP proof c_s256 mismatch")
+
+        if expected_jkt is not None:
+            thumbprint = jwk_thumbprint(jwk)
+            if not compare_digest(thumbprint, expected_jkt):
+                raise DPoPError("DPoP proof JWK thumbprint mismatch")
+
+    def _validate_jwk(self, jwk: dict) -> PyJWK | None:
+        """Ensure the JWK is a public asymmetric key without private material.
+
+        Returns the PyJWK constructed while checking the RSA key size, so
+        `_verify_signature` can reuse it instead of re-parsing the same key.
+        """
+        kty = jwk.get("kty")
+        if kty not in DPOP_SUPPORTED_KTYS:
+            raise DPoPError(f"Unsupported JWK kty for DPoP: {kty}")
+
+        key = None
+        if kty == "RSA":
+            key = PyJWK.from_dict(jwk)
+            if isinstance(key.key, RSAPublicKey) and key.key.key_size < DPOP_RSA_MIN_KEY_SIZE:
+                raise DPoPError("RSA key too small for DPoP (minimum 2048 bits)")
+            if isinstance(key.key, RSAPublicKey) and key.key.key_size > DPOP_RSA_MAX_KEY_SIZE:
+                raise DPoPError("RSA key too large for DPoP")
+        elif kty == "EC":
+            crv = jwk.get("crv")
+            if crv not in DPOP_SUPPORTED_EC_CURVES:
+                raise DPoPError(f"Unsupported EC curve for DPoP: {crv}")
+
+        private_fields = {"d", "p", "q", "dp", "dq", "qi"}
+        if any(field in jwk for field in private_fields):
+            raise DPoPError("DPoP JWK must not contain private key material")
+
+        return key
+
+    def _htu_matches(self, proof_htu: str, expected_htu: str) -> bool:
+        """Compare htu values ignoring query string and fragment"""
+        parsed_proof = urlparse(proof_htu)
+        parsed_expected = urlparse(expected_htu)
+        return (
+            parsed_proof.scheme == parsed_expected.scheme
+            and parsed_proof.netloc == parsed_expected.netloc
+            and parsed_proof.path == parsed_expected.path
+        )

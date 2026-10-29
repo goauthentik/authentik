@@ -21,10 +21,9 @@ interface MessageEvent {
  *
  * @remarks
  *
- * Third-party assistants in the authentication process, notably Device Compliance checks, are
- * loaded in iframes. This controller listens for iframe boundary-crossing events and, if
- * appropriate, forwards them to the FlowExecutor.
- *
+ *   Third-party assistants in the authentication process, notably Device Compliance checks, are
+ *   loaded in iframes. This controller listens for iframe boundary-crossing events and, if
+ *   appropriate, forwards them to the FlowExecutor.
  */
 export class FlowIframeMessageController implements ReactiveController {
     #abortController: AbortController | null = null;
@@ -35,6 +34,7 @@ export class FlowIframeMessageController implements ReactiveController {
 
     onMessage = (event: MessageEvent) => {
         const { source, context, message } = event.data;
+
         if (source === "goauthentik.io" && context === "flow-executor" && message === "submit") {
             this.host.submit({} as FlowChallengeResponseRequest, {
                 invisible: true,
