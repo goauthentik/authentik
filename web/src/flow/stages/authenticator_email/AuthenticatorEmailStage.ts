@@ -15,7 +15,7 @@ import { AKLabel } from "#components/ak-label";
 
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
-import { RESEND_COOLDOWN_SECONDS, startResendCooldown } from "#flow/stages/resend-cooldown";
+import { ResendFeedback } from "#flow/stages/resend-feedback";
 
 import {
     AuthenticatorEmailChallenge,
@@ -24,7 +24,7 @@ import {
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-email")
 export class AuthenticatorEmailStage extends BaseStage<
@@ -41,54 +41,17 @@ export class AuthenticatorEmailStage extends BaseStage<
         PFButton,
     ];
 
-    @state()
-    protected resendCooldown = 0;
+    #resendFeedback = new ResendFeedback(this);
 
-    #cancelCooldown?: () => void;
-    #cooldownStarted = false;
-
-    #beginCooldown() {
-        this.#cancelCooldown?.();
-        this.#cancelCooldown = startResendCooldown(RESEND_COOLDOWN_SECONDS, (remaining) => {
-            this.resendCooldown = remaining;
-        });
-    }
-
-    #resend = () => {
-        if (this.resendCooldown > 0) {
-            return;
-        }
-        // Submit with neither code nor email; the backend treats this as a resend request and
-        // re-sends a fresh code to the same address. Only start the visible cooldown once the
-        // submit resolves successfully, so a failed resend doesn't disable the button for nothing.
-        this.host
-            ?.submit(
+    #resend = () =>
+        this.#resendFeedback.run(() =>
+            this.host.submit(
                 {
                     component: "ak-stage-authenticator-email",
                 } as AuthenticatorEmailChallengeResponseRequest,
                 { invisible: true },
-            )
-            ?.then((ok) => {
-                if (ok) {
-                    this.#beginCooldown();
-                }
-            })
-            .catch(() => undefined);
-    };
-
-    protected override willUpdate(): void {
-        // The OTP screen is only reached once a code has been mailed out, so start counting from
-        // there rather than from the first click.
-        if (!this.#cooldownStarted && this.challenge && !this.challenge.emailRequired) {
-            this.#cooldownStarted = true;
-            this.#beginCooldown();
-        }
-    }
-
-    override disconnectedCallback(): void {
-        this.#cancelCooldown?.();
-        super.disconnectedCallback();
-    }
+            ),
+        );
 
     renderEmailInput(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
@@ -110,7 +73,9 @@ export class AuthenticatorEmailStage extends BaseStage<
                         class="pf-c-form-control"
                         required
                     />
-                    ${AKFormErrors({ errors: this.challenge?.responseErrors?.email })}
+                    ${AKFormErrors({
+                        errors: this.challenge?.responseErrors?.email,
+                    })}
                 </div>
                 ${this.renderNonFieldErrors()}
                 <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
@@ -139,18 +104,22 @@ export class AuthenticatorEmailStage extends BaseStage<
 
             <p>
                 ${
-                    email
-                        ? msg(
-                              str`A verification token has been sent to your configured email address: ${email}`,
-                              {
-                                  id: "stage.authenticator.email.sent-to-address",
-                                  desc: "Displayed when a verification token has been sent to the user's configured email address.",
-                              },
-                          )
-                        : msg("A verification token has been sent to your email address.", {
-                              id: "stage.authenticator.email.sent",
-                              desc: "Displayed when a verification token has been sent to the user's email address.",
-                          })
+                    this.challenge.responseErrors?.non_field_errors?.some(
+                        (error) => error.code === "throttled",
+                    )
+                        ? nothing
+                        : email
+                          ? msg(
+                                str`A verification token has been sent to your configured email address: ${email}`,
+                                {
+                                    id: "stage.authenticator.email.sent-to-address",
+                                    desc: "Displayed when a verification token has been sent to the user's configured email address.",
+                                },
+                            )
+                          : msg("A verification token has been sent to your email address.", {
+                                id: "stage.authenticator.email.sent",
+                                desc: "Displayed when a verification token has been sent to the user's email address.",
+                            })
                 }
             </p>
             <form class="pf-c-form" @submit=${this.submitForm}>
@@ -168,17 +137,16 @@ export class AuthenticatorEmailStage extends BaseStage<
                         class="pf-c-form-control pf-m-monospace"
                         required
                     />
-                    ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
+                    ${AKFormErrors({
+                        errors: this.challenge.responseErrors?.code,
+                    })}
                 </div>
                 ${this.renderNonFieldErrors()}
                 <div class="pf-c-form__helper-text">
-                    ${this.resendCooldown > 0
-                        ? msg(
-                              str`Didn't get the code? It can take a moment and may land in your spam or junk folder. You can request a new code in ${this.resendCooldown} seconds.`,
-                          )
-                        : msg(
-                              "Didn't get the code? It can take a moment and may land in your spam or junk folder. You can also resend it.",
-                          )}
+                    ${msg(
+                        "Didn't get the code? It can take a moment and may land in your spam or junk folder. You can also resend it.",
+                        { id: "email-otp.resend.description" },
+                    )}
                 </div>
                 <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
@@ -193,13 +161,15 @@ export class AuthenticatorEmailStage extends BaseStage<
                         name="resend"
                         type="button"
                         class="pf-c-button pf-m-secondary pf-m-block"
-                        ?disabled=${this.resendCooldown > 0}
+                        ?disabled=${this.#resendFeedback.state !== "idle"}
+                        aria-busy=${this.#resendFeedback.state === "sending"}
                         @click=${this.#resend}
                     >
-                        ${this.resendCooldown > 0
-                            ? msg(str`Resend code (${this.resendCooldown}s)`)
-                            : msg("Resend code")}
+                        ${this.#resendFeedback.label}
                     </button>
+                    <span class="sr-only" role="status" aria-live="polite">
+                        ${this.#resendFeedback.state === "idle" ? nothing : this.#resendFeedback.label}
+                    </span>
                 </fieldset>
             </form>
         </ak-flow-card>`;

@@ -1,8 +1,5 @@
 """Email Setup stage"""
 
-from time import time
-
-from django.core.cache import cache
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
@@ -26,66 +23,15 @@ from authentik.stages.authenticator_email.models import (
     EmailDevice,
 )
 from authentik.stages.email.tasks import send_mails
+from authentik.stages.email.throttling import email_is_rate_limited
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONTEXT_EMAIL_DEVICE = "goauthentik.io/stages/authenticator_email/email_device"
+PLAN_CONTEXT_EMAIL_SEND_ERROR = "goauthentik.io/stages/authenticator_email/send_error"
 PLAN_CONTEXT_EMAIL = "email"
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
-
-# Minimum interval between two sign-in codes sent to the same address. Enforced server-side so a
-# client that skips the UI countdown cannot use the resend endpoint to mail-bomb an address. Keyed
-# by address rather than by session, otherwise starting a fresh flow would reset the limit.
-RESEND_THROTTLE_SECONDS = 60
-RESEND_THROTTLE_KEY = "goauthentik.io/stages/authenticator_email/resend_throttle/%s"
-
-
-def _throttle_key(email: str) -> str:
-    return RESEND_THROTTLE_KEY % email.lower()
-
-
-def resend_cooldown_remaining(email: str) -> int:
-    """Read-only: seconds left before another code may be sent to `email` (for UI messages)."""
-    if not email:
-        return 0
-    ready_at = cache.get(_throttle_key(email))
-    if not ready_at:
-        return 0
-    return max(int(ready_at - time()), 0)
-
-
-def reserve_send(email: str) -> int:
-    """Atomically claim the right to send a code to `email`.
-
-    Returns 0 when the caller may send now (the window was opened for it), otherwise the number of
-    seconds until the next send is allowed. cache.add (Redis SETNX) makes this race-free: with a
-    burst of concurrent send requests only the first one gets 0, the rest are refused.
-
-    The caller must send the code once it gets 0, or call release_send() if the send fails, so a
-    failed attempt does not lock the address out for the full window.
-    """
-    if not email:
-        return 0
-    deadline = time() + RESEND_THROTTLE_SECONDS
-    if cache.add(_throttle_key(email), deadline, timeout=RESEND_THROTTLE_SECONDS):
-        return 0
-    return resend_cooldown_remaining(email)
-
-
-def release_send(email: str) -> None:
-    """Release a window reserved by reserve_send() when the send did not actually go out."""
-    if not email:
-        return
-    cache.delete(_throttle_key(email))
-
-
-def throttled_error(remaining: int) -> ValidationError:
-    """User-facing error for a resend attempt made during the cooldown window."""
-    return ValidationError(
-        _("A code was just sent. You can request a new one in %(seconds)d seconds.")
-        % {"seconds": remaining}
-    )
 
 
 class AuthenticatorEmailChallenge(WithUserInfoChallenge):
@@ -119,13 +65,10 @@ class AuthenticatorEmailChallengeResponse(ChallengeResponse):
                     raise ValidationError("email required")
                 email = attrs["email"]
             if self.device.email == email:
-                remaining = reserve_send(email)
-                if remaining:
-                    raise throttled_error(remaining)
                 self.stage.resend()
             else:
-                self.device.email = email
                 self.stage.validate_and_send(email)
+                self.device.email = email
             return super().validate(attrs)
         if not self.device.verify_token(str(attrs["code"])):
             raise ValidationError(_("Code does not match"))
@@ -138,28 +81,29 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
     response_class = AuthenticatorEmailChallengeResponse
 
-    def validate_and_send(self, email: str, reserve: bool = True):
-        """Validate email and send message.
-
-        `reserve` gates this send through the per-address cooldown; the resend path passes
-        reserve=False because it already reserved the window before regenerating the token.
-        """
-        # Throttle every direct send too (initial entry / re-submitting the email challenge),
-        # otherwise the resend cooldown could be bypassed by replaying the email step.
-        if reserve:
-            remaining = reserve_send(email)
-            if remaining:
-                raise throttled_error(remaining)
-
-        pending_user = self.get_pending_user()
-
+    def validate_and_send(self, email: str):
+        """Validate email and send message using the shared email attempt limit."""
         stage: AuthenticatorEmailStage = self.executor.current_stage
         if EmailDevice.objects.filter(Q(email=email), stage=stage.pk).exists():
-            release_send(email)
             raise ValidationError(_("Invalid email"))
 
-        device: EmailDevice = self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE]
+        self._check_rate_limit(email)
+        self._send_email(email)
 
+    def _check_rate_limit(self, email: str):
+        if minutes_left := email_is_rate_limited(email):
+            raise ValidationError(
+                _(
+                    "Too many account verification attempts. "
+                    "Please try again after {minutes} minutes."
+                ).format(minutes=minutes_left),
+                code="throttled",
+            )
+
+    def _send_email(self, email: str):
+        pending_user = self.get_pending_user()
+        stage: AuthenticatorEmailStage = self.executor.current_stage
+        device: EmailDevice = self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE]
         try:
             message = TemplateEmailMessage(
                 subject=_(stage.subject),
@@ -174,8 +118,8 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             )
 
             send_mails(stage, message)
+            self.executor.plan.context.pop(PLAN_CONTEXT_EMAIL_SEND_ERROR, None)
         except TemplateSyntaxError as exc:
-            release_send(email)
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
@@ -187,10 +131,10 @@ class AuthenticatorEmailStageView(ChallengeStageView):
         """Regenerate the token and re-send it to the device's existing email address."""
         device: EmailDevice = self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE]
         stage: AuthenticatorEmailStage = self.executor.current_stage
+        self._check_rate_limit(device.email)
         valid_secs: int = timedelta_from_string(stage.token_expiry).total_seconds()
         device.generate_token(valid_secs=valid_secs, commit=False)
-        # The resend branch already reserved the cooldown window before this token was regenerated.
-        self.validate_and_send(device.email, reserve=False)
+        self._send_email(device.email)
 
     def _has_email(self) -> str | None:
         context = self.executor.plan.context
@@ -215,12 +159,10 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         email = self._has_email()
-        return AuthenticatorEmailChallenge(
-            data={
-                "email": mask_email(email),
-                "email_required": email is None,
-            }
-        )
+        data = {"email": mask_email(email), "email_required": email is None}
+        if send_error := self.executor.plan.context.get(PLAN_CONTEXT_EMAIL_SEND_ERROR):
+            data["response_errors"] = send_error
+        return AuthenticatorEmailChallenge(data=data)
 
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         response = super().get_response_instance(data)
@@ -244,6 +186,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
                 _("The user already has an email address registered for MFA.")
             )
         if PLAN_CONTEXT_EMAIL_DEVICE not in self.executor.plan.context:
+            self.executor.plan.context.pop(PLAN_CONTEXT_EMAIL_SEND_ERROR, None)
             device = EmailDevice(user=user, confirmed=False, stage=stage, name="Email Device")
             valid_secs: int = timedelta_from_string(stage.token_expiry).total_seconds()
             device.generate_token(valid_secs=valid_secs, commit=False)
@@ -251,11 +194,23 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             if email := self._has_email():
                 device.email = email
                 try:
-                    # This auto-send runs once per flow plan (guarded above), so it is not an
-                    # attacker-repeatable path; skip the cooldown gate to avoid the retry loop
-                    # below spinning on a throttle error.
-                    self.validate_and_send(email, reserve=False)
+                    self.validate_and_send(email)
                 except ValidationError as exc:
+                    if exc.get_codes() == ["throttled"]:
+                        self.executor.plan.context[PLAN_CONTEXT_EMAIL_SEND_ERROR] = {
+                            "non_field_errors": [
+                                {
+                                    "string": str(
+                                        _(
+                                            "Email sending was rate limited. "
+                                            "Request a new code to try again."
+                                        )
+                                    ),
+                                    "code": "throttled",
+                                }
+                            ]
+                        }
+                        return super().get(request, *args, **kwargs)
                     # We had an email given already (at this point only possible from flow
                     # context), but an error occurred while sending (most likely)
                     # due to a duplicate device, so delete the email we got given, reset the state

@@ -1,12 +1,9 @@
 """authentik multi-stage authentication engine"""
 
-import math
-from datetime import UTC, datetime, timedelta
-from hashlib import sha256
+from datetime import timedelta
 from uuid import uuid4
 
 from django.contrib import messages
-from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.template.exceptions import TemplateSyntaxError
@@ -28,9 +25,8 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
+from authentik.stages.email.throttling import email_cache_key, email_is_rate_limited
 from authentik.stages.email.utils import TemplateEmailMessage
-
-EMAIL_RECOVERY_CACHE_KEY = "goauthentik.io/stages/email/stage/"
 
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
@@ -183,9 +179,7 @@ class EmailStageView(ChallengeStageView):
 
     def _get_cache_key(self) -> str:
         """Return the cache key used for rate limiting email recovery attempts."""
-        user = self.get_pending_user()
-        user_email_hashed = sha256(user.email.lower().encode("utf-8")).hexdigest()
-        return EMAIL_RECOVERY_CACHE_KEY + user_email_hashed
+        return email_cache_key(self.get_pending_user().email)
 
     def _is_rate_limited(self) -> int | None:
         """Check whether the email recovery attempt should be rate limited.
@@ -193,42 +187,12 @@ class EmailStageView(ChallengeStageView):
         If the request should be rate limited, update the cache and return the
         remaining time in minutes before the user is allowed to try again.
         Otherwise, return None."""
-        cache_key = self._get_cache_key()
-        attempts = cache.get(cache_key, [])
-
-        # Fetch a fresh copy for the current rate limit configuration, without
-        # overwriting the rest of the stage config pickled into the flow plan
         stage = EmailStage.objects.get(pk=self.executor.current_stage.pk)
-        max_attempts = stage.recovery_max_attempts
-        cache_timeout_delta = timedelta_from_string(stage.recovery_cache_timeout)
-
-        _now = now()
-        start_window = _now - cache_timeout_delta
-
-        # Convert unix timestamps to datetime objects for comparison
-        recent_attempts_in_window = [
-            datetime.fromtimestamp(attempt, UTC)
-            for attempt in attempts
-            if datetime.fromtimestamp(attempt, UTC) > start_window
-        ]
-
-        if len(recent_attempts_in_window) >= max_attempts:
-            retry_after = (min(recent_attempts_in_window) + cache_timeout_delta) - _now
-            minutes_left = max(1, math.ceil(retry_after.total_seconds() / 60))
-            return minutes_left
-
-        recent_attempts_in_window.append(_now)
-
-        # Convert datetime objects back to unix timestamps to update cache
-        recent_attempts_in_window = [attempt.timestamp() for attempt in recent_attempts_in_window]
-
-        cache.set(
-            cache_key,
-            recent_attempts_in_window,
-            int(cache_timeout_delta.total_seconds()),
+        return email_is_rate_limited(
+            self.get_pending_user().email,
+            stage.recovery_max_attempts,
+            stage.recovery_cache_timeout,
         )
-
-        return None
 
     def _rate_limit_error(self, minutes_left: int) -> str:
         return _(
