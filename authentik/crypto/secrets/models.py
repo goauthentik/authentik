@@ -1,13 +1,16 @@
 """Managed secret models."""
 
 from base64 import b64decode
+from collections.abc import Callable
 from json import JSONDecodeError, dumps, loads
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models, transaction
 from django.utils.translation import gettext_lazy as _
+from guardian.models import RoleModelPermission
 from yaml import YAMLError, safe_load
 
 from authentik.blueprints.models import ManagedModel
@@ -156,3 +159,58 @@ def create_named_secret(name: str, **fields) -> Secret:
             return Secret.objects.create(name=name, **fields)
     except IntegrityError:
         return Secret.objects.create(name=f"{name} ({generate_id(8)})", **fields)
+
+
+def grant_secret_like_upgrade(
+    model: type[models.Model], secret: Secret, value_permission: str | None
+) -> None:
+    """Give roles with access to every object of `model` the access to a new secret of one of
+    its objects that the credential migrations gave them on existing secrets.
+
+    `value_permission` is the `value_permission` of the model's migration. Keep in sync with
+    `preserve_permissions` in migrations/_permissions.py. Initial permissions cover the user
+    who creates the object.
+    """
+    model_name = model._meta.model_name
+    grants = {f"view_{model_name}": ["view_secret"], f"change_{model_name}": ["view_secret"]}
+    if value_permission:
+        grants[f"{value_permission}_{model_name}"].append("view_secret_value")
+    for granted in RoleModelPermission.objects.filter(
+        content_type=ContentType.objects.get_for_model(model),
+        permission__codename__in=grants,
+    ).select_related("role", "permission"):
+        granted.role.assign_perms(
+            [f"authentik_crypto_secrets.{perm}" for perm in grants[granted.permission.codename]],
+            secret,
+        )
+
+
+class GeneratedSecretsMixin:
+    """Create the secrets a model needs when it is saved without them.
+
+    `generated_secrets` maps each reference field to the suffix of the secret's name and
+    the function that generates its value. `secret_value_permission` is the permission
+    on the model that declares a field, "view" or "change", that let roles read the
+    credential through the API before it moved to a secret. It matches `value_permission`
+    in that model's migration.
+    """
+
+    generated_secrets: dict[str, tuple[str, Callable[[], str]]] = {}
+    secret_value_permission: str | None = None
+
+    def save(self, *args, **kwargs):
+        missing = [
+            field for field in self.generated_secrets if getattr(self, f"{field}_id") is None
+        ]
+        with transaction.atomic():
+            for field in missing:
+                label, generate = self.generated_secrets[field]
+                secret = create_named_secret(f"{self.name} {label}", secret_value=generate())
+                # The migrations go by the declaring model, so a proxy provider's client
+                # secret follows OAuth2 provider permissions.
+                owner = self._meta.get_field(field).model
+                grant_secret_like_upgrade(owner, secret, owner.secret_value_permission)
+                setattr(self, field, secret)
+            if missing and (update_fields := kwargs.get("update_fields")) is not None:
+                kwargs["update_fields"] = {*update_fields, *missing}
+            return super().save(*args, **kwargs)
