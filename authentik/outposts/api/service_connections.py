@@ -20,7 +20,6 @@ from authentik.core.api.utils import (
     PassiveSerializer,
 )
 from authentik.crypto.secrets.models import SecretType
-from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
@@ -119,6 +118,8 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
                 raise serializers.ValidationError(
                     {"kubeconfig_ref": _("A kubeconfig secret is required for a remote cluster.")}
                 )
+            from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
+
             try:
                 validate_kubeconfig(secret.get_json())
             except DjangoValidationError as exc:
