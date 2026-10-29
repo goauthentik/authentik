@@ -7930,18 +7930,6 @@ definido, por exemplo, como <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id=
   <source>Enterprise</source>
   <target>Corporativo</target>
 </trans-unit>
-<trans-unit id="sd51d6a39208696cc">
-  <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
-  <target>Recolher <x id="0" equiv-text="${this.label}"/></target>
-</trans-unit>
-<trans-unit id="scce64bcfb0a73ad7">
-  <source>Expand <x id="0" equiv-text="${this.label}"/></source>
-  <target>Expandir <x id="0" equiv-text="${this.label}"/></target>
-</trans-unit>
-<trans-unit id="sfe1fb536cab6c0f5">
-  <source><x id="0" equiv-text="${this.label}"/> navigation</source>
-  <target>Navegação <x id="0" equiv-text="${this.label}"/></target>
-</trans-unit>
 <trans-unit id="s8849ece8c65e3a18">
   <source>Dashboards</source>
   <target>Painéis</target>
@@ -8054,20 +8042,8 @@ definido, por exemplo, como <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id=
   <source>Notifications</source>
   <target>Notificações</target>
 </trans-unit>
-<trans-unit id="sf1a3d030efd11f28">
-  <source>Open about dialog</source>
-  <target>Abrir diálogo sobre</target>
-</trans-unit>
-<trans-unit id="s95b96d7ead27527f">
-  <source>Product name</source>
-  <target>Nome do produto</target>
-</trans-unit>
-<trans-unit id="s68b6d404c3349b18">
-  <source>Product version</source>
-  <target>Versão do produto</target>
-</trans-unit>
 <trans-unit id="s358e08de4fbebf51">
-  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent}"/></source>
   <target>Versão <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="se0d7715f3211d220">
@@ -10082,9 +10058,6 @@ definido, por exemplo, como <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id=
 </trans-unit>
 <trans-unit id="command-palette.prefix.reloads-page">
   <source>Reloads page</source>
-</trans-unit>
-<trans-unit id="s35ed5cf95b0c7262">
-  <source>authentik information</source>
 </trans-unit>
 <trans-unit id="s55402a876309f95b">
   <source>Landmark: <x id="0" equiv-text="${capitalCase(this.pageIdentifier)}"/></source>
@@ -12663,6 +12636,15 @@ definido, por exemplo, como <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id=
 </trans-unit>
 <trans-unit id="s42cebc8c4e28982e">
   <source>This security key is already registered on your account. Touch a different key to add it.</source>
+</trans-unit>
+<trans-unit id="sidebar.notice.enterprise-only">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="array-input.validation.invalid-entry">
+  <source>One or more entries are invalid.</source>
+</trans-unit>
+<trans-unit id="array-input.remove.aria-label">
+  <source>Remove entry</source>
 </trans-unit>
 </body>
 </file>
