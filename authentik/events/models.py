@@ -373,7 +373,18 @@ class NotificationTransport(TasksModel, SerializerModel):
     email_subject_prefix = models.TextField(default="authentik Notification: ", blank=True)
     email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
+    webhook_url_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Webhook URL"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="notification_transports",
+    )
+
     webhook_ca = models.ForeignKey(
         CertificateKeyPair,
         null=True,
@@ -411,6 +422,11 @@ class NotificationTransport(TasksModel, SerializerModel):
         """Send notification to user, called from async task"""
         if self.mode == TransportMode.LOCAL:
             return self.send_local(notification)
+        if self.mode in (TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK) and (
+            not self.webhook_url_ref
+        ):
+            # Transports saved without a URL before it was validated have no secret.
+            raise NotificationTransportError("Webhook URL is not configured.")
         if self.mode == TransportMode.WEBHOOK:
             return self.send_webhook(notification)
         if self.mode == TransportMode.WEBHOOK_SLACK:
@@ -471,7 +487,7 @@ class NotificationTransport(TasksModel, SerializerModel):
         def send(**kwargs):
             try:
                 response = get_http_session().post(
-                    self.webhook_url,
+                    self.webhook_url_ref.secret_value,
                     json=default_body,
                     headers=headers,
                     **kwargs,
@@ -561,7 +577,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             )
         try:
             response = get_http_session().post(
-                self.webhook_url,
+                self.webhook_url_ref.secret_value,
                 json=body,
                 headers=headers,
             )
