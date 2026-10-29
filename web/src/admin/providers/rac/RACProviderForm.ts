@@ -1,7 +1,7 @@
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-number-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -127,11 +127,11 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                         ></ak-dual-select-dynamic-selected>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Settings")} name="settings">
-                        <ak-codemirror
+                        <ak-code-editor
                             mode="yaml"
                             value="${YAML.stringify(this.instance?.settings ?? {})}"
                         >
-                        </ak-codemirror>
+                        </ak-code-editor>
                         <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>
                     </ak-form-element-horizontal>
                 </div>

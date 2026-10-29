@@ -1,7 +1,7 @@
 import "#components/ak-text-input";
 import "#elements/ToggleGroup";
 import "#components/ak-switch-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -179,11 +179,11 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   label=${msg("Blueprint")}
                                   name="content"
                               >
-                                  <ak-codemirror
+                                  <ak-code-editor
                                       mode="yaml"
                                       raw
                                       value="${ifDefined(this.instance?.content)}"
-                                  ></ak-codemirror>
+                                  ></ak-code-editor>
                               </ak-form-element-horizontal>`
                             : nothing
                     }
@@ -193,11 +193,11 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
             <ak-form-group label="${msg("Additional settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Context")} name="context">
-                        <ak-codemirror
+                        <ak-code-editor
                             mode="yaml"
                             value="${YAML.stringify(this.instance?.context ?? {})}"
                         >
-                        </ak-codemirror>
+                        </ak-code-editor>
                         <p class="pf-c-form__helper-text">
                             ${msg("Configure the blueprint context, used for templating.")}
                         </p>

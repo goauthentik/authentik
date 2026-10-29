@@ -2,7 +2,7 @@ import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/oauth/OAuthSourceDiagram";
 import "#admin/events/ObjectChangelog";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

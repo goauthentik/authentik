@@ -1,6 +1,6 @@
 import "#admin/admin-settings/AdminSettingsForm";
 import "#admin/events/ObjectChangelog";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";

@@ -4,7 +4,7 @@ import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -250,11 +250,11 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                                   </p>
                               </ak-form-element-horizontal>
                               <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
-                                  <ak-codemirror
+                                  <ak-code-editor
                                       mode="javascript"
                                       value="${JSON.stringify(this.instance?.oidcJwks ?? {})}"
                                   >
-                                  </ak-codemirror>
+                                  </ak-code-editor>
                                   <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
                               </ak-form-element-horizontal>`
                         : nothing
