@@ -1,5 +1,5 @@
 #!/bin/sh
-# Download the DB-IP Lite City and ASN databases into the given directory.
+# Download the DB-IP Lite City database into the given directory.
 # DB-IP publishes a new edition on the first of each month, so fall back to the
 # previous month's edition if the current one is not available yet.
 set -eu
@@ -34,4 +34,3 @@ fetch() {
 
 mkdir -p "$out"
 fetch city
-fetch asn
