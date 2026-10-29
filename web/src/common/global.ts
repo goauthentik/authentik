@@ -1,9 +1,6 @@
 /**
  * @file Reader for the values the server injects into the interface documents.
- *   The server renders them as data — two `json_script` blocks and a handful of
- *   `<meta>` tags — rather than as an executable `window.authentik` assignment,
- *   so the interface pages can eventually be served under a strict CSP. See
- *   `authentik/core/templates/base/header_js.html`.
+ *   The server renders them as data — two `json_script` blocks and a handful of `<meta>` tags.
  */
 
 import { TargetLanguageTag } from "#common/ui/locale/definitions";
@@ -16,6 +13,8 @@ import {
     CurrentBrandFromJSON,
     FlowLayoutEnum,
 } from "@goauthentik/api";
+import { ServerContextMeta } from "@goauthentik/core/document";
+import { readJSONScript, readMeta } from "@goauthentik/core/document/browser";
 
 export interface FlowMeta {
     layout: FlowLayoutEnum;
@@ -38,57 +37,44 @@ export interface GlobalAuthentik {
 }
 
 /**
- * Read a server-injected `<meta>` value, if the document carries one.
+ * Read the current brand from the document.
  */
-function readMeta(name: string): string | null {
-    const element = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
-
-    return element?.content || null;
+export function readCurrentBrand(): CurrentBrand {
+    return CurrentBrandFromJSON(readJSONScript(ServerContextMeta.Brand) ?? { ui_footer_links: [] });
 }
 
 /**
- * Parse a server-injected `json_script` block, if the document carries one.
- *
- * A malformed block is treated as absent: the interface still boots on the
- * fallbacks below, which is strictly better than failing to render at all.
+ * Read the configuration from the document.
  */
-function readJSONScript(id: string): unknown {
-    const element = document.getElementById(id);
-
-    if (!element?.textContent) return null;
-
-    try {
-        return JSON.parse(element.textContent);
-    } catch (_error) {
-        return null;
-    }
+export function readConfig(): Config {
+    return ConfigFromJSON(readJSONScript(ServerContextMeta.Config) ?? { capabilities: [] });
 }
 
 function readServerContext(): GlobalAuthentik {
     const fallbackAPIBase = new URL(import.meta.env.AK_API_BASE_PATH || window.location.origin);
 
     const context: GlobalAuthentik = {
-        locale: autoDetectLanguage(readMeta("ak-locale") ?? undefined),
+        locale: autoDetectLanguage(readMeta(ServerContextMeta.Locale)),
         // `ConfigFromJSON`/`CurrentBrandFromJSON` pass a nullish value straight
         // through, so the empty shapes stand in when nothing was injected.
-        config: ConfigFromJSON(readJSONScript("ak-config") ?? { capabilities: [] }),
-        brand: CurrentBrandFromJSON(readJSONScript("ak-brand") ?? { ui_footer_links: [] }),
-        versionFamily: readMeta("ak-version-family") ?? "",
-        versionSubdomain: readMeta("ak-version-subdomain") ?? "",
-        build: readMeta("ak-build") ?? "",
+        config: readConfig(),
+        brand: readCurrentBrand(),
+        versionFamily: readMeta(ServerContextMeta.VersionFamily) ?? "",
+        versionSubdomain: readMeta(ServerContextMeta.VersionSubdomain) ?? "",
+        build: readMeta(ServerContextMeta.Build) ?? "",
         api: {
-            base: readMeta("ak-base-url") ?? fallbackAPIBase.toString(),
-            relBase: readMeta("ak-base-url-rel") ?? fallbackAPIBase.pathname,
+            base: readMeta(ServerContextMeta.BaseURL) ?? fallbackAPIBase.toString(),
+            relBase: readMeta(ServerContextMeta.BaseURLRel) ?? fallbackAPIBase.pathname,
         },
     };
 
-    const flowLayout = readMeta("ak-flow-layout");
+    const flowLayout = readMeta(ServerContextMeta.FlowLayout);
 
     if (flowLayout) {
         context.flow = {
             layout: flowLayout as FlowLayoutEnum,
-            title: readMeta("ak-flow-title") ?? undefined,
-            background: readMeta("ak-flow-background") ?? undefined,
+            title: readMeta(ServerContextMeta.FlowTitle) ?? undefined,
+            background: readMeta(ServerContextMeta.FlowBackground) ?? undefined,
         };
     }
 
