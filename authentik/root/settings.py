@@ -3,7 +3,6 @@
 import importlib
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from django.utils import http as utils_http
 
@@ -334,7 +333,7 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-PROMETHEUS_EXPORT_MIGRATIONS = not TYPE_CHECKING
+PROMETHEUS_EXPORT_MIGRATIONS = True
 
 # Custom overrides for database backends
 # The tree looks like this:
