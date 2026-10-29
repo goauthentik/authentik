@@ -1,15 +1,13 @@
 from asyncio.exceptions import CancelledError
+from sys import modules
 
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
 from django.db import DatabaseError, InternalError, OperationalError, ProgrammingError
 from django.http.response import Http404
-from docker.errors import DockerException
 from dramatiq.errors import Retry
 from h11 import LocalProtocolError
-from ldap3.core.exceptions import LDAPException
 from psycopg.errors import Error
 from rest_framework.exceptions import APIException
-from websockets.exceptions import WebSocketException
 
 
 class TracingIgnoredException(Exception):
@@ -31,8 +29,6 @@ ignored_classes = (
     ProgrammingError,
     SuspiciousOperation,
     ValidationError,
-    # websocket errors
-    WebSocketException,
     LocalProtocolError,
     # rest_framework error
     APIException,
@@ -40,10 +36,6 @@ ignored_classes = (
     Retry,
     # custom baseclass
     TracingIgnoredException,
-    # ldap errors
-    LDAPException,
-    # Docker errors
-    DockerException,
     # End-user errors
     Http404,
     # AsyncIO
@@ -51,6 +43,20 @@ ignored_classes = (
 )
 
 
+# Exceptions of optional, heavy libraries. Checked only once the library has been imported,
+# as an exception can't come from a module that was never loaded.
+lazy_ignored_classes = (
+    ("websockets.exceptions", "WebSocketException"),
+    ("ldap3.core.exceptions", "LDAPException"),
+    ("docker.errors", "DockerException"),
+)
+
+
 def should_ignore_exception(exc: Exception) -> bool:
     """Check if an exception should be dropped"""
-    return isinstance(exc, ignored_classes)
+    if isinstance(exc, ignored_classes):
+        return True
+    return any(
+        module in modules and isinstance(exc, getattr(modules[module], name))
+        for module, name in lazy_ignored_classes
+    )
