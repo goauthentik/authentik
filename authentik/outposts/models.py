@@ -392,21 +392,24 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
             if rebuild:
                 user.remove_all_perms_from_managed_role()
             role = user.get_managed_role(create=True)
-            existing_model = set(
+            existing_model_permissions: set[int] = set(
                 RoleModelPermission.objects.filter(role=role).values_list(
                     "permission_id", flat=True
                 )
             )
-            existing_obj = {
+            # (permission ID, object PK) -> RoleObjectPermission PK
+            existing_obj_permissions: dict[tuple[int, str], int] = {
                 (perm_id, object_pk): pk
                 for pk, perm_id, object_pk in RoleObjectPermission.objects.filter(
                     role=role
                 ).values_list("pk", "permission_id", "object_pk")
             }
-            if stale := existing_model - model_perms.keys():
+            if stale := existing_model_permissions - model_perms.keys():
                 RoleModelPermission.objects.filter(role=role, permission_id__in=stale).delete()
-            if stale := [pk for key, pk in existing_obj.items() if key not in obj_perms]:
-                RoleObjectPermission.objects.filter(pk__in=stale).delete()
+            if stale_pks := [
+                pk for key, pk in existing_obj_permissions.items() if key not in obj_perms
+            ]:
+                RoleObjectPermission.objects.filter(pk__in=stale_pks).delete()
             # Sorted, so concurrent rebuilds insert shared rows in the same order
             RoleModelPermission.objects.bulk_create(
                 [
@@ -415,7 +418,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
                         permission=model_perms[perm_id],
                         content_type_id=model_perms[perm_id].content_type_id,
                     )
-                    for perm_id in sorted(model_perms.keys() - existing_model)
+                    for perm_id in sorted(model_perms.keys() - existing_model_permissions)
                 ],
                 ignore_conflicts=True,
             )
@@ -427,7 +430,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
                         content_type_id=obj_perms[key].content_type_id,
                         object_pk=key[1],
                     )
-                    for key in sorted(obj_perms.keys() - existing_obj.keys())
+                    for key in sorted(obj_perms.keys() - existing_obj_permissions.keys())
                 ],
                 ignore_conflicts=True,
             )
