@@ -5,7 +5,6 @@ from collections import OrderedDict
 from pathlib import Path
 
 from django.utils import http as utils_http
-from xmlsec import enable_debug_trace
 
 from authentik import authentik_version
 from authentik.lib.config import (
@@ -373,6 +372,23 @@ DEFAULT_FROM_EMAIL = CONFIG.get("email.from")
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_SUBJECT_PREFIX = "[authentik] "
 
+# The first hasher is used for new passwords. The rest remain available so existing
+# hashes still verify.
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+]
+# Keep in sync with `authentik.lib.validators.PasswordHashValidator.current_parameters`
+PASSWORD_HASHERS_IMPORT_ALLOWED = [
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+]
+
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -570,6 +586,8 @@ except ImportError:
 
 if DEBUG:
     INSTALLED_APPS.insert(INSTALLED_APPS.index("django.contrib.staticfiles"), "daphne")
+    from xmlsec import enable_debug_trace
+
     enable_debug_trace(True)
 
 

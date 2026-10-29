@@ -2,7 +2,6 @@ from json import dumps, loads
 
 from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
-from googleapiclient.discovery import build
 
 from authentik.endpoints.controller import BaseController, Capabilities
 from authentik.endpoints.facts import DeviceFacts, OSFamily
@@ -28,6 +27,8 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
 
     def __init__(self, connector):
         super().__init__(connector)
+        from googleapiclient.discovery import build
+
         self.google_client = build(
             "verifiedaccess",
             "v2",

@@ -139,6 +139,11 @@ export interface SAMLProviderRequest {
      */
     defaultRelayState?: string;
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
+    /**
+     * OAuth2 providers which can exchange their JWTs for a SAML Response of this provider via token
+     * exchange.
+     */
+    jwtFederationProviders?: Array<number>;
 }
 
 /**
@@ -270,6 +275,8 @@ export function SAMLProviderRequestFromJSONTyped(
             json["default_name_id_policy"] == null
                 ? undefined
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
+        jwtFederationProviders:
+            json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
     };
 }
 
@@ -315,5 +322,6 @@ export function SAMLProviderRequestToJSONTyped(
         logout_method: SAMLLogoutMethodsToJSON(value["logoutMethod"]),
         default_relay_state: value["defaultRelayState"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
+        jwt_federation_providers: value["jwtFederationProviders"],
     };
 }
