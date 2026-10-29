@@ -5,6 +5,7 @@ from itertools import batched
 from typing import Any
 
 from django.db import transaction
+from django.db.models import QuerySet
 from django.utils.http import urlencode
 from pydantic import ValidationError
 
@@ -385,17 +386,19 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         )
 
     def discover(self):
+        groups = self.provider.get_object_qs(Group)
         for group in self.paginate_resources("/Groups"):
             try:
-                self._discover_group_single(group)
+                self._discover_group_single(group, groups)
             except ValidationError:
                 self.logger.warning("failed to discover group", scim_group=group.get("externalId"))
 
-    def _discover_group_single(self, group: dict):
+    def _discover_group_single(self, group: dict, groups: QuerySet[Group]):
         scim_group = SCIMGroupSchema.model_validate(group)
         if SCIMProviderGroup.objects.filter(scim_id=scim_group.id, provider=self.provider).exists():
             return
-        ak_group = Group.objects.filter(name=scim_group.displayName).first()
+        # Only adopt groups that this provider is configured to manage.
+        ak_group = groups.filter(name=scim_group.displayName).first()
         if not ak_group:
             return
         SCIMProviderGroup.objects.create(
