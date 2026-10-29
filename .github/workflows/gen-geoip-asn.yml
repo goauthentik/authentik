@@ -16,6 +16,10 @@ jobs:
     permissions:
       contents: read
       packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
@@ -32,7 +36,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+      - id: push
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: packages/geo
           file: packages/geo/Dockerfile
@@ -41,3 +46,8 @@ jobs:
           tags: |
             ghcr.io/goauthentik/geoip:latest
             ghcr.io/goauthentik/geoip:${{ steps.date.outputs.date }}
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
+        with:
+          subject-name: ghcr.io/goauthentik/geoip
+          subject-digest: "${{ steps.push.outputs.digest }}"
+          push-to-registry: true
