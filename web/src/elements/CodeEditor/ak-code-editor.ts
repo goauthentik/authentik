@@ -93,8 +93,8 @@ export class CodeEditor<T extends Jsonifiable = Jsonifiable> extends FormAssocia
      * The editor's text.
      *
      * @remarks
-     *   The editor module is imported lazily, so a form submitted before that import
-     *   resolves still reads the value that was set on the element.
+     *   The editor is created once the element is shown, from a lazily imported module,
+     *   so a form submitted before then still reads the value that was set on the element.
      */
     #source?: string;
 
@@ -143,14 +143,27 @@ export class CodeEditor<T extends Jsonifiable = Jsonifiable> extends FormAssocia
         });
     }
 
+    /**
+     * Defers loading Monaco until the element is shown, since many forms keep their code
+     * field in a collapsed group that is usually never opened.
+     */
+    #visibilityObserver = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+
+        this.#visibilityObserver.disconnect();
+        this.#initialize(this.renderRoot as ShadowRoot);
+    });
+
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        this.#initialize(this.renderRoot as ShadowRoot);
+        this.#visibilityObserver.observe(this);
     }
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
+
+        this.#visibilityObserver.disconnect();
 
         if (this.#editor) {
             console.debug("ak-code-editor: destroying editor");

@@ -48,6 +48,29 @@ describe("ak-code-editor", () => {
         expect(element.toJSON()).toStrictEqual({ a: 1 });
     });
 
+    it("creates the editor once a collapsed group is opened", async () => {
+        // With the module already loaded, an editor created on connect would render right away.
+        await import("#elements/CodeEditor/editor");
+
+        const { form, element } = mount(
+            html`<details>
+                <summary>Advanced settings</summary>
+                <ak-code-editor mode="yaml" raw value="a: 1"></ak-code-editor>
+            </details>`,
+        );
+
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        expect(element.shadowRoot?.querySelector(".monaco-editor")).toBeNull();
+
+        form.querySelector("details")!.open = true;
+
+        await focusEditor(element);
+        await userEvent.keyboard("0");
+
+        expect(element.value).toBe("a: 10");
+    });
+
     it("follows typing", async () => {
         const { form, element } = mount(
             html`<ak-code-editor
