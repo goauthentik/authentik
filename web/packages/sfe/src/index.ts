@@ -15,6 +15,7 @@ import {
     type PasswordChallenge,
     type RedirectChallenge,
 } from "@goauthentik/api";
+import { readJSONScript, readMeta } from "@goauthentik/core/document/browser";
 
 import { fromByteArray } from "base64-js";
 import $ from "jquery";
@@ -36,30 +37,15 @@ interface GlobalAuthentik {
     };
 }
 
-function readMeta(name: string): string | null {
-    return document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`)?.content || null;
-}
-
-function readJSONScript<T>(id: string): T | null {
-    const element = document.getElementById(id);
-
-    if (!element?.textContent) return null;
-
-    try {
-        return JSON.parse(element.textContent) as T;
-    } catch {
-        return null;
-    }
-}
-
 let context: GlobalAuthentik | null = null;
 
 /**
  * The values the server injected into this document.
  *
  * `base/header_js.html` renders them as data — a `json_script` block for the
- * brand and `<meta>` tags for the scalars — rather than assigning
- * `window.authentik`. This reader is deliberately standalone: the main bundle's
+ * brand and `<meta>` tags for the scalars.
+ *
+ * This reader is deliberately standalone: the main bundle's
  * equivalent in `web/src/common/global.ts` pulls in the generated API client,
  * which would dwarf this one.
  *

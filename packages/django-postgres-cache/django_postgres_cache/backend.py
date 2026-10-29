@@ -8,6 +8,7 @@ from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT, BaseCache, get_key_func
 from django.db import DatabaseError, connections, router
 from django.db.backends.utils import CursorWrapper
+from django.db.models import QuerySet
 from django.utils.timezone import now
 
 from django_postgres_cache.models import CacheEntry
@@ -196,7 +197,16 @@ class DatabaseCache(BaseCache):
             cursor.execute("TRUNCATE django_postgres_cache_cacheentry")
 
     def keys(self, keys_pattern: str, version: int | None = None) -> list[str]:
-        """Return cache keys matching a glob pattern (``*`` wildcard).
+        """Return cache keys matching a glob pattern."""
+        qs = self._filter_keys(keys_pattern, version)
+        return [self.reverse_key_func(key) for key in qs.values_list("cache_key", flat=True)]
+
+    def keys_count(self, keys_pattern: str, version: int | None = None) -> int:
+        """Count cache keys matching a glob pattern without fetching them."""
+        return self._filter_keys(keys_pattern, version).count()
+
+    def _filter_keys(self, keys_pattern: str, version: int | None) -> QuerySet[CacheEntry]:
+        """Filter cache entries by a glob pattern (``*`` wildcard).
 
         Simple ``prefix*`` patterns use Django's ``__startswith`` lookup
         (``LIKE 'prefix%'``), which can be answered by a B-tree index on
@@ -208,14 +218,11 @@ class DatabaseCache(BaseCache):
         wildcard_count = keys_pattern.count("*")
         if wildcard_count == 0:
             key = self.make_key(keys_pattern, version=version)
-            qs = CacheEntry.objects.filter(cache_key=key)
+            return CacheEntry.objects.filter(cache_key=key)
         # This also handles a pattern of "*". The prefix is then "", which will end up as an `all`
         # query, +/- the various prefixes prepended to it.
-        elif wildcard_count == 1 and keys_pattern.endswith("*"):
+        if wildcard_count == 1 and keys_pattern.endswith("*"):
             prefix = self.make_key(keys_pattern[:-1], version=version)
-            qs = CacheEntry.objects.filter(cache_key__startswith=prefix)
-        else:
-            regex = self.make_key(keys_pattern.replace("*", ".*"), version=version)
-            qs = CacheEntry.objects.filter(cache_key__regex=regex)
-
-        return [self.reverse_key_func(key) for key in qs.values_list("cache_key", flat=True)]
+            return CacheEntry.objects.filter(cache_key__startswith=prefix)
+        regex = self.make_key(keys_pattern.replace("*", ".*"), version=version)
+        return CacheEntry.objects.filter(cache_key__regex=regex)
