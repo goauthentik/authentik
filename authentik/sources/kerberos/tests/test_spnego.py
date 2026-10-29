@@ -9,6 +9,8 @@ import gssapi
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.secrets.models import SecretType
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.tests.utils import KerberosTestCase
 
@@ -20,7 +22,9 @@ class TestSPNEGOSource(KerberosTestCase):
         self.source = KerberosSource.objects.create(
             name="test",
             slug="test",
-            spnego_keytab=b64encode(Path(self.realm.http_keytab).read_bytes()).decode(),
+            spnego_keytab_ref=create_test_secret(
+                b64encode(Path(self.realm.http_keytab).read_bytes()).decode(), SecretType.FILE
+            ),
         )
         # Force store creation early
         self.source.get_gssapi_store()

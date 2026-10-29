@@ -3,6 +3,7 @@
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Session, SourceUserMatchingModes, User
 from authentik.core.tests.utils import create_test_session
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.sources.kerberos.models import (
     KerberosSource,
@@ -27,7 +28,7 @@ class TestKerberosSync(KerberosTestCase):
             sync_users=True,
             sync_users_password=True,
             sync_principal=self.realm.admin_princ,
-            sync_password=self.realm.password("admin"),
+            sync_password_ref=create_test_secret(self.realm.password("admin")),
         )
         self.source.user_property_mappings.set(
             KerberosSourcePropertyMapping.objects.filter(
