@@ -90,6 +90,35 @@ test("buildLLMSOutputs emits root, full, per-group, and per-page files", async (
     assert.ok(release.includes("Release notes with a route overridden by frontmatter."));
 });
 
+test("buildLLMSOutputs points links in per-page payloads at published URLs", async () => {
+    const outputs = await buildLLMSOutputs({
+        siteDir: FIXTURE,
+        outDir: "/tmp/ignored",
+        siteUrl: "https://docs.x",
+        title: "T",
+        description: "D",
+        routesPaths: ROUTES,
+        options: {
+            sections: [{ path: ".", routeBasePath: "/" }],
+            groupBy: "topic",
+            crossLinks: [],
+        },
+    });
+    const page = outputs.get("topic-b/page-two.md") ?? "";
+
+    assert.ok(page.includes("[Overview](https://docs.x/topic-a.md#intro)"), "relative file link");
+    assert.ok(
+        page.includes("[Release](https://docs.x/releases/2026.5.md)"),
+        "site-absolute file link",
+    );
+    assert.ok(page.includes("[Page One](https://docs.x/topic-a/page-one.md)"), "link in a partial");
+    assert.ok(page.includes("[Sibling](https://docs.x/topic-b/page-three/)"), "relative URL");
+    assert.ok(page.includes("[External](https://example.com/guide.mdx)"), "absolute URL kept");
+    assert.ok(page.includes("[Anchor](#links)"), "in-page anchor kept");
+    assert.ok(page.includes("[Missing](./missing.mdx)"), "unknown file kept");
+    assert.ok(page.includes("[Example](./example.json)"), "linked file kept");
+});
+
 test("buildLLMSOutputs writes per-category index at the slug path with a label heading", async () => {
     const outputs = await buildLLMSOutputs({
         siteDir: FIXTURE,
