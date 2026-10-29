@@ -24,13 +24,10 @@ html[data-theme="dark"] {
     border: 1px solid var(--ifm-color-emphasis-200);
 }
 
-.theme-doc-markdown .theme-code-block pre code {
-    font-weight: 400;
-}
-
 /* Keep both existing code controls discoverable on touch and keyboard input. */
 .theme-doc-markdown .theme-code-block button.clean-btn {
     opacity: 1;
+    justify-content: center;
     min-width: 2.25rem;
     min-height: 2.25rem;
 }

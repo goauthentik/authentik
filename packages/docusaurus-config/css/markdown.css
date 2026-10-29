@@ -19,8 +19,23 @@
     font-size: 1.0625rem;
 
     /* Retain Infima's 1.65 body line height, 20px leading, and 40px H2 spacing. */
+    --ifm-h1-vertical-rhythm-bottom: 0.8;
     --ifm-heading-vertical-rhythm-bottom: 0.6;
     --ifm-h3-vertical-rhythm-top: 1.6;
+}
+
+/* Keep title spacing on the header rather than stacking H1 and title-row margins. */
+.theme-doc-markdown > header {
+    --ifm-h1-vertical-rhythm-bottom: 0;
+    margin-bottom: 1rem;
+}
+
+.theme-doc-markdown > header > :last-child {
+    margin-bottom: 0;
+}
+
+.theme-doc-markdown > :is(header, h1) + :is(h2, h3, h4, h5, h6)[id] {
+    margin-top: 0;
 }
 
 /* Use the same rhythm for MDX headings inside tab panels and procedural lists. */
