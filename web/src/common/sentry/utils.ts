@@ -20,9 +20,8 @@ export interface SentrySetupOptions {
     /**
      * The deployment's error-reporting configuration.
      *
-     * Optional because `Config` types it as required while
-     * `ErrorReportingConfigFromJSON` passes a missing value straight through —
-     * it is absent whenever the server didn't inject `window.authentik`.
+     * Optional because {@linkcode Config} types it as required while
+     * {@linkcode ErrorReportingConfigFromJSON} passes a missing value straight through.
      */
     errorReporting?: ErrorReportingConfig;
     /**

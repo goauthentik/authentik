@@ -7,7 +7,6 @@ from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
-from zxcvbn import zxcvbn
 
 from authentik.lib.utils.http import get_http_session
 from authentik.policies.models import Policy
@@ -141,6 +140,8 @@ class PasswordPolicy(Policy):
 
     def passes_zxcvbn(self, password: str, request: PolicyRequest) -> PolicyResult:
         """Check Dropbox's zxcvbn password estimator"""
+        from zxcvbn import zxcvbn
+
         user_inputs = []
         if request.user.is_authenticated:
             user_inputs.append(request.user.username)

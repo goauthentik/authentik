@@ -73,6 +73,10 @@ Property mappings are evaluated in name order. If a property mapping fails to ev
 
 To handle network interruptions, authentik detects transient request failures and retries sync tasks.
 
+If Entra ID rejects a user or group, for example because another object already has the same `userPrincipalName`, authentik skips that object and continues the sync with the next one. The sync task logs a warning that names the object and includes the error message from Microsoft Graph. You can view the sync tasks and their logs on the provider's page in the Admin interface. For other errors from Microsoft Graph, such as missing permissions, authentik stops syncing the current batch of users or groups.
+
+If a linked user or group was deleted in Entra ID, authentik creates it again on the next sync.
+
 ## Property mapping
 
 There are several considerations regarding how authentik data is mapped to Entra ID user and group data.

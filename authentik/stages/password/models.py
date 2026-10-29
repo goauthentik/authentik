@@ -156,13 +156,19 @@ class PasswordDevice(Device):
         signal: bool = True,
         sender: Any = None,
         request: HttpRequest | None = None,
+        hasher_defaults_overridden: bool = False,
     ):
         """Store an already validated password hash as-is.
 
         Because no raw password is available, downstream password sync integrations
         such as LDAP and Kerberos cannot be updated from this code path."""
         if signal:
-            password_hash_changed.send(sender=sender or user, user=user, request=request)
+            password_hash_changed.send(
+                sender=sender or user,
+                user=user,
+                request=request,
+                hasher_defaults_overridden=hasher_defaults_overridden,
+            )
         cls._store(user, password_hash)
 
     @classmethod
