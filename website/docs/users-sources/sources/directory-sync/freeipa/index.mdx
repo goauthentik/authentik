@@ -121,6 +121,12 @@ metadata:
     labels:
         blueprints.goauthentik.io/description: "LDAP Source configuration for FreeIPA"
 entries:
+    - model: authentik_crypto_secrets.secret
+      id: freeipa-bind-password
+      identifiers:
+          name: FreeIPA bind password
+      attrs:
+          value: !Env FREEIPA_PASSWORD
     - model: authentik_sources_ldap.ldapsource
       identifiers:
           slug: ldap-source-freeipa
@@ -130,7 +136,7 @@ entries:
           additional_user_dn: cn=users,cn=accounts
           additional_group_dn: cn=groups,cn=accounts
           bind_cn: !Env FREEIPA_DN
-          bind_password: !Env FREEIPA_PASSWORD
+          bind_password_ref: !KeyOf freeipa-bind-password
           delete_not_found_objects: true
           group_membership_field: memberOf
           group_object_filter: (objectClass=groupofnames)
