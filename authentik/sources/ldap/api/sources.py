@@ -25,7 +25,7 @@ from authentik.sources.ldap.models import (
     LDAPSource,
     LDAPSourceBindMethod,
 )
-from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES, ldap_sync
+from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, ldap_sync
 from authentik.tasks.models import Task, TaskStatus
 
 
@@ -239,9 +239,21 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def debug(self, request: Request, slug: str) -> Response:
         """Get raw LDAP data to debug"""
+        from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
+        from authentik.sources.ldap.sync.membership import (
+            GroupHierarchyLDAPSynchronizer,
+            MembershipLDAPSynchronizer,
+        )
+        from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+
         source = self.get_object()
         all_objects = {}
-        for sync_class in SYNC_CLASSES:
+        for sync_class in (
+            UserLDAPSynchronizer,
+            GroupLDAPSynchronizer,
+            MembershipLDAPSynchronizer,
+            GroupHierarchyLDAPSynchronizer,
+        ):
             class_name = sync_class.name()
             all_objects.setdefault(class_name, [])
             for page in sync_class(source, Task()).get_objects(size_limit=10):

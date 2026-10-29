@@ -13,7 +13,6 @@ from authentik.core.signals import impersonation_changed
 from authentik.crypto.models import CertificateKeyPair
 from authentik.crypto.secrets.models import Secret, parse_json
 from authentik.crypto.secrets.signals import secret_value_changed, secret_value_validating
-from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
 from authentik.outposts.models import Outpost, OutpostModel, OutpostServiceConnection
 from authentik.outposts.tasks import (
     CACHE_KEY_OUTPOST_DOWN,
@@ -210,4 +209,6 @@ def outpost_impersonation_revoke(sender, session_key: str, **_):
 def validate_kubernetes_secret(sender, secret: Secret, value: str, **_):
     """Validate kubeconfig replacements before notifying outposts."""
     if secret.kubernetes_connections.filter(local=False).exists():
+        from authentik.outposts.controllers.k8s.utils import validate_kubeconfig
+
         validate_kubeconfig(parse_json(value))

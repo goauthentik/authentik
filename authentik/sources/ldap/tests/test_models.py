@@ -176,7 +176,7 @@ class LDAPModelTests(TestCase):
         calls = Mock()
         calls.attach_mock(connection.start_tls, "start_tls")
         calls.attach_mock(connection.bind, "bind")
-        with patch("authentik.sources.ldap.models.Connection", return_value=connection):
+        with patch("ldap3.Connection", return_value=connection):
             source._connect_and_bind(server=server)
         self.assertEqual(
             calls.mock_calls,
