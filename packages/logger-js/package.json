@@ -57,13 +57,13 @@
         "types/**/*"
     ],
     "engines": {
-        "node": ">=24",
+        "node": "^24.22.1 || >=26.12.1",
         "pnpm": ">=11.20.0"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
-            "version": ">=24.20",
+            "version": "^24.22.1 || >=26.12.1",
             "onFail": "warn"
         }
     },
