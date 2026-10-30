@@ -17,7 +17,12 @@ import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { aki } from "#common/api/client";
-import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import {
+    APIError,
+    isCausedByTimeoutError,
+    parseAPIResponseError,
+    pluckErrorDetail,
+} from "#common/errors/network";
 import { FlowMeta, globalAK } from "#common/global";
 import { applyBackgroundImageProperty, resolveThemedUrl } from "#common/theme";
 
@@ -94,6 +99,11 @@ const DefaultFlowMeta: FlowMeta = {
 export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
     public static readonly DefaultLayout: FlowLayoutEnum = DefaultFlowMeta.layout;
 
+    /**
+     * Milliseconds before an in-flight challenge submission is aborted.
+     */
+    public static readonly SubmitTimeout = 60_000;
+
     //#region Styles
 
     static styles: CSSResult[] = [
@@ -137,6 +147,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     // Listen for authentik state-change events from other tabs
     #flowMultitabController = new FlowMultitabController(this);
+
+    /**
+     * The in-flight challenge submission, shared with any duplicate submit calls.
+     */
+    #pendingSubmission: Promise<boolean> | null = null;
 
     //#endregion
 
@@ -213,7 +228,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     //#region Listeners
 
-    private setFlowErrorChallenge(error: APIError) {
+    private setFlowErrorChallenge(error: APIError | string) {
         this.challenge = {
             component: "ak-stage-flow-error",
             error: pluckErrorDetail(error),
@@ -287,6 +302,12 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         payload?: FlowChallengeResponseRequestBody,
         options?: SubmitOptions,
     ): Promise<boolean> => {
+        if (this.#pendingSubmission) {
+            this.#logger.debug("Skipping submit, a submission is already in flight");
+
+            return this.#pendingSubmission;
+        }
+
         if (!payload) throw new Error("No payload provided");
 
         if (!this.challenge) throw new Error("No challenge provided");
@@ -311,12 +332,15 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             this.loading = true;
         }
 
-        return this.#api
-            .flowsExecutorSolve({
-                flowSlug: this.flowSlug,
-                query: window.location.search.substring(1),
-                flowChallengeResponseRequest,
-            })
+        this.#pendingSubmission = this.#api
+            .flowsExecutorSolve(
+                {
+                    flowSlug: this.flowSlug,
+                    query: window.location.search.substring(1),
+                    flowChallengeResponseRequest,
+                },
+                { signal: AbortSignal.timeout(FlowExecutor.SubmitTimeout) },
+            )
             .then((challenge) => {
                 window.dispatchEvent(new AKFlowAdvanceEvent());
 
@@ -332,13 +356,26 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 return !this.challenge.responseErrors;
             })
             .catch((error: APIError) => {
+                if (isCausedByTimeoutError(error)) {
+                    this.setFlowErrorChallenge(
+                        msg("The request timed out. Please try again.", {
+                            id: "flow.executor.submit.timeout.error",
+                        }),
+                    );
+
+                    return false;
+                }
+
                 this.setFlowErrorChallenge(error);
 
                 return false;
             })
             .finally(() => {
+                this.#pendingSubmission = null;
                 this.loading = false;
             });
+
+        return this.#pendingSubmission;
     };
 
     //#region Render Challenge
