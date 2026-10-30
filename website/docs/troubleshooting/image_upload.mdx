@@ -2,7 +2,7 @@
 title: Errors when uploading icons
 ---
 
-There are two common causes for icon and image upload problems when authentik uses local file storage.
+There are three common causes for icon and image upload problems when authentik uses local file storage.
 
 First, verify that your deployment meets the [File storage requirements](../customize/files.mdx#storage-requirements).
 
@@ -29,9 +29,9 @@ Alternatively, If you are using Kubernetes, ensure that the volume mounted at `/
 
 ## 2. Legacy `/media` mounts after upgrading
 
-If you upgraded from an older release and existing files still appear, but the upload controls are missing in **Customization** > **Files**, or you cannot upload new files, check your local storage mount path.
+If you upgraded from an older release and previously uploaded files are missing, the upload controls are missing in **Customization** > **Files**, or you cannot upload new files, check your local storage mount path.
 
-Current authentik versions expect local file storage at `/data`, with media files stored under `/data/media`. A legacy mount to `/media` will still allow older files to be read through compatibility handling, while preventing new uploads and file management.
+Current authentik versions expect local file storage at `/data`, with media files stored under `/data/media`. Up to 2026.8, a legacy mount to `/media` still allows older files to be read through compatibility handling, while preventing new uploads and file management. Starting with 2026.11, authentik does not read a volume mounted at `/media` at all, so files stored there do not appear.
 
 Update your deployment to use the current storage layout.
 
@@ -47,3 +47,45 @@ volumes:
 For Kubernetes deployments, mount your persistent storage at `/data` instead of `/media`.
 
 If you previously stored files under a path mounted to `/media`, move that data so it is available under `/data/media` inside the authentik container.
+
+## 3. `media` symlink in a named `/data` volume {#media-symlink}
+
+The container images for authentik 2025.12 through 2026.8 include a `/data/media` symlink to `/media`. When a new, empty named volume is mounted at `/data`, Docker and Podman copy the image's `/data` into it, including that symlink. Uploads then follow the symlink out of the volume and into the server container's own filesystem, and are lost whenever the container is recreated. Bind mounts, such as `./data:/data` in the official Docker Compose file, are not affected.
+
+Starting with 2026.11, the image no longer includes the symlink or `/media`, but a volume created by an earlier version keeps its copy. After the upgrade, the symlink points to a path that does not exist, and uploads fail.
+
+To check whether your volume has the symlink, list `/data` in the server container:
+
+```shell
+docker compose exec server ls -l /data
+```
+
+If the output shows `media -> /media`, follow the steps below that match your version. Without Docker Compose, run the same commands with `docker exec` or `podman exec` against the server container.
+
+### Before upgrading to 2026.11
+
+Upgrading recreates the server container, which deletes the files uploaded through the symlink, unless you also mount a volume at `/media`. While still on the previous version, back up the files, then replace the symlink with a copy of them inside the volume:
+
+```shell
+# Back up the uploaded files from the server container
+docker compose cp server:/media ./media-backup
+# Replace the symlink in the volume with a directory
+docker compose exec server rm /data/media
+docker compose exec server mkdir /data/media
+# Restore the files into /data/media in the volume
+docker compose exec server cp -a /media/. /data/media/
+```
+
+If you run several server replicas, each one stored its uploads in its own `/media`. In each further replica, back up to a separate directory and run only the last command, selecting the replica with `--index`, for example `docker compose cp --index 2 server:/media ./media-backup-2` and `docker compose exec --index 2 server cp -a /media/. /data/media/`.
+
+Then upgrade as usual.
+
+### After upgrading to 2026.11
+
+Delete the symlink so authentik can create `/data/media` inside the volume:
+
+```shell
+docker compose exec server rm /data/media
+```
+
+The distroless image does not include `rm`. If you use it, switch to the regular image tag for this step. Files uploaded while the symlink was in place were not stored in the volume, so upload them again.
