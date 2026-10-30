@@ -1073,6 +1073,44 @@ class TestAPI(ExpirationTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("warn_before", response.data)
 
+    def test_notification_transports_require_warning_period(self):
+        from authentik.events.models import NotificationTransport
+
+        transport = NotificationTransport.objects.create(name=generate_id())
+        url = reverse("authentik_api:userexpirationrule-list")
+        response = self.client.post(
+            url,
+            {"name": generate_id(), "notification_transports": [str(transport.pk)]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertIn("notification_transports", response.data)
+
+        response = self.client.post(
+            url,
+            {
+                "name": generate_id(),
+                "warn_before": "days=7",
+                "notification_transports": [str(transport.pk)],
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 201, response.data)
+        rule = UserExpirationRule.objects.get(pk=response.data["pk"])
+        detail = reverse("authentik_api:userexpirationrule-detail", kwargs={"pk": rule.pk})
+
+        response = self.client.patch(detail, {"warn_before": None}, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertIn("notification_transports", response.data)
+
+        response = self.client.patch(
+            detail, {"warn_before": None, "notification_transports": []}, format="json"
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        rule.refresh_from_db()
+        self.assertIsNone(rule.warn_before)
+        self.assertFalse(rule.notification_transports.exists())
+
     def test_invalid_duration(self):
         response = self.client.post(
             reverse("authentik_api:userexpirationrule-list"),

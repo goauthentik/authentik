@@ -84,6 +84,13 @@ class UserExpirationRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
             ),
         )
         warn_before = attrs.get("warn_before", getattr(self.instance, "warn_before", None))
+        transports = attrs.get("notification_transports")
+        if transports is None and self.instance is not None:
+            transports = self.instance.notification_transports.exists()
+        if not warn_before and transports:
+            raise ValidationError(
+                {"notification_transports": _("A warning period is required for notifications.")}
+            )
         if (
             duration
             and warn_before
