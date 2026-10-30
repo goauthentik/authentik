@@ -61,7 +61,29 @@ class ObjectPermissions(DjangoObjectPermissions):
         if owner_field := getattr(view, "owner_field", None):
             if getattr(obj, owner_field) == request.user:
                 return True
-        return super().has_object_permission(request, view, obj)
+        # Not `super()`, which checks the queryset model's `perms` on `obj` unchanged, see
+        # `permission_for_object`. `perms_map` requires no permissions for safe methods, so
+        # `super()`'s 404 case never applies here.
+        return request.user.has_perms([permission_for_object(perm, obj) for perm in perms], obj)
+
+
+def permission_for_object(perm: str, obj: Model) -> str:
+    """Map a parent model's default permission to the same permission on `obj`'s model,
+    which is where guardian stores object permissions. For an `ExpressionPolicy`,
+    `authentik_policies.view_policy` becomes `authentik_policies_expression.view_expressionpolicy`.
+    Other permissions are returned unchanged."""
+    if "." not in perm:
+        return perm
+    app_label, codename = perm.split(".", 1)
+    # guardian files grants on a proxy model's instances under the concrete model
+    opts = obj._meta.concrete_model._meta
+    for parent in opts.get_parent_list():
+        if parent._meta.app_label != app_label:
+            continue
+        for action in parent._meta.default_permissions:
+            if codename == f"{action}_{parent._meta.model_name}":
+                return f"{opts.app_label}.{action}_{opts.model_name}"
+    return perm
 
 
 def HasPermission(*perm: str) -> type[BasePermission]:
