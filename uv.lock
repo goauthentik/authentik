@@ -2398,7 +2398,7 @@ wheels = [
 
 [[package]]
 name = "microsoft-kiota-http"
-version = "1.12.0"
+version = "1.16.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx", extra = ["http2"] },
@@ -2406,9 +2406,9 @@ dependencies = [
     { name = "opentelemetry-api" },
     { name = "opentelemetry-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/68/7e/d2f9ce3b7033481d3a634c2834a81c18917a94483eb99924090e6709420f/microsoft_kiota_http-1.12.0.tar.gz", hash = "sha256:f2b97d0b773cc093842114a6ccaea3cc21c03bdc6877a02e7af11d97c0f9a37c", size = 22417, upload-time = "2026-08-27T13:26:23.121Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/3c/5d326276b590c6c4367701cb021b2f984acba4e94b49cda43b4d3a746756/microsoft_kiota_http-1.16.0.tar.gz", hash = "sha256:5bd5fe7f83428edd61e0d28f90bc95af145b1004fdc33e082422f4bd38d60fde", size = 25554, upload-time = "2026-10-26T14:27:18.83Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/f5/df817794ebaef428ab961c82aa3bdd7212f0a4b52288b2e2442d7a4633f2/microsoft_kiota_http-1.12.0-py3-none-any.whl", hash = "sha256:a1ec9e6c6b1ec6d3afce309f3353c91c1e3c8c4614c84c7f5199f1179fa13858", size = 31999, upload-time = "2026-08-27T13:26:30.435Z" },
+    { url = "https://files.pythonhosted.org/packages/2f/dc/e2853f186a35df32d4a10f11c8ef84a85df7500dbad65cbd740ee591f0cc/microsoft_kiota_http-1.16.0-py3-none-any.whl", hash = "sha256:ee51cc37c86650dda5b8a4478914dc7dc99d0bb9c0d4d1c5363716fe557d58e0", size = 37147, upload-time = "2026-10-26T14:27:29.167Z" },
 ]
 
 [[package]]
