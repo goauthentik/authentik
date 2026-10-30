@@ -240,6 +240,18 @@ ak-flow-executor::part(locale-select) {
 }
 ```
 
+### Style source icons on the login page
+
+The icons of sources on the login page are exposed as the `challenge-source-icon` part.
+
+```css
+ak-flow-executor::part(challenge-source-icon) {
+    border-radius: 50%;
+}
+```
+
+For icons that need a different version in dark mode, use [`%(theme)s` in the source's **Icon** field](../file-picker.mdx#source-icons-in-light-and-dark-themes) rather than a CSS filter.
+
 ## Troubleshooting
 
 Custom CSS can be powerful, but it can also lead to unexpected results if not implemented carefully. Here are some common issues and solutions.

@@ -1,5 +1,7 @@
 """identification tests"""
 
+from json import loads
+
 from django.urls import reverse
 from requests_mock import Mocker
 from rest_framework.exceptions import ValidationError
@@ -165,6 +167,46 @@ class TestIdentificationStage(APIFlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_source_icon_themed_urls(self):
+        """Test themed icon URLs of login sources"""
+        sources = [
+            # Built-in default icon
+            OAuthSource(provider_type="github"),
+            # Built-in icon picked in the file picker
+            OAuthSource(icon="/static/authentik/sources/github/%(theme)s.svg"),
+            OAuthSource(icon="https://example.com/logo-%(theme)s.svg"),
+            OAuthSource(icon="https://example.com/logo.png"),
+        ]
+        for idx, source in enumerate(sources):
+            source.name = f"{idx}-{generate_id()}"
+            source.slug = generate_id()
+            source.save()
+        self.stage.sources.set(sources)
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(
+            [source["icon_themed_urls"] for source in loads(response.content)["sources"]],
+            [
+                # Default icons are relative, like their icon_url
+                {
+                    "light": "/static/authentik/sources/github/light.svg",
+                    "dark": "/static/authentik/sources/github/dark.svg",
+                },
+                {
+                    "light": "http://testserver/static/authentik/sources/github/light.svg",
+                    "dark": "http://testserver/static/authentik/sources/github/dark.svg",
+                },
+                {
+                    "light": "https://example.com/logo-light.svg",
+                    "dark": "https://example.com/logo-dark.svg",
+                },
+                None,
+            ],
+        )
+
     def test_valid_with_email(self):
         """Test with valid email, check that URL redirects back to itself"""
         form_data = {"uid_field": self.user.email}
@@ -211,7 +253,11 @@ class TestIdentificationStage(APIFlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -248,7 +294,11 @@ class TestIdentificationStage(APIFlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -371,7 +421,11 @@ class TestIdentificationStage(APIFlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -428,7 +482,11 @@ class TestIdentificationStage(APIFlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -492,7 +550,11 @@ class TestIdentificationStage(APIFlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -537,7 +599,11 @@ class TestIdentificationStage(APIFlowTestCase):
             primary_action="Log in",
             sources=[
                 {
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "challenge": {
                         "component": "xak-flow-redirect",
@@ -581,7 +647,11 @@ class TestIdentificationStage(APIFlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -610,7 +680,11 @@ class TestIdentificationStage(APIFlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }

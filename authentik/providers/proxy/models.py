@@ -146,7 +146,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/proxy.svg")
+        return static("authentik/sources/proxy/light.svg")
 
     @property
     def serializer(self) -> type[Serializer]:

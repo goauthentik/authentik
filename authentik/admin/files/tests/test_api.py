@@ -92,10 +92,13 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             {
-                "name": "/static/authentik/sources/ldap.png",
-                "url": "http://testserver/static/authentik/sources/ldap.png",
-                "mime_type": "image/png",
-                "themed_urls": None,
+                "name": "/static/authentik/sources/ldap/%(theme)s.svg",
+                "url": "http://testserver/static/authentik/sources/ldap/%(theme)s.svg",
+                "mime_type": "image/svg+xml",
+                "themed_urls": {
+                    "light": "http://testserver/static/authentik/sources/ldap/light.svg",
+                    "dark": "http://testserver/static/authentik/sources/ldap/dark.svg",
+                },
             },
             response.data,
         )
@@ -120,7 +123,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
             reverse(
                 "authentik_api:files",
                 query={
-                    "search": "LDAP.PNG",
+                    "search": "LDAP/",
                 },
             )
         )
@@ -128,10 +131,13 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             {
-                "name": "/static/authentik/sources/ldap.png",
-                "url": "http://testserver/static/authentik/sources/ldap.png",
-                "mime_type": "image/png",
-                "themed_urls": None,
+                "name": "/static/authentik/sources/ldap/%(theme)s.svg",
+                "url": "http://testserver/static/authentik/sources/ldap/%(theme)s.svg",
+                "mime_type": "image/svg+xml",
+                "themed_urls": {
+                    "light": "http://testserver/static/authentik/sources/ldap/light.svg",
+                    "dark": "http://testserver/static/authentik/sources/ldap/dark.svg",
+                },
             },
             response.data,
         )

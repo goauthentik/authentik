@@ -23,6 +23,7 @@ var _ MappedNullable = &LoginSource{}
 type LoginSource struct {
 	Name                 string              `json:"name"`
 	IconUrl              NullableString      `json:"icon_url,omitempty"`
+	IconThemedUrls       NullableThemedUrls  `json:"icon_themed_urls,omitempty"`
 	Promoted             *bool               `json:"promoted,omitempty"`
 	Challenge            LoginChallengeTypes `json:"challenge"`
 	AdditionalProperties map[string]interface{}
@@ -120,6 +121,49 @@ func (o *LoginSource) UnsetIconUrl() {
 	o.IconUrl.Unset()
 }
 
+// GetIconThemedUrls returns the IconThemedUrls field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LoginSource) GetIconThemedUrls() ThemedUrls {
+	if o == nil || IsNil(o.IconThemedUrls.Get()) {
+		var ret ThemedUrls
+		return ret
+	}
+	return *o.IconThemedUrls.Get()
+}
+
+// GetIconThemedUrlsOk returns a tuple with the IconThemedUrls field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LoginSource) GetIconThemedUrlsOk() (*ThemedUrls, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.IconThemedUrls.Get(), o.IconThemedUrls.IsSet()
+}
+
+// HasIconThemedUrls returns a boolean if a field has been set.
+func (o *LoginSource) HasIconThemedUrls() bool {
+	if o != nil && o.IconThemedUrls.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetIconThemedUrls gets a reference to the given NullableThemedUrls and assigns it to the IconThemedUrls field.
+func (o *LoginSource) SetIconThemedUrls(v ThemedUrls) {
+	o.IconThemedUrls.Set(&v)
+}
+
+// SetIconThemedUrlsNil sets the value for IconThemedUrls to be an explicit nil
+func (o *LoginSource) SetIconThemedUrlsNil() {
+	o.IconThemedUrls.Set(nil)
+}
+
+// UnsetIconThemedUrls ensures that no value is present for IconThemedUrls, not even an explicit nil
+func (o *LoginSource) UnsetIconThemedUrls() {
+	o.IconThemedUrls.Unset()
+}
+
 // GetPromoted returns the Promoted field value if set, zero value otherwise.
 func (o *LoginSource) GetPromoted() bool {
 	if o == nil || IsNil(o.Promoted) {
@@ -190,6 +234,9 @@ func (o LoginSource) ToMap() (map[string]interface{}, error) {
 	if o.IconUrl.IsSet() {
 		toSerialize["icon_url"] = o.IconUrl.Get()
 	}
+	if o.IconThemedUrls.IsSet() {
+		toSerialize["icon_themed_urls"] = o.IconThemedUrls.Get()
+	}
 	if !IsNil(o.Promoted) {
 		toSerialize["promoted"] = o.Promoted
 	}
@@ -240,6 +287,7 @@ func (o *LoginSource) UnmarshalJSON(data []byte) (err error) {
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "name")
 		delete(additionalProperties, "icon_url")
+		delete(additionalProperties, "icon_themed_urls")
 		delete(additionalProperties, "promoted")
 		delete(additionalProperties, "challenge")
 		o.AdditionalProperties = additionalProperties

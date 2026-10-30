@@ -171,7 +171,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/scim.png")
+        return static("authentik/sources/scim/light.svg")
 
     @property
     def sync_actor(self) -> Actor:
