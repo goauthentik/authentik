@@ -22,10 +22,8 @@ INITIAL_WORKER_ID = 1000
 def crashed_threads(worker: Worker) -> list[str]:
     """Worker and consumer threads that exited without being stopped.
 
-    TimeLimitExceeded is raised asynchronously, so it can also land after the task, for
-    example in the after_process_message hooks of a failed task, in the ack, or between two
-    tasks. dramatiq only catches `Exception` there, so the thread ends, and dramatiq never
-    starts a replacement.
+    dramatiq only catches `Exception` in them, so a time limit that hits outside a task ends
+    the thread, and nothing starts a replacement.
     """
     return [
         thread.name
