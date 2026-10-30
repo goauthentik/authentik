@@ -65,3 +65,7 @@ class TestPassthroughBackend(TestCase):
         """Test file_url returns HTTP URL as-is"""
         url = "http://cdn.example.com/logo.svg"
         self.assertEqual(self.backend.file_url(url), url)
+
+    def test_read_file(self):
+        """Test read_file returns None since external files aren't stored"""
+        self.assertIsNone(self.backend.read_file("https://cdn.example.com/logo.png"))

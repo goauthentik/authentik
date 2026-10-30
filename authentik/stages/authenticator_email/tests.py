@@ -1,6 +1,7 @@
 """Test Email Authenticator API"""
 
 from datetime import timedelta
+from pathlib import Path
 from unittest.mock import PropertyMock, patch
 
 from django.core import mail
@@ -13,6 +14,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
+from authentik.brands.models import Brand
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import APIFlowTestCase
@@ -201,6 +203,26 @@ class TestAuthenticatorEmailStage(APIFlowTestCase):
 
         device = self.get_flow_plan().context[PLAN_CONTEXT_EMAIL_DEVICE]
         self.assertEqual(device.email, self.user.email)
+
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_brand_logo(self):
+        """Test the logo of the request's brand is embedded"""
+        Brand.objects.create(
+            domain="testserver", branding_logo="/static/authentik/sources/ldap.png"
+        )
+        self.device.delete()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].attachments[0].get_payload(decode=True),
+            Path("web/authentik/sources/ldap.png").read_bytes(),
+        )
 
     def test_email_template(self):
         """Test email template rendering"""

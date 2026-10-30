@@ -1,5 +1,6 @@
 """email tests"""
 
+from pathlib import Path
 from smtplib import SMTPException
 from unittest.mock import MagicMock, PropertyMock, patch
 
@@ -7,6 +8,7 @@ from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.urls import reverse
 
+from authentik.brands.models import Brand
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
@@ -176,3 +178,27 @@ class TestEmailStageSending(APIFlowTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertGreaterEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "authentik")
+
+    def test_brand_logo(self):
+        """Test the logo of the request's brand is embedded"""
+        Brand.objects.create(
+            domain="testserver", branding_logo="/static/authentik/sources/ldap.png"
+        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].attachments[0].get_payload(decode=True),
+            Path("web/authentik/sources/ldap.png").read_bytes(),
+        )

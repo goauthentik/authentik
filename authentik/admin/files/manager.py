@@ -92,6 +92,18 @@ class FileManager:
         LOGGER.warning(f"Could not find file backend for file: {name}")
         return ""
 
+    def read_file(self, name: str) -> bytes | None:
+        """
+        Read file content.
+
+        Returns None if authentik doesn't store the file (for example an external URL).
+        Raises FileNotFoundError if the file does not exist.
+        """
+        for backend in self.backends:
+            if backend.supports_file(name):
+                return backend.read_file(name)
+        raise FileNotFoundError(name)
+
     def themed_urls(
         self,
         name: str | None,

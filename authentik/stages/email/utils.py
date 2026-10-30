@@ -1,8 +1,8 @@
 """email utils"""
 
 from email.mime.image import MIMEImage
-from functools import lru_cache
-from pathlib import Path
+from mimetypes import guess_extension
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
@@ -10,20 +10,55 @@ from django.core.mail.message import sanitize_address
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils import translation
+from structlog.stdlib import get_logger
+
+from authentik.admin.files.backends.base import get_content_type, has_theme_variable
+from authentik.admin.files.backends.static import StaticBackend
+from authentik.admin.files.manager import get_file_manager
+from authentik.admin.files.usage import FileUsage
+
+if TYPE_CHECKING:
+    from authentik.brands.models import Brand
+
+LOGGER = get_logger()
+DEFAULT_LOGO = "/static/dist/assets/icons/icon_left_brand.png"
+# Many mail clients don't render SVG, so only embed formats they all render
+LOGO_CONTENT_TYPES = ["image/png", "image/jpeg", "image/gif"]
 
 
-@lru_cache
-def logo_data() -> MIMEImage:
-    """Get logo as MIME Image for emails"""
-    path = Path("web/dist/assets/icons/icon_left_brand.png")
-    # When running tests, assets might not exist, so fallback to a different icon
-    if settings.TEST:
-        path = Path("web/authentik/sources/saml.png")
-    with open(path, "rb") as _logo_file:
-        logo = MIMEImage(_logo_file.read())
-    logo.add_header("Content-ID", "<logo>")
-    logo.add_header("Content-Disposition", "inline", filename="logo.png")
-    return logo
+def _brand_logo(brand: Brand) -> tuple[bytes, str] | None:
+    """Read the brand's logo if it can be embedded in emails"""
+    name = brand.branding_logo
+    content_type = get_content_type(name)
+    # A themed logo has no single file to embed
+    if content_type not in LOGO_CONTENT_TYPES or has_theme_variable(name):
+        return None
+    try:
+        content = get_file_manager(FileUsage.MEDIA).read_file(name)
+    except Exception as exc:  # noqa: BLE001 - a missing logo or storage outage must not stop emails
+        LOGGER.warning("Failed to read brand logo, using default logo in email", logo=name, exc=exc)
+        return None
+    if content is None:
+        return None
+    return content, content_type
+
+
+def logo_data(brand: Brand) -> MIMEImage:
+    """Get the brand's logo as MIME Image for emails, falling back to authentik's logo"""
+    logo = _brand_logo(brand)
+    if logo is None:
+        default_logo = DEFAULT_LOGO
+        # When running tests, assets might not exist, so fallback to a different icon
+        if settings.TEST:
+            default_logo = "/static/authentik/sources/saml.png"
+        logo = StaticBackend(FileUsage.MEDIA).read_file(default_logo), "image/png"
+    content, content_type = logo
+    image = MIMEImage(content, _subtype=content_type.removeprefix("image/"))
+    image.add_header("Content-ID", "<logo>")
+    image.add_header(
+        "Content-Disposition", "inline", filename=f"logo{guess_extension(content_type)}"
+    )
+    return image
 
 
 def _sanitize_recipients(recipients: list[tuple[str, str]]) -> list[str]:

@@ -129,7 +129,7 @@ class EmailStageView(ChallengeStageView):
                     "token": token.key,
                 },
             )
-            send_mails(current_stage, message)
+            send_mails(current_stage, message, brand=self.request.brand)
         except TemplateSyntaxError as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,

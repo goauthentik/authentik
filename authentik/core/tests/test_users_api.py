@@ -2,6 +2,8 @@
 
 from datetime import datetime, timedelta
 from json import loads
+from pathlib import Path
+from unittest.mock import PropertyMock, patch
 
 from django.conf import settings
 from django.contrib.auth.hashers import (
@@ -9,6 +11,8 @@ from django.contrib.auth.hashers import (
     check_password,
     make_password,
 )
+from django.core import mail
+from django.core.mail.backends.locmem import EmailBackend
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.urls.base import reverse
@@ -462,6 +466,36 @@ class TestUsersAPI(APITestCase):
             data={"email_stage": stage.pk},
         )
         self.assertEqual(response.status_code, 204)
+
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_recovery_email_brand_logo(self):
+        """Test user recovery email embeds the logo of the request's brand"""
+        self.user.email = "foo@bar.baz"
+        self.user.save()
+        Brand.objects.create(
+            domain="testserver",
+            flow_recovery=create_test_flow(FlowDesignation.RECOVERY),
+            branding_logo="/static/authentik/sources/ldap.png",
+        )
+        stage = EmailStage.objects.create(name=generate_id())
+
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse(
+                "authentik_api:user-recovery-email",
+                kwargs={"pk": self.user.pk},
+            ),
+            data={"email_stage": stage.pk},
+        )
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].attachments[0].get_payload(decode=True),
+            Path("web/authentik/sources/ldap.png").read_bytes(),
+        )
 
     def test_service_account(self):
         """Service account creation"""
