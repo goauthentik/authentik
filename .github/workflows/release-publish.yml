@@ -198,7 +198,6 @@ jobs:
       - name: Upload template
         run: |
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
-          aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
   test-release:
     needs:
       - build-server
