@@ -6,7 +6,6 @@ from structlog.stdlib import get_logger
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group, PropertyMapping, Source, User
 from authentik.events.models import Event, EventAction
-from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.policies.utils import delete_none_values
 
@@ -90,6 +89,6 @@ class SourceMapper:
                 )
                 raise exc
 
-            MERGE_LIST_UNIQUE.merge(properties, value)
+            mapping.merge_into(properties, value)
 
         return delete_none_values(properties)

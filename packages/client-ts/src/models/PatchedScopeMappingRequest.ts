@@ -10,6 +10,9 @@
  * Do not edit the class manually.
  */
 
+import type { ListMergeModeEnum } from "./ListMergeModeEnum.js";
+import { ListMergeModeEnumFromJSON, ListMergeModeEnumToJSON } from "./ListMergeModeEnum.js";
+
 /**
  * ScopeMapping Serializer
  *
@@ -25,6 +28,7 @@ export interface PatchedScopeMappingRequest {
     managed?: string | null;
     name?: string;
     expression?: string;
+    listMergeMode?: ListMergeModeEnum;
     /**
      * Scope name requested by the client
      */
@@ -64,6 +68,10 @@ export function PatchedScopeMappingRequestFromJSONTyped(
                   : json["managed"],
         name: json["name"] == null ? undefined : json["name"],
         expression: json["expression"] == null ? undefined : json["expression"],
+        listMergeMode:
+            json["list_merge_mode"] == null
+                ? undefined
+                : ListMergeModeEnumFromJSON(json["list_merge_mode"]),
         scopeName: json["scope_name"] == null ? undefined : json["scope_name"],
         description: json["description"] == null ? undefined : json["description"],
     };
@@ -85,6 +93,7 @@ export function PatchedScopeMappingRequestToJSONTyped(
         managed: value["managed"],
         name: value["name"],
         expression: value["expression"],
+        list_merge_mode: ListMergeModeEnumToJSON(value["listMergeMode"]),
         scope_name: value["scopeName"],
         description: value["description"],
     };

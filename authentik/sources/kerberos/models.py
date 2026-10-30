@@ -20,6 +20,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import (
     GroupSourceConnection,
+    MergedSourcePropertyMapping,
     PropertyMapping,
     UserSourceConnection,
     UserTypes,
@@ -372,7 +373,7 @@ class Krb5ConfContext:
             del os.environ["KRB5_CONFIG"]
 
 
-class KerberosSourcePropertyMapping(PropertyMapping):
+class KerberosSourcePropertyMapping(MergedSourcePropertyMapping, PropertyMapping):
     """Map Kerberos Property to User object attribute"""
 
     expression_allowed_types = [dict]

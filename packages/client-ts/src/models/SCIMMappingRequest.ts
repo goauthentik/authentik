@@ -10,6 +10,9 @@
  * Do not edit the class manually.
  */
 
+import type { ListMergeModeEnum } from "./ListMergeModeEnum.js";
+import { ListMergeModeEnumFromJSON, ListMergeModeEnumToJSON } from "./ListMergeModeEnum.js";
+
 /**
  * SCIMMapping Serializer
  *
@@ -25,6 +28,7 @@ export interface SCIMMappingRequest {
     managed?: string | null;
     name: string;
     expression: string;
+    listMergeMode?: ListMergeModeEnum;
 }
 
 /**
@@ -56,6 +60,10 @@ export function SCIMMappingRequestFromJSONTyped(
                   : json["managed"],
         name: json["name"],
         expression: json["expression"],
+        listMergeMode:
+            json["list_merge_mode"] == null
+                ? undefined
+                : ListMergeModeEnumFromJSON(json["list_merge_mode"]),
     };
 }
 
@@ -75,5 +83,6 @@ export function SCIMMappingRequestToJSONTyped(
         managed: value["managed"],
         name: value["name"],
         expression: value["expression"],
+        list_merge_mode: ListMergeModeEnumToJSON(value["listMergeMode"]),
     };
 }

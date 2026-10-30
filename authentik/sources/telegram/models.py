@@ -12,6 +12,7 @@ from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik.core.models import (
     GroupSourceConnection,
+    MergedSourcePropertyMapping,
     PropertyMapping,
     Source,
     UserSourceConnection,
@@ -112,7 +113,7 @@ class TelegramSource(Source):
         verbose_name_plural = _("Telegram Sources")
 
 
-class TelegramSourcePropertyMapping(PropertyMapping):
+class TelegramSourcePropertyMapping(MergedSourcePropertyMapping, PropertyMapping):
     """Map Telegram properties to User or Group object attributes"""
 
     expression_allowed_types = [dict]

@@ -56,7 +56,8 @@ return {
 A user or group object is constructed as follows:
 
 1.  The source provides initial properties based on commonly used data.
-2.  Each property mapping associated with the source is run and results are merged into the previous properties.
+2.  Each property mapping associated with the source is run, sorted by name, and results are merged into the previous properties.
+    - Each mapping's **List merging** setting decides how a list it returns is combined with the list under the same key in the previous properties. **Append unique items**, the default for source property mappings, adds only items that are not already in the list. **Append** adds every item, and **Replace** discards the previous list. :ak-version[2026.11]
     - If a property mapping throws an error, the process is aborted. If that happens inside a synchronization process, the object is skipped. If it happens during an enrollment or authentication flow, the flow is canceled.
     - If a property mapping sets one attribute to `None`, that attribute is then discarded.
 3.  If the `username` field is not set for user objects, or the `name` field is not set for group objects, the process is aborted.
@@ -125,9 +126,7 @@ return {"groups": groups}
 
 Pick a stable, unique identifier from each object, because authentik uses it to recognize the group on later logins.
 
-The identifiers the mapping returns are merged into the `groups` the source already collected, not substituted for them, so the original objects are still in the list. authentik skips those and records a **Configuration error** event counting how many it dropped. The identifiers you extracted still synchronize.
-
-To get rid of the event, the `groups` claim itself has to contain only identifiers. Either change what the provider sends, or have it emit a separate identifier-only claim and map that claim to `groups`.
+Set the mapping's **List merging** setting to **Replace**. Otherwise, the identifiers the mapping returns are added to the `groups` the source already collected, so the original objects stay in the list. authentik skips those and records a **Configuration error** event counting how many it dropped, while the identifiers you extracted still synchronize.
 
 To use the provider's group name instead of the identifier, add a second OAuth source property mapping under the source's **Group property mappings**. It receives `group_id` along with the original `info` data:
 

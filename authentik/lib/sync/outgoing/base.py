@@ -16,7 +16,6 @@ from authentik.core.expression.exceptions import (
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import advisory_lock_db_alias
 from authentik.lib.expression.exceptions import ControlFlowException
-from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
@@ -141,8 +140,8 @@ class BaseOutgoingSyncClient[
                 obj._meta.model_name: obj,
             }
             eval_kwargs.setdefault("user", None)
-            for value in self.mapper.iter_eval(**eval_kwargs):
-                MERGE_LIST_UNIQUE.merge(raw_final_object, value)
+            for value, mapping in self.mapper.iter_eval(return_mapping=True, **eval_kwargs):
+                mapping.merge_into(raw_final_object, value)
         except ControlFlowException as exc:
             raise exc from exc
         except PropertyMappingExpressionException as exc:

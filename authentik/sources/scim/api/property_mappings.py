@@ -12,7 +12,7 @@ class SCIMSourcePropertyMappingSerializer(PropertyMappingSerializer):
 
     class Meta:
         model = SCIMSourcePropertyMapping
-        fields = PropertyMappingSerializer.Meta.fields
+        fields = PropertyMappingSerializer.Meta.fields + ["list_merge_mode"]
 
 
 class SCIMSourcePropertyMappingFilter(PropertyMappingFilterSet):

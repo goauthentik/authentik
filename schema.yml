@@ -14562,6 +14562,10 @@ paths:
         schema:
           type: string
       - in: query
+        name: list_merge_mode
+        schema:
+          $ref: '#/components/schemas/ListMergeModeEnum'
+      - in: query
         name: managed
         schema:
           type: array
@@ -14768,6 +14772,10 @@ paths:
         name: expression
         schema:
           type: string
+      - in: query
+        name: list_merge_mode
+        schema:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       - in: query
         name: managed
         schema:
@@ -41983,6 +41991,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - component
       - expression
@@ -42010,6 +42020,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - expression
       - name
@@ -43420,6 +43432,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - component
       - expression
@@ -43447,6 +43461,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - expression
       - name
@@ -44159,6 +44175,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - component
       - expression
@@ -44186,6 +44204,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - expression
       - name
@@ -44783,6 +44803,12 @@ components:
           type: string
       required:
       - link
+    ListMergeModeEnum:
+      enum:
+      - append
+      - append_unique
+      - replace
+      type: string
     LogEvent:
       type: object
       description: Single log message with all context logged.
@@ -45083,6 +45109,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - component
       - expression
@@ -45110,6 +45138,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - expression
       - name
@@ -46471,6 +46501,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - component
       - expression
@@ -46498,6 +46530,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - expression
       - name
@@ -51065,6 +51099,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
     PatchedGoogleWorkspaceProviderRequest:
       type: object
       description: GoogleWorkspaceProvider Serializer
@@ -51372,6 +51408,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
     PatchedKerberosSourceRequest:
       type: object
       description: Kerberos Source Serializer
@@ -51583,6 +51621,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -51799,6 +51839,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
     PatchedMicrosoftEntraProviderRequest:
       type: object
       description: MicrosoftEntraProvider Serializer
@@ -52141,6 +52183,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
     PatchedOAuthSourceRequest:
       type: object
       description: OAuth Source Serializer
@@ -52439,6 +52483,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
     PatchedPlexSourceRequest:
       type: object
       description: Plex Source Serializer
@@ -53131,6 +53177,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
     PatchedSAMLSourceRequest:
       type: object
       description: SAMLSource Serializer
@@ -53275,6 +53323,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
     PatchedSCIMProviderRequest:
       type: object
       description: SCIMProvider Serializer
@@ -53394,6 +53444,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
     PatchedSCIMSourceRequest:
       type: object
       description: SCIMSource Serializer
@@ -53502,6 +53554,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
         scope_name:
           type: string
           minLength: 1
@@ -53655,6 +53709,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
     PatchedTelegramSourceRequest:
       type: object
       description: Source Serializer
@@ -54319,6 +54375,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - component
       - expression
@@ -54346,6 +54404,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - expression
       - name
@@ -57490,6 +57550,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - component
       - expression
@@ -57517,6 +57579,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - expression
       - name
@@ -57694,6 +57758,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - component
       - expression
@@ -57721,6 +57787,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - expression
       - name
@@ -58189,6 +58257,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - component
       - expression
@@ -58216,6 +58286,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - expression
       - name
@@ -58577,6 +58649,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
         scope_name:
           type: string
           description: Scope name requested by the client
@@ -58612,6 +58686,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
         scope_name:
           type: string
           minLength: 1
@@ -59875,6 +59951,8 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - component
       - expression
@@ -59902,6 +59980,8 @@ components:
         expression:
           type: string
           minLength: 1
+        list_merge_mode:
+          $ref: '#/components/schemas/ListMergeModeEnum'
       required:
       - expression
       - name

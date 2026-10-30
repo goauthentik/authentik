@@ -9,7 +9,7 @@ from requests_mock import Mocker
 
 from authentik.admin.models import SystemSettings
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application, Group, User, UserTypes
+from authentik.core.models import Application, Group, ListMergeMode, User, UserTypes
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
@@ -362,22 +362,31 @@ class SCIMUserTests(TestCase):
             },
         )
 
-    def test_user_schema_merge_lists(self):
-        """Test that list values returned by several mappings are not duplicated"""
-        for extension in ["slack:profile", "enterprise"]:
-            self.provider.property_mappings.add(
-                SCIMMapping.objects.create(
-                    name=generate_id(),
-                    expression=f"""return {{
-                        "schemas": [
-                            "urn:ietf:params:scim:schemas:core:2.0:User",
-                            "urn:ietf:params:scim:schemas:extension:{extension}:2.0:User",
-                        ],
-                    }}""",
-                )
+    def test_user_schema_list_merge_mode(self):
+        """Test that the mappings' list merge mode decides how lists returned by
+        several mappings are merged"""
+        mappings = [
+            SCIMMapping.objects.create(
+                name=generate_id(),
+                expression=f"""return {{
+                    "schemas": [
+                        "urn:ietf:params:scim:schemas:core:2.0:User",
+                        "urn:ietf:params:scim:schemas:extension:{extension}:2.0:User",
+                    ],
+                }}""",
             )
+            for extension in ["slack:profile", "enterprise"]
+        ]
+        self.provider.property_mappings.add(*mappings)
         uid = generate_id()
         user = User(username=uid, name=uid, email=f"{uid}@goauthentik.io")
+
+        scim_user = SCIMUserClient(self.provider).to_schema(user, None)
+        self.assertEqual(scim_user.schemas.count("urn:ietf:params:scim:schemas:core:2.0:User"), 2)
+
+        SCIMMapping.objects.filter(pk__in=[mapping.pk for mapping in mappings]).update(
+            list_merge_mode=ListMergeMode.APPEND_UNIQUE
+        )
         scim_user = SCIMUserClient(self.provider).to_schema(user, None)
         self.assertCountEqual(
             scim_user.schemas,

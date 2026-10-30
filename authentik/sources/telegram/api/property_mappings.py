@@ -12,6 +12,7 @@ class TelegramSourcePropertyMappingSerializer(PropertyMappingSerializer):
 
     class Meta(PropertyMappingSerializer.Meta):
         model = TelegramSourcePropertyMapping
+        fields = PropertyMappingSerializer.Meta.fields + ["list_merge_mode"]
 
 
 class TelegramSourcePropertyMappingFilter(PropertyMappingFilterSet):

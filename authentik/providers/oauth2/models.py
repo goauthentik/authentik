@@ -49,6 +49,7 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import (
     AuthenticatedSession,
+    MergedPropertyMapping,
     PropertyMapping,
     Provider,
     User,
@@ -187,7 +188,7 @@ class JWTAlgorithms(models.TextChoices):
         raise ValueError(f"Invalid private key type: {type(private_key)}")
 
 
-class ScopeMapping(PropertyMapping):
+class ScopeMapping(MergedPropertyMapping, PropertyMapping):
     """Map an OAuth Scope to users properties"""
 
     expression_allowed_types = [dict]
