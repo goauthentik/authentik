@@ -130,7 +130,9 @@ authentik supports the following general OAuth 2.0 and OpenID Connect flows:
 
 The [refresh token](#refresh-token-grant) grant allows a client to obtain new access tokens without repeating the original authorization flow.
 
-You can define which grant types are available for your OAuth2 provider when you [create and configure the provider](./create-oauth2-provider.mdx). By default, all types are selected.
+You can define which grant types are available for your OAuth2 provider when you [create and configure the provider](./create-oauth2-provider.mdx). The Admin interface selects every type except token exchange by default. A provider created through the API, a blueprint, or Terraform without `grant_types` gets `authorization_code` and `refresh_token`. A provider must have at least one grant type.
+
+If a client uses a grant type that isn't enabled for the provider, authentik returns an `unauthorized_client` error. When a logged-in user hits this at the authorization endpoint, authentik also writes a `configuration_error` event.
 
 ### 1. Web-based application authorization
 

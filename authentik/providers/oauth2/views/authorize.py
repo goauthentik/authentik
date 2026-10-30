@@ -235,11 +235,12 @@ class OAuthAuthorizationParams:
             LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
             raise AuthorizeError(
                 redirect_uri=self.redirect_uri,
-                error="invalid_request",
+                error="unauthorized_client",
                 grant_type=self.grant_type,
                 state=self.state,
                 response_mode=self.response_mode,
-            )
+                description=f"The {self.grant_type} grant type is not enabled for this provider",
+            ).with_cause("grant_type_not_configured")
 
         self.set_default_response_mode()
 
@@ -448,6 +449,13 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri, cause=error.cause)
+            # Only for logged-in users, so anonymous requests can't flood admins with
+            # configuration_error notifications
+            if error.cause == "grant_type_not_configured" and self.request.user.is_authenticated:
+                provider = OAuth2Provider.objects.filter(
+                    client_id=self.request.GET.get("client_id")
+                ).first()
+                error.to_event(provider=provider).from_http(self.request)
             raise RequestValidationError(error.get_response(self.request)) from None
         except OAuth2Error as error:
             LOGGER.warning(error.description, cause=error.cause)

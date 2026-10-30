@@ -86,6 +86,10 @@ export interface OAuth2Provider {
      * Public clients are incapable
      */
     clientType?: ClientTypeEnum;
+    /**
+     * Grant types the client may use. Defaults to authorization_code and refresh_token when omitted
+     * on create.
+     */
     grantTypes?: Array<GrantTypeEnum>;
     clientId?: string;
     clientSecret?: string;
