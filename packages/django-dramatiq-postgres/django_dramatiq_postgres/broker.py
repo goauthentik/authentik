@@ -77,26 +77,13 @@ def raise_broker_connection_error(func: Callable[P, R]) -> Callable[P, R]:  # no
 
 
 def discard_interrupted_transactions() -> None:
-    """Replace the current thread's database connections that a task left in a transaction.
+    """Close connections that an interrupted task left in a transaction.
 
-    TimeLimitExceeded is raised asynchronously, so it can land in `Atomic.__enter__` after
-    the connection is marked as inside an atomic block, between the end of a
-    `with transaction.atomic()` body and its `__exit__`, or in `Atomic.__exit__` before the
-    mark is cleared or autocommit is turned back on. Nothing leaves that transaction
-    afterwards:
-
-    - Django never resets a connection it thinks is in an atomic block. `close()` only
-      marks it as closed in the transaction and keeps the closed connection, so every later
-      query on this thread fails with "the connection is closed", including the ack or nack
-      that dramatiq retries forever.
-    - With autocommit left off, later writes on this thread are never committed and are
-      rolled back when the connection is closed.
-
-    Between two messages, a worker or consumer thread is never legitimately in a
-    transaction, so close such a connection and drop the wrapper. The next query opens a
-    fresh connection. Tests process messages inside the test's own transaction, so this
-    does nothing there.
+    A time limit can hit inside `transaction.atomic()` before Django leaves the atomic block
+    or turns autocommit back on. Django never resets such a connection, so every later query
+    on the thread fails or is never committed, including the ack.
     """
+    # Tests process messages inside the test's own transaction
     if Conf().test:
         return
     for conn in connections.all(initialized_only=True):
@@ -154,9 +141,7 @@ class PostgresBroker(Broker):
         return cast(DatabaseWrapper, connections[self.db_alias])
 
     def emit_after(self, signal: str, *args: Any, **kwargs: Any) -> None:
-        # Clean up before any after_process_message hook runs, otherwise their writes
-        # (task logs, events, the retry of the message) would go into the interrupted
-        # transaction and be lost with it.
+        # Before the after_process_message hooks write task logs, events and retries
         if signal == "process_message":
             discard_interrupted_transactions()
         super().emit_after(signal, *args, **kwargs)
@@ -621,9 +606,7 @@ class _PostgresConsumer(Consumer):
 
     def _post_process_message(self, message: MessageProxy, state: TaskState) -> None:
         self.logger.debug("Post-processing message", message=message.message_id, state=state)
-        # dramatiq retries the ack or nack until it succeeds. An after_process_message hook
-        # can still leave a transaction behind after the check in PostgresBroker.emit_after,
-        # so check again here, or the retries would never get past it.
+        # A hook can leave a transaction too, and dramatiq retries the ack until it succeeds
         discard_interrupted_transactions()
         task = message.options.pop("task", None)
         try:
