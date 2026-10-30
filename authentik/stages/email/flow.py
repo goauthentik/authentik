@@ -6,7 +6,11 @@ from django.utils.translation import gettext as _
 
 from authentik.flows.models import FlowToken, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, FlowPlan
-from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_HEADER, ConsentStageView
+from authentik.stages.consent.stage import (
+    PLAN_CONTEXT_CONSENT_HEADER,
+    PLAN_CONTEXT_CONSENT_TOKEN,
+    ConsentStageView,
+)
 
 
 def pickle_flow_token_for_email(plan: FlowPlan):
@@ -31,6 +35,19 @@ class EmailTokenRevocationConsentStageView(ConsentStageView):
                 _("Link was already used, please request a new link.")
             )
         return super().get(request, *args, **kwargs)
+
+    def challenge_invalid(self, response):
+        # No consent token in the plan means the plan was just restored from the link's
+        # flow token, so this request lost the session that rendered the prompt (e.g. the
+        # session cookie was blocked). Re-showing the prompt would loop, since every submit
+        # restores the plan again without the token.
+        if "token" in response.errors and (
+            PLAN_CONTEXT_CONSENT_TOKEN not in self.executor.plan.context
+        ):
+            return self.executor.stage_invalid(
+                _("Session for this link was lost, please open the link again.")
+            )
+        return super().challenge_invalid(response)
 
     def challenge_valid(self, response):
         token: FlowToken = self.executor.plan.context[PLAN_CONTEXT_IS_RESTORED]
