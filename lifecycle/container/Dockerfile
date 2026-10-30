@@ -1,5 +1,10 @@
 # syntax=docker/dockerfile:1
 
+# CI pins this to a digest whose provenance attestation it verified.
+ARG GEOIP_IMAGE=ghcr.io/goauthentik/geoip:latest
+
+FROM ${GEOIP_IMAGE} AS geoip
+
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
 FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.9.1@sha256:77123fd40a39db0eb8be6bddfcf0cea15e000122b9221ccce2e4415be29050f2 AS pnpm
@@ -269,7 +274,7 @@ RUN ln -s /ak-root/packages /packages && \
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/
-COPY --from=geoip:latest /geoip /geoip
+COPY --from=geoip /geoip /geoip
 
 # Stage: distroless root filesystem
 # prune.sh copies the files the distroless image needs into /out
