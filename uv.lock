@@ -2368,21 +2368,22 @@ wheels = [
 
 [[package]]
 name = "microsoft-kiota-abstractions"
-version = "1.12.0"
+version = "1.16.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "opentelemetry-api" },
     { name = "opentelemetry-sdk" },
     { name = "std-uritemplate" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6d/90/387b442587501d8912570def5988e2ae752a04a7282eb500b38e063eeb2c/microsoft_kiota_abstractions-1.12.0.tar.gz", hash = "sha256:1e459414432b367ccb693ed45be94c2f4bad202280cde3a903acc44744b4abbe", size = 25477, upload-time = "2026-08-27T13:26:19.786Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/48/d42b4a23cb2d40f9591bdc5a99096f0148fb0144249c9bc2bba78d371901/microsoft_kiota_abstractions-1.16.0.tar.gz", hash = "sha256:284bf16ce9be5008709fcf96fb4234bd4231811337c2809afcb1352979bee1b0", size = 26591, upload-time = "2026-10-26T14:27:14.989Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d2/b5/e2a91a7c83f3c56389d9e600f068b8bcda1b77547568eddbac505b2dee62/microsoft_kiota_abstractions-1.12.0-py3-none-any.whl", hash = "sha256:a69b03cb0a062c51ac2ae3969a2691db134cd0ae260a3096242e4f0140b6674c", size = 44578, upload-time = "2026-08-27T13:26:27.812Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/dd/d2757f626350183c4140e7ae4d199a6ef6bbb751200844dbcc5b4532c978/microsoft_kiota_abstractions-1.16.0-py3-none-any.whl", hash = "sha256:1117d434f4840f74e7b735ba34c569325a4faa0e088cdfd0a3b972fa5c60703e", size = 45850, upload-time = "2026-10-26T14:27:25.616Z" },
 ]
 
 [[package]]
 name = "microsoft-kiota-authentication-azure"
-version = "1.12.0"
+version = "1.16.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -2391,14 +2392,14 @@ dependencies = [
     { name = "opentelemetry-api" },
     { name = "opentelemetry-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/13/ee/454ac0fd434566355b13cc8ce340ca4081b4dc73a9bbe1d097ba3640b8de/microsoft_kiota_authentication_azure-1.12.0.tar.gz", hash = "sha256:ae16cd257539b0c9d95e3559ba2db61b984a28ef0341f9173d414086e4eca217", size = 5277, upload-time = "2026-08-27T13:26:20.802Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9a/b0/cd322067e9a8b17c20dbfd0a65fba1e1986ea4d340e16c85520fb8afbb52/microsoft_kiota_authentication_azure-1.16.0.tar.gz", hash = "sha256:e7a1aeb8d1e8820c3a624e277a6587dc7078cd06c5c6af9d0e67f7f63fbe645a", size = 5489, upload-time = "2026-10-26T14:27:16.416Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/b6/95e3c86e7e63ae0270c7b6ff765e31246bfeeec3184947bdfc35e03a6436/microsoft_kiota_authentication_azure-1.12.0-py3-none-any.whl", hash = "sha256:b40a244ed7f35a63d049a5472ba259ab2b18e616bc1afafdc7bdfb7ae0587694", size = 7246, upload-time = "2026-08-27T13:26:28.814Z" },
+    { url = "https://files.pythonhosted.org/packages/09/ee/2aceb887c5b7c8873cbb8ce483b361c0cf4b8a7bf26cab2770120a2efb38/microsoft_kiota_authentication_azure-1.16.0-py3-none-any.whl", hash = "sha256:52ed4f507a2d028a88d685f14099dec68228ee8919e697d5a514419c3b479f76", size = 7486, upload-time = "2026-10-26T14:27:26.843Z" },
 ]
 
 [[package]]
 name = "microsoft-kiota-http"
-version = "1.12.0"
+version = "1.16.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx", extra = ["http2"] },
@@ -2406,9 +2407,9 @@ dependencies = [
     { name = "opentelemetry-api" },
     { name = "opentelemetry-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/68/7e/d2f9ce3b7033481d3a634c2834a81c18917a94483eb99924090e6709420f/microsoft_kiota_http-1.12.0.tar.gz", hash = "sha256:f2b97d0b773cc093842114a6ccaea3cc21c03bdc6877a02e7af11d97c0f9a37c", size = 22417, upload-time = "2026-08-27T13:26:23.121Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/3c/5d326276b590c6c4367701cb021b2f984acba4e94b49cda43b4d3a746756/microsoft_kiota_http-1.16.0.tar.gz", hash = "sha256:5bd5fe7f83428edd61e0d28f90bc95af145b1004fdc33e082422f4bd38d60fde", size = 25554, upload-time = "2026-10-26T14:27:18.83Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/f5/df817794ebaef428ab961c82aa3bdd7212f0a4b52288b2e2442d7a4633f2/microsoft_kiota_http-1.12.0-py3-none-any.whl", hash = "sha256:a1ec9e6c6b1ec6d3afce309f3353c91c1e3c8c4614c84c7f5199f1179fa13858", size = 31999, upload-time = "2026-08-27T13:26:30.435Z" },
+    { url = "https://files.pythonhosted.org/packages/2f/dc/e2853f186a35df32d4a10f11c8ef84a85df7500dbad65cbd740ee591f0cc/microsoft_kiota_http-1.16.0-py3-none-any.whl", hash = "sha256:ee51cc37c86650dda5b8a4478914dc7dc99d0bb9c0d4d1c5363716fe557d58e0", size = 37147, upload-time = "2026-10-26T14:27:29.167Z" },
 ]
 
 [[package]]
@@ -2518,7 +2519,7 @@ wheels = [
 
 [[package]]
 name = "msgraph-core"
-version = "1.5.1"
+version = "1.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx", extra = ["http2"] },
@@ -2526,9 +2527,9 @@ dependencies = [
     { name = "microsoft-kiota-authentication-azure" },
     { name = "microsoft-kiota-http" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ec/99/702da0cb467040e754ad5342a7ee6e799aacf8d0f4161dd25ad3b1e7be76/msgraph_core-1.5.1.tar.gz", hash = "sha256:1eecc9089ead63ab9cfca4cfb0751fc664088d6a53fc9ee1fc0574eddfba030b", size = 25658, upload-time = "2026-07-13T23:41:23.128Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b6/bc/7519821548ddcc2b887dbd15f45a7859ca3d14d80e63ebb9c9feda4fafef/msgraph_core-1.5.2.tar.gz", hash = "sha256:8ce6a4ffa76d0b4801c2b20df872dd85d4d925b8eceb9809e08d21daba3762cf", size = 25791, upload-time = "2026-10-06T19:13:20.07Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b5/86/0acc90e555be33ff77d0ddad4d30f4f16706b44b6ac170beaebfae3aa1fc/msgraph_core-1.5.1-py3-none-any.whl", hash = "sha256:929758ca0ba5dc4231aff051d7dda93f4faba2dbf781e178ef86d36b4592ea12", size = 34575, upload-time = "2026-07-13T23:41:24.235Z" },
+    { url = "https://files.pythonhosted.org/packages/d1/30/2b06a10ae4ad9e36d4e8dc0867e45bc4c688f8fc6cb0cb0851dccb138597/msgraph_core-1.5.2-py3-none-any.whl", hash = "sha256:3293ad24edefd6439f4b1f1e3325f44af5a4a696f2176cf097cacb2a29d60acd", size = 34697, upload-time = "2026-10-06T19:13:21.324Z" },
 ]
 
 [[package]]
