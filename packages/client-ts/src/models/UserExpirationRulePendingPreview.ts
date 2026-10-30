@@ -13,8 +13,8 @@
 import { parseDateTime } from "../runtime.js";
 import type { OffboardingActionEnum } from "./OffboardingActionEnum.js";
 import { OffboardingActionEnumFromJSON } from "./OffboardingActionEnum.js";
-import type { PartialUser } from "./PartialUser.js";
-import { PartialUserFromJSON } from "./PartialUser.js";
+import type { UserExpirationRuleUser } from "./UserExpirationRuleUser.js";
+import { UserExpirationRuleUserFromJSON } from "./UserExpirationRuleUser.js";
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -24,7 +24,7 @@ import { PartialUserFromJSON } from "./PartialUser.js";
  */
 export interface UserExpirationRulePendingPreview {
     readonly id: string;
-    readonly user: PartialUser;
+    readonly user: UserExpirationRuleUser;
     readonly previousAction: OffboardingActionEnum;
     readonly action: OffboardingActionEnum | null;
     readonly previousScheduledAt: Date;
@@ -111,7 +111,7 @@ export function UserExpirationRulePendingPreviewFromJSONTyped(
     }
     return {
         id: json["id"],
-        user: PartialUserFromJSON(json["user"]),
+        user: UserExpirationRuleUserFromJSON(json["user"]),
         previousAction: OffboardingActionEnumFromJSON(json["previous_action"]),
         action: OffboardingActionEnumFromJSON(json["action"]),
         previousScheduledAt:

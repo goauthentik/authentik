@@ -5,15 +5,20 @@ from django.utils.translation import gettext as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import BooleanField, ChoiceField, DateTimeField, IntegerField, UUIDField
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    DateTimeField,
+    IntegerField,
+    UUIDField,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.enterprise.api import EnterpriseRequiredMixin
@@ -25,8 +30,19 @@ from authentik.rbac.decorators import permission_required
 PREVIEW_LIMIT = 20
 
 
+class UserExpirationRuleUserSerializer(PassiveSerializer):
+    pk = IntegerField(read_only=True)
+    username = CharField(read_only=True)
+    name = CharField(read_only=True)
+
+
+class UserExpirationRuleGroupSerializer(PassiveSerializer):
+    pk = UUIDField(read_only=True)
+    name = CharField(read_only=True)
+
+
 class UserExpirationRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
-    group_obj = PartialGroupSerializer(source="group", read_only=True)
+    group_obj = UserExpirationRuleGroupSerializer(source="group", read_only=True)
 
     class Meta:
         model = UserExpirationRule
@@ -81,7 +97,7 @@ class UserExpirationRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
 class UserExpirationRulePendingPreviewSerializer(PassiveSerializer):
     id = UUIDField(read_only=True)
-    user = PartialUserSerializer(read_only=True)
+    user = UserExpirationRuleUserSerializer(read_only=True)
     previous_action = ChoiceField(choices=OffboardingAction.choices, read_only=True)
     action = ChoiceField(choices=OffboardingAction.choices, allow_null=True, read_only=True)
     previous_scheduled_at = DateTimeField(read_only=True)
@@ -99,7 +115,7 @@ class UserExpirationRulePendingPreviewGroupSerializer(PassiveSerializer):
 
 class UserExpirationRulePreviewSerializer(PassiveSerializer):
     count = IntegerField(read_only=True)
-    users = PartialUserSerializer(many=True, read_only=True)
+    users = UserExpirationRuleUserSerializer(many=True, read_only=True)
     updated = UserExpirationRulePendingPreviewGroupSerializer(read_only=True)
     taken_over = UserExpirationRulePendingPreviewGroupSerializer(read_only=True)
     removed = UserExpirationRulePendingPreviewGroupSerializer(read_only=True)
@@ -170,7 +186,7 @@ class UserExpirationRuleViewSet(UsedByMixin, ModelViewSet):
         candidates = rule.candidates(withdrawn=withdrawn).order_by("username")
         data: dict[str, object] = {
             "count": candidates.count(),
-            "users": PartialUserSerializer(candidates[:PREVIEW_LIMIT], many=True).data,
+            "users": UserExpirationRuleUserSerializer(candidates[:PREVIEW_LIMIT], many=True).data,
         }
         data.update(
             {

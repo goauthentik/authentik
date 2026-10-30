@@ -60996,7 +60996,7 @@ components:
             Leave empty to apply to every user.
         group_obj:
           allOf:
-          - $ref: '#/components/schemas/PartialGroup'
+          - $ref: '#/components/schemas/UserExpirationRuleGroup'
           readOnly: true
         user_types:
           type: array
@@ -61035,6 +61035,20 @@ components:
       - group_obj
       - name
       - pbm_uuid
+    UserExpirationRuleGroup:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
     UserExpirationRulePendingPreview:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -61045,7 +61059,7 @@ components:
           readOnly: true
         user:
           allOf:
-          - $ref: '#/components/schemas/PartialUser'
+          - $ref: '#/components/schemas/UserExpirationRuleUser'
           readOnly: true
         previous_action:
           allOf:
@@ -61115,7 +61129,7 @@ components:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/PartialUser'
+            $ref: '#/components/schemas/UserExpirationRuleUser'
           readOnly: true
         updated:
           allOf:
@@ -61196,6 +61210,23 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
       required:
       - name
+    UserExpirationRuleUser:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - username
     UserFieldsEnum:
       enum:
       - email

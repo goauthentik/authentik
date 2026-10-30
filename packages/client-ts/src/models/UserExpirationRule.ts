@@ -17,10 +17,10 @@ import {
     OffboardingActionEnumFromJSON,
     OffboardingActionEnumToJSON,
 } from "./OffboardingActionEnum.js";
-import type { PartialGroup } from "./PartialGroup.js";
-import { PartialGroupFromJSON } from "./PartialGroup.js";
 import type { PolicyEngineMode } from "./PolicyEngineMode.js";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { UserExpirationRuleGroup } from "./UserExpirationRuleGroup.js";
+import { UserExpirationRuleGroupFromJSON } from "./UserExpirationRuleGroup.js";
 import type { UserTypeEnum } from "./UserTypeEnum.js";
 import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
@@ -45,7 +45,7 @@ export interface UserExpirationRule {
      * every user.
      */
     group?: string | null;
-    readonly groupObj: PartialGroup;
+    readonly groupObj: UserExpirationRuleGroup;
     /**
      * Only expire users of these types. Service accounts are excluded by default.
      */
@@ -118,7 +118,7 @@ export function UserExpirationRuleFromJSONTyped(
                 : ActivityBasisEnumFromJSON(json["activity_basis"]),
         group:
             json["group"] === undefined ? undefined : json["group"] === null ? null : json["group"],
-        groupObj: PartialGroupFromJSON(json["group_obj"]),
+        groupObj: UserExpirationRuleGroupFromJSON(json["group_obj"]),
         userTypes:
             json["user_types"] == null
                 ? undefined
