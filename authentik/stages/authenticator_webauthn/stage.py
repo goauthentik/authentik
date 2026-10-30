@@ -48,7 +48,7 @@ from authentik.stages.authenticator_webauthn.models import (
     WebAuthnDevice,
     WebAuthnDeviceType,
 )
-from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.authenticator_webauthn.utils import get_expected_origins, get_rp_id
 
 # TODO: Remove once py_webauthn adds ML-DSA to its default supported algorithms.
 # Offered in order of preference, so the post-quantum ML-DSA sets (FIPS 204) are only
@@ -92,13 +92,16 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
     def validate_response(self, response: dict) -> VerifiedRegistrationData:
         """Validate webauthn challenge response"""
         challenge = self.stage.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]
+        stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         try:
             registration: VerifiedRegistration = verify_registration_response(
                 credential=response,
                 expected_challenge=challenge,
                 expected_rp_id=get_rp_id(self.request),
-                expected_origin=get_origin(self.request),
+                expected_origin=get_expected_origins(
+                    self.request, stage.additional_accepted_origins
+                ),
                 supported_pub_key_algs=SUPPORTED_PUB_KEY_ALGS,
             )
         # py_webauthn does not wrap cryptography's ValueError when an attestation certificate
@@ -110,7 +113,6 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             ) from None
 
         registration_data = VerifiedRegistrationData(registration)
-        stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         att_obj = parse_attestation_object(registration.attestation_object)
         if (
