@@ -225,7 +225,7 @@ class TestSelection(ExpirationTestCase):
         self.assertEqual(rule.apply(), 0)
 
     def test_sweep_is_idempotent(self):
-        rule = self._rule()
+        rule = self._rule(warn_before="days=7")
         _dormant_user()
         self.assertEqual(rule.apply(), 1)
         self.assertEqual(rule.apply(), 0)
@@ -259,13 +259,33 @@ class TestSelection(ExpirationTestCase):
     def test_notifications_sent_per_transport(self):
         from authentik.events.models import NotificationTransport
 
-        rule = self._rule()
+        rule = self._rule(warn_before="days=7")
         rule.notification_transports.add(NotificationTransport.objects.create(name=generate_id()))
         _dormant_user()
         with patch(SEND_NOTIFICATION) as send:
             rule.apply()
         send.assert_called_once()
         self.assertFalse(Notification.objects.exists())
+
+    def test_empty_warning_period_schedules_without_warning(self):
+        for warning_period in (None, ""):
+            with self.subTest(warning_period=warning_period):
+                group = Group.objects.create(name=generate_id())
+                rule = self._rule(group=group, warn_before=warning_period)
+                user = _dormant_user()
+                user.groups.add(group)
+                with patch(SEND_NOTIFICATION) as send:
+                    self.assertEqual(rule.apply(), 1)
+                    self.assertIsNotNone(_pending(user))
+                    rule.action = OffboardingAction.DELETE
+                    rule.save()
+                    rule.apply()
+                    self.assertEqual(_pending(user).action, OffboardingAction.DELETE)
+                send.assert_not_called()
+                self.assertFalse(
+                    Event.objects.filter(action=EventAction.USER_EXPIRATION_WARNING).exists()
+                )
+                self.assertFalse(Notification.objects.filter(user=user).exists())
 
     def test_warning_without_transports_is_delivered_locally(self):
         rule = self._rule(warn_before="days=7")
@@ -414,7 +434,7 @@ class TestOverlapAndChange(ExpirationTestCase):
         )
 
     def test_changed_action_and_revocations_update_owned_row(self):
-        rule = self._rule(action=OffboardingAction.DELETE)
+        rule = self._rule(action=OffboardingAction.DELETE, warn_before="days=7")
         user = _dormant_user()
         rule.apply()
         rule.action = OffboardingAction.DEACTIVATE
@@ -497,7 +517,9 @@ class TestOverlapAndChange(ExpirationTestCase):
         loose.apply()
         first = _pending(user)
         self.assertEqual(first.rule, loose)
-        tight = self._rule(inactivity_duration="days=90", action=OffboardingAction.DELETE)
+        tight = self._rule(
+            inactivity_duration="days=90", action=OffboardingAction.DELETE, warn_before="days=7"
+        )
         tight.apply()
         pending = _pending(user)
         self.assertEqual(pending.pk, first.pk)
@@ -520,7 +542,7 @@ class TestOverlapAndChange(ExpirationTestCase):
         self.assertEqual(pending.scheduled_at, first.scheduled_at)
 
     def test_loosened_duration_pushes_row_out_silently(self):
-        rule = self._rule(inactivity_duration="days=90")
+        rule = self._rule(inactivity_duration="days=90", warn_before="days=7")
         user = _dormant_user(100)
         rule.apply()
         rule.inactivity_duration = "days=120"
