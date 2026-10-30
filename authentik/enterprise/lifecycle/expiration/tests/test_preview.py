@@ -289,6 +289,55 @@ class TestPreview(ExpirationTestCase):
                 )
                 self.assertEqual(response.status_code, 403, response.data)
 
+    def test_viewer_receives_only_user_and_group_identifiers(self):
+        self.group.attributes = {"private": "group secret"}
+        self.group.save()
+        new, updated, removed, taken_over = [self._user() for _ in range(4)]
+        for user in (new, updated, removed, taken_over):
+            user.attributes = {"private": "user secret"}
+            user.save(update_fields=["attributes"])
+        self._row(updated)
+        self._row(removed)
+        removed.groups.clear()
+        foreign = self._rule(inactivity_duration="days=95")
+        UserOffboarding.objects.create(
+            user=taken_over, rule=foreign, scheduled_at=foreign.due_at(taken_over)
+        )
+        self.rule.action = OffboardingAction.DELETE
+        self.rule.save()
+        viewer = create_test_user()
+        viewer.assign_perms_to_managed_role("authentik_lifecycle.view_userexpirationrule")
+        self.client.force_login(viewer)
+        self.assertFalse(viewer.has_perm("authentik_core.view_user"))
+        self.assertFalse(viewer.has_perm("authentik_core.view_group"))
+
+        response = self.client.get(
+            reverse("authentik_api:userexpirationrule-detail", kwargs={"pk": self.rule.pk})
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            response.data["group_obj"], {"pk": str(self.group.pk), "name": self.group.name}
+        )
+        for method in ("get", "post"):
+            with self.subTest(method=method):
+                response = getattr(self.client, method)(self.url)
+                self.assertEqual(response.status_code, 200, response.data)
+                self.assertEqual(response.data["count"], 1)
+                self.assertEqual(
+                    response.data["users"],
+                    [{"pk": new.pk, "username": new.username, "name": new.name}],
+                )
+                for section, user in (
+                    ("updated", updated),
+                    ("removed", removed),
+                    ("taken_over", taken_over),
+                ):
+                    self.assertEqual(response.data[section]["count"], 1)
+                    self.assertEqual(
+                        response.data[section]["offboardings"][0]["user"],
+                        {"pk": user.pk, "username": user.username, "name": user.name},
+                    )
+
     def test_manual_rows_terminal_exemptions_and_unchanged_rows_are_preserved(self):
         manual_user = self._user()
         UserOffboarding.objects.create(user=manual_user, scheduled_at=now() + timedelta(days=1))

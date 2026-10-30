@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser.js";
-import { PartialUserFromJSON } from "./PartialUser.js";
 import type { UserExpirationRulePendingPreviewGroup } from "./UserExpirationRulePendingPreviewGroup.js";
 import { UserExpirationRulePendingPreviewGroupFromJSON } from "./UserExpirationRulePendingPreviewGroup.js";
+import type { UserExpirationRuleUser } from "./UserExpirationRuleUser.js";
+import { UserExpirationRuleUserFromJSON } from "./UserExpirationRuleUser.js";
 
 /**
  * Base serializer class which doesn't implement create/update methods
@@ -23,7 +23,7 @@ import { UserExpirationRulePendingPreviewGroupFromJSON } from "./UserExpirationR
  */
 export interface UserExpirationRulePreview {
     readonly count: number;
-    readonly users: Array<PartialUser>;
+    readonly users: Array<UserExpirationRuleUser>;
     readonly updated: UserExpirationRulePendingPreviewGroup;
     readonly takenOver: UserExpirationRulePendingPreviewGroup;
     readonly removed: UserExpirationRulePendingPreviewGroup;
@@ -62,7 +62,7 @@ export function UserExpirationRulePreviewFromJSONTyped(
     }
     return {
         count: json["count"],
-        users: (json["users"] as Array<any>).map(PartialUserFromJSON),
+        users: (json["users"] as Array<any>).map(UserExpirationRuleUserFromJSON),
         updated: UserExpirationRulePendingPreviewGroupFromJSON(json["updated"]),
         takenOver: UserExpirationRulePendingPreviewGroupFromJSON(json["taken_over"]),
         removed: UserExpirationRulePendingPreviewGroupFromJSON(json["removed"]),
