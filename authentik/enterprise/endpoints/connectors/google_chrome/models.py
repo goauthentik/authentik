@@ -37,7 +37,7 @@ class GoogleChromeConnector(Connector):
 
     @property
     def icon_url(self):
-        return static("authentik/sources/google.svg")
+        return static("authentik/sources/google/light.svg")
 
     @property
     def serializer(self) -> type[BaseSerializer]:

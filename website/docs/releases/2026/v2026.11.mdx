@@ -74,6 +74,14 @@ Bootstrap and API password hash imports now enforce the [password hash import se
 
 Generate a replacement hash with the target authentik version. API clients can use the override for another supported hash, but bootstrap imports do not support an override.
 
+### Source icons are no longer inverted in dark mode
+
+In dark mode, authentik used to invert the colors of every source icon on the login page, in the user settings, and in the Admin interface's **Create** wizards. This turned colored logos into the wrong colors, for example Discord's blue into yellow. Source icons now keep their original colors.
+
+The built-in source and provider icons have been refreshed, and each now has a light and a dark version in its own folder, such as `/static/authentik/sources/github/%(theme)s.svg`. The previous files, such as `/static/authentik/sources/github.svg`, have been removed. Icons, logos, and backgrounds that pointed at them are updated to the new paths during the upgrade.
+
+If you set a custom source icon that relied on the inversion, such as a black logo, it will be hard to see in dark mode. Upload a version for each theme and use `%(theme)s` in the source's **Icon** field. See [Source icons in light and dark themes](../../customize/file-picker.mdx#source-icons-in-light-and-dark-themes).
+
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).

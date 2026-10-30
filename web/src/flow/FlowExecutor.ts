@@ -87,6 +87,7 @@ const DefaultFlowMeta: FlowMeta = {
  * @slot overlay-viewport - Loading overlay placed over the viewport, used on small screens and sidebar layouts.
  * @part challenge-additional-actions - Container in stages which have additional actions.
  * @part challenge-footer-band - Container for the stage footer, used for additional actions in some stages.
+ * @part challenge-source-icon - The icon of a source on the identification stage.
  * @part locale-select-label - The label of the locale select component.
  * @part locale-select-select - The select element of the locale select component.
  */
@@ -365,7 +366,10 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
         const litParts = {
             part: "challenge",
-            exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
+            exportparts: exportParts(
+                ["additional-actions", "footer-band", "source-icon"],
+                "challenge",
+            ),
         };
 
         let mapping: StageMapping;

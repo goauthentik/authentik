@@ -231,7 +231,7 @@ class LDAPSource(IncomingSyncSource):
 
     @property
     def icon_url(self) -> str:
-        return static("authentik/sources/ldap.png")
+        return static("authentik/sources/ldap/light.svg")
 
     def server(self, **kwargs) -> ServerPool:
         """Get LDAP Server/ServerPool"""

@@ -104,7 +104,7 @@ class PlexSource(ScheduledModel, Source):
     def icon_url(self) -> str:
         icon = super().icon_url
         if not icon:
-            icon = static("authentik/sources/plex.svg")
+            icon = static("authentik/sources/plex/light.svg")
         return icon
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
@@ -117,6 +117,7 @@ class PlexSource(ScheduledModel, Source):
                 }
             ),
             icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
+            icon_themed_urls=self.get_icon_themed_urls(request, use_cache=False),
             name=self.name,
             promoted=self.promoted,
         )
@@ -128,6 +129,7 @@ class PlexSource(ScheduledModel, Source):
                 "component": "ak-user-settings-source-plex",
                 "configure_url": self.client_id,
                 "icon_url": self.icon_url,
+                "icon_themed_urls": self.icon_themed_urls,
             }
         )
 

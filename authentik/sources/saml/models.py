@@ -266,7 +266,7 @@ class SAMLSource(Source):
     def icon_url(self) -> str:
         icon = super().icon_url
         if not icon:
-            return static("authentik/sources/saml.png")
+            return static("authentik/sources/saml/light.png")
         return icon
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
@@ -281,6 +281,7 @@ class SAMLSource(Source):
             ),
             name=self.name,
             icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
+            icon_themed_urls=self.get_icon_themed_urls(request, use_cache=False),
             promoted=self.promoted,
         )
 
@@ -294,6 +295,7 @@ class SAMLSource(Source):
                     kwargs={"source_slug": self.slug},
                 ),
                 "icon_url": self.icon_url,
+                "icon_themed_urls": self.icon_themed_urls,
             }
         )
 

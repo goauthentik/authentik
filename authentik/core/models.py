@@ -33,6 +33,7 @@ from rest_framework.fields import BooleanField, CharField, IntegerField, ListFie
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.backends.static import static_url_name
 from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
@@ -814,7 +815,7 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
 
     @property
     def get_meta_icon_themed_urls(self) -> dict[str, str] | None:
-        """Get themed URLs for meta_icon if it contains %(theme)s"""
+        """Get themed URLs for meta_icon if it contains %(theme)s or is a built-in source icon"""
         if not self.meta_icon:
             return None
 
@@ -1049,9 +1050,10 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         request=None,
         use_cache: bool = True,
     ) -> dict[str, str] | None:
-        """Get themed URLs for icon if it contains %(theme)s."""
+        """Get themed URLs for the icon if it contains %(theme)s or is a built-in source icon."""
         if not self.icon:
-            return None
+            # Subclasses fall back to a built-in default icon, relative like their icon_url
+            return get_file_manager(FileUsage.MEDIA).themed_urls(static_url_name(self.icon_url))
         return get_file_manager(FileUsage.MEDIA).themed_urls(
             self.icon,
             request,

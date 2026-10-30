@@ -57,13 +57,3 @@ fieldset[name="login-sources"] {
         pointer-events: none;
     }
 }
-
-:host([theme="dark"]),
-ak-stage-identification[theme="dark"].style-scope {
-    fieldset[name="login-sources"] .pf-c-button__icon {
-        img,
-        .pf-c-button__icon .fas {
-            filter: invert(1);
-        }
-    }
-}

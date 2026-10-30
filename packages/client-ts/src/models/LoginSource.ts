@@ -12,6 +12,8 @@
 
 import type { LoginChallengeTypes } from "./LoginChallengeTypes.js";
 import { LoginChallengeTypesFromJSON, LoginChallengeTypesToJSON } from "./LoginChallengeTypes.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls.js";
 
 /**
  * Serializer for Login buttons of sources
@@ -22,6 +24,7 @@ import { LoginChallengeTypesFromJSON, LoginChallengeTypesToJSON } from "./LoginC
 export interface LoginSource {
     name: string;
     iconUrl?: string | null;
+    iconThemedUrls?: ThemedUrls | null;
     promoted?: boolean;
     challenge: LoginChallengeTypes;
 }
@@ -51,6 +54,12 @@ export function LoginSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
                 : json["icon_url"] === null
                   ? null
                   : json["icon_url"],
+        iconThemedUrls:
+            json["icon_themed_urls"] === undefined
+                ? undefined
+                : json["icon_themed_urls"] === null
+                  ? null
+                  : ThemedUrlsFromJSON(json["icon_themed_urls"]),
         promoted: json["promoted"] == null ? undefined : json["promoted"],
         challenge: LoginChallengeTypesFromJSON(json["challenge"]),
     };
@@ -71,6 +80,7 @@ export function LoginSourceToJSONTyped(
     return {
         name: value["name"],
         icon_url: value["iconUrl"],
+        icon_themed_urls: ThemedUrlsToJSON(value["iconThemedUrls"]),
         promoted: value["promoted"],
         challenge: LoginChallengeTypesToJSON(value["challenge"]),
     };
