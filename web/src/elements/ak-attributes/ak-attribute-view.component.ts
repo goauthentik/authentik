@@ -1,4 +1,5 @@
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 import "./ak-tree-view";
 
 import { match, P } from "ts-pattern";
@@ -13,8 +14,11 @@ type Mode = "json" | "yaml" | "tree";
 const PJsonKey = P.union(P.string, P.number, P.symbol);
 
 type JsonScalar = string | number | boolean | null;
+
 type JsonObject = { [key: string]: JsonValue };
+
 type JsonArray = JsonValue[];
+
 export type JsonValue = JsonScalar | JsonObject | JsonArray;
 
 export class AkAttributeView extends LitElement {
@@ -24,8 +28,8 @@ export class AkAttributeView extends LitElement {
     @property({ type: String, reflect: true })
     public mode: Mode = "json";
 
-    handleToggle = (ev: CustomEvent) => {
-        this.mode = ev.detail.value;
+    handleToggle = (ev: ToggleGroupEvent<Mode>) => {
+        this.mode = ev.value;
     };
 
     copy = (ev: CustomEvent) => {
@@ -37,10 +41,12 @@ export class AkAttributeView extends LitElement {
             match(ob)
                 .with(P.string, (s) =>
                     // Clean some artifacts from the way Django sends the data
-                    s.replace(/\\n/g, String.fromCharCode(10)).replace(/\\'/g, "'")
+                    s.replace(/\\n/g, String.fromCharCode(10)).replace(/\\'/g, "'"),
                 )
                 .with(P.record(PJsonKey, P._), (r) =>
-                    Object.fromEntries(Object.entries(r).map(([key, value]) => [`${key}`, cleanObject(value)]))
+                    Object.fromEntries(
+                        Object.entries(r).map(([key, value]) => [`${key}`, cleanObject(value)]),
+                    ),
                 )
                 .with(P.array(P._), (a) => a.map((o) => cleanObject(o)))
                 .otherwise((a) => JSON.stringify(a));
@@ -51,7 +57,8 @@ export class AkAttributeView extends LitElement {
     render() {
         const json = () => html`<pre>${JSON.stringify(this.cleanedValue, null, 2)}</pre>`;
 
-        const yaml = () => html`<pre>${YAML.stringify(this.cleanedValue, { blockQuote: "folded" })}</pre>`;
+        const yaml = () =>
+            html`<pre>${YAML.stringify(this.cleanedValue, { blockQuote: "folded" })}</pre>`;
 
         return html`
             <ak-toggle-group compact @ak-toggle=${this.handleToggle}>
@@ -64,7 +71,10 @@ export class AkAttributeView extends LitElement {
                 ${match(this.mode)
                     .with("json", json)
                     .with("yaml", yaml)
-                    .with("tree", () => html`<ak-tree-view .value=${this.cleanedValue}></ak-tree-view>`)
+                    .with(
+                        "tree",
+                        () => html`<ak-tree-view .value=${this.cleanedValue}></ak-tree-view>`,
+                    )
                     .exhaustive()}
             </div>
         `;

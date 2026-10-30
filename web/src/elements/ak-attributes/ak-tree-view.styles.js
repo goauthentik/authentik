@@ -6,24 +6,26 @@ export const styles = css`
         font-family: var(--pf-global--FontFamily--monospace, "monospace");
     }
 
-    .collapsable {
+    .collapsable::before {
         display: inline-flex;
-        font-size: 0.8rem;
+        font-size: var(--pf-global--FontSize--sm);
         content: "▶";
+        width: 1.2em;
+        height: 1.2em;
         align-items: center;
         justify-content: center;
-        transition: transform 225ms ease-out;
+        transition: var(--pf-global--Transition);
         transform: rotate(90deg);
     }
 
-    .collapsable--collapsed::before {
+    .collapsable.collapsed::before {
         transform: rotate(0);
     }
 
     [part="tree-key"] {
         display: inline-flex;
         align-items: flex-start;
-        color: var(--pf-global--Color--300);
+        color: var(--pf-global--Color--100);
     }
 
     ul {
