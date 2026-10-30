@@ -1036,7 +1036,7 @@ class UserViewSet(
                 "expires": token.expires,
             },
         )
-        send_mails(stage, message)
+        send_mails(stage, message, brand=request.brand)
         return Response(status=204)
 
     @permission_required("authentik_core.impersonate")

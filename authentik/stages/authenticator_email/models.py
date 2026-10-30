@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.brands.models import Brand
 from authentik.core.types import UserSettingSerializer
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import StageInvalidException
@@ -100,13 +101,13 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
             timeout=self.timeout,
         )
 
-    def send(self, device: EmailDevice):
+    def send(self, device: EmailDevice, brand: Brand | None = None):
         # Lazy import here to avoid circular import
         from authentik.stages.email.tasks import send_mails
 
         # Compose the message using templates
         message = device._compose_email()
-        return send_mails(device.stage, message)
+        return send_mails(device.stage, message, brand=brand)
 
     def __str__(self):
         return f"Email Authenticator Stage {self.name}"

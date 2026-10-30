@@ -9,6 +9,7 @@ from django.urls import reverse
 from jwt import decode
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.brands.models import Brand
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.events.models import Event
 from authentik.lib.expression.evaluator import BaseEvaluator
@@ -190,6 +191,21 @@ class TestEvaluator(TestCase):
         with self.assertRaises(ValueError) as cm:
             evaluator.evaluate("return ak_send_email('test@example.com', 'Test')")
         self.assertIn("Either body or template parameter must be provided", str(cm.exception))
+
+    @patch("authentik.stages.email.tasks.send_mails")
+    def test_expr_send_email_brand(self, mock_send_mails):
+        """Test ak_send_email passes the request's brand"""
+        request = RequestFactory().get("/")
+        request.brand = Brand(domain=generate_id())
+        evaluator = BaseEvaluator(generate_id())
+        evaluator._context = {"http_request": request}
+
+        evaluator.evaluate("return ak_send_email('test@example.com', 'Test', body='Test')")
+        self.assertEqual(mock_send_mails.call_args.kwargs["brand"], request.brand)
+
+        evaluator._context = {}
+        evaluator.evaluate("return ak_send_email('test@example.com', 'Test', body='Test')")
+        self.assertIsNone(mock_send_mails.call_args.kwargs["brand"])
 
     @patch("authentik.stages.email.tasks.send_mails")
     def test_expr_send_email_with_custom_stage(self, mock_send_mails):

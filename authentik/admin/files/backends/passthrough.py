@@ -47,6 +47,10 @@ class PassthroughBackend(Backend):
         """Return the URL as-is for passthrough files."""
         return name
 
+    def read_file(self, name: str) -> None:
+        """External files aren't stored by authentik."""
+        return None
+
     def themed_urls(
         self,
         name: str,

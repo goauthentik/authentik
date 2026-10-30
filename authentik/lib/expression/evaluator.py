@@ -320,7 +320,9 @@ class BaseEvaluator:
                     body=body,
                 )
 
-            send_mails(stage, message)
+            send_mails(
+                stage, message, brand=getattr(self._context.get("http_request"), "brand", None)
+            )
             return True
 
         except (SMTPException, ConnectionError, ValidationError, ValueError) as exc:

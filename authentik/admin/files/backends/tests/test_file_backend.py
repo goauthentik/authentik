@@ -166,6 +166,23 @@ class TestFileBackend(FileTestFileBackendMixin, TestCase):
         """Test file_exists returns False for nonexistent file"""
         self.assertFalse(self.backend.file_exists("does_not_exist.txt"))
 
+    def test_read_file(self):
+        """Test read_file returns file content"""
+        self.backend.save_file("path/to/file.png", b"content")
+        self.assertEqual(self.backend.read_file("path/to/file.png"), b"content")
+
+    def test_read_file_nonexistent(self):
+        """Test read_file raises FileNotFoundError for nonexistent file"""
+        with self.assertRaises(FileNotFoundError):
+            self.backend.read_file("does_not_exist.png")
+
+    def test_read_file_outside_storage(self):
+        """Test read_file doesn't read files outside of the storage directory"""
+        self.backend.base_path.mkdir(parents=True, exist_ok=True)
+        (self.backend.base_path.parent / "outside.png").write_bytes(b"content")
+        with self.assertRaises(FileNotFoundError):
+            self.backend.read_file("../outside.png")
+
     def test_themed_urls_without_theme_variable(self):
         """Test themed_urls returns None when filename has no %(theme)s"""
         file_name = "logo.png"

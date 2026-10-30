@@ -1,9 +1,15 @@
 """Test validator stage for Email devices"""
 
+from pathlib import Path
+from unittest.mock import PropertyMock, patch
+
+from django.core import mail
+from django.core.mail.backends.locmem import EmailBackend
 from django.test.client import RequestFactory
 from django.urls.base import reverse
 from freezegun import freeze_time
 
+from authentik.brands.models import Brand
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import APIFlowTestCase
@@ -107,6 +113,30 @@ class AuthenticatorValidateStageEmailTests(APIFlowTestCase):
         )
         # Should redirect to root since this is the last stage
         self.assertStageRedirects(response, "/")
+
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_brand_logo(self):
+        """Test the logo of the request's brand is embedded"""
+        Brand.objects.create(
+            domain="testserver", branding_logo="/static/authentik/sources/ldap.png"
+        )
+        device = EmailDevice.objects.create(
+            user=self.user,
+            confirmed=True,
+            stage=self.stage,
+            email="xx@0.co",
+        )
+        self._identify_user()
+        mail.outbox.clear()
+        self._send_challenge(device)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].attachments[0].get_payload(decode=True),
+            Path("web/authentik/sources/ldap.png").read_bytes(),
+        )
 
     def test_no_device(self):
         """Test validator stage without configured device"""
