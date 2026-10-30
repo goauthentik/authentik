@@ -273,6 +273,9 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         return self._apply_policies(qs)
 
     def _warn(self, user: User, offboarding: UserOffboarding):
+        if not self.warn_before:
+            return
+
         from authentik.enterprise.lifecycle.review.tasks import send_notification
 
         event = Event.new(
