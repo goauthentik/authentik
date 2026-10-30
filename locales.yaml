@@ -21,6 +21,7 @@ locales:
   - { tag: cy-GB, django: cy_GB, transifex: cy_GB, ship: false }
   - { tag: da-DK, django: da_DK, transifex: da_DK, ship: false }
   - { tag: de-DE, django: de_DE, transifex: de_DE, ship: true }
+  - { tag: de-DE-informal, django: de_DE-informal, transifex: de_DE_informal, ship: false }
   - { tag: el-GR, django: el_GR, transifex: el_GR, ship: false }
   - { tag: en, django: en, transifex: null, ship: true }
   - { tag: en-XA, django: null, transifex: null, ship: true }
