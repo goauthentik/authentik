@@ -11090,6 +11090,29 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/instances/{uuid}/rebuild_permissions/:
+    post:
+      operationId: outposts_instances_rebuild_permissions_create
+      description: Delete and recreate all permissions of the outpost's service account
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Permissions rebuilt
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /outposts/instances/{uuid}/used_by/:
     get:
       operationId: outposts_instances_used_by_list
@@ -19986,6 +20009,14 @@ paths:
         schema:
           type: string
       - in: query
+        name: jwt_federation_providers
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - in: query
         name: logout_method
         schema:
           allOf:
@@ -21152,6 +21183,14 @@ paths:
         name: issuer_override
         schema:
           type: string
+      - in: query
+        name: jwt_federation_providers
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - in: query
         name: logout_method
         schema:
@@ -53067,6 +53106,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
     PatchedSAMLSourcePropertyMappingRequest:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -56999,6 +57044,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
         url_download_metadata:
           type: string
           description: Get metadata download URL
@@ -57214,6 +57265,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
       required:
       - acs_url
       - authorization_flow
@@ -60972,6 +61029,11 @@ components:
         password:
           type: string
           minLength: 1
+        override:
+          type: boolean
+          default: false
+          description: Import a valid password hash even when its parameters do not
+            match authentik's current password hashing settings.
       required:
       - password
     UserPasswordSetRequest:

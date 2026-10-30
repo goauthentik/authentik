@@ -3,7 +3,7 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
-import { AndNext } from "#common/api/config";
+import { withNext } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
 import { toUserInterface } from "#elements/router/core/interfaces";
@@ -27,7 +27,10 @@ export class UserSettingsPassword extends AKElement {
             <div class="pf-c-card__title">${msg("Change your password")}</div>
             <div class="pf-c-card__body">
                 <a
-                    href="${ifDefined(this.configureUrl)}${AndNext(toUserInterface("settings"))}"
+                    href=${ifDefined(
+                        this.configureUrl &&
+                            withNext(this.configureUrl, toUserInterface("settings")),
+                    )}
                     class="pf-c-button pf-m-primary"
                 >
                     ${msg("Change password")}
