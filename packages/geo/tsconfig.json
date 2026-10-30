@@ -10,6 +10,7 @@
         "composite": false,
         "incremental": false,
         "allowImportingTsExtensions": true,
+        "types": ["node"],
         // src/labels.ts reads the archive's label contract from web, so the
         // program spans both packages.
         "rootDir": "../..",
