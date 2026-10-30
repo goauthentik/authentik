@@ -59,8 +59,5 @@ def start_pyroscope(component: str, **tags: str) -> bool:
             **tags,
         },
         mem_enabled=True,
-        # Also sample threads outside the GIL, otherwise native work like password hashing
-        # is invisible
-        gil_only=False,
     )
     return True
