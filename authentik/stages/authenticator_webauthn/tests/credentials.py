@@ -1,19 +1,28 @@
-"""Helpers to build WebAuthn responses signed with a generated ML-DSA (FIPS 204) key.
+"""Helpers to build WebAuthn responses signed with a software key.
 
-No shipping authenticator implements ML-DSA yet, so these construct the same CBOR structures a
-CTAP2 authenticator would return, using python-fido2's encoders and a key from cryptography."""
+These construct the same CBOR structures a CTAP2 authenticator would return, using python-fido2's
+encoders and a key from cryptography. They cover algorithms no fixture can: ML-DSA (FIPS 204),
+which no shipping authenticator implements yet, and Ed25519, which authentik cannot verify under
+the validated OpenSSL FIPS provider."""
 
 from hashlib import sha256
 from json import dumps
 from os import urandom
 
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.mldsa import MLDSA44PrivateKey
 from fido2 import cbor
-from fido2.cose import MLDSA44
+from fido2.cose import MLDSA44, CoseKey, EdDSA
 from fido2.webauthn import AttestationObject, AttestedCredentialData, AuthenticatorData
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
+from webauthn.helpers.cose import COSEAlgorithmIdentifier
 
 from authentik.stages.authenticator_webauthn.models import UNKNOWN_DEVICE_TYPE_AAGUID
+
+_KEY_CLASSES: dict[COSEAlgorithmIdentifier, tuple[type, type[CoseKey]]] = {
+    COSEAlgorithmIdentifier.EDDSA: (Ed25519PrivateKey, EdDSA),
+    COSEAlgorithmIdentifier.ML_DSA_44: (MLDSA44PrivateKey, MLDSA44),
+}
 
 
 def _client_data(webauthn_type: str, challenge: bytes, origin: str) -> bytes:
@@ -27,27 +36,33 @@ def _client_data(webauthn_type: str, challenge: bytes, origin: str) -> bytes:
     ).encode("utf-8")
 
 
-class MLDSACredential:
-    """A software ML-DSA-44 credential that can produce registration and assertion responses"""
+class SoftwareCredential:
+    """A software credential that can produce registration and assertion responses"""
 
-    def __init__(self, rp_id: str, origin: str):
+    def __init__(
+        self,
+        rp_id: str,
+        origin: str,
+        alg: COSEAlgorithmIdentifier = COSEAlgorithmIdentifier.ML_DSA_44,
+    ):
         self.rp_id = rp_id
         self.origin = origin
-        self.private_key = MLDSA44PrivateKey.generate()
+        private_key_class, self.cose_class = _KEY_CLASSES[alg]
+        self.private_key = private_key_class.generate()
         self.credential_id = urandom(32)
         self.sign_count = 0
 
     @property
     def cose_public_key(self) -> bytes:
         """CBOR-encoded COSE public key, as stored on a WebAuthnDevice"""
-        return cbor.encode(MLDSA44.from_cryptography_key(self.private_key.public_key()))
+        return cbor.encode(self.cose_class.from_cryptography_key(self.private_key.public_key()))
 
     def registration_response(self, challenge: bytes) -> dict:
         """Build a `navigator.credentials.create()` response with a `none` attestation"""
         credential_data = AttestedCredentialData.create(
             bytes.fromhex(UNKNOWN_DEVICE_TYPE_AAGUID.replace("-", "")),
             self.credential_id,
-            MLDSA44.from_cryptography_key(self.private_key.public_key()),
+            self.cose_class.from_cryptography_key(self.private_key.public_key()),
         )
         auth_data = AuthenticatorData.create(
             sha256(self.rp_id.encode("utf-8")).digest(),
@@ -70,7 +85,7 @@ class MLDSACredential:
         }
 
     def assertion_response(self, challenge: bytes) -> dict:
-        """Build a `navigator.credentials.get()` response signed with the ML-DSA key"""
+        """Build a `navigator.credentials.get()` response signed with the software key"""
         self.sign_count += 1
         auth_data = AuthenticatorData.create(
             sha256(self.rp_id.encode("utf-8")).digest(),

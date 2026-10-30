@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 from django.urls import reverse
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
+from webauthn.helpers.cose import COSEAlgorithmIdentifier
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.flows.markers import StageMarker
@@ -16,6 +17,7 @@ from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
+from authentik.stages.authenticator_webauthn.algorithms import PREFERRED_PUB_KEY_ALGS
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     AuthenticatorWebAuthnStage,
@@ -23,12 +25,9 @@ from authentik.stages.authenticator_webauthn.models import (
     WebAuthnDeviceType,
     WebAuthnHint,
 )
-from authentik.stages.authenticator_webauthn.stage import (
-    PLAN_CONTEXT_WEBAUTHN_CHALLENGE,
-    SUPPORTED_PUB_KEY_ALGS,
-)
+from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
-from authentik.stages.authenticator_webauthn.tests.mldsa import MLDSACredential
+from authentik.stages.authenticator_webauthn.tests.credentials import SoftwareCredential
 
 
 class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
@@ -701,12 +700,87 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
         params = response.json()["registration"]["pubKeyCredParams"]
-        self.assertEqual([p["alg"] for p in params], [int(alg) for alg in SUPPORTED_PUB_KEY_ALGS])
+        self.assertEqual([p["alg"] for p in params], [int(alg) for alg in PREFERRED_PUB_KEY_ALGS])
         self.assertEqual([p["alg"] for p in params][-3:], [-48, -49, -50])
+
+    def _enable_fips(self):
+        """Pretend the OpenSSL FIPS provider is active, which has neither Ed25519 nor ML-DSA"""
+        patcher = patch(
+            "authentik.stages.authenticator_webauthn.algorithms.backend._fips_enabled", True
+        )
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_registration_options_algorithms_fips(self):
+        """With FIPS enabled only the algorithms the FIPS provider can verify are offered"""
+        self._enable_fips()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        params = response.json()["registration"]["pubKeyCredParams"]
+        self.assertEqual([p["alg"] for p in params], [-7, -257])
+
+    def _register_software_credential(self, credential: SoftwareCredential):
+        challenge = b"\x01" * 64
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = challenge
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        return self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={
+                "component": "ak-stage-authenticator-webauthn",
+                "response": credential.registration_response(challenge),
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+
+    def test_register_eddsa(self):
+        """Test registration of an Ed25519 credential"""
+        credential = SoftwareCredential(
+            rp_id="localhost", origin="http://localhost:9000", alg=COSEAlgorithmIdentifier.EDDSA
+        )
+        response = self._register_software_credential(credential)
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        device = WebAuthnDevice.objects.get(user=self.user)
+        self.assertEqual(device.public_key, bytes_to_base64url(credential.cose_public_key))
+
+    def test_register_unavailable_algorithm_fips(self):
+        """An authenticator that ignores the offered algorithms and creates a credential the
+        FIPS provider cannot verify is rejected at registration, not at first login"""
+        self._enable_fips()
+        credential = SoftwareCredential(
+            rp_id="localhost", origin="http://localhost:9000", alg=COSEAlgorithmIdentifier.EDDSA
+        )
+        response = self._register_software_credential(credential)
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            component="ak-stage-authenticator-webauthn",
+            response_errors={
+                "response": [
+                    {
+                        "string": "Registration failed. Please contact your administrator.",
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
+        self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
 
     def test_register_mldsa(self):
         """Test registration of an ML-DSA-44 (FIPS 204) credential"""
-        credential = MLDSACredential(rp_id="localhost", origin="http://localhost:9000")
+        credential = SoftwareCredential(rp_id="localhost", origin="http://localhost:9000")
         challenge = b"\x01" * 64
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
