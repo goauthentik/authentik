@@ -1,4 +1,4 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -130,11 +130,11 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
             <ak-form-group label="${msg("Advanced settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Expression")} name="expression">
-                        <ak-codemirror
+                        <ak-code-editor
                             mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >
-                        </ak-codemirror>
+                        </ak-code-editor>
                         <p class="pf-c-form__helper-text">
                             ${msg("Expression using Python.")}
                             <a

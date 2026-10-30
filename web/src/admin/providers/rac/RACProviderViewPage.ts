@@ -4,7 +4,7 @@ import "#admin/providers/rac/RACProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
 import "#admin/events/ObjectChangelog";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";

@@ -1,6 +1,9 @@
 import { parse as parseYAML, stringify as stringifyYAML } from "yaml";
 
-export const CodeMirrorMode = {
+/**
+ * The languages the code editor highlights, named by their Monaco language ID.
+ */
+export const CodeEditorMode = {
     XML: "xml",
     JavaScript: "javascript",
     HTML: "html",
@@ -9,11 +12,11 @@ export const CodeMirrorMode = {
     YAML: "yaml",
 } as const satisfies Record<string, string>;
 
-export type CodeMirrorMode = (typeof CodeMirrorMode)[keyof typeof CodeMirrorMode];
+export type CodeEditorMode = (typeof CodeEditorMode)[keyof typeof CodeEditorMode];
 
 //#region Serialization
 
-export function stringifyCodeMirrorSource(value: unknown, mode: CodeMirrorMode): string {
+export function stringifyCodeEditorSource(value: unknown, mode: CodeEditorMode): string {
     if (typeof value === "string" || value instanceof String) {
         return value.toString();
     }
@@ -28,11 +31,11 @@ export function stringifyCodeMirrorSource(value: unknown, mode: CodeMirrorMode):
     return String(value).toString();
 }
 
-export function parseCodeMirrorSource<T = unknown>(value: string, mode: CodeMirrorMode): T {
+export function parseCodeEditorSource<T = unknown>(value: string, mode: CodeEditorMode): T {
     switch (mode) {
-        case CodeMirrorMode.YAML:
+        case CodeEditorMode.YAML:
             return parseYAML(value);
-        case CodeMirrorMode.JavaScript:
+        case CodeEditorMode.JavaScript:
             return JSON.parse(value);
     }
 

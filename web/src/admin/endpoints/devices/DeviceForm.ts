@@ -3,7 +3,7 @@ import "#components/ak-radio-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
 import "#elements/utils/TimeDeltaHelp";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -99,11 +99,11 @@ export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
                 })}
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
-                <ak-codemirror
+                <ak-code-editor
                     mode="yaml"
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>

@@ -1,7 +1,7 @@
 import "#admin/stages/invitation/InvitationListLink";
 import "#components/ak-switch-input";
 import "#components/ak-slug-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/HorizontalFormElement";
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -181,11 +181,11 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 help=${msg("When enabled, the invitation will be deleted after usage.")}
             ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
-                <ak-codemirror
+                <ak-code-editor
                     mode="yaml"
                     value="${YAML.stringify(this.instance?.fixedData ?? {})}"
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.",

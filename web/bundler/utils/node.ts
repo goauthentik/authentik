@@ -2,6 +2,9 @@
  * @file Bundler utilities.
  */
 
+import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
+
 import { NodeEnvironment, serializeEnvironmentVars } from "@goauthentik/core/environment/node";
 import {
     AuthentikVersion,
@@ -32,5 +35,23 @@ export function createBundleDefinitions() {
         // We need to explicitly set this for NPM packages that use `process`
         // to determine their environment.
         "process.env.NODE_ENV": SerializedNodeEnvironment,
+    };
+}
+
+/**
+ * Creates a mapping of import paths to the files a package ships without exporting them.
+ */
+export function createBundleAliases(): Record<string, string> {
+    const require = createRequire(import.meta.url);
+
+    return {
+        // Monaco's `exports` map covers only its modules. The editor renders in a shadow root,
+        // so it needs the stylesheet that its modules would otherwise inject into the document.
+        // `require` resolves the package to `min/vs/index.js`, next to that stylesheet.
+        "monaco-editor/min/vs/editor/editor.main.css": join(
+            dirname(require.resolve("monaco-editor")),
+            "editor",
+            "editor.main.css",
+        ),
     };
 }

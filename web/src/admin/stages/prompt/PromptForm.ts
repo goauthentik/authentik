@@ -1,4 +1,4 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/HorizontalFormElement";
 import "#flow/stages/prompt/PromptStage";
 import "#components/ak-switch-input";
@@ -298,14 +298,14 @@ export class PromptForm extends ModelForm<Prompt, string> {
             If the evaluation fails, the placeholder itself is returned.`)}
             ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Placeholder")} name="placeholder">
-                <ak-codemirror
+                <ak-code-editor
                     mode="python"
                     value="${ifDefined(this.instance?.placeholder)}"
                     @change=${() => {
                         this._shouldRefresh = true;
                     }}
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         `Optionally provide a short hint that describes the expected input value.
@@ -325,8 +325,8 @@ export class PromptForm extends ModelForm<Prompt, string> {
             If the evaluation fails, the initial value itself is returned.`)}
             ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Initial value")} name="initialValue">
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.initialValue)}">
-                </ak-codemirror>
+                <ak-code-editor mode="python" value="${ifDefined(this.instance?.initialValue)}">
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         `Optionally pre-fill the input with an initial value.
@@ -336,14 +336,14 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Help text")} name="subText">
-                <ak-codemirror
+                <ak-code-editor
                     mode="html"
                     value="${ifDefined(this.instance?.subText)}"
                     @change=${() => {
                         this._shouldRefresh = true;
                     }}
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">${msg("Any HTML can be used.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Order")} required name="order">

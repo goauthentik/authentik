@@ -1,4 +1,4 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/HorizontalFormElement";
 import { aki } from "#common/api/client";
 

@@ -103,7 +103,7 @@ web/src/styles/
   authentik/            # component CSS
     components/<Name>/  #   Per-component overrides or new, unique components
     login.css           #   login-screen layout + token bridges
-  atom/                 # CodeMirror CSS stuff (imported into the CodeMirror component)
+  atom/                 # One Dark syntax colors (imported into ak-mdx)
 ```
 
 Note: quite a number of components have embedded CSS of their own (via Lit's `css()` function) or

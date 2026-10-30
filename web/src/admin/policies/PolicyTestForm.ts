@@ -1,5 +1,5 @@
 import "#components/ak-status-label";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -142,12 +142,12 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                     },
                     msg("Context"),
                 )}
-                <ak-codemirror
+                <ak-code-editor
                     id="context"
                     mode="yaml"
                     value=${YAML.stringify(this.request?.context ?? {})}
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>

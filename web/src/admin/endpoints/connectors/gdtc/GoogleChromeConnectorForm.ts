@@ -2,7 +2,7 @@ import "#components/ak-secret-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -61,10 +61,10 @@ export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, 
                         required
                         name="credentials"
                     >
-                        <ak-codemirror
+                        <ak-code-editor
                             mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
-                        ></ak-codemirror>
+                        ></ak-code-editor>
                         <p class="pf-c-form__helper-text">
                             ${msg("Google Cloud credentials file.")}
                         </p>
