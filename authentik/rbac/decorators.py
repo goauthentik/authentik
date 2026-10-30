@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.rbac.permissions import permission_for_object
+
 LOGGER = get_logger()
 
 
@@ -20,8 +22,9 @@ def permission_required(obj_perm: str | None = None, global_perms: list[str] | N
         if request.user.has_perm(obj_perm):
             return
         obj = self.get_object()
-        if not request.user.has_perm(obj_perm, obj):
-            LOGGER.debug("denying access for object", user=request.user, perm=obj_perm, obj=obj)
+        perm = permission_for_object(obj_perm, obj)
+        if not request.user.has_perm(perm, obj):
+            LOGGER.debug("denying access for object", user=request.user, perm=perm, obj=obj)
             self.permission_denied(request)
 
     def wrapper_outer(func: Callable):

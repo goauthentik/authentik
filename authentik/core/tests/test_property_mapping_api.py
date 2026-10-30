@@ -8,8 +8,9 @@ from rest_framework.test import APITestCase
 
 from authentik.core.api.property_mappings import PropertyMappingSerializer
 from authentik.core.models import Group, PropertyMapping
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.models import ScopeMapping
 
 
 class TestPropertyMappingAPI(APITestCase):
@@ -51,6 +52,29 @@ class TestPropertyMappingAPI(APITestCase):
         self.assertJSONEqual(
             response.content.decode(),
             {"result": dumps({"foo": "bar", "baz": group.name}), "successful": True},
+        )
+
+    def test_test_call_subclass_global_perms(self):
+        """Test PropertyMappings's test endpoint with global permissions on the subclass only"""
+        mapping = ScopeMapping.objects.create(
+            name=generate_id(), scope_name=generate_id(), expression="return {'foo': 'bar'}"
+        )
+        user = create_test_user()
+        self.client.force_login(user)
+        url = reverse("authentik_api:propertymapping-test", kwargs={"pk": mapping.pk})
+        response = self.client.post(url, data={})
+        self.assertEqual(response.status_code, 403)
+        user.assign_perms_to_managed_role(
+            [
+                "authentik_providers_oauth2.view_scopemapping",
+                "authentik_providers_oauth2.add_scopemapping",
+            ]
+        )
+        response = self.client.post(url, data={})
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            response.content.decode(),
+            {"result": dumps({"foo": "bar"}), "successful": True},
         )
 
     def test_validate(self):
