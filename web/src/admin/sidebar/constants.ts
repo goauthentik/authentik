@@ -1,10 +1,10 @@
-import { SidebarEntry } from "#elements/sidebar/utils";
+import { SidebarEntry } from "#admin/sidebar/types";
 
 import { msg } from "@lit/localize";
 
 // prettier-ignore
 export const initAdminSidebarEntries = (): readonly SidebarEntry[] => [
-    [null, msg("Dashboards"), { key: "dashboards", "?expanded": true }, [
+    [null, msg("Dashboards"), { key: "dashboards", expanded: true }, [
         ["/administration/overview", msg("Overview")],
         ["/administration/dashboard/users", msg("User Statistics")],
         ["/administration/system-tasks", msg("System Tasks"), ["system-tasks"]]]

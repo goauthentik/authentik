@@ -8,12 +8,11 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
-import { AndNext } from "#common/api/config";
 import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
 import { IconEditButton, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
-import { toAdminInterface } from "#elements/router/core/interfaces";
+import { toAdminInterface, toFlowInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -101,7 +100,10 @@ export class FlowListPage extends TablePage<Flow> {
                     aria-label=${msg(str`Execute "${item.name}"`)}
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
-                        const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+                        const finalURL = toFlowInterface(item.slug, {
+                            next: `${window.location.pathname}#${window.location.hash}`,
+                        });
+
                         window.open(finalURL, "_blank");
                     }}
                 >
