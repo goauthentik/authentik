@@ -80,6 +80,40 @@ for (const kind of ["setup", "validation"] as const) {
             expect(button.textContent).toContain("Resend code");
         }, 20000);
 
+        it("does not claim a code was sent when the initial email send was rate limited", async () => {
+            const stage = mount(async () => false);
+
+            stage.challenge = {
+                ...stage.challenge!,
+                responseErrors: {
+                    [kind === "setup" ? "non_field_errors" : "selected_challenge"]: [
+                        { code: "throttled", string: "Email sending was rate limited." },
+                    ],
+                },
+            };
+
+            await stage.updateComplete;
+
+            expect(stage.shadowRoot!.textContent).not.toMatch(
+                /A (verification token|code) has been sent/,
+            );
+        });
+
+        it("keeps the sent-to hint when an entered code is invalid", async () => {
+            const stage = mount(async () => false);
+
+            stage.challenge = {
+                ...stage.challenge!,
+                responseErrors: { code: [{ code: "invalid", string: "Code does not match" }] },
+            };
+
+            await stage.updateComplete;
+
+            expect(stage.shadowRoot!.textContent).toMatch(
+                /A (verification token|code) has been sent/,
+            );
+        });
+
         it("restores the button without claiming success when the server rejects sending", async () => {
             const stage = mount(async () => false);
             await stage.updateComplete;

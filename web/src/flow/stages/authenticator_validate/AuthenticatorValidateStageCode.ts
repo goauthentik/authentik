@@ -39,6 +39,12 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         const staticDevice = this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static;
         const emailDevice = this.deviceChallenge?.deviceClass === DeviceClassesEnum.Email;
 
+        const emailSendLimited =
+            emailDevice &&
+            this.challenge?.responseErrors?.selected_challenge?.some(
+                (error) => error.code === "throttled",
+            );
+
         return html`<form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
             <fieldset class="ak-c-fieldset pf-c-form__group">
@@ -67,7 +73,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                     required
                 />
                 <div class="pf-c-form__helper-text" id="validation-code-help">
-                    ${formatDeviceChallengeMessage(this.deviceChallenge)}
+                    ${emailSendLimited ? nothing : formatDeviceChallengeMessage(this.deviceChallenge)}
                 </div>
                 ${
                     emailDevice
