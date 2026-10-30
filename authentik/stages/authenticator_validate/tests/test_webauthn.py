@@ -1,7 +1,9 @@
 """Test validator stage"""
 
 from time import sleep
+from unittest import skipIf
 
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.urls.base import reverse
 from rest_framework.serializers import ValidationError
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
@@ -651,6 +653,7 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
                 self.user,
             )
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_validate_challenge_mldsa(self):
         """Test webauthn authentication with an ML-DSA-44 (FIPS 204) credential"""
         credential = MLDSACredential(rp_id="localhost", origin="http://localhost:9000")

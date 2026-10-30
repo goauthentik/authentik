@@ -2,8 +2,10 @@
 
 from base64 import b64decode
 from json import loads
+from unittest import skipIf
 from unittest.mock import MagicMock, patch
 
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.urls import reverse
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
@@ -704,6 +706,7 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         self.assertEqual([p["alg"] for p in params], [int(alg) for alg in SUPPORTED_PUB_KEY_ALGS])
         self.assertEqual([p["alg"] for p in params][-3:], [-48, -49, -50])
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_register_mldsa(self):
         """Test registration of an ML-DSA-44 (FIPS 204) credential"""
         credential = MLDSACredential(rp_id="localhost", origin="http://localhost:9000")
