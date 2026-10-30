@@ -470,9 +470,9 @@ class FlowExecutorView(APIView):
                 keep_context=keep_context,
             )
             return self.restart_flow(keep_context)
+        # Create the stage before cancel() so it can still read `next` from the session
+        challenge_view = AccessDeniedStage(self, error_message, request=self.request)
         self.cancel()
-        challenge_view = AccessDeniedStage(self, error_message)
-        challenge_view.request = self.request
         return to_stage_response(self.request, challenge_view.get(self.request))
 
     def cancel(self):
