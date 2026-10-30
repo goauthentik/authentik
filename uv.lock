@@ -458,7 +458,7 @@ requires-dist = [
     { name = "opentelemetry-propagator-b3", specifier = "==1.45.1" },
     { name = "opentelemetry-sdk", specifier = "==1.44.0" },
     { name = "packaging", specifier = "==26.3" },
-    { name = "paramiko", specifier = "==5.0.1" },
+    { name = "paramiko", specifier = "==5.1.0" },
     { name = "psycopg", extras = ["c", "pool"], specifier = "==3.3.6" },
     { name = "pydantic", specifier = "==2.14.1" },
     { name = "pydantic-scim", specifier = "==0.0.8" },
@@ -2950,7 +2950,7 @@ wheels = [
 
 [[package]]
 name = "paramiko"
-version = "5.0.1"
+version = "5.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bcrypt" },
@@ -2958,9 +2958,9 @@ dependencies = [
     { name = "invoke" },
     { name = "pynacl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3b/ec/d00e282ee3be1e13b789a5e85ca5a26758e3afd1cc4d84300cfc23ed2b34/paramiko-5.0.1.tar.gz", hash = "sha256:5c2d9e6293a221f8bb39a65de198a8ce3350390cbd4578a559c1bc016c1d7f2d", size = 1579876, upload-time = "2026-10-18T01:50:10.274Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/76/cb/b1fde76618d84b1acf54d3d03d2b833ba5878afd12b9899346cc080f209d/paramiko-5.1.0.tar.gz", hash = "sha256:239b5f9b2a53006cd54f83cf8495ee742083708ead947882c8dd2786de79f39b", size = 1579549, upload-time = "2026-10-18T02:38:51.931Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4a/aa/ca045ce603b8f91efb1e6a3cb8a49293148abd15825687dcc4438e04134d/paramiko-5.0.1-py3-none-any.whl", hash = "sha256:126ff26677a7cb1504c4ea5a5a7a168b14abee3972ac72657e31efca68977f03", size = 209106, upload-time = "2026-10-18T01:50:08.887Z" },
+    { url = "https://files.pythonhosted.org/packages/13/45/fa0e8d70cb25d2dae06bc238e580a84834f6ca53a4e2408cccc19a78db7b/paramiko-5.1.0-py3-none-any.whl", hash = "sha256:d9fe6d67a9d0bbf3eb85b051d26ab850b678c02d060f32915b944e5ca6d0d9e1", size = 211623, upload-time = "2026-10-18T02:38:49.903Z" },
 ]
 
 [[package]]
