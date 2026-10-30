@@ -2,30 +2,24 @@
 
 from base64 import b64decode
 from dataclasses import dataclass
-from urllib.parse import quote_plus
 from xml.etree.ElementTree import ParseError  # nosec
 
-import xmlsec
 from defusedxml import ElementTree
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
-    DSA_SHA1,
-    NS_MAP,
     NS_SAML_PROTOCOL,
-    RSA_SHA1,
-    RSA_SHA256,
-    RSA_SHA384,
-    RSA_SHA512,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
 from authentik.common.saml.exceptions import (
     ERROR_CANNOT_DECODE_REQUEST,
     ERROR_FAILED_TO_VERIFY,
-    ERROR_SIGNATURE_REQUIRED_BUT_ABSENT,
     CannotHandleAssertion,
 )
-from authentik.lib.xml import UnsafeXML, lxml_from_string
+from authentik.common.saml.parsers.verify import (
+    verify_detached_signature,
+    verify_enveloped_signature,
+)
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 from authentik.sources.saml.models import SAMLNameIDPolicy
@@ -105,30 +99,7 @@ class AuthNRequestParser:
         if not verifier:
             return self._parse_xml(decoded_xml, relay_state)
 
-        try:
-            root = lxml_from_string(decoded_xml)
-        except UnsafeXML as exc:
-            raise CannotHandleAssertion(str(exc)) from exc
-        xmlsec.tree.add_ids(root, ["ID"])
-        signature_nodes = root.xpath("/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP)
-        # No signatures, no verifier configured -> decode xml directly
-        if len(signature_nodes) < 1:
-            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
-
-        signature_node = signature_nodes[0]
-
-        if signature_node is not None:
-            try:
-                ctx = xmlsec.SignatureContext()
-                key = xmlsec.Key.from_memory(
-                    verifier.certificate_data,
-                    xmlsec.constants.KeyDataFormatCertPem,
-                    None,
-                )
-                ctx.key = key
-                ctx.verify(signature_node)
-            except xmlsec.Error as exc:
-                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+        verify_enveloped_signature(decoded_xml, verifier, "/samlp:AuthnRequest/ds:Signature")
 
         return self._parse_xml(decoded_xml, relay_state)
 
@@ -149,40 +120,9 @@ class AuthNRequestParser:
         if not verifier:
             return self._parse_xml(decoded_xml, relay_state)
 
-        if verifier and not (signature and sig_alg):
-            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
-
-        if signature and sig_alg:
-            querystring = f"SAMLRequest={quote_plus(saml_request)}&"
-            if relay_state is not None:
-                querystring += f"RelayState={quote_plus(relay_state)}&"
-            querystring += f"SigAlg={quote_plus(sig_alg)}"
-
-            dsig_ctx = xmlsec.SignatureContext()
-            key = xmlsec.Key.from_memory(
-                verifier.certificate_data, xmlsec.constants.KeyDataFormatCertPem, None
-            )
-            dsig_ctx.key = key
-
-            sign_algorithm_transform_map = {
-                DSA_SHA1: xmlsec.constants.TransformDsaSha1,
-                RSA_SHA1: xmlsec.constants.TransformRsaSha1,
-                RSA_SHA256: xmlsec.constants.TransformRsaSha256,
-                RSA_SHA384: xmlsec.constants.TransformRsaSha384,
-                RSA_SHA512: xmlsec.constants.TransformRsaSha512,
-            }
-            sign_algorithm_transform = sign_algorithm_transform_map.get(
-                sig_alg, xmlsec.constants.TransformRsaSha1
-            )
-
-            try:
-                dsig_ctx.verify_binary(
-                    querystring.encode("utf-8"),
-                    sign_algorithm_transform,
-                    b64decode(signature),
-                )
-            except xmlsec.Error as exc:
-                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+        verify_detached_signature(
+            "SAMLRequest", saml_request, relay_state, signature, sig_alg, verifier
+        )
         try:
             return self._parse_xml(decoded_xml, relay_state)
         except ParseError as exc:

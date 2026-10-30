@@ -2,7 +2,7 @@
  * @file Entrypoint file for the styles used by the User & Admin applications
  */
 
-@import "#styles/layers.css";
+@import "#styles/if/shared/layers.css";
 
 /*
  * 2026-06-25: The `.global.css` suffix is currently *required* to trigger the correct
