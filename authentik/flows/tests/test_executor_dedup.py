@@ -1,9 +1,14 @@
 """flow executor duplicate-submission deduplication tests"""
 
+from threading import Event as ThreadEvent
+from threading import Thread
+from time import monotonic
 from unittest.mock import patch
 
 from django.conf import settings
+from django.db import connection
 from django.http import HttpResponseRedirect
+from django.test import Client, TransactionTestCase
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_flow
@@ -94,3 +99,76 @@ class TestFlowExecutorDedup(FlowTestCase):
             )
         self.assertEqual(solve.call_count, 1)
         self.assertEqual(response.status_code, 302)
+
+
+class TestFlowExecutorDedupConcurrent(TransactionTestCase):
+    """Test deduplication of truly concurrent submissions"""
+
+    def setUp(self):
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        for order in range(2):
+            FlowStageBinding.objects.create(
+                target=self.flow,
+                stage=DummyStage.objects.create(name=generate_id()),
+                order=order,
+            )
+        self.url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+
+    def _waiting_advisory_locks(self) -> int:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT count(*) FROM pg_locks WHERE locktype = 'advisory' AND NOT granted"
+            )
+            return cursor.fetchone()[0]
+
+    def test_concurrent_duplicate_waits_and_replays(self):
+        """A duplicate arriving mid-submission waits for the first and replays its redirect"""
+        self.client.get(self.url)
+        duplicate_client = Client()
+        duplicate_client.cookies = self.client.cookies
+
+        entered = ThreadEvent()
+        release = ThreadEvent()
+        responses = {}
+        errors = []
+        real_solve = FlowExecutorView._solve_challenge
+
+        def solve(view, request, *args, **kwargs):
+            entered.set()
+            if not release.wait(timeout=10):
+                errors.append("first submission was never released")
+            return real_solve(view, request, *args, **kwargs)
+
+        def submit(name: str, client: Client):
+            try:
+                responses[name] = client.post(
+                    self.url, {"component": "ak-stage-dummy"}, content_type="application/json"
+                )
+            except Exception as exc:  # noqa: BLE001
+                errors.append(exc)
+            finally:
+                connection.close()
+
+        with patch.object(
+            FlowExecutorView, "_solve_challenge", autospec=True, side_effect=solve
+        ) as mock:
+            first = Thread(target=submit, args=("first", self.client))
+            first.start()
+            self.assertTrue(entered.wait(timeout=10), "first submission never reached the stage")
+            duplicate = Thread(target=submit, args=("duplicate", duplicate_client))
+            duplicate.start()
+            deadline = monotonic() + 10
+            while self._waiting_advisory_locks() < 1:
+                self.assertLess(monotonic(), deadline, "duplicate never waited on the lock")
+            release.set()
+            first.join(timeout=15)
+            duplicate.join(timeout=15)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(responses["first"].status_code, 302)
+        self.assertEqual(responses["duplicate"].status_code, 302)
+        self.assertEqual(
+            responses["duplicate"].headers["Location"], responses["first"].headers["Location"]
+        )
+        self.assertIn(settings.SESSION_COOKIE_NAME, responses["duplicate"].cookies)
