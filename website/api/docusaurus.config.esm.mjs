@@ -95,6 +95,13 @@ const config = createDocusaurusConfig({
                     showLastUpdateTime: false,
                     showLastUpdateAuthor: false,
                     numberPrefixParser: false,
+                    editUrl: ({ docPath }) =>
+                        docPath.startsWith("reference/")
+                            ? undefined
+                            : new URL(
+                                  docPath,
+                                  "https://github.com/goauthentik/authentik/edit/main/website/api/",
+                              ).toString(),
                     exclude: [
                         "**/_*.{js,jsx,ts,tsx,md,mdx}",
                         "**/_*/**",
@@ -164,7 +171,7 @@ const config = createDocusaurusConfig({
 
     //#region Theme
 
-    themes: ["docusaurus-theme-openapi-docs"],
+    themes: ["docusaurus-theme-openapi-docs", "@goauthentik/docusaurus-theme/toc"],
     favicon: "https://goauthentik.io/img/icon.png",
     themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
         footer: {

@@ -1,0 +1,38 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+.docItemContainer header + *,
+.docItemContainer article > *:first-child {
+    margin-top: 0;
+}
+
+@media (min-width: 997px) {
+    :global(.container):has(> .docItemRow) {
+        --doc-article-gutter: clamp(3rem, 5vw, 6rem);
+        max-width: none !important;
+        padding-inline-start: var(--doc-article-gutter);
+    }
+
+    .docItemRow:global(.row) {
+        --doc-toc-inline-padding: 0.25rem;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        margin-inline: 0;
+    }
+
+    .docItemRow.withTOC {
+        grid-template-columns: minmax(0, 1fr) var(--doc-sidebar-width);
+        /* Include the TOC's inner padding when matching the outer article gutter. */
+        column-gap: calc(var(--doc-article-gutter) - var(--doc-toc-inline-padding));
+    }
+
+    .docItemRow > :global(.col) {
+        min-width: 0;
+        max-width: none;
+        padding-inline: 0;
+    }
+}
