@@ -74,6 +74,12 @@ Bootstrap and API password hash imports now enforce the [password hash import se
 
 Generate a replacement hash with the target authentik version. API clients can use the override for another supported hash, but bootstrap imports do not support an override.
 
+### `/data/media` is now a directory in the container image {#data-media-directory}
+
+The container image no longer includes `/media`, or the `/data/media` symlink to it that kept legacy `/media` mounts readable. `/data/media` is now a regular directory, and authentik does not read a volume mounted at `/media`. If you still mount one, move its contents to the `media` directory of the volume mounted at `/data`, as described in the [2025.12 release notes](../2025/v2025.12.mdx#storage-mount-changes).
+
+When a new, empty named Docker or Podman volume was mounted at `/data`, the old symlink was copied into it, and uploaded files were lost whenever the server container was recreated. Bind mounts, such as `./data:/data` in the official Docker Compose file, are not affected. New volumes no longer get the symlink, but a volume created by an earlier version keeps it, and upgrading deletes the files uploaded through it. Before you upgrade, follow [`media` symlink in a named `/data` volume](../../troubleshooting/image_upload.mdx#media-symlink) to check your volume and move those files into it.
+
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
