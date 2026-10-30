@@ -1,5 +1,6 @@
 """authentik SAML Provider Models"""
 
+from typing import Any
 from uuid import uuid4
 
 from django.db import models
@@ -395,6 +396,28 @@ class SAMLSession(InternallyManagedMixin, SerializerModel, ExpiringModel):
         from authentik.providers.saml.api.sessions import SAMLSessionSerializer
 
         return SAMLSessionSerializer
+
+    @classmethod
+    def upsert(cls, session_index: str, provider: SAMLProvider, **values: Any) -> None:
+        """Create or replace the SAMLSession for a session index and provider.
+
+        This is a single INSERT ... ON CONFLICT DO UPDATE, because a separate delete and create
+        can fail on the unique constraint: concurrent logins from one browser session share a
+        session index, and an expired session that cleanup hasn't deleted yet still holds its
+        index, but the default manager hides it. Fields that `values` omits are reset to their
+        defaults. This doesn't call `save()` or send its signals, so `values` must set
+        `expires`."""
+        unique_fields = ["session_index", "provider"]
+        cls.objects.bulk_create(
+            [cls(session_index=session_index, provider=provider, **values)],
+            update_conflicts=True,
+            unique_fields=unique_fields,
+            update_fields=[
+                field.name
+                for field in cls._meta.concrete_fields
+                if not field.primary_key and field.name not in unique_fields
+            ],
+        )
 
     def __str__(self):
         return f"SAML Session for provider {self.provider_id} and user {self.user_id}"
