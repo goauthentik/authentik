@@ -19,7 +19,7 @@ locales:
   - { tag: cs-CZ, django: cs_CZ, transifex: cs_CZ, ship: true }
   - { tag: sk-SK, django: sk_SK, transifex: sk_SK, ship: true }
   - { tag: cy-GB, django: cy_GB, transifex: cy_GB, ship: false }
-  - { tag: da-DK, django: da_DK, transifex: da_DK, ship: false }
+  - { tag: da-DK, django: da_DK, transifex: da_DK, ship: true }
   - { tag: de-DE, django: de_DE, transifex: de_DE, ship: true }
   - { tag: el-GR, django: el_GR, transifex: el_GR, ship: false }
   - { tag: en, django: en, transifex: null, ship: true }
