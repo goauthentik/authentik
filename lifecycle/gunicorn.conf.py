@@ -148,6 +148,15 @@ def on_reload(server: "Arbiter"):  # noqa: UP037
 def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Attach the next free worker_id before forking off."""
     worker._worker_id = _next_worker_id(server)
+    # Workers must not inherit database connections or connection pools opened in the master,
+    # as multiple processes using the same socket corrupt the connection (and TLS state)
+    # See https://github.com/goauthentik/authentik/issues/14320
+    from django.db import connections
+
+    for conn in connections.all(initialized_only=True):
+        conn.close()
+        if hasattr(conn, "close_pool"):
+            conn.close_pool()
 
 
 def post_worker_init(worker: DjangoUvicornWorker):
