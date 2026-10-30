@@ -114,7 +114,7 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==9.1.1",
   "requests-mock==1.12.1",
-  "ruff==0.17.2",
+  "ruff==0.17.3",
   "selenium==4.51.0",
   "types-channels==4.3.0.20260518",
   "types-defusedxml==0.7.0.20260504",
