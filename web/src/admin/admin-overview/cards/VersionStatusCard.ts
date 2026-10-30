@@ -4,7 +4,6 @@ import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
-import Styles from "#admin/admin-overview/cards/VersionStatusCard.css";
 
 import { AdminApi, Version } from "@goauthentik/api";
 
@@ -14,8 +13,6 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-    public static styles = [...super.styles, Styles];
-
     public override icon = "pf-icon pf-icon-bundle";
     public override label = msg("Version");
 
