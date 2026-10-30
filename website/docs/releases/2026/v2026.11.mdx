@@ -76,9 +76,17 @@ Generate a replacement hash with the target authentik version. API clients can u
 
 ### `/data/media` is now a directory in the container image {#data-media-directory}
 
-The container image no longer includes `/media`, or the `/data/media` symlink to it that kept legacy `/media` mounts readable. `/data/media` is now a regular directory, and authentik does not read a volume mounted at `/media`. If you still mount one, move its contents to the `media` directory of the volume mounted at `/data`, as described in the [2025.12 release notes](../2025/v2025.12.mdx#storage-mount-changes).
+The `/data/media` path is now a regular directory instead of a symlink to `/media`. The `/media` directory has also been removed from the container image, so authentik no longer uses volumes mounted there.
 
-When a new, empty named Docker or Podman volume was mounted at `/data`, the old symlink was copied into it, and uploaded files were lost whenever the server container was recreated. Bind mounts, such as `./data:/data` in the official Docker Compose file, are not affected. New volumes no longer get the symlink, but a volume created by an earlier version keeps it, and upgrading deletes the files uploaded through it. Before you upgrade, follow [`media` symlink in a named `/data` volume](../../troubleshooting/image_upload.mdx#media-symlink) to check your volume and move those files into it.
+If you still mount a volume at `/media`, move its contents into the `media` directory within your `/data` volume. See the [2025.12 release notes](../2025/v2025.12.mdx#storage-mount-changes) for details.
+
+**Important for Docker and Podman named volumes:**
+
+Previously, when a new, empty named volume was mounted at `/data`, Docker or Podman could copy the `/data/media` symlink into it. This caused uploaded files to be stored in the container's temporary filesystem rather than the persistent volume. As a result, those files could be lost when the container was recreated, including during an upgrade.
+
+New volumes no longer have this problem, but existing named volumes may still contain the old symlink. Bind mounts, such as `./data:/data` in the official Docker Compose file, are not affected.
+
+**Before upgrading**, follow the [media symlink troubleshooting guide](../../troubleshooting/image_upload.mdx#media-symlink) to check whether your volume contains the old symlink and migrate any affected files before they are lost.
 
 ## New features and improvements
 
