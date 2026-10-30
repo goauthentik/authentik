@@ -3,7 +3,6 @@ members = [
   "packages/ak-axum",
   "packages/ak-common",
   "packages/client-rust",
-  "website/scripts/docsmg",
 ]
 resolver = "3"
 
@@ -23,17 +22,15 @@ arc-swap = "= 1.9.3"
 argh = "= 0.1.19"
 askama = "= 0.16.1"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
-aws-lc-rs = { version = "= 1.18.2", features = ["fips"] }
+aws-lc-rs = { version = "= 1.19.0", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
 axum-extra = { version = "= 0.12.6", default-features = false, features = [
   "cookie-signed",
   "cookie-key-expansion",
 ] }
 base64 = "= 0.23.1"
-clap = { version = "= 4.6.7", features = ["derive", "env"] }
 chrono = { version = "0.4.45", features = ["serde"] }
 color-eyre = "= 0.6.5"
-colored = "= 3.1.1"
 config-rs = { package = "config", version = "= 0.15.22", default-features = false, features = [
   "json",
   "yaml",
@@ -74,7 +71,7 @@ nix = { version = "= 0.31.3", features = [
   "signal",
   "user",
 ] }
-notify = "= 8.2.0"
+notify = "= 8.2.1"
 pem = "= 4.0.0"
 percent-encoding = "= 2.3.2"
 pin-project-lite = "= 0.2.17"
@@ -132,7 +129,7 @@ sqlx = { version = "= 0.9.0", default-features = false, features = [
 tempfile = "= 3.27.0"
 thiserror = "= 2.0.21"
 time = { version = "= 0.3.55", features = ["macros"] }
-tokio = { version = "= 1.53.3", features = ["full", "tracing"] }
+tokio = { version = "= 1.54.1", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.6"
 tokio-tungstenite = { version = "= 0.30.0", features = [
