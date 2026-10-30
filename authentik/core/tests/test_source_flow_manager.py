@@ -9,12 +9,17 @@ from guardian.shortcuts import get_anonymous_user
 
 from authentik.core import user_switching
 from authentik.core.models import SourceUserMatchingModes, User
-from authentik.core.sources.flow_manager import Action
+from authentik.core.sources.flow_manager import (
+    SESSION_KEY_OVERRIDE_FLOW_TOKEN,
+    SESSION_KEY_SOURCE_FLOW_STAGES,
+    Action,
+    prepare_source_login_from_flow,
+)
 from authentik.core.sources.matcher import MatchFailureReason
 from authentik.core.sources.stage import PostSourceStage
 from authentik.core.tests.utils import RequestFactory, create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import FlowAuthenticationRequirement
+from authentik.flows.models import FlowAuthenticationRequirement, FlowToken
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_ADD_USER,
@@ -438,6 +443,21 @@ class TestSourceFlowManager(TestCase):
                 {"name": group_id, "attributes": {"group_id": group_id}},
             )
         return len(queries.captured_queries)
+
+    def test_prepare_source_login_from_flow_stashes_active_plan(self):
+        """Identification source login must resume the in-progress flow afterward."""
+        request = self.request_factory.get("/", user=AnonymousUser())
+        plan = FlowPlan(self.authentication_flow.pk.hex)
+        plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER] = True
+        request.session[SESSION_KEY_PLAN] = plan
+
+        prepare_source_login_from_flow(request)
+
+        self.assertIn(SESSION_KEY_OVERRIDE_FLOW_TOKEN, request.session)
+        self.assertTrue(request.session[SESSION_KEY_SOURCE_FLOW_STAGES])
+        token: FlowToken = request.session[SESSION_KEY_OVERRIDE_FLOW_TOKEN]
+        self.assertEqual(token.flow_id, self.authentication_flow.pk)
+        self.assertTrue(token.plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
 
     def test_group_properties_reuse_mapping_manager(self):
         """Test that building group properties doesn't re-fetch and re-compile the

@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 from xmlsec import InternalError, VerificationError
 
+from authentik.core.sources.flow_manager import prepare_source_login_from_flow
 from authentik.flows.challenge import (
     PLAN_CONTEXT_ATTRS,
     PLAN_CONTEXT_TITLE,
@@ -98,6 +99,7 @@ class InitiateView(View):
         source: SAMLSource = get_object_or_404(SAMLSource, slug=source_slug)
         if not source.enabled:
             raise Http404
+        prepare_source_login_from_flow(request)
         relay_state = request.GET.get("next", "")
         auth_n_req = RequestProcessor(source, request, relay_state)
         # If the source is configured for Redirect bindings, we can just redirect there
