@@ -68,14 +68,10 @@ class ObjectPermissions(DjangoObjectPermissions):
 
 
 def permission_for_object(perm: str, obj: Model) -> str:
-    """Translate `perm` into the permission object-level grants on `obj` are stored under.
-
-    Viewsets over a base model with subclasses, like `/policies/all/`, return the subclass
-    from `get_object()`, and guardian stores object permissions under the subclass's content
-    type. A default permission of a parent model (`authentik_policies.view_policy`) becomes
-    the subclass's (`authentik_policies_expression.view_expressionpolicy`), which is what the
-    subclass's own viewset checks. guardian raises `WrongAppError` for the parent's
-    permission when the subclass is in another app."""
+    """Map a parent model's default permission to the same permission on `obj`'s model,
+    which is where guardian stores object permissions. For an `ExpressionPolicy`,
+    `authentik_policies.view_policy` becomes `authentik_policies_expression.view_expressionpolicy`.
+    Other permissions are returned unchanged."""
     if "." not in perm:
         return perm
     app_label, codename = perm.split(".", 1)
