@@ -4,13 +4,18 @@ import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
-import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+import {
+    LDAPSourcePropertyMapping,
+    ListMergeModeEnum,
+    PropertymappingsApi,
+} from "@goauthentik/api";
 
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-ldap-form")
 export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
+    protected override listMergeModeDefault = ListMergeModeEnum.AppendUnique;
 
     protected endpoints = {
         load: (pk: string) =>

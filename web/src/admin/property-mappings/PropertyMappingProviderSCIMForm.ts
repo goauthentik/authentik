@@ -4,12 +4,14 @@ import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
-import { PropertymappingsApi, SCIMMapping } from "@goauthentik/api";
+import { ListMergeModeEnum, PropertymappingsApi, SCIMMapping } from "@goauthentik/api";
 
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-provider-scim-form")
 export class PropertyMappingProviderSCIMForm extends BasePropertyMappingForm<SCIMMapping> {
+    protected override listMergeModeDefault = ListMergeModeEnum.Append;
+
     protected endpoints = {
         load: (pk: string) =>
             aki(PropertymappingsApi).propertymappingsProviderScimRetrieve({ pmUuid: pk }),

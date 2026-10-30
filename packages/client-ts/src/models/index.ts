@@ -303,6 +303,7 @@ export * from "./LifecycleIterationStateEnum.js";
 export * from "./LifecycleRule.js";
 export * from "./LifecycleRuleRequest.js";
 export * from "./Link.js";
+export * from "./ListMergeModeEnum.js";
 export * from "./LogEvent.js";
 export * from "./LogLevelEnum.js";
 export * from "./LoginChallengeTypes.js";

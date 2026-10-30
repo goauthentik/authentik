@@ -16,7 +16,7 @@ class MicrosoftEntraProviderMappingSerializer(PropertyMappingSerializer):
 
     class Meta:
         model = MicrosoftEntraProviderMapping
-        fields = PropertyMappingSerializer.Meta.fields
+        fields = PropertyMappingSerializer.Meta.fields + ["list_merge_mode"]
 
 
 class MicrosoftEntraProviderMappingFilter(FilterSet):

@@ -10,6 +10,9 @@
  * Do not edit the class manually.
  */
 
+import type { ListMergeModeEnum } from "./ListMergeModeEnum.js";
+import { ListMergeModeEnumFromJSON, ListMergeModeEnumToJSON } from "./ListMergeModeEnum.js";
+
 /**
  * GoogleWorkspaceProviderMapping Serializer
  *
@@ -42,6 +45,7 @@ export interface GoogleWorkspaceProviderMapping {
      * Return internal model name
      */
     readonly metaModelName: string;
+    listMergeMode?: ListMergeModeEnum;
 }
 
 /**
@@ -103,6 +107,10 @@ export function GoogleWorkspaceProviderMappingFromJSONTyped(
         verboseName: json["verbose_name"],
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
+        listMergeMode:
+            json["list_merge_mode"] == null
+                ? undefined
+                : ListMergeModeEnumFromJSON(json["list_merge_mode"]),
     };
 }
 
@@ -125,5 +133,6 @@ export function GoogleWorkspaceProviderMappingToJSONTyped(
         managed: value["managed"],
         name: value["name"],
         expression: value["expression"],
+        list_merge_mode: ListMergeModeEnumToJSON(value["listMergeMode"]),
     };
 }

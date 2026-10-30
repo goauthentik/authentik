@@ -4,13 +4,18 @@ import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
-import { PropertymappingsApi, SAMLSourcePropertyMapping } from "@goauthentik/api";
+import {
+    ListMergeModeEnum,
+    PropertymappingsApi,
+    SAMLSourcePropertyMapping,
+} from "@goauthentik/api";
 
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-saml-form")
 export class PropertyMappingSourceSAMLForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
+    protected override listMergeModeDefault = ListMergeModeEnum.AppendUnique;
 
     protected endpoints = {
         load: (pk: string) =>

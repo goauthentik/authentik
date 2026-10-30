@@ -179,7 +179,8 @@ class ProviderInfoView(View):
             if not isinstance(value, dict):
                 continue
             default_claims.extend(value.keys())
-        return default_claims
+        # Several scope mappings can return the same claim, e.g. `groups`
+        return list(dict.fromkeys(default_claims))
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """OpenID-compliant Provider Info"""

@@ -12,7 +12,7 @@ class LDAPSourcePropertyMappingSerializer(PropertyMappingSerializer):
 
     class Meta:
         model = LDAPSourcePropertyMapping
-        fields = PropertyMappingSerializer.Meta.fields
+        fields = PropertyMappingSerializer.Meta.fields + ["list_merge_mode"]
 
 
 class LDAPSourcePropertyMappingFilter(PropertyMappingFilterSet):

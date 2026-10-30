@@ -34,6 +34,7 @@ import {
     type LDAPSourcePropertyMappingRequest,
     LDAPSourcePropertyMappingRequestToJSON,
 } from "../models/LDAPSourcePropertyMappingRequest.js";
+import { type ListMergeModeEnum } from "../models/ListMergeModeEnum.js";
 import {
     type MicrosoftEntraProviderMapping,
     MicrosoftEntraProviderMappingFromJSON,
@@ -384,6 +385,7 @@ export interface PropertymappingsProviderGoogleWorkspaceDestroyRequest {
 
 export interface PropertymappingsProviderGoogleWorkspaceListRequest {
     expression?: string;
+    listMergeMode?: ListMergeModeEnum;
     managed?: Array<string>;
     name?: string;
     /**
@@ -448,6 +450,7 @@ export interface PropertymappingsProviderMicrosoftEntraDestroyRequest {
 
 export interface PropertymappingsProviderMicrosoftEntraListRequest {
     expression?: string;
+    listMergeMode?: ListMergeModeEnum;
     managed?: Array<string>;
     name?: string;
     /**
@@ -2333,6 +2336,10 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             queryParameters["expression"] = requestParameters["expression"];
         }
 
+        if (requestParameters["listMergeMode"] != null) {
+            queryParameters["list_merge_mode"] = requestParameters["listMergeMode"];
+        }
+
         if (requestParameters["managed"] != null) {
             queryParameters["managed"] = requestParameters["managed"];
         }
@@ -2868,6 +2875,10 @@ export class PropertymappingsApi extends runtime.BaseAPI {
 
         if (requestParameters["expression"] != null) {
             queryParameters["expression"] = requestParameters["expression"];
+        }
+
+        if (requestParameters["listMergeMode"] != null) {
+            queryParameters["list_merge_mode"] = requestParameters["listMergeMode"];
         }
 
         if (requestParameters["managed"] != null) {

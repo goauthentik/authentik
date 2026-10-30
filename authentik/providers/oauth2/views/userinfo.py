@@ -2,7 +2,6 @@
 
 from typing import Any
 
-from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
@@ -72,9 +71,11 @@ class UserInfoView(View):
 
         scopes_from_client = token.scope
         final_claims = {}
+        # Mappings can share a scope name, and the list merge mode depends on which
+        # mapping is evaluated later, so the order has to be stable
         for scope in ScopeMapping.objects.filter(
             provider=provider, scope_name__in=scopes_from_client
-        ).order_by("scope_name"):
+        ).order_by("scope_name", "name"):
             scope: ScopeMapping
             value = None
             try:
@@ -94,7 +95,7 @@ class UserInfoView(View):
                 LOGGER.warning("Failed to evaluate property mapping", exc=exc)
             if value is None:
                 continue
-            always_merger.merge(final_claims, value)
+            scope.merge_into(final_claims, value)
             LOGGER.debug("updated scope", scope=scope)
         return final_claims
 

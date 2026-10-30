@@ -12,6 +12,7 @@ from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik.core.models import (
     GroupSourceConnection,
+    MergedSourcePropertyMapping,
     PropertyMapping,
     Source,
     UserSourceConnection,
@@ -136,7 +137,7 @@ class PlexSource(ScheduledModel, Source):
         verbose_name_plural = _("Plex Sources")
 
 
-class PlexSourcePropertyMapping(PropertyMapping):
+class PlexSourcePropertyMapping(MergedSourcePropertyMapping, PropertyMapping):
     """Map Plex properties to User of Group object attributes"""
 
     expression_allowed_types = [dict]

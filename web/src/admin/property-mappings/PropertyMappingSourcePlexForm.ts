@@ -4,13 +4,18 @@ import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
-import { PlexSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+import {
+    ListMergeModeEnum,
+    PlexSourcePropertyMapping,
+    PropertymappingsApi,
+} from "@goauthentik/api";
 
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-plex-form")
 export class PropertyMappingSourcePlexForm extends BasePropertyMappingForm<PlexSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
+    protected override listMergeModeDefault = ListMergeModeEnum.AppendUnique;
 
     protected endpoints = {
         load: (pk: string) =>

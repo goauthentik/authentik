@@ -8,7 +8,14 @@ from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer, Serializer
 
-from authentik.core.models import Group, PropertyMapping, Source, Token, User
+from authentik.core.models import (
+    Group,
+    MergedSourcePropertyMapping,
+    PropertyMapping,
+    Source,
+    Token,
+    User,
+)
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
 
 
@@ -81,7 +88,7 @@ class SCIMSource(Source):
         verbose_name_plural = _("SCIM Sources")
 
 
-class SCIMSourcePropertyMapping(PropertyMapping):
+class SCIMSourcePropertyMapping(MergedSourcePropertyMapping, PropertyMapping):
     """Map SCIM properties to User or Group object attributes"""
 
     expression_allowed_types = [dict]

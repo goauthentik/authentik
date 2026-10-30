@@ -12,6 +12,7 @@ class KerberosSourcePropertyMappingSerializer(PropertyMappingSerializer):
 
     class Meta(PropertyMappingSerializer.Meta):
         model = KerberosSourcePropertyMapping
+        fields = PropertyMappingSerializer.Meta.fields + ["list_merge_mode"]
 
 
 class KerberosSourcePropertyMappingFilter(PropertyMappingFilterSet):

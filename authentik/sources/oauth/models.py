@@ -12,6 +12,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.api.object_types import CreatableType, NonCreatableType
 from authentik.core.models import (
     GroupSourceConnection,
+    MergedSourcePropertyMapping,
     PropertyMapping,
     Source,
     UserSourceConnection,
@@ -301,7 +302,7 @@ class WeChatOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("WeChat OAuth Sources")
 
 
-class OAuthSourcePropertyMapping(PropertyMapping):
+class OAuthSourcePropertyMapping(MergedSourcePropertyMapping, PropertyMapping):
     """Map OAuth properties to User or Group object attributes"""
 
     expression_allowed_types = [dict]

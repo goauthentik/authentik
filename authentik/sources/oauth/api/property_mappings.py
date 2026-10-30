@@ -12,6 +12,7 @@ class OAuthSourcePropertyMappingSerializer(PropertyMappingSerializer):
 
     class Meta(PropertyMappingSerializer.Meta):
         model = OAuthSourcePropertyMapping
+        fields = PropertyMappingSerializer.Meta.fields + ["list_merge_mode"]
 
 
 class OAuthSourcePropertyMappingFilter(PropertyMappingFilterSet):

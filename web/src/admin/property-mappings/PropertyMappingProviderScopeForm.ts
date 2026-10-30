@@ -4,7 +4,7 @@ import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
-import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
+import { ListMergeModeEnum, PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -13,6 +13,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-property-mapping-provider-scope-form")
 export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<ScopeMapping> {
+    protected override listMergeModeDefault = ListMergeModeEnum.Append;
+
     protected endpoints = {
         load: (pk: string) =>
             aki(PropertymappingsApi).propertymappingsProviderScopeRetrieve({ pmUuid: pk }),

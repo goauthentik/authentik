@@ -4,12 +4,18 @@ import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
-import { MicrosoftEntraProviderMapping, PropertymappingsApi } from "@goauthentik/api";
+import {
+    ListMergeModeEnum,
+    MicrosoftEntraProviderMapping,
+    PropertymappingsApi,
+} from "@goauthentik/api";
 
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-provider-microsoft-entra-form")
 export class PropertyMappingProviderMicrosoftEntraForm extends BasePropertyMappingForm<MicrosoftEntraProviderMapping> {
+    protected override listMergeModeDefault = ListMergeModeEnum.Append;
+
     protected endpoints = {
         load: (pk: string) =>
             aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraRetrieve({

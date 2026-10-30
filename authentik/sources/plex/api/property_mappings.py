@@ -12,6 +12,7 @@ class PlexSourcePropertyMappingSerializer(PropertyMappingSerializer):
 
     class Meta(PropertyMappingSerializer.Meta):
         model = PlexSourcePropertyMapping
+        fields = PropertyMappingSerializer.Meta.fields + ["list_merge_mode"]
 
 
 class PlexSourcePropertyMappingFilter(PropertyMappingFilterSet):

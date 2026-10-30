@@ -10,6 +10,9 @@
  * Do not edit the class manually.
  */
 
+import type { ListMergeModeEnum } from "./ListMergeModeEnum.js";
+import { ListMergeModeEnumFromJSON, ListMergeModeEnumToJSON } from "./ListMergeModeEnum.js";
+
 /**
  * MicrosoftEntraProviderMapping Serializer
  *
@@ -25,6 +28,7 @@ export interface MicrosoftEntraProviderMappingRequest {
     managed?: string | null;
     name: string;
     expression: string;
+    listMergeMode?: ListMergeModeEnum;
 }
 
 /**
@@ -60,6 +64,10 @@ export function MicrosoftEntraProviderMappingRequestFromJSONTyped(
                   : json["managed"],
         name: json["name"],
         expression: json["expression"],
+        listMergeMode:
+            json["list_merge_mode"] == null
+                ? undefined
+                : ListMergeModeEnumFromJSON(json["list_merge_mode"]),
     };
 }
 
@@ -81,5 +89,6 @@ export function MicrosoftEntraProviderMappingRequestToJSONTyped(
         managed: value["managed"],
         name: value["name"],
         expression: value["expression"],
+        list_merge_mode: ListMergeModeEnumToJSON(value["listMergeMode"]),
     };
 }

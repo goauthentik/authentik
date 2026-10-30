@@ -62,7 +62,7 @@ The synchronization process runs in the authentik worker. To improve scalability
 
 Attribute mapping from authentik to SCIM users is done through property mappings, as with other providers. The default mappings for users and groups work for many setups, but you can define custom mappings to add fields.
 
-All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. Lists are combined without duplicate items; see [Synchronization property mappings](../property-mappings/index.mdx#synchronization-property-mappings) for the merge rules. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
+All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. Each mapping's **List merging** setting decides how its lists are combined; see [Synchronization property mappings](../property-mappings/index.mdx#synchronization-property-mappings) for the merge rules. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
 
 :::warning Property mapping errors
 Property mappings are evaluated in name order. If a property mapping fails to evaluate, authentik stops the synchronization and does not evaluate the remaining mappings.

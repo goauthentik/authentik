@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application
+from authentik.core.models import Application, ListMergeMode
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
@@ -73,6 +73,40 @@ class TestUserinfo(OAuthTestCase):
             },
         )
         self.assertEqual(res.status_code, 200)
+
+    def test_userinfo_list_merge_mode(self):
+        """test that the list merge mode of the scope mapping evaluated last decides
+        how list claims returned by several scope mappings are merged"""
+        self.provider.property_mappings.add(
+            ScopeMapping.objects.create(
+                name=generate_id(),
+                scope_name="groups",
+                expression="""return {
+                    "groups": ["extra"] + [group.name for group in request.user.groups.all()],
+                }""",
+            )
+        )
+        self.token.scope = ["openid", "profile", "groups"]
+        self.token.save()
+        # Scope mappings are evaluated sorted by scope name, so `profile` comes after `groups`
+        profile = ScopeMapping.objects.get(managed="goauthentik.io/providers/oauth2/scope-profile")
+        self.assertEqual(profile.list_merge_mode, ListMergeMode.APPEND)
+        groups = [group.name for group in self.user.groups.all()]
+
+        for mode, expected in [
+            (ListMergeMode.APPEND, ["extra"] + groups + groups),
+            (ListMergeMode.APPEND_UNIQUE, ["extra"] + groups),
+            (ListMergeMode.REPLACE, groups),
+        ]:
+            with self.subTest(mode=mode):
+                profile.list_merge_mode = mode
+                profile.save()
+                res = self.client.get(
+                    reverse("authentik_providers_oauth2:userinfo"),
+                    HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
+                )
+                self.assertEqual(res.status_code, 200)
+                self.assertEqual(res.json()["groups"], expected)
 
     def test_userinfo_invalid_scope(self):
         """test user info with a broken scope"""

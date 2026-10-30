@@ -44,7 +44,7 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
-from authentik.lib.merge import MERGE_LIST_UNIQUE
+from authentik.lib.merge import MERGE_LIST_REPLACE, MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
@@ -1307,6 +1307,47 @@ class PropertyMapping(SerializerModel, ManagedModel):
     class Meta:
         verbose_name = _("Property Mapping")
         verbose_name_plural = _("Property Mappings")
+
+
+class ListMergeMode(models.TextChoices):
+    """How the lists a property mapping returns are merged into the results
+    of the mappings evaluated before it"""
+
+    APPEND = "append"
+    APPEND_UNIQUE = "append_unique"
+    REPLACE = "replace"
+
+
+LIST_MERGERS = {
+    ListMergeMode.APPEND: always_merger,
+    ListMergeMode.APPEND_UNIQUE: MERGE_LIST_UNIQUE,
+    ListMergeMode.REPLACE: MERGE_LIST_REPLACE,
+}
+
+
+class MergedPropertyMapping(models.Model):
+    """Property mapping whose result is merged with the results of other mappings"""
+
+    list_merge_mode = models.TextField(choices=ListMergeMode.choices, default=ListMergeMode.APPEND)
+
+    class Meta:
+        abstract = True
+
+    def merge_into(self, destination: dict[str, Any], value: Any):
+        """Merge `value`, which this mapping returned, into `destination`"""
+        LIST_MERGERS[self.list_merge_mode].merge(destination, value)
+
+
+class MergedSourcePropertyMapping(MergedPropertyMapping):
+    """Source property mappings have always skipped list items that an
+    earlier mapping already returned, so they keep doing that by default"""
+
+    list_merge_mode = models.TextField(
+        choices=ListMergeMode.choices, default=ListMergeMode.APPEND_UNIQUE
+    )
+
+    class Meta:
+        abstract = True
 
 
 class SourceUserPropertyMapping(SimpleThroughModel):

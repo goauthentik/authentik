@@ -13,7 +13,14 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.core.apps import AppAccessWithoutBindings
-from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
+from authentik.core.models import (
+    BackchannelProvider,
+    Group,
+    MergedPropertyMapping,
+    PropertyMapping,
+    User,
+    UserTypes,
+)
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
@@ -305,7 +312,7 @@ class SCIMProviderGroupPropertyMapping(SimpleThroughModel):
         )
 
 
-class SCIMMapping(PropertyMapping):
+class SCIMMapping(MergedPropertyMapping, PropertyMapping):
     """Map authentik data to outgoing SCIM requests"""
 
     expression_allowed_types = [dict]
