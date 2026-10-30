@@ -6,7 +6,7 @@ import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
-import { AndNext } from "#common/api/config";
+import { withNext } from "#common/api/config";
 import { createPaginatedResponse } from "#common/api/responses";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/error";
@@ -86,9 +86,13 @@ export class MFADevicesPage extends Table<Device> {
                         return html`<li role="presentation">
                             <a
                                 role="menuitem"
-                                href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    toUserInterface("settings/credentials"),
-                                )}"
+                                href=${ifDefined(
+                                    stage.configureUrl &&
+                                        withNext(
+                                            stage.configureUrl,
+                                            toUserInterface("settings/credentials"),
+                                        ),
+                                )}
                                 class="pf-c-dropdown__menu-item"
                             >
                                 ${stageToAuthenticatorName(stage)}

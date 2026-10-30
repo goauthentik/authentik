@@ -376,6 +376,18 @@ authorization](../../add-secure-apps/applications/manage_apps.mdx#policy-driven-
 
 Defaults to `86400` (one day).
 
+##### `AUTHENTIK_CACHE__TIMEOUT_BRANDS`:ak-version[2026.11]
+
+Duration in seconds for which each authentik process keeps brands in memory. The process that saves a change to a brand, or to a flow or application that a brand uses, applies it immediately. Other processes keep using the cached brand until this timeout has passed, and then reload it in the background.
+
+Defaults to `15`.
+
+##### `AUTHENTIK_CACHE__TIMEOUT_SYSTEM_SETTINGS`:ak-version[2026.11]
+
+Duration in seconds for which each authentik process keeps the [system settings](../../sys-mgmt/settings.mdx) in memory. The process that saves a change applies it immediately. Other processes keep using the cached settings until this timeout has passed, and then reload them in the background.
+
+Defaults to `15`.
+
 ## Worker settings
 
 ##### `AUTHENTIK_WORKER__PROCESSES`

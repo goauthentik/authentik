@@ -59,13 +59,19 @@ class GoogleWorkspaceGroupClient(
         with transaction.atomic():
             try:
                 response = self._request(self.directory_service.groups().insert(body=google_group))
-            except ObjectExistsSyncException:
+            except ObjectExistsSyncException as exc:
                 # group already exists in google workspace, so we can connect them manually
                 # for groups we need to fetch the group from google as we connect on
                 # ID and not group email
-                group_data = self._request(
-                    self.directory_service.groups().get(groupKey=google_group["email"])
-                )
+                try:
+                    group_data = self._request(
+                        self.directory_service.groups().get(groupKey=google_group["email"])
+                    )
+                except NotFoundSyncException:
+                    group_data = None
+                # A user has the address, or it is an alias of another group
+                if not group_data or group_data["email"].lower() != google_group["email"].lower():
+                    raise exc
                 return GoogleWorkspaceProviderGroup.objects.create(
                     provider=self.provider,
                     group=group,
@@ -134,6 +140,10 @@ class GoogleWorkspaceGroupClient(
                     )
             except ObjectExistsSyncException:
                 pass
+            except NotFoundSyncException:
+                # A user who isn't a member anymore doesn't need to be removed
+                if direction != Direction.remove:
+                    raise
             except TransientSyncException:
                 raise
 

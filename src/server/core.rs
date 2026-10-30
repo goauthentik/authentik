@@ -1,4 +1,8 @@
-use std::sync::{Arc, LazyLock, atomic::Ordering};
+use std::{
+    error::Error as _,
+    io,
+    sync::{Arc, LazyLock, atomic::Ordering},
+};
 
 use ak_axum::{
     accept::tls::TlsState,
@@ -9,22 +13,27 @@ use ak_axum::{
 use ak_common::{config, db};
 use axum::{
     Extension, Router,
-    body::Body,
+    body::{Body, HttpBody as _},
     extract::{OriginalUri, Request, State},
     http::{
-        HeaderName, HeaderValue, Method, StatusCode, Uri,
-        header::{ACCEPT, CONTENT_TYPE, HOST, LOCATION, RETRY_AFTER},
+        HeaderMap, HeaderName, HeaderValue, Method, StatusCode, Uri,
+        header::{
+            ACCEPT, CONNECTION, CONTENT_TYPE, HOST, LOCATION, PROXY_AUTHENTICATE,
+            PROXY_AUTHORIZATION, RETRY_AFTER, TE, TRAILER, TRANSFER_ENCODING, UPGRADE,
+        },
     },
     response::{IntoResponse as _, Response},
     routing::any,
 };
 use http_body_util::BodyExt as _;
+use hyper::body::Incoming;
 use serde_json::json;
-use tracing::{instrument, warn};
+use tracing::{debug, instrument, warn};
 
 use crate::server::{
-    GUNICORN_READY, Server,
+    GUNICORN_READY, Server, ServerClient,
     core::websockets::{handle_websocket_upgrade, is_websocket_upgrade},
+    is_connect_not_found,
 };
 
 static STARTUP_RESPONSE_JSON: LazyLock<Response<String>> = LazyLock::new(|| {
@@ -82,6 +91,41 @@ const FORWARD_REMOVED_HEADERS_IF_UNTRUSTED: [HeaderName; 3] = [
     HeaderName::from_static("x-forwarded-tls-client-cert"), // traefik
     X_FORWARDED_CLIENT_CERT,                    // envoy
 ];
+/// Hop-by-hop headers describe the client's connection to us, not ours to the
+/// application (RFC 9110, section 7.6.1). The Go server's
+/// `httputil.ReverseProxy` removed the same set.
+const HOP_BY_HOP_HEADERS: [HeaderName; 9] = [
+    CONNECTION,
+    HeaderName::from_static("keep-alive"),
+    PROXY_AUTHENTICATE,
+    PROXY_AUTHORIZATION,
+    HeaderName::from_static("proxy-connection"),
+    TE,
+    TRAILER,
+    TRANSFER_ENCODING,
+    UPGRADE,
+];
+
+/// Removes hop-by-hop headers, including any the `Connection` header names.
+///
+/// Forwarding `Connection: Close` made uvicorn before 0.53 keep the upstream
+/// connection open and silently drop the next request sent on it.
+fn remove_hop_by_hop_headers(headers: &mut HeaderMap) {
+    #[expect(
+        clippy::needless_collect,
+        reason = "The names borrow from the map that is changed below"
+    )]
+    let listed = headers
+        .get_all(CONNECTION)
+        .iter()
+        .filter_map(|value| value.to_str().ok())
+        .flat_map(|value| value.split(','))
+        .filter_map(|name| HeaderName::from_bytes(name.trim().as_bytes()).ok())
+        .collect::<Vec<_>>();
+    for header_name in listed.into_iter().chain(HOP_BY_HOP_HEADERS) {
+        headers.remove(header_name);
+    }
+}
 
 fn startup_response(accept_header: &str) -> Response {
     let response = if accept_header.contains("application/json") {
@@ -130,6 +174,14 @@ async fn forward_request(
         .build()?;
     *request.uri_mut() = uri;
 
+    // The upgrade handshake needs `Connection` and `Upgrade`, so only strip
+    // hop-by-hop headers from plain requests. Strip them before adding our own
+    // headers, which `Connection` could otherwise name.
+    let is_websocket = is_websocket_upgrade(request.headers());
+    if !is_websocket {
+        remove_hop_by_hop_headers(request.headers_mut());
+    }
+
     for header_name in FORWARD_ALWAYS_REMOVED_HEADERS {
         request.headers_mut().remove(header_name);
     }
@@ -150,7 +202,7 @@ async fn forward_request(
         .headers_mut()
         .insert(X_FORWARDED_PROTO, HeaderValue::from_str(scheme.as_ref())?);
 
-    if is_websocket_upgrade(request.headers()) {
+    if is_websocket {
         return handle_websocket_upgrade(request, &server.socket_path).await;
     }
 
@@ -172,7 +224,7 @@ async fn forward_request(
             .insert(X_FORWARDED_CLIENT_CERT, HeaderValue::from_str(&xfcc)?);
     }
 
-    match server.client.request(request).await {
+    match send_to_server(&server.client, &server.retry_client, request).await {
         Ok(res) => {
             let (parts, body) = res.into_parts();
             Ok(Response::from_parts(
@@ -180,8 +232,75 @@ async fn forward_request(
                 Body::from_stream(body.into_data_stream()),
             ))
         }
-        Err(_) => Ok(startup_response(&accept_header)),
+        Err(err) => {
+            warn!(?err, "failed to forward request to server");
+            Ok(startup_response(&accept_header))
+        }
     }
+}
+
+/// Sends `request` to gunicorn.
+///
+/// When gunicorn recycles a worker after `max_requests`, the worker closes its idle keep-alive
+/// connections. A request that `client` sends on one of them before noticing fails with a
+/// connection reset or broken pipe, even though another worker is ready to serve it. Requests
+/// that are safe to resend are retried once on a new connection from `retry_client`.
+async fn send_to_server(
+    client: &ServerClient,
+    retry_client: &ServerClient,
+    request: Request,
+) -> Result<hyper::Response<Incoming>, hyper_util::client::legacy::Error> {
+    let retry_request = clone_resendable_request(&request);
+    match client.request(request).await {
+        Err(err) if is_closed_connection_error(&err) => match retry_request {
+            Some(retry_request) => {
+                debug!(?err, "server closed the connection, retrying the request");
+                retry_client.request(retry_request).await
+            }
+            None => Err(err),
+        },
+        res => res,
+    }
+}
+
+/// Copies `request` if it can be sent again: its method is safe and it has no body. These are the
+/// requests Go's `net/http` transport retried, which the Go server relied on.
+fn clone_resendable_request(request: &Request) -> Option<Request> {
+    let safe = matches!(
+        *request.method(),
+        Method::GET | Method::HEAD | Method::OPTIONS | Method::TRACE
+    );
+    if !safe || request.body().size_hint().exact() != Some(0) {
+        return None;
+    }
+
+    let mut clone = Request::new(Body::empty());
+    clone.method_mut().clone_from(request.method());
+    clone.uri_mut().clone_from(request.uri());
+    *clone.version_mut() = request.version();
+    clone.headers_mut().clone_from(request.headers());
+    Some(clone)
+}
+
+/// Whether the server closed the connection before answering, which is how a pooled connection
+/// to a recycled worker fails.
+fn is_closed_connection_error(err: &hyper_util::client::legacy::Error) -> bool {
+    if err.is_connect() {
+        return false;
+    }
+    let mut source = err.source();
+    while let Some(err) = source {
+        if let Some(err) = err.downcast_ref::<io::Error>() {
+            return matches!(
+                err.kind(),
+                io::ErrorKind::ConnectionReset
+                    | io::ErrorKind::ConnectionAborted
+                    | io::ErrorKind::BrokenPipe
+            );
+        }
+        source = err.source();
+    }
+    false
 }
 
 #[instrument(skip_all)]
@@ -237,8 +356,17 @@ async fn health_live(State(server): State<Arc<Server>>) -> Result<StatusCode> {
         return Ok(StatusCode::SERVICE_UNAVAILABLE);
     }
 
-    if !server.health_live().await? {
-        return Ok(StatusCode::SERVICE_UNAVAILABLE);
+    match server.health_live().await {
+        Ok(true) => {}
+        Ok(false) => return Ok(StatusCode::SERVICE_UNAVAILABLE),
+        Err(err) => {
+            if is_connect_not_found(err.as_ref()) {
+                debug!(?err, "upstream socket not yet ready (health live)");
+            } else {
+                warn!(?err, "failed to check server health liveness");
+            }
+            return Ok(StatusCode::SERVICE_UNAVAILABLE);
+        }
     }
     match server.health_live().await {
         Ok(true) => {}
@@ -321,9 +449,158 @@ pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
 
 #[cfg(test)]
 mod tests {
-    use axum::http::Method;
+    use std::{
+        path::{Path, PathBuf},
+        sync::atomic::AtomicUsize,
+    };
 
-    use super::is_django_http_method;
+    use hyper_unix_socket::UnixSocketConnector;
+    use hyper_util::{client::legacy::Client, rt::TokioExecutor};
+    use tempfile::TempDir;
+    use tokio::{
+        io::{AsyncReadExt as _, AsyncWriteExt as _},
+        net::{UnixListener, UnixStream},
+    };
+
+    use super::*;
+
+    fn headers(pairs: &[(&'static str, &'static str)]) -> HeaderMap {
+        let mut headers = HeaderMap::new();
+        for (name, value) in pairs {
+            headers.append(*name, HeaderValue::from_static(value));
+        }
+        headers
+    }
+
+    async fn read_request_head(stream: &mut UnixStream) {
+        let mut head = Vec::new();
+        let mut byte = [0_u8; 1];
+        while !head.ends_with(b"\r\n\r\n") {
+            if stream.read(&mut byte).await.expect("failed to read") == 0 {
+                break;
+            }
+            head.extend_from_slice(&byte);
+        }
+    }
+
+    /// Stands in for gunicorn while it recycles a worker. The first connection answers one
+    /// request with keep-alive, then gets closed by the exiting worker as the next request
+    /// arrives on it. Every later connection is answered by a fresh worker.
+    ///
+    /// Returns the number of connections accepted.
+    fn spawn_recycling_upstream(socket_path: &Path) -> Arc<AtomicUsize> {
+        let listener = UnixListener::bind(socket_path).expect("failed to bind upstream socket");
+        let connections = Arc::new(AtomicUsize::new(0));
+        let accepted = Arc::clone(&connections);
+
+        tokio::spawn(async move {
+            loop {
+                let (mut stream, _) = listener.accept().await.expect("failed to accept");
+                read_request_head(&mut stream).await;
+                if accepted.fetch_add(1, Ordering::SeqCst) == 0 {
+                    stream
+                        .write_all(b"HTTP/1.1 200 OK\r\ncontent-length: 6\r\n\r\npooled")
+                        .await
+                        .expect("failed to write response");
+                    // Close with the next request unread, which resets the connection.
+                    let mut byte = [0_u8; 1];
+                    stream.read_exact(&mut byte).await.expect("failed to read");
+                    drop(stream);
+                } else {
+                    stream
+                        .write_all(b"HTTP/1.1 200 OK\r\ncontent-length: 5\r\n\r\nfresh")
+                        .await
+                        .expect("failed to write response");
+                }
+            }
+        });
+
+        connections
+    }
+
+    fn clients(socket_path: &Path) -> (ServerClient, ServerClient) {
+        let connector = || UnixSocketConnector::new(PathBuf::from(socket_path));
+        let client = Client::builder(TokioExecutor::new())
+            .set_host(false)
+            .build(connector());
+        let retry_client = Client::builder(TokioExecutor::new())
+            .pool_max_idle_per_host(0)
+            .set_host(false)
+            .build(connector());
+        (client, retry_client)
+    }
+
+    fn request(method: Method, body: Body) -> Request {
+        Request::builder()
+            .method(method)
+            .uri("http://localhost:8000/-/health/live/")
+            .body(body)
+            .expect("failed to build request")
+    }
+
+    async fn body_text(response: hyper::Response<Incoming>) -> String {
+        let body = response
+            .into_body()
+            .collect()
+            .await
+            .expect("failed to read body")
+            .to_bytes();
+        String::from_utf8(body.to_vec()).expect("body is not utf-8")
+    }
+
+    #[tokio::test]
+    async fn retries_request_when_recycled_worker_closes_connection() {
+        let dir = TempDir::new().expect("failed to create temp dir");
+        let socket_path = dir.path().join("authentik.sock");
+        let connections = spawn_recycling_upstream(&socket_path);
+        let (client, retry_client) = clients(&socket_path);
+
+        let first = send_to_server(&client, &retry_client, request(Method::GET, Body::empty()))
+            .await
+            .expect("first request should succeed");
+        assert_eq!(body_text(first).await, "pooled");
+
+        let second = send_to_server(&client, &retry_client, request(Method::GET, Body::empty()))
+            .await
+            .expect("request on the closed connection should be retried");
+        assert_eq!(second.status(), StatusCode::OK);
+        assert_eq!(body_text(second).await, "fresh");
+        assert_eq!(connections.load(Ordering::SeqCst), 2);
+    }
+
+    #[tokio::test]
+    async fn does_not_retry_request_with_body() {
+        let dir = TempDir::new().expect("failed to create temp dir");
+        let socket_path = dir.path().join("authentik.sock");
+        let connections = spawn_recycling_upstream(&socket_path);
+        let (client, retry_client) = clients(&socket_path);
+
+        let first = send_to_server(&client, &retry_client, request(Method::GET, Body::empty()))
+            .await
+            .expect("first request should succeed");
+        assert_eq!(body_text(first).await, "pooled");
+
+        let err = send_to_server(
+            &client,
+            &retry_client,
+            request(Method::POST, Body::from("data")),
+        )
+        .await
+        .expect_err("a request with a body must not be sent twice");
+        assert!(is_closed_connection_error(&err));
+        assert_eq!(connections.load(Ordering::SeqCst), 1);
+    }
+
+    #[test]
+    fn only_safe_requests_without_body_are_resendable() {
+        for method in [Method::GET, Method::HEAD, Method::OPTIONS, Method::TRACE] {
+            assert!(clone_resendable_request(&request(method, Body::empty())).is_some());
+        }
+        for method in [Method::POST, Method::PUT, Method::PATCH, Method::DELETE] {
+            assert!(clone_resendable_request(&request(method, Body::empty())).is_none());
+        }
+        assert!(clone_resendable_request(&request(Method::GET, Body::from("data"))).is_none());
+    }
 
     #[test]
     fn django_http_methods_are_allowed() {
@@ -347,6 +624,47 @@ mod tests {
         assert!(!is_django_http_method(
             &Method::from_bytes(b"PROPFIND").expect("method")
         ));
+    }
+
+    /// uvicorn before 0.53 only treated lowercase `close` as closing, so a
+    /// forwarded `Connection: Close` made it drop the next request on the
+    /// connection.
+    #[test]
+    fn hop_by_hop_headers_are_removed() {
+        let mut headers = headers(&[
+            ("connection", "Close"),
+            ("keep-alive", "timeout=5"),
+            ("proxy-connection", "keep-alive"),
+            ("proxy-authorization", "Basic Zm9vOmJhcg=="),
+            ("te", "trailers"),
+            ("trailer", "expires"),
+            ("transfer-encoding", "chunked"),
+            ("upgrade", "h2c"),
+            ("authorization", "Bearer token"),
+            ("content-length", "4"),
+        ]);
+
+        remove_hop_by_hop_headers(&mut headers);
+
+        let mut remaining = headers.keys().map(|name| name.as_str()).collect::<Vec<_>>();
+        remaining.sort_unstable();
+        assert_eq!(remaining, ["authorization", "content-length"]);
+    }
+
+    #[test]
+    fn headers_named_by_connection_are_removed() {
+        let mut headers = headers(&[
+            ("connection", "keep-alive, X-Custom-Hop"),
+            ("connection", "x-other-hop"),
+            ("x-custom-hop", "1"),
+            ("x-other-hop", "2"),
+            ("x-end-to-end", "3"),
+        ]);
+
+        remove_hop_by_hop_headers(&mut headers);
+
+        assert_eq!(headers.len(), 1);
+        assert!(headers.contains_key("x-end-to-end"));
     }
 }
 

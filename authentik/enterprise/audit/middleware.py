@@ -1,7 +1,6 @@
 """Enterprise audit middleware"""
 
 from copy import deepcopy
-from functools import partial
 from typing import Any
 
 from django.apps.registry import apps
@@ -10,7 +9,7 @@ from django.db import connection
 from django.db.models import ManyToManyRel, Model
 from django.db.models.expressions import BaseExpression, Combinable
 from django.db.models.signals import post_init
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 
 from authentik.enterprise.audit.apps import AuditIncludeExpandedDiff
 from authentik.events.middleware import AuditMiddleware, should_log_model
@@ -25,23 +24,11 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         """Check if audit logging is enabled"""
         return apps.get_app_config("authentik_enterprise").enabled()
 
-    def connect(self, request: HttpRequest):
-        super().connect(request)
-        if not self.enabled:
-            return
-        if not hasattr(request, "request_id"):
-            return
-        post_init.connect(
-            partial(self.post_init_handler, request=request),
-            dispatch_uid=request.request_id,
-            weak=False,
-        )
-
-    def disconnect(self, request: HttpRequest):
-        super().disconnect(request)
-        if not hasattr(request, "request_id"):
-            return
-        post_init.disconnect(dispatch_uid=request.request_id)
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        # post_init fires for every model instance, so only connect it once enterprise is in use
+        if self.enabled:
+            self.connect(post_init, "post_init_handler")
+        return super().__call__(request)
 
     def serialize_simple(self, model: Model) -> dict:
         """Serialize a model in a very simple way. No ForeignKeys or other relationships are

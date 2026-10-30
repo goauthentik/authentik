@@ -4,6 +4,8 @@ import { buildHexworldStyle, wedgeColors } from "./hexworld-style.js";
 import { binAtLocation, buildEventFeatures, type EventFeatureCollection } from "./wedges.js";
 import MaplibreStyles from "maplibre-gl/dist/maplibre-gl.css";
 
+import { staticURL } from "#common/urls";
+
 import { EventActions } from "@goauthentik/api";
 
 import { cellToLatLng } from "h3-js";
@@ -72,7 +74,7 @@ export class AKMap extends LitElement {
      * URL of the bundled hexworld PMTiles archive (used when `pmtilesURL` is empty).
      */
     @property({ type: String, attribute: "hexworld-url" })
-    public hexworldURL = "/static/dist/assets/maps/hexworld.pmtiles";
+    public hexworldURL = staticURL("/static/dist/assets/maps/hexworld.pmtiles");
 
     @property({ type: String })
     public theme: BasemapTheme = "light";
@@ -373,7 +375,11 @@ export class AKMap extends LitElement {
 
     protected createStyleSpec() {
         if (this.#hexworldMode) {
-            return buildHexworldStyle({ archiveURL: this.hexworldURL, theme: this.theme });
+            return buildHexworldStyle({
+                archiveURL: this.hexworldURL,
+                glyphsURL: staticURL("/static/dist/assets/maps/fonts/{fontstack}/{range}.pbf"),
+                theme: this.theme,
+            });
         }
 
         return buildBasemapStyle({

@@ -179,6 +179,10 @@ export class AuthenticatorValidateStage
         this.selectedDeviceChallenge = null;
     }
 
+    public refresh(): Promise<boolean> {
+        return this.host.refresh?.() ?? Promise.resolve(false);
+    }
+
     protected override willUpdate(changed: PropertyValues<this>) {
         // When moving between multiple authenticator-validate stages in one flow, the element
         // instance is reused. Reset selection if it is no longer valid in the new challenge.
@@ -188,6 +192,16 @@ export class AuthenticatorValidateStage
             if (shouldResetSelectedChallenge(this.selectedDeviceChallenge, allowedChallenges)) {
                 this.selectedDeviceChallenge = null;
                 this.initialized = false;
+            } else if (this.#selectedDeviceChallenge) {
+                const { deviceClass, deviceUid } = this.#selectedDeviceChallenge;
+
+                // Swap in the refreshed challenge without re-notifying the server of the selection.
+                this.#selectedDeviceChallenge =
+                    allowedChallenges.find(
+                        (challenge) =>
+                            challenge.deviceClass === deviceClass &&
+                            challenge.deviceUid === deviceUid,
+                    ) ?? null;
             }
         }
 
