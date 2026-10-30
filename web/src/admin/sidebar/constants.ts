@@ -27,6 +27,7 @@ export const initAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/events/transports", msg("Notification Transports")],
         ["/events/lifecycle-rules", msg("Lifecycle Rules"), {enterprise:true}],
         ["/events/lifecycle-reviews", msg("Reviews"), {enterprise:true}],
+        ["/events/expiration-rules", msg("Expiration Rules"), {enterprise:true}],
         ["/events/offboardings", msg("Offboardings"), {enterprise:true}],
         ["/events/exports", msg("Data Exports"), {enterprise:true}]]
     ],
