@@ -1464,6 +1464,13 @@ class UserSwitchingSession(models.Model):
         on_delete=models.SET_NULL,
         related_name="+",
     )
+    # The login that started "Add user" and hasn't finished it.
+    add_user_session = models.ForeignKey(
+        "authentik_core.Session",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
 
     class Meta:
         verbose_name = _("User Switching Session")

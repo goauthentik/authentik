@@ -9,7 +9,8 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.brands.models import SESSION_KEY_BRAND_SAFE_MODE
-from authentik.core.models import Token, TokenIntents, User
+from authentik.core.models import Session, Token, TokenIntents, User
+from authentik.core.tests.utils import create_test_user
 
 
 class TestRecovery(TestCase):
@@ -52,6 +53,27 @@ class TestRecovery(TestCase):
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
         self.client.get(reverse("authentik_recovery:use-token", kwargs={"key": token.key}))
         self.assertEqual(self.client.session["authenticatedsession"].user.pk, token.user.pk)
+
+    def test_recovery_as_other_user_starts_empty_session(self):
+        """Recovery replaces another user's login without carrying over session data"""
+        self.client.force_login(create_test_user())
+        session = self.client.session
+        previous_session_key = session.session_key
+        session["previous-user-data"] = "private data"
+        session.save()
+        call_command("create_recovery_key", "10", self.user.username, stdout=StringIO())
+        token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
+
+        response = self.client.get(
+            reverse("authentik_recovery:use-token", kwargs={"key": token.key})
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.client.session["authenticatedsession"].user_id, self.user.pk)
+        self.assertNotIn("previous-user-data", self.client.session)
+        self.assertFalse(Session.objects.filter(session_key=previous_session_key).exists())
+        self.assertFalse(Token.objects.filter(pk=token.pk).exists())
+        self.assertTrue(self.client.session[SESSION_KEY_BRAND_SAFE_MODE])
 
     def test_recovery_view_safe_mode(self):
         """Test recovery view enables brand safe mode on the session"""
