@@ -246,6 +246,15 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(engine.build().passing, False)
         self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
 
+    def test_engine_cache_disabled(self):
+        """Ensure an engine that bypasses the cache doesn't write to it either"""
+        pbm = PolicyBindingModel.objects.create()
+        binding = PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0)
+        engine = PolicyEngine(pbm, self.user)
+        engine.use_cache = False
+        self.assertEqual(engine.build().passing, False)
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 0)
+
     def test_engine_cache_expired(self):
         """Ensure a cached passing result is not used once its binding has expired"""
         pbm = PolicyBindingModel.objects.create()

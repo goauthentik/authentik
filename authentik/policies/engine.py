@@ -186,7 +186,7 @@ class _PolicyEngineBase:
                 continue
             self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=request)
             our_end, task_end = Pipe(False)
-            task = PolicyProcess(binding, request, task_end)
+            task = PolicyProcess(binding, request, task_end, use_cache=self.use_cache)
             task.daemon = False
             self.logger.debug("P_ENG: Starting Process", binding=binding, request=request)
             if not CURRENT_PROCESS._config.get("daemon"):
