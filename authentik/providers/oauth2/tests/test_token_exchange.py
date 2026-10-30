@@ -467,7 +467,7 @@ class TestTokenExchange(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 400)
         body = loads(response.content.decode())
-        self.assertEqual(body["error"], "invalid_grant")
+        self.assertEqual(body["error"], "unauthorized_client")
 
     def test_confidential_client_without_secret(self):
         """test that a confidential client must authenticate"""

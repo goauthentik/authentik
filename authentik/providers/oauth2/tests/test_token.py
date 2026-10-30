@@ -70,6 +70,7 @@ class TestToken(OAuthTestCase):
         )
         with self.assertRaises(TokenError) as cm:
             parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(cm.exception.error, "unauthorized_client")
         self.assertEqual(cm.exception.cause, "grant_type_not_configured")
 
     def test_request_auth_code(self):

@@ -46,7 +46,7 @@ class DeviceView(View):
         except Application.DoesNotExist:
             raise DeviceCodeError("invalid_client") from None
         if GrantType.DEVICE_CODE not in provider.grant_types:
-            raise DeviceCodeError("invalid_client")
+            raise DeviceCodeError("unauthorized_client")
         self.provider = provider
         self.client_id = client_id
 

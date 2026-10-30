@@ -9,12 +9,14 @@ from freezegun import freeze_time
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.blueprints.v1.importer import Importer
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.crypto.builder import PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair, KeyType
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -282,3 +284,80 @@ class TestAPI(APITestCase):
         retrieved_data = response.json()
         self.assertEqual(retrieved_data["logout_uri"], "http://goauthentik.io/logout")
         self.assertEqual(retrieved_data["logout_method"], "backchannel")
+
+    def test_grant_types_default_on_create(self):
+        """Omitting grant_types on create enables authorization_code and refresh_token"""
+        response = self.client.post(
+            reverse("authentik_api:oauth2provider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "redirect_uris": [],
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            response.json()["grant_types"],
+            [GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN],
+        )
+
+    def test_grant_types_default_on_blueprint_create(self):
+        """Blueprints get the same default on create, and keep grant types on update"""
+        flow = create_test_flow()
+        client_id = generate_id()
+        blueprint = f"""
+            version: 1
+            entries:
+                - model: authentik_providers_oauth2.oauth2provider
+                  identifiers: {{ client_id: {client_id} }}
+                  attrs:
+                      name: {client_id}
+                      authorization_flow: {flow.pk}
+                      invalidation_flow: {flow.pk}
+                      redirect_uris: []
+        """
+        self.assertTrue(Importer.from_string(blueprint).apply())
+        provider = OAuth2Provider.objects.get(client_id=client_id)
+        self.assertEqual(
+            provider.grant_types, [GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN]
+        )
+        provider.grant_types = [GrantType.CLIENT_CREDENTIALS]
+        provider.save()
+        self.assertTrue(Importer.from_string(blueprint).apply())
+        provider.refresh_from_db()
+        self.assertEqual(provider.grant_types, [GrantType.CLIENT_CREDENTIALS])
+
+    def test_grant_types_empty(self):
+        """An explicitly empty grant_types list is rejected"""
+        response = self.client.post(
+            reverse("authentik_api:oauth2provider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "redirect_uris": [],
+                "grant_types": [],
+            },
+        )
+        self.assertJSONEqual(
+            response.content,
+            {"grant_types": ["At least one grant type must be enabled."]},
+        )
+
+    def test_grant_types_kept_on_update(self):
+        """A full update that omits grant_types keeps the existing ones"""
+        self.provider.grant_types = [GrantType.CLIENT_CREDENTIALS]
+        self.provider.save()
+        response = self.client.put(
+            reverse("authentik_api:oauth2provider-detail", kwargs={"pk": self.provider.pk}),
+            data={
+                "name": self.provider.name,
+                "authorization_flow": self.provider.authorization_flow.pk,
+                "invalidation_flow": create_test_flow().pk,
+                "redirect_uris": [],
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.provider.refresh_from_db()
+        self.assertEqual(self.provider.grant_types, [GrantType.CLIENT_CREDENTIALS])

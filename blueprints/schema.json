@@ -12248,7 +12248,8 @@
                         ],
                         "title": "Grant types"
                     },
-                    "title": "Grant types"
+                    "title": "Grant types",
+                    "description": "Grant types the client may use. Defaults to authorization_code and refresh_token when omitted on create."
                 },
                 "client_id": {
                     "type": "string",

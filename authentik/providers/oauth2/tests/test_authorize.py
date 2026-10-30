@@ -66,7 +66,44 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             OAuthAuthorizationParams.from_request(request)
-        self.assertEqual(cm.exception.error, "invalid_request")
+        self.assertEqual(cm.exception.error, "unauthorized_client")
+        self.assertEqual(cm.exception.cause, "grant_type_not_configured")
+        self.assertEqual(
+            cm.exception.description,
+            "The authorization_code grant type is not enabled for this provider",
+        )
+
+    def test_disallowed_grant_type_event(self):
+        """A disabled grant type writes a configuration_error event, only for logged-in users"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            grant_types=[GrantType.CLIENT_CREDENTIALS],
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+        )
+        data = {
+            "response_type": "code",
+            "client_id": provider.client_id,
+            "redirect_uri": "http://local.invalid/Foo",
+        }
+        events = Event.objects.filter(
+            action=EventAction.CONFIGURATION_ERROR,
+            context__cause="grant_type_not_configured",
+        )
+
+        response = self.client.get(reverse("authentik_providers_oauth2:authorize"), data=data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(parse_qs(urlparse(response.url).query)["error"], ["unauthorized_client"])
+        self.assertFalse(events.exists())
+
+        self.client.force_login(create_test_admin_user())
+        response = self.client.get(reverse("authentik_providers_oauth2:authorize"), data=data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(parse_qs(urlparse(response.url).query)["error"], ["unauthorized_client"])
+        event = events.get()
+        self.assertEqual(event.context["error"], "unauthorized_client")
+        self.assertEqual(event.context["provider"]["pk"], provider.pk)
 
     def test_error_custom_scheme(self):
         """Test error is returned to a redirect URI with a private-use scheme"""
@@ -89,7 +126,7 @@ class TestAuthorize(OAuthTestCase):
             OAuthAuthorizationParams.from_request(request)
         response = cm.exception.get_response(request)
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.url.startswith("app.invalid:/callback?error=invalid_request&"))
+        self.assertTrue(response.url.startswith("app.invalid:/callback?error=unauthorized_client&"))
 
     def test_error_response_routing_and_encoding(self):
         """Errors honor response modes and preserve callback parameters and opaque state."""
