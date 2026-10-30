@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { RACProvider } from "./RACProvider";
-import { RACProviderFromJSON } from "./RACProvider";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { RACProvider } from "./RACProvider.js";
+import { RACProviderFromJSON } from "./RACProvider.js";
 
 /**
  * ConnectionToken Serializer

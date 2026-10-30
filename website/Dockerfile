@@ -2,7 +2,7 @@
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
 FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.9.1@sha256:77123fd40a39db0eb8be6bddfcf0cea15e000122b9221ccce2e4415be29050f2 AS pnpm
 
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.10.0-trixie@sha256:a723b54c35a76e947095a20a67d39585bb09c862e6b1adeb8a9f518f95e34fb0 AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.12.1-trixie@sha256:a98e6fda54fdbb22d4238054cca9a2a113bcd1191c09193a535aae22f400aa8e AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -62,7 +62,7 @@ COPY ./SECURITY.md /work/
 
 RUN pnpm run build
 
-FROM docker.io/library/nginx:1.31.6-trixie@sha256:908dc23e643a1447dbfb2e189ed268bfde6a51a5bf9a34d3dd3440a24f58ccf7
+FROM docker.io/library/nginx:1.31.8-trixie@sha256:6e67f8eaac94fc456588d4ff6c470d984841f5b5dc4279863d5cbe6ec5a60def
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \

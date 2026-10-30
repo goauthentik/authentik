@@ -605,7 +605,7 @@
         <x id="0" equiv-text="${value.versionCurrent}"/></target>
 </trans-unit>
 <trans-unit id="s68a50b1ee6efee7b">
-  <source><x id="0" equiv-text="${value.versionLatest}"/> is available!</source>
+  <source><x id="0" equiv-text="${upstreamVersion}"/> is available!</source>
   <target><x id="0" equiv-text="${value.versionLatest}"/> is beschikbaar!</target>
 </trans-unit>
 <trans-unit id="s08272eeeddfd244e">
@@ -2287,9 +2287,6 @@
 </trans-unit>
 <trans-unit id="se669a4b939be0891">
   <source>authentik was unable to complete this process.</source>
-</trans-unit>
-<trans-unit id="s71c5d51d5a357dbd">
-  <source>Don't show this message again.</source>
 </trans-unit>
 <trans-unit id="sd1a5560fde6f2271">
   <source>Successfully imported provider.</source>
@@ -7847,18 +7844,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
 </trans-unit>
-<trans-unit id="s11a2ac9f2bd811d8">
-  <source>Delete Object Permission</source>
-</trans-unit>
-<trans-unit id="s78aa910bcb26034d">
-  <source>Global and object permission</source>
-</trans-unit>
-<trans-unit id="sc8f73affccb6ae4d">
-  <source>Global permission</source>
-</trans-unit>
-<trans-unit id="scf9ebad133d2d561">
-  <source>Object permission</source>
-</trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
 </trans-unit>
@@ -11446,6 +11431,99 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="sa81413e2e309b882">
   <source>No results found.</source>
+</trans-unit>
+<trans-unit id="s976733698fe1b0fe">
+  <source>No change vs previous week</source>
+</trans-unit>
+<trans-unit id="s7f4f31965f7198d7">
+  <source><x id="0" equiv-text="${diff &gt; 0 ? &quot;+&quot; : &quot;&quot;}${diff}"/> vs previous week</source>
+</trans-unit>
+<trans-unit id="s1c4aaab60097f5d0">
+  <source><x id="0" equiv-text="${diff &gt; 0 ? &quot;+&quot; : &quot;&quot;}${Math.round((diff / previous) * 100)}"/>% vs previous week</source>
+</trans-unit>
+<trans-unit id="sab5ab8f14efd1dbf">
+  <source>Successful logins</source>
+</trans-unit>
+<trans-unit id="sb7a30bbc1dcf6de9">
+  <source>Issues</source>
+</trans-unit>
+<trans-unit id="s07463520e4c6f064">
+  <source>A new version is available!</source>
+</trans-unit>
+<trans-unit id="s809b66661523bd3e">
+  <source>Danger banner:</source>
+</trans-unit>
+<trans-unit id="se9caa2b970300b67">
+  <source>Warning banner:</source>
+</trans-unit>
+<trans-unit id="sfd32828882e09561">
+  <source>Security release <x id="0" equiv-text="${v.version}"/> of <x id="1" equiv-text="${this.brandingTitle}"/> is available. Update now.</source>
+</trans-unit>
+<trans-unit id="s6bce0c6466a2cf53">
+  <source>Version <x id="0" equiv-text="${v.version}"/> of <x id="1" equiv-text="${this.brandingTitle}"/> is available.</source>
+</trans-unit>
+<trans-unit id="sbf0ff47d8bff9545">
+  <source>Click here for the changelog.</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-44.label">
+  <source>ML-DSA-44</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-65.label">
+  <source>ML-DSA-65</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-87.label">
+  <source>ML-DSA-87</source>
+</trans-unit>
+<trans-unit id="sfdcaa7f363be0c81">
+  <source>Encryption algorithm</source>
+</trans-unit>
+<trans-unit id="s53b68dd0954af12d">
+  <source>Block cipher used to encrypt the assertion.</source>
+</trans-unit>
+<trans-unit id="permissions.aria.universal">
+  <source>Global and object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.universal">
+  <source>object + global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.global">
+  <source>Global permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.global">
+  <source>global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.object">
+  <source>Object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.object">
+  <source>object</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.role">
+  <source>Role</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.permissions">
+  <source>Permissions</source>
+</trans-unit>
+<trans-unit id="permission.sort.by-name">
+  <source>By name</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-first">
+  <source>Assigned first</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-only">
+  <source>Assigned only</source>
+</trans-unit>
+<trans-unit id="permissions.filter.show-assigned">
+  <source>Sort and filter</source>
+</trans-unit>
+<trans-unit id="permissions.delete.label">
+  <source>Permission(s)</source>
+</trans-unit>
+<trans-unit id="permissions.delete.meta-data">
+  <source>Permission</source>
+</trans-unit>
+<trans-unit id="permissions.delete.button">
+  <source>Delete object permission</source>
 </trans-unit>
 </body>
 </file>

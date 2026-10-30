@@ -291,6 +291,9 @@ importers:
       '@patternfly/patternfly':
         specifier: ^4.224.5
         version: 4.224.5
+      '@patternfly/pfe-core':
+        specifier: ^6.0.0
+        version: 6.0.0
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.62.1
@@ -2080,6 +2083,9 @@ packages:
 
   '@patternfly/pfe-core@5.0.8':
     resolution: {integrity: sha512-gH+gC8+lwLQ5OxcQsmJOSHNHqQgoa+VboM4LlI63N+jnDPmB7E9EZ7VzJc8C4qTPbCIfQp+o1ObjmKyNw/b9TA==}
+
+  '@patternfly/pfe-core@6.0.0':
+    resolution: {integrity: sha512-5mvYKjf3XMXVpzolfDyPXk2qmCLdojA+SaLvErG+/aw+aE+odORVh09cvv3GD/yl7i7zS7SSTWe/glAe54qqbQ==}
 
   '@pinojs/redact@0.4.0':
     resolution: {integrity: sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==}
@@ -7356,6 +7362,11 @@ snapshots:
   '@patternfly/patternfly@4.224.5': {}
 
   '@patternfly/pfe-core@5.0.8':
+    dependencies:
+      '@lit/context': 1.1.6
+      lit: 3.3.3
+
+  '@patternfly/pfe-core@6.0.0':
     dependencies:
       '@lit/context': 1.1.6
       lit: 3.3.3
