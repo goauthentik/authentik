@@ -36,6 +36,10 @@ function makeSidebarEntry(entry: SidebarEntry, licensed: boolean, canEnterprise:
         throw new Error("An entry must have either a path or a key");
     }
 
+    if (!key || key.trim().length === 0) {
+        throw new Error("An entry must have either a path or a key");
+    }
+
     const item: ExtendedSidebarItem = {
         label,
         key,
@@ -47,12 +51,18 @@ function makeSidebarEntry(entry: SidebarEntry, licensed: boolean, canEnterprise:
         item.notice = enterpriseOnly();
     }
 
-    if (children) {
+    if (Array.isArray(children)) {
         item.children = resolveSidebarEntries(children, { licensed, canEnterprise });
     }
 
-    if (isSidebarAttributeObject(attributes) && attributes.expanded !== undefined) {
-        item.expanded = attributes.expanded;
+    if (isSidebarAttributeObject(attributes)) {
+        if (attributes.expanded !== undefined) {
+            item.expanded = attributes.expanded;
+        }
+
+        if (attributes.icon !== undefined) {
+            item.icon = attributes.icon;
+        }
     }
 
     if (Array.isArray(attributes)) {
