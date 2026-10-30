@@ -10,13 +10,15 @@ from requests_mock import Mocker
 from authentik.admin.models import SystemSettings
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User, UserTypes
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.lib.sync.outgoing.exceptions import TransientSyncException
+from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.providers.scim.clients.users import SCIMUserClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects, sync_tasks
-from authentik.tasks.models import Task
+from authentik.tasks.models import Task, TaskStatus
 
 
 @patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
@@ -135,6 +137,168 @@ class SCIMUserTests(TestCase):
     def test_user_create_conflict_lowercase_resources_key(self, mock: Mocker):
         """An existing user is adopted from a lowercase list response"""
         self._test_user_create_conflict(mock, "resources")
+
+    def _mock_user_conflict(self, mock: Mocker, conflict_uid: str, filter_supported: bool):
+        """Answer 409 for user creation of `conflict_uid`, and create any other user"""
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={
+                "authenticationSchemes": [],
+                "patch": {"supported": False},
+                "bulk": {"supported": False},
+                "filter": {"supported": filter_supported},
+                "changePassword": {"supported": False},
+                "sort": {"supported": False},
+                "etag": {"supported": False},
+            },
+        )
+
+        def create(request, context):
+            if request.json()["userName"] == conflict_uid:
+                context.status_code = 409
+                return {
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+                    "status": "409",
+                    "scimType": "uniqueness",
+                    "detail": "User already exists",
+                }
+            return {"id": generate_id()}
+
+        mock.post("https://localhost/Users", json=create)
+
+    def _assert_conflict_logged(self, task: Task, user: User):
+        log = task.tasklogs.get(log_level=TaskStatus.WARNING)
+        self.assertIn(f"Failed to sync {user}", log.event)
+        self.assertIn("User already exists", log.event)
+        self.assertIn("Delete or rename the conflicting object", log.event)
+        self.assertEqual(log.attributes["obj"]["pk"], user.pk)
+
+    @Mocker()
+    def test_sync_task_user_conflict(self, mock: Mocker):
+        """A user that conflicts with an unmatched remote user is reported, and the sync
+        continues with the next user"""
+        conflict_uid = generate_id()
+        self._mock_user_conflict(mock, conflict_uid, filter_supported=True)
+        # Not a SCIM ListResponse, so the conflicting user can't be matched
+        mock.get("https://localhost/Users", json=[])
+        with sync_outgoing_inhibit_dispatch():
+            conflict_user = User.objects.create(username=conflict_uid)
+            other_user = User.objects.create(username=generate_id())
+
+        scim_sync.send(self.provider.pk).get_result()
+
+        self.assertFalse(
+            SCIMProviderUser.objects.filter(provider=self.provider, user=conflict_user).exists()
+        )
+        self.assertTrue(
+            SCIMProviderUser.objects.filter(provider=self.provider, user=other_user).exists()
+        )
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
+        task = (
+            Task.objects.filter(
+                actor_name=scim_sync_objects.actor_name,
+                _uid=f"{self.provider.name}:user:1",
+            )
+            .order_by("-mtime")
+            .first()
+        )
+        self._assert_conflict_logged(task, conflict_user)
+
+    @Mocker()
+    def test_direct_sync_user_conflict(self, mock: Mocker):
+        """A user that conflicts with a remote user is reported by direct sync"""
+        conflict_uid = generate_id()
+        self._mock_user_conflict(mock, conflict_uid, filter_supported=False)
+
+        conflict_user = User.objects.create(username=conflict_uid)
+
+        self.assertFalse(
+            SCIMProviderUser.objects.filter(provider=self.provider, user=conflict_user).exists()
+        )
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
+        task = Task.objects.get(
+            _uid=f"{self.provider.name}:user:{conflict_user.pk}:direct",
+        )
+        self._assert_conflict_logged(task, conflict_user)
+
+    @Mocker()
+    def test_user_create_conflict_filter_ignored(self, mock: Mocker):
+        """A remote system that ignores the filter doesn't get another user linked"""
+        conflict_uid = generate_id()
+        self._mock_user_conflict(mock, conflict_uid, filter_supported=True)
+        mock.get(
+            "https://localhost/Users",
+            json={"Resources": [{"id": generate_id(), "userName": generate_id()}]},
+        )
+
+        conflict_user = User.objects.create(username=conflict_uid)
+
+        self.assertFalse(
+            SCIMProviderUser.objects.filter(provider=self.provider, user=conflict_user).exists()
+        )
+        task = Task.objects.get(
+            _uid=f"{self.provider.name}:user:{conflict_user.pk}:direct",
+        )
+        self._assert_conflict_logged(task, conflict_user)
+
+    @Mocker()
+    def test_user_create_conflict_search_failed(self, mock: Mocker):
+        """A conflict is reported when searching for the conflicting user fails"""
+        conflict_uid = generate_id()
+        self._mock_user_conflict(mock, conflict_uid, filter_supported=True)
+        mock.get("https://localhost/Users", status_code=400, json={"detail": "Invalid filter"})
+
+        conflict_user = User.objects.create(username=conflict_uid)
+
+        self.assertFalse(
+            SCIMProviderUser.objects.filter(provider=self.provider, user=conflict_user).exists()
+        )
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
+        task = Task.objects.get(
+            _uid=f"{self.provider.name}:user:{conflict_user.pk}:direct",
+        )
+        self._assert_conflict_logged(task, conflict_user)
+
+    @Mocker()
+    def test_user_delete_error(self, mock: Mocker):
+        """An error deleting a user in the remote system is logged in the delete task"""
+        scim_id = generate_id()
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        mock.delete(
+            f"https://localhost/Users/{scim_id}",
+            status_code=409,
+            json={"detail": "User is locked"},
+        )
+        with sync_outgoing_inhibit_dispatch():
+            user = User.objects.create(username=generate_id())
+        SCIMProviderUser.objects.create(provider=self.provider, user=user, scim_id=scim_id)
+
+        user.delete()
+
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
+        log = Task.objects.get(
+            _uid=f"{self.provider.name}:user:{scim_id}:delete",
+        ).tasklogs.get(log_level=TaskStatus.WARNING)
+        self.assertIn(f"Failed to delete User {scim_id}", log.event)
+        self.assertIn("User is locked", log.event)
+
+    @Mocker()
+    def test_direct_sync_stop_sync(self, mock: Mocker):
+        """An error that stops direct sync is reported with the user it happened for"""
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        self.provider.property_mappings.clear()
+
+        user = User.objects.create(username=generate_id())
+
+        self.assertEqual(mock.call_count, 1)
+        log = Task.objects.get(
+            _uid=f"{self.provider.name}:user:{user.pk}:direct",
+        ).tasklogs.get(log_level=TaskStatus.WARNING)
+        self.assertEqual(
+            log.event,
+            f"Failed to sync {user}: Error No mappings configured, caused by {user}",
+        )
+        self.assertEqual(log.attributes["obj"]["pk"], user.pk)
 
     @Mocker()
     def test_user_create_custom_schema(self, mock: Mocker):
@@ -725,6 +889,25 @@ class SCIMUserTests(TestCase):
         self.assertFalse(
             SCIMProviderUser.objects.filter(provider=self.provider, scim_id=scim_id).exists()
         )
+
+    @Mocker()
+    def test_sync_cleanup_stale_user_error(self, mock: Mocker):
+        """An error deleting a stale user during cleanup is logged in the sync task"""
+        scim_id = generate_id()
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        mock.delete(
+            f"https://localhost/Users/{scim_id}",
+            status_code=409,
+            json={"detail": "User is locked"},
+        )
+        self._create_stale_provider_user(scim_id, generate_id())
+
+        scim_sync.send(self.provider.pk).get_result()
+
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
+        task = Task.objects.filter(actor_name=scim_sync.actor_name).order_by("-mtime").first()
+        log = task.tasklogs.get(log_level=TaskStatus.ERROR)
+        self.assertIn("User is locked", log.event)
 
     @Mocker()
     def test_sync_cleanup_stale_user_not_found(self, mock: Mocker):

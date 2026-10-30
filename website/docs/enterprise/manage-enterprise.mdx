@@ -40,8 +40,10 @@ Select a license on the **Licenses** page and click **Delete**. Removing an acti
 
 authentik counts active internal and external users separately. Disabled users, the anonymous user, and service accounts, including [agent accounts](../users-sources/user/account-types/agent-accounts.mdx), do not consume licensed capacity.
 
-- An **internal user** can access the authentik application dashboard and user settings. Employees and other members of your organization are typically internal users.
-- An **external user** cannot access the application dashboard or user settings. Customers, partners, volunteers, and contractors who use authentik only to access another application can be external users.
+The authentik UI and Enterprise licenses use the terms _internal users_ and _external users_. These typically correspond to workforce accounts and customer accounts, respectively:
+
+- An [**internal user**](../users-sources/user/account-types/internal-users.mdx) is typically a workforce identity for business-to-business (B2B) use cases, such as employees and partners accessing workplace applications. Internal users can access the authentik application dashboard and user settings menu.
+- An [**external user**](../users-sources/user/account-types/external-users.mdx) is typically a customer identity for business-to-consumer (B2C) use cases, such as customers accessing your digital services. External users cannot access the authentik application dashboard or user settings menu.
 
 You configure a user's type on the user account. To send external users directly to an application after authentication, configure the brand's [default application](../customize/branding/index.mdx#external-user-settings).
 

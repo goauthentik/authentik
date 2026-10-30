@@ -408,7 +408,7 @@ requires-dist = [
     { name = "ak-guardian", editable = "packages/ak-guardian" },
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "bcrypt", specifier = "==5.0.0" },
-    { name = "cachetools", specifier = "==7.2.4" },
+    { name = "cachetools", specifier = "==7.2.5" },
     { name = "certifi", specifier = "==2026.10.23" },
     { name = "channels", specifier = "==4.3.2" },
     { name = "cryptography", specifier = "==50.0.2" },
@@ -441,7 +441,7 @@ requires-dist = [
     { name = "gunicorn", specifier = "==26.2.0" },
     { name = "jsonpatch", specifier = "==1.36" },
     { name = "jwcrypto", specifier = "==1.6.1" },
-    { name = "kubernetes", specifier = "==36.0.3" },
+    { name = "kubernetes", specifier = "==37.0.1" },
     { name = "ldap3", specifier = "==2.9.1" },
     { name = "lxml", specifier = "==6.1.3" },
     { name = "msgraph-sdk", specifier = "==1.64.0" },
@@ -464,13 +464,13 @@ requires-dist = [
     { name = "pydantic-scim", specifier = "==0.0.8" },
     { name = "pyjwt", specifier = "==2.15.1" },
     { name = "pyrad", specifier = "==2.6.0" },
-    { name = "pyroscope-io", specifier = "==1.3.0" },
+    { name = "pyroscope-io", specifier = "==1.4.0" },
     { name = "pyroscope-otel", specifier = "==1.1.0" },
     { name = "python-kadmin-rs", specifier = "==0.7.5" },
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "requests-oauthlib", specifier = "==2.0.0" },
     { name = "scim2-filter-parser", specifier = "==0.7.0" },
-    { name = "sentry-sdk", specifier = "==2.72.0" },
+    { name = "sentry-sdk", specifier = "==2.73.0" },
     { name = "service-identity", specifier = "==26.1.0" },
     { name = "setproctitle", specifier = "==1.3.8" },
     { name = "structlog", specifier = "==26.1.0" },
@@ -790,11 +790,11 @@ wheels = [
 
 [[package]]
 name = "cachetools"
-version = "7.2.4"
+version = "7.2.5"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/3a/5d/15ea0494ebcb9062c7ca79bf026cbba380a50538ae73753fb40bdffa79e2/cachetools-7.2.4.tar.gz", hash = "sha256:e0203b04b75fe13e62098eeb5b2018c4eb1a14c04e2b5b450e70db3ee7e92ec5", size = 44251, upload-time = "2026-10-19T19:09:44.931Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5a/e5/43f9a3f926cc182a0ee95cfd53ec0b5ac0e2cdafa184af6fc50166fd03fd/cachetools-7.2.5.tar.gz", hash = "sha256:a2223b80de434291ddf4c105354e533bbaf4d29382f5d1bc3e4b9332cb31061e", size = 46088, upload-time = "2026-10-25T08:53:17.172Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5a/4c/694f7d44f2399b3901232d6ded1c88442a02fc8141936396d9289d951848/cachetools-7.2.4-py3-none-any.whl", hash = "sha256:4cfbebf3eec4040d2073b19c460511ad47eef7b852dbf9a0d385099b4dafa31e", size = 18571, upload-time = "2026-10-19T19:09:43.296Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/bd/bd8f45fbdf05ce06dbadda61bf0a09844bb0cf0a048d7f5c4a368d437e24/cachetools-7.2.5-py3-none-any.whl", hash = "sha256:9033308cc26b678784a27b096aab1541b9e698d785c3e9918b691ccd458d88df", size = 19132, upload-time = "2026-10-25T08:53:15.638Z" },
 ]
 
 [[package]]
@@ -2136,23 +2136,25 @@ wheels = [
 
 [[package]]
 name = "kubernetes"
-version = "36.0.3"
+version = "37.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
+    { name = "aiohttp-retry" },
     { name = "certifi" },
     { name = "durationpy" },
+    { name = "pydantic" },
     { name = "python-dateutil" },
     { name = "pyyaml" },
     { name = "requests" },
     { name = "requests-oauthlib" },
-    { name = "six" },
+    { name = "typing-extensions" },
     { name = "urllib3" },
     { name = "websocket-client" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ca/57/b07b96353f902aa1bdbe00e878e3a12a137977d03a962479785576aa8ec9/kubernetes-36.0.3.tar.gz", hash = "sha256:36993ed25ce59b789c9341473a228fcf268504a2fec7c2b2b1531d73072e5ce7", size = 2337528, upload-time = "2026-07-13T20:38:12.128Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/c3/efd33fa9ae254ecdc35ebc128f99e8034d5a5a8c625f92e5d2173f929b53/kubernetes-37.0.1.tar.gz", hash = "sha256:e41db0a95615c2388680a2d556df33fd0f27a5717c9b5df5857e475c196c2f10", size = 3358265, upload-time = "2026-10-09T17:13:41.072Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5b/30/a96d47df739689ac0001ade0afefc16e3b477fc2fb426b568515fdc8afce/kubernetes-36.0.3-py2.py3-none-any.whl", hash = "sha256:8fde9241c4b298e6374a069dcf728359b4e72c2fb29489a975ba4e1c047cf10f", size = 4618066, upload-time = "2026-07-13T20:38:10.172Z" },
+    { url = "https://files.pythonhosted.org/packages/8a/de/ac1904ac7fb651426e5698f56a268669a1ca3d63378629bacbf057b25e75/kubernetes-37.0.1-py2.py3-none-any.whl", hash = "sha256:a313a482361506340b5972cabaf20a7ee16ec8713e73325bf699b783a40464a9", size = 7511310, upload-time = "2026-10-09T17:13:38.933Z" },
 ]
 
 [[package]]
@@ -3167,11 +3169,11 @@ wheels = [
 
 [[package]]
 name = "pycparser"
-version = "3.0"
+version = "3.12"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/1b/7d/92392ff7815c21062bea51aa7b87d45576f649f16458d78b7cf94b9ab2e6/pycparser-3.0.tar.gz", hash = "sha256:600f49d217304a5902ac3c37e1281c9fe94e4d0489de643a9504c5cdfdfc6b29", size = 103492, upload-time = "2026-01-21T14:26:51.89Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/27/eeb9f307bf07060f3d9f9aa0fb8c15b01bdfded0a941e4b2719c7f94cacd/pycparser-3.12.tar.gz", hash = "sha256:f03387877eab82ce01bbdfd0ba7252ee55a90b1c708d5129e2ce915475cf1db6", size = 158785, upload-time = "2026-10-22T13:40:03.56Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0c/c3/44f3fbbfa403ea2a7c779186dc20772604442dde72947e7d01069cbe98e3/pycparser-3.0-py3-none-any.whl", hash = "sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992", size = 48172, upload-time = "2026-01-21T14:26:50.693Z" },
+    { url = "https://files.pythonhosted.org/packages/b6/ae/315bbeee126a769cbde43cf4908acb4b40408d8bf8bbf334dd7368d8dadf/pycparser-3.12-py3-none-any.whl", hash = "sha256:a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e", size = 62600, upload-time = "2026-10-22T13:40:02.021Z" },
 ]
 
 [[package]]
@@ -3341,16 +3343,16 @@ wheels = [
 
 [[package]]
 name = "pyroscope-io"
-version = "1.3.0"
+version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/40/3c/72d8ed75644fc743c1c806abba17fe6a8a03984746d9cc284a6561c8b751/pyroscope_io-1.3.0.tar.gz", hash = "sha256:f60ee94bce517d17f787972d43dc9f3f12ffcfd202a5a29584ed3fd54132e80a", size = 239803, upload-time = "2026-10-13T07:36:43.525Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4e/f4/a375d0b3eab82fda80b28511b6e514131e969a637443e67b35db4b2b69ed/pyroscope_io-1.4.0.tar.gz", hash = "sha256:f3d987a945a7bf79d831596f07b1aa54be8363e264cd4046e3e1118b236b7a4f", size = 258962, upload-time = "2026-10-22T09:06:55.81Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/34/3b/64614a1ffb1e2a258d58448280bcb6a623931a3e425d38a5cee504573f0d/pyroscope_io-1.3.0-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:d561290ac34c4afe2bb609558080a12fdbdc0bd1e31185b8ce09bae10db6ac3f", size = 2157510, upload-time = "2026-10-13T07:36:34.041Z" },
-    { url = "https://files.pythonhosted.org/packages/1e/9f/74ab01e92ba8bc4c3ad7b7d311bbf13aa922412fef6e7a490e8542259ce3/pyroscope_io-1.3.0-cp314-cp314-macosx_11_0_x86_64.whl", hash = "sha256:f476d6557ce1e770669c1fa9e830b625769c102e41a9f41a5a24ce41eae36587", size = 2245899, upload-time = "2026-10-13T07:36:35.33Z" },
-    { url = "https://files.pythonhosted.org/packages/be/4e/be38341588edeeea040d509c9676b931ba7a60f916a9b42b256b381b708b/pyroscope_io-1.3.0-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:d110a8183fef8d6fd441478098ee5b2c5b56c7f1f0f2d2cff78b5018c09a69b9", size = 5539723, upload-time = "2026-10-13T07:36:37.113Z" },
-    { url = "https://files.pythonhosted.org/packages/86/8a/2b4bfa2401af53e52b81fcaa70efe76671ff063ee242dcac6a5a3ff6ac85/pyroscope_io-1.3.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:2fd2cc1e9ce4b4426567a660b4d9e9c897d3ec5e952e265e832d5387bcc71949", size = 5054835, upload-time = "2026-10-13T07:36:38.549Z" },
-    { url = "https://files.pythonhosted.org/packages/b5/96/f0454e2ca2989f64c170817c11d8c4400acf43e96b487c794624c5dffc6d/pyroscope_io-1.3.0-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:6c07abe6064e32482c197ff2a97e340f84255ce3750727d8977669007f721ca7", size = 5605284, upload-time = "2026-10-13T07:36:40.292Z" },
-    { url = "https://files.pythonhosted.org/packages/aa/17/100ea56bb77621b6eb349238d0f41ffba4b101c82ddff781b9c77a72b7c8/pyroscope_io-1.3.0-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:b4162a2c9073ee7a65645a6b221165522449bbb28995a8857264c3dea418a844", size = 5364898, upload-time = "2026-10-13T07:36:41.767Z" },
+    { url = "https://files.pythonhosted.org/packages/11/47/739a5833dd349acc73078a9810f072ee43dfd17e1ad8dff1c0e709b69fa7/pyroscope_io-1.4.0-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:a5e7f25e0de7737f692d2b60ba98cb4899c0051a8dad6b1ea43b8f2f70b793f6", size = 2157779, upload-time = "2026-10-22T09:06:45.943Z" },
+    { url = "https://files.pythonhosted.org/packages/74/64/36eecaa5a76d03fcc8956ea975bc3432b7aee642d0680e659671a472f039/pyroscope_io-1.4.0-cp314-cp314-macosx_11_0_x86_64.whl", hash = "sha256:0ccd47ac6b7f3ee03336ce8f07151c60fb08a9ca95ceadb2e36d2abe8300aaae", size = 2245698, upload-time = "2026-10-22T09:06:47.402Z" },
+    { url = "https://files.pythonhosted.org/packages/3c/92/ca4b0f4b392f03fa253aa2aab7716646ea388652bdb11507b72bd1e36276/pyroscope_io-1.4.0-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:21b487b632f4f33dbe4a16599c4ef4038a14b8b66f09d8fa0cf695669413b685", size = 5571641, upload-time = "2026-10-22T09:06:48.781Z" },
+    { url = "https://files.pythonhosted.org/packages/a4/c7/0a990aabfb525e9e65b339bba6f238a4dfa8ef181ab1c4a72a65d12a5810/pyroscope_io-1.4.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:d39e1755e0bbf46d84f2effd994848f70bdec404647e84cb6921c5e8e24eb7d3", size = 5095644, upload-time = "2026-10-22T09:06:50.5Z" },
+    { url = "https://files.pythonhosted.org/packages/77/60/c7dbe092738ce04341cee36eac9b75e6a1a9f644123a3a2255de6266c04c/pyroscope_io-1.4.0-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:5e3493aa05c6efa2d2d34cc8117607c9e08f489a2edf8151bdd0dcfad333a71d", size = 5635996, upload-time = "2026-10-22T09:06:52.245Z" },
+    { url = "https://files.pythonhosted.org/packages/e5/94/d71d46d57ab384792b6a97831181b328bba66a684456e46b42cb13a41a9d/pyroscope_io-1.4.0-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:2d24d0a130aa9bdb00395494b1e2caf31fc4082e23ee78933c934a91437022e7", size = 5400724, upload-time = "2026-10-22T09:06:53.929Z" },
 ]
 
 [[package]]
@@ -3724,15 +3726,15 @@ wheels = [
 
 [[package]]
 name = "sentry-sdk"
-version = "2.72.0"
+version = "2.73.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/26/c1/d2bbb2b03bdc2ef14b35e02b647b8489156c50b6e0b8bacc5fa303902e23/sentry_sdk-2.72.0.tar.gz", hash = "sha256:0d2ffbc28ee2e63cbaf3d015e93b448cffcc3ef3be03a44704ad36ade72faa95", size = 1069699, upload-time = "2026-10-12T13:08:11.195Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c5/3b/1e47acf2456781c26e12007379ecc154bf310b8f64d40390d78b791d55c3/sentry_sdk-2.73.0.tar.gz", hash = "sha256:4a2ab97b16e4693c325ab361c7bbbb346dbc7d0bc0150922d795a25bac8d5280", size = 1079078, upload-time = "2026-10-22T09:08:49.63Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d0/0b/0dd9686842d9dc49c3ee84cced31c54bceb0fb52a826be7d3d4fe30d882a/sentry_sdk-2.72.0-py3-none-any.whl", hash = "sha256:3e13ace4ffd0b3cc78288236edfc4e4bd90eb12a396cc5845fa10a58ff289f50", size = 544754, upload-time = "2026-10-12T13:08:01.619Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/88/cabf98d017d7b940720e514e5f8ee02e3e6f7495caf93c30735a38387ec4/sentry_sdk-2.73.0-py3-none-any.whl", hash = "sha256:0bcfa6928ea5adbb89591858b514d27adac27c7a3cccc31b20ed10e0b09eda9e", size = 549011, upload-time = "2026-10-22T09:08:47.88Z" },
 ]
 
 [[package]]

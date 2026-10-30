@@ -4,6 +4,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { writeToClipboard } from "#common/clipboard";
+import { websocketURL } from "#common/urls";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -134,8 +135,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
     async firstUpdated(): Promise<void> {
         this.synchronizeTitle();
 
-        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${window.location.host}/ws/rac/${this.token}/`;
-        this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
+        this.tunnel = new Guacamole.WebSocketTunnel(websocketURL(`ws/rac/${this.token}/`));
         this.tunnel.receiveTimeout = 10 * 1000;
 
         // 10 seconds
