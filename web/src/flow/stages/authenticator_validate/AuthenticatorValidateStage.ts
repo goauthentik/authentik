@@ -11,9 +11,11 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { aki } from "#common/api/client";
 
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
+import { singleFlight } from "#flow/stages/authenticator_validate/challenge-requests";
 import { shouldResetSelectedChallenge } from "#flow/stages/authenticator_validate/challenge-selection";
 import { BaseStage } from "#flow/stages/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
@@ -25,7 +27,6 @@ import {
     CurrentBrand,
     DeviceChallenge,
     DeviceClassesEnum,
-    FlowChallengeResponseRequest,
     FlowsApi,
 } from "@goauthentik/api";
 
@@ -145,23 +146,8 @@ export class AuthenticatorValidateStage
             return;
         }
 
-        const component = (this.challenge?.component ||
-            "") as unknown as "ak-stage-authenticator-validate";
-
         value.lastUsed ??= new Date();
-
-        const flowChallengeResponseRequest = {
-            component,
-            selectedChallenge: value,
-        } satisfies FlowChallengeResponseRequest;
-
-        // We don't use this.submit here, as we don't want to advance the flow.
-        // We just want to notify the backend which challenge has been selected.
-        this.#api.flowsExecutorSolve({
-            flowSlug: this.host?.flowSlug || "",
-            query: window.location.search.substring(1),
-            flowChallengeResponseRequest,
-        });
+        this.#sendChallenge(value).catch(() => undefined);
     }
 
     protected get selectedDeviceChallenge(): DeviceChallenge | null {
@@ -181,6 +167,56 @@ export class AuthenticatorValidateStage
 
     public refresh(): Promise<boolean> {
         return this.host.refresh?.() ?? Promise.resolve(false);
+    }
+
+    #sendChallenge = singleFlight(async (value: DeviceChallenge) => {
+        const component = this.challenge?.component;
+
+        if (!component) {
+            throw new Error("no challenge selected");
+        }
+
+        try {
+            const challenge = await this.#api.flowsExecutorSolve({
+                flowSlug: this.host?.flowSlug || "",
+                query: window.location.search.substring(1),
+                flowChallengeResponseRequest: {
+                    component: component as unknown as "ak-stage-authenticator-validate",
+                    selectedChallenge: value,
+                },
+            });
+
+            if (
+                this.#selectedDeviceChallenge === value &&
+                this.challenge?.component === component
+            ) {
+                // Selection-only submissions have no OTP to validate. Show selection
+                // errors without copying the expected non-field "Empty response" error.
+                const errors = challenge.responseErrors?.selected_challenge;
+
+                this.challenge = {
+                    ...this.challenge,
+                    responseErrors: errors ? { selected_challenge: errors } : undefined,
+                };
+            }
+
+            return challenge;
+        } catch (error) {
+            await showAPIErrorMessage(error);
+            throw error;
+        }
+    });
+
+    public resendSelectedChallenge(): Promise<boolean> {
+        const value = this.#selectedDeviceChallenge;
+
+        if (!value) {
+            return Promise.reject(new Error("no challenge selected"));
+        }
+
+        return this.#sendChallenge(value).then(
+            (challenge) => !challenge.responseErrors?.selected_challenge?.length,
+        );
     }
 
     protected override willUpdate(changed: PropertyValues<this>) {

@@ -39,6 +39,7 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.email.throttling import email_is_rate_limited
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
@@ -136,6 +137,13 @@ def select_challenge_sms(request: HttpRequest, device: SMSDevice):
 
 def select_challenge_email(request: HttpRequest, device: EmailDevice):
     """Send Email"""
+    if minutes_left := email_is_rate_limited(device.email):
+        raise ValidationError(
+            _(
+                "Too many account verification attempts. Please try again after {minutes} minutes."
+            ).format(minutes=minutes_left),
+            code="throttled",
+        )
     valid_secs: int = timedelta_from_string(device.stage.token_expiry).total_seconds()
     device.generate_token(valid_secs=valid_secs)
     device.stage.send(device)

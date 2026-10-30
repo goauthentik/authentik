@@ -1,9 +1,11 @@
 """Test Email Authenticator API"""
 
 from datetime import timedelta
+from types import SimpleNamespace
 from unittest.mock import PropertyMock, patch
 
 from django.core import mail
+from django.core.cache import cache
 from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.db.models.deletion import ProtectedError
@@ -12,6 +14,7 @@ from django.template.exceptions import TemplateDoesNotExist
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
+from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.models import FlowStageBinding
@@ -24,7 +27,12 @@ from authentik.stages.authenticator_email.api import (
     EmailDeviceSerializer,
 )
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
-from authentik.stages.authenticator_email.stage import PLAN_CONTEXT_EMAIL_DEVICE
+from authentik.stages.authenticator_email.stage import (
+    PLAN_CONTEXT_EMAIL_DEVICE,
+    AuthenticatorEmailStageView,
+)
+from authentik.stages.authenticator_validate.challenge import select_challenge_email
+from authentik.stages.email.throttling import email_is_rate_limited
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
@@ -201,6 +209,46 @@ class TestAuthenticatorEmailStage(APIFlowTestCase):
 
         device = self.get_flow_plan().context[PLAN_CONTEXT_EMAIL_DEVICE]
         self.assertEqual(device.email, self.user.email)
+
+    @patch("authentik.stages.authenticator_email.stage.send_mails")
+    def test_prefilled_email_rate_limit_does_not_retry(self, send):
+        """An exhausted shared window keeps the setup screen available for retry."""
+        cache.clear()
+        self.addCleanup(cache.clear)
+        self.device.delete()
+        for _ in range(5):
+            email_is_rate_limited(self.user.email)
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.get(url)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-email",
+            email_required=False,
+            response_errors={
+                "non_field_errors": [
+                    {
+                        "code": "throttled",
+                        "string": (
+                            "Email sending was rate limited. Request a new code to try again."
+                        ),
+                    }
+                ],
+            },
+        )
+        send.assert_not_called()
+        # Reloading must not turn an unsent token into a successful-send claim.
+        response = self.client.get(url)
+        self.assertEqual(
+            response.json()["response_errors"]["non_field_errors"][0]["code"], "throttled"
+        )
+        response = self.client.post(url, data={"component": "ak-stage-authenticator-email"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()["response_errors"]["non_field_errors"][0]["code"], "throttled"
+        )
+        send.assert_not_called()
 
     def test_email_template(self):
         """Test email template rendering"""
@@ -404,3 +452,75 @@ class TestEmailDeviceThrottling(ThrottlingTestMixin, TestCase):
 
     def invalid_token(self):
         return "000000" if self.device.token != "000000" else "111111"
+
+
+class TestAuthenticatorEmailResendThrottle(TestCase):
+    """Email OTP sends share the existing email stage's attempt window."""
+
+    def setUp(self):
+        super().setUp()
+        cache.clear()
+        self.addCleanup(cache.clear)
+        self.email = "otp@example.com"
+
+    def test_shared_window_and_case_folding(self):
+        for _ in range(5):
+            self.assertIsNone(email_is_rate_limited(self.email))
+        self.assertEqual(email_is_rate_limited("OTP@example.com"), 5)
+        self.assertIsNone(email_is_rate_limited("other@example.com"))
+
+    def test_window_expires(self):
+        timestamp = now()
+        with patch("authentik.stages.email.throttling.now", return_value=timestamp):
+            for _ in range(5):
+                self.assertIsNone(email_is_rate_limited(self.email))
+        with patch(
+            "authentik.stages.email.throttling.now",
+            return_value=timestamp + timedelta(minutes=5),
+        ):
+            self.assertIsNone(email_is_rate_limited(self.email))
+
+    def test_setup_resend_preserves_token_when_limited(self):
+        device = EmailDevice(email=self.email, token="123456")
+        view = AuthenticatorEmailStageView.__new__(AuthenticatorEmailStageView)
+        view.executor = SimpleNamespace(
+            current_stage=None, plan=SimpleNamespace(context={PLAN_CONTEXT_EMAIL_DEVICE: device})
+        )
+        for _ in range(5):
+            email_is_rate_limited(self.email)
+        with self.assertRaises(ValidationError):
+            view.resend()
+        self.assertEqual(device.token, "123456")
+
+    def test_validation_resend_uses_shared_window(self):
+        user = create_test_user()
+        stage = AuthenticatorEmailStage.objects.create(name="email-otp", use_global_settings=True)
+        device = EmailDevice.objects.create(user=user, stage=stage, email=self.email)
+        with patch.object(AuthenticatorEmailStage, "send") as send:
+            # Existing recovery attempts also count towards OTP sending.
+            for _ in range(4):
+                email_is_rate_limited(self.email)
+            select_challenge_email(None, device)
+            token = device.token
+            with self.assertRaises(ValidationError):
+                select_challenge_email(None, device)
+            send.assert_called_once()
+            device.refresh_from_db()
+            self.assertEqual(device.token, token)
+
+    def test_setup_allows_immediate_resends_within_shared_budget(self):
+        device = EmailDevice(email=self.email)
+        stage = SimpleNamespace(token_expiry="minutes=30")
+        view = AuthenticatorEmailStageView.__new__(AuthenticatorEmailStageView)
+        view.executor = SimpleNamespace(
+            current_stage=stage,
+            plan=SimpleNamespace(context={PLAN_CONTEXT_EMAIL_DEVICE: device}),
+        )
+        with patch.object(view, "_send_email") as send:
+            for _ in range(5):
+                view.resend()
+            token = device.token
+            with self.assertRaises(ValidationError):
+                view.resend()
+            self.assertEqual(send.call_count, 5)
+            self.assertEqual(device.token, token)
