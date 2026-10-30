@@ -20,7 +20,6 @@ import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
-import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithLocale } from "#elements/mixins/locale";
 import { WithSession } from "#elements/mixins/session";
 import { setPageDetails } from "#elements/router/meta";
@@ -33,7 +32,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithLazyTabs(
-    WithLicenseSummary(WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))))),
+    WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement)))),
 ) {
     #api = aki(CoreApi);
 
@@ -107,7 +106,6 @@ export class UserViewPage extends WithLazyTabs(
                         .user=${this.user}
                         .currentUserPk=${this.currentUser?.pk}
                         .canImpersonate=${this.can(CapabilitiesEnum.CanImpersonate)}
-                        .hasEnterpriseLicense=${this.hasEnterpriseLicense}
                         .brandHasRecoveryFlow=${!!this.brand.flowRecovery}
                     ></ak-user-overview-tab>
                 </div>
