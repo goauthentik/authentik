@@ -59,7 +59,10 @@ from authentik.sources.saml.models import (
     SAMLSource,
     UserSAMLSourceConnection,
 )
-from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
+from authentik.sources.saml.processors.request import (
+    SESSION_KEY_REQUEST_ID,
+    get_pending_request_ids,
+)
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -251,7 +254,9 @@ class ResponseProcessor:
             raise MismatchedRequestID(
                 "Missing InResponseTo and IdP-initiated Logins are not allowed"
             )
-        if in_response_to and in_response_to != self._http_request.session[SESSION_KEY_REQUEST_ID]:
+        if in_response_to and in_response_to not in get_pending_request_ids(
+            self._http_request.session
+        ):
             raise MismatchedRequestID("Mismatched request ID")
 
     def _get_bearer_confirmation_data(self) -> list[_Element]:
@@ -326,7 +331,7 @@ class ResponseProcessor:
                 raise InvalidTime()
         in_response_to = data.attrib.get("InResponseTo")
         if in_response_to and not self._source.allow_idp_initiated:
-            if in_response_to != self._http_request.session.get(SESSION_KEY_REQUEST_ID):
+            if in_response_to not in get_pending_request_ids(self._http_request.session):
                 raise MismatchedRequestID("Mismatched request ID")
 
     def _verify_not_seen_before(self):
