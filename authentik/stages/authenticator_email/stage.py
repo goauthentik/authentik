@@ -97,6 +97,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
                     "expires": device.valid_until,
                     "token": device.token,
                 },
+                sensitive_values=[device.token],
             )
 
             send_mails(stage, message)

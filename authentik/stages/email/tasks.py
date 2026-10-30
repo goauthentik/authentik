@@ -7,6 +7,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.core.mail.utils import DNS_NAME
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.views.debug import SafeExceptionReporterFilter
 from dramatiq.actor import actor
 from dramatiq.composition import group
 from structlog.stdlib import get_logger
@@ -42,6 +43,13 @@ def send_mails(
     for message in messages:
         tasks.append(send_mail.message(message.__dict__, stage_class_path, stage_pk))
     return group(tasks).run()
+
+
+def redact(value: str, sensitive_values: list[str]) -> str:
+    """Replace each sensitive value in a string with the cleansed substitute"""
+    for sensitive in sensitive_values:
+        value = value.replace(sensitive, SafeExceptionReporterFilter.cleansed_substitute)
+    return value
 
 
 def get_email_body(email: EmailMultiAlternatives) -> str:
@@ -80,6 +88,7 @@ def send_mail(
     backend.open()
     # Since django's EmailMessage objects are not JSON serialisable,
     # we need to rebuild them from a dict
+    sensitive_values: list[str] = message.pop("sensitive_values", [])
     message_object = EmailMultiAlternatives()
     for key, value in message.items():
         setattr(message_object, key, value)
@@ -106,8 +115,8 @@ def send_mail(
     Event.new(
         EventAction.EMAIL_SENT,
         message=f"Email to {', '.join(message_object.to)} sent",
-        subject=message_object.subject,
-        body=get_email_body(message_object),
+        subject=redact(message_object.subject, sensitive_values),
+        body=redact(get_email_body(message_object), sensitive_values),
         from_email=message_object.from_email,
         to_email=message_object.to,
     ).save()

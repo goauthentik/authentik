@@ -159,6 +159,7 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
                     "expires": self.valid_until,
                     "token": self.token,
                 },
+                sensitive_values=[self.token],
             )
             return message
         except TemplateSyntaxError as exc:

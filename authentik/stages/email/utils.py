@@ -48,12 +48,14 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         template_name=None,
         template_context=None,
         language="",
+        sensitive_values: list[str] | None = None,
         **kwargs,
     ):
         sanitized_to = _sanitize_recipients(to)
         sanitized_cc = _sanitize_recipients(cc) if cc else None
         sanitized_bcc = _sanitize_recipients(bcc) if bcc else None
         super().__init__(to=sanitized_to, cc=sanitized_cc, bcc=sanitized_bcc, **kwargs)
+        self.sensitive_values = [value for value in sensitive_values or [] if value]
         if not template_name:
             return
         with translation.override(language):

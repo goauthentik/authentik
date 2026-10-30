@@ -128,6 +128,7 @@ class EmailStageView(ChallengeStageView):
                     "expires": token.expires,
                     "token": token.key,
                 },
+                sensitive_values=[token.key],
             )
             send_mails(current_stage, message)
         except TemplateSyntaxError as exc:
