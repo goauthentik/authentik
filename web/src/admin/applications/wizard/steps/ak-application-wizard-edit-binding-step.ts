@@ -11,6 +11,7 @@ import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
     PolicyObjectKeys,
+    renderDryRunHelp,
 } from "#common/policies/utils";
 
 import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
@@ -167,6 +168,12 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                     name="enabled"
                     ?checked=${instance?.enabled ?? true}
                     label=${msg("Enabled")}
+                ></ak-switch-input>
+                <ak-switch-input
+                    name="dryRun"
+                    ?checked=${instance?.dryRun ?? false}
+                    label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                    .help=${renderDryRunHelp()}
                 ></ak-switch-input>
                 <ak-switch-input
                     name="negate"

@@ -1,4 +1,5 @@
 import "#elements/Expand";
+import "#elements/Label";
 import "#elements/Spinner";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -475,6 +476,9 @@ ${JSON.stringify(value.new_value, null, 4)}</pre>`;
     }
 
     renderPolicyExecution() {
+        const result = this.event.context.result as EventContext;
+        const dryRun = this.event.context.dry_run === true;
+
         return html`<div class="pf-l-flex">
                 <div class="pf-l-flex__item">
                     <div class="pf-c-card__title">${msg("Binding")}</div>
@@ -506,24 +510,45 @@ ${JSON.stringify(value.new_value, null, 4)}</pre>`;
                     </div>
                 </div>
                 <div class="pf-l-flex__item">
-                    <div class="pf-c-card__title">${msg("Result")}</div>
+                    <div class="pf-c-card__title">
+                        ${msg("Result")}
+                        ${
+                            dryRun
+                                ? html`<ak-label color="pf-m-blue" icon="fa-vial">
+                                      ${msg("Dry-run", {
+                                          id: "policies.bindings.dry-run.label",
+                                      })}
+                                  </ak-label>`
+                                : nothing
+                        }
+                    </div>
                     <div class="pf-c-card__body">
                         <ul class="pf-c-list">
-                            <li>
-                                ${msg("Passing")}:
-                                ${(this.event.context.result as EventContext).passing}
-                            </li>
+                            <li>${msg("Passing")}: ${result.passing}</li>
                             <li>
                                 ${msg("Messages")}:
                                 <ul class="pf-c-list">
-                                    ${(
-                                        (this.event.context.result as EventContext)
-                                            .messages as string[]
-                                    ).map((msg) => {
+                                    ${(result.messages as string[]).map((msg) => {
                                         return html`<li>${msg}</li>`;
                                     })}
                                 </ul>
                             </li>
+                            <li>
+                                ${msg("Raw result", {
+                                    id: "events.policy-execution.raw-result.label",
+                                })}:
+                                <code>${JSON.stringify(result.raw_result, null, 4)}</code>
+                            </li>
+                            ${
+                                dryRun
+                                    ? html`<li>
+                                          ${msg("Cached", {
+                                              id: "events.policy-execution.cached.label",
+                                          })}:
+                                          ${this.event.context.cached ? msg("Yes") : msg("No")}
+                                      </li>`
+                                    : nothing
+                            }
                         </ul>
                     </div>
                 </div>
