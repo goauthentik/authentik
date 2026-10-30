@@ -2,6 +2,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#elements/Crontab";
 import "#components/tasks/ScheduleForm";
 import "#components/tasks/TaskList";
 import "#components/tasks/TaskStatus";
@@ -105,7 +106,7 @@ export class ScheduleList extends Table<Schedule> {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
-            html`${item.crontab}`,
+            html`<ak-crontab cron=${item.crontab}></ak-crontab>`,
             html` ${item.paused ? html`${msg("Paused")}` : Timestamp(item.nextRun)} `,
             html`<ak-task-status .status=${item.lastTaskStatus}></ak-task-status>`,
             html`<ak-action-button
