@@ -26,7 +26,7 @@ export class AKTimestamp extends AKElement {
     public set timestamp(value: string | Date | number | null) {
         const date = value ? (value instanceof Date ? value : new Date(value)) : null;
 
-        // An unparseable value returns an Invalid Date, which is truthy but still can't be formatted.
+        // An unparsable value returns an Invalid Date, which is truthy but still can't be formatted.
         this.#timestamp = date && !Number.isNaN(date.getTime()) ? date : null;
     }
 
