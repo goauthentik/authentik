@@ -15,6 +15,128 @@
     }
 }
 
+.theme-doc-markdown {
+    font-size: 1.0625rem;
+
+    /* Retain Infima's 1.65 body line height, 20px leading, and 40px H2 spacing. */
+    --ifm-h1-vertical-rhythm-bottom: 0.8;
+    --ifm-heading-vertical-rhythm-bottom: 0.6;
+    --ifm-h3-vertical-rhythm-top: 1.6;
+}
+
+/* Keep title spacing on the header rather than stacking H1 and title-row margins. */
+.theme-doc-markdown > header {
+    --ifm-h1-vertical-rhythm-bottom: 0;
+    margin-bottom: 1rem;
+}
+
+.theme-doc-markdown > header > :last-child {
+    margin-bottom: 0;
+}
+
+.theme-doc-markdown > :is(header, h1) + :is(h2, h3, h4, h5, h6)[id] {
+    margin-top: 0;
+}
+
+/* Use the same rhythm for MDX headings inside tab panels and procedural lists. */
+.theme-doc-markdown :is(h2, h3, h4, h5, h6)[id] {
+    margin-bottom: calc(
+        var(--ifm-heading-vertical-rhythm-bottom) * var(--ifm-leading)
+    );
+}
+
+.theme-doc-markdown h2[id] {
+    --ifm-h2-font-size: 2rem;
+    margin-top: calc(var(--ifm-h2-vertical-rhythm-top) * var(--ifm-leading));
+}
+
+.theme-doc-markdown h3[id] {
+    --ifm-h3-font-size: 1.5rem;
+    margin-top: calc(var(--ifm-h3-vertical-rhythm-top) * var(--ifm-leading));
+}
+
+.theme-doc-markdown :is(h4, h5, h6)[id] {
+    margin-top: 1.5rem;
+}
+
+.theme-doc-markdown h4[id] {
+    font-size: 1.25rem;
+}
+
+.theme-doc-markdown h5[id] {
+    font-size: 1.125rem;
+}
+
+.theme-doc-markdown h6[id] {
+    font-size: 1.0625rem;
+}
+
+@media (max-width: 576px) {
+    .theme-doc-markdown h2[id] {
+        --ifm-h2-font-size: 1.5rem;
+    }
+
+    .theme-doc-markdown h3[id] {
+        --ifm-h3-font-size: 1.25rem;
+    }
+
+    .theme-doc-markdown h4[id] {
+        font-size: 1.125rem;
+    }
+
+    .theme-doc-markdown h5[id] {
+        font-size: 1.0625rem;
+    }
+
+    .theme-doc-markdown h6[id] {
+        font-size: 1rem;
+    }
+}
+
+/* Prose lists only: do not add space to tabs or component/navigation lists. */
+.theme-doc-markdown :where(ul, ol):not([class]) {
+    --ifm-list-item-margin: 0.375rem;
+    --ifm-list-paragraph-margin: 0.5rem;
+}
+
+.theme-doc-markdown :where(ul, ol):not([class]) :where(ul, ol) {
+    --ifm-list-item-margin: 0.25rem;
+}
+
+.theme-doc-markdown .theme-tabs-container {
+    --ifm-tabs-padding-vertical: 0.75rem;
+}
+
+.theme-doc-markdown .theme-tabs-container > .tabs {
+    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.theme-doc-markdown .tabs__item--active {
+    background-color: var(--ifm-color-emphasis-100);
+}
+
+.theme-doc-markdown table {
+    --ifm-table-cell-padding: 0.625rem 0.875rem;
+    --ifm-table-border-color: var(--ifm-color-emphasis-200);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.theme-doc-markdown :is(th, td) {
+    vertical-align: top;
+}
+
+.theme-doc-markdown .theme-admonition {
+    --ifm-alert-border-left-width: 4px;
+    --ifm-alert-shadow: none;
+    margin-bottom: var(--ifm-leading);
+}
+
+/* The optional title precedes the content; title-less callouts have one child. */
+.theme-doc-markdown .theme-admonition > :first-child:not(:last-child) {
+    margin-bottom: 0.5rem;
+}
+
 .contains-task-list {
     input[type="checkbox"] {
         appearance: none;
