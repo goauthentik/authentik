@@ -1,5 +1,4 @@
 import "../ak-visibility-toggle.js";
-
 import { type VisibilityToggle, type VisibilityToggleProps } from "../ak-visibility-toggle.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
@@ -91,6 +90,7 @@ export const PasswordFieldExample: Story = {
             const passwordField = document.querySelector("#demo-password") as HTMLInputElement;
 
             toggle.open = isVisible;
+
             if (passwordField) {
                 passwordField.type = isVisible ? "text" : "password";
             }

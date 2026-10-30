@@ -3,8 +3,16 @@
 from datetime import datetime, timedelta
 from json import loads
 
-from django.contrib.auth.hashers import make_password
+from django.conf import settings
+from django.contrib.auth.hashers import (
+    PBKDF2PasswordHasher,
+    check_password,
+    make_password,
+)
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls.base import reverse
+from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
@@ -25,13 +33,19 @@ from authentik.core.tests.utils import (
     create_test_session,
     create_test_user,
 )
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
 from authentik.stages.email.models import EmailStage
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
-INVALID_PASSWORD_HASH_ERROR = "Invalid password hash format. Must be a valid Django password hash."
+ALLOWED_ALGORITHMS = ", ".join(
+    import_string(path)().algorithm for path in settings.PASSWORD_HASHERS_IMPORT_ALLOWED
+)
+INVALID_PASSWORD_HASH_ERROR = (
+    f"Cannot identify hash function. Password hash must use one of: {ALLOWED_ALGORITHMS}."
+)
 
 
 class TestUsersAPI(APITestCase):
@@ -41,10 +55,15 @@ class TestUsersAPI(APITestCase):
         self.admin = create_test_admin_user()
         self.user = create_test_user()
 
-    def _set_password_hash(self, user: User, password_hash: str, client=None):
+    def _set_password_hash(
+        self, user: User, password_hash: str, client=None, override: bool | None = None
+    ):
+        data: dict[str, str | bool] = {"password": password_hash}
+        if override is not None:
+            data["override"] = override
         return (client or self.client).post(
             reverse("authentik_api:user-set-password-hash", kwargs={"pk": user.pk}),
-            data={"password": password_hash},
+            data=data,
         )
 
     def _assert_password_hash_set(
@@ -53,31 +72,89 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 204, response.data)
         user.refresh_from_db()
         self.assertEqual(user.password, password_hash)
-        self.assertTrue(user.check_password(password))
+        self.assertTrue(check_password(password, user.password))
 
     def _assert_password_hash_rejected(
-        self, user: User, original_password_hash: str, response
+        self,
+        user: User,
+        original_password_hash: str,
+        response,
+        errors: str | list[str] | None = INVALID_PASSWORD_HASH_ERROR,
     ) -> None:
         self.assertEqual(response.status_code, 400)
-        self.assertJSONEqual(
-            response.content,
-            {"password": [INVALID_PASSWORD_HASH_ERROR]},
-        )
+        if errors is not None:
+            if isinstance(errors, str):
+                errors = [errors]
+            self.assertJSONEqual(response.content, {"password": errors})
         user.refresh_from_db()
         self.assertEqual(user.password, original_password_hash)
 
     def test_filter_type(self):
         """Test API filtering by type"""
         self.client.force_login(self.admin)
-        user = create_test_admin_user(type=UserTypes.EXTERNAL)
+        path = generate_id()
+        internal = create_test_user(path=path)
+        external = create_test_user(path=path, type=UserTypes.EXTERNAL)
+        service_account = create_test_user(path=path, type=UserTypes.SERVICE_ACCOUNT)
+        for types, expected in (
+            ([UserTypes.EXTERNAL], [external]),
+            ([UserTypes.EXTERNAL, UserTypes.SERVICE_ACCOUNT], [external, service_account]),
+            ([UserTypes.INTERNAL, UserTypes.EXTERNAL], [internal, external]),
+        ):
+            with self.subTest(types=types):
+                response = self.client.get(
+                    reverse("authentik_api:user-list"),
+                    data={"path": path, "type": types},
+                )
+                self.assertEqual(response.status_code, 200)
+                body = loads(response.content)
+                self.assertCountEqual(
+                    [user["pk"] for user in body["results"]], [user.pk for user in expected]
+                )
+                self.assertEqual(body["pagination"]["count"], len(expected))
+
+    def test_filter_type_no_distinct(self):
+        """Test that filtering by type doesn't make the list and count queries DISTINCT"""
+        self.client.force_login(self.admin)
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.get(
+                reverse("authentik_api:user-list"),
+                data={"type": UserTypes.INTERNAL},
+            )
+        self.assertEqual(response.status_code, 200)
+        user_queries = [
+            query["sql"]
+            for query in queries.captured_queries
+            if 'FROM "authentik_core_user"' in query["sql"]
+        ]
+        for sql in user_queries:
+            self.assertNotIn("DISTINCT", sql)
+        # The paginator counts the user table directly, not a DISTINCT subquery
+        self.assertTrue(
+            any(
+                sql.startswith('SELECT COUNT(*) AS "__count" FROM "authentik_core_user"')
+                for sql in user_queries
+            )
+        )
+
+    def test_filter_type_with_groups(self):
+        """Test filtering by type together with a to-many filter returns each user once"""
+        self.client.force_login(self.admin)
+        group_a = Group.objects.create(name=generate_id())
+        group_b = Group.objects.create(name=generate_id())
+        user = create_test_user(type=UserTypes.EXTERNAL)
+        user.groups.add(group_a, group_b)
         response = self.client.get(
             reverse("authentik_api:user-list"),
             data={
                 "type": UserTypes.EXTERNAL,
-                "username": user.username,
+                "groups_by_pk": [str(group_a.pk), str(group_b.pk)],
             },
         )
         self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual([result["pk"] for result in body["results"]], [user.pk])
+        self.assertEqual(body["pagination"]["count"], 1)
 
     def test_filter_is_superuser(self):
         """Test API filtering by superuser status"""
@@ -107,6 +184,66 @@ class TestUsersAPI(APITestCase):
         body = loads(response.content)
         self.assertEqual(len(body["results"]), 1, body)
         self.assertEqual(body["results"][0]["username"], user.username)
+
+    def _create_superuser_hierarchy(self) -> dict[int, bool]:
+        """Create users with direct, inherited and no superuser status, and return the
+        expected is_superuser value for each of them"""
+        superuser_group = Group.objects.create(name=generate_id(), is_superuser=True)
+        child = Group.objects.create(name=generate_id())
+        child.parents.add(superuser_group)
+        grandchild = Group.objects.create(name=generate_id())
+        grandchild.parents.add(child)
+        parent = Group.objects.create(name=generate_id())
+        non_superuser_child = Group.objects.create(name=generate_id())
+        non_superuser_child.parents.add(parent)
+
+        direct = create_test_user()
+        superuser_group.users.add(direct)
+        via_child = create_test_user()
+        child.users.add(via_child)
+        via_grandchild = create_test_user()
+        grandchild.users.add(via_grandchild)
+        via_non_superuser_child = create_test_user()
+        non_superuser_child.users.add(via_non_superuser_child)
+        no_groups = create_test_user()
+        return {
+            direct.pk: True,
+            via_child.pk: True,
+            via_grandchild.pk: True,
+            via_non_superuser_child.pk: False,
+            no_groups.pk: False,
+        }
+
+    def test_list_is_superuser(self):
+        """Test is_superuser in the user list and detail for direct and inherited superuser
+        group membership"""
+        expected = self._create_superuser_hierarchy()
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-list"), {"page_size": 100})
+        self.assertEqual(response.status_code, 200)
+        listed = {user["pk"]: user["is_superuser"] for user in loads(response.content)["results"]}
+        for pk, is_superuser in expected.items():
+            self.assertEqual(User.objects.get(pk=pk).is_superuser, is_superuser, pk)
+            self.assertEqual(listed[pk], is_superuser, pk)
+            response = self.client.get(reverse("authentik_api:user-detail", kwargs={"pk": pk}))
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(loads(response.content)["is_superuser"], is_superuser, pk)
+
+    def test_list_is_superuser_query_count(self):
+        """Test is_superuser in the user list doesn't add group queries per user"""
+
+        def group_queries(ctx: CaptureQueriesContext) -> int:
+            return len([q for q in ctx.captured_queries if "authentik_core_group" in q["sql"]])
+
+        self._create_superuser_hierarchy()
+        self.client.force_login(self.admin)
+        url = reverse("authentik_api:user-list")
+        with CaptureQueriesContext(connection) as before:
+            self.assertEqual(self.client.get(url).status_code, 200)
+        self._create_superuser_hierarchy()
+        with CaptureQueriesContext(connection) as after:
+            self.assertEqual(self.client.get(url).status_code, 200)
+        self.assertEqual(group_queries(after), group_queries(before))
 
     def test_list_with_groups(self):
         """Test listing with groups"""
@@ -159,7 +296,7 @@ class TestUsersAPI(APITestCase):
         self.assertJSONEqual(response.content, {"password": ["This field may not be blank."]})
 
     def test_set_password_hash(self):
-        """Test setting a user's password from a hash."""
+        """Test setting a user's password from a current hash."""
         self.client.force_login(self.admin)
         password = generate_key()
         password_hash = make_password(password)
@@ -170,15 +307,40 @@ class TestUsersAPI(APITestCase):
     def test_set_password_hash_invalid(self):
         """Test invalid password hashes are rejected."""
         self.client.force_login(self.admin)
-        original_password = self.user.password
-        for password_hash in (
-            INVALID_PASSWORD_HASH,
-            "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM=",
-        ):
-            with self.subTest(password_hash=password_hash):
-                response = self._set_password_hash(self.user, password_hash)
+        response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH)
 
-                self._assert_password_hash_rejected(self.user, original_password, response)
+        self._assert_password_hash_rejected(self.user, self.user.password, response)
+
+    def _noncurrent_pbkdf2_hash(self, password: str, salt: str | None = None) -> str:
+        hasher = PBKDF2PasswordHasher()
+        hasher.iterations -= 1
+        return hasher.encode(password, salt or hasher.salt())
+
+    def test_set_password_hash_override(self):
+        """Test override imports a non-current hash, but not an invalid one."""
+        self.client.force_login(self.admin)
+        original_password = self.user.password
+        password = generate_key()
+        password_hash = self._noncurrent_pbkdf2_hash(password, "salt")
+
+        response = self._set_password_hash(self.user, password_hash)
+        errors = response.json()["password"]
+        self._assert_password_hash_rejected(self.user, original_password, response, errors=errors)
+        self.assertEqual(len(errors), 2)
+        self.assertTrue(all("override" in error for error in errors))
+
+        response = self._set_password_hash(self.user, password_hash, override=True)
+        self._assert_password_hash_set(self.user, password, password_hash, response)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_SET,
+                user__pk=self.user.pk,
+                context__hasher_defaults_overridden=True,
+            ).exists()
+        )
+
+        response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH, override=True)
+        self._assert_password_hash_rejected(self.user, password_hash, response)
 
     def test_recovery(self):
         """Test user recovery link"""
@@ -1020,7 +1182,7 @@ class TestUsersAPI(APITestCase):
 
 
 class TestUsersAPIGroupRoleValidation(APITestCase):
-    """Test that PATCH /api/v3/core/users/{pk}/ enforces group and role permission checks."""
+    """Test that the users API enforces group and role permission checks."""
 
     def setUp(self) -> None:
         self.actor = create_test_user()
@@ -1093,3 +1255,72 @@ class TestUsersAPIGroupRoleValidation(APITestCase):
         self.target.roles.add(role)
         res = self._patch({"roles": [str(role.pk)]})
         self.assertEqual(res.status_code, 200)
+
+    def test_patch_inherited_superuser_group_no_perm(self):
+        """Assigning a group which takes superuser status from its parent without
+        enable_group_superuser must be rejected."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(list(self.target.groups.all()), [])
+
+    def test_patch_inherited_superuser_group_with_perm(self):
+        """Assigning a group which takes superuser status from its parent with
+        enable_group_superuser must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        self.actor.assign_perms_to_managed_role("authentik_core.enable_group_superuser")
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(list(self.target.groups.all()), [group])
+        self.assertTrue(User.objects.get(pk=self.target.pk).is_superuser)
+
+    def test_patch_inherited_non_superuser_group_no_perm(self):
+        """Assigning a group whose parent is not a superuser group without special
+        permission must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        parent = Group.objects.create(name=generate_id())
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(parent)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(list(self.target.groups.all()), [group])
+        self.assertFalse(User.objects.get(pk=self.target.pk).is_superuser)
+
+    def test_patch_existing_inherited_superuser_group_no_perm(self):
+        """Keeping an existing membership in a group which takes superuser status from its
+        parent without the permission must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        self.target.groups.add(group)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(list(self.target.groups.all()), [group])
+
+    def test_create_inherited_superuser_group_no_perm(self):
+        """Creating a user in a group which takes superuser status from its parent without
+        enable_group_superuser must be rejected."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.add_user")
+        superuser = Group.objects.create(name=generate_id(), is_superuser=True)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(superuser)
+        self.client.force_login(self.actor)
+        res = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={"username": generate_id(), "name": generate_id(), "groups": [str(group.pk)]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(list(group.users.all()), [])

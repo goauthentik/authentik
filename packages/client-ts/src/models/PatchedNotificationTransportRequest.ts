@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,67 +10,36 @@
  * Do not edit the class manually.
  */
 
-import type { TransportModeEnum } from "./TransportModeEnum";
-import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportModeEnum";
+import type { TransportModeEnum } from "./TransportModeEnum.js";
+import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportModeEnum.js";
 
 /**
  * NotificationTransport Serializer
+ *
  * @export
  * @interface PatchedNotificationTransportRequest
  */
 export interface PatchedNotificationTransportRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedNotificationTransportRequest
-     */
     name?: string;
-    /**
-     *
-     * @type {TransportModeEnum}
-     * @memberof PatchedNotificationTransportRequest
-     */
     mode?: TransportModeEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedNotificationTransportRequest
-     */
     webhookUrl?: string;
     /**
      * When set, the selected certificate is used to validate the certificate of the webhook server.
-     * @type {string}
-     * @memberof PatchedNotificationTransportRequest
      */
     webhookCa?: string | null;
     /**
      * Customize the body of the request. Mapping should return data that is JSON-serializable.
-     * @type {string}
-     * @memberof PatchedNotificationTransportRequest
      */
     webhookMappingBody?: string | null;
     /**
-     * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
-     * @type {string}
-     * @memberof PatchedNotificationTransportRequest
+     * Configure additional headers to be sent. Mapping should return a dictionary of key-value
+     * pairs
      */
     webhookMappingHeaders?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedNotificationTransportRequest
-     */
     emailSubjectPrefix?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedNotificationTransportRequest
-     */
     emailTemplate?: string;
     /**
      * Only send notification once, for example when sending a webhook into a chat channel.
-     * @type {boolean}
-     * @memberof PatchedNotificationTransportRequest
      */
     sendOnce?: boolean;
 }

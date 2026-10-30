@@ -1,8 +1,8 @@
 import "#elements/forms/HorizontalFormElement";
 import "#flow/components/ak-flow-card";
-
 import { globalAK } from "#common/global";
-import { autoDetectLanguage, setSessionLocale } from "#common/ui/locale/utils";
+import { applyLocaleChange } from "#common/ui/locale/persist";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -17,8 +17,7 @@ import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 /**
- * @prop {StageHost} host - The host managing this stage.
- *
+ * @property {StageHost} host - The host managing this stage.
  */
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
@@ -60,6 +59,7 @@ export class UserSettingsPromptStage extends PromptStage {
                 </ak-form-element-horizontal>
             `;
         }
+
         return html`${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)} `;
     }
 
@@ -70,15 +70,18 @@ export class UserSettingsPromptStage extends PromptStage {
                     <button name="continue" type="submit" class="pf-c-button pf-m-primary">
                         ${msg("Save")}
                     </button>
-                    ${this.host.brand?.flowUnenrollment
-                        ? html` <a
-                              class="pf-c-button pf-m-danger"
-                              href="${globalAK().api.base}if/flow/${this.host.brand
-                                  .flowUnenrollment}/"
-                          >
-                              ${msg("Delete account")}
-                          </a>`
-                        : nothing}
+                    ${
+                        this.host.brand?.flowUnenrollment
+                            ? html` <a
+                                  class="pf-c-button pf-m-danger"
+                                  href="${globalAK().api.base}if/flow/${
+                                      this.host.brand.flowUnenrollment
+                                  }/"
+                              >
+                                  ${msg("Delete account")}
+                              </a>`
+                            : nothing
+                    }
                 </div>
             </div>
         </div>`;
@@ -118,16 +121,17 @@ export class UserSettingsPromptStage extends PromptStage {
 
         if (typeof languageTag !== "string") return;
 
-        // Remove the temporary session locale...
-        setSessionLocale(null);
+        const nextLanguageTag = autoDetectLanguage(languageTag);
 
-        if (languageTag !== this.activeLanguageTag) {
+        if (nextLanguageTag !== this.activeLanguageTag) {
             this.logger.info("A prompt stage changed the locale", {
                 languageTag,
                 previousLanguageTag,
             });
 
-            this.activeLanguageTag = autoDetectLanguage(languageTag);
+            // Locale is fixed per page load: persist the choice and reload so
+            // server-rendered strings come back in the new locale too.
+            applyLocaleChange(nextLanguageTag);
         }
     }
 }

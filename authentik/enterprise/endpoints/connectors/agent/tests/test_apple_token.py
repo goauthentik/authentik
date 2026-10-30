@@ -1,7 +1,12 @@
+from base64 import b64encode, urlsafe_b64encode
+from json import loads
+
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 from django.test import TestCase
 from django.urls import reverse
+from jwcrypto.jwe import JWE
+from jwcrypto.jwk import JWK
 from jwt import encode
 
 from authentik.blueprints.tests import reconcile_app
@@ -11,8 +16,10 @@ from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
     AgentDeviceUserBinding,
+    AppleAuthorizationCode,
     AppleIndependentSecureEnclave,
     AppleNonce,
+    AppleUnlockKey,
     DeviceToken,
     EnrollmentToken,
 )
@@ -95,6 +102,7 @@ class TestAppleToken(TestCase):
             self.apple_sign_key.private_key,
             headers={
                 "kid": self.apple_sign_key.kid,
+                "typ": "platformsso-login-request+jwt",
             },
             algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
         )
@@ -116,6 +124,73 @@ class TestAppleToken(TestCase):
         self.assertEqual(event.context["device"]["name"], self.device.name)
 
     @reconcile_app("authentik_crypto")
+    def test_token_unlock_ecdh(self):
+        """auth:unlock must derive the shared key from the request's own other_publickey,
+        not from a value cached at device registration"""
+        device_user = AgentDeviceUserBinding.objects.get(target=self.device, user=self.user)
+        unlock_private_key = ec.generate_private_key(curve=ec.SECP256R1())
+        unlock_key = AppleUnlockKey.objects.create(
+            device_user=device_user,
+            private_key=unlock_private_key.private_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PrivateFormat.PKCS8,
+                encryption_algorithm=serialization.NoEncryption(),
+            ).decode(),
+        )
+
+        # The device's ephemeral key for this specific unlock exchange
+        device_ephemeral_key = ec.generate_private_key(curve=ec.SECP256R1())
+        numbers = device_ephemeral_key.public_key().public_numbers()
+        point = b"\x04" + numbers.x.to_bytes(32, "big") + numbers.y.to_bytes(32, "big")
+        other_publickey = urlsafe_b64encode(point).rstrip(b"=").decode()
+        expected_shared_key = device_ephemeral_key.exchange(
+            ec.ECDH(), unlock_private_key.public_key()
+        )
+
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+        embedded = encode(
+            {"iss": str(self.connector.pk), "aud": str(self.device.pk), "request_nonce": nonce},
+            self.apple_sign_key.private_key,
+            headers={"kid": self.apple_sign_key.kid},
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        assertion = encode(
+            {
+                "iss": str(self.connector.pk),
+                "aud": "http://testserver/endpoints/agent/psso/token/",
+                "request_nonce": nonce,
+                "assertion": embedded,
+                "scope": "openid urn:apple:platformsso:auth:unlock",
+                "other_publickey": other_publickey,
+                "jwe_crypto": {
+                    "apv": (
+                        "AAAABUFwcGxlAAAAQQTFgZOospN6KbkhXhx1lfa-AKYxjEfJhTJrkpdEY_srMmkPzS7VN0Bzt2AtNBEXE"
+                        "aphDONiP2Mq6Oxytv5JKOxHAAAAJDgyOThERkY5LTVFMUUtNEUwMS04OEUwLUI3QkQzOUM4QjA3Qw"
+                    )
+                },
+            },
+            self.apple_sign_key.private_key,
+            headers={"kid": self.apple_sign_key.kid, "typ": "platformsso-login-request+jwt"},
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        res = self.client.post(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token"),
+            data={
+                "assertion": assertion,
+                "platform_sso_version": "1.0",
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            },
+        )
+
+        self.assertEqual(res.status_code, 200)
+        parsed = JWE()
+        parsed.deserialize(res.content.decode(), JWK.from_pyca(self.enc_key))
+        body = loads(parsed.payload)
+        self.assertEqual(body["key"], b64encode(expected_shared_key).decode())
+        self.assertEqual(body["key_context"], str(unlock_key.identifier))
+
+    @reconcile_app("authentik_crypto")
     def test_token_unknown_kid(self):
         """An assertion signed by a key ID we don't know must be rejected with a 400"""
         assertion = encode(
@@ -127,6 +202,7 @@ class TestAppleToken(TestCase):
             self.apple_sign_key.private_key,
             headers={
                 "kid": generate_id(),
+                "typ": "platformsso-login-request+jwt",
             },
             algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
         )
@@ -173,6 +249,7 @@ class TestAppleToken(TestCase):
             self.apple_sign_key.private_key,
             headers={
                 "kid": self.apple_sign_key.kid,
+                "typ": "platformsso-login-request+jwt",
             },
             algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
         )
@@ -225,6 +302,7 @@ class TestAppleToken(TestCase):
             self.apple_sign_key.private_key,
             headers={
                 "kid": self.apple_sign_key.kid,
+                "typ": "platformsso-login-request+jwt",
             },
             algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
         )
@@ -244,3 +322,86 @@ class TestAppleToken(TestCase):
         ).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["device"]["name"], self.device.name)
+
+    @reconcile_app("authentik_crypto")
+    def test_authorization_code(self):
+        """A code bound to the redeeming device is accepted"""
+        auth_code = AppleAuthorizationCode.objects.create(
+            user=self.user,
+            connector=self.connector,
+            device_connection=self.connection,
+            scope="openid",
+        )
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+        assertion = encode(
+            {
+                "iss": str(self.connector.pk),
+                "aud": "http://testserver/endpoints/agent/psso/token/",
+                "request_nonce": nonce,
+                "jwe_crypto": {
+                    "apv": (
+                        "AAAABUFwcGxlAAAAQQTFgZOospN6KbkhXhx1lfa-AKYxjEfJhTJrkpdEY_srMmkPzS7VN0Bzt2AtNBEXE"
+                        "aphDONiP2Mq6Oxytv5JKOxHAAAAJDgyOThERkY5LTVFMUUtNEUwMS04OEUwLUI3QkQzOUM4QjA3Qw"
+                    )
+                },
+            },
+            self.apple_sign_key.private_key,
+            headers={"kid": self.apple_sign_key.kid, "typ": "platformsso-login-request+jwt"},
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        res = self.client.post(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token"),
+            data={
+                "assertion": assertion,
+                "platform_sso_version": "1.0",
+                "grant_type": "authorization_code",
+                "code": auth_code.code,
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertFalse(AppleAuthorizationCode.objects.filter(pk=auth_code.pk).exists())
+
+    @reconcile_app("authentik_crypto")
+    def test_authorization_code_other_device(self):
+        """A code issued to another device of the same connector must not be redeemable"""
+        other_connection = AgentDeviceConnection.objects.create(
+            device=Device.objects.create(name=generate_id(), identifier=generate_id()),
+            connector=self.connector,
+            apple_sign_key_id=generate_id(),
+        )
+        auth_code = AppleAuthorizationCode.objects.create(
+            user=self.user,
+            connector=self.connector,
+            device_connection=other_connection,
+            scope="openid",
+        )
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+        assertion = encode(
+            {
+                "iss": str(self.connector.pk),
+                "aud": "http://testserver/endpoints/agent/psso/token/",
+                "request_nonce": nonce,
+                "jwe_crypto": {
+                    "apv": (
+                        "AAAABUFwcGxlAAAAQQTFgZOospN6KbkhXhx1lfa-AKYxjEfJhTJrkpdEY_srMmkPzS7VN0Bzt2AtNBEXE"
+                        "aphDONiP2Mq6Oxytv5JKOxHAAAAJDgyOThERkY5LTVFMUUtNEUwMS04OEUwLUI3QkQzOUM4QjA3Qw"
+                    )
+                },
+            },
+            self.apple_sign_key.private_key,
+            headers={"kid": self.apple_sign_key.kid, "typ": "platformsso-login-request+jwt"},
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        res = self.client.post(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token"),
+            data={
+                "assertion": assertion,
+                "platform_sso_version": "1.0",
+                "grant_type": "authorization_code",
+                "code": auth_code.code,
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertTrue(AppleAuthorizationCode.objects.filter(pk=auth_code.pk).exists())

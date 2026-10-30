@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,57 +10,23 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
 
 /**
  * Special challenge for apple-native authentication flow, which happens on the client.
+ *
  * @export
  * @interface AppleLoginChallenge
  */
 export interface AppleLoginChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof AppleLoginChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof AppleLoginChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AppleLoginChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof AppleLoginChallenge
-     */
     clientId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AppleLoginChallenge
-     */
     scope: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AppleLoginChallenge
-     */
     redirectUri: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AppleLoginChallenge
-     */
     state: string;
 }
 

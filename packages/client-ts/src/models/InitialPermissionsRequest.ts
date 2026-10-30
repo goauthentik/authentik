@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * InitialPermissions serializer
+ *
  * @export
  * @interface InitialPermissionsRequest
  */
 export interface InitialPermissionsRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof InitialPermissionsRequest
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof InitialPermissionsRequest
-     */
     role: string;
-    /**
-     *
-     * @type {Array<number>}
-     * @memberof InitialPermissionsRequest
-     */
     permissions?: Array<number>;
 }
 

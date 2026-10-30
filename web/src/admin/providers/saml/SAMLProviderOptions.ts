@@ -1,5 +1,6 @@
 import {
     DigestAlgorithmEnum,
+    EncryptionAlgorithmEnum,
     KeyTypeEnum,
     SAMLBindingsEnum,
     SAMLLogoutMethods,
@@ -62,6 +63,13 @@ export const digestAlgorithmOptions = toOptions([
     ["SHA512", DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512],
 ]);
 
+export const encryptionAlgorithmOptions = toOptions([
+    ["AES128-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes128Cbc],
+    ["AES256-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes256Cbc],
+    ["AES128-GCM", EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes128Gcm],
+    ["AES256-GCM", EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes256Gcm, true],
+]);
+
 export const signatureAlgorithmOptions = toOptions([
     ["RSA-SHA1", SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1],
     ["RSA-SHA256", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256, true],
@@ -103,9 +111,8 @@ export function retrieveSignatureAlgorithm(
     algorithm: HashAlgorithm,
 ): SignatureAlgorithmEnum | null {
     const familyMap = SignatureFamilyByHashAlgorithm[family];
+
     if (!familyMap) return null;
 
     return familyMap.get(algorithm) ?? null;
 }
-
-export const SAMLSupportedKeyTypes = [KeyTypeEnum.Rsa, KeyTypeEnum.Ec, KeyTypeEnum.Dsa];

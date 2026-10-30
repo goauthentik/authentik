@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { KubernetesServiceConnection } from "./KubernetesServiceConnection";
+import type { KubernetesServiceConnection } from "./KubernetesServiceConnection.js";
 import {
     KubernetesServiceConnectionFromJSON,
     KubernetesServiceConnectionToJSON,
-} from "./KubernetesServiceConnection";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./KubernetesServiceConnection.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedKubernetesServiceConnectionList
  */
 export interface PaginatedKubernetesServiceConnectionList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedKubernetesServiceConnectionList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<KubernetesServiceConnection>}
-     * @memberof PaginatedKubernetesServiceConnectionList
-     */
     results: Array<KubernetesServiceConnection>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedKubernetesServiceConnectionList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { LifecycleIteration } from "./LifecycleIteration";
-import { LifecycleIterationFromJSON, LifecycleIterationToJSON } from "./LifecycleIteration";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { LifecycleIteration } from "./LifecycleIteration.js";
+import { LifecycleIterationFromJSON, LifecycleIterationToJSON } from "./LifecycleIteration.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedLifecycleIterationList
  */
 export interface PaginatedLifecycleIterationList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedLifecycleIterationList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<LifecycleIteration>}
-     * @memberof PaginatedLifecycleIterationList
-     */
     results: Array<LifecycleIteration>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedLifecycleIterationList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,4 @@
 import "../Expand.js";
-
 import { Expand, type IExpand } from "../Expand.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
@@ -81,7 +80,11 @@ export const DefaultStory: StoryObj = {
             </ak-expand>`,
         ),
 };
+
 export const Expanded = {
     ...DefaultStory,
-    args: { ...DefaultStory, ...{ expanded: true } },
+    args: {
+        ...DefaultStory,
+        expanded: true,
+    },
 };

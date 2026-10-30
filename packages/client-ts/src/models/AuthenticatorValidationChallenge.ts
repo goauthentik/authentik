@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,61 +10,27 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { DeviceChallenge } from "./DeviceChallenge";
-import { DeviceChallengeFromJSON, DeviceChallengeToJSON } from "./DeviceChallenge";
-import type { ErrorDetail } from "./ErrorDetail";
-import type { SelectableStage } from "./SelectableStage";
-import { SelectableStageFromJSON, SelectableStageToJSON } from "./SelectableStage";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { DeviceChallenge } from "./DeviceChallenge.js";
+import { DeviceChallengeFromJSON, DeviceChallengeToJSON } from "./DeviceChallenge.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
+import type { SelectableStage } from "./SelectableStage.js";
+import { SelectableStageFromJSON, SelectableStageToJSON } from "./SelectableStage.js";
 
 /**
  * Authenticator challenge
+ *
  * @export
  * @interface AuthenticatorValidationChallenge
  */
 export interface AuthenticatorValidationChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof AuthenticatorValidationChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorValidationChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AuthenticatorValidationChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorValidationChallenge
-     */
     pendingUser: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorValidationChallenge
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     * @type {Array<DeviceChallenge>}
-     * @memberof AuthenticatorValidationChallenge
-     */
     deviceChallenges: Array<DeviceChallenge>;
-    /**
-     *
-     * @type {Array<SelectableStage>}
-     * @memberof AuthenticatorValidationChallenge
-     */
     configurationStages: Array<SelectableStage>;
 }
 

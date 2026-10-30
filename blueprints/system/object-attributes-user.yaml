@@ -146,8 +146,8 @@ entries:
         type: text
     - model: authentik_core.objectattribute
       identifiers:
-        key: employee_departmenet
-        managed: goauthentik.io/object-attrs/user/employee/departmenet
+        key: employee_department
+        managed: goauthentik.io/object-attrs/user/employee/department
       attrs:
         group: Employee
         object_type: authentik_core.user

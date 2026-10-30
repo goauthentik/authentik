@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,39 +12,19 @@
 
 /**
  * Reputation Policy Serializer
+ *
  * @export
  * @interface ReputationPolicyRequest
  */
 export interface ReputationPolicyRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof ReputationPolicyRequest
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof ReputationPolicyRequest
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof ReputationPolicyRequest
-     */
     checkIp?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof ReputationPolicyRequest
-     */
     checkUsername?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof ReputationPolicyRequest
-     */
     threshold?: number;
 }
 

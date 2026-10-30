@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * Authenticator Email Challenge response, device is set by get_response_instance
+ *
  * @export
  * @interface AuthenticatorEmailChallengeResponseRequest
  */
 export interface AuthenticatorEmailChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorEmailChallengeResponseRequest
-     */
     component?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorEmailChallengeResponseRequest
-     */
     code?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorEmailChallengeResponseRequest
-     */
     email?: string;
 }
 

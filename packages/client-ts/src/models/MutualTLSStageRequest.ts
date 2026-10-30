@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,48 +10,28 @@
  * Do not edit the class manually.
  */
 
-import type { CertAttributeEnum } from "./CertAttributeEnum";
-import { CertAttributeEnumFromJSON, CertAttributeEnumToJSON } from "./CertAttributeEnum";
-import type { StageModeEnum } from "./StageModeEnum";
-import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
-import type { UserAttributeEnum } from "./UserAttributeEnum";
-import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttributeEnum";
+import type { CertAttributeEnum } from "./CertAttributeEnum.js";
+import { CertAttributeEnumFromJSON, CertAttributeEnumToJSON } from "./CertAttributeEnum.js";
+import type { StageModeEnum } from "./StageModeEnum.js";
+import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum.js";
+import type { UserAttributeEnum } from "./UserAttributeEnum.js";
+import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttributeEnum.js";
 
 /**
  * MutualTLSStage Serializer
+ *
  * @export
  * @interface MutualTLSStageRequest
  */
 export interface MutualTLSStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof MutualTLSStageRequest
-     */
     name: string;
-    /**
-     *
-     * @type {StageModeEnum}
-     * @memberof MutualTLSStageRequest
-     */
     mode: StageModeEnum;
     /**
-     * Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
-     * @type {Array<string>}
-     * @memberof MutualTLSStageRequest
+     * Configure certificate authorities to validate the certificate against. This option has a
+     * higher priority than the `client_certificate` option on `Brand`.
      */
     certificateAuthorities?: Array<string>;
-    /**
-     *
-     * @type {CertAttributeEnum}
-     * @memberof MutualTLSStageRequest
-     */
     certAttribute: CertAttributeEnum;
-    /**
-     *
-     * @type {UserAttributeEnum}
-     * @memberof MutualTLSStageRequest
-     */
     userAttribute: UserAttributeEnum;
 }
 

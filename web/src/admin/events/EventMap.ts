@@ -1,4 +1,5 @@
 import "#elements/maps/ak-map";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { EventWithContext } from "#common/events";
 
@@ -14,13 +15,9 @@ import { Event } from "@goauthentik/api";
 import { css, CSSResult, html, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
 /**
- *
  * @event {select-events} - Fired when an event column is selected on the map. The ids of the
  *      column's events are contained in the `detail.eventIds` field.
- *
  */
 @customElement("ak-events-map")
 export class EventMap extends WithBrandConfig(AKElement) {
@@ -47,10 +44,12 @@ export class EventMap extends WithBrandConfig(AKElement) {
         return results
             .filter((event): event is EventWithContext => {
                 const geo = (event as EventWithContext).context?.geo;
+
                 return Boolean(geo && typeof geo.lat === "number" && typeof geo.long === "number");
             })
             .map((event) => {
                 const geo = event.context.geo!;
+
                 return {
                     id: String(event.pk),
                     lon: geo.long!,
@@ -72,6 +71,7 @@ export class EventMap extends WithBrandConfig(AKElement) {
 
     render(): TemplateResult {
         const theme = this.activeTheme === "dark" ? "dark" : "light";
+
         // Empty brandingMapTiles flips ak-map into hexworld mode (the bundled
         // default); a non-empty value routes to the conventional basemap path.
         return html`<div class="pf-c-card">

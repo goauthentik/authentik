@@ -2,12 +2,9 @@
 
 import importlib
 from collections import OrderedDict
-from hashlib import sha512
 from pathlib import Path
 
 from django.utils import http as utils_http
-from sentry_sdk import set_tag
-from xmlsec import enable_debug_trace
 
 from authentik import authentik_version
 from authentik.lib.config import (
@@ -17,8 +14,6 @@ from authentik.lib.config import (
     postgresql_direct_db_enabled,
 )
 from authentik.lib.logging import get_logger_config, structlog_configure
-from authentik.lib.sentry import sentry_init
-from authentik.lib.utils.reflection import get_env
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
@@ -59,10 +54,11 @@ AUTHENTICATION_BACKENDS = [
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
-SHARED_APPS = [
+INSTALLED_APPS = [
     "authentik.commands",
-    "django_tenants",
-    "authentik.tenants",
+    "django_dramatiq_postgres",
+    "authentik.tasks",
+    "authentik.admin",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
@@ -77,16 +73,11 @@ SHARED_APPS = [
     "pglock",
     "channels",
     "django_channels_postgres",
-    "django_dramatiq_postgres",
-    "authentik.tasks",
-]
-TENANT_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "pgtrigger",
     "django_postgres_cache",
-    "authentik.admin",
     "authentik.api",
     "authentik.core",
     "authentik.crypto",
@@ -143,17 +134,12 @@ TENANT_APPS = [
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
     "authentik.tasks.schedules",
+    # TODO: remove in 2027
+    "authentik.tenants",
     "authentik.brands",
     "authentik.blueprints",
     "guardian",
 ]
-
-TENANT_MODEL = "authentik_tenants.Tenant"
-TENANT_DOMAIN_MODEL = "authentik_tenants.Domain"
-
-TENANT_CREATION_FAKES_MIGRATIONS = True
-TENANT_BASE_SCHEMA = "template"
-PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
 GUARDIAN_GROUP_MODEL = "authentik_core.Group"
 GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
@@ -186,6 +172,7 @@ SPECTACULAR_SETTINGS = {
     "ENUM_NAME_OVERRIDES": {
         "AppEnum": "authentik.lib.api.Apps",
         "AuthenticationEnum": "authentik.flows.models.FlowAuthenticationRequirement",
+        "ClientTypeEnum": "authentik.providers.oauth2.models.ClientType",
         "ConsentModeEnum": "authentik.stages.consent.models.ConsentMode",
         "CountryCodeEnum": "django_countries.countries",
         "DeviceClassesEnum": "authentik.stages.authenticator_validate.models.DeviceClasses",
@@ -194,6 +181,7 @@ SPECTACULAR_SETTINGS = {
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "FlowMessageLevelEnum": "authentik.flows.challenge.FLOW_MESSAGE_LEVELS",
+        "GrantTypeEnum": "authentik.providers.oauth2.models.GrantType",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "ModelEnum": "authentik.lib.api.Models",
         "OffboardingActionEnum": (
@@ -208,6 +196,7 @@ SPECTACULAR_SETTINGS = {
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
         "RedirectURITypeEnum": "authentik.providers.oauth2.models.RedirectURIType",
+        "RequestStatus": "authentik.enterprise.requests.models.RequestStatus",
         "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
         "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
@@ -216,12 +205,12 @@ SPECTACULAR_SETTINGS = {
         "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
         "TaskStatusEnum": "django_dramatiq_postgres.models.TaskState",
         "TransportModeEnum": "authentik.events.models.TransportMode",
-        "RequestStatus": "authentik.enterprise.requests.models.RequestStatus",
-        "ClientTypeEnum": "authentik.providers.oauth2.models.ClientType",
-        "GrantTypeEnum": "authentik.providers.oauth2.models.GrantType",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "WebAuthnHintEnum": "authentik.stages.authenticator_webauthn.models.WebAuthnHint",
+        "WSFedSAMLVersionEnum": (
+            "authentik.enterprise.providers.ws_federation.models.WSFederationSAMLVersion"
+        ),
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -269,8 +258,8 @@ REST_FRAMEWORK = {
 CACHES = {
     "default": {
         "BACKEND": "django_postgres_cache.backend.DatabaseCache",
-        "KEY_FUNCTION": "django_tenants.cache.make_key",
-        "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
+        "KEY_FUNCTION": "authentik.root.cache.make_key",
+        "REVERSE_KEY_FUNCTION": "authentik.root.cache.reverse_key",
     },
     # In-process cache for DRF throttle counters. Per-worker rather than
     # cluster-wide, so the per-IP ceiling is ``throttle.default`` × (pods × workers)
@@ -294,10 +283,10 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 MIDDLEWARE_FIRST = [
+    "authentik.root.middleware.LivenessMiddleware",
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 MIDDLEWARE = [
-    "authentik.tenants.middleware.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
@@ -312,6 +301,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
+    "authentik.core.middleware.LocaleOverrideMiddleware",
     "authentik.rbac.middleware.InitialPermissionsMiddleware",
 ]
 MIDDLEWARE_LAST = [
@@ -347,17 +337,12 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 # The tree looks like this:
 # psqlextra backend
 #   -> authentik custom backend
-#     -> django_tenants backend
-#       -> django_prometheus backend
-#         -> django built-in backend
-ORIGINAL_BACKEND = "django_prometheus.db.backends.postgresql"
+#     -> django_prometheus backend
+#       -> django built-in backend
 POSTGRES_EXTRA_DB_BACKEND_BASE = "authentik.root.db"
 DATABASES = django_db_config()
 
-DATABASE_ROUTERS = (
-    "authentik.tenants.db.FailoverRouter",
-    "django_tenants.routers.TenantSyncRouter",
-)
+DATABASE_ROUTERS = ("authentik.root.db.router.FailoverRouter",)
 
 # We don't use HStore
 POSTGRES_EXTRA_AUTO_EXTENSION_SET_UP = False
@@ -386,6 +371,23 @@ EMAIL_TIMEOUT = CONFIG.get_int("email.timeout")
 DEFAULT_FROM_EMAIL = CONFIG.get("email.from")
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_SUBJECT_PREFIX = "[authentik] "
+
+# The first hasher is used for new passwords. The rest remain available so existing
+# hashes still verify.
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+]
+# Keep in sync with `authentik.lib.validators.PasswordHashValidator.current_parameters`
+PASSWORD_HASHERS_IMPORT_ALLOWED = [
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -423,7 +425,6 @@ TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 # Dramatiq
 
 DRAMATIQ = {
-    "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
     # Route the broker's LISTEN connection and advisory-lock connection through
@@ -480,7 +481,6 @@ DRAMATIQ = {
         ("dramatiq.results.middleware.Results", {"store_results": True}),
         ("authentik.tasks.middleware.StartupSignalsMiddleware", {}),
         ("authentik.tasks.middleware.CurrentTask", {}),
-        ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.ModelDataMiddleware", {}),
         ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
@@ -495,16 +495,6 @@ DRAMATIQ = {
     ),
     "test": TEST,
 }
-
-
-# Sentry integration
-
-env = get_env()
-_ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
-if _ERROR_REPORTING:
-    sentry_env = CONFIG.get("error_reporting.environment", "customer")
-    sentry_init(spotlight=DEBUG)
-    set_tag("authentik.uuid", sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16])
 
 
 # Static files (CSS, JavaScript, Images)
@@ -530,8 +520,6 @@ LOGGING = get_logger_config()
 
 
 _DISALLOWED_ITEMS = [
-    "SHARED_APPS",
-    "TENANT_APPS",
     "INSTALLED_APPS",
     "MIDDLEWARE_FIRST",
     "MIDDLEWARE",
@@ -569,11 +557,9 @@ def _update_settings(app_path: str) -> None:
         settings_module = importlib.import_module(app_path)
         CONFIG.log("debug", "Loaded app settings", path=app_path)
 
-        new_shared_apps = subtract_list(getattr(settings_module, "SHARED_APPS", []), SHARED_APPS)
-        new_tenant_apps = subtract_list(getattr(settings_module, "TENANT_APPS", []), TENANT_APPS)
-        SHARED_APPS.extend(new_shared_apps)
-        TENANT_APPS.extend(new_tenant_apps)
-        _filter_and_update(new_shared_apps + new_tenant_apps)
+        new_apps = subtract_list(getattr(settings_module, "INSTALLED_APPS", []), INSTALLED_APPS)
+        INSTALLED_APPS.extend(new_apps)
+        _filter_and_update(new_apps)
 
         MIDDLEWARE_FIRST.extend(getattr(settings_module, "MIDDLEWARE_FIRST", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
@@ -593,22 +579,26 @@ def _update_settings(app_path: str) -> None:
 try:
     importlib.import_module("authentik.enterprise.apps")
     CONFIG.log("info", "Enabled authentik enterprise")
-    TENANT_APPS.insert(TENANT_APPS.index("authentik.events"), "authentik.enterprise")
+    INSTALLED_APPS.insert(INSTALLED_APPS.index("authentik.events"), "authentik.enterprise")
 except ImportError:
     pass
 
 
 if DEBUG:
-    SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
+    INSTALLED_APPS.insert(INSTALLED_APPS.index("django.contrib.staticfiles"), "daphne")
+    from xmlsec import enable_debug_trace
+
     enable_debug_trace(True)
 
 
 CONFIG.log("info", "Booting authentik", version=authentik_version())
 
 # Load subapps's settings
-_filter_and_update(SHARED_APPS + TENANT_APPS)
+_filter_and_update(INSTALLED_APPS)
 _update_settings("data.user_settings")
 
 MIDDLEWARE = list(OrderedDict.fromkeys(MIDDLEWARE_FIRST + MIDDLEWARE + MIDDLEWARE_LAST))
-SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
-INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
+
+# Error-reporting tracers (OpenTelemetry, Sentry) are initialized from
+# AuthentikCoreConfig.ready(), since it needs to run after Django settings have fully
+# loaded (see authentik/core/apps.py)

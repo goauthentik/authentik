@@ -7,6 +7,7 @@ from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import HttpRequest
 from django.test import RequestFactory as BaseRequestFactory
+from django.urls import ResolverMatch
 from django.utils.text import slugify
 
 from authentik.brands.models import Brand
@@ -135,5 +136,10 @@ class RequestFactory(BaseRequestFactory):
         middleware = MessageMiddleware(dummy_get_response)
         middleware.process_request(request)
         request.session.save()
+
+        # Not explicitly required for testing, however a `ResolverMatch` instance
+        # cannot be pickled, which has caused numerous issues in the past
+        # and as such we always inject this here.
+        request.resolver_match = ResolverMatch(dummy_get_response, (), {})
 
         return request

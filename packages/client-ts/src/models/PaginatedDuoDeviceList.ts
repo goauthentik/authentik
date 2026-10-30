@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { DuoDevice } from "./DuoDevice";
-import { DuoDeviceFromJSON, DuoDeviceToJSON } from "./DuoDevice";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { DuoDevice } from "./DuoDevice.js";
+import { DuoDeviceFromJSON, DuoDeviceToJSON } from "./DuoDevice.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedDuoDeviceList
  */
 export interface PaginatedDuoDeviceList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedDuoDeviceList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<DuoDevice>}
-     * @memberof PaginatedDuoDeviceList
-     */
     results: Array<DuoDevice>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedDuoDeviceList
-     */
     autocomplete: { [key: string]: any };
 }
 

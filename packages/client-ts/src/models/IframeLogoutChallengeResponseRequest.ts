@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Response for iframe logout
+ *
  * @export
  * @interface IframeLogoutChallengeResponseRequest
  */
 export interface IframeLogoutChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof IframeLogoutChallengeResponseRequest
-     */
     component?: string;
 }
 

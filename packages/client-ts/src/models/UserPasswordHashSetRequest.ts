@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,16 +12,17 @@
 
 /**
  * Payload to set a users' password hash directly
+ *
  * @export
  * @interface UserPasswordHashSetRequest
  */
 export interface UserPasswordHashSetRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof UserPasswordHashSetRequest
-     */
     password: string;
+    /**
+     * Import a valid password hash even when its parameters do not match authentik's current
+     * password hashing settings.
+     */
+    override?: boolean;
 }
 
 /**
@@ -49,6 +48,7 @@ export function UserPasswordHashSetRequestFromJSONTyped(
     }
     return {
         password: json["password"],
+        override: json["override"] == null ? undefined : json["override"],
     };
 }
 
@@ -66,5 +66,6 @@ export function UserPasswordHashSetRequestToJSONTyped(
 
     return {
         password: value["password"],
+        override: value["override"],
     };
 }

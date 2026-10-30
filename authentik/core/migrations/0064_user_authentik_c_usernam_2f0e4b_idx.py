@@ -6,8 +6,8 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0063_actor"),
-        ("authentik_rbac", "0011_initialpermissionspermission"),
+        ("authentik_core", "0059_add_application_meta_hide"),
+        ("authentik_rbac", "0010_remove_role_group_alter_role_name"),
     ]
 
     operations = [

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +10,23 @@
  * Do not edit the class manually.
  */
 
-import type { DigitsEnum } from "./DigitsEnum";
-import { DigitsEnumFromJSON, DigitsEnumToJSON } from "./DigitsEnum";
+import type { DigitsEnum } from "./DigitsEnum.js";
+import { DigitsEnumFromJSON, DigitsEnumToJSON } from "./DigitsEnum.js";
 
 /**
  * AuthenticatorTOTPStage Serializer
+ *
  * @export
  * @interface AuthenticatorTOTPStageRequest
  */
 export interface AuthenticatorTOTPStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorTOTPStageRequest
-     */
     name: string;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorTOTPStageRequest
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorTOTPStageRequest
-     */
     friendlyName?: string;
-    /**
-     *
-     * @type {DigitsEnum}
-     * @memberof AuthenticatorTOTPStageRequest
-     */
     digits: DigitsEnum;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,46 +10,31 @@
  * Do not edit the class manually.
  */
 
+import type { UpdateVersionInfo } from "./UpdateVersionInfo.js";
+import { UpdateVersionInfoFromJSON } from "./UpdateVersionInfo.js";
+
 /**
  * Get running and latest version.
+ *
  * @export
  * @interface Version
  */
 export interface Version {
     /**
      * Get current version
-     * @type {string}
-     * @memberof Version
      */
     readonly versionCurrent: string;
-    /**
-     * Get latest version from cache
-     * @type {string}
-     * @memberof Version
-     */
-    readonly versionLatest: string;
-    /**
-     * Check if latest version is valid
-     * @type {boolean}
-     * @memberof Version
-     */
-    readonly versionLatestValid: boolean;
+    readonly versionLatest: UpdateVersionInfo;
     /**
      * Get build hash, if version is not latest or released
-     * @type {string}
-     * @memberof Version
      */
     readonly buildHash: string;
     /**
      * Check if we're running the latest version
-     * @type {boolean}
-     * @memberof Version
      */
     readonly outdated: boolean;
     /**
      * Check if any outpost is outdated/has a version mismatch
-     * @type {boolean}
-     * @memberof Version
      */
     readonly outpostOutdated: boolean;
 }
@@ -72,13 +55,6 @@ export function instanceOfVersion(value: object): value is Version {
             !("version_latest" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["versionLatest"] === undefined &&
             (value as Record<string, any>)["version_latest"] === undefined)
-    )
-        return false;
-    if (
-        (!("versionLatestValid" in (value as Record<string, any>)) &&
-            !("version_latest_valid" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["versionLatestValid"] === undefined &&
-            (value as Record<string, any>)["version_latest_valid"] === undefined)
     )
         return false;
     if (
@@ -109,8 +85,7 @@ export function VersionFromJSONTyped(json: any, ignoreDiscriminator: boolean): V
     }
     return {
         versionCurrent: json["version_current"],
-        versionLatest: json["version_latest"],
-        versionLatestValid: json["version_latest_valid"],
+        versionLatest: UpdateVersionInfoFromJSON(json["version_latest"]),
         buildHash: json["build_hash"],
         outdated: json["outdated"],
         outpostOutdated: json["outpost_outdated"],
@@ -124,12 +99,7 @@ export function VersionToJSON(json: any): Version {
 export function VersionToJSONTyped(
     value?: Omit<
         Version,
-        | "versionCurrent"
-        | "versionLatest"
-        | "versionLatestValid"
-        | "buildHash"
-        | "outdated"
-        | "outpostOutdated"
+        "versionCurrent" | "versionLatest" | "buildHash" | "outdated" | "outpostOutdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -15,246 +13,255 @@
 import {
     type GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderMappingFromJSON,
-} from "../models/GoogleWorkspaceProviderMapping";
+} from "../models/GoogleWorkspaceProviderMapping.js";
 import {
     type GoogleWorkspaceProviderMappingRequest,
     GoogleWorkspaceProviderMappingRequestToJSON,
-} from "../models/GoogleWorkspaceProviderMappingRequest";
+} from "../models/GoogleWorkspaceProviderMappingRequest.js";
 import {
     type KerberosSourcePropertyMapping,
     KerberosSourcePropertyMappingFromJSON,
-} from "../models/KerberosSourcePropertyMapping";
+} from "../models/KerberosSourcePropertyMapping.js";
 import {
     type KerberosSourcePropertyMappingRequest,
     KerberosSourcePropertyMappingRequestToJSON,
-} from "../models/KerberosSourcePropertyMappingRequest";
+} from "../models/KerberosSourcePropertyMappingRequest.js";
 import {
     type LDAPSourcePropertyMapping,
     LDAPSourcePropertyMappingFromJSON,
-} from "../models/LDAPSourcePropertyMapping";
+} from "../models/LDAPSourcePropertyMapping.js";
 import {
     type LDAPSourcePropertyMappingRequest,
     LDAPSourcePropertyMappingRequestToJSON,
-} from "../models/LDAPSourcePropertyMappingRequest";
+} from "../models/LDAPSourcePropertyMappingRequest.js";
 import {
     type MicrosoftEntraProviderMapping,
     MicrosoftEntraProviderMappingFromJSON,
-} from "../models/MicrosoftEntraProviderMapping";
+} from "../models/MicrosoftEntraProviderMapping.js";
 import {
     type MicrosoftEntraProviderMappingRequest,
     MicrosoftEntraProviderMappingRequestToJSON,
-} from "../models/MicrosoftEntraProviderMappingRequest";
+} from "../models/MicrosoftEntraProviderMappingRequest.js";
 import {
     type NotificationWebhookMapping,
     NotificationWebhookMappingFromJSON,
-} from "../models/NotificationWebhookMapping";
+} from "../models/NotificationWebhookMapping.js";
 import {
     type NotificationWebhookMappingRequest,
     NotificationWebhookMappingRequestToJSON,
-} from "../models/NotificationWebhookMappingRequest";
+} from "../models/NotificationWebhookMappingRequest.js";
 import {
     type OAuthSourcePropertyMapping,
     OAuthSourcePropertyMappingFromJSON,
-} from "../models/OAuthSourcePropertyMapping";
+} from "../models/OAuthSourcePropertyMapping.js";
 import {
     type OAuthSourcePropertyMappingRequest,
     OAuthSourcePropertyMappingRequestToJSON,
-} from "../models/OAuthSourcePropertyMappingRequest";
+} from "../models/OAuthSourcePropertyMappingRequest.js";
 import {
     type PaginatedGoogleWorkspaceProviderMappingList,
     PaginatedGoogleWorkspaceProviderMappingListFromJSON,
-} from "../models/PaginatedGoogleWorkspaceProviderMappingList";
+} from "../models/PaginatedGoogleWorkspaceProviderMappingList.js";
 import {
     type PaginatedKerberosSourcePropertyMappingList,
     PaginatedKerberosSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedKerberosSourcePropertyMappingList";
+} from "../models/PaginatedKerberosSourcePropertyMappingList.js";
 import {
     type PaginatedLDAPSourcePropertyMappingList,
     PaginatedLDAPSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedLDAPSourcePropertyMappingList";
+} from "../models/PaginatedLDAPSourcePropertyMappingList.js";
 import {
     type PaginatedMicrosoftEntraProviderMappingList,
     PaginatedMicrosoftEntraProviderMappingListFromJSON,
-} from "../models/PaginatedMicrosoftEntraProviderMappingList";
+} from "../models/PaginatedMicrosoftEntraProviderMappingList.js";
 import {
     type PaginatedNotificationWebhookMappingList,
     PaginatedNotificationWebhookMappingListFromJSON,
-} from "../models/PaginatedNotificationWebhookMappingList";
+} from "../models/PaginatedNotificationWebhookMappingList.js";
 import {
     type PaginatedOAuthSourcePropertyMappingList,
     PaginatedOAuthSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedOAuthSourcePropertyMappingList";
+} from "../models/PaginatedOAuthSourcePropertyMappingList.js";
 import {
     type PaginatedPlexSourcePropertyMappingList,
     PaginatedPlexSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedPlexSourcePropertyMappingList";
+} from "../models/PaginatedPlexSourcePropertyMappingList.js";
 import {
     type PaginatedPropertyMappingList,
     PaginatedPropertyMappingListFromJSON,
-} from "../models/PaginatedPropertyMappingList";
+} from "../models/PaginatedPropertyMappingList.js";
 import {
     type PaginatedRACPropertyMappingList,
     PaginatedRACPropertyMappingListFromJSON,
-} from "../models/PaginatedRACPropertyMappingList";
+} from "../models/PaginatedRACPropertyMappingList.js";
 import {
     type PaginatedRadiusProviderPropertyMappingList,
     PaginatedRadiusProviderPropertyMappingListFromJSON,
-} from "../models/PaginatedRadiusProviderPropertyMappingList";
+} from "../models/PaginatedRadiusProviderPropertyMappingList.js";
 import {
     type PaginatedSAMLPropertyMappingList,
     PaginatedSAMLPropertyMappingListFromJSON,
-} from "../models/PaginatedSAMLPropertyMappingList";
+} from "../models/PaginatedSAMLPropertyMappingList.js";
 import {
     type PaginatedSAMLSourcePropertyMappingList,
     PaginatedSAMLSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedSAMLSourcePropertyMappingList";
+} from "../models/PaginatedSAMLSourcePropertyMappingList.js";
 import {
     type PaginatedSCIMMappingList,
     PaginatedSCIMMappingListFromJSON,
-} from "../models/PaginatedSCIMMappingList";
+} from "../models/PaginatedSCIMMappingList.js";
 import {
     type PaginatedSCIMSourcePropertyMappingList,
     PaginatedSCIMSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedSCIMSourcePropertyMappingList";
+} from "../models/PaginatedSCIMSourcePropertyMappingList.js";
 import {
     type PaginatedScopeMappingList,
     PaginatedScopeMappingListFromJSON,
-} from "../models/PaginatedScopeMappingList";
+} from "../models/PaginatedScopeMappingList.js";
 import {
     type PaginatedTelegramSourcePropertyMappingList,
     PaginatedTelegramSourcePropertyMappingListFromJSON,
-} from "../models/PaginatedTelegramSourcePropertyMappingList";
+} from "../models/PaginatedTelegramSourcePropertyMappingList.js";
 import {
     type PatchedGoogleWorkspaceProviderMappingRequest,
     PatchedGoogleWorkspaceProviderMappingRequestToJSON,
-} from "../models/PatchedGoogleWorkspaceProviderMappingRequest";
+} from "../models/PatchedGoogleWorkspaceProviderMappingRequest.js";
 import {
     type PatchedKerberosSourcePropertyMappingRequest,
     PatchedKerberosSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedKerberosSourcePropertyMappingRequest";
+} from "../models/PatchedKerberosSourcePropertyMappingRequest.js";
 import {
     type PatchedLDAPSourcePropertyMappingRequest,
     PatchedLDAPSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedLDAPSourcePropertyMappingRequest";
+} from "../models/PatchedLDAPSourcePropertyMappingRequest.js";
 import {
     type PatchedMicrosoftEntraProviderMappingRequest,
     PatchedMicrosoftEntraProviderMappingRequestToJSON,
-} from "../models/PatchedMicrosoftEntraProviderMappingRequest";
+} from "../models/PatchedMicrosoftEntraProviderMappingRequest.js";
 import {
     type PatchedNotificationWebhookMappingRequest,
     PatchedNotificationWebhookMappingRequestToJSON,
-} from "../models/PatchedNotificationWebhookMappingRequest";
+} from "../models/PatchedNotificationWebhookMappingRequest.js";
 import {
     type PatchedOAuthSourcePropertyMappingRequest,
     PatchedOAuthSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedOAuthSourcePropertyMappingRequest";
+} from "../models/PatchedOAuthSourcePropertyMappingRequest.js";
 import {
     type PatchedPlexSourcePropertyMappingRequest,
     PatchedPlexSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedPlexSourcePropertyMappingRequest";
+} from "../models/PatchedPlexSourcePropertyMappingRequest.js";
 import {
     type PatchedRACPropertyMappingRequest,
     PatchedRACPropertyMappingRequestToJSON,
-} from "../models/PatchedRACPropertyMappingRequest";
+} from "../models/PatchedRACPropertyMappingRequest.js";
 import {
     type PatchedRadiusProviderPropertyMappingRequest,
     PatchedRadiusProviderPropertyMappingRequestToJSON,
-} from "../models/PatchedRadiusProviderPropertyMappingRequest";
+} from "../models/PatchedRadiusProviderPropertyMappingRequest.js";
 import {
     type PatchedSAMLPropertyMappingRequest,
     PatchedSAMLPropertyMappingRequestToJSON,
-} from "../models/PatchedSAMLPropertyMappingRequest";
+} from "../models/PatchedSAMLPropertyMappingRequest.js";
 import {
     type PatchedSAMLSourcePropertyMappingRequest,
     PatchedSAMLSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedSAMLSourcePropertyMappingRequest";
+} from "../models/PatchedSAMLSourcePropertyMappingRequest.js";
 import {
     type PatchedSCIMMappingRequest,
     PatchedSCIMMappingRequestToJSON,
-} from "../models/PatchedSCIMMappingRequest";
+} from "../models/PatchedSCIMMappingRequest.js";
 import {
     type PatchedSCIMSourcePropertyMappingRequest,
     PatchedSCIMSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedSCIMSourcePropertyMappingRequest";
+} from "../models/PatchedSCIMSourcePropertyMappingRequest.js";
 import {
     type PatchedScopeMappingRequest,
     PatchedScopeMappingRequestToJSON,
-} from "../models/PatchedScopeMappingRequest";
+} from "../models/PatchedScopeMappingRequest.js";
 import {
     type PatchedTelegramSourcePropertyMappingRequest,
     PatchedTelegramSourcePropertyMappingRequestToJSON,
-} from "../models/PatchedTelegramSourcePropertyMappingRequest";
+} from "../models/PatchedTelegramSourcePropertyMappingRequest.js";
 import {
     type PlexSourcePropertyMapping,
     PlexSourcePropertyMappingFromJSON,
-} from "../models/PlexSourcePropertyMapping";
+} from "../models/PlexSourcePropertyMapping.js";
 import {
     type PlexSourcePropertyMappingRequest,
     PlexSourcePropertyMappingRequestToJSON,
-} from "../models/PlexSourcePropertyMappingRequest";
-import { type PropertyMapping, PropertyMappingFromJSON } from "../models/PropertyMapping";
+} from "../models/PlexSourcePropertyMappingRequest.js";
+import { type PropertyMapping, PropertyMappingFromJSON } from "../models/PropertyMapping.js";
 import {
     type PropertyMappingTestRequest,
     PropertyMappingTestRequestToJSON,
-} from "../models/PropertyMappingTestRequest";
+} from "../models/PropertyMappingTestRequest.js";
 import {
     type PropertyMappingTestResult,
     PropertyMappingTestResultFromJSON,
-} from "../models/PropertyMappingTestResult";
-import { type RACPropertyMapping, RACPropertyMappingFromJSON } from "../models/RACPropertyMapping";
+} from "../models/PropertyMappingTestResult.js";
+import {
+    type RACPropertyMapping,
+    RACPropertyMappingFromJSON,
+} from "../models/RACPropertyMapping.js";
 import {
     type RACPropertyMappingRequest,
     RACPropertyMappingRequestToJSON,
-} from "../models/RACPropertyMappingRequest";
+} from "../models/RACPropertyMappingRequest.js";
 import {
     type RadiusProviderPropertyMapping,
     RadiusProviderPropertyMappingFromJSON,
-} from "../models/RadiusProviderPropertyMapping";
+} from "../models/RadiusProviderPropertyMapping.js";
 import {
     type RadiusProviderPropertyMappingRequest,
     RadiusProviderPropertyMappingRequestToJSON,
-} from "../models/RadiusProviderPropertyMappingRequest";
+} from "../models/RadiusProviderPropertyMappingRequest.js";
 import {
     type SAMLPropertyMapping,
     SAMLPropertyMappingFromJSON,
-} from "../models/SAMLPropertyMapping";
+} from "../models/SAMLPropertyMapping.js";
 import {
     type SAMLPropertyMappingRequest,
     SAMLPropertyMappingRequestToJSON,
-} from "../models/SAMLPropertyMappingRequest";
+} from "../models/SAMLPropertyMappingRequest.js";
 import {
     type SAMLSourcePropertyMapping,
     SAMLSourcePropertyMappingFromJSON,
-} from "../models/SAMLSourcePropertyMapping";
+} from "../models/SAMLSourcePropertyMapping.js";
 import {
     type SAMLSourcePropertyMappingRequest,
     SAMLSourcePropertyMappingRequestToJSON,
-} from "../models/SAMLSourcePropertyMappingRequest";
-import { type SCIMMapping, SCIMMappingFromJSON } from "../models/SCIMMapping";
-import { type SCIMMappingRequest, SCIMMappingRequestToJSON } from "../models/SCIMMappingRequest";
+} from "../models/SAMLSourcePropertyMappingRequest.js";
+import { type SCIMMapping, SCIMMappingFromJSON } from "../models/SCIMMapping.js";
+import { type SCIMMappingRequest, SCIMMappingRequestToJSON } from "../models/SCIMMappingRequest.js";
 import {
     type SCIMSourcePropertyMapping,
     SCIMSourcePropertyMappingFromJSON,
-} from "../models/SCIMSourcePropertyMapping";
+} from "../models/SCIMSourcePropertyMapping.js";
 import {
     type SCIMSourcePropertyMappingRequest,
     SCIMSourcePropertyMappingRequestToJSON,
-} from "../models/SCIMSourcePropertyMappingRequest";
-import { type ScopeMapping, ScopeMappingFromJSON } from "../models/ScopeMapping";
-import { type ScopeMappingRequest, ScopeMappingRequestToJSON } from "../models/ScopeMappingRequest";
+} from "../models/SCIMSourcePropertyMappingRequest.js";
+import { type ScopeMapping, ScopeMappingFromJSON } from "../models/ScopeMapping.js";
+import {
+    type ScopeMappingRequest,
+    ScopeMappingRequestToJSON,
+} from "../models/ScopeMappingRequest.js";
 import {
     type TelegramSourcePropertyMapping,
     TelegramSourcePropertyMappingFromJSON,
-} from "../models/TelegramSourcePropertyMapping";
+} from "../models/TelegramSourcePropertyMapping.js";
 import {
     type TelegramSourcePropertyMappingRequest,
     TelegramSourcePropertyMappingRequestToJSON,
-} from "../models/TelegramSourcePropertyMappingRequest";
-import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/TelegramSourcePropertyMappingRequest.js";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface PropertymappingsAllDestroyRequest {
+    /**
+     * A UUID string identifying this Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -262,23 +269,44 @@ export interface PropertymappingsAllListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsAllRetrieveRequest {
+    /**
+     * A UUID string identifying this Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsAllTestCreateRequest {
+    /**
+     * A UUID string identifying this Property Mapping.
+     */
     pmUuid: string;
     formatResult?: boolean;
     propertyMappingTestRequest?: PropertyMappingTestRequest;
 }
 
 export interface PropertymappingsAllUsedByListRequest {
+    /**
+     * A UUID string identifying this Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -287,32 +315,59 @@ export interface PropertymappingsNotificationCreateRequest {
 }
 
 export interface PropertymappingsNotificationDestroyRequest {
+    /**
+     * A UUID string identifying this Webhook Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsNotificationListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsNotificationPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Webhook Mapping.
+     */
     pmUuid: string;
     patchedNotificationWebhookMappingRequest?: PatchedNotificationWebhookMappingRequest;
 }
 
 export interface PropertymappingsNotificationRetrieveRequest {
+    /**
+     * A UUID string identifying this Webhook Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsNotificationUpdateRequest {
+    /**
+     * A UUID string identifying this Webhook Mapping.
+     */
     pmUuid: string;
     notificationWebhookMappingRequest: NotificationWebhookMappingRequest;
 }
 
 export interface PropertymappingsNotificationUsedByListRequest {
+    /**
+     * A UUID string identifying this Webhook Mapping.
+     */
     pmUuid: string;
 }
 
@@ -321,6 +376,9 @@ export interface PropertymappingsProviderGoogleWorkspaceCreateRequest {
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceDestroyRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Mapping.
+     */
     pmUuid: string;
 }
 
@@ -328,28 +386,52 @@ export interface PropertymappingsProviderGoogleWorkspaceListRequest {
     expression?: string;
     managed?: Array<string>;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     pmUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderGoogleWorkspacePartialUpdateRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Mapping.
+     */
     pmUuid: string;
     patchedGoogleWorkspaceProviderMappingRequest?: PatchedGoogleWorkspaceProviderMappingRequest;
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceRetrieveRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceUpdateRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Mapping.
+     */
     pmUuid: string;
     googleWorkspaceProviderMappingRequest: GoogleWorkspaceProviderMappingRequest;
 }
 
 export interface PropertymappingsProviderGoogleWorkspaceUsedByListRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Mapping.
+     */
     pmUuid: string;
 }
 
@@ -358,6 +440,9 @@ export interface PropertymappingsProviderMicrosoftEntraCreateRequest {
 }
 
 export interface PropertymappingsProviderMicrosoftEntraDestroyRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Mapping.
+     */
     pmUuid: string;
 }
 
@@ -365,28 +450,52 @@ export interface PropertymappingsProviderMicrosoftEntraListRequest {
     expression?: string;
     managed?: Array<string>;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     pmUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Mapping.
+     */
     pmUuid: string;
     patchedMicrosoftEntraProviderMappingRequest?: PatchedMicrosoftEntraProviderMappingRequest;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraRetrieveRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraUpdateRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Mapping.
+     */
     pmUuid: string;
     microsoftEntraProviderMappingRequest: MicrosoftEntraProviderMappingRequest;
 }
 
 export interface PropertymappingsProviderMicrosoftEntraUsedByListRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Mapping.
+     */
     pmUuid: string;
 }
 
@@ -395,33 +504,60 @@ export interface PropertymappingsProviderRacCreateRequest {
 }
 
 export interface PropertymappingsProviderRacDestroyRequest {
+    /**
+     * A UUID string identifying this RAC Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderRacListRequest {
     managed?: Array<string>;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderRacPartialUpdateRequest {
+    /**
+     * A UUID string identifying this RAC Provider Property Mapping.
+     */
     pmUuid: string;
     patchedRACPropertyMappingRequest?: PatchedRACPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderRacRetrieveRequest {
+    /**
+     * A UUID string identifying this RAC Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderRacUpdateRequest {
+    /**
+     * A UUID string identifying this RAC Provider Property Mapping.
+     */
     pmUuid: string;
     rACPropertyMappingRequest: RACPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderRacUsedByListRequest {
+    /**
+     * A UUID string identifying this RAC Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -430,6 +566,9 @@ export interface PropertymappingsProviderRadiusCreateRequest {
 }
 
 export interface PropertymappingsProviderRadiusDestroyRequest {
+    /**
+     * A UUID string identifying this Radius Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -437,27 +576,51 @@ export interface PropertymappingsProviderRadiusListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderRadiusPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Radius Provider Property Mapping.
+     */
     pmUuid: string;
     patchedRadiusProviderPropertyMappingRequest?: PatchedRadiusProviderPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderRadiusRetrieveRequest {
+    /**
+     * A UUID string identifying this Radius Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderRadiusUpdateRequest {
+    /**
+     * A UUID string identifying this Radius Provider Property Mapping.
+     */
     pmUuid: string;
     radiusProviderPropertyMappingRequest: RadiusProviderPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderRadiusUsedByListRequest {
+    /**
+     * A UUID string identifying this Radius Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -466,6 +629,9 @@ export interface PropertymappingsProviderSamlCreateRequest {
 }
 
 export interface PropertymappingsProviderSamlDestroyRequest {
+    /**
+     * A UUID string identifying this SAML Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -474,28 +640,52 @@ export interface PropertymappingsProviderSamlListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     samlName?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderSamlPartialUpdateRequest {
+    /**
+     * A UUID string identifying this SAML Provider Property Mapping.
+     */
     pmUuid: string;
     patchedSAMLPropertyMappingRequest?: PatchedSAMLPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderSamlRetrieveRequest {
+    /**
+     * A UUID string identifying this SAML Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderSamlUpdateRequest {
+    /**
+     * A UUID string identifying this SAML Provider Property Mapping.
+     */
     pmUuid: string;
     sAMLPropertyMappingRequest: SAMLPropertyMappingRequest;
 }
 
 export interface PropertymappingsProviderSamlUsedByListRequest {
+    /**
+     * A UUID string identifying this SAML Provider Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -504,6 +694,9 @@ export interface PropertymappingsProviderScimCreateRequest {
 }
 
 export interface PropertymappingsProviderScimDestroyRequest {
+    /**
+     * A UUID string identifying this SCIM Provider Mapping.
+     */
     pmUuid: string;
 }
 
@@ -511,27 +704,51 @@ export interface PropertymappingsProviderScimListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderScimPartialUpdateRequest {
+    /**
+     * A UUID string identifying this SCIM Provider Mapping.
+     */
     pmUuid: string;
     patchedSCIMMappingRequest?: PatchedSCIMMappingRequest;
 }
 
 export interface PropertymappingsProviderScimRetrieveRequest {
+    /**
+     * A UUID string identifying this SCIM Provider Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderScimUpdateRequest {
+    /**
+     * A UUID string identifying this SCIM Provider Mapping.
+     */
     pmUuid: string;
     sCIMMappingRequest: SCIMMappingRequest;
 }
 
 export interface PropertymappingsProviderScimUsedByListRequest {
+    /**
+     * A UUID string identifying this SCIM Provider Mapping.
+     */
     pmUuid: string;
 }
 
@@ -540,6 +757,9 @@ export interface PropertymappingsProviderScopeCreateRequest {
 }
 
 export interface PropertymappingsProviderScopeDestroyRequest {
+    /**
+     * A UUID string identifying this Scope Mapping.
+     */
     pmUuid: string;
 }
 
@@ -547,28 +767,52 @@ export interface PropertymappingsProviderScopeListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     scopeName?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsProviderScopePartialUpdateRequest {
+    /**
+     * A UUID string identifying this Scope Mapping.
+     */
     pmUuid: string;
     patchedScopeMappingRequest?: PatchedScopeMappingRequest;
 }
 
 export interface PropertymappingsProviderScopeRetrieveRequest {
+    /**
+     * A UUID string identifying this Scope Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsProviderScopeUpdateRequest {
+    /**
+     * A UUID string identifying this Scope Mapping.
+     */
     pmUuid: string;
     scopeMappingRequest: ScopeMappingRequest;
 }
 
 export interface PropertymappingsProviderScopeUsedByListRequest {
+    /**
+     * A UUID string identifying this Scope Mapping.
+     */
     pmUuid: string;
 }
 
@@ -577,6 +821,9 @@ export interface PropertymappingsSourceKerberosCreateRequest {
 }
 
 export interface PropertymappingsSourceKerberosDestroyRequest {
+    /**
+     * A UUID string identifying this Kerberos Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -584,27 +831,51 @@ export interface PropertymappingsSourceKerberosListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceKerberosPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Kerberos Source Property Mapping.
+     */
     pmUuid: string;
     patchedKerberosSourcePropertyMappingRequest?: PatchedKerberosSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceKerberosRetrieveRequest {
+    /**
+     * A UUID string identifying this Kerberos Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceKerberosUpdateRequest {
+    /**
+     * A UUID string identifying this Kerberos Source Property Mapping.
+     */
     pmUuid: string;
     kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceKerberosUsedByListRequest {
+    /**
+     * A UUID string identifying this Kerberos Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -613,6 +884,9 @@ export interface PropertymappingsSourceLdapCreateRequest {
 }
 
 export interface PropertymappingsSourceLdapDestroyRequest {
+    /**
+     * A UUID string identifying this LDAP Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -620,27 +894,51 @@ export interface PropertymappingsSourceLdapListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceLdapPartialUpdateRequest {
+    /**
+     * A UUID string identifying this LDAP Source Property Mapping.
+     */
     pmUuid: string;
     patchedLDAPSourcePropertyMappingRequest?: PatchedLDAPSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceLdapRetrieveRequest {
+    /**
+     * A UUID string identifying this LDAP Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceLdapUpdateRequest {
+    /**
+     * A UUID string identifying this LDAP Source Property Mapping.
+     */
     pmUuid: string;
     lDAPSourcePropertyMappingRequest: LDAPSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceLdapUsedByListRequest {
+    /**
+     * A UUID string identifying this LDAP Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -649,6 +947,9 @@ export interface PropertymappingsSourceOauthCreateRequest {
 }
 
 export interface PropertymappingsSourceOauthDestroyRequest {
+    /**
+     * A UUID string identifying this OAuth Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -656,27 +957,51 @@ export interface PropertymappingsSourceOauthListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceOauthPartialUpdateRequest {
+    /**
+     * A UUID string identifying this OAuth Source Property Mapping.
+     */
     pmUuid: string;
     patchedOAuthSourcePropertyMappingRequest?: PatchedOAuthSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceOauthRetrieveRequest {
+    /**
+     * A UUID string identifying this OAuth Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceOauthUpdateRequest {
+    /**
+     * A UUID string identifying this OAuth Source Property Mapping.
+     */
     pmUuid: string;
     oAuthSourcePropertyMappingRequest: OAuthSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceOauthUsedByListRequest {
+    /**
+     * A UUID string identifying this OAuth Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -685,6 +1010,9 @@ export interface PropertymappingsSourcePlexCreateRequest {
 }
 
 export interface PropertymappingsSourcePlexDestroyRequest {
+    /**
+     * A UUID string identifying this Plex Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -692,27 +1020,51 @@ export interface PropertymappingsSourcePlexListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourcePlexPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Plex Source Property Mapping.
+     */
     pmUuid: string;
     patchedPlexSourcePropertyMappingRequest?: PatchedPlexSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourcePlexRetrieveRequest {
+    /**
+     * A UUID string identifying this Plex Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourcePlexUpdateRequest {
+    /**
+     * A UUID string identifying this Plex Source Property Mapping.
+     */
     pmUuid: string;
     plexSourcePropertyMappingRequest: PlexSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourcePlexUsedByListRequest {
+    /**
+     * A UUID string identifying this Plex Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -721,6 +1073,9 @@ export interface PropertymappingsSourceSamlCreateRequest {
 }
 
 export interface PropertymappingsSourceSamlDestroyRequest {
+    /**
+     * A UUID string identifying this SAML Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -728,27 +1083,51 @@ export interface PropertymappingsSourceSamlListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceSamlPartialUpdateRequest {
+    /**
+     * A UUID string identifying this SAML Source Property Mapping.
+     */
     pmUuid: string;
     patchedSAMLSourcePropertyMappingRequest?: PatchedSAMLSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceSamlRetrieveRequest {
+    /**
+     * A UUID string identifying this SAML Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceSamlUpdateRequest {
+    /**
+     * A UUID string identifying this SAML Source Property Mapping.
+     */
     pmUuid: string;
     sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceSamlUsedByListRequest {
+    /**
+     * A UUID string identifying this SAML Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -757,6 +1136,9 @@ export interface PropertymappingsSourceScimCreateRequest {
 }
 
 export interface PropertymappingsSourceScimDestroyRequest {
+    /**
+     * A UUID string identifying this SCIM Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -764,27 +1146,51 @@ export interface PropertymappingsSourceScimListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceScimPartialUpdateRequest {
+    /**
+     * A UUID string identifying this SCIM Source Property Mapping.
+     */
     pmUuid: string;
     patchedSCIMSourcePropertyMappingRequest?: PatchedSCIMSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceScimRetrieveRequest {
+    /**
+     * A UUID string identifying this SCIM Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceScimUpdateRequest {
+    /**
+     * A UUID string identifying this SCIM Source Property Mapping.
+     */
     pmUuid: string;
     sCIMSourcePropertyMappingRequest: SCIMSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceScimUsedByListRequest {
+    /**
+     * A UUID string identifying this SCIM Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -793,6 +1199,9 @@ export interface PropertymappingsSourceTelegramCreateRequest {
 }
 
 export interface PropertymappingsSourceTelegramDestroyRequest {
+    /**
+     * A UUID string identifying this Telegram Source Property Mapping.
+     */
     pmUuid: string;
 }
 
@@ -800,33 +1209,54 @@ export interface PropertymappingsSourceTelegramListRequest {
     managed?: Array<string>;
     managedIsnull?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface PropertymappingsSourceTelegramPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Telegram Source Property Mapping.
+     */
     pmUuid: string;
     patchedTelegramSourcePropertyMappingRequest?: PatchedTelegramSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceTelegramRetrieveRequest {
+    /**
+     * A UUID string identifying this Telegram Source Property Mapping.
+     */
     pmUuid: string;
 }
 
 export interface PropertymappingsSourceTelegramUpdateRequest {
+    /**
+     * A UUID string identifying this Telegram Source Property Mapping.
+     */
     pmUuid: string;
     telegramSourcePropertyMappingRequest: TelegramSourcePropertyMappingRequest;
 }
 
 export interface PropertymappingsSourceTelegramUsedByListRequest {
+    /**
+     * A UUID string identifying this Telegram Source Property Mapping.
+     */
     pmUuid: string;
 }
 
-/**
- *
- */
 export class PropertymappingsApi extends runtime.BaseAPI {
     /**
      * Creates request options for propertymappingsAllDestroy without sending the request
@@ -938,7 +1368,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/all/`;
+        const urlPath = `/propertymappings/all/`;
 
         return {
             path: urlPath,
@@ -1137,7 +1567,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/all/types/`;
+        const urlPath = `/propertymappings/all/types/`;
 
         return {
             path: urlPath,
@@ -1267,7 +1697,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/notification/`;
+        const urlPath = `/propertymappings/notification/`;
 
         return {
             path: urlPath,
@@ -1413,7 +1843,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/notification/`;
+        const urlPath = `/propertymappings/notification/`;
 
         return {
             path: urlPath,
@@ -1454,7 +1884,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsNotificationPartialUpdate without sending the request
+     * Creates request options for propertymappingsNotificationPartialUpdate without sending the
+     * request
      */
     async propertymappingsNotificationPartialUpdateRequestOpts(
         requestParameters: PropertymappingsNotificationPartialUpdateRequest,
@@ -1681,7 +2112,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsNotificationUsedByList without sending the request
+     * Creates request options for propertymappingsNotificationUsedByList without sending the
+     * request
      */
     async propertymappingsNotificationUsedByListRequestOpts(
         requestParameters: PropertymappingsNotificationUsedByListRequest,
@@ -1749,7 +2181,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderGoogleWorkspaceCreate without sending the request
+     * Creates request options for propertymappingsProviderGoogleWorkspaceCreate without sending the
+     * request
      */
     async propertymappingsProviderGoogleWorkspaceCreateRequestOpts(
         requestParameters: PropertymappingsProviderGoogleWorkspaceCreateRequest,
@@ -1776,7 +2209,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/google_workspace/`;
+        const urlPath = `/propertymappings/provider/google_workspace/`;
 
         return {
             path: urlPath,
@@ -1820,7 +2253,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderGoogleWorkspaceDestroy without sending the request
+     * Creates request options for propertymappingsProviderGoogleWorkspaceDestroy without sending
+     * the request
      */
     async propertymappingsProviderGoogleWorkspaceDestroyRequestOpts(
         requestParameters: PropertymappingsProviderGoogleWorkspaceDestroyRequest,
@@ -1887,7 +2321,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderGoogleWorkspaceList without sending the request
+     * Creates request options for propertymappingsProviderGoogleWorkspaceList without sending the
+     * request
      */
     async propertymappingsProviderGoogleWorkspaceListRequestOpts(
         requestParameters: PropertymappingsProviderGoogleWorkspaceListRequest,
@@ -1937,7 +2372,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/google_workspace/`;
+        const urlPath = `/propertymappings/provider/google_workspace/`;
 
         return {
             path: urlPath,
@@ -1978,7 +2413,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderGoogleWorkspacePartialUpdate without sending the request
+     * Creates request options for propertymappingsProviderGoogleWorkspacePartialUpdate without
+     * sending the request
      */
     async propertymappingsProviderGoogleWorkspacePartialUpdateRequestOpts(
         requestParameters: PropertymappingsProviderGoogleWorkspacePartialUpdateRequest,
@@ -2055,7 +2491,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderGoogleWorkspaceRetrieve without sending the request
+     * Creates request options for propertymappingsProviderGoogleWorkspaceRetrieve without sending
+     * the request
      */
     async propertymappingsProviderGoogleWorkspaceRetrieveRequestOpts(
         requestParameters: PropertymappingsProviderGoogleWorkspaceRetrieveRequest,
@@ -2127,7 +2564,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderGoogleWorkspaceUpdate without sending the request
+     * Creates request options for propertymappingsProviderGoogleWorkspaceUpdate without sending the
+     * request
      */
     async propertymappingsProviderGoogleWorkspaceUpdateRequestOpts(
         requestParameters: PropertymappingsProviderGoogleWorkspaceUpdateRequest,
@@ -2209,7 +2647,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderGoogleWorkspaceUsedByList without sending the request
+     * Creates request options for propertymappingsProviderGoogleWorkspaceUsedByList without sending
+     * the request
      */
     async propertymappingsProviderGoogleWorkspaceUsedByListRequestOpts(
         requestParameters: PropertymappingsProviderGoogleWorkspaceUsedByListRequest,
@@ -2279,7 +2718,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderMicrosoftEntraCreate without sending the request
+     * Creates request options for propertymappingsProviderMicrosoftEntraCreate without sending the
+     * request
      */
     async propertymappingsProviderMicrosoftEntraCreateRequestOpts(
         requestParameters: PropertymappingsProviderMicrosoftEntraCreateRequest,
@@ -2306,7 +2746,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/microsoft_entra/`;
+        const urlPath = `/propertymappings/provider/microsoft_entra/`;
 
         return {
             path: urlPath,
@@ -2350,7 +2790,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderMicrosoftEntraDestroy without sending the request
+     * Creates request options for propertymappingsProviderMicrosoftEntraDestroy without sending the
+     * request
      */
     async propertymappingsProviderMicrosoftEntraDestroyRequestOpts(
         requestParameters: PropertymappingsProviderMicrosoftEntraDestroyRequest,
@@ -2417,7 +2858,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderMicrosoftEntraList without sending the request
+     * Creates request options for propertymappingsProviderMicrosoftEntraList without sending the
+     * request
      */
     async propertymappingsProviderMicrosoftEntraListRequestOpts(
         requestParameters: PropertymappingsProviderMicrosoftEntraListRequest,
@@ -2467,7 +2909,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/microsoft_entra/`;
+        const urlPath = `/propertymappings/provider/microsoft_entra/`;
 
         return {
             path: urlPath,
@@ -2508,7 +2950,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderMicrosoftEntraPartialUpdate without sending the request
+     * Creates request options for propertymappingsProviderMicrosoftEntraPartialUpdate without
+     * sending the request
      */
     async propertymappingsProviderMicrosoftEntraPartialUpdateRequestOpts(
         requestParameters: PropertymappingsProviderMicrosoftEntraPartialUpdateRequest,
@@ -2585,7 +3028,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderMicrosoftEntraRetrieve without sending the request
+     * Creates request options for propertymappingsProviderMicrosoftEntraRetrieve without sending
+     * the request
      */
     async propertymappingsProviderMicrosoftEntraRetrieveRequestOpts(
         requestParameters: PropertymappingsProviderMicrosoftEntraRetrieveRequest,
@@ -2655,7 +3099,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderMicrosoftEntraUpdate without sending the request
+     * Creates request options for propertymappingsProviderMicrosoftEntraUpdate without sending the
+     * request
      */
     async propertymappingsProviderMicrosoftEntraUpdateRequestOpts(
         requestParameters: PropertymappingsProviderMicrosoftEntraUpdateRequest,
@@ -2737,7 +3182,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderMicrosoftEntraUsedByList without sending the request
+     * Creates request options for propertymappingsProviderMicrosoftEntraUsedByList without sending
+     * the request
      */
     async propertymappingsProviderMicrosoftEntraUsedByListRequestOpts(
         requestParameters: PropertymappingsProviderMicrosoftEntraUsedByListRequest,
@@ -2834,7 +3280,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/rac/`;
+        const urlPath = `/propertymappings/provider/rac/`;
 
         return {
             path: urlPath,
@@ -2982,7 +3428,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/rac/`;
+        const urlPath = `/propertymappings/provider/rac/`;
 
         return {
             path: urlPath,
@@ -3023,7 +3469,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderRacPartialUpdate without sending the request
+     * Creates request options for propertymappingsProviderRacPartialUpdate without sending the
+     * request
      */
     async propertymappingsProviderRacPartialUpdateRequestOpts(
         requestParameters: PropertymappingsProviderRacPartialUpdateRequest,
@@ -3343,7 +3790,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/radius/`;
+        const urlPath = `/propertymappings/provider/radius/`;
 
         return {
             path: urlPath,
@@ -3497,7 +3944,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/radius/`;
+        const urlPath = `/propertymappings/provider/radius/`;
 
         return {
             path: urlPath,
@@ -3538,7 +3985,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderRadiusPartialUpdate without sending the request
+     * Creates request options for propertymappingsProviderRadiusPartialUpdate without sending the
+     * request
      */
     async propertymappingsProviderRadiusPartialUpdateRequestOpts(
         requestParameters: PropertymappingsProviderRadiusPartialUpdateRequest,
@@ -3613,7 +4061,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderRadiusRetrieve without sending the request
+     * Creates request options for propertymappingsProviderRadiusRetrieve without sending the
+     * request
      */
     async propertymappingsProviderRadiusRetrieveRequestOpts(
         requestParameters: PropertymappingsProviderRadiusRetrieveRequest,
@@ -3765,7 +4214,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderRadiusUsedByList without sending the request
+     * Creates request options for propertymappingsProviderRadiusUsedByList without sending the
+     * request
      */
     async propertymappingsProviderRadiusUsedByListRequestOpts(
         requestParameters: PropertymappingsProviderRadiusUsedByListRequest,
@@ -3860,7 +4310,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/saml/`;
+        const urlPath = `/propertymappings/provider/saml/`;
 
         return {
             path: urlPath,
@@ -4020,7 +4470,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/saml/`;
+        const urlPath = `/propertymappings/provider/saml/`;
 
         return {
             path: urlPath,
@@ -4061,7 +4511,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderSamlPartialUpdate without sending the request
+     * Creates request options for propertymappingsProviderSamlPartialUpdate without sending the
+     * request
      */
     async propertymappingsProviderSamlPartialUpdateRequestOpts(
         requestParameters: PropertymappingsProviderSamlPartialUpdateRequest,
@@ -4286,7 +4737,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderSamlUsedByList without sending the request
+     * Creates request options for propertymappingsProviderSamlUsedByList without sending the
+     * request
      */
     async propertymappingsProviderSamlUsedByListRequestOpts(
         requestParameters: PropertymappingsProviderSamlUsedByListRequest,
@@ -4381,7 +4833,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/scim/`;
+        const urlPath = `/propertymappings/provider/scim/`;
 
         return {
             path: urlPath,
@@ -4531,7 +4983,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/scim/`;
+        const urlPath = `/propertymappings/provider/scim/`;
 
         return {
             path: urlPath,
@@ -4572,7 +5024,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderScimPartialUpdate without sending the request
+     * Creates request options for propertymappingsProviderScimPartialUpdate without sending the
+     * request
      */
     async propertymappingsProviderScimPartialUpdateRequestOpts(
         requestParameters: PropertymappingsProviderScimPartialUpdateRequest,
@@ -4789,7 +5242,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderScimUsedByList without sending the request
+     * Creates request options for propertymappingsProviderScimUsedByList without sending the
+     * request
      */
     async propertymappingsProviderScimUsedByListRequestOpts(
         requestParameters: PropertymappingsProviderScimUsedByListRequest,
@@ -4884,7 +5338,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/scope/`;
+        const urlPath = `/propertymappings/provider/scope/`;
 
         return {
             path: urlPath,
@@ -5040,7 +5494,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/provider/scope/`;
+        const urlPath = `/propertymappings/provider/scope/`;
 
         return {
             path: urlPath,
@@ -5081,7 +5535,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderScopePartialUpdate without sending the request
+     * Creates request options for propertymappingsProviderScopePartialUpdate without sending the
+     * request
      */
     async propertymappingsProviderScopePartialUpdateRequestOpts(
         requestParameters: PropertymappingsProviderScopePartialUpdateRequest,
@@ -5304,7 +5759,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsProviderScopeUsedByList without sending the request
+     * Creates request options for propertymappingsProviderScopeUsedByList without sending the
+     * request
      */
     async propertymappingsProviderScopeUsedByListRequestOpts(
         requestParameters: PropertymappingsProviderScopeUsedByListRequest,
@@ -5399,7 +5855,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/kerberos/`;
+        const urlPath = `/propertymappings/source/kerberos/`;
 
         return {
             path: urlPath,
@@ -5553,7 +6009,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/kerberos/`;
+        const urlPath = `/propertymappings/source/kerberos/`;
 
         return {
             path: urlPath,
@@ -5594,7 +6050,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceKerberosPartialUpdate without sending the request
+     * Creates request options for propertymappingsSourceKerberosPartialUpdate without sending the
+     * request
      */
     async propertymappingsSourceKerberosPartialUpdateRequestOpts(
         requestParameters: PropertymappingsSourceKerberosPartialUpdateRequest,
@@ -5669,7 +6126,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceKerberosRetrieve without sending the request
+     * Creates request options for propertymappingsSourceKerberosRetrieve without sending the
+     * request
      */
     async propertymappingsSourceKerberosRetrieveRequestOpts(
         requestParameters: PropertymappingsSourceKerberosRetrieveRequest,
@@ -5821,7 +6279,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceKerberosUsedByList without sending the request
+     * Creates request options for propertymappingsSourceKerberosUsedByList without sending the
+     * request
      */
     async propertymappingsSourceKerberosUsedByListRequestOpts(
         requestParameters: PropertymappingsSourceKerberosUsedByListRequest,
@@ -5916,7 +6375,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/ldap/`;
+        const urlPath = `/propertymappings/source/ldap/`;
 
         return {
             path: urlPath,
@@ -6070,7 +6529,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/ldap/`;
+        const urlPath = `/propertymappings/source/ldap/`;
 
         return {
             path: urlPath,
@@ -6111,7 +6570,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceLdapPartialUpdate without sending the request
+     * Creates request options for propertymappingsSourceLdapPartialUpdate without sending the
+     * request
      */
     async propertymappingsSourceLdapPartialUpdateRequestOpts(
         requestParameters: PropertymappingsSourceLdapPartialUpdateRequest,
@@ -6433,7 +6893,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/oauth/`;
+        const urlPath = `/propertymappings/source/oauth/`;
 
         return {
             path: urlPath,
@@ -6587,7 +7047,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/oauth/`;
+        const urlPath = `/propertymappings/source/oauth/`;
 
         return {
             path: urlPath,
@@ -6628,7 +7088,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceOauthPartialUpdate without sending the request
+     * Creates request options for propertymappingsSourceOauthPartialUpdate without sending the
+     * request
      */
     async propertymappingsSourceOauthPartialUpdateRequestOpts(
         requestParameters: PropertymappingsSourceOauthPartialUpdateRequest,
@@ -6950,7 +7411,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/plex/`;
+        const urlPath = `/propertymappings/source/plex/`;
 
         return {
             path: urlPath,
@@ -7104,7 +7565,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/plex/`;
+        const urlPath = `/propertymappings/source/plex/`;
 
         return {
             path: urlPath,
@@ -7145,7 +7606,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourcePlexPartialUpdate without sending the request
+     * Creates request options for propertymappingsSourcePlexPartialUpdate without sending the
+     * request
      */
     async propertymappingsSourcePlexPartialUpdateRequestOpts(
         requestParameters: PropertymappingsSourcePlexPartialUpdateRequest,
@@ -7467,7 +7929,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/saml/`;
+        const urlPath = `/propertymappings/source/saml/`;
 
         return {
             path: urlPath,
@@ -7621,7 +8083,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/saml/`;
+        const urlPath = `/propertymappings/source/saml/`;
 
         return {
             path: urlPath,
@@ -7662,7 +8124,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceSamlPartialUpdate without sending the request
+     * Creates request options for propertymappingsSourceSamlPartialUpdate without sending the
+     * request
      */
     async propertymappingsSourceSamlPartialUpdateRequestOpts(
         requestParameters: PropertymappingsSourceSamlPartialUpdateRequest,
@@ -7984,7 +8447,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/scim/`;
+        const urlPath = `/propertymappings/source/scim/`;
 
         return {
             path: urlPath,
@@ -8138,7 +8601,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/scim/`;
+        const urlPath = `/propertymappings/source/scim/`;
 
         return {
             path: urlPath,
@@ -8179,7 +8642,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceScimPartialUpdate without sending the request
+     * Creates request options for propertymappingsSourceScimPartialUpdate without sending the
+     * request
      */
     async propertymappingsSourceScimPartialUpdateRequestOpts(
         requestParameters: PropertymappingsSourceScimPartialUpdateRequest,
@@ -8501,7 +8965,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/telegram/`;
+        const urlPath = `/propertymappings/source/telegram/`;
 
         return {
             path: urlPath,
@@ -8655,7 +9119,7 @@ export class PropertymappingsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/propertymappings/source/telegram/`;
+        const urlPath = `/propertymappings/source/telegram/`;
 
         return {
             path: urlPath,
@@ -8696,7 +9160,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceTelegramPartialUpdate without sending the request
+     * Creates request options for propertymappingsSourceTelegramPartialUpdate without sending the
+     * request
      */
     async propertymappingsSourceTelegramPartialUpdateRequestOpts(
         requestParameters: PropertymappingsSourceTelegramPartialUpdateRequest,
@@ -8771,7 +9236,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceTelegramRetrieve without sending the request
+     * Creates request options for propertymappingsSourceTelegramRetrieve without sending the
+     * request
      */
     async propertymappingsSourceTelegramRetrieveRequestOpts(
         requestParameters: PropertymappingsSourceTelegramRetrieveRequest,
@@ -8923,7 +9389,8 @@ export class PropertymappingsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for propertymappingsSourceTelegramUsedByList without sending the request
+     * Creates request options for propertymappingsSourceTelegramUsedByList without sending the
+     * request
      */
     async propertymappingsSourceTelegramUsedByListRequestOpts(
         requestParameters: PropertymappingsSourceTelegramUsedByListRequest,

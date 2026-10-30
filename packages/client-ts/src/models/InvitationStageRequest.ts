@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,20 +12,15 @@
 
 /**
  * InvitationStage Serializer
+ *
  * @export
  * @interface InvitationStageRequest
  */
 export interface InvitationStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof InvitationStageRequest
-     */
     name: string;
     /**
-     * If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.
-     * @type {boolean}
-     * @memberof InvitationStageRequest
+     * If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By
+     * default this Stage will cancel the Flow when no invitation is given.
      */
     continueFlowWithoutInvitation?: boolean;
 }

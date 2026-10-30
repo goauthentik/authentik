@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,20 +10,14 @@
  * Do not edit the class manually.
  */
 
-import type { DuoResponseEnum } from "./DuoResponseEnum";
-import { DuoResponseEnumFromJSON, DuoResponseEnumToJSON } from "./DuoResponseEnum";
+import type { DuoResponseEnum } from "./DuoResponseEnum.js";
+import { DuoResponseEnumFromJSON, DuoResponseEnumToJSON } from "./DuoResponseEnum.js";
 
 /**
- *
  * @export
  * @interface DuoDeviceEnrollmentStatus
  */
 export interface DuoDeviceEnrollmentStatus {
-    /**
-     *
-     * @type {DuoResponseEnum}
-     * @memberof DuoDeviceEnrollmentStatus
-     */
     duoResponse: DuoResponseEnum;
 }
 

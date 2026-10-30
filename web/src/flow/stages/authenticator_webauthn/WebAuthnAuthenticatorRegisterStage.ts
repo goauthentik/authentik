@@ -1,11 +1,17 @@
 import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
 import "#flow/FormStatic";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import {
     Assertion,
     assertWebAuthnSupported,
+    isWebAuthnInvalidStateError,
     isWebAuthnNotAllowedError,
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
@@ -22,12 +28,6 @@ import {
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;
@@ -57,6 +57,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
         if (!this.host) {
             this.logger.error("Host is not set, cannot submit registration");
+
             return;
         }
 
@@ -73,6 +74,15 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                 return credential as PublicKeyCredential;
             })
             .catch((cause) => {
+                if (isWebAuthnInvalidStateError(cause)) {
+                    throw new Error(
+                        msg(
+                            "This security key is already registered on your account. Touch a different key to add it.",
+                        ),
+                        { cause },
+                    );
+                }
+
                 if (isWebAuthnNotAllowedError(cause)) {
                     throw new Error(
                         msg("Registration was cancelled or timed out. Please try again."),
@@ -110,6 +120,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         if (this.registerRunning) {
             return;
         }
+
         this.registerRunning = true;
 
         return this.register()
@@ -134,6 +145,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                 this.challenge?.registration as PublicKeyCredentialCreationOptions,
                 this.challenge?.registration.user.id,
             );
+
             this.tryRegister();
         }
     }
@@ -145,27 +157,33 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
                 <ak-empty-state ?loading="${this.registerRunning}" icon="fa-times">
                     <span
-                        >${this.registerRunning
-                            ? msg("Registering...")
-                            : this.errorMessage || msg("Failed to register")}
+                        >${
+                            this.registerRunning
+                                ? msg("Registering...")
+                                : this.errorMessage || msg("Failed to register")
+                        }
                     </span>
                 </ak-empty-state>
-                ${this.challenge?.responseErrors
-                    ? html`<p>${this.challenge.responseErrors.response[0].string}</p>`
-                    : nothing}
+                ${
+                    this.challenge?.responseErrors
+                        ? html`<p>${this.challenge.responseErrors.response[0].string}</p>`
+                        : nothing
+                }
                 <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
-                    ${!this.registerRunning
-                        ? html` <button
-                              class="pf-c-button pf-m-primary pf-m-block"
-                              @click=${() => {
-                                  this.tryRegister();
-                              }}
-                              type="button"
-                          >
-                              ${msg("Retry registration")}
-                          </button>`
-                        : nothing}
+                    ${
+                        !this.registerRunning
+                            ? html` <button
+                                  class="pf-c-button pf-m-primary pf-m-block"
+                                  @click=${() => {
+                                      this.tryRegister();
+                                  }}
+                                  type="button"
+                              >
+                                  ${msg("Retry registration")}
+                              </button>`
+                            : nothing
+                    }
                 </fieldset>
             </form>
         </ak-flow-card>`;

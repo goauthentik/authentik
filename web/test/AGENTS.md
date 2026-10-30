@@ -1,11 +1,12 @@
 # Test Directory Router
 
-This directory holds three flavors of automated tests for the authentik WebUI. Each has its own conventions doc — **read the relevant one before writing or modifying tests there.**
+This directory holds four flavors of automated tests for the authentik WebUI. Each has its own conventions doc — **read the relevant one before writing or modifying tests there.**
 
 | Directory          | What lives here                                                                                                           | Runner / environment                                    | Conventions                                   |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------- |
 | `test/unit/`       | Pure-Node tests for functions, classes, and modules with no DOM dependency.                                               | Vitest, Node environment.                               | [`test/unit/AGENTS.md`](unit/AGENTS.md)       |
 | `test/browser/`    | End-to-end tests that drive the admin and user UIs in Chromium against a running authentik instance.                      | Vitest browser provider (Playwright) + `#e2e` fixtures. | [`test/browser/AGENTS.md`](browser/AGENTS.md) |
+| `test/visual/`     | Screenshot comparisons of every story and a few pages against the base branch.                                            | Playwright via `pnpm run test:visual`.                  | [`test/visual/AGENTS.md`](visual/AGENTS.md)   |
 | `test/lit/`        | Shared Lit render helpers (`renderLit`, `LitViteContext`) for component-level browser tests. No tests live here directly. | —                                                       | —                                             |
 | `test/blueprints/` | YAML blueprints (e.g. `test-admin-user.yaml`) seeded into authentik for browser tests to authenticate against.            | —                                                       | —                                             |
 

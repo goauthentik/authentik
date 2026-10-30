@@ -1,11 +1,12 @@
 """evaluator tests"""
 
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
+from authentik.core.tests.utils import RequestFactory
 from authentik.lib.generators import generate_id
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.expression.api import ExpressionPolicySerializer

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Pseudo class for autosubmit response
+ *
  * @export
  * @interface AutoSubmitChallengeResponseRequest
  */
 export interface AutoSubmitChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AutoSubmitChallengeResponseRequest
-     */
     component?: string;
 }
 

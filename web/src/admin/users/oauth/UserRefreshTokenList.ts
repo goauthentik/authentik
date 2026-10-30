@@ -2,9 +2,11 @@ import "#components/ak-status-label";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -13,8 +15,6 @@ import { ExpiringBaseGrantModel, Oauth2Api, TokenModel } from "@goauthentik/api"
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 @customElement("ak-user-oauth-refresh-token-list")
 export class UserOAuthRefreshTokenList extends Table<TokenModel> {
@@ -61,6 +61,7 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Refresh Tokens(s)")}
             .objects=${this.selectedElements}
@@ -83,7 +84,9 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
 
     row(item: TokenModel): SlottedTemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
+            html`<a href=${toAdminInterface(`core/providers/${item.provider?.pk}`)}>
+                ${item.provider?.name}
+            </a>`,
             html`<ak-status-label
                 type="warning"
                 ?good=${!item.revoked}

@@ -1,5 +1,5 @@
-import { globalAK } from "#common/global";
 import { MessageLevel } from "#common/messages";
+import { websocketURL } from "#common/urls";
 import { createEventFromWSMessage, WSMessage } from "#common/ws/events";
 
 import { showMessage } from "#elements/messages/MessageContainer";
@@ -74,13 +74,13 @@ export class WebsocketClient extends WebSocket implements Disposable {
 
         WebsocketClient.#connection?.close();
 
-        const apiURL = new URL(globalAK().api.base);
-        const wsURL = `${window.location.protocol.replace("http", "ws")}//${apiURL.host}${apiURL.pathname}ws/client/`;
+        const wsURL = websocketURL("ws/client/");
 
         try {
             return new WebsocketClient(wsURL);
         } catch (error) {
             console.warn(`authentik/ws: failed to connect to ws ${error}`);
+
             return null;
         }
     }

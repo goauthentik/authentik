@@ -1,10 +1,10 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
 import { ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -40,11 +40,11 @@ export class AgentListPage extends TablePage<Agent> {
         [msg("Name"), "username"],
         [msg("Parent")],
         [msg("Expires"), "expires"],
-        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html` <ak-forms-delete-bulk
             object-label=${msg("Agent(s)")}
             .objects=${this.selectedElements}
@@ -65,25 +65,12 @@ export class AgentListPage extends TablePage<Agent> {
             html`<div>${item.username}</div>
                 <small>${item.name}</small>`,
             item.parent
-                ? html`<a href="#/identity/users/${item.parent.pk}">
+                ? html`<a href=${toAdminInterface(`identity/users/${item.parent.pk}`)}>
                       <div>${item.parent.username}</div>
                       <small>${item.parent.name}</small>
                   </a>`
                 : html`<span class="pf-u-color-200">${msg("-")}</span>`,
             item.expiring && item.expires ? Timestamp(item.expires) : msg("Never"),
-            html`<ak-forms-delete-bulk
-                object-label=${msg("Agent")}
-                .objects=${[item]}
-                .delete=${(agent: Agent) => {
-                    return aki(AgentsApi).agentsAgentsDestroy({
-                        id: agent.pk,
-                    });
-                }}
-            >
-                <button slot="trigger" class="pf-c-button pf-m-danger pf-m-small">
-                    ${msg("Delete")}
-                </button>
-            </ak-forms-delete-bulk>`,
         ];
     }
 

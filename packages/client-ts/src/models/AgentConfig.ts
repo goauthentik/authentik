@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,76 +10,27 @@
  * Do not edit the class manually.
  */
 
-import type { Config } from "./Config";
-import { ConfigFromJSON } from "./Config";
-import type { LicenseStatusEnum } from "./LicenseStatusEnum";
-import { LicenseStatusEnumFromJSON } from "./LicenseStatusEnum";
+import type { Config } from "./Config.js";
+import { ConfigFromJSON } from "./Config.js";
+import type { LicenseStatusEnum } from "./LicenseStatusEnum.js";
+import { LicenseStatusEnumFromJSON } from "./LicenseStatusEnum.js";
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface AgentConfig
  */
 export interface AgentConfig {
-    /**
-     *
-     * @type {string}
-     * @memberof AgentConfig
-     */
     readonly deviceId: string;
-    /**
-     *
-     * @type {number}
-     * @memberof AgentConfig
-     */
     readonly refreshInterval: number;
-    /**
-     *
-     * @type {string}
-     * @memberof AgentConfig
-     */
     readonly authorizationFlow: string | null;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof AgentConfig
-     */
     readonly jwksAuth: { [key: string]: any };
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof AgentConfig
-     */
     readonly jwksChallenge: { [key: string]: any } | null;
-    /**
-     *
-     * @type {number}
-     * @memberof AgentConfig
-     */
     nssUidOffset: number;
-    /**
-     *
-     * @type {number}
-     * @memberof AgentConfig
-     */
     nssGidOffset: number;
-    /**
-     *
-     * @type {boolean}
-     * @memberof AgentConfig
-     */
     authTerminateSessionOnExpiry: boolean;
-    /**
-     *
-     * @type {Config}
-     * @memberof AgentConfig
-     */
     readonly systemConfig: Config;
-    /**
-     *
-     * @type {LicenseStatusEnum}
-     * @memberof AgentConfig
-     */
     readonly licenseStatus: LicenseStatusEnum | null;
 }
 

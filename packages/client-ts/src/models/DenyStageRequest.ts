@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * DenyStage Serializer
+ *
  * @export
  * @interface DenyStageRequest
  */
 export interface DenyStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof DenyStageRequest
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof DenyStageRequest
-     */
     denyMessage?: string;
 }
 

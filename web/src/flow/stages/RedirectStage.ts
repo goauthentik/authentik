@@ -1,4 +1,9 @@
 import "#flow/components/ak-flow-card";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -15,16 +20,12 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
     @state()
     startedRedirect = false;
+
+    #keydownController: AbortController | null = null;
 
     static styles: CSSResult[] = [
         PFLogin,
@@ -40,75 +41,122 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     ];
 
     getURL(): string {
-        return new URL(this.challenge?.to || "", document.baseURI).toString();
+        return new URL(this.challenge?.to || "", this.ownerDocument.baseURI).toString();
     }
 
     // The current implementation expects the button and the stage to share the same DOM context,
     // and the same rootNode. If that changes, this will need to be updated.
-    get promptUser() {
+    public get promptUser(): boolean {
         return !!(this.getRootNode() as Element | undefined)?.querySelector(
             "ak-flow-inspector-button",
         )?.open;
     }
 
-    updated(changed: PropertyValues<this>): void {
+    protected keydownListener = (event: KeyboardEvent): void => {
+        if (event.key === "Enter") {
+            this.redirect();
+        }
+    };
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        this.#keydownController?.abort();
+        this.#keydownController = null;
+    }
+
+    protected override updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
         if (!changed.has("challenge")) {
             return;
         }
+
         if (this.promptUser) {
-            document.addEventListener("keydown", (ev) => {
-                if (ev.key === "Enter") {
-                    this.redirect();
-                }
-            });
+            // Register the listener once for the element's lifetime; `updated` runs on every
+            // challenge change, and the AbortController tears it down on disconnect.
+            if (!this.#keydownController) {
+                this.#keydownController = new AbortController();
+
+                this.ownerDocument.addEventListener("keydown", this.keydownListener, {
+                    signal: this.#keydownController.signal,
+                });
+            }
+
             return;
         }
+
         this.redirect();
     }
 
     async redirect() {
-        console.debug(
-            "authentik/stages/redirect: redirecting to url from server",
-            this.challenge?.to,
-        );
+        const challenge = this.challenge;
+
+        if (!challenge) {
+            return;
+        }
+
+        console.debug("authentik/stages/redirect: redirecting to url from server", challenge.to);
 
         // `final_redirect` marks the terminal redirect out of a completed flow. Only then do we
         // resume other continuous-login tabs; intermediate hops (source stages, the same-origin
         // SAML resume re-entry) skip orchestration entirely.
-        const finalRedirect = this.challenge?.finalRedirect ?? false;
+        const finalRedirect = challenge.finalRedirect ?? false;
+
+        // Coordinating other tabs is best-effort. Nothing it does may keep this tab from
+        // redirecting; otherwise the flow is done server-side but the page spins forever.
         if (finalRedirect) {
-            await multiTabOrchestrateResume();
+            try {
+                await multiTabOrchestrateResume();
+            } catch (error: unknown) {
+                this.logger.error("Failed to resume other tabs, redirecting anyway", error);
+            }
         }
 
-        // A foreign final redirect means we're leaving authentik for good, so signal our exit.
-        // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
-        const url = new URL(this.challenge!.to, window.location.origin);
+        try {
+            // A foreign final redirect means we're leaving authentik for good, so signal our exit.
+            // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
+            const url = new URL(challenge.to, window.location.origin);
 
-        if (finalRedirect && url.origin !== window.location.origin) {
-            multiTabOrchestrateLeave();
-        } else {
-            suppressNextExitForSameOriginNavigation();
+            if (finalRedirect && url.origin !== window.location.origin) {
+                multiTabOrchestrateLeave();
+            } else {
+                suppressNextExitForSameOriginNavigation();
+            }
+        } catch (error: unknown) {
+            this.logger.error("Failed to update multi-tab state, redirecting anyway", error);
         }
 
-        window.location.assign(this.challenge!.to);
+        this.navigate(challenge.to);
         this.startedRedirect = true;
+    }
+
+    /**
+     * Navigate this document's browsing context to the given URL.
+     *
+     * @param to The URL to navigate to.
+     */
+    public navigate(to: string): void {
+        window.location.assign(to);
     }
 
     renderLoading(): TemplateResult {
         const url = new URL(this.getURL());
+
         // If the protocol isn't http or https assume a custom protocol, that has an OS-level
         // handler, which the browser will show a popup for.
         // As this wouldn't really be a redirect, show a message that the page can be closed
         // and try to close it ourselves
-        if (!url.protocol.startsWith("http")) {
+        // Apple Platform SSO redirects to a custom protocol, but takes a moment to finish,
+        // so keep showing the spinner instead of a misleading "close" message.
+        if (!url.protocol.startsWith("http") && url.protocol !== "com.apple.platformsso:") {
             return html`<ak-flow-card .challenge=${this.challenge}>
                 <ak-empty-state icon="fas fa-check"
                     ><span>${msg("You may close this page now.")}</span>
                 </ak-empty-state>
             </ak-flow-card>`;
         }
+
         return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { ExtraRoleObjectPermission } from "./ExtraRoleObjectPermission";
+import type { ExtraRoleObjectPermission } from "./ExtraRoleObjectPermission.js";
 import {
     ExtraRoleObjectPermissionFromJSON,
     ExtraRoleObjectPermissionToJSON,
-} from "./ExtraRoleObjectPermission";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./ExtraRoleObjectPermission.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedExtraRoleObjectPermissionList
  */
 export interface PaginatedExtraRoleObjectPermissionList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedExtraRoleObjectPermissionList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<ExtraRoleObjectPermission>}
-     * @memberof PaginatedExtraRoleObjectPermissionList
-     */
     results: Array<ExtraRoleObjectPermission>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedExtraRoleObjectPermissionList
-     */
     autocomplete: { [key: string]: any };
 }
 

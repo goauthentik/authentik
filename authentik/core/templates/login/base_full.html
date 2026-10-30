@@ -14,6 +14,10 @@
     :root {
         --ak-global--background-image: url("{{ request.brand.branding_default_flow_background_url|iriencode|safe }}");
     }
+    :root[data-theme="dark"] .branding-logo--light,
+    :root:not([data-theme="dark"]) .branding-logo--dark {
+        display: none;
+    }
 </style>
 
 <link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/static-%v.css' %}" />
@@ -31,7 +35,14 @@
                     <div class="pf-c-login" data-layout="stacked">
                         <main class="pf-c-login__main" aria-label="Authentication form">
                             <div class="pf-c-login__main-header pf-c-brand">
+                                {% with themed=brand.branding_logo_themed_urls %}
+                                {% if themed %}
+                                <img class="branding-logo branding-logo--light" src="{{ themed.light }}" alt="authentik Logo" />
+                                <img class="branding-logo branding-logo--dark" src="{{ themed.dark }}" alt="authentik Logo" />
+                                {% else %}
                                 <img class="branding-logo" src="{{ brand.branding_logo_url }}" alt="authentik Logo" />
+                                {% endif %}
+                                {% endwith %}
                             </div>
                             <div class="pf-c-login__main-header">
                                 <h1 class="pf-c-title pf-m-3xl" data-test-id="card-title">

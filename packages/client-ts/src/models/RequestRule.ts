@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,77 +10,31 @@
  * Do not edit the class manually.
  */
 
-import type { NotificationModeEnum } from "./NotificationModeEnum";
-import { NotificationModeEnumFromJSON, NotificationModeEnumToJSON } from "./NotificationModeEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { NotificationModeEnum } from "./NotificationModeEnum.js";
+import {
+    NotificationModeEnumFromJSON,
+    NotificationModeEnumToJSON,
+} from "./NotificationModeEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface RequestRule
  */
 export interface RequestRule {
-    /**
-     *
-     * @type {string}
-     * @memberof RequestRule
-     */
     uuid?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RequestRule
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     * @type {PolicyEngineMode}
-     * @memberof RequestRule
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     * @type {string}
-     * @memberof RequestRule
-     */
     name: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof RequestRule
-     */
     readonly targets: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof RequestRule
-     */
     notificationTransports?: Array<string>;
-    /**
-     *
-     * @type {NotificationModeEnum}
-     * @memberof RequestRule
-     */
     notificationMode?: NotificationModeEnum;
-    /**
-     *
-     * @type {number}
-     * @memberof RequestRule
-     */
     minReviewers?: number;
-    /**
-     *
-     * @type {boolean}
-     * @memberof RequestRule
-     */
     minReviewersIsPerGroup?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof RequestRule
-     */
     requestFlow?: string | null;
 }
 

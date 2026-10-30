@@ -13,7 +13,6 @@ from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
 from rest_framework.serializers import ValidationError
-from sentry_sdk import start_span
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, Source, User
@@ -35,6 +34,7 @@ from authentik.flows.planner import (
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.lib.avatars import DEFAULT_AVATAR
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
@@ -45,6 +45,7 @@ from authentik.stages.authenticator_validate.challenge import (
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.stage import (
     PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
+    PLAN_CONTEXT_CAPTCHA_SITE_KEY,
     CaptchaChallenge,
     verify_captcha_token,
 )
@@ -177,7 +178,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
         pre_user = self.stage.get_user(uid_field)
         if not pre_user:
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.stages.identification.validate_invalid_wait",
                 name="Sleep random time on invalid user identifier",
             ):
@@ -236,7 +237,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
         if not password:
             self.stage.logger.warning("Password not set for ident+auth attempt")
         try:
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.stages.identification.authenticate",
                 name="User authenticate call (combo stage)",
             ):
@@ -347,7 +348,10 @@ class IdentificationStageView(ChallengeStageView):
                 "captcha_stage": (
                     {
                         "js_url": current_stage.captcha_stage.js_url,
-                        "site_key": current_stage.captcha_stage.public_key,
+                        "site_key": self.executor.plan.context.get(
+                            PLAN_CONTEXT_CAPTCHA_SITE_KEY,
+                            current_stage.captcha_stage.public_key,
+                        ),
                         "interactive": current_stage.captcha_stage.interactive,
                         "pending_user": "",
                         "pending_user_avatar": DEFAULT_AVATAR,

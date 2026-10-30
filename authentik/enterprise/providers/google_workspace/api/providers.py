@@ -42,6 +42,7 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "dry_run",
             "discovery_enabled",
         ]
+        secret_fields = ["credentials"]
         extra_kwargs = {}
 
 

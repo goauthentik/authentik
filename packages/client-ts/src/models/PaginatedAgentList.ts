@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Agent } from "./Agent";
-import { AgentFromJSON, AgentToJSON } from "./Agent";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Agent } from "./Agent.js";
+import { AgentFromJSON, AgentToJSON } from "./Agent.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedAgentList
  */
 export interface PaginatedAgentList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedAgentList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<Agent>}
-     * @memberof PaginatedAgentList
-     */
     results: Array<Agent>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedAgentList
-     */
     autocomplete: { [key: string]: any };
 }
 

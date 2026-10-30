@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { BlueprintInstance } from "./BlueprintInstance";
-import { BlueprintInstanceFromJSON, BlueprintInstanceToJSON } from "./BlueprintInstance";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { BlueprintInstance } from "./BlueprintInstance.js";
+import { BlueprintInstanceFromJSON, BlueprintInstanceToJSON } from "./BlueprintInstance.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedBlueprintInstanceList
  */
 export interface PaginatedBlueprintInstanceList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedBlueprintInstanceList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<BlueprintInstance>}
-     * @memberof PaginatedBlueprintInstanceList
-     */
     results: Array<BlueprintInstance>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedBlueprintInstanceList
-     */
     autocomplete: { [key: string]: any };
 }
 

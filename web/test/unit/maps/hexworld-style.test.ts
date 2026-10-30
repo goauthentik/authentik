@@ -11,7 +11,10 @@ import {
 import type { ExpressionSpecification, VectorSourceSpecification } from "maplibre-gl";
 import { expect, test } from "vitest";
 
-const style = buildHexworldStyle({ archiveURL: "/static/dist/assets/maps/hexworld.pmtiles" });
+const style = buildHexworldStyle({
+    archiveURL: "/static/dist/assets/maps/hexworld.pmtiles",
+    glyphsURL: "/static/dist/assets/maps/fonts/{fontstack}/{range}.pbf",
+});
 
 const hexworldSource = (spec = style) => spec.sources.hexworld as VectorSourceSpecification;
 
@@ -28,7 +31,7 @@ test("style uses the pmtiles protocol with promoted h3 ids", () => {
 });
 
 test("source maxzoom is overridable for a finer archive cut", () => {
-    const r5 = buildHexworldStyle({ archiveURL: "/x.pmtiles", maxzoom: 8 });
+    const r5 = buildHexworldStyle({ archiveURL: "/x.pmtiles", glyphsURL: "/x.pbf", maxzoom: 8 });
     expect(hexworldSource(r5).maxzoom).toBe(8);
 });
 
@@ -38,6 +41,7 @@ test("style has hex fill + label layers with name:en fallback", () => {
     expect(ids.includes("hexworld-hex")).toBeTruthy();
     const labels = style.layers.filter((layer) => layer.type === "symbol");
     expect(labels.length >= 2, "expected kind-gated symbol layers").toBeTruthy();
+
     for (const layer of labels) {
         expect(layoutOf(layer)["text-field"]).toStrictEqual([
             "coalesce",
@@ -67,15 +71,21 @@ test("style has country + region border layers filtered by level", () => {
     expect((region.minzoom ?? 0) >= 3).toBeTruthy();
 });
 
-test("airgap: default style references no absolute URLs", () => {
+test("airgap: style references no absolute URLs", () => {
     const json = JSON.stringify(style);
     expect(!/https?:\/\//.test(json), "style must not reach external hosts").toBeTruthy();
 });
 
 test("dark theme swaps palette", () => {
-    const dark = buildHexworldStyle({ archiveURL: "/x.pmtiles", theme: "dark" });
+    const dark = buildHexworldStyle({
+        archiveURL: "/x.pmtiles",
+        glyphsURL: "/x.pbf",
+        theme: "dark",
+    });
+
     const bg = (spec: typeof style) =>
         paintOf(layerById(spec, "hexworld-background"))["background-color"];
+
     expect(bg(dark)).not.toBe(bg(style));
 });
 
@@ -83,8 +93,10 @@ test("wedge palette covers the five event actions in both themes", () => {
     // "11184809" is EventActions.UnknownDefaultOpenApi — drf-spectacular's
     // sentinel for values outside the enum.
     const actions = ["login", "login_failed", "logout", "authorize_application", "11184809"];
+
     for (const theme of ["light", "dark"] satisfies BasemapTheme[]) {
         const colors: Record<string, string | undefined> = wedgeColors(theme);
+
         for (const action of actions) {
             expect(required(colors[action], action), `${theme}/${action}`).toMatch(
                 /^#[0-9a-f]{6}$/i,
@@ -99,21 +111,26 @@ test("bandFadeOpacity cross-fades bands at their boundaries", () => {
     expect(expr[2]).toStrictEqual(["zoom"]);
     // Stops come in [zoom, matchExpression] pairs from index 3 on.
     const stops: [number, ExpressionSpecification][] = [];
+
     for (let i = 3; i < expr.length; i += 2) {
         stops.push([expr[i] as number, expr[i + 1] as ExpressionSpecification]);
     }
+
     const valueFor = (match: ExpressionSpecification, res: number): unknown => {
         // ["match", ["get","res"], r1, v1, r2, v2, ..., fallback]
         for (let i = 2; i < match.length - 1; i += 2) {
             if (match[i] === res) return match[i + 1];
         }
+
         return match[match.length - 1];
     };
+
     const atZoom = (z: number) =>
         required(
             stops.find(([stop]) => stop === z),
             `stop at z${z}`,
         )[1];
+
     // z3: res-3 grid still fully present, res-4 not yet visible.
     expect(valueFor(atZoom(3), 3)).toBe(0.95);
     expect(valueFor(atZoom(3), 4)).toBe(0);
@@ -131,9 +148,11 @@ test("bandFadeOpacity cross-fades bands at their boundaries", () => {
 });
 
 test("hex and border layers use the band fade", () => {
-    const faded = buildHexworldStyle({ archiveURL: "/x.pmtiles" });
+    const faded = buildHexworldStyle({ archiveURL: "/x.pmtiles", glyphsURL: "/x.pbf" });
+
     const opacity = (id: string, property: string) =>
         (paintOf(layerById(faded, id))[property] as unknown[])[0];
+
     expect(opacity("hexworld-hex", "fill-opacity")).toBe("interpolate");
     expect(opacity("hexworld-hex-outline", "line-opacity")).toBe("interpolate");
     expect(opacity("hexworld-borders", "line-opacity")).toBe("interpolate");
@@ -141,8 +160,9 @@ test("hex and border layers use the band fade", () => {
 });
 
 test("label layers sort collisions by population and regions start at z3", () => {
-    const spec = buildHexworldStyle({ archiveURL: "/x.pmtiles" });
+    const spec = buildHexworldStyle({ archiveURL: "/x.pmtiles", glyphsURL: "/x.pbf" });
     expect(layerById(spec, "hexworld-label-region").minzoom).toBe(3);
+
     for (const kind of ["country", "region", "locality"]) {
         const sort = layoutOf(layerById(spec, `hexworld-label-${kind}`))["symbol-sort-key"];
         expect(Array.isArray(sort), `${kind} needs a symbol-sort-key`).toBeTruthy();

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * ApplicationEntitlement Serializer
+ *
  * @export
  * @interface PatchedApplicationEntitlementRequest
  */
 export interface PatchedApplicationEntitlementRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedApplicationEntitlementRequest
-     */
     name?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedApplicationEntitlementRequest
-     */
     app?: string;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedApplicationEntitlementRequest
-     */
     attributes?: { [key: string]: any };
 }
 

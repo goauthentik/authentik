@@ -41,6 +41,12 @@ import Tabs from "@theme/Tabs";
 
 </Tabs>
 
+## Configure the server and worker containers
+
+Give the server and worker containers the same `AUTHENTIK_` environment variables. Each container ignores the settings it does not use.
+
+The exception is when the server and worker share a network, for example with host networking or in the same pod. Both containers listen on `AUTHENTIK_LISTEN__HTTP` and `AUTHENTIK_LISTEN__METRICS`, so set different ports for each container. Otherwise, the container that starts second exits with an error such as `failed to listen on [::]:9000 for server`.
+
 ## Verify your configuration settings
 
 To check if your config has been applied correctly, you can run the following command to output the full config:
@@ -67,6 +73,8 @@ To check if your config has been applied correctly, you can run the following co
 
 authentik requires PostgreSQL for application data, configuration, sessions, and background task coordination. authentik supports PostgreSQL 14 - 18.
 
+The database must use the `UTF8` server encoding, which is PostgreSQL's default. Unless a different encoding was explicitly chosen when the database was created, no change is needed. Run `SHOW server_encoding;` to check; authentik logs a warning on any other encoding, and support for them will be removed in an upcoming version. Converting an existing database means dumping it, re-creating it with `ENCODING 'UTF8'`, and restoring the dump.
+
 Use the settings in this section to configure:
 
 - the primary PostgreSQL connection
@@ -74,7 +82,7 @@ Use the settings in this section to configure:
 - connection behavior and pooler compatibility
 - optional read replicas
 
-For more information, see the PostgreSQL upgrade guides for [Docker Compose](../../troubleshooting/postgres/upgrade_docker.md) and [Kubernetes](../../troubleshooting/postgres/upgrade_kubernetes.md). For backup guidance, see [Backup and restore](../../sys-mgmt/ops/backup-restore.md).
+For more information, see the PostgreSQL upgrade guides for [Docker Compose](../../troubleshooting/postgres/upgrade_docker.mdx) and [Kubernetes](../../troubleshooting/postgres/upgrade_kubernetes.mdx). For backup guidance, see [Backup and restore](../../sys-mgmt/ops/backup-restore.mdx).
 
 ### Connection settings
 
@@ -141,6 +149,8 @@ Use these settings when your PostgreSQL server requires TLS/SSL or mutual TLS.
     Path to the private key corresponding to `AUTHENTIK_POSTGRESQL__SSLCERT`.
 
 For more detail, see [Django's PostgreSQL documentation](https://docs.djangoproject.com/en/stable/ref/databases/#postgresql-connection-settings) and the [PostgreSQL `libpq` SSL documentation](https://www.postgresql.org/docs/current/libpq-ssl.html#LIBPQ-SSL-PROTECTION).
+
+To check whether authentik's database connection uses TLS, open the system info API endpoint at https://authentik.company/api/v3/admin/system/ while logged in as an administrator. Its `postgresql` section shows `ssl`, `ssl_version`, and `ssl_cipher` for authentik's PostgreSQL session. If authentik connects through a connection pooler, these values describe the pooler's connection to PostgreSQL, not authentik's connection to the pooler.
 
 ### Connection management
 
@@ -331,6 +341,26 @@ Timeout for cached policies until they expire in seconds.
 
 Defaults to `300`.
 
+##### `AUTHENTIK_CACHE__TIMEOUT_APPLICATION_POLICIES`
+
+Duration during which a user's application list will be cached. When it expires the cache will be
+regenerated, filtered according to [policy-driven
+authorization](../../add-secure-apps/applications/manage_apps.mdx#policy-driven-authorization).
+
+Defaults to `86400` (one day).
+
+##### `AUTHENTIK_CACHE__TIMEOUT_BRANDS`:ak-version[2026.11]
+
+Duration in seconds for which each authentik process keeps brands in memory. The process that saves a change to a brand, or to a flow or application that a brand uses, applies it immediately. Other processes keep using the cached brand until this timeout has passed, and then reload it in the background.
+
+Defaults to `15`.
+
+##### `AUTHENTIK_CACHE__TIMEOUT_SYSTEM_SETTINGS`:ak-version[2026.11]
+
+Duration in seconds for which each authentik process keeps the [system settings](../../sys-mgmt/settings.mdx) in memory. The process that saves a change applies it immediately. Other processes keep using the cached settings until this timeout has passed, and then reload them in the background.
+
+Defaults to `15`.
+
 ## Worker settings
 
 ##### `AUTHENTIK_WORKER__PROCESSES`
@@ -389,6 +419,8 @@ List of comma-separated `address:port` values for HTTP.
 
 Applies to the Server, the Worker, and Proxy outposts.
 
+Set to an empty value to disable the HTTP listener.
+
 Defaults to `[::]:9000`.
 
 ##### `AUTHENTIK_LISTEN__HTTPS`
@@ -396,6 +428,8 @@ Defaults to `[::]:9000`.
 List of comma-separated `address:port` values for HTTPS.
 
 Applies to the Server and Proxy outposts.
+
+Set to an empty value to disable the HTTPS listener.
 
 Defaults to `[::]:9443`.
 
@@ -429,6 +463,8 @@ List of comma-separated `address:port` values for Prometheus metrics.
 
 Applies to all.
 
+Set to an empty value to disable the metrics listener.
+
 Defaults to `[::]:9300`.
 
 ##### `AUTHENTIK_LISTEN__DEBUG`
@@ -441,7 +477,7 @@ Defaults to `0.0.0.0:9900`.
 
 ##### `AUTHENTIK_LISTEN__DEBUG_PY`
 
-Base listening address:port for the Python debugging server, see [Debugging](../../developer-docs/setup/debugging.md).
+Base listening address:port for the Python debugging server, see [Debugging](../../developer-docs/setup/debugging.mdx).
 
 Applies to the Server and the Worker. The Server listens on this exact port; each Worker process listens on a successive port (`9902`, `9903`, …).
 
@@ -469,6 +505,8 @@ Defaults to `file`.
 
 ### File storage backend settings
 
+See [File storage requirements](../../customize/files.mdx#storage-requirements) before enabling local uploads.
+
 #### `AUTHENTIK_STORAGE__FILE__PATH`
 
 Where to store files on disk.
@@ -483,7 +521,7 @@ Defaults to `minutes=15`.
 
 ### S3 storage backend settings
 
-For more information on S3 storage, see [S3-compatible storage](../../sys-mgmt/ops/storage-s3/index.md).
+For more information on S3 storage, see [S3-compatible storage](../../sys-mgmt/ops/storage-s3/index.mdx).
 
 #### `AUTHENTIK_STORAGE__S3__REGION`
 
@@ -687,7 +725,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
 The `AUTHENTIK_EMAIL` settings are used to configure SMTP email delivery from authentik.
 
-These global email settings are used for administrator notifications, release and configuration alerts, [notification rules](../../sys-mgmt/events/notifications.md), and any [Email stage](../../add-secure-apps/flows-stages/stages/email/) configured to use global settings.
+These global email settings are used for administrator notifications, release and configuration alerts, [notification rules](../../sys-mgmt/events/notifications.mdx), and any [Email stage](../../add-secure-apps/flows-stages/stages/email/) configured to use global settings.
 
 For complete setup examples, testing instructions, and TLS guidance, see the [Email configuration guide](../email.mdx).
 
@@ -799,13 +837,13 @@ If you are running a version earlier than 2025.4, you can configure if the sessi
 
 ### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
 
-Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See the [user login stage](../../add-secure-apps/flows-stages/stages/user_login/index.md) for session validity.
+Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See the [user login stage](../../add-secure-apps/flows-stages/stages/user_login/index.mdx) for session validity.
 
 Defaults to `days=1`.
 
 ### `AUTHENTIK_SESSIONS__USER_SWITCHING_AGE`:ak-version[2026.8]
 
-Configure how long the browser cookie that groups sessions for [user account switching](../../users-sources/user/user-switching.md) lasts. This setting does not change the validity of the grouped sessions.
+Configure how long the browser cookie that groups sessions for [user account switching](../../users-sources/user/user-switching.mdx) lasts. This setting does not change the validity of the grouped sessions.
 
 Defaults to `days=365`.
 
@@ -843,7 +881,9 @@ Defaults to `/`.
 
 The base URL under which this authentik instance is reachable, for example `https://authentik.company`.
 
-This option is a bootstrap value. On first start, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.md) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
+This option is a bootstrap value. On startup, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.mdx) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
+
+The Base URL system setting is required. Set this option for an [automated install](../automated-install.mdx), or when an existing instance has no Base URL configured. After the initial setup, authentik does not start until a base URL is configured.
 
 Any trailing slash is removed, so `https://authentik.company` and `https://authentik.company/` are equivalent.
 
@@ -852,8 +892,6 @@ Set this to the scheme and host only, without a path. All of authentik is served
 :::
 
 Defaults to an empty string.
-
-This setting is currently unused until it can be marked as required, starting from authentik version 2026.11.
 
 ### `AUTHENTIK_WEB__TIMEOUT_HTTP`
 
@@ -885,7 +923,7 @@ Defaults to `false`.
 
 ## System settings
 
-Additional [system settings](../../sys-mgmt/settings.md) are configurable using the Admin interface, under **System** > **Settings** or using the API.
+Additional [system settings](../../sys-mgmt/settings.mdx) are configurable using the Admin interface, under **System** > **Settings** or using the API.
 
 ## Custom python settings
 

@@ -20,16 +20,19 @@ OLD_GAUGE_WORKERS = Gauge(
     "authentik_admin_workers",
     "Currently connected workers, their versions and if they are the same version as authentik",
     ["version", "version_matched"],
+    multiprocess_mode="livemostrecent",
 )
 GAUGE_WORKERS = Gauge(
     "authentik_tasks_workers",
     "Currently connected workers, their versions and if they are the same version as authentik",
     ["version", "version_matched"],
+    multiprocess_mode="livemostrecent",
 )
 GAUGE_TASKS_QUEUED = Gauge(
     "authentik_tasks_queued",
     "The number of tasks in queue.",
     ["queue_name", "actor_name"],
+    multiprocess_mode="livemostrecent",
 )
 
 
@@ -42,9 +45,16 @@ def monitoring_set_workers(sender, **kwargs):
         version_matching = parse(status.version) == our_version
         worker_version_count.setdefault(status.version, {"count": 0, "matching": version_matching})
         worker_version_count[status.version]["count"] += 1
-    for version, stats in worker_version_count.items():
-        OLD_GAUGE_WORKERS.labels(version, stats["matching"]).set(stats["count"])
-        GAUGE_WORKERS.labels(version, stats["matching"]).set(stats["count"])
+    for gauge in (OLD_GAUGE_WORKERS, GAUGE_WORKERS):
+        # Zero every labelset this process has exported before, rather than the versions
+        # currently in the database: under multiprocess collection a labelset stays in this
+        # process' mmap file until it is overwritten, so a version whose WorkerStatus rows
+        # are already gone would otherwise be reported as connected forever.
+        for metric in gauge.collect():
+            for sample in metric.samples:
+                gauge.labels(**sample.labels).set(0)
+        for version, stats in worker_version_count.items():
+            gauge.labels(version, stats["matching"]).set(stats["count"])
 
 
 @receiver(monitoring_set)

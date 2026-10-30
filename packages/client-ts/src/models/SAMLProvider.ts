@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,300 +10,207 @@
  * Do not edit the class manually.
  */
 
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
-import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
-import type { SAMLLogoutMethods } from "./SAMLLogoutMethods";
-import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum.js";
+import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum.js";
+import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum.js";
+import {
+    EncryptionAlgorithmEnumFromJSON,
+    EncryptionAlgorithmEnumToJSON,
+} from "./EncryptionAlgorithmEnum.js";
+import type { SAMLBindingsEnum } from "./SAMLBindingsEnum.js";
+import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum.js";
+import type { SAMLLogoutMethods } from "./SAMLLogoutMethods.js";
+import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods.js";
+import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum.js";
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from "./SAMLNameIDPolicyEnum.js";
+import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum.js";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
+} from "./SignatureAlgorithmEnum.js";
 
 /**
  * SAMLProvider Serializer
+ *
  * @export
  * @interface SAMLProvider
  */
 export interface SAMLProvider {
-    /**
-     *
-     * @type {number}
-     * @memberof SAMLProvider
-     */
     readonly pk: number;
-    /**
-     *
-     * @type {string}
-     * @memberof SAMLProvider
-     */
     name: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof SAMLProvider
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof SAMLProvider
      */
     authorizationFlow: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof SAMLProvider
      */
     invalidationFlow: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof SAMLProvider
-     */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly assignedApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly assignedApplicationName: string | null;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {string}
-     * @memberof SAMLProvider
-     */
     acsUrl: string;
     /**
      * Single Logout Service URL where the logout response should be sent.
-     * @type {string}
-     * @memberof SAMLProvider
      */
     slsUrl?: string;
     /**
-     * Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added.
-     * @type {string}
-     * @memberof SAMLProvider
+     * Value of the audience restriction field of the assertion. When left empty, no audience
+     * restriction will be added.
      */
     audience?: string;
     /**
-     * Also known as EntityID. Providing a value overrides the default issuer generated by authentik.
-     * @type {string}
-     * @memberof SAMLProvider
+     * Also known as EntityID. Providing a value overrides the default issuer generated by
+     * authentik.
      */
     issuerOverride?: string;
     /**
-     * Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).
-     * @type {string}
-     * @memberof SAMLProvider
+     * Assertion valid not before current time + this value (Format:
+     * hours=-1;minutes=-2;seconds=-3).
      */
     assertionValidNotBefore?: string;
     /**
-     * Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof SAMLProvider
+     * Assertion not valid on or after current time + this value (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     assertionValidNotOnOrAfter?: string;
     /**
-     * Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof SAMLProvider
+     * Session not valid on or after current time + this value (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     sessionValidNotOnOrAfter?: string;
     /**
-     * Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
-     * @type {string}
-     * @memberof SAMLProvider
+     * Configure how the NameID value will be created. When left empty, the NameIDPolicy of the
+     * incoming request will be considered
      */
     nameIdMapping?: string | null;
     /**
-     * Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-     * @type {string}
-     * @memberof SAMLProvider
+     * Configure how the AuthnContextClassRef value will be created. When left empty, the
+     * AuthnContextClassRef will be set based on which authentication methods the user used to
+     * authenticate.
      */
     authnContextClassRefMapping?: string | null;
-    /**
-     *
-     * @type {DigestAlgorithmEnum}
-     * @memberof SAMLProvider
-     */
     digestAlgorithm?: DigestAlgorithmEnum;
-    /**
-     *
-     * @type {SignatureAlgorithmEnum}
-     * @memberof SAMLProvider
-     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Keypair used to sign outgoing Responses going to the Service Provider.
-     * @type {string}
-     * @memberof SAMLProvider
      */
     signingKp?: string | null;
     /**
-     * When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
-     * @type {string}
-     * @memberof SAMLProvider
+     * When selected, incoming assertion's Signatures will be validated against this certificate. To
+     * allow unsigned Requests, leave on default.
      */
     verificationKp?: string | null;
     /**
-     * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-     * @type {string}
-     * @memberof SAMLProvider
+     * When selected, incoming assertions are encrypted by the IdP using the public key of the
+     * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
     /**
-     *
-     * @type {boolean}
-     * @memberof SAMLProvider
+     * Block cipher used to encrypt the assertion.
      */
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     signAssertion?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof SAMLProvider
-     */
     signResponse?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof SAMLProvider
-     */
     signLogoutRequest?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof SAMLProvider
-     */
     signLogoutResponse?: boolean;
     /**
      * This determines how authentik sends the response back to the Service Provider.
-     * @type {SAMLBindingsEnum}
-     * @memberof SAMLProvider
      */
     spBinding?: SAMLBindingsEnum;
     /**
      * This determines how authentik sends the logout response back to the Service Provider.
-     * @type {SAMLBindingsEnum}
-     * @memberof SAMLProvider
      */
     slsBinding?: SAMLBindingsEnum;
     /**
-     * Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
-     * @type {SAMLLogoutMethods}
-     * @memberof SAMLProvider
+     * Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden
+     * iframes. Front-channel native uses your active browser tab to send post requests and redirect
+     * to providers. Back-channel sends logout requests directly from the server without user
+     * interaction (requires POST SLS binding).
      */
     logoutMethod?: SAMLLogoutMethods;
     /**
      * Default relay_state value for IDP-initiated logins
-     * @type {string}
-     * @memberof SAMLProvider
      */
     defaultRelayState?: string;
-    /**
-     *
-     * @type {SAMLNameIDPolicyEnum}
-     * @memberof SAMLProvider
-     */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
     /**
+     * OAuth2 providers which can exchange their JWTs for a SAML Response of this provider via token
+     * exchange.
+     */
+    jwtFederationProviders?: Array<number>;
+    /**
      * Get metadata download URL
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly urlDownloadMetadata: string;
     /**
      * Get Issuer/EntityID URL
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly urlIssuer: string;
     /**
      * Get unified SAML endpoint URL (handles SSO and SLO)
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly urlUnified: string;
     /**
      * Get IdP-initiated SAML URL
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly urlUnifiedInit: string;
     /**
      * Get SSO Post URL
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly urlSsoPost: string;
     /**
      * Get SSO Redirect URL
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly urlSsoRedirect: string;
     /**
      * Get SSO IDP-Initiated URL
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly urlSsoInit: string;
     /**
      * Get SLO POST URL
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly urlSloPost: string;
     /**
      * Get SLO redirect URL
-     * @type {string}
-     * @memberof SAMLProvider
      */
     readonly urlSloRedirect: string;
 }
@@ -535,6 +440,10 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["encryption_kp"] === null
                   ? null
                   : json["encryption_kp"],
+        encryptionAlgorithm:
+            json["encryption_algorithm"] == null
+                ? undefined
+                : EncryptionAlgorithmEnumFromJSON(json["encryption_algorithm"]),
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signResponse: json["sign_response"] == null ? undefined : json["sign_response"],
         signLogoutRequest:
@@ -555,6 +464,8 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
             json["default_name_id_policy"] == null
                 ? undefined
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
+        jwtFederationProviders:
+            json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
         urlDownloadMetadata: json["url_download_metadata"],
         urlIssuer: json["url_issuer"],
         urlUnified: json["url_unified"],
@@ -619,6 +530,7 @@ export function SAMLProviderToJSONTyped(
         signing_kp: value["signingKp"],
         verification_kp: value["verificationKp"],
         encryption_kp: value["encryptionKp"],
+        encryption_algorithm: EncryptionAlgorithmEnumToJSON(value["encryptionAlgorithm"]),
         sign_assertion: value["signAssertion"],
         sign_response: value["signResponse"],
         sign_logout_request: value["signLogoutRequest"],
@@ -628,5 +540,6 @@ export function SAMLProviderToJSONTyped(
         logout_method: SAMLLogoutMethodsToJSON(value["logoutMethod"]),
         default_relay_state: value["defaultRelayState"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
+        jwt_federation_providers: value["jwtFederationProviders"],
     };
 }

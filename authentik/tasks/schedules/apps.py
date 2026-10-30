@@ -10,7 +10,7 @@ class AuthentikTasksSchedulesConfig(ManagedAppConfig):
     default = True
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.tasks.schedules.models import ScheduledModel
 
         schedules = []
@@ -39,13 +39,9 @@ class AuthentikTasksSchedulesConfig(ManagedAppConfig):
         for schedule in schedules_to_send:
             schedule.send()
 
-    @ManagedAppConfig.reconcile_tenant
-    def reconcile_tenant_schedules(self):
-        from authentik.tenants.utils import get_current_tenant, get_public_schema_name
-
+    @ManagedAppConfig.reconcile
+    def reconcile_schedules(self):
         schedule_specs = []
         for app in get_apps():
-            schedule_specs.extend(app.tenant_schedule_specs)
-            if get_current_tenant().schema_name == get_public_schema_name():
-                schedule_specs.extend(app.global_schedule_specs)
+            schedule_specs.extend(app.schedule_specs)
         self._reconcile_schedules(schedule_specs)

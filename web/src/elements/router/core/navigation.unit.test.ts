@@ -1,4 +1,9 @@
-import { type AnchorClickContext, decideInterception, type InterceptScope } from "./navigation.js";
+import {
+    type AnchorClickContext,
+    decideInterception,
+    type InterceptScope,
+    resolveNavigationMode,
+} from "./navigation.js";
 
 import { describe, expect, it } from "vitest";
 
@@ -70,6 +75,7 @@ describe("decideInterception", () => {
         expect(
             decideInterception(ctx({ href: "https://id.example.com/if/user/settings" }), scope),
         ).toBeNull();
+
         expect(
             decideInterception(ctx({ href: "https://id.example.com/media/x.png" }), scope),
         ).toBeNull();
@@ -84,10 +90,11 @@ describe("decideInterception", () => {
         ).toBeNull();
     });
 
-    it("lets the browser own a link to the exact current URL", () => {
+    it("claims a link to the exact current URL, so the page does not reload", () => {
         expect(
-            decideInterception(ctx({ href: "https://id.example.com/if/admin/overview" }), scope),
-        ).toBeNull();
+            decideInterception(ctx({ href: "https://id.example.com/if/admin/overview" }), scope)
+                ?.pathname,
+        ).toBe("/if/admin/overview");
     });
 
     it("claims a link to the current pathname with a different search", () => {
@@ -105,9 +112,32 @@ describe("decideInterception", () => {
         expect(
             decideInterception(ctx({ href: "https://id.example.com/if/admin/x" }), authScope),
         ).toBeNull();
+
         expect(
             decideInterception(ctx({ href: "https://id.example.com/auth/if/admin/x" }), authScope)
                 ?.pathname,
         ).toBe("/auth/if/admin/x");
+    });
+});
+
+describe("resolveNavigationMode", () => {
+    const origin = "https://id.example.com";
+
+    it("keeps push for a same-origin destination", () => {
+        expect(resolveNavigationMode("push", origin, origin)).toBe("push");
+    });
+
+    it("keeps replace for a same-origin destination", () => {
+        expect(resolveNavigationMode("replace", origin, origin)).toBe("replace");
+    });
+
+    it("falls back to assign for a cross-origin destination", () => {
+        expect(resolveNavigationMode("push", "https://evil.example.com", origin)).toBe("assign");
+        expect(resolveNavigationMode("replace", "https://evil.example.com", origin)).toBe("assign");
+    });
+
+    it("passes an explicit assign through unchanged", () => {
+        expect(resolveNavigationMode("assign", origin, origin)).toBe("assign");
+        expect(resolveNavigationMode("assign", "https://evil.example.com", origin)).toBe("assign");
     });
 });

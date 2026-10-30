@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { ProxyProvider } from "./ProxyProvider";
-import { ProxyProviderFromJSON, ProxyProviderToJSON } from "./ProxyProvider";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { ProxyProvider } from "./ProxyProvider.js";
+import { ProxyProviderFromJSON, ProxyProviderToJSON } from "./ProxyProvider.js";
 
 /**
- *
  * @export
  * @interface PaginatedProxyProviderList
  */
 export interface PaginatedProxyProviderList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedProxyProviderList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<ProxyProvider>}
-     * @memberof PaginatedProxyProviderList
-     */
     results: Array<ProxyProvider>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedProxyProviderList
-     */
     autocomplete: { [key: string]: any };
 }
 

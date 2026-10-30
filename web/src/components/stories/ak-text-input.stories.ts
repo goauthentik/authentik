@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../ak-text-input.js";
-
 import AkTextInput from "../ak-text-input.js";
 
 import { Meta } from "@storybook/web-components";

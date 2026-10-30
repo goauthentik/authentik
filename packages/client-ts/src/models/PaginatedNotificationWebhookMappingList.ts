@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { NotificationWebhookMapping } from "./NotificationWebhookMapping";
+import type { NotificationWebhookMapping } from "./NotificationWebhookMapping.js";
 import {
     NotificationWebhookMappingFromJSON,
     NotificationWebhookMappingToJSON,
-} from "./NotificationWebhookMapping";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./NotificationWebhookMapping.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedNotificationWebhookMappingList
  */
 export interface PaginatedNotificationWebhookMappingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedNotificationWebhookMappingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<NotificationWebhookMapping>}
-     * @memberof PaginatedNotificationWebhookMappingList
-     */
     results: Array<NotificationWebhookMapping>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedNotificationWebhookMappingList
-     */
     autocomplete: { [key: string]: any };
 }
 

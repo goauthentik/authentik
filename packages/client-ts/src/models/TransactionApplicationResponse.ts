@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Transactional creation response
+ *
  * @export
  * @interface TransactionApplicationResponse
  */
 export interface TransactionApplicationResponse {
-    /**
-     *
-     * @type {boolean}
-     * @memberof TransactionApplicationResponse
-     */
     applied: boolean;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof TransactionApplicationResponse
-     */
     logs: Array<string>;
 }
 

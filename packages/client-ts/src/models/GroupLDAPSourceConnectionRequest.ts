@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Group Source Connection
+ *
  * @export
  * @interface GroupLDAPSourceConnectionRequest
  */
 export interface GroupLDAPSourceConnectionRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof GroupLDAPSourceConnectionRequest
-     */
     source: string;
-    /**
-     *
-     * @type {string}
-     * @memberof GroupLDAPSourceConnectionRequest
-     */
     identifier: string;
 }
 

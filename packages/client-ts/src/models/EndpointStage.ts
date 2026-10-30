@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,78 +10,41 @@
  * Do not edit the class manually.
  */
 
-import type { Connector } from "./Connector";
-import { ConnectorFromJSON } from "./Connector";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { StageModeEnum } from "./StageModeEnum";
-import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
+import type { Connector } from "./Connector.js";
+import { ConnectorFromJSON } from "./Connector.js";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { StageModeEnum } from "./StageModeEnum.js";
+import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum.js";
 
 /**
  * EndpointStage Serializer
+ *
  * @export
  * @interface EndpointStage
  */
 export interface EndpointStage {
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointStage
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointStage
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof EndpointStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof EndpointStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof EndpointStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof EndpointStage
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {Array<FlowSet>}
-     * @memberof EndpointStage
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointStage
-     */
     connector: string;
-    /**
-     *
-     * @type {Connector}
-     * @memberof EndpointStage
-     */
     readonly connectorObj: Connector;
-    /**
-     *
-     * @type {StageModeEnum}
-     * @memberof EndpointStage
-     */
     mode?: StageModeEnum;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Event } from "./Event";
-import { EventFromJSON, EventToJSON } from "./Event";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Event } from "./Event.js";
+import { EventFromJSON, EventToJSON } from "./Event.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedEventList
  */
 export interface PaginatedEventList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedEventList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<Event>}
-     * @memberof PaginatedEventList
-     */
     results: Array<Event>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedEventList
-     */
     autocomplete: { [key: string]: any };
 }
 

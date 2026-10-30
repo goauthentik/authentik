@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Consent challenge response, any valid response request is valid
+ *
  * @export
  * @interface ConsentChallengeResponseRequest
  */
 export interface ConsentChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallengeResponseRequest
-     */
     component?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallengeResponseRequest
-     */
     token: string;
 }
 

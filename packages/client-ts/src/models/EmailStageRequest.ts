@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,104 +12,40 @@
 
 /**
  * EmailStage Serializer
+ *
  * @export
  * @interface EmailStageRequest
  */
 export interface EmailStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStageRequest
-     */
     name: string;
     /**
-     * When enabled, global Email connection settings will be used and connection settings below will be ignored.
-     * @type {boolean}
-     * @memberof EmailStageRequest
+     * When enabled, global Email connection settings will be used and connection settings below
+     * will be ignored.
      */
     useGlobalSettings?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStageRequest
-     */
     host?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof EmailStageRequest
-     */
     port?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStageRequest
-     */
     username?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStageRequest
-     */
     password?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof EmailStageRequest
-     */
     useTls?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof EmailStageRequest
-     */
     useSsl?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof EmailStageRequest
-     */
     timeout?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStageRequest
-     */
     fromAddress?: string;
     /**
      * Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
-     * @type {string}
-     * @memberof EmailStageRequest
      */
     tokenExpiry?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStageRequest
-     */
     subject?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailStageRequest
-     */
     template?: string;
     /**
      * Activate users upon completion of stage.
-     * @type {boolean}
-     * @memberof EmailStageRequest
      */
     activateUserOnSuccess?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof EmailStageRequest
-     */
     recoveryMaxAttempts?: number;
     /**
-     * The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof EmailStageRequest
+     * The time window used to count recent account recovery attempts. If the number of attempts
+     * exceed recovery_max_attempts within this period, further attempts will be rate-limited.
+     * (Format: hours=1;minutes=2;seconds=3).
      */
     recoveryCacheTimeout?: string;
 }

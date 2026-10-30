@@ -207,9 +207,9 @@ However, you can obtain more detailed error information from the [authentik serv
 
 ### OAuth introspection and revocation endpoints
 
-To use the OAuth introspection endpoint to obtain more information on a token, you must first authenticate to it. By default, a provider can introspect or revoke tokens that were issued by that same provider.
+To use the OAuth introspection endpoint to obtain more information on a token, authenticate with a confidential provider. By default, a confidential provider can introspect tokens that it issued. Both public and confidential providers can revoke their own tokens.
 
-To let a confidential provider introspect or revoke tokens from another OAuth2 provider, open the provider that issues the token and add the calling provider under **Federated OAuth2/OpenID Providers**. This applies to both `/application/o/introspect/` and `/application/o/revoke/`.
+For cross-provider introspection and revocation configuration, refer to [Cross-provider token introspection and revocation](./index.mdx#cross-provider-token-introspection-and-revocation).
 
 ### Event logging
 

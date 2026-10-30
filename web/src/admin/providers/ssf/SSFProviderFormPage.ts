@@ -1,4 +1,3 @@
-import "#admin/common/ak-crypto-certificate-search";
 import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
@@ -7,11 +6,10 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
-import { ifPresent } from "#elements/utils/attributes";
-
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { JWTSigningKeyTypes } from "#admin/common/certificate-key-types";
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     oauth2ProvidersProvider,
@@ -29,7 +27,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
  * Form page for SSF Authentication Method
  *
  * @element ak-provider-ssf-form
- *
  */
 
 @customElement("ak-provider-ssf-form")
@@ -60,10 +57,7 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                         name="signingKey"
                         required
                     >
-                        <ak-crypto-certificate-search
-                            certificate=${ifPresent(provider?.signingKey)}
-                            singleton
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "signingKey", value: provider?.signingKey, singleton: true, allowedKeyTypes: JWTSigningKeyTypes })}
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the events.")}</p>
                     </ak-form-element-horizontal>
                     <ak-switch-input

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,90 +10,39 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
-import type { DeviceConnection } from "./DeviceConnection";
-import { DeviceConnectionFromJSON, DeviceConnectionToJSON } from "./DeviceConnection";
-import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
-import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceAccessGroup } from "./DeviceAccessGroup.js";
+import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup.js";
+import type { DeviceConnection } from "./DeviceConnection.js";
+import { DeviceConnectionFromJSON, DeviceConnectionToJSON } from "./DeviceConnection.js";
+import type { DeviceFactSnapshot } from "./DeviceFactSnapshot.js";
+import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot.js";
+import type { DeviceUserBinding } from "./DeviceUserBinding.js";
+import { DeviceUserBindingFromJSON } from "./DeviceUserBinding.js";
+import type { RACConnectionOverride } from "./RACConnectionOverride.js";
+import {
+    RACConnectionOverrideFromJSON,
+    RACConnectionOverrideToJSON,
+} from "./RACConnectionOverride.js";
 
 /**
- *
  * @export
  * @interface EndpointDeviceDetails
  */
 export interface EndpointDeviceDetails {
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointDeviceDetails
-     */
     deviceUuid?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointDeviceDetails
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointDeviceDetails
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof EndpointDeviceDetails
-     */
     accessGroup?: string | null;
-    /**
-     *
-     * @type {DeviceAccessGroup}
-     * @memberof EndpointDeviceDetails
-     */
     accessGroupObj?: DeviceAccessGroup;
-    /**
-     *
-     * @type {boolean}
-     * @memberof EndpointDeviceDetails
-     */
     expiring?: boolean;
-    /**
-     *
-     * @type {Date}
-     * @memberof EndpointDeviceDetails
-     */
     expires?: Date | null;
-    /**
-     *
-     * @type {DeviceFactSnapshot}
-     * @memberof EndpointDeviceDetails
-     */
     readonly facts: DeviceFactSnapshot | null;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof EndpointDeviceDetails
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     * @type {Array<DeviceConnection>}
-     * @memberof EndpointDeviceDetails
-     */
+    readonly primaryBindingObj: DeviceUserBinding | null;
+    rac: RACConnectionOverride | null;
     connectionsObj: Array<DeviceConnection>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof EndpointDeviceDetails
-     */
     readonly policies: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof EndpointDeviceDetails
-     */
     readonly connections: Array<string>;
 }
 
@@ -112,6 +59,14 @@ export function instanceOfEndpointDeviceDetails(value: object): value is Endpoin
         return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("facts" in value) || value["facts"] === undefined) return false;
+    if (
+        (!("primaryBindingObj" in (value as Record<string, any>)) &&
+            !("primary_binding_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["primaryBindingObj"] === undefined &&
+            (value as Record<string, any>)["primary_binding_obj"] === undefined)
+    )
+        return false;
+    if (!("rac" in value) || value["rac"] === undefined) return false;
     if (
         (!("connectionsObj" in (value as Record<string, any>)) &&
             !("connections_obj" in (value as Record<string, any>))) ||
@@ -155,9 +110,11 @@ export function EndpointDeviceDetailsFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         facts: DeviceFactSnapshotFromJSON(json["facts"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
+        primaryBindingObj: DeviceUserBindingFromJSON(json["primary_binding_obj"]),
+        rac: RACConnectionOverrideFromJSON(json["rac"]),
         connectionsObj: (json["connections_obj"] as Array<any>).map(DeviceConnectionFromJSON),
         policies: json["policies"],
         connections: json["connections"],
@@ -169,7 +126,10 @@ export function EndpointDeviceDetailsToJSON(json: any): EndpointDeviceDetails {
 }
 
 export function EndpointDeviceDetailsToJSONTyped(
-    value?: Omit<EndpointDeviceDetails, "pbmUuid" | "facts" | "policies" | "connections"> | null,
+    value?: Omit<
+        EndpointDeviceDetails,
+        "pbmUuid" | "facts" | "primaryBindingObj" | "policies" | "connections"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -182,8 +142,9 @@ export function EndpointDeviceDetailsToJSONTyped(
         access_group: value["accessGroup"],
         access_group_obj: DeviceAccessGroupToJSON(value["accessGroupObj"]),
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
+        rac: RACConnectionOverrideToJSON(value["rac"]),
         connections_obj: (value["connectionsObj"] as Array<any>).map(DeviceConnectionToJSON),
     };
 }

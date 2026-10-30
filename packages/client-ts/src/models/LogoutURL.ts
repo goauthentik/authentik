@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,45 +12,16 @@
 
 /**
  * Data for a single logout URL
+ *
  * @export
  * @interface LogoutURL
  */
 export interface LogoutURL {
-    /**
-     *
-     * @type {string}
-     * @memberof LogoutURL
-     */
     url: string;
-    /**
-     *
-     * @type {string}
-     * @memberof LogoutURL
-     */
     providerName?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof LogoutURL
-     */
     binding?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof LogoutURL
-     */
     samlRequest?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof LogoutURL
-     */
     samlResponse?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof LogoutURL
-     */
     samlRelayState?: string | null;
 }
 

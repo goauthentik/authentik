@@ -52,6 +52,10 @@ ak-tabs::part(row) {
     --pf-global--BackgroundColor--100: transparent;
 }
 
+.pf-c-button:has(.pf-c-notification-badge) {
+    line-height: var(--pf-global--LineHeight--sm);
+}
+
 /* #region Dark Theme */
 
 [data-theme="dark"] .pf-c-page,

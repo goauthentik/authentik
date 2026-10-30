@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,32 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { SyncObjectModelEnum } from "./SyncObjectModelEnum";
-import { SyncObjectModelEnumFromJSON, SyncObjectModelEnumToJSON } from "./SyncObjectModelEnum";
+import type { SyncObjectModelEnum } from "./SyncObjectModelEnum.js";
+import { SyncObjectModelEnumFromJSON, SyncObjectModelEnumToJSON } from "./SyncObjectModelEnum.js";
 
 /**
  * Sync object serializer
+ *
  * @export
  * @interface SyncObjectRequest
  */
 export interface SyncObjectRequest {
-    /**
-     *
-     * @type {SyncObjectModelEnum}
-     * @memberof SyncObjectRequest
-     */
     syncObjectModel: SyncObjectModelEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof SyncObjectRequest
-     */
     syncObjectId: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof SyncObjectRequest
-     */
     overrideDryRun?: boolean;
 }
 

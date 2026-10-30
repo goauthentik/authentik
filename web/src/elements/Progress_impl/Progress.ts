@@ -10,15 +10,23 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 export const progressVariants = ["none", "top", "inside", "outside", "indeterminate"] as const;
+
 export type ProgressVariant = (typeof progressVariants)[number];
 
 export const progressSize = ["xs", "sm", "md", "lg"] as const;
+
 export type ProgressSize = (typeof progressSize)[number];
 
 export const progressSeverity = ["success", "danger", "warning"] as const;
+
 export type ProgressSeverity = (typeof progressSeverity)[number];
 
 /**
+ * @remarks
+ *   The component uses CSS Grid with specific positioning. Do not override override grid-column or
+ *   grid-row properties in your slotted content as this will break the layout contract defined by
+ *   PatternFly 5.
+ * @property {function} displayValue - Alternative status renderer
  * @element ak-progress
  *
  * @summary A progress bar component that displays the completion progress of a task with
@@ -31,15 +39,8 @@ export type ProgressSeverity = (typeof progressSeverity)[number];
  * @attr {number} max - Maximum value for progress range
  * @attr {number} value - Current progress value
  * @attr {boolean} one-way - Prevents progress value from decreasing
- * @prop {function} displayValue - alternative status renderer
- *
  * @slot label - Label text (renders in grid row 1, spans columns 1-2 for outside variant)
  * @slot status - Status text
- *
- * @remarks
- * The component uses CSS Grid with specific positioning. Do not override override grid-column or
- * grid-row properties in your slotted content as this will break the layout contract defined by
- * PatternFly 5.
  *
  * @csspart main - The main container element
  * @csspart status - Container for progress value
@@ -47,7 +48,6 @@ export type ProgressSeverity = (typeof progressSeverity)[number];
  * @csspart indicator - The filled portion of the progress bar
  * @csspart measure - Text display of the current progress value
  * @csspart label - Container for the label text
- *
  */
 export class Progress extends LitElement {
     static readonly styles = [styles];
@@ -71,6 +71,7 @@ export class Progress extends LitElement {
         if (this.oneWay && value < this._value) {
             return;
         }
+
         this._value = value;
     }
 
@@ -91,6 +92,7 @@ export class Progress extends LitElement {
 
     protected getSlotted(name: string) {
         const selector = `[slot="${name}"]`;
+
         return Array.from(this.children).find((e) => e.matches(selector));
     }
 
@@ -107,6 +109,7 @@ export class Progress extends LitElement {
 
         const range = this.max - this.min;
         const normalized = Math.min(Math.max(this.value, this.min), this.max);
+
         return ((normalized - this.min) / range) * 100;
     }
 
@@ -134,9 +137,11 @@ export class Progress extends LitElement {
             ${status}
             <div part="bar">
                 <div part="indicator" style=${styleMap(width)}>
-                    ${this.variant === "inside"
-                        ? html`<span part="measure">${this.renderedValue}</span>`
-                        : nothing}
+                    ${
+                        this.variant === "inside"
+                            ? html`<span part="measure">${this.renderedValue}</span>`
+                            : nothing
+                    }
                 </div>
             </div>
         </div>`;
@@ -152,9 +157,8 @@ export type ProgressProps = ElementRest &
     };
 
 /**
- * @summary Helper function to create a Progress component programmatically
- *
  * @returns {TemplateResult} A Lit template result containing the configured ak-progress element
+ * @summary Helper function to create a Progress component programmatically
  *
  * @see {@link Progress} - The underlying web component
  */

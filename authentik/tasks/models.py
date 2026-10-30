@@ -16,7 +16,6 @@ from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.errors import exception_to_dict
-from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
@@ -45,12 +44,6 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
         symmetrical=False,
         through="TaskDependency",
         through_fields=("task", "dependency"),
-    )
-
-    tenant = models.ForeignKey(
-        Tenant,
-        on_delete=models.CASCADE,
-        help_text=_("Tenant this task belongs to"),
     )
 
     rel_obj_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
@@ -124,9 +117,12 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
                 "exception": exception_to_dict(exc),
                 **attributes,
             }
-            message = str(message)
-            if not message and isinstance(exc, Retry):
-                message = "Task has encountered an error and will be retried"
+            message_prefix = (
+                "Task has encountered an error and will be retried"
+                if isinstance(exc, Retry)
+                else "Task has encountered an error"
+            )
+            message = f"{message_prefix}: {str(exc)}"
         return LogEvent(
             message,
             logger=logger,

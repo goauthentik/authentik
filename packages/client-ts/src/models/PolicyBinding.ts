@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,108 +10,48 @@
  * Do not edit the class manually.
  */
 
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { Policy } from "./Policy";
-import { PolicyFromJSON } from "./Policy";
+import { parseDateTime } from "../runtime.js";
+import type { PartialGroup } from "./PartialGroup.js";
+import { PartialGroupFromJSON } from "./PartialGroup.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { Policy } from "./Policy.js";
+import { PolicyFromJSON } from "./Policy.js";
 
 /**
  * PolicyBinding Serializer
+ *
  * @export
  * @interface PolicyBinding
  */
 export interface PolicyBinding {
-    /**
-     *
-     * @type {string}
-     * @memberof PolicyBinding
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PolicyBinding
-     */
     policy?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PolicyBinding
-     */
     group?: string | null;
-    /**
-     *
-     * @type {number}
-     * @memberof PolicyBinding
-     */
     user?: number | null;
-    /**
-     *
-     * @type {Policy}
-     * @memberof PolicyBinding
-     */
     readonly policyObj: Policy | null;
-    /**
-     *
-     * @type {PartialGroup}
-     * @memberof PolicyBinding
-     */
     readonly groupObj: PartialGroup | null;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof PolicyBinding
-     */
     readonly userObj: PartialUser | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PolicyBinding
-     */
     target: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof PolicyBinding
      */
     negate?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PolicyBinding
-     */
     enabled?: boolean;
     /**
-     *
-     * @type {number}
-     * @memberof PolicyBinding
+     * Execute the policy but ignore its result.
      */
+    dryRun?: boolean;
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof PolicyBinding
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof PolicyBinding
      */
     failureResult?: boolean;
-    /**
-     *
-     * @type {Date}
-     * @memberof PolicyBinding
-     */
     readonly expires: Date | null;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PolicyBinding
-     */
     readonly expiring: boolean;
 }
 
@@ -175,10 +113,11 @@ export function PolicyBindingFromJSONTyped(json: any, ignoreDiscriminator: boole
         target: json["target"],
         negate: json["negate"] == null ? undefined : json["negate"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
-        expires: json["expires"] == null ? null : new Date(json["expires"]),
+        expires: json["expires"] == null ? null : parseDateTime(json["expires"]),
         expiring: json["expiring"],
     };
 }
@@ -205,6 +144,7 @@ export function PolicyBindingToJSONTyped(
         target: value["target"],
         negate: value["negate"],
         enabled: value["enabled"],
+        dry_run: value["dryRun"],
         order: value["order"],
         timeout: value["timeout"],
         failure_result: value["failureResult"],

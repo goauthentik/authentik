@@ -7,7 +7,6 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
@@ -24,6 +23,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export function coreGroupPair(item: Group | RelatedGroup): DualSelectPair {
     return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
 }
+
 export function rbacRolePair(item: Role): DualSelectPair {
     return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
 }
@@ -49,8 +49,8 @@ export class GroupForm extends ObjectAttributeModelForm<Group, string> {
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
         return aki(CoreApi)
             .coreGroupsList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {
@@ -62,8 +62,8 @@ export class GroupForm extends ObjectAttributeModelForm<Group, string> {
     #fetchRoles = (page: number, search?: string): Promise<DataProvision> => {
         return aki(RbacApi)
             .rbacRolesList({
-                page: page,
-                search: search,
+                page,
+                search,
             })
             .then((results) => {
                 return {
@@ -89,13 +89,16 @@ export class GroupForm extends ObjectAttributeModelForm<Group, string> {
 
     async send(data: Group): Promise<Group> {
         data.attributes ??= {};
+
         if (this.instance?.pk) {
             return aki(CoreApi).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,
                 patchedGroupRequest: data,
             });
         }
+
         data.users = [];
+
         return aki(CoreApi).coreGroupsCreate({
             groupRequest: data,
         });

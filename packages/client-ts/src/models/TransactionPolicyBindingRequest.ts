@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,56 +12,30 @@
 
 /**
  * PolicyBindingSerializer which does not require target as target is set implicitly
+ *
  * @export
  * @interface TransactionPolicyBindingRequest
  */
 export interface TransactionPolicyBindingRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof TransactionPolicyBindingRequest
-     */
     policy?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof TransactionPolicyBindingRequest
-     */
     group?: string | null;
-    /**
-     *
-     * @type {number}
-     * @memberof TransactionPolicyBindingRequest
-     */
     user?: number | null;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof TransactionPolicyBindingRequest
      */
     negate?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof TransactionPolicyBindingRequest
-     */
     enabled?: boolean;
     /**
-     *
-     * @type {number}
-     * @memberof TransactionPolicyBindingRequest
+     * Execute the policy but ignore its result.
      */
+    dryRun?: boolean;
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof TransactionPolicyBindingRequest
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof TransactionPolicyBindingRequest
      */
     failureResult?: boolean;
 }
@@ -103,6 +75,7 @@ export function TransactionPolicyBindingRequestFromJSONTyped(
         user: json["user"] === undefined ? undefined : json["user"] === null ? null : json["user"],
         negate: json["negate"] == null ? undefined : json["negate"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
@@ -127,6 +100,7 @@ export function TransactionPolicyBindingRequestToJSONTyped(
         user: value["user"],
         negate: value["negate"],
         enabled: value["enabled"],
+        dry_run: value["dryRun"],
         order: value["order"],
         timeout: value["timeout"],
         failure_result: value["failureResult"],

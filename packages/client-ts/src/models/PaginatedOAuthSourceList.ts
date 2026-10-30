@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { OAuthSource } from "./OAuthSource";
-import { OAuthSourceFromJSON, OAuthSourceToJSON } from "./OAuthSource";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { OAuthSource } from "./OAuthSource.js";
+import { OAuthSourceFromJSON, OAuthSourceToJSON } from "./OAuthSource.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedOAuthSourceList
  */
 export interface PaginatedOAuthSourceList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedOAuthSourceList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<OAuthSource>}
-     * @memberof PaginatedOAuthSourceList
-     */
     results: Array<OAuthSource>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedOAuthSourceList
-     */
     autocomplete: { [key: string]: any };
 }
 

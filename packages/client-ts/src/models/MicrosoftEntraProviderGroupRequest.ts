@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * MicrosoftEntraProviderGroup Serializer
+ *
  * @export
  * @interface MicrosoftEntraProviderGroupRequest
  */
 export interface MicrosoftEntraProviderGroupRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderGroupRequest
-     */
     microsoftId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderGroupRequest
-     */
     group: string;
-    /**
-     *
-     * @type {number}
-     * @memberof MicrosoftEntraProviderGroupRequest
-     */
     provider: number;
 }
 

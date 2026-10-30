@@ -11,10 +11,7 @@ use axum::{
 };
 use tracing::{Span, instrument};
 
-use crate::{
-    accept::proxy_protocol::ProxyProtocolState,
-    extract::trusted_proxy::{TrustedProxy, ip_addr_trusted},
-};
+use crate::{accept::proxy_protocol::ProxyProtocolState, extract::trusted_proxy::TrustedProxy};
 
 /// Client IP.
 ///
@@ -36,28 +33,23 @@ where
     }
 }
 
-/// Get the rightmost IP from the `X-Forwarded-For` chain that is not itself a
-/// trusted proxy.
-fn rightmost_untrusted_x_forwarded_for(headers: &HeaderMap) -> Option<IpAddr> {
-    let mut forwarded_ips = Vec::new();
+/// Get the leftmost IP from the `X-Forwarded-For` chain.
+fn extract_from_x_forwarded_for(headers: &HeaderMap) -> Option<IpAddr> {
     for value in headers.get_all("x-forwarded-for") {
         let Ok(value) = value.to_str() else {
             continue;
         };
         for part in value.split(',') {
-            let Ok(ip) = part.trim().parse() else {
-                continue;
-            };
-            forwarded_ips.push(ip);
+            let part = part.trim();
+            if let Ok(ip) = part.parse::<IpAddr>() {
+                return Some(ip);
+            } else if let Ok(socket_addr) = part.parse::<SocketAddr>() {
+                return Some(socket_addr.ip());
+            }
         }
     }
 
-    forwarded_ips
-        .iter()
-        .rev()
-        .find(|ip| ip_addr_trusted(ip).is_none())
-        .or_else(|| forwarded_ips.first())
-        .copied()
+    None
 }
 
 /// Get the client IP from the request.
@@ -70,7 +62,7 @@ async fn extract_client_ip(parts: &mut Parts) -> IpAddr {
         .0;
 
     if is_trusted {
-        if let Some(ip) = rightmost_untrusted_x_forwarded_for(&parts.headers) {
+        if let Some(ip) = extract_from_x_forwarded_for(&parts.headers) {
             return ip;
         }
 
@@ -135,7 +127,7 @@ mod tests {
 
         let client_ip = extract_client_ip(&mut parts).await;
 
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 42),);
+        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 51),);
     }
 
     #[tokio::test]
@@ -247,6 +239,38 @@ mod tests {
 
         let client_ip = extract_client_ip(&mut parts).await;
 
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 3),);
+        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 1));
+    }
+
+    #[tokio::test]
+    async fn with_ports() {
+        config::init().expect("config");
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-for", "10.0.0.1:9000")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let client_ip = extract_client_ip(&mut parts).await;
+
+        assert_eq!(client_ip, Ipv4Addr::new(10, 0, 0, 1));
+    }
+
+    #[tokio::test]
+    async fn ipv6_with_ports() {
+        config::init().expect("config");
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-for", "[2001:db8::42]:9000")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let client_ip = extract_client_ip(&mut parts).await;
+
+        assert_eq!(client_ip, Ipv6Addr::new(0x2001, 0xdb8, 0, 0, 0, 0, 0, 0x42));
     }
 }

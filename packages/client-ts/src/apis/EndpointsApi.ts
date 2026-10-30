@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -15,150 +13,153 @@
 import {
     type AgentAuthenticationResponse,
     AgentAuthenticationResponseFromJSON,
-} from "../models/AgentAuthenticationResponse";
-import { type AgentConfig, AgentConfigFromJSON } from "../models/AgentConfig";
-import { type AgentConnector, AgentConnectorFromJSON } from "../models/AgentConnector";
+} from "../models/AgentAuthenticationResponse.js";
+import { type AgentConfig, AgentConfigFromJSON } from "../models/AgentConfig.js";
+import { type AgentConnector, AgentConnectorFromJSON } from "../models/AgentConnector.js";
 import {
     type AgentConnectorRequest,
     AgentConnectorRequestToJSON,
-} from "../models/AgentConnectorRequest";
+} from "../models/AgentConnectorRequest.js";
 import {
     type AgentPSSODeviceRegistrationRequest,
     AgentPSSODeviceRegistrationRequestToJSON,
-} from "../models/AgentPSSODeviceRegistrationRequest";
+} from "../models/AgentPSSODeviceRegistrationRequest.js";
 import {
     type AgentPSSODeviceRegistrationResponse,
     AgentPSSODeviceRegistrationResponseFromJSON,
-} from "../models/AgentPSSODeviceRegistrationResponse";
+} from "../models/AgentPSSODeviceRegistrationResponse.js";
 import {
     type AgentPSSOUserRegistrationRequest,
     AgentPSSOUserRegistrationRequestToJSON,
-} from "../models/AgentPSSOUserRegistrationRequest";
-import { type AgentTokenResponse, AgentTokenResponseFromJSON } from "../models/AgentTokenResponse";
+} from "../models/AgentPSSOUserRegistrationRequest.js";
+import {
+    type AgentTokenResponse,
+    AgentTokenResponseFromJSON,
+} from "../models/AgentTokenResponse.js";
 import {
     type AppleIndependentSecureEnclave,
     AppleIndependentSecureEnclaveFromJSON,
-} from "../models/AppleIndependentSecureEnclave";
+} from "../models/AppleIndependentSecureEnclave.js";
 import {
     type AppleIndependentSecureEnclaveRequest,
     AppleIndependentSecureEnclaveRequestToJSON,
-} from "../models/AppleIndependentSecureEnclaveRequest";
-import { type Connector, ConnectorFromJSON } from "../models/Connector";
-import { type DeviceAccessGroup, DeviceAccessGroupFromJSON } from "../models/DeviceAccessGroup";
+} from "../models/AppleIndependentSecureEnclaveRequest.js";
+import { type Connector, ConnectorFromJSON } from "../models/Connector.js";
+import { type DeviceAccessGroup, DeviceAccessGroupFromJSON } from "../models/DeviceAccessGroup.js";
 import {
     type DeviceAccessGroupRequest,
     DeviceAccessGroupRequestToJSON,
-} from "../models/DeviceAccessGroupRequest";
-import { type DeviceFactsRequest, DeviceFactsRequestToJSON } from "../models/DeviceFactsRequest";
-import { type DeviceSummary, DeviceSummaryFromJSON } from "../models/DeviceSummary";
-import { type DeviceUserBinding, DeviceUserBindingFromJSON } from "../models/DeviceUserBinding";
+} from "../models/DeviceAccessGroupRequest.js";
+import { type DeviceFactsRequest, DeviceFactsRequestToJSON } from "../models/DeviceFactsRequest.js";
+import { type DeviceSummary, DeviceSummaryFromJSON } from "../models/DeviceSummary.js";
+import { type DeviceUserBinding, DeviceUserBindingFromJSON } from "../models/DeviceUserBinding.js";
 import {
     type DeviceUserBindingRequest,
     DeviceUserBindingRequestToJSON,
-} from "../models/DeviceUserBindingRequest";
-import { type EndpointDevice, EndpointDeviceFromJSON } from "../models/EndpointDevice";
+} from "../models/DeviceUserBindingRequest.js";
+import { type EndpointDevice, EndpointDeviceFromJSON } from "../models/EndpointDevice.js";
 import {
     type EndpointDeviceDetails,
     EndpointDeviceDetailsFromJSON,
-} from "../models/EndpointDeviceDetails";
+} from "../models/EndpointDeviceDetails.js";
 import {
     type EndpointDeviceRequest,
     EndpointDeviceRequestToJSON,
-} from "../models/EndpointDeviceRequest";
-import { type EnrollmentToken, EnrollmentTokenFromJSON } from "../models/EnrollmentToken";
+} from "../models/EndpointDeviceRequest.js";
+import { type EnrollmentToken, EnrollmentTokenFromJSON } from "../models/EnrollmentToken.js";
 import {
     type EnrollmentTokenRequest,
     EnrollmentTokenRequestToJSON,
-} from "../models/EnrollmentTokenRequest";
-import { type EnrollRequest, EnrollRequestToJSON } from "../models/EnrollRequest";
-import { type FleetConnector, FleetConnectorFromJSON } from "../models/FleetConnector";
+} from "../models/EnrollmentTokenRequest.js";
+import { type EnrollRequest, EnrollRequestToJSON } from "../models/EnrollRequest.js";
+import { type FleetConnector, FleetConnectorFromJSON } from "../models/FleetConnector.js";
 import {
     type FleetConnectorRequest,
     FleetConnectorRequestToJSON,
-} from "../models/FleetConnectorRequest";
+} from "../models/FleetConnectorRequest.js";
 import {
     type GoogleChromeConnector,
     GoogleChromeConnectorFromJSON,
-} from "../models/GoogleChromeConnector";
+} from "../models/GoogleChromeConnector.js";
 import {
     type GoogleChromeConnectorRequest,
     GoogleChromeConnectorRequestToJSON,
-} from "../models/GoogleChromeConnectorRequest";
-import { type MDMConfigRequest, MDMConfigRequestToJSON } from "../models/MDMConfigRequest";
-import { type MDMConfigResponse, MDMConfigResponseFromJSON } from "../models/MDMConfigResponse";
+} from "../models/GoogleChromeConnectorRequest.js";
+import { type MDMConfigRequest, MDMConfigRequestToJSON } from "../models/MDMConfigRequest.js";
+import { type MDMConfigResponse, MDMConfigResponseFromJSON } from "../models/MDMConfigResponse.js";
 import {
     type PaginatedAgentConnectorList,
     PaginatedAgentConnectorListFromJSON,
-} from "../models/PaginatedAgentConnectorList";
+} from "../models/PaginatedAgentConnectorList.js";
 import {
     type PaginatedAppleIndependentSecureEnclaveList,
     PaginatedAppleIndependentSecureEnclaveListFromJSON,
-} from "../models/PaginatedAppleIndependentSecureEnclaveList";
+} from "../models/PaginatedAppleIndependentSecureEnclaveList.js";
 import {
     type PaginatedConnectorList,
     PaginatedConnectorListFromJSON,
-} from "../models/PaginatedConnectorList";
+} from "../models/PaginatedConnectorList.js";
 import {
     type PaginatedDeviceAccessGroupList,
     PaginatedDeviceAccessGroupListFromJSON,
-} from "../models/PaginatedDeviceAccessGroupList";
+} from "../models/PaginatedDeviceAccessGroupList.js";
 import {
     type PaginatedDeviceUserBindingList,
     PaginatedDeviceUserBindingListFromJSON,
-} from "../models/PaginatedDeviceUserBindingList";
+} from "../models/PaginatedDeviceUserBindingList.js";
 import {
     type PaginatedEndpointDeviceList,
     PaginatedEndpointDeviceListFromJSON,
-} from "../models/PaginatedEndpointDeviceList";
+} from "../models/PaginatedEndpointDeviceList.js";
 import {
     type PaginatedEnrollmentTokenList,
     PaginatedEnrollmentTokenListFromJSON,
-} from "../models/PaginatedEnrollmentTokenList";
+} from "../models/PaginatedEnrollmentTokenList.js";
 import {
     type PaginatedFleetConnectorList,
     PaginatedFleetConnectorListFromJSON,
-} from "../models/PaginatedFleetConnectorList";
+} from "../models/PaginatedFleetConnectorList.js";
 import {
     type PaginatedGoogleChromeConnectorList,
     PaginatedGoogleChromeConnectorListFromJSON,
-} from "../models/PaginatedGoogleChromeConnectorList";
+} from "../models/PaginatedGoogleChromeConnectorList.js";
 import {
     type PatchedAgentConnectorRequest,
     PatchedAgentConnectorRequestToJSON,
-} from "../models/PatchedAgentConnectorRequest";
+} from "../models/PatchedAgentConnectorRequest.js";
 import {
     type PatchedAppleIndependentSecureEnclaveRequest,
     PatchedAppleIndependentSecureEnclaveRequestToJSON,
-} from "../models/PatchedAppleIndependentSecureEnclaveRequest";
+} from "../models/PatchedAppleIndependentSecureEnclaveRequest.js";
 import {
     type PatchedDeviceAccessGroupRequest,
     PatchedDeviceAccessGroupRequestToJSON,
-} from "../models/PatchedDeviceAccessGroupRequest";
+} from "../models/PatchedDeviceAccessGroupRequest.js";
 import {
     type PatchedDeviceUserBindingRequest,
     PatchedDeviceUserBindingRequestToJSON,
-} from "../models/PatchedDeviceUserBindingRequest";
+} from "../models/PatchedDeviceUserBindingRequest.js";
 import {
     type PatchedEndpointDeviceRequest,
     PatchedEndpointDeviceRequestToJSON,
-} from "../models/PatchedEndpointDeviceRequest";
+} from "../models/PatchedEndpointDeviceRequest.js";
 import {
     type PatchedEnrollmentTokenRequest,
     PatchedEnrollmentTokenRequestToJSON,
-} from "../models/PatchedEnrollmentTokenRequest";
+} from "../models/PatchedEnrollmentTokenRequest.js";
 import {
     type PatchedFleetConnectorRequest,
     PatchedFleetConnectorRequestToJSON,
-} from "../models/PatchedFleetConnectorRequest";
+} from "../models/PatchedFleetConnectorRequest.js";
 import {
     type PatchedGoogleChromeConnectorRequest,
     PatchedGoogleChromeConnectorRequestToJSON,
-} from "../models/PatchedGoogleChromeConnectorRequest";
-import { type TokenView, TokenViewFromJSON } from "../models/TokenView";
-import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import { type UserSelf, UserSelfFromJSON } from "../models/UserSelf";
-import * as runtime from "../runtime";
+} from "../models/PatchedGoogleChromeConnectorRequest.js";
+import { type TokenView, TokenViewFromJSON } from "../models/TokenView.js";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import { type UserSelf, UserSelfFromJSON } from "../models/UserSelf.js";
+import * as runtime from "../runtime.js";
 
 export interface EndpointsAgentsConnectorsAuthFedCreateRequest {
     device: string;
@@ -177,6 +178,9 @@ export interface EndpointsAgentsConnectorsCreateRequest {
 }
 
 export interface EndpointsAgentsConnectorsDestroyRequest {
+    /**
+     * A UUID string identifying this Agent Connector.
+     */
     connectorUuid: string;
 }
 
@@ -187,32 +191,59 @@ export interface EndpointsAgentsConnectorsEnrollCreateRequest {
 export interface EndpointsAgentsConnectorsListRequest {
     enabled?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface EndpointsAgentsConnectorsMdmConfigCreateRequest {
+    /**
+     * A UUID string identifying this Agent Connector.
+     */
     connectorUuid: string;
     mDMConfigRequest: MDMConfigRequest;
 }
 
 export interface EndpointsAgentsConnectorsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Agent Connector.
+     */
     connectorUuid: string;
     patchedAgentConnectorRequest?: PatchedAgentConnectorRequest;
 }
 
 export interface EndpointsAgentsConnectorsRetrieveRequest {
+    /**
+     * A UUID string identifying this Agent Connector.
+     */
     connectorUuid: string;
 }
 
 export interface EndpointsAgentsConnectorsUpdateRequest {
+    /**
+     * A UUID string identifying this Agent Connector.
+     */
     connectorUuid: string;
     agentConnectorRequest: AgentConnectorRequest;
 }
 
 export interface EndpointsAgentsConnectorsUsedByListRequest {
+    /**
+     * A UUID string identifying this Agent Connector.
+     */
     connectorUuid: string;
 }
 
@@ -221,37 +252,67 @@ export interface EndpointsAgentsEnrollmentTokensCreateRequest {
 }
 
 export interface EndpointsAgentsEnrollmentTokensDestroyRequest {
+    /**
+     * A UUID string identifying this Enrollment Token.
+     */
     tokenUuid: string;
 }
 
 export interface EndpointsAgentsEnrollmentTokensListRequest {
     connector?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     tokenUuid?: string;
 }
 
 export interface EndpointsAgentsEnrollmentTokensPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Enrollment Token.
+     */
     tokenUuid: string;
     patchedEnrollmentTokenRequest?: PatchedEnrollmentTokenRequest;
 }
 
 export interface EndpointsAgentsEnrollmentTokensRetrieveRequest {
+    /**
+     * A UUID string identifying this Enrollment Token.
+     */
     tokenUuid: string;
 }
 
 export interface EndpointsAgentsEnrollmentTokensUpdateRequest {
+    /**
+     * A UUID string identifying this Enrollment Token.
+     */
     tokenUuid: string;
     enrollmentTokenRequest: EnrollmentTokenRequest;
 }
 
 export interface EndpointsAgentsEnrollmentTokensUsedByListRequest {
+    /**
+     * A UUID string identifying this Enrollment Token.
+     */
     tokenUuid: string;
 }
 
 export interface EndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest {
+    /**
+     * A UUID string identifying this Enrollment Token.
+     */
     tokenUuid: string;
 }
 
@@ -260,33 +321,60 @@ export interface EndpointsAgentsPssoIseCreateRequest {
 }
 
 export interface EndpointsAgentsPssoIseDestroyRequest {
+    /**
+     * A UUID string identifying this Apple Independent Secure Enclave.
+     */
     uuid: string;
 }
 
 export interface EndpointsAgentsPssoIseListRequest {
     appleEnclaveKeyId?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     user?: number;
 }
 
 export interface EndpointsAgentsPssoIsePartialUpdateRequest {
+    /**
+     * A UUID string identifying this Apple Independent Secure Enclave.
+     */
     uuid: string;
     patchedAppleIndependentSecureEnclaveRequest?: PatchedAppleIndependentSecureEnclaveRequest;
 }
 
 export interface EndpointsAgentsPssoIseRetrieveRequest {
+    /**
+     * A UUID string identifying this Apple Independent Secure Enclave.
+     */
     uuid: string;
 }
 
 export interface EndpointsAgentsPssoIseUpdateRequest {
+    /**
+     * A UUID string identifying this Apple Independent Secure Enclave.
+     */
     uuid: string;
     appleIndependentSecureEnclaveRequest: AppleIndependentSecureEnclaveRequest;
 }
 
 export interface EndpointsAgentsPssoIseUsedByListRequest {
+    /**
+     * A UUID string identifying this Apple Independent Secure Enclave.
+     */
     uuid: string;
 }
 
@@ -299,21 +387,42 @@ export interface EndpointsAgentsPssoRegisterUserCreateRequest {
 }
 
 export interface EndpointsConnectorsDestroyRequest {
+    /**
+     * A UUID string identifying this connector.
+     */
     connectorUuid: string;
 }
 
 export interface EndpointsConnectorsListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface EndpointsConnectorsRetrieveRequest {
+    /**
+     * A UUID string identifying this connector.
+     */
     connectorUuid: string;
 }
 
 export interface EndpointsConnectorsUsedByListRequest {
+    /**
+     * A UUID string identifying this connector.
+     */
     connectorUuid: string;
 }
 
@@ -322,33 +431,60 @@ export interface EndpointsDeviceAccessGroupsCreateRequest {
 }
 
 export interface EndpointsDeviceAccessGroupsDestroyRequest {
+    /**
+     * A UUID string identifying this Device access group.
+     */
     pbmUuid: string;
 }
 
 export interface EndpointsDeviceAccessGroupsListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     pbmUuid?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface EndpointsDeviceAccessGroupsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Device access group.
+     */
     pbmUuid: string;
     patchedDeviceAccessGroupRequest?: PatchedDeviceAccessGroupRequest;
 }
 
 export interface EndpointsDeviceAccessGroupsRetrieveRequest {
+    /**
+     * A UUID string identifying this Device access group.
+     */
     pbmUuid: string;
 }
 
 export interface EndpointsDeviceAccessGroupsUpdateRequest {
+    /**
+     * A UUID string identifying this Device access group.
+     */
     pbmUuid: string;
     deviceAccessGroupRequest: DeviceAccessGroupRequest;
 }
 
 export interface EndpointsDeviceAccessGroupsUsedByListRequest {
+    /**
+     * A UUID string identifying this Device access group.
+     */
     pbmUuid: string;
 }
 
@@ -357,17 +493,32 @@ export interface EndpointsDeviceBindingsCreateRequest {
 }
 
 export interface EndpointsDeviceBindingsDestroyRequest {
+    /**
+     * A UUID string identifying this Device User binding.
+     */
     policyBindingUuid: string;
 }
 
 export interface EndpointsDeviceBindingsListRequest {
     enabled?: boolean;
     order?: number;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     policy?: string;
     policyIsnull?: boolean;
+    /**
+     * A search term.
+     */
     search?: string;
     target?: string;
     targetIn?: Array<string>;
@@ -375,51 +526,94 @@ export interface EndpointsDeviceBindingsListRequest {
 }
 
 export interface EndpointsDeviceBindingsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Device User binding.
+     */
     policyBindingUuid: string;
     patchedDeviceUserBindingRequest?: PatchedDeviceUserBindingRequest;
 }
 
 export interface EndpointsDeviceBindingsRetrieveRequest {
+    /**
+     * A UUID string identifying this Device User binding.
+     */
     policyBindingUuid: string;
 }
 
 export interface EndpointsDeviceBindingsUpdateRequest {
+    /**
+     * A UUID string identifying this Device User binding.
+     */
     policyBindingUuid: string;
     deviceUserBindingRequest: DeviceUserBindingRequest;
 }
 
 export interface EndpointsDeviceBindingsUsedByListRequest {
+    /**
+     * A UUID string identifying this Device User binding.
+     */
     policyBindingUuid: string;
 }
 
+export interface EndpointsDevicesCreateRequest {
+    endpointDeviceRequest: EndpointDeviceRequest;
+}
+
 export interface EndpointsDevicesDestroyRequest {
+    /**
+     * A UUID string identifying this Device.
+     */
     deviceUuid: string;
 }
 
 export interface EndpointsDevicesListRequest {
     identifier?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface EndpointsDevicesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Device.
+     */
     deviceUuid: string;
     patchedEndpointDeviceRequest?: PatchedEndpointDeviceRequest;
 }
 
 export interface EndpointsDevicesRetrieveRequest {
+    /**
+     * A UUID string identifying this Device.
+     */
     deviceUuid: string;
 }
 
 export interface EndpointsDevicesUpdateRequest {
+    /**
+     * A UUID string identifying this Device.
+     */
     deviceUuid: string;
     endpointDeviceRequest: EndpointDeviceRequest;
 }
 
 export interface EndpointsDevicesUsedByListRequest {
+    /**
+     * A UUID string identifying this Device.
+     */
     deviceUuid: string;
 }
 
@@ -428,32 +622,59 @@ export interface EndpointsFleetConnectorsCreateRequest {
 }
 
 export interface EndpointsFleetConnectorsDestroyRequest {
+    /**
+     * A UUID string identifying this Fleet Connector.
+     */
     connectorUuid: string;
 }
 
 export interface EndpointsFleetConnectorsListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface EndpointsFleetConnectorsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Fleet Connector.
+     */
     connectorUuid: string;
     patchedFleetConnectorRequest?: PatchedFleetConnectorRequest;
 }
 
 export interface EndpointsFleetConnectorsRetrieveRequest {
+    /**
+     * A UUID string identifying this Fleet Connector.
+     */
     connectorUuid: string;
 }
 
 export interface EndpointsFleetConnectorsUpdateRequest {
+    /**
+     * A UUID string identifying this Fleet Connector.
+     */
     connectorUuid: string;
     fleetConnectorRequest: FleetConnectorRequest;
 }
 
 export interface EndpointsFleetConnectorsUsedByListRequest {
+    /**
+     * A UUID string identifying this Fleet Connector.
+     */
     connectorUuid: string;
 }
 
@@ -462,48 +683,73 @@ export interface EndpointsGoogleChromeConnectorsCreateRequest {
 }
 
 export interface EndpointsGoogleChromeConnectorsDestroyRequest {
+    /**
+     * A UUID string identifying this Google Device Trust Connector.
+     */
     connectorUuid: string;
 }
 
 export interface EndpointsGoogleChromeConnectorsListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface EndpointsGoogleChromeConnectorsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Google Device Trust Connector.
+     */
     connectorUuid: string;
     patchedGoogleChromeConnectorRequest?: PatchedGoogleChromeConnectorRequest;
 }
 
 export interface EndpointsGoogleChromeConnectorsRetrieveRequest {
+    /**
+     * A UUID string identifying this Google Device Trust Connector.
+     */
     connectorUuid: string;
 }
 
 export interface EndpointsGoogleChromeConnectorsUpdateRequest {
+    /**
+     * A UUID string identifying this Google Device Trust Connector.
+     */
     connectorUuid: string;
     googleChromeConnectorRequest: GoogleChromeConnectorRequest;
 }
 
 export interface EndpointsGoogleChromeConnectorsUsedByListRequest {
+    /**
+     * A UUID string identifying this Google Device Trust Connector.
+     */
     connectorUuid: string;
 }
 
-/**
- *
- */
 export class EndpointsApi extends runtime.BaseAPI {
     /**
-     * Creates request options for endpointsAgentsConnectorsAgentConfigRetrieve without sending the request
+     * Creates request options for endpointsAgentsConnectorsAgentConfigRetrieve without sending the
+     * request
      */
     async endpointsAgentsConnectorsAgentConfigRetrieveRequestOpts(): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        let urlPath = `/endpoints/agents/connectors/agent_config/`;
+        const urlPath = `/endpoints/agents/connectors/agent_config/`;
 
         return {
             path: urlPath,
@@ -536,7 +782,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsAgentsConnectorsAuthFedCreate without sending the request
+     * Creates request options for endpointsAgentsConnectorsAuthFedCreate without sending the
+     * request
      */
     async endpointsAgentsConnectorsAuthFedCreateRequestOpts(
         requestParameters: EndpointsAgentsConnectorsAuthFedCreateRequest,
@@ -565,7 +812,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/agents/connectors/auth_fed/`;
+        const urlPath = `/endpoints/agents/connectors/auth_fed/`;
 
         return {
             path: urlPath,
@@ -619,7 +866,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        let urlPath = `/endpoints/agents/connectors/auth_ia/`;
+        const urlPath = `/endpoints/agents/connectors/auth_ia/`;
 
         return {
             path: urlPath,
@@ -660,7 +907,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsAgentsConnectorsCheckInCreate without sending the request
+     * Creates request options for endpointsAgentsConnectorsCheckInCreate without sending the
+     * request
      */
     async endpointsAgentsConnectorsCheckInCreateRequestOpts(
         requestParameters: EndpointsAgentsConnectorsCheckInCreateRequest,
@@ -671,7 +919,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         headerParameters["Content-Type"] = "application/json";
 
-        let urlPath = `/endpoints/agents/connectors/check_in/`;
+        const urlPath = `/endpoints/agents/connectors/check_in/`;
 
         return {
             path: urlPath,
@@ -734,7 +982,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/agents/connectors/`;
+        const urlPath = `/endpoints/agents/connectors/`;
 
         return {
             path: urlPath,
@@ -867,7 +1115,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/agents/connectors/enroll/`;
+        const urlPath = `/endpoints/agents/connectors/enroll/`;
 
         return {
             path: urlPath,
@@ -951,7 +1199,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/agents/connectors/`;
+        const urlPath = `/endpoints/agents/connectors/`;
 
         return {
             path: urlPath,
@@ -992,7 +1240,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsAgentsConnectorsMdmConfigCreate without sending the request
+     * Creates request options for endpointsAgentsConnectorsMdmConfigCreate without sending the
+     * request
      */
     async endpointsAgentsConnectorsMdmConfigCreateRequestOpts(
         requestParameters: EndpointsAgentsConnectorsMdmConfigCreateRequest,
@@ -1072,7 +1321,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsAgentsConnectorsPartialUpdate without sending the request
+     * Creates request options for endpointsAgentsConnectorsPartialUpdate without sending the
+     * request
      */
     async endpointsAgentsConnectorsPartialUpdateRequestOpts(
         requestParameters: EndpointsAgentsConnectorsPartialUpdateRequest,
@@ -1392,7 +1642,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/agents/enrollment_tokens/`;
+        const urlPath = `/endpoints/agents/enrollment_tokens/`;
 
         return {
             path: urlPath,
@@ -1434,7 +1684,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsAgentsEnrollmentTokensDestroy without sending the request
+     * Creates request options for endpointsAgentsEnrollmentTokensDestroy without sending the
+     * request
      */
     async endpointsAgentsEnrollmentTokensDestroyRequestOpts(
         requestParameters: EndpointsAgentsEnrollmentTokensDestroyRequest,
@@ -1540,7 +1791,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/agents/enrollment_tokens/`;
+        const urlPath = `/endpoints/agents/enrollment_tokens/`;
 
         return {
             path: urlPath,
@@ -1581,7 +1832,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsAgentsEnrollmentTokensPartialUpdate without sending the request
+     * Creates request options for endpointsAgentsEnrollmentTokensPartialUpdate without sending the
+     * request
      */
     async endpointsAgentsEnrollmentTokensPartialUpdateRequestOpts(
         requestParameters: EndpointsAgentsEnrollmentTokensPartialUpdateRequest,
@@ -1656,7 +1908,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsAgentsEnrollmentTokensRetrieve without sending the request
+     * Creates request options for endpointsAgentsEnrollmentTokensRetrieve without sending the
+     * request
      */
     async endpointsAgentsEnrollmentTokensRetrieveRequestOpts(
         requestParameters: EndpointsAgentsEnrollmentTokensRetrieveRequest,
@@ -1806,7 +2059,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsAgentsEnrollmentTokensUsedByList without sending the request
+     * Creates request options for endpointsAgentsEnrollmentTokensUsedByList without sending the
+     * request
      */
     async endpointsAgentsEnrollmentTokensUsedByListRequestOpts(
         requestParameters: EndpointsAgentsEnrollmentTokensUsedByListRequest,
@@ -1874,7 +2128,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsAgentsEnrollmentTokensViewKeyRetrieve without sending the request
+     * Creates request options for endpointsAgentsEnrollmentTokensViewKeyRetrieve without sending
+     * the request
      */
     async endpointsAgentsEnrollmentTokensViewKeyRetrieveRequestOpts(
         requestParameters: EndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest,
@@ -1969,7 +2224,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/agents/psso/ise/`;
+        const urlPath = `/endpoints/agents/psso/ise/`;
 
         return {
             path: urlPath,
@@ -2116,7 +2371,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/agents/psso/ise/`;
+        const urlPath = `/endpoints/agents/psso/ise/`;
 
         return {
             path: urlPath,
@@ -2436,7 +2691,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsAgentsPssoRegisterDeviceCreate without sending the request
+     * Creates request options for endpointsAgentsPssoRegisterDeviceCreate without sending the
+     * request
      */
     async endpointsAgentsPssoRegisterDeviceCreateRequestOpts(
         requestParameters: EndpointsAgentsPssoRegisterDeviceCreateRequest,
@@ -2454,7 +2710,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         headerParameters["Content-Type"] = "application/json";
 
-        let urlPath = `/endpoints/agents/psso/register/device/`;
+        const urlPath = `/endpoints/agents/psso/register/device/`;
 
         return {
             path: urlPath,
@@ -2467,8 +2723,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async endpointsAgentsPssoRegisterDeviceCreateRaw(
         requestParameters: EndpointsAgentsPssoRegisterDeviceCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2482,8 +2736,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async endpointsAgentsPssoRegisterDeviceCreate(
         requestParameters: EndpointsAgentsPssoRegisterDeviceCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2514,7 +2766,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         headerParameters["Content-Type"] = "application/json";
 
-        let urlPath = `/endpoints/agents/psso/register/user/`;
+        const urlPath = `/endpoints/agents/psso/register/user/`;
 
         return {
             path: urlPath,
@@ -2527,8 +2779,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async endpointsAgentsPssoRegisterUserCreateRaw(
         requestParameters: EndpointsAgentsPssoRegisterUserCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2540,8 +2790,6 @@ export class EndpointsApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSelfFromJSON(jsonValue));
     }
 
-    /**
-     */
     async endpointsAgentsPssoRegisterUserCreate(
         requestParameters: EndpointsAgentsPssoRegisterUserCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2651,7 +2899,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/connectors/`;
+        const urlPath = `/endpoints/connectors/`;
 
         return {
             path: urlPath,
@@ -2771,7 +3019,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/connectors/types/`;
+        const urlPath = `/endpoints/connectors/types/`;
 
         return {
             path: urlPath,
@@ -2901,7 +3149,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/device_access_groups/`;
+        const urlPath = `/endpoints/device_access_groups/`;
 
         return {
             path: urlPath,
@@ -3049,7 +3297,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/device_access_groups/`;
+        const urlPath = `/endpoints/device_access_groups/`;
 
         return {
             path: urlPath,
@@ -3090,7 +3338,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsDeviceAccessGroupsPartialUpdate without sending the request
+     * Creates request options for endpointsDeviceAccessGroupsPartialUpdate without sending the
+     * request
      */
     async endpointsDeviceAccessGroupsPartialUpdateRequestOpts(
         requestParameters: EndpointsDeviceAccessGroupsPartialUpdateRequest,
@@ -3410,7 +3659,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/device_bindings/`;
+        const urlPath = `/endpoints/device_bindings/`;
 
         return {
             path: urlPath,
@@ -3578,7 +3827,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/device_bindings/`;
+        const urlPath = `/endpoints/device_bindings/`;
 
         return {
             path: urlPath,
@@ -3911,6 +4160,71 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for endpointsDevicesCreate without sending the request
+     */
+    async endpointsDevicesCreateRequestOpts(
+        requestParameters: EndpointsDevicesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["endpointDeviceRequest"] == null) {
+            throw new runtime.RequiredError(
+                "endpointDeviceRequest",
+                'Required parameter "endpointDeviceRequest" was null or undefined when calling endpointsDevicesCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/endpoints/devices/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: EndpointDeviceRequestToJSON(requestParameters["endpointDeviceRequest"]),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsDevicesCreateRaw(
+        requestParameters: EndpointsDevicesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EndpointDevice>> {
+        const requestOptions = await this.endpointsDevicesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EndpointDeviceFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsDevicesCreate(
+        requestParameters: EndpointsDevicesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EndpointDevice> {
+        const response = await this.endpointsDevicesCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for endpointsDevicesDestroy without sending the request
      */
     async endpointsDevicesDestroyRequestOpts(
@@ -4016,7 +4330,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/devices/`;
+        const urlPath = `/endpoints/devices/`;
 
         return {
             path: urlPath,
@@ -4210,7 +4524,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/devices/summary/`;
+        const urlPath = `/endpoints/devices/summary/`;
 
         return {
             path: urlPath,
@@ -4412,7 +4726,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/fleet/connectors/`;
+        const urlPath = `/endpoints/fleet/connectors/`;
 
         return {
             path: urlPath,
@@ -4556,7 +4870,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/fleet/connectors/`;
+        const urlPath = `/endpoints/fleet/connectors/`;
 
         return {
             path: urlPath,
@@ -4917,7 +5231,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/google_chrome/connectors/`;
+        const urlPath = `/endpoints/google_chrome/connectors/`;
 
         return {
             path: urlPath,
@@ -4961,7 +5275,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsGoogleChromeConnectorsDestroy without sending the request
+     * Creates request options for endpointsGoogleChromeConnectorsDestroy without sending the
+     * request
      */
     async endpointsGoogleChromeConnectorsDestroyRequestOpts(
         requestParameters: EndpointsGoogleChromeConnectorsDestroyRequest,
@@ -5063,7 +5378,7 @@ export class EndpointsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/endpoints/google_chrome/connectors/`;
+        const urlPath = `/endpoints/google_chrome/connectors/`;
 
         return {
             path: urlPath,
@@ -5104,7 +5419,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsGoogleChromeConnectorsPartialUpdate without sending the request
+     * Creates request options for endpointsGoogleChromeConnectorsPartialUpdate without sending the
+     * request
      */
     async endpointsGoogleChromeConnectorsPartialUpdateRequestOpts(
         requestParameters: EndpointsGoogleChromeConnectorsPartialUpdateRequest,
@@ -5179,7 +5495,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsGoogleChromeConnectorsRetrieve without sending the request
+     * Creates request options for endpointsGoogleChromeConnectorsRetrieve without sending the
+     * request
      */
     async endpointsGoogleChromeConnectorsRetrieveRequestOpts(
         requestParameters: EndpointsGoogleChromeConnectorsRetrieveRequest,
@@ -5331,7 +5648,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for endpointsGoogleChromeConnectorsUsedByList without sending the request
+     * Creates request options for endpointsGoogleChromeConnectorsUsedByList without sending the
+     * request
      */
     async endpointsGoogleChromeConnectorsUsedByListRequestOpts(
         requestParameters: EndpointsGoogleChromeConnectorsUsedByListRequest,

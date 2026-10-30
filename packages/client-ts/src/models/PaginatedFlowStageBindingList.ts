@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { FlowStageBinding } from "./FlowStageBinding";
-import { FlowStageBindingFromJSON, FlowStageBindingToJSON } from "./FlowStageBinding";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { FlowStageBinding } from "./FlowStageBinding.js";
+import { FlowStageBindingFromJSON, FlowStageBindingToJSON } from "./FlowStageBinding.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedFlowStageBindingList
  */
 export interface PaginatedFlowStageBindingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedFlowStageBindingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<FlowStageBinding>}
-     * @memberof PaginatedFlowStageBindingList
-     */
     results: Array<FlowStageBinding>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedFlowStageBindingList
-     */
     autocomplete: { [key: string]: any };
 }
 

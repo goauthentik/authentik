@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,62 +10,35 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
 
 /**
  * DenyStage Serializer
+ *
  * @export
  * @interface DenyStage
  */
 export interface DenyStage {
-    /**
-     *
-     * @type {string}
-     * @memberof DenyStage
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof DenyStage
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof DenyStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof DenyStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof DenyStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof DenyStage
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {Array<FlowSet>}
-     * @memberof DenyStage
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     * @type {string}
-     * @memberof DenyStage
-     */
     denyMessage?: string;
 }
 

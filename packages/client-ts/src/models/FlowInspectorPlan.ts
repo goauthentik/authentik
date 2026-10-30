@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,24 @@
  * Do not edit the class manually.
  */
 
-import type { FlowStageBinding } from "./FlowStageBinding";
-import { FlowStageBindingFromJSON } from "./FlowStageBinding";
+import type { FlowStageBinding } from "./FlowStageBinding.js";
+import { FlowStageBindingFromJSON } from "./FlowStageBinding.js";
 
 /**
  * Serializer for an active FlowPlan
+ *
  * @export
  * @interface FlowInspectorPlan
  */
 export interface FlowInspectorPlan {
-    /**
-     *
-     * @type {FlowStageBinding}
-     * @memberof FlowInspectorPlan
-     */
     readonly currentStage: FlowStageBinding;
-    /**
-     *
-     * @type {FlowStageBinding}
-     * @memberof FlowInspectorPlan
-     */
     readonly nextPlannedStage: FlowStageBinding;
     /**
      * Get the plan's context, sanitized
-     * @type {{ [key: string]: any; }}
-     * @memberof FlowInspectorPlan
      */
     readonly planContext: { [key: string]: any };
     /**
      * Get a unique session ID
-     * @type {string}
-     * @memberof FlowInspectorPlan
      */
     readonly sessionId: string;
 }

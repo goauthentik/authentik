@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,28 +12,14 @@
 
 /**
  * ConnectionToken Serializer
+ *
  * @export
  * @interface PatchedConnectionTokenRequest
  */
 export interface PatchedConnectionTokenRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedConnectionTokenRequest
-     */
     pk?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedConnectionTokenRequest
-     */
     provider?: number;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedConnectionTokenRequest
-     */
-    endpoint?: string;
+    device?: string;
 }
 
 /**
@@ -61,7 +45,7 @@ export function PatchedConnectionTokenRequestFromJSONTyped(
     return {
         pk: json["pk"] == null ? undefined : json["pk"],
         provider: json["provider"] == null ? undefined : json["provider"],
-        endpoint: json["endpoint"] == null ? undefined : json["endpoint"],
+        device: json["device"] == null ? undefined : json["device"],
     };
 }
 
@@ -80,6 +64,6 @@ export function PatchedConnectionTokenRequestToJSONTyped(
     return {
         pk: value["pk"],
         provider: value["provider"],
-        endpoint: value["endpoint"],
+        device: value["device"],
     };
 }

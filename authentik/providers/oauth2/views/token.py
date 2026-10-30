@@ -1,5 +1,7 @@
 """authentik OAuth2 Token views"""
 
+from base64 import b64encode
+from copy import copy
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse
@@ -7,7 +9,6 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import (
@@ -20,9 +21,11 @@ from authentik.common.oauth.constants import (
     JWT_TYPE_DPOP_ID_TOKEN,
     SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
+    TOKEN_TYPE_URI_SAML2,
 )
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.events.signals import get_login_event
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import (
     DeviceCodeError,
@@ -33,6 +36,7 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2Provider,
+    OAuth2SessionLogin,
     RefreshToken,
 )
 from authentik.providers.oauth2.token.base import TokenRequest
@@ -42,6 +46,8 @@ from authentik.providers.oauth2.utils import (
     cors_allow,
     extract_client_auth,
 )
+from authentik.providers.saml.processors.assertion import AssertionProcessor
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 
 LOGGER = get_logger()
 
@@ -56,10 +62,7 @@ class TokenView(View):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
-        allowed_origins = []
-        if self.provider:
-            allowed_origins = [x.url for x in self.provider.redirect_uris]
-        cors_allow(self.request, response, *allowed_origins)
+        cors_allow(self.request, response, self.provider.redirect_uris if self.provider else [])
         return response
 
     def options(self, request: HttpRequest) -> HttpResponse:
@@ -68,7 +71,7 @@ class TokenView(View):
     def post(self, request: HttpRequest) -> HttpResponse:
         """Generate tokens for clients"""
         try:
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
@@ -79,7 +82,7 @@ class TokenView(View):
                 self.params = parse_token_request(request, self.provider, client_id, client_secret)
                 CTX_AUTH_VIA.set("oauth_client_secret")
 
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.providers.oauth2.post.response",
             ):
                 if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
@@ -136,6 +139,7 @@ class TokenView(View):
         self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
+        OAuth2SessionLogin.record(access_token, access_id_token)
 
         id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
@@ -201,6 +205,7 @@ class TokenView(View):
         self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
+        OAuth2SessionLogin.record(access_token, access_id_token)
 
         id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
@@ -296,6 +301,7 @@ class TokenView(View):
         self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
+        OAuth2SessionLogin.record(access_token, access_id_token)
 
         id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
@@ -333,8 +339,28 @@ class TokenView(View):
         self.params.device_code.delete()
         return response
 
+    def create_saml_token_exchange_response(self) -> dict[str, Any]:
+        """IdP-initiated SAML Response for the federated SAML provider, base64-encoded
+        like the SAMLResponse form field, so it can be passed on as-is
+        (e.g. to AWS STS AssumeRoleWithSAML)."""
+        provider = self.params.saml_provider
+        request = copy(self.request)
+        request.user = self.params.user
+        response = AssertionProcessor(provider, request, AuthNRequest()).build_response()
+        return {
+            "access_token": b64encode(response.encode()).decode(),
+            "issued_token_type": TOKEN_TYPE_URI_SAML2,
+            # RFC 8693 §2.2.1: the issued token is not an OAuth access token
+            "token_type": "N_A",
+            "expires_in": int(
+                timedelta_from_string(provider.assertion_valid_not_on_or_after).total_seconds()
+            ),
+        }
+
     def create_token_exchange_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.1"""
+        if self.params.saml_provider:
+            return self.create_saml_token_exchange_response()
         # Issued on the `audience` target, else on the client's own provider
         provider = self.params.token_provider
         now = timezone.now()
@@ -351,6 +377,7 @@ class TokenView(View):
             provider,
             access_token,
             self.request,
+            act=self.params.prior_act,
         )
         access_token.save()
 

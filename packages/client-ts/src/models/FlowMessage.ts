@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,26 +10,20 @@
  * Do not edit the class manually.
  */
 
-import type { FlowMessageLevelEnum } from "./FlowMessageLevelEnum";
-import { FlowMessageLevelEnumFromJSON, FlowMessageLevelEnumToJSON } from "./FlowMessageLevelEnum";
+import type { FlowMessageLevelEnum } from "./FlowMessageLevelEnum.js";
+import {
+    FlowMessageLevelEnumFromJSON,
+    FlowMessageLevelEnumToJSON,
+} from "./FlowMessageLevelEnum.js";
 
 /**
  * Serializer for a django.contrib.messages message
+ *
  * @export
  * @interface FlowMessage
  */
 export interface FlowMessage {
-    /**
-     *
-     * @type {FlowMessageLevelEnum}
-     * @memberof FlowMessage
-     */
     level: FlowMessageLevelEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof FlowMessage
-     */
     message: string;
 }
 

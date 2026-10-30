@@ -1,12 +1,12 @@
 import "#elements/Spinner";
-
 import { aki } from "#common/api/client";
-import { AndNext } from "#common/api/config";
+import { withNext } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 
 import { showMessage } from "#elements/messages/MessageContainer";
+import { toUserInterface } from "#elements/router/core/interfaces";
 import { BaseUserSettings } from "#elements/user/sources/BaseUserSettings";
 
 import { SourcesApi } from "@goauthentik/api";
@@ -55,9 +55,7 @@ export class SourceSettingsSAML extends BaseUserSettings {
 
         return html`<a
             class="pf-c-button pf-m-primary"
-            href="${this.configureURL}${AndNext(
-                `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
-            )}"
+            href=${withNext(this.configureURL, toUserInterface("settings/sources"))}
         >
             ${msg("Connect")}
         </a>`;

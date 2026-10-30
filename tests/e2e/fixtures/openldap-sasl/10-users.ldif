@@ -1,0 +1,11 @@
+dn: ou=users,dc=goauthentik,dc=io
+objectClass: organizationalUnit
+ou: users
+
+dn: uid=alice,ou=users,dc=goauthentik,dc=io
+objectClass: inetOrgPerson
+uid: alice
+cn: Alice Example
+sn: Example
+mail: alice@example.test
+userPassword: correct-horse-battery-staple

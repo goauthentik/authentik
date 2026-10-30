@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Base serializer class which doesn't implement create/update methods
+ *
  * @export
  * @interface AgentAuthenticationResponse
  */
 export interface AgentAuthenticationResponse {
-    /**
-     *
-     * @type {string}
-     * @memberof AgentAuthenticationResponse
-     */
     url: string;
 }
 

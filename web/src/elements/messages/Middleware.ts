@@ -15,6 +15,7 @@ export class MessageMiddleware implements Middleware {
                 description: `${context.init.method} ${context.url}: ${context.response.status}`,
             });
         }
+
         return Promise.resolve(context.response);
     }
 }

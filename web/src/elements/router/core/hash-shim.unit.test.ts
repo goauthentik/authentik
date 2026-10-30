@@ -22,10 +22,33 @@ describe("translateHashRoute", () => {
         expect(translateHashRoute(hash, scope)).toBe("/if/admin/core/applications?page=2");
     });
 
+    // The exact shape `admin_link_for_model` emits for lifecycle-review rows:
+    // a path plus a percent-encoded JSON tab selector.
+    it("translates a lifecycle-review object admin URL", () => {
+        const hash =
+            "#/core/applications/my-app;" + encodeURIComponent('{"page":"page-lifecycle"}');
+
+        expect(translateHashRoute(hash, scope)).toBe(
+            "/if/admin/core/applications/my-app?page=page-lifecycle",
+        );
+    });
+
     it("translates a raw JSON blob", () => {
         expect(translateHashRoute('#/core/applications;{"page":2}', scope)).toBe(
             "/if/admin/core/applications?page=2",
         );
+    });
+
+    // The bare form `flow_manager.py` emits when linking a source. The legacy
+    // router read the token as a tab selector, so it must survive translation.
+    it("translates a bare tab token into the page parameter", () => {
+        expect(translateHashRoute("#/settings;page-sources", scope)).toBe(
+            "/if/admin/settings?page=page-sources",
+        );
+    });
+
+    it("keeps the URLSearchParams encoding distinct from a bare token", () => {
+        expect(translateHashRoute("#/x;a=1&b=true", scope)).toBe("/if/admin/x?a=1&b=true");
     });
 
     it("translates JSON booleans", () => {

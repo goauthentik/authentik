@@ -20,6 +20,7 @@ export class VersionContextController extends ReactiveContextController<Version>
         super();
 
         this.host = host;
+
         this.context = new ContextProvider(this.host, {
             context: VersionContext,
             initialValue,

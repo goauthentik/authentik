@@ -99,7 +99,12 @@ class TestSAMLProviderAPI(APITestCase):
         self.assertIn("signing_kp", loads(response.content))
         self.assertJSONEqual(
             response.content,
-            {"signing_kp": ["Only RSA, EC, and DSA key types are supported for SAML signing."]},
+            {
+                "signing_kp": [
+                    "Key type Ed25519 is not supported. "
+                    "Supported key types are: RSA, Elliptic Curve, DSA."
+                ]
+            },
         )
 
     def test_metadata(self):
@@ -208,6 +213,33 @@ class TestSAMLProviderAPI(APITestCase):
                 format="multipart",
             )
         self.assertEqual(400, response.status_code)
+
+    def test_import_doctype(self):
+        """Test metadata import (document type declaration)"""
+        authorization_flow = create_test_flow(FlowDesignation.AUTHORIZATION)
+        invalidation_flow = create_test_flow(FlowDesignation.INVALIDATION)
+        metadata_xml = load_fixture("fixtures/simple.xml").replace(
+            '<?xml version="1.0"?>',
+            '<?xml version="1.0"?><!DOCTYPE md:EntityDescriptor>',
+        )
+        with TemporaryFile() as metadata:
+            metadata.write(metadata_xml.encode())
+            metadata.seek(0)
+            response = self.client.post(
+                reverse("authentik_api:samlprovider-import-metadata"),
+                {
+                    "file": metadata,
+                    "name": generate_id(),
+                    "authorization_flow": authorization_flow.pk,
+                    "invalidation_flow": invalidation_flow.pk,
+                },
+                format="multipart",
+            )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json(),
+            ["Failed to import Metadata: XML document contains a DOCTYPE declaration"],
+        )
 
     def test_import_invalid(self):
         """Test metadata import (invalid input)"""

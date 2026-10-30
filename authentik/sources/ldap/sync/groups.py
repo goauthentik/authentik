@@ -119,12 +119,13 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 if action in (Action.AUTH, Action.LINK):
                     group = connection.group
                     group.update_attributes(defaults)
+                    connection.save()
                 elif action == Action.DENY:
                     continue
 
                 if parent:
                     group.parents.add(parent)
-                self._logger.debug("Created group with attributes", **defaults)
+                self._logger.debug("Created group with attributes", attributes=defaults)
             except SkipObjectException:
                 continue
             except PropertyMappingExpressionException as exc:

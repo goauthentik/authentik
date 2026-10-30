@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,94 +10,42 @@
  * Do not edit the class manually.
  */
 
-import type { PromptStage } from "./PromptStage";
-import { PromptStageFromJSON } from "./PromptStage";
-import type { PromptTypeEnum } from "./PromptTypeEnum";
-import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
+import type { PromptStage } from "./PromptStage.js";
+import { PromptStageFromJSON } from "./PromptStage.js";
+import type { PromptTypeEnum } from "./PromptTypeEnum.js";
+import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum.js";
 
 /**
  * Prompt Serializer
+ *
  * @export
  * @interface Prompt
  */
 export interface Prompt {
-    /**
-     *
-     * @type {string}
-     * @memberof Prompt
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Prompt
-     */
     name: string;
     /**
      * Name of the form field, also used to store the value
-     * @type {string}
-     * @memberof Prompt
      */
     fieldKey: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Prompt
-     */
     label: string;
-    /**
-     *
-     * @type {PromptTypeEnum}
-     * @memberof Prompt
-     */
     type: PromptTypeEnum;
-    /**
-     *
-     * @type {boolean}
-     * @memberof Prompt
-     */
     required?: boolean;
     /**
-     * Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
-     * @type {string}
-     * @memberof Prompt
+     * Optionally provide a short hint that describes the expected input value. When creating a
+     * fixed choice field, enable interpreting as expression and return a list to return multiple
+     * choices.
      */
     placeholder?: string;
     /**
-     * Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
-     * @type {string}
-     * @memberof Prompt
+     * Optionally pre-fill the input with an initial value. When creating a fixed choice field,
+     * enable interpreting as expression and return a list to return multiple default choices.
      */
     initialValue?: string;
-    /**
-     *
-     * @type {number}
-     * @memberof Prompt
-     */
     order?: number;
-    /**
-     *
-     * @type {Array<PromptStage>}
-     * @memberof Prompt
-     */
     readonly promptStagesObj: Array<PromptStage>;
-    /**
-     *
-     * @type {string}
-     * @memberof Prompt
-     */
     subText?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof Prompt
-     */
     placeholderExpression?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof Prompt
-     */
     initialValueExpression?: boolean;
 }
 

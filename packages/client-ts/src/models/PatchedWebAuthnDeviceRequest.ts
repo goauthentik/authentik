@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Serializer for WebAuthn authenticator devices
+ *
  * @export
  * @interface PatchedWebAuthnDeviceRequest
  */
 export interface PatchedWebAuthnDeviceRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedWebAuthnDeviceRequest
-     */
     name?: string;
 }
 

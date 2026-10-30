@@ -21,6 +21,7 @@ export function findSlottedInstance<T>(
  * @param element The element to check for an assigned slot.
  * @param name The slot name to match. Pass `null` to match any named slot
  *   (excluding the default slot). If omitted, matches the default slot.
+ *
  * @returns The matching assigned slot, or `null` if none is found.
  */
 export function findAssignedSlot(
@@ -42,4 +43,22 @@ export function findAssignedSlot(
     }
 
     return assignedSlot.name === name ? assignedSlot : null;
+}
+
+/**
+ * Creates a new slot element with the specified name.
+ *
+ * @param name The name of the slot. Omit or pass `null` for the default slot.
+ * @param ownerDocument The document to create the slot in. Defaults to the current document.
+ *
+ * @returns The created slot element.
+ */
+export function createSlot(name?: string | null, ownerDocument = document): HTMLSlotElement {
+    const slot = ownerDocument.createElement("slot");
+
+    if (name) {
+        slot.setAttribute("name", name);
+    }
+
+    return slot;
 }

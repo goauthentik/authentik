@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,75 +10,38 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorAttachmentEnum } from "./AuthenticatorAttachmentEnum";
+import type { AuthenticatorAttachmentEnum } from "./AuthenticatorAttachmentEnum.js";
 import {
     AuthenticatorAttachmentEnumFromJSON,
     AuthenticatorAttachmentEnumToJSON,
-} from "./AuthenticatorAttachmentEnum";
-import type { UserVerificationEnum } from "./UserVerificationEnum";
-import { UserVerificationEnumFromJSON, UserVerificationEnumToJSON } from "./UserVerificationEnum";
-import type { WebAuthnHintEnum } from "./WebAuthnHintEnum";
-import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum";
+} from "./AuthenticatorAttachmentEnum.js";
+import type { UserVerificationEnum } from "./UserVerificationEnum.js";
+import {
+    UserVerificationEnumFromJSON,
+    UserVerificationEnumToJSON,
+} from "./UserVerificationEnum.js";
+import type { WebAuthnHintEnum } from "./WebAuthnHintEnum.js";
+import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum.js";
 
 /**
  * AuthenticatorWebAuthnStage Serializer
+ *
  * @export
  * @interface PatchedAuthenticatorWebAuthnStageRequest
  */
 export interface PatchedAuthenticatorWebAuthnStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
-     */
     name?: string;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
-     */
     friendlyName?: string;
-    /**
-     *
-     * @type {UserVerificationEnum}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
-     */
     userVerification?: UserVerificationEnum;
-    /**
-     *
-     * @type {AuthenticatorAttachmentEnum}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
-     */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
-    /**
-     *
-     * @type {UserVerificationEnum}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
-     */
     residentKeyRequirement?: UserVerificationEnum;
-    /**
-     *
-     * @type {Array<WebAuthnHintEnum>}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
-     */
     hints?: Array<WebAuthnHintEnum>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
-     */
     deviceTypeRestrictions?: Array<string>;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
-     */
     maxAttempts?: number;
 }
 

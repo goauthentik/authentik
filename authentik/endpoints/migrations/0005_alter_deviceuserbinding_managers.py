@@ -13,8 +13,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelManagers(
             name="deviceuserbinding",
-            managers=[
-                ("in_use", django.db.models.manager.Manager()),
-            ],
+            managers=[],
         ),
     ]

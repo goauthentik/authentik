@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Serializer for email authenticator devices
+ *
  * @export
  * @interface EmailDevice
  */
 export interface EmailDevice {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof EmailDevice
      */
     name: string;
-    /**
-     *
-     * @type {number}
-     * @memberof EmailDevice
-     */
     readonly pk: number;
-    /**
-     *
-     * @type {string}
-     * @memberof EmailDevice
-     */
     readonly email: string;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof EmailDevice
-     */
     readonly user: PartialUser;
 }
 

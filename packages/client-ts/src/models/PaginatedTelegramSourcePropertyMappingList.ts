@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { TelegramSourcePropertyMapping } from "./TelegramSourcePropertyMapping";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { TelegramSourcePropertyMapping } from "./TelegramSourcePropertyMapping.js";
 import {
     TelegramSourcePropertyMappingFromJSON,
     TelegramSourcePropertyMappingToJSON,
-} from "./TelegramSourcePropertyMapping";
+} from "./TelegramSourcePropertyMapping.js";
 
 /**
- *
  * @export
  * @interface PaginatedTelegramSourcePropertyMappingList
  */
 export interface PaginatedTelegramSourcePropertyMappingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedTelegramSourcePropertyMappingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<TelegramSourcePropertyMapping>}
-     * @memberof PaginatedTelegramSourcePropertyMappingList
-     */
     results: Array<TelegramSourcePropertyMapping>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedTelegramSourcePropertyMappingList
-     */
     autocomplete: { [key: string]: any };
 }
 

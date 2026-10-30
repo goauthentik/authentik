@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { MutualTLSStage } from "./MutualTLSStage";
-import { MutualTLSStageFromJSON, MutualTLSStageToJSON } from "./MutualTLSStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { MutualTLSStage } from "./MutualTLSStage.js";
+import { MutualTLSStageFromJSON, MutualTLSStageToJSON } from "./MutualTLSStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedMutualTLSStageList
  */
 export interface PaginatedMutualTLSStageList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedMutualTLSStageList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<MutualTLSStage>}
-     * @memberof PaginatedMutualTLSStageList
-     */
     results: Array<MutualTLSStage>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedMutualTLSStageList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatedSession } from "./AuthenticatedSession";
-import { AuthenticatedSessionFromJSON, AuthenticatedSessionToJSON } from "./AuthenticatedSession";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { AuthenticatedSession } from "./AuthenticatedSession.js";
+import {
+    AuthenticatedSessionFromJSON,
+    AuthenticatedSessionToJSON,
+} from "./AuthenticatedSession.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedAuthenticatedSessionList
  */
 export interface PaginatedAuthenticatedSessionList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedAuthenticatedSessionList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<AuthenticatedSession>}
-     * @memberof PaginatedAuthenticatedSessionList
-     */
     results: Array<AuthenticatedSession>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedAuthenticatedSessionList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Group Source Connection
+ *
  * @export
  * @interface PatchedGroupTelegramSourceConnectionRequest
  */
 export interface PatchedGroupTelegramSourceConnectionRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedGroupTelegramSourceConnectionRequest
-     */
     source?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedGroupTelegramSourceConnectionRequest
-     */
     identifier?: string;
 }
 

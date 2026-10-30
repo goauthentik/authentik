@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Role serializer
+ *
  * @export
  * @interface RoleRequest
  */
 export interface RoleRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof RoleRequest
-     */
     name: string;
 }
 

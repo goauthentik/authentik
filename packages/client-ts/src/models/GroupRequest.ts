@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,45 +12,19 @@
 
 /**
  * Group Serializer
+ *
  * @export
  * @interface GroupRequest
  */
 export interface GroupRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof GroupRequest
-     */
     name: string;
     /**
      * Users added to this group will be superusers.
-     * @type {boolean}
-     * @memberof GroupRequest
      */
     isSuperuser?: boolean;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof GroupRequest
-     */
     parents?: Array<string>;
-    /**
-     *
-     * @type {Array<number>}
-     * @memberof GroupRequest
-     */
     users?: Array<number>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof GroupRequest
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof GroupRequest
-     */
     roles?: Array<string>;
 }
 

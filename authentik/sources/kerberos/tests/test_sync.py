@@ -1,10 +1,14 @@
 """Kerberos Source sync tests"""
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Session, User
+from authentik.core.models import Session, SourceUserMatchingModes, User
 from authentik.core.tests.utils import create_test_session
 from authentik.lib.generators import generate_id
-from authentik.sources.kerberos.models import KerberosSource, KerberosSourcePropertyMapping
+from authentik.sources.kerberos.models import (
+    KerberosSource,
+    KerberosSourcePropertyMapping,
+    UserKerberosSourceConnection,
+)
 from authentik.sources.kerberos.sync import KerberosSync
 from authentik.sources.kerberos.tasks import kerberos_sync
 from authentik.sources.kerberos.tests.utils import KerberosTestCase
@@ -56,6 +60,18 @@ class TestKerberosSync(KerberosTestCase):
         user.refresh_from_db()
         self.assertFalse(user.is_active)
         self.assertFalse(Session.objects.filter(session_key=session.session.session_key).exists())
+
+    def test_sync_link_existing(self):
+        """Test that linking to an existing user persists the source connection"""
+        self.source.user_matching_mode = SourceUserMatchingModes.USERNAME_LINK
+        self.source.save()
+        existing = User.objects.create(username=self.realm.user_princ.rsplit("@", 1)[0])
+
+        KerberosSync(self.source, Task()).sync()
+
+        self.assertTrue(
+            UserKerberosSourceConnection.objects.filter(source=self.source, user=existing).exists()
+        )
 
     def test_sync_mapping(self):
         """Test property mappings"""

@@ -1,5 +1,4 @@
 import "./styles.css";
-
 import IconExternalLink from "@theme/Icon/ExternalLink";
 
 export function EnterpriseCTA() {

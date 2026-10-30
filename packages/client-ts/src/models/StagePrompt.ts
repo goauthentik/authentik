@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,70 +10,26 @@
  * Do not edit the class manually.
  */
 
-import type { PromptChoice } from "./PromptChoice";
-import { PromptChoiceFromJSON, PromptChoiceToJSON } from "./PromptChoice";
-import type { PromptTypeEnum } from "./PromptTypeEnum";
-import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
+import type { PromptChoice } from "./PromptChoice.js";
+import { PromptChoiceFromJSON, PromptChoiceToJSON } from "./PromptChoice.js";
+import type { PromptTypeEnum } from "./PromptTypeEnum.js";
+import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum.js";
 
 /**
  * Serializer for a single Prompt field
+ *
  * @export
  * @interface StagePrompt
  */
 export interface StagePrompt {
-    /**
-     *
-     * @type {string}
-     * @memberof StagePrompt
-     */
     fieldKey: string;
-    /**
-     *
-     * @type {string}
-     * @memberof StagePrompt
-     */
     label: string;
-    /**
-     *
-     * @type {PromptTypeEnum}
-     * @memberof StagePrompt
-     */
     type: PromptTypeEnum;
-    /**
-     *
-     * @type {boolean}
-     * @memberof StagePrompt
-     */
     required: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof StagePrompt
-     */
     placeholder: string;
-    /**
-     *
-     * @type {string}
-     * @memberof StagePrompt
-     */
     initialValue: string;
-    /**
-     *
-     * @type {number}
-     * @memberof StagePrompt
-     */
     order: number;
-    /**
-     *
-     * @type {string}
-     * @memberof StagePrompt
-     */
     subText: string;
-    /**
-     *
-     * @type {Array<PromptChoice>}
-     * @memberof StagePrompt
-     */
     choices: Array<PromptChoice> | null;
 }
 

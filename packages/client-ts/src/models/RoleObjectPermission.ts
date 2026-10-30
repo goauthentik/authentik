@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,45 +12,16 @@
 
 /**
  * Role-bound object level permission
+ *
  * @export
  * @interface RoleObjectPermission
  */
 export interface RoleObjectPermission {
-    /**
-     *
-     * @type {number}
-     * @memberof RoleObjectPermission
-     */
     readonly id: number;
-    /**
-     *
-     * @type {string}
-     * @memberof RoleObjectPermission
-     */
     readonly codename: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RoleObjectPermission
-     */
     readonly model: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RoleObjectPermission
-     */
     readonly appLabel: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RoleObjectPermission
-     */
     objectPk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RoleObjectPermission
-     */
     readonly name: string;
 }
 

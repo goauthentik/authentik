@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,50 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * MicrosoftEntraProviderUser Serializer
+ *
  * @export
  * @interface MicrosoftEntraProviderUser
  */
 export interface MicrosoftEntraProviderUser {
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderUser
-     */
     readonly id: string;
-    /**
-     *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderUser
-     */
     microsoftId: string;
-    /**
-     *
-     * @type {number}
-     * @memberof MicrosoftEntraProviderUser
-     */
     user: number;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof MicrosoftEntraProviderUser
-     */
     readonly userObj: PartialUser;
-    /**
-     *
-     * @type {number}
-     * @memberof MicrosoftEntraProviderUser
-     */
     provider: number;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof MicrosoftEntraProviderUser
-     */
     readonly attributes: { [key: string]: any };
 }
 

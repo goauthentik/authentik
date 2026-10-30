@@ -6,6 +6,9 @@ import "#admin/users/UserOverviewTab";
 import "#admin/users/UserRolesTab";
 import "#admin/events/UserEvents";
 import "#elements/Tabs";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { aki } from "#common/api/client";
 import { AKRefreshEvent } from "#common/events";
@@ -20,18 +23,13 @@ import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithLocale } from "#elements/mixins/locale";
 import { WithSession } from "#elements/mixins/session";
-
-import { setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails } from "#elements/router/meta";
 
 import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithLazyTabs(
@@ -95,7 +93,7 @@ export class UserViewPage extends WithLazyTabs(
         }
 
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"

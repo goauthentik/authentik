@@ -1,16 +1,15 @@
+import { DualSelectEvent } from "../events.js";
 import { DualSelectEventType, DualSelectPair } from "../types.js";
 import { listStyles, selectedPaneStyles } from "./styles.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 
 import { AKElement } from "#elements/Base";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-selected-pane-status"],
@@ -19,23 +18,20 @@ const hostAttributes = [
 ] as const satisfies Array<[string, string]>;
 
 /**
+ * @fires ak-dual-select-selected-move-changed - When the list of "to move" entries changed.
+ *   Includes the current `toMove` content.
+ * @fires ak-dual-select-remove-one - Double-click with the element clicked on.
+ *
+ *   It is not expected that the `ak-dual-select-selected-move-changed` will be used; instead, the
+ *   attribute will be read by the parent when a control is clicked.
+ * @property {DualSelectPair[]} selected - The full list of key/value pairs that are currently
  * @element ak-dual-select-available-panel
  *
  * The "selected options" or "right" pane in a dual-list multi-select.  It receives from its parent
  * a list of the selected options, and maintains an internal list of objects selected to move.
- *
- * @fires ak-dual-select-selected-move-changed - When the list of "to move" entries changed.
- * Includes the current `toMove` content.
- *
- * @fires ak-dual-select-remove-one - Double-click with the element clicked on.
- *
- * It is not expected that the `ak-dual-select-selected-move-changed` will be used; instead, the
- * attribute will be read by the parent when a control is clicked.
- *
- * @prop {DualSelectPair[]} selected - The full list of key/value pairs that are currently
  */
 @customElement("ak-dual-select-selected-pane")
-export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEventType>(AKElement) {
+export class AkDualSelectSelectedPane extends AKElement {
     static styles = [PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
 
     //#region Properties
@@ -95,12 +91,14 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
             this.toMove.add(key);
         }
 
-        this.dispatchCustomEvent(
-            DualSelectEventType.MoveChanged,
-            Array.from(this.toMove.values()).sort(),
+        this.dispatchEvent(
+            new DualSelectEvent(
+                DualSelectEventType.MoveChanged,
+                Array.from(this.toMove.values()).sort(),
+            ),
         );
 
-        this.dispatchCustomEvent("ak-dual-select-move");
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.Move));
         // Necessary because updating a map won't trigger a state change
         this.requestUpdate();
     };
@@ -108,7 +106,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
     #moveListener = (key: string | number): void => {
         this.toMove.delete(key);
 
-        this.dispatchCustomEvent(DualSelectEventType.RemoveOne, key);
+        this.dispatchEvent(new DualSelectEvent(DualSelectEventType.RemoveOne, key));
         this.requestUpdate();
     };
 
@@ -124,6 +122,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
                         const selected = classMap({
                             "pf-m-selected": this.toMove.has(key),
                         });
+
                         return html` <li
                             class="pf-c-dual-list-selector__list-item"
                             aria-selected="false"

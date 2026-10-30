@@ -21,6 +21,8 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
+from authentik.admin.models import SystemSettings
+from authentik.admin.utils import get_system_settings
 from authentik.brands.models import Brand
 from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
@@ -44,18 +46,15 @@ from authentik.lib.models import (
     SerializerModel,
     SimpleThroughModel,
 )
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
-from authentik.tenants.models import Tenant
-from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 DISCORD_FIELD_LIMIT = 25
@@ -66,9 +65,9 @@ def default_event_duration():
     """Default duration an Event is saved.
     This is used as a fallback when no brand is available"""
     try:
-        tenant = get_current_tenant(only=["event_retention"])
-        return now() + timedelta_from_string(tenant.event_retention)
-    except Tenant.DoesNotExist:
+        settings = get_system_settings()
+        return now() + timedelta_from_string(settings.event_retention)
+    except SystemSettings.DoesNotExist:
         return now() + timedelta(days=365)
 
 
@@ -83,7 +82,17 @@ def django_app_names() -> list[str]:
     return [x.name for x in apps.app_configs.values()]
 
 
-class NotificationTransportError(SentryIgnoredException):
+@lru_cache
+def app_for_module(module: str) -> str:
+    """Match a module to the django app it belongs to, or keep the module name"""
+    django_apps: list[str] = get_close_matches(module, django_app_names(), n=1)
+    # Also ensure that closest django app has the correct prefix
+    if len(django_apps) > 0 and django_apps[0].startswith(module):
+        return django_apps[0]
+    return module
+
+
+class NotificationTransportError(TracingIgnoredException):
     """Error raised when a notification fails to be delivered"""
 
 
@@ -182,13 +191,7 @@ class Event(SerializerModel, ExpiringModel):
         if not app:
             current = currentframe()
             parent = current.f_back
-            app = parent.f_globals["__name__"]
-            # Attempt to match the calling module to the django app it belongs to
-            # if we can't find a match, keep the module name
-            django_apps: list[str] = get_close_matches(app, django_app_names(), n=1)
-            # Also ensure that closest django app has the correct prefix
-            if len(django_apps) > 0 and django_apps[0].startswith(app):
-                app = django_apps[0]
+            app = app_for_module(parent.f_globals["__name__"])
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
@@ -228,10 +231,10 @@ class Event(SerializerModel, ExpiringModel):
         if hasattr(request, "brand"):
             brand: Brand = request.brand
             self.brand = sanitize_dict(model_to_dict(brand))
-        if hasattr(request, "user"):
-            self.user = get_user(request.user)
         if user:
             self.user = get_user(user)
+        elif hasattr(request, "user"):
+            self.user = get_user(request.user)
         if hasattr(request, "session"):
             from authentik.flows.views.executor import SESSION_KEY_PLAN
 
@@ -484,6 +487,9 @@ class NotificationTransport(TasksModel, SerializerModel):
             ]
 
         if self.webhook_ca:
+            # Imports the docker client, only load it when a custom CA is set
+            from authentik.outposts.docker_tls import DockerInlineTLS
+
             with DockerInlineTLS(self.webhook_ca, authentication_kp=None) as tls:
                 return send(verify=tls.ca_cert)
         return send()

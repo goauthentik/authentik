@@ -16,11 +16,13 @@ import { VFile } from "vfile";
 export const remarkHeadings: Plugin<[], Root, VFile> = () => {
     return function transformer(tree) {
         const slugger = new GithubSlugger();
+
         const visitor = (node: Heading) => {
             const textContent = toString(node);
             const id = slugger.slug(textContent);
 
             node.data = node.data || {};
+
             node.data.hProperties = {
                 ...node.data.hProperties,
                 id,

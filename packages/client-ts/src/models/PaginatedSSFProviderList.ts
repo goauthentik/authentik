@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SSFProvider } from "./SSFProvider";
-import { SSFProviderFromJSON, SSFProviderToJSON } from "./SSFProvider";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { SSFProvider } from "./SSFProvider.js";
+import { SSFProviderFromJSON, SSFProviderToJSON } from "./SSFProvider.js";
 
 /**
- *
  * @export
  * @interface PaginatedSSFProviderList
  */
 export interface PaginatedSSFProviderList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedSSFProviderList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<SSFProvider>}
-     * @memberof PaginatedSSFProviderList
-     */
     results: Array<SSFProvider>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSSFProviderList
-     */
     autocomplete: { [key: string]: any };
 }
 

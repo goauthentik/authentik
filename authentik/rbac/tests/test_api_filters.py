@@ -5,6 +5,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.events.models import Notification
 from authentik.lib.generators import generate_id
 from authentik.rbac.models import Role
 from authentik.stages.invitation.api import InvitationSerializer
@@ -157,3 +158,33 @@ class TestAPIPerms(APITestCase):
 
         res = self.client.get(reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}))
         self.assertEqual(res.status_code, 403)
+
+    def test_anonymous_user_denied_owner_field(self):
+        """Test anonymous user denied on an object of a viewset with an owner field"""
+        notification = Notification.objects.create(user=self.user, body=generate_id())
+        res = self.client.get(
+            reverse("authentik_api:notification-detail", kwargs={"pk": notification.pk})
+        )
+        self.assertEqual(res.status_code, 403)
+
+        # A lookup value that isn't a valid primary key, as sent by scanners
+        res = self.client.get(reverse("authentik_api:notification-detail", kwargs={"pk": "rules"}))
+        self.assertEqual(res.status_code, 403)
+
+        res = self.client.delete(
+            reverse("authentik_api:notification-detail", kwargs={"pk": notification.pk})
+        )
+        self.assertEqual(res.status_code, 403)
+        self.assertTrue(Notification.objects.filter(pk=notification.pk).exists())
+
+    def test_owner_field(self):
+        """Test owner field access to own and other users' objects"""
+        own = Notification.objects.create(user=self.user, body=generate_id())
+        other = Notification.objects.create(user=self.superuser, body=generate_id())
+        self.client.force_login(self.user)
+
+        res = self.client.get(reverse("authentik_api:notification-detail", kwargs={"pk": own.pk}))
+        self.assertEqual(res.status_code, 200)
+
+        res = self.client.get(reverse("authentik_api:notification-detail", kwargs={"pk": other.pk}))
+        self.assertEqual(res.status_code, 404)

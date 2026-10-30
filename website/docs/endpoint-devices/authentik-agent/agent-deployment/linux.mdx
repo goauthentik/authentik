@@ -16,7 +16,7 @@ import Tabs from "@theme/Tabs";
 
 ## Prerequisites
 
-You must [configure your authentik deployment](../configuration.md) to support the authentik Agent.
+You must [configure your authentik deployment](../configuration.mdx) to support the authentik Agent.
 
 ## Create an enrollment token
 
@@ -24,7 +24,7 @@ If you already have an enrollment token, skip to [Install the authentik Agent on
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
-3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
+3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.mdx) to support the authentik agent.
 4. Under **Enrollment Tokens**, click **New Enrollment Token**, and configure the following settings:
     - **Token name**: Provide a descriptive name for the token.
     - **Device group _(optional)_**: Select a device access group to add the device to after enrollment.
@@ -136,7 +136,7 @@ sudo ak-sysd domains join <deployment_name> --authentik-url https://authentik.co
 - `https://authentik.company` is the fully qualified domain name of the authentik deployment.
 
 2. Enter your [enrollment token](#create-an-enrollment-token) when prompted.
-3. After you enter the token, authentik enrolls the device. The device appears on the [Devices page](../../manage-devices.mdx) after it [checks in](../../device-compliance/device-reporting.md).
+3. After you enter the token, authentik enrolls the device. The device appears on the [Devices page](../../manage-devices.mdx) after it [checks in](../../device-compliance/device-reporting.mdx).
 
 ### Configure device login on non-Debian systems
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { DenyStage } from "./DenyStage";
-import { DenyStageFromJSON, DenyStageToJSON } from "./DenyStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { DenyStage } from "./DenyStage.js";
+import { DenyStageFromJSON, DenyStageToJSON } from "./DenyStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedDenyStageList
  */
 export interface PaginatedDenyStageList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedDenyStageList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<DenyStage>}
-     * @memberof PaginatedDenyStageList
-     */
     results: Array<DenyStage>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedDenyStageList
-     */
     autocomplete: { [key: string]: any };
 }
 

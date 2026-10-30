@@ -1,17 +1,19 @@
-import { AKControlElement } from "#elements/ControlElement";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+
+import { FormAssociatedElement, isFormField } from "#elements/forms/form-associated-element";
+import { SettlingFormField } from "#elements/forms/settle-form-fields";
 import { SlottedTemplateResult, type Spread } from "#elements/types";
 import { randomId } from "#elements/utils/randomId";
 
 import { spread } from "@open-wc/lit-helpers";
+import type { Jsonifiable } from "type-fest";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
-import { customElement, property, queryAll } from "lit/decorators.js";
+import { css, html, nothing, PropertyValues, ReactiveElement } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 
 export type InputCell<T> = (el: T, idx: number) => SlottedTemplateResult | typeof nothing;
 
@@ -23,10 +25,41 @@ export interface IArrayInput<T> {
     validator?: (_: T[]) => boolean;
 }
 
-type Keyed<T> = { key: string; item: T };
+interface Row<T> {
+    key: string;
+    item: T;
+}
 
+/**
+ * A row element rendered by {@linkcode ArrayInput.row}.
+ */
+interface RowElement<T> extends HTMLElement {
+    toJSON(): T;
+    valid?: boolean;
+}
+
+/**
+ * Two empty lists are the same list. Hosts often pass `items ?? []`, a new array on every render.
+ */
+function itemsChanged(nextItems: unknown[] | undefined, previousItems: unknown[] | undefined) {
+    if (!nextItems?.length && !previousItems?.length) return false;
+
+    return nextItems !== previousItems;
+}
+
+/**
+ * An editable list of rows, each rendered by {@linkcode ArrayInput.row}.
+ *
+ * `items` is the list provided by the host. Assigning a different array replaces the rows.
+ * Re-assigning the same array keeps the user's edits. A form reset restores `items`.
+ *
+ * @fires change - The user edited, added, or removed a row.
+ */
 @customElement("ak-array-input")
-export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<T> {
+export class ArrayInput<T>
+    extends FormAssociatedElement<string, Jsonifiable>
+    implements IArrayInput<T>, SettlingFormField
+{
     static styles = [
         PFButton,
         PFInputGroup,
@@ -51,132 +84,192 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
         `,
     ];
 
-    @property({ type: String })
-    public name: string | null = null;
+    //#region Properties
 
+    /**
+     * Check each row's `valid` and the {@linkcode validator} before the form submits.
+     */
     @property({ type: Boolean })
     public validate = false;
 
-    @property({ type: Object, attribute: false })
+    @property({ attribute: false })
     public validator?: (_: T[]) => boolean;
 
-    @property({ type: Array, attribute: false })
+    @property({ attribute: false })
     public row!: InputCell<T>;
 
-    @property({ type: Object, attribute: false })
+    @property({ attribute: false })
     public newItem!: () => T;
 
-    #items: Keyed<T>[] = [];
+    @property({ attribute: false, hasChanged: itemsChanged })
+    public items: T[] = [];
 
-    // This magic creates a semi-reliable key on which Lit's `repeat` directive can control its
-    // interaction. Without it, we get undefined behavior in the re-rendering of the array.
-    @property({ type: Array, attribute: false })
-    public set items(nextItems: T[]) {
-        const previousItems = new Map(
-            (this.#items ?? []).map((key, item) => [JSON.stringify(item), key]),
+    //#endregion
+
+    //#region State
+
+    @state()
+    protected rows: Row<T>[] = [];
+
+    //#endregion
+
+    //#region Lifecycle
+
+    protected override willUpdate(changedProperties: PropertyValues<this>): void {
+        super.willUpdate(changedProperties);
+
+        if (changedProperties.has("items")) {
+            this.#resetRows();
+        }
+    }
+
+    #rowsUpdated: Promise<void> = Promise.resolve();
+
+    protected override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
+        this.#rowsUpdated = Promise.all(
+            this.#rowElements().map((element) =>
+                element instanceof ReactiveElement ? element.updateComplete : true,
+            ),
+        ).then(() => this.#syncValidity());
+    }
+
+    protected override async getUpdateComplete(): Promise<boolean> {
+        const result = await super.getUpdateComplete();
+
+        await this.#rowsUpdated;
+
+        return result;
+    }
+
+    /**
+     * Resolves once the rows have rendered and the form value reflects them.
+     */
+    public get settled(): Promise<void> {
+        return this.updateComplete.then(() => undefined);
+    }
+
+    public formResetCallback(): void {
+        this.#resetRows();
+    }
+
+    public formStateRestoreCallback(state: string): void {
+        this.rows = (JSON.parse(state) as T[]).map((item) => ({ key: randomId(), item }));
+    }
+
+    //#endregion
+
+    //#region Value
+
+    public toJSON(): T[] & Jsonifiable {
+        return this.rows.map(({ item }) => item) as T[] & Jsonifiable;
+    }
+
+    #resetRows(): void {
+        this.rows = (this.items ?? []).map((item) => ({ key: randomId(), item }));
+    }
+
+    #rowElements(): RowElement<T>[] {
+        return Array.from(
+            this.renderRoot.querySelectorAll<RowElement<T>>(".ak-input-group > [name]"),
         );
-
-        const resolvedItems = nextItems.map((item) => ({
-            item,
-            key: previousItems.get(JSON.stringify(item))?.key ?? randomId(),
-        }));
-
-        this.#items = resolvedItems;
     }
 
-    get items() {
-        return this.#items.map(({ item }) => item);
-    }
+    #syncValidity(): void {
+        const values = this.toJSON();
+        const rowElements = this.#rowElements();
 
-    @queryAll("div.ak-input-group")
-    protected inputGroups?: HTMLDivElement[];
+        this.internals.setFormValue(JSON.stringify(values));
 
-    public toJSON(): T[] {
-        if (!this.inputGroups) {
-            throw new Error("Could not find input group collection in ak-array-input");
+        const invalidRow = this.validate
+            ? rowElements.find((element) => element.valid === false)
+            : undefined;
+
+        if (this.validate && (invalidRow || (this.validator && !this.validator(values)))) {
+            this.internals.setValidity(
+                { customError: true },
+                msg("One or more entries are invalid.", {
+                    id: "array-input.validation.invalid-entry",
+                }),
+                invalidRow ?? rowElements[0],
+            );
+
+            return;
         }
 
-        return this.items;
-    }
+        if (this.required && !values.length) {
+            this.internals.setValidity(
+                { valueMissing: true },
+                msg("This field is required."),
+                this.renderRoot.querySelector<HTMLElement>("button.pf-m-link") ?? undefined,
+            );
 
-    get valid() {
-        if (!this.validate) {
-            return true;
+            return;
         }
 
-        const oneIsValid = (g: HTMLDivElement) =>
-            g.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")?.valid ?? true;
-
-        const allAreValid = Array.from(this.inputGroups ?? []).every(oneIsValid);
-        return allAreValid && (this.validator ? this.validator(this.items) : true);
+        this.internals.setValidity({});
     }
 
-    protected getNamedElements(): (HTMLInputElement & AKControlElement<T>)[] {
-        return Array.from(this.inputGroups ?? []).map(
-            (group) => group.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")!,
-        );
-    }
-
-    protected itemsFromDOM(): T[] {
-        return Array.from(this.inputGroups ?? [])
-            .map((group) => {
-                return (
-                    group
-                        .querySelector<HTMLInputElement & AKControlElement<T>>("[name]")
-                        ?.toJSON() ?? null
-                );
-            })
-            .filter((i) => i !== null);
-    }
-
-    protected dispatchChangeEvent() {
+    #dispatchChange(): void {
         this.dispatchEvent(new Event("change", { composed: true, bubbles: true }));
     }
 
-    protected changeListener = () => {
-        this.items = this.itemsFromDOM();
-        this.dispatchChangeEvent();
-    };
+    //#endregion
 
-    protected addNewGroup = () => {
-        this.items = [...this.itemsFromDOM(), this.newItem()];
-        this.dispatchChangeEvent();
+    //#region Event Listeners
 
-        requestAnimationFrame(() => {
-            this.focusLastInput();
-        });
-    };
+    #rowChanged(key: string, event: Event): void {
+        event.stopPropagation();
 
-    protected focusLastInput() {
-        const namedElements = this.getNamedElements();
+        if (!isFormField(event.target as object)) return;
 
-        if (namedElements.length) {
-            namedElements[namedElements.length - 1].focus();
-        }
+        const item = (event.target as RowElement<T>).toJSON();
+
+        this.rows = this.rows.map((row) => (row.key === key ? { key, item } : row));
+        this.#dispatchChange();
     }
 
-    protected renderDeleteButton(idx: number): SlottedTemplateResult {
-        const deleteOneGroup = () => {
-            this.items = [...this.items.slice(0, idx), ...this.items.slice(idx + 1)];
-            this.dispatchChangeEvent();
-        };
+    #addRow = async (): Promise<void> => {
+        this.rows = [...this.rows, { key: randomId(), item: this.newItem() }];
+        this.#dispatchChange();
 
-        return html`<button class="pf-c-button pf-m-control" type="button" @click=${deleteOneGroup}>
-            <i class="fas fa-minus" aria-hidden="true"></i>
-        </button>`;
+        await this.updateComplete;
+
+        this.#rowElements().at(-1)?.focus();
+    };
+
+    #removeRow(key: string): void {
+        this.rows = this.rows.filter((row) => row.key !== key);
+        this.#dispatchChange();
     }
+
+    //#endregion
+
+    //#region Rendering
 
     render() {
-        return html` <div class="pf-l-stack">
+        return html`<div class="pf-l-stack">
             ${repeat(
-                this.#items,
-                (item: Keyed<T>) => item.key,
-                (item: Keyed<T>, idx) =>
-                    html` <div class="ak-input-group" @change=${() => this.changeListener()}>
-                        ${this.row(item.item, idx)}${this.renderDeleteButton(idx)}
+                this.rows,
+                (row) => row.key,
+                (row, idx) =>
+                    html`<div
+                        class="ak-input-group"
+                        @change=${(event: Event) => this.#rowChanged(row.key, event)}
+                    >
+                        ${this.row(row.item, idx)}
+                        <button
+                            class="pf-c-button pf-m-control"
+                            type="button"
+                            aria-label=${msg("Remove entry", { id: "array-input.remove.aria-label" })}
+                            @click=${() => this.#removeRow(row.key)}
+                        >
+                            <i class="fas fa-minus" aria-hidden="true"></i>
+                        </button>
                     </div>`,
             )}
-            <button class="pf-c-button pf-m-link" type="button" @click=${this.addNewGroup}>
+            <button class="pf-c-button pf-m-link" type="button" @click=${this.#addRow}>
                 <span class="pf-c-button__icon pf-m-start">
                     <i class="fas fa-plus" aria-hidden="true"></i
                 ></span>
@@ -184,6 +277,8 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
             </button>
         </div>`;
     }
+
+    //#endregion
 }
 
 export function akArrayInput<T>(properties: IArrayInput<T>) {

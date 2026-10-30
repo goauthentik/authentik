@@ -23,6 +23,7 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
 
             if (value === "") {
                 this.value = NaN;
+
                 return;
             }
 
