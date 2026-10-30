@@ -11,6 +11,7 @@ from authentik.core.models import User
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.sources.ldap.models import flatten
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+from authentik.stages.password.models import PasswordDevice
 
 FILETIME_EPOCH = datetime(1601, 1, 1, tzinfo=UTC)
 FILETIME_NEVER = 9223372036854775807
@@ -73,8 +74,7 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
                 created=created,
                 pwd_last_set=pwd_last_set,
             )
-            user.set_unusable_password()
-            user.save()
+            PasswordDevice.set_unusable_password(user)
 
     @staticmethod
     def account_expired(value: Any) -> bool:
