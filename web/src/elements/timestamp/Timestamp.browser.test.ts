@@ -259,7 +259,7 @@ describe("ak-timestamp: empty states", () => {
     });
 
     it.each([
-        ["an unparseable string", "not a date"],
+        ["an unparsable string", "not a date"],
         ["an Invalid Date", new Date("not a date")],
         ["NaN", Number.NaN],
     ])("renders a placeholder for %s", async (_label, timestamp) => {
