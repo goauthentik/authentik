@@ -5997,10 +5997,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
   <target>Если включено, будут использоваться глобальные настройки подключения к электронной почте, а настройки подключения ниже будут игнорироваться.</target>
 </trans-unit>
-<trans-unit id="s7e2bcca51126ec9c">
-  <source>Subject of the verification email.</source>
-  <target>Тема письма для подтверждения.</target>
-</trans-unit>
 <trans-unit id="sc12c90b1da0f3a47">
   <source>Token expiration</source>
   <target>Срок действия токена</target>
@@ -13741,6 +13737,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="array-input.remove.aria-label">
   <source>Remove entry</source>
+</trans-unit>
+<trans-unit id="stages.authenticator-email.subject.default">
+  <source>Your verification code is <x id="0" equiv-text="${&quot;{{ token }}&quot;}"/></source>
+</trans-unit>
+<trans-unit id="stages.authenticator-email.subject.help">
+  <source>Subject of the verification email. Use <x id="0" equiv-text="${&quot;{{ token }}&quot;}"/> to include the code.</source>
 </trans-unit>
 </body>
 </file>

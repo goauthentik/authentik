@@ -5307,9 +5307,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
 <trans-unit id="s7754fa56a4439de4">
   <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
 </trans-unit>
-<trans-unit id="s7e2bcca51126ec9c">
-  <source>Subject of the verification email.</source>
-</trans-unit>
 <trans-unit id="sc12c90b1da0f3a47">
   <source>Token expiration</source>
 </trans-unit>
@@ -11524,6 +11521,12 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="array-input.remove.aria-label">
   <source>Remove entry</source>
+</trans-unit>
+<trans-unit id="stages.authenticator-email.subject.default">
+  <source>Your verification code is <x id="0" equiv-text="${&quot;{{ token }}&quot;}"/></source>
+</trans-unit>
+<trans-unit id="stages.authenticator-email.subject.help">
+  <source>Subject of the verification email. Use <x id="0" equiv-text="${&quot;{{ token }}&quot;}"/> to include the code.</source>
 </trans-unit>
 </body>
 </file>

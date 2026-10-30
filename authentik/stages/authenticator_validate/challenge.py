@@ -138,7 +138,7 @@ def select_challenge_email(request: HttpRequest, device: EmailDevice):
     """Send Email"""
     valid_secs: int = timedelta_from_string(device.stage.token_expiry).total_seconds()
     device.generate_token(valid_secs=valid_secs)
-    device.stage.send(device)
+    device.stage.send(device, request)
 
 
 def validate_challenge_code(
