@@ -6654,7 +6654,7 @@ nav izpildīta, ja vienas vai abu atlasīto opciju vērtība ir vienāda ar slie
 </trans-unit>
 <trans-unit id="sf7949fbbab2eb566">
   <source>Different browsers handle session cookies differently, and might not remove them even when the browser is closed.</source>
-  <target>Dažādi pārlūki sesijas sīkdatnes apstrādā atšķirīgi un var tās nenoņemt, pat kad pārlūku aizver.</target>
+  <target>Dažādi pārlūki sesijas sīkdatnes apstrādā atšķirīgi un var tās nenoņemt, pat ja pārlūku aizver.</target>
 </trans-unit>
 <trans-unit id="s53bbc3ae4b5fa1d0">
   <source>See here.</source>
