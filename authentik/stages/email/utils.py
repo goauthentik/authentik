@@ -37,6 +37,9 @@ def _sanitize_recipients(recipients: list[tuple[str, str]]) -> list[str]:
     return sanitized
 
 
+DEFAULT_BRAND_TITLE = "authentik"
+
+
 class TemplateEmailMessage(EmailMultiAlternatives):
     """Wrapper around EmailMultiAlternatives with integrated template rendering"""
 
@@ -48,6 +51,7 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         template_name=None,
         template_context=None,
         language="",
+        brand_title: str | None = None,
         **kwargs,
     ):
         sanitized_to = _sanitize_recipients(to)
@@ -56,6 +60,12 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         super().__init__(to=sanitized_to, cc=sanitized_cc, bcc=sanitized_bcc, **kwargs)
         if not template_name:
             return
+        # Templates refer to the brand as `brand_title`, so mails of a custom brand don't
+        # talk about "authentik". An explicit `brand_title` in the template context wins.
+        template_context = {
+            "brand_title": brand_title or DEFAULT_BRAND_TITLE,
+            **(template_context or {}),
+        }
         with translation.override(language):
             html_content = render_to_string(template_name, template_context)
             try:

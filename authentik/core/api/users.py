@@ -1030,6 +1030,7 @@ class UserViewSet(
             to=[(user.name, user.email)],
             template_name=stage.template,
             language=user.locale(request),
+            brand_title=request.brand.branding_title,
             template_context={
                 "url": link,
                 "user": user,
