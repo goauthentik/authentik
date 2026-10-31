@@ -43,7 +43,7 @@ msgstr ""
 
 #: authentik/admin/files/validation.py
 msgid "File name cannot contain duplicate /"
-msgstr "Faila nosaukumā nedrīkst būt dubultas /"
+msgstr "Faila nosaukumā nedrīkst būt dubultas slīpsvītras (/)"
 
 #: authentik/admin/files/validation.py
 msgid "Absolute paths are not allowed"
@@ -273,10 +273,10 @@ msgid ""
 "embed API keys or other credentials in it."
 msgstr ""
 "URL veidne vektoru fragmentu avotam, ko izmanto notikumu karte. Atbalsta XYZ"
-" veidnes ar vietturiem {z}, {x} un {y} vai pmtiles:// arhīva URL. Ja tukšs, "
-"priekšgals izmanto iebūvēto hexworld pamatkarti. Šī vērtība ir daļa no "
-"zīmola informācijas, ko nosūta neautentificētiem klientiem; neiekļaujiet "
-"tajā API atslēgas vai citus akreditācijas datus."
+" veidnes ar vietturiem {z}, {x} un {y} vai pmtiles:// arhīva URL. Ja lauks "
+"ir tukšs, priekšgalsistēma izmanto iebūvēto hexworld pamatkarti. Šī vērtība "
+"ir daļa no zīmola informācijas, ko nosūta neautentificētiem klientiem; "
+"neiekļaujiet tajā API atslēgas vai citus akreditācijas datus."
 
 #: authentik/brands/models.py
 msgid ""
@@ -335,8 +335,8 @@ msgid ""
 "Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
 "this method only if you have different UPN and Mail domains."
 msgstr ""
-"Pēc lietotāja UPN; darbojas tikai tad, ja lietotājam ir iestatīts atribūts "
-"'upn'. Izmantojiet šo metodi tikai tad, ja jums ir atšķirīgi UPN un pasta "
+"Pēc lietotāja UPN; darbojas tikai, ja lietotājam ir iestatīts atribūts "
+"'upn'. Izmantojiet šo metodi tikai, ja jums ir atšķirīgi UPN un pasta "
 "domēni."
 
 #: authentik/common/saml/exceptions.py
@@ -398,9 +398,9 @@ msgid ""
 "providers are returned. When set to false, backchannel providers are "
 "excluded"
 msgstr ""
-"Ja nav iestatīts, tiek atgriezti visi pakalpojumu sniedzēji. Ja iestatīts uz"
-" true, tiek atgriezti tikai aizmugures kanāla pakalpojumu sniedzēji. Ja "
-"iestatīts uz false, aizmugures kanāla pakalpojumu sniedzēji tiek izslēgti"
+"Ja nav iestatīts, tiek atgriezti visi pakalpojuma sniedzēji. Ja vērtība ir "
+"true, tiek atgriezti tikai starpserveru pakalpojuma sniedzēji. Ja vērtība ir"
+" false, starpserveru pakalpojuma sniedzēji tiek izslēgti"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -436,13 +436,13 @@ msgid ""
 "Import a valid password hash even when its parameters do not match "
 "authentik's current password hashing settings."
 msgstr ""
-"Importēt derīgu paroles jaucējkodu arī tad, ja tā parametri neatbilst "
-"authentik pašreizējiem paroļu jaukšanas iestatījumiem."
+"Importēt derīgu paroles jaucējkodu, pat ja tā parametri neatbilst authentik "
+"pašreizējiem paroļu jaukšanas iestatījumiem."
 
 #: authentik/core/api/users.py
 #, python-format
 msgid "%(reason)s Set \"override\" to true to import it anyway."
-msgstr "%(reason)s Iestatiet \"override\" uz true, lai to tomēr importētu."
+msgstr "%(reason)s Iestatiet \"override\" vērtību true, lai to tomēr importētu."
 
 #: authentik/core/api/users.py
 msgid "No recovery flow set."
@@ -540,7 +540,7 @@ msgstr "Var uzdoties par citiem lietotājiem"
 
 #: authentik/core/models.py
 msgid "Can preview user data sent to providers"
-msgstr "Var priekšskatīt pakalpojumu sniedzējiem nosūtītos lietotāja datus"
+msgstr "Var priekšskatīt pakalpojuma sniedzējiem nosūtītos lietotāja datus"
 
 #: authentik/core/models.py
 msgid "View applications the user has access to"
@@ -567,8 +567,8 @@ msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
 msgstr ""
-"Piekļūst no lietotnēm; neobligāti aizmugures kanāla pakalpojumu sniedzēji "
-"tādiem protokoliem kā LDAP un SCIM."
+"Piekļūst no lietotnēm; neobligāti starpserveru pakalpojuma sniedzēji tādiem "
+"protokoliem kā LDAP un SCIM."
 
 #: authentik/core/models.py
 msgid "Application's display Name."
@@ -580,7 +580,7 @@ msgstr "Lietotnes iekšējais nosaukums, ko izmanto URL."
 
 #: authentik/core/models.py
 msgid "Open launch URL in a new browser tab or window."
-msgstr "Atvērt palaišanas URL jaunā pārlūkprogrammas cilnē vai logā."
+msgstr "Atvērt palaišanas URL jaunā pārlūka cilnē vai logā."
 
 #: authentik/core/models.py
 msgid "Hide this application from the user's My applications page."
@@ -674,7 +674,7 @@ msgstr "Plūsma, ar ko piesakās esošie lietotāji."
 
 #: authentik/core/models.py
 msgid "Flow to use when enrolling new users."
-msgstr "Plūsma, ko izmantot jaunu lietotāju reģistrēšanai."
+msgstr "Plūsma, ar ko reģistrējas jauni lietotāji."
 
 #: authentik/core/models.py
 msgid ""
@@ -891,7 +891,7 @@ msgid ""
 "                extension."
 msgstr ""
 "Šīs lietotnes darbībai nepieciešams JavaScript. Iespējams, JavaScript ir\n"
-"                atspējots jūsu pārlūkprogrammas iestatījumos vai to bloķē pārlūkprogrammas\n"
+"                atspējots jūsu pārlūka iestatījumos vai to bloķē pārlūka\n"
 "                paplašinājums."
 
 #: authentik/core/templates/base/noscript.html
@@ -1098,7 +1098,7 @@ msgstr "Aģenta savienotāja JWT federācijas pakalpojuma sniedzējs"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Connector JWT Federation Providers"
-msgstr "Aģenta savienotāja JWT federācijas pakalpojumu sniedzēji"
+msgstr "Aģenta savienotāja JWT federācijas pakalpojuma sniedzēji"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Device User binding"
@@ -1313,7 +1313,7 @@ msgstr "Google Device Trust savienotāji"
 #: authentik/enterprise/endpoints/connectors/google_chrome/stage.py
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
 msgid "Verifying your browser..."
-msgstr "Pārbauda jūsu pārlūkprogrammu..."
+msgstr "Pārbauda jūsu pārlūku..."
 
 #: authentik/enterprise/lifecycle/offboarding/actions.py
 #, python-format
@@ -1566,7 +1566,7 @@ msgstr "Google Workspace pakalpojuma sniedzējs"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Providers"
-msgstr "Google Workspace pakalpojumu sniedzēji"
+msgstr "Google Workspace pakalpojuma sniedzēji"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Property Mappings Group"
@@ -1604,7 +1604,7 @@ msgid ""
 "providers."
 msgstr ""
 "Nodot izpildei objekta (lietotāja, grupas) dzēšanu Google Workspace "
-"pakalpojumu sniedzējiem."
+"pakalpojuma sniedzējiem."
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Delete an object (user, group) for Google Workspace provider."
@@ -1617,7 +1617,7 @@ msgid ""
 "providers."
 msgstr ""
 "Nodot izpildei tiešā objekta (lietotāja, grupas) sinhronizāciju Google "
-"Workspace pakalpojumu sniedzējiem."
+"Workspace pakalpojuma sniedzējiem."
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Sync a related object (memberships) for Google Workspace provider."
@@ -1631,7 +1631,7 @@ msgid ""
 "providers."
 msgstr ""
 "Nodot izpildei saistītā objekta (dalības) sinhronizāciju Google Workspace "
-"pakalpojumu sniedzējiem."
+"pakalpojuma sniedzējiem."
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider User"
@@ -1651,7 +1651,7 @@ msgstr "Microsoft Entra pakalpojuma sniedzējs"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Providers"
-msgstr "Microsoft Entra pakalpojumu sniedzēji"
+msgstr "Microsoft Entra pakalpojuma sniedzēji"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Property Mappings Group"
@@ -1689,7 +1689,7 @@ msgid ""
 "providers."
 msgstr ""
 "Nodot izpildei tiešā objekta (lietotāja, grupas) sinhronizāciju Microsoft "
-"Entra pakalpojumu sniedzējiem."
+"Entra pakalpojuma sniedzējiem."
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Delete an object (user, group) for Microsoft Entra provider."
@@ -1702,7 +1702,7 @@ msgid ""
 "providers."
 msgstr ""
 "Nodot izpildei objekta (lietotāja, grupas) dzēšanu Microsoft Entra "
-"pakalpojumu sniedzējiem."
+"pakalpojuma sniedzējiem."
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync a related object (memberships) for Microsoft Entra provider."
@@ -1716,7 +1716,7 @@ msgid ""
 "providers."
 msgstr ""
 "Nodot izpildei saistītā objekta (dalības) sinhronizāciju Microsoft Entra "
-"pakalpojumu sniedzējiem."
+"pakalpojuma sniedzējiem."
 
 #: authentik/enterprise/providers/radius/api.py
 msgid "Enterprise is required to use EAP-TLS."
@@ -1749,7 +1749,7 @@ msgstr "Shared Signals Framework pakalpojuma sniedzējs"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Shared Signals Framework Providers"
-msgstr "Shared Signals Framework pakalpojumu sniedzēji"
+msgstr "Shared Signals Framework pakalpojuma sniedzēji"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Add stream to SSF provider"
@@ -1761,7 +1761,7 @@ msgstr "SSF pakalpojuma sniedzēja OIDC autentifikācijas pakalpojuma sniedzējs
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Provider OIDC Auth Providers"
-msgstr "SSF pakalpojuma sniedzēja OIDC autentifikācijas pakalpojumu sniedzēji"
+msgstr "SSF pakalpojuma sniedzēja OIDC autentifikācijas pakalpojuma sniedzēji"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream"
@@ -1809,7 +1809,7 @@ msgstr "WS-Federation pakalpojuma sniedzējs"
 
 #: authentik/enterprise/providers/ws_federation/models.py
 msgid "WS-Federation Providers"
-msgstr "WS-Federation pakalpojumu sniedzēji"
+msgstr "WS-Federation pakalpojuma sniedzēji"
 
 #: authentik/enterprise/providers/ws_federation/views.py
 #: authentik/providers/oauth2/views/authorize.py
@@ -1969,7 +1969,7 @@ msgstr "Bloķēšanas plūsma nav piemērojama."
 
 #: authentik/enterprise/stages/account_lockdown/api.py
 msgid "Choose the target account, then return a flow link."
-msgstr "Izvēlieties mērķa kontu, pēc tam atgrieziet plūsmas saiti."
+msgstr "Izvēlas mērķa kontu un pēc tam atgriež plūsmas saiti."
 
 #: authentik/enterprise/stages/account_lockdown/api.py
 msgid "No lockdown flow configured or the flow is not applicable"
@@ -1981,7 +1981,7 @@ msgstr "Atļauja liegta (ja mērķis ir cits lietotājs)"
 
 #: authentik/enterprise/stages/account_lockdown/models.py
 msgid "Deactivate the user account (set is_active to False)"
-msgstr "Deaktivizēt lietotāja kontu (iestatīt is_active uz False)"
+msgstr "Deaktivizēt lietotāja kontu (iestatīt is_active vērtību False)"
 
 #: authentik/enterprise/stages/account_lockdown/models.py
 msgid "Set an unusable password for the user"
@@ -2005,7 +2005,7 @@ msgid ""
 "require authentication since the user's session is deleted."
 msgstr ""
 "Plūsma, uz kuru novirzīt lietotājus pēc pašapkalpošanās bloķēšanas. Šai "
-"plūsmai nevajadzētu prasīt autentifikāciju, jo lietotāja sesija tiek dzēsta."
+"plūsmai nevajadzētu prasīt pieteikšanos, jo lietotāja sesija tiek dzēsta."
 
 #: authentik/enterprise/stages/account_lockdown/models.py
 msgid "Account Lockdown Stage"
@@ -2066,7 +2066,7 @@ msgstr "Savstarpējās TLS posmi"
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Permissions to pass Certificates for outposts."
-msgstr "Atļaujas nodot sertifikātus priekšposteņiem."
+msgstr "Atļaujas nodot sertifikātus satelītservisiem."
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Mutual TLS Stage Certificate Authority"
@@ -2094,7 +2094,7 @@ msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
 msgid "Source matching failure reasons for which the flow should resume."
-msgstr "Avota sakritības kļūmju iemesli, kuru gadījumā plūsma jāatsāk."
+msgstr "Avota atbilstības kļūmju iemesli, kuru gadījumā plūsma jāatsāk."
 
 #: authentik/enterprise/stages/source/models.py
 msgid "Source Stage"
@@ -2285,8 +2285,7 @@ msgstr ""
 msgid ""
 "Upon successful authentication, re-start authentication in other open tabs."
 msgstr ""
-"Pēc veiksmīgas autentifikācijas atsākt autentifikāciju citās atvērtajās "
-"cilnēs."
+"Pēc veiksmīgas pieteikšanās atsākt pieteikšanos citās atvērtajās cilnēs."
 
 #: authentik/flows/exceptions.py
 msgid "Flow does not apply to current user."
@@ -2415,7 +2414,7 @@ msgstr "Nederīgs nākamais URL"
 
 #: authentik/lib/sync/incoming/models.py
 msgid "When to trigger sync for outgoing providers"
-msgstr "Kad aktivizēt izejošo pakalpojumu sniedzēju sinhronizāciju"
+msgstr "Kad aktivizēt izejošo pakalpojuma sniedzēju sinhronizāciju"
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Controls the number of objects synced in a single task"
@@ -2454,7 +2453,7 @@ msgstr "Lauki {field_names} jāizmanto kopā."
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
 msgstr ""
-"Tukšu kubeconfig var izmantot tikai tad, ja savienojas ar lokālu klasteri."
+"Tukšu kubeconfig var izmantot tikai, ja savienojas ar lokālu klasteri."
 
 #: authentik/outposts/api/service_connections.py
 msgid "Invalid kubeconfig"
@@ -2470,11 +2469,11 @@ msgstr ""
 
 #: authentik/outposts/models.py
 msgid "Outpost Service-Connection"
-msgstr "Priekšposteņa servisa savienojums"
+msgstr "Satelītservisa servisa savienojums"
 
 #: authentik/outposts/models.py
 msgid "Outpost Service-Connections"
-msgstr "Priekšposteņa servisa savienojumi"
+msgstr "Satelītservisa servisa savienojumi"
 
 #: authentik/outposts/models.py
 msgid ""
@@ -2533,24 +2532,24 @@ msgid ""
 "Select Service-Connection authentik should use to manage this outpost. Leave"
 " empty if authentik should not handle the deployment."
 msgstr ""
-"Atlasiet servisa savienojumu, ar ko authentik pārvaldīs šo priekšposteni. "
+"Atlasiet servisa savienojumu, ar ko authentik pārvaldīs šo satelītservisu. "
 "Atstājiet tukšu, ja authentik nav jāapstrādā izvietošana."
 
 #: authentik/outposts/models.py
 msgid "Outpost"
-msgstr "Priekšpostenis"
+msgstr "Satelītserviss"
 
 #: authentik/outposts/models.py
 msgid "Outposts"
-msgstr "Priekšposteņi"
+msgstr "Satelītservisi"
 
 #: authentik/outposts/models.py
 msgid "Outpost Provider"
-msgstr "Priekšposteņa pakalpojuma sniedzējs"
+msgstr "Satelītservisa pakalpojuma sniedzējs"
 
 #: authentik/outposts/models.py
 msgid "Outpost Providers"
-msgstr "Priekšposteņa pakalpojumu sniedzēji"
+msgstr "Satelītservisa pakalpojuma sniedzēji"
 
 #: authentik/outposts/tasks.py
 msgid "Update cached state of service connection."
@@ -2558,16 +2557,16 @@ msgstr "Atjaunināt servisa savienojuma kešoto stāvokli."
 
 #: authentik/outposts/tasks.py
 msgid "Create/update/monitor/delete the deployment of an Outpost."
-msgstr "Izveidot/atjaunināt/uzraudzīt/dzēst priekšposteņa izvietojumu."
+msgstr "Izveidot/atjaunināt/uzraudzīt/dzēst satelītservisa izvietojumu."
 
 #: authentik/outposts/tasks.py
 msgid "Ensure that all Outposts have valid Service Accounts and Tokens."
 msgstr ""
-"Nodrošināt, ka visiem priekšposteņiem ir derīgi servisa konti un marķieri."
+"Nodrošināt, ka visiem satelītservisiem ir derīgi servisa konti un marķieri."
 
 #: authentik/outposts/tasks.py
 msgid "Send update to outpost"
-msgstr "Nosūtīt atjauninājumu priekšpostenim"
+msgstr "Nosūtīt atjauninājumu satelītservisam"
 
 #: authentik/outposts/tasks.py
 msgid "Checks the local environment and create Service connections."
@@ -2575,7 +2574,7 @@ msgstr "Pārbauda lokālo vidi un izveido servisa savienojumus."
 
 #: authentik/outposts/tasks.py
 msgid "Terminate session on all outposts."
-msgstr "Pārtraukt sesiju visos priekšposteņos."
+msgstr "Pārtraukt sesiju visos satelītservisos."
 
 #: authentik/policies/denied.py
 msgid "Access denied"
@@ -2668,7 +2667,7 @@ msgstr "GeoIP: klienta IP nav atrasts ASN datubāzē."
 
 #: authentik/policies/geoip/models.py
 msgid "Client IP is not part of an allowed autonomous system."
-msgstr "Klienta IP nepieder pie atļautas autonomās sistēmas."
+msgstr "Klienta IP neietilpst nevienā atļautajā autonomajā sistēmā."
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP: client IP address not found in City database."
@@ -2680,7 +2679,7 @@ msgstr "Klienta IP nav atļautā valstī."
 
 #: authentik/policies/geoip/models.py
 msgid "Distance from previous authentication is larger than threshold."
-msgstr "Attālums no iepriekšējās autentifikācijas pārsniedz slieksni."
+msgstr "Attālums no iepriekšējās pieteikšanās vietas pārsniedz slieksni."
 
 #: authentik/policies/geoip/models.py
 msgid "Distance is further than possible."
@@ -2760,7 +2759,8 @@ msgstr "Notīrīt politikas kešatmiņas metriku"
 
 #: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
-msgstr "Cik reizes paroles jaucējkods drīkst parādīties haveibeenpwned"
+msgstr ""
+"Cik reizes paroles jaucējkods drīkst būt atrodams haveibeenpwned datubāzē"
 
 #: authentik/policies/password/models.py
 msgid ""
@@ -2892,9 +2892,9 @@ msgid ""
 "contains a semicolon."
 msgstr ""
 "Ja iespējots, MFA ar kodu var izmantot, pievienojot parolei semikolu un TOTP"
-" kodu. Iespējojiet to tikai tad, ja visiem lietotājiem, kas piesaistīsies "
-"šim pakalpojuma sniedzējam, ir iestatīta TOTP ierīce, jo citādi parole, kurā"
-" ir semikols, var tikt kļūdaini noraidīta."
+" kodu. Iespējojiet to tikai, ja visiem lietotājiem, kas piesaistīsies šim "
+"pakalpojuma sniedzējam, ir iestatīta TOTP ierīce, jo citādi parole, kurā ir "
+"semikols, var tikt kļūdaini noraidīta."
 
 #: authentik/providers/ldap/models.py
 msgid "LDAP Provider"
@@ -2902,7 +2902,7 @@ msgstr "LDAP pakalpojuma sniedzējs"
 
 #: authentik/providers/ldap/models.py
 msgid "LDAP Providers"
-msgstr "LDAP pakalpojumu sniedzēji"
+msgstr "LDAP pakalpojuma sniedzēji"
 
 #: authentik/providers/ldap/models.py
 msgid "Search full LDAP directory"
@@ -2923,7 +2923,7 @@ msgstr "Publisks"
 
 #: authentik/providers/oauth2/models.py
 msgid "Same identifier is used for all providers"
-msgstr "Visiem pakalpojumu sniedzējiem izmanto vienu identifikatoru"
+msgstr "Visiem pakalpojuma sniedzējiem izmanto vienu identifikatoru"
 
 #: authentik/providers/oauth2/models.py
 msgid "Each provider has a different issuer, based on the application slug."
@@ -2948,11 +2948,11 @@ msgstr "Atteikšanās"
 
 #: authentik/providers/oauth2/models.py
 msgid "Back-channel"
-msgstr "Aizmugures kanāls"
+msgstr "Starpserveru"
 
 #: authentik/providers/oauth2/models.py
 msgid "Front-channel"
-msgstr "Priekšpuses kanāls"
+msgstr "Caur pārlūku"
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
@@ -3059,20 +3059,20 @@ msgid ""
 "Backchannel logs out with server to server calls. Frontchannel uses iframes "
 "in your browser"
 msgstr ""
-"Aizmugures kanālā atteikšanās notiek ar servera–servera izsaukumiem. "
-"Priekšpuses kanālā izmanto iframe jūsu pārlūkprogrammā"
+"Starpserveru atteikšanās notiek ar tiešiem izsaukumiem starp serveriem. "
+"Atteikšanās caur pārlūku izmanto iframe elementus jūsu pārlūkā"
 
 #: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
-msgstr "Iekļaut prasījumus id_token"
+msgstr "Iekļaut prasījumus marķierī id_token"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Include User claims from scopes in the id_token, for applications that don't"
 " access the userinfo endpoint."
 msgstr ""
-"Iekļaut id_token lietotāja prasījumus no tvērumiem, ja lietotne nepiekļūst "
-"userinfo galapunktam."
+"Iekļaut marķierī id_token lietotāja prasījumus no tvērumiem, ja lietotne "
+"nepiekļūst galapunktam userinfo."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -3142,7 +3142,7 @@ msgstr "OAuth2/OpenID pakalpojuma sniedzējs"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2/OpenID Providers"
-msgstr "OAuth2/OpenID pakalpojumu sniedzēji"
+msgstr "OAuth2/OpenID pakalpojuma sniedzēji"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Provider JWT Federation Source"
@@ -3158,7 +3158,7 @@ msgstr "OAuth2 pakalpojuma sniedzēja JWT federācijas pakalpojuma sniedzējs"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Provider JWT Federation Providers"
-msgstr "OAuth2 pakalpojuma sniedzēja JWT federācijas pakalpojumu sniedzēji"
+msgstr "OAuth2 pakalpojuma sniedzēja JWT federācijas pakalpojuma sniedzēji"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scopes"
@@ -3302,13 +3302,12 @@ msgstr "Dinamiskās klientu reģistrācijas rekvizītu kartējumi"
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Send a back-channel logout request to the registered client"
-msgstr ""
-"Nosūtīt reģistrētajam klientam aizmugures kanāla atteikšanās pieprasījumu"
+msgstr "Nosūtīt reģistrētajam klientam starpserveru atteikšanās pieprasījumu"
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Handle backchannel logout notifications dispatched via signal"
 msgstr ""
-"Apstrādāt aizmugures kanāla atteikšanās paziņojumus, kas nosūtīti ar signālu"
+"Apstrādāt starpserveru atteikšanās paziņojumus, kas nosūtīti ar signālu"
 
 #: authentik/providers/oauth2/templates/if/oauth_form_post.html
 msgid "Redirecting..."
@@ -3318,7 +3317,7 @@ msgstr "Novirza..."
 msgid ""
 "Your browser does not support JavaScript, please click below to continue."
 msgstr ""
-"Jūsu pārlūkprogramma neatbalsta JavaScript. Lūdzu, noklikšķiniet zemāk, lai "
+"Jūsu pārlūks neatbalsta JavaScript. Lūdzu, noklikšķiniet zemāk, lai "
 "turpinātu."
 
 #: authentik/providers/oauth2/templates/if/oauth_form_post.html
@@ -3434,7 +3433,7 @@ msgstr "Starpniekservera pakalpojuma sniedzējs"
 
 #: authentik/providers/proxy/models.py
 msgid "Proxy Providers"
-msgstr "Starpniekservera pakalpojumu sniedzēji"
+msgstr "Starpniekservera pakalpojuma sniedzēji"
 
 #: authentik/providers/rac/models.py
 msgid ""
@@ -3459,13 +3458,12 @@ msgid ""
 "lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
 "Nosaka, cik ilgi ilgst sesija. Noklusējuma vērtība 0 nozīmē, ka sesija "
-"ilgst, līdz pārlūkprogramma tiek aizvērta. (Formāts: "
-"hours=-1;minutes=-2;seconds=-3)"
+"ilgst, līdz pārlūks tiek aizvērts. (Formāts: hours=-1;minutes=-2;seconds=-3)"
 
 #: authentik/providers/rac/models.py
 msgid "When set to true, connection tokens will be deleted upon disconnect."
 msgstr ""
-"Ja iestatīts uz true, savienojuma marķieri pēc atvienošanās tiks dzēsti."
+"Ja vērtība ir true, savienojuma marķieri pēc atvienošanās tiks dzēsti."
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider"
@@ -3473,7 +3471,7 @@ msgstr "RAC pakalpojuma sniedzējs"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Providers"
-msgstr "RAC pakalpojumu sniedzēji"
+msgstr "RAC pakalpojuma sniedzēji"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mapping"
@@ -3509,7 +3507,7 @@ msgstr "Sasniegts maksimālais savienojumu skaits."
 
 #: authentik/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
-msgstr "(Jūs jau esat savienots citā cilnē/logā)"
+msgstr "(Jums jau ir savienojums citā cilnē/logā)"
 
 #: authentik/providers/radius/models.py
 msgid "Shared secret between clients and server to hash packets."
@@ -3522,8 +3520,8 @@ msgid ""
 "specified CIDR will be dropped."
 msgstr ""
 "CIDR saraksts (atdalīts ar komatiem), no kuriem klienti var pieslēgties. "
-"Specifiskāks CIDR tiek salīdzināts pirms vispārīgāka. Klientu savienojumi no"
-" nenorādīta CIDR tiks pārtraukti."
+"Specifiskāks CIDR tiek piemērots pirms vispārīgāka. Klientu savienojumi no "
+"nenorādīta CIDR tiks pārtraukti."
 
 #: authentik/providers/radius/models.py
 msgid "Radius Provider"
@@ -3531,7 +3529,7 @@ msgstr "RADIUS pakalpojuma sniedzējs"
 
 #: authentik/providers/radius/models.py
 msgid "Radius Providers"
-msgstr "RADIUS pakalpojumu sniedzēji"
+msgstr "RADIUS pakalpojuma sniedzēji"
 
 #: authentik/providers/radius/models.py
 msgid "Radius Provider Property Mapping"
@@ -3546,8 +3544,8 @@ msgid ""
 "With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
 "Response' must be selected."
 msgstr ""
-"Ja atlasīts parakstīšanas atslēgu pāris, jāatlasa vismaz viens no 'Sign "
-"assertion' un 'Sign Response'."
+"Ja atlasīts parakstīšanas atslēgu pāris, jāatlasa vismaz viena no opcijām "
+"'Parakstīt apgalvojumus' vai 'Parakstīt atbildes'."
 
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
@@ -3618,12 +3616,11 @@ msgid ""
 "sends logout requests directly from the server without user interaction "
 "(requires POST SLS binding)."
 msgstr ""
-"Atteikšanās metode. Priekšpuses kanāla iframe ielādē visus atteikšanās URL "
-"vienlaikus slēptos iframe. Priekšpuses kanāla vietējā metode izmanto jūsu "
-"aktīvo pārlūkprogrammas cilni, lai sūtītu POST pieprasījumus un novirzītu uz"
-" pakalpojumu sniedzējiem. Aizmugures kanāls sūta atteikšanās pieprasījumus "
-"tieši no servera bez lietotāja mijiedarbības (nepieciešama POST SLS "
-"piesaiste)."
+"Atteikšanās metode. Caur pārlūku (iframe): visus atteikšanās URL ielādē "
+"vienlaikus slēptos iframe elementos. Caur pārlūku (natīvi): izmanto jūsu "
+"aktīvo pārlūka cilni, lai sūtītu POST pieprasījumus un novirzītu uz "
+"pakalpojuma sniedzējiem. Starpserveru: atteikšanās pieprasījumus sūta tieši "
+"no servera bez lietotāja mijiedarbības (nepieciešama POST SLS piesaiste)."
 
 #: authentik/providers/saml/models.py
 msgid "NameID Property Mapping"
@@ -3790,7 +3787,7 @@ msgid ""
 "OAuth2 providers which can exchange their JWTs for a SAML Response of this "
 "provider via token exchange."
 msgstr ""
-"OAuth2 pakalpojumu sniedzēji, kas ar marķiera apmaiņu var apmainīt savus JWT"
+"OAuth2 pakalpojuma sniedzēji, kas ar marķiera apmaiņu var apmainīt savus JWT"
 " pret šī pakalpojuma sniedzēja SAML atbildi."
 
 #: authentik/providers/saml/models.py
@@ -3799,7 +3796,7 @@ msgstr "SAML pakalpojuma sniedzējs"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Providers"
-msgstr "SAML pakalpojumu sniedzēji"
+msgstr "SAML pakalpojuma sniedzēji"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider JWT Federation Provider"
@@ -3807,7 +3804,7 @@ msgstr "SAML pakalpojuma sniedzēja JWT federācijas pakalpojuma sniedzējs"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider JWT Federation Providers"
-msgstr "SAML pakalpojuma sniedzēja JWT federācijas pakalpojumu sniedzēji"
+msgstr "SAML pakalpojuma sniedzēja JWT federācijas pakalpojuma sniedzēji"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider Property Mapping"
@@ -3823,7 +3820,7 @@ msgstr "SAML pakalpojuma sniedzējs no metadatiem"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Providers from Metadata"
-msgstr "SAML pakalpojumu sniedzēji no metadatiem"
+msgstr "SAML pakalpojuma sniedzēji no metadatiem"
 
 #: authentik/providers/saml/models.py
 msgid "Link to the user's authenticated session"
@@ -3903,7 +3900,7 @@ msgstr "SCIM pieprasījumu bāzes URL, parasti beidzas ar /v2"
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
-msgstr "Pieteikšanās marķieris"
+msgstr "Autentifikācijas marķieris"
 
 #: authentik/providers/scim/models.py
 msgid "Username used for Basic authentication"
@@ -3943,7 +3940,7 @@ msgstr "SCIM pakalpojuma sniedzējs"
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Providers"
-msgstr "SCIM pakalpojumu sniedzēji"
+msgstr "SCIM pakalpojuma sniedzēji"
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider Group Filter"
@@ -3986,7 +3983,7 @@ msgstr ""
 msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
 msgstr ""
 "Nodot izpildei tiešā objekta (lietotāja, grupas) sinhronizāciju SCIM "
-"pakalpojumu sniedzējiem."
+"pakalpojuma sniedzējiem."
 
 #: authentik/providers/scim/tasks.py
 msgid "Delete an object (user, group) for SCIM provider."
@@ -3995,7 +3992,7 @@ msgstr "Dzēst objektu (lietotāju, grupu) SCIM pakalpojuma sniedzējam."
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch deletions for an object (user, group) for SCIM providers."
 msgstr ""
-"Nodot izpildei objekta (lietotāja, grupas) dzēšanu SCIM pakalpojumu "
+"Nodot izpildei objekta (lietotāja, grupas) dzēšanu SCIM pakalpojuma "
 "sniedzējiem."
 
 #: authentik/providers/scim/tasks.py
@@ -4005,7 +4002,7 @@ msgstr "Sinhronizēt saistīto objektu (dalību) SCIM pakalpojuma sniedzējam."
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a related object (memberships) for SCIM providers."
 msgstr ""
-"Nodot izpildei saistītā objekta (dalības) sinhronizāciju SCIM pakalpojumu "
+"Nodot izpildei saistītā objekta (dalības) sinhronizāciju SCIM pakalpojuma "
 "sniedzējiem."
 
 #: authentik/rbac/models.py
@@ -4133,8 +4130,8 @@ msgid ""
 "Force the use of a specific server name for SPNEGO. Must be in the form "
 "HTTP@hostname"
 msgstr ""
-"Vienmēr izmantot konkrētu servera nosaukumu SPNEGO. Jābūt formā "
-"HTTP@hostname"
+"Vienmēr izmantot SPNEGO autentifikācijai konkrētu servera nosaukumu. Jābūt "
+"formā HTTP@hostname"
 
 #: authentik/sources/kerberos/models.py
 msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
@@ -4241,7 +4238,7 @@ msgid ""
 "Optionally verify the LDAP Server's Certificate against the CA Chain in this"
 " keypair."
 msgstr ""
-"Pēc izvēles pārbaudīt LDAP servera sertifikātu pret šī atslēgu pāra CA ķēdi."
+"Pēc izvēles pārbaudīt LDAP servera sertifikātu ar šī atslēgu pāra CA ķēdi."
 
 #: authentik/sources/ldap/models.py
 msgid ""
@@ -4706,8 +4703,8 @@ msgid ""
 "With a Verification Certificate selected, at least one of 'Verify Assertion "
 "Signature' or 'Verify Response Signature' must be selected."
 msgstr ""
-"Ja atlasīts pārbaudes sertifikāts, jāatlasa vismaz viena no opcijām 'Verify "
-"Assertion Signature' vai 'Verify Response Signature'."
+"Ja atlasīts pārbaudes sertifikāts, jāatlasa vismaz viena no opcijām "
+"'Pārbaudīt apgalvojuma parakstu' vai 'Pārbaudīt atbildes parakstu'."
 
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
@@ -4759,8 +4756,8 @@ msgid ""
 "When enabled, the IdP will re-authenticate the user even if a session "
 "exists."
 msgstr ""
-"Ja iespējots, IdP lūgs lietotājam pieteikties atkārtoti pat tad, ja sesija "
-"jau ir."
+"Ja iespējots, IdP lūgs lietotājam pieteikties atkārtoti, pat ja sesija jau "
+"ir."
 
 #: authentik/sources/saml/models.py
 msgid ""
@@ -5075,7 +5072,7 @@ msgstr ""
 #: authentik/stages/authenticator_sms/models.py
 msgid "Optionally modify the payload being sent to custom providers."
 msgstr ""
-"Pēc izvēles mainīt datus, ko sūta pielāgotajiem pakalpojumu sniedzējiem."
+"Pēc izvēles mainīt datus, ko sūta pielāgotajiem pakalpojuma sniedzējiem."
 
 #: authentik/stages/authenticator_sms/models.py
 #, python-brace-format
@@ -5679,7 +5676,7 @@ msgid ""
 "When enabled, the stage will succeed and continue even when incorrect user "
 "info is entered."
 msgstr ""
-"Ja iespējots, posms izdosies un plūsma turpināsies pat tad, ja ievadīta "
+"Ja iespējots, posms izdosies un plūsma turpināsies, pat ja ievadīta "
 "nepareiza lietotāja informācija."
 
 #: authentik/stages/identification/models.py
@@ -5964,11 +5961,11 @@ msgstr "Paroles nesakrīt."
 
 #: authentik/stages/redirect/api.py
 msgid "Target URL should be present when mode is Static."
-msgstr "Ja režīms ir Static, jānorāda mērķa URL."
+msgstr "Ja režīms ir 'Statisks', jānorāda mērķa URL."
 
 #: authentik/stages/redirect/api.py
 msgid "Target Flow should be present when mode is Flow."
-msgstr "Ja režīms ir Flow, jānorāda mērķa plūsma."
+msgstr "Ja režīms ir 'Plūsma', jānorāda mērķa plūsma."
 
 #: authentik/stages/redirect/models.py
 msgid "Redirect Stage"
@@ -6001,7 +5998,7 @@ msgstr ""
 
 #: authentik/stages/user_login/models.py
 msgid "Terminate all other sessions of the user logging in."
-msgstr "Pārtraukt visas pārējās piesakāmā lietotāja sesijas."
+msgstr "Pārtraukt visas pārējās tā lietotāja sesijas, kurš piesakās."
 
 #: authentik/stages/user_login/models.py
 msgid ""
