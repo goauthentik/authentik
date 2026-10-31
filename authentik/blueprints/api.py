@@ -225,7 +225,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
             raise ValidationError("Either path or file must be set")
         context = body.validated_data.get("context") or {}
         try:
-            importer = Importer.from_string(string_contents, context)
+            importer = Importer.from_string(string_contents, context, self.request.user)
         except EntryInvalidError as exc:
             raise ValidationError(_("Invalid blueprint file: {exc}".format(exc=str(exc)))) from None
 
