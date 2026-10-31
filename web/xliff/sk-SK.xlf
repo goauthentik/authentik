@@ -13703,6 +13703,9 @@ Väzby na skupiny/používateľov sa kontrolujú oproti používateľovi udalost
 <trans-unit id="array-input.remove.aria-label">
   <source>Remove entry</source>
 </trans-unit>
+<trans-unit id="crontab.parse-failed">
+  <source>Cron string does not parse.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
