@@ -76,6 +76,36 @@ def raise_broker_connection_error(func: Callable[P, R]) -> Callable[P, R]:  # no
     return wrapper
 
 
+def discard_interrupted_transactions() -> None:
+    """Close connections that an interrupted task left in a transaction.
+
+    A time limit can hit inside `transaction.atomic()` before Django leaves the atomic block
+    or turns autocommit back on. Django never resets such a connection, so every later query
+    on the thread fails or is never committed, including the ack.
+    """
+    # Tests process messages inside the test's own transaction
+    if Conf().test:
+        return
+    for conn in connections.all(initialized_only=True):
+        if not conn.in_atomic_block and (
+            conn.connection is None or conn.autocommit == conn.settings_dict["AUTOCOMMIT"]
+        ):
+            continue
+        logger.warning(
+            "Discarding database connection left in a transaction by an interrupted task",
+            alias=conn.alias,
+        )
+        try:
+            conn.close()
+        except DATABASE_ERRORS:
+            pass
+        del connections[conn.alias]
+        # django-tenants keeps the active tenant on the connection, and a new one starts on the
+        # public schema. Keep the task's tenant for the hooks that run after this.
+        if (tenant := getattr(conn, "tenant", None)) is not None:
+            connections[conn.alias].set_tenant(tenant, conn.include_public_schema)
+
+
 class PostgresBroker(Broker):
     queues: set[str]
 
@@ -109,6 +139,12 @@ class PostgresBroker(Broker):
     @property
     def connection(self) -> DatabaseWrapper:
         return cast(DatabaseWrapper, connections[self.db_alias])
+
+    def emit_after(self, signal: str, *args: Any, **kwargs: Any) -> None:
+        # Before the after_process_message hooks write task logs, events and retries
+        if signal == "process_message":
+            discard_interrupted_transactions()
+        super().emit_after(signal, *args, **kwargs)
 
     @property
     def consumer_class(self) -> type[_PostgresConsumer]:
@@ -536,6 +572,8 @@ class _PostgresConsumer(Consumer):
 
     def _post_process_message(self, message: MessageProxy, state: TaskState) -> None:
         self.logger.debug("Post-processing message", message=message.message_id, state=state)
+        # A hook can leave a transaction too, and dramatiq retries the ack until it succeeds
+        discard_interrupted_transactions()
         task = message.options.pop("task", None)
         try:
             m = b"" if state == TaskState.DONE else message.encode()
