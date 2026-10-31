@@ -117,10 +117,7 @@ impl Application {
 
         let session_cookie = SessionCookie::new(
             provider.client_id.as_deref().unwrap_or_default(),
-            provider
-                .cookie_secret
-                .as_deref()
-                .ok_or_else(|| eyre!("provider has no cookie secret"))?,
+            &provider.cookie_secret,
             external_url.scheme() == "https",
             provider.cookie_domain.clone(),
         )?;

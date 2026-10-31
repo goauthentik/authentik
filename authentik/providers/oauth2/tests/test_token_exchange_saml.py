@@ -78,7 +78,7 @@ class TestTokenExchangeSAML(OAuthTestCase):
             {
                 "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.client_secret_ref.secret_value,
                 "subject_token": self.subject_token,
                 "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
                 "requested_token_type": TOKEN_TYPE_URI_SAML2,
