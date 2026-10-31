@@ -1,11 +1,14 @@
 """authentik multi-stage authentication engine"""
 
 from copy import deepcopy
+from hashlib import sha256
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
+import pglock
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
+from django.db import DatabaseError
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.http.request import QueryDict
 from django.shortcuts import get_object_or_404, redirect
@@ -54,6 +57,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
+from authentik.lib.config import advisory_lock_db_alias
 from authentik.lib.tracing import (
     active_tracer,
     record_exception,
@@ -62,6 +66,7 @@ from authentik.lib.tracing.exceptions import TracingIgnoredException, should_ign
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
+from authentik.root.middleware import SessionMiddleware
 
 LOGGER = get_logger()
 # Argument used to redirect user after login
@@ -73,6 +78,12 @@ SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
 QS_KEY_TOKEN = "flow_token"  # nosec
 QS_QUERY = "query"
+
+CACHE_DEDUP_PREFIX = "goauthentik.io/flows/dedup"
+# Seconds a duplicate waits for the first submission to finish
+DEDUP_LOCK_TIMEOUT = 30
+# Seconds a stored redirect stays replayable; must exceed DEDUP_LOCK_TIMEOUT
+DEDUP_CACHE_TIMEOUT = 60
 
 
 def challenge_types():
@@ -339,6 +350,108 @@ class FlowExecutorView(APIView):
     )
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Solve the previously retrieved challenge and advanced to the next stage."""
+        # Some clients (Apple CFNetwork: iOS Safari, PWAs, ASWebAuthenticationSession)
+        # send the same request twice, concurrently. Processing both submissions
+        # consumes one-time credentials (e.g. TOTP) twice: the duplicate fails as a
+        # replay, emits a spurious login_failed event and can lock the user out of
+        # the current TOTP step. Identical (session, stage binding, path, body)
+        # submissions are serialized on an advisory lock; a duplicate replays the
+        # first submission's redirect instead of being processed again.
+        # Every deduplication path fails open to processing the request normally.
+        dedup_key = self._dedup_key(request)
+        if not dedup_key:
+            return self._solve_challenge(request, *args, **kwargs)
+        try:
+            with pglock.advisory(
+                lock_id=dedup_key,
+                timeout=DEDUP_LOCK_TIMEOUT,
+                side_effect=pglock.Return,
+                using=advisory_lock_db_alias(),
+            ) as lock_acquired:
+                if not lock_acquired:
+                    self._logger.warning("f(exec): duplicate lock timed out, processing")
+                    return self._solve_challenge(request, *args, **kwargs)
+                stored = cache.get(dedup_key)
+                if stored is not None:
+                    self._logger.info("f(exec): replaying response to duplicate")
+                    # The first submission's session state is authoritative; discard
+                    # this request's session writes so they cannot overwrite it
+                    request.session.modified = False
+                    return self._dedup_restore_response(stored)
+                response = self._solve_challenge(request, *args, **kwargs)
+                self._dedup_store_response(request, dedup_key, response)
+                return response
+        except DatabaseError as exc:
+            self._logger.warning("f(exec): dedup lock failed, processing normally", exc=exc)
+            return self._solve_challenge(request, *args, **kwargs)
+
+    def _dedup_key(self, request: HttpRequest) -> str | None:
+        """Key identifying an exact duplicate of this submission (same session, stage
+        binding, path and body), or None when the request cannot be deduplicated.
+        Scoping to the stage binding keeps identical bodies submitted to consecutive
+        stages distinct."""
+        session_key = request.session.session_key
+        if not session_key or not self.current_binding:
+            return None
+        digest = sha256()
+        for part in (
+            session_key.encode(),
+            str(self.current_binding.pk).encode(),
+            request.get_full_path().encode(),
+            request.body,
+        ):
+            digest.update(part)
+            digest.update(b"\x00")
+        return f"{CACHE_DEDUP_PREFIX}/{digest.hexdigest()}"
+
+    def _dedup_store_response(
+        self, request: HttpRequest, dedup_key: str, response: HttpResponse
+    ) -> None:
+        """Store a redirect for replay to duplicates of this submission. Only redirects
+        are stored, so challenge bodies never land in the cache. The session cookie is
+        set here instead of by the session middleware, so a rotated session key (e.g.
+        after login) also reaches a client that receives the replay."""
+        if not isinstance(response, HttpResponseRedirect):
+            return
+        if request.session.modified:
+            # Persist now; a replayed redirect can be followed before the session
+            # middleware saves this request's session
+            request.session.save()
+        session_cookie = HttpResponse()
+        max_age = (
+            None
+            if request.session.get_expire_at_browser_close()
+            else request.session.get_expiry_age()
+        )
+        secure = SessionMiddleware.is_secure(request)
+        session_cookie.set_cookie(
+            settings.SESSION_COOKIE_NAME,
+            SessionMiddleware.encode_session(request.session.session_key, request.user),
+            max_age=max_age,
+            domain=settings.SESSION_COOKIE_DOMAIN,
+            path=settings.SESSION_COOKIE_PATH,
+            secure=secure,
+            httponly=settings.SESSION_COOKIE_HTTPONLY or None,
+            samesite="None" if secure else "Lax",
+        )
+        cookies = session_cookie.cookies
+        cookies.update(response.cookies)
+        cache.set(
+            dedup_key,
+            {"status": response.status_code, "location": response["Location"], "cookies": cookies},
+            timeout=DEDUP_CACHE_TIMEOUT,
+        )
+
+    @staticmethod
+    def _dedup_restore_response(stored: dict) -> HttpResponse:
+        """Rebuild a redirect stored by _dedup_store_response"""
+        response = HttpResponse(status=stored["status"])
+        response["Location"] = stored["location"]
+        response.cookies.update(stored["cookies"])
+        return response
+
+    def _solve_challenge(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Pass the submission to the current stage view"""
         class_path = class_to_path(self.current_stage_view.__class__)
         self._logger.debug(
             "f(exec): Passing POST",
