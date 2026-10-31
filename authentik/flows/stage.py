@@ -272,6 +272,14 @@ class AccessDeniedStage(ChallengeStageView):
     def __init__(self, executor: FlowExecutorView, error_message: str | None = None, **kwargs):
         super().__init__(executor, **kwargs)
         self.error_message = error_message
+        # stage_invalid() cancels the flow before this stage renders, and cancelling
+        # clears the `next` that the cancel URL is built from. Build it now so that
+        # "Go back" restarts with the original request instead of logging the user out.
+        self._cancel_url = super().cancel_url
+
+    @property
+    def cancel_url(self) -> str:
+        return self._cancel_url
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return AccessDeniedChallenge(

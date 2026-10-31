@@ -826,6 +826,25 @@ class TestFlowExecutor(APIFlowTestCase):
             },
         )
 
+    def test_cancel_next_access_denied(self):
+        """Test cancel URL on the access denied page with ?next param set"""
+        flow = create_test_flow()
+        FlowStageBinding.objects.create(
+            target=flow,
+            stage=DenyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+            + f"?{urlencode({QS_QUERY: urlencode({NEXT_ARG_NAME: "/foo"})})}"
+        )
+        body = self.assertStageResponse(res, flow, component="ak-stage-access-denied")
+        self.assertEqual(body["flow_info"]["cancel_url"], "/flows/-/cancel/?next=%2Ffoo")
+        self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
+
+        res = self.client.get(body["flow_info"]["cancel_url"])
+        self.assertRedirects(res, "/foo", fetch_redirect_response=False)
+
     @patch(
         "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
