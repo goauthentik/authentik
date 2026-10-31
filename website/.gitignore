@@ -31,5 +31,7 @@ yarn-error.log*
 **/static/compose.yml
 **/static/releases.gen.json
 **/static/schema.yml
+# The search index and the sqlite-wasm runtime, written by the search plugin on every build.
+**/static/search/
 api/reference
 docs/developer-docs/api/reference/**

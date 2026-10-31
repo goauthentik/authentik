@@ -97,7 +97,7 @@ function loadPartial(partialPath, chain) {
  *
  * @returns {string}
  */
-function inlinePartials(content, filePath) {
+export function inlinePartials(content, filePath) {
     const importRe =
         /^\s*import\s+(?:(\w+)|{\s*(\w+)\s*})\s+from\s+['"]([^'"]+_[^'"]+\.mdx?)['"];?\s*$/gm;
     /** @type {Map<string, string>} */
