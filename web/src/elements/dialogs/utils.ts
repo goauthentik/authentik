@@ -109,6 +109,7 @@ export function renderDialog(
 
         if (returnValue === "submitted") {
             const dispatcher = invokerElement ?? dialog;
+            // TODO: Refresh might benefit from a namespace to avoid excess re-renders.
             dispatcher.dispatchEvent(new AKRefreshEvent());
         }
 
