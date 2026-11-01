@@ -4,7 +4,6 @@ from typing import Any
 
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from ldap3.core.exceptions import LDAPException, LDAPOperationResult
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -47,6 +46,8 @@ def ldap_sync_password(sender, user: User, password: str, **_):
         return
     if not LDAPPasswordChanger.should_check_user(user):
         return
+    from ldap3.core.exceptions import LDAPException, LDAPOperationResult
+
     try:
         changer = LDAPPasswordChanger(source)
         changer.change_password(user, password)

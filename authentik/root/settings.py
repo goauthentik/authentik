@@ -5,7 +5,6 @@ from collections import OrderedDict
 from pathlib import Path
 
 from django.utils import http as utils_http
-from xmlsec import enable_debug_trace
 
 from authentik import authentik_version
 from authentik.lib.config import (
@@ -587,6 +586,8 @@ except ImportError:
 
 if DEBUG:
     INSTALLED_APPS.insert(INSTALLED_APPS.index("django.contrib.staticfiles"), "daphne")
+    from xmlsec import enable_debug_trace
+
     enable_debug_trace(True)
 
 

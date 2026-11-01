@@ -50,7 +50,6 @@ from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.models import EmailTemplates
@@ -108,6 +107,8 @@ class EventAction(models.TextChoices):
     USER_OFFBOARDED = "user_offboarded"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
+
+    REQUIRED_ACTION_COMPLETED = "required_action_completed"
 
     SECRET_VIEW = "secret_view"  # noqa # nosec
     SECRET_ROTATE = "secret_rotate"  # noqa # nosec
@@ -488,6 +489,9 @@ class NotificationTransport(TasksModel, SerializerModel):
             ]
 
         if self.webhook_ca:
+            # Imports the docker client, only load it when a custom CA is set
+            from authentik.outposts.docker_tls import DockerInlineTLS
+
             with DockerInlineTLS(self.webhook_ca, authentication_kp=None) as tls:
                 return send(verify=tls.ca_cert)
         return send()

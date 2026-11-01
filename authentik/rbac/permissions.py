@@ -76,7 +76,10 @@ def HasPermission(*perm: str) -> type[BasePermission]:
 
 
 def assign_initial_permissions(user: User, instance: Model):
-    # Performance here should not be an issue, but if needed, there are many optimization routes
+    # Cheap check first, as this runs for every object created in a request
+    content_type = ContentType.objects.get_for_model(instance)
+    if not InitialPermissions.objects.filter(permissions__content_type=content_type).exists():
+        return
     initial_permissions_list = InitialPermissions.objects.filter(role__in=user.all_roles())
     for initial_permissions in initial_permissions_list:
         for permission in initial_permissions.permissions.all():
