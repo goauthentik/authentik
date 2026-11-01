@@ -153,6 +153,13 @@ export interface OutpostsInstancesPartialUpdateRequest {
     patchedOutpostRequest?: PatchedOutpostRequest;
 }
 
+export interface OutpostsInstancesRebuildPermissionsCreateRequest {
+    /**
+     * A UUID string identifying this Outpost.
+     */
+    uuid: string;
+}
+
 export interface OutpostsInstancesRetrieveRequest {
     /**
      * A UUID string identifying this Outpost.
@@ -881,6 +888,68 @@ export class OutpostsApi extends runtime.BaseAPI {
             initOverrides,
         );
         return await response.value();
+    }
+
+    /**
+     * Creates request options for outpostsInstancesRebuildPermissionsCreate without sending the
+     * request
+     */
+    async outpostsInstancesRebuildPermissionsCreateRequestOpts(
+        requestParameters: OutpostsInstancesRebuildPermissionsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsInstancesRebuildPermissionsCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/outposts/instances/{uuid}/rebuild_permissions/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Delete and recreate all permissions of the outpost's service account
+     */
+    async outpostsInstancesRebuildPermissionsCreateRaw(
+        requestParameters: OutpostsInstancesRebuildPermissionsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.outpostsInstancesRebuildPermissionsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Delete and recreate all permissions of the outpost's service account
+     */
+    async outpostsInstancesRebuildPermissionsCreate(
+        requestParameters: OutpostsInstancesRebuildPermissionsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.outpostsInstancesRebuildPermissionsCreateRaw(requestParameters, initOverrides);
     }
 
     /**

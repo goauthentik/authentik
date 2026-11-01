@@ -6,13 +6,12 @@ from typing import Any
 
 from django.utils.timezone import now
 from rest_framework.fields import CharField, ChoiceField, DateTimeField, DictField
-from structlog import configure, get_config
-from structlog.stdlib import NAME_TO_LEVEL, ProcessorFormatter, get_logger
-from structlog.testing import LogCapture
+from structlog.stdlib import NAME_TO_LEVEL, get_logger
 from structlog.types import EventDict
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.utils import sanitize_dict
+from authentik.lib.logging import CAPTURED_LOGS
 
 
 @dataclass()
@@ -52,25 +51,13 @@ class LogEventSerializer(PassiveSerializer):
 
 @contextmanager
 def capture_logs(log_default_output=True) -> Generator[list[LogEvent]]:
-    """Capture log entries created"""
+    """Capture log entries created in the current context (thread/task)"""
     logs = []
-    cap = LogCapture()
-    # Modify `_Configuration.default_processors` set via `configure` but always
-    # keep the list instance intact to not break references held by bound
-    # loggers.
-    processors: list = get_config()["processors"]
-    old_processors = processors.copy()
+    entries: list[EventDict] = []
+    token = CAPTURED_LOGS.set(entries)
     try:
-        # clear processors list and use LogCapture for testing
-        if ProcessorFormatter.wrap_for_formatter in processors:
-            processors.remove(ProcessorFormatter.wrap_for_formatter)
-        processors.append(cap)
-        configure(processors=processors)
         yield logs
-        for raw_log in cap.entries:
+        for raw_log in entries:
             logs.append(LogEvent.from_event_dict(raw_log))
     finally:
-        # remove LogCapture and restore original processors
-        processors.clear()
-        processors.extend(old_processors)
-        configure(processors=processors)
+        CAPTURED_LOGS.reset(token)

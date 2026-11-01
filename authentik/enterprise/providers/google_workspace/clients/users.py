@@ -9,6 +9,7 @@ from authentik.enterprise.providers.google_workspace.models import (
 )
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import (
+    NotFoundSyncException,
     ObjectExistsSyncException,
     TransientSyncException,
 )
@@ -56,10 +57,25 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
         with transaction.atomic():
             try:
                 response = self._request(self.directory_service.users().insert(body=google_user))
-            except ObjectExistsSyncException:
+            except ObjectExistsSyncException as exc:
                 # user already exists in google workspace, so we can connect them manually
+                try:
+                    user_data = self._request(
+                        self.directory_service.users().get(userKey=google_user["primaryEmail"])
+                    )
+                except NotFoundSyncException:
+                    user_data = None
+                # A group has the address, or it is an alias of another user
+                if (
+                    not user_data
+                    or user_data["primaryEmail"].lower() != google_user["primaryEmail"].lower()
+                ):
+                    raise exc
                 return GoogleWorkspaceProviderUser.objects.create(
-                    provider=self.provider, user=user, google_id=user.email, attributes={}
+                    provider=self.provider,
+                    user=user,
+                    google_id=user_data["primaryEmail"],
+                    attributes=user_data,
                 )
             except TransientSyncException as exc:
                 raise exc
