@@ -3,8 +3,10 @@
 from hashlib import sha512
 from pathlib import Path
 from tempfile import NamedTemporaryFile, mkdtemp
+from unittest.mock import patch
 
 from django.test import TransactionTestCase
+from django.utils.crypto import salted_hmac
 from yaml import dump
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
@@ -124,6 +126,49 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                     "labels": {"foo": "bar"},
                 },
             )
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_valid_updated_external_values(self):
+        """Test that changing only an `!Env` or `!File` value reapplies the blueprint"""
+        name = generate_id()
+        env_key = f"AUTHENTIK_TEST_{generate_id().upper()}"
+        with (
+            NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file,
+            NamedTemporaryFile(mode="w+") as value_file,
+            patch.dict("os.environ", {env_key: "foo"}),
+        ):
+            value_file.write("foo")
+            value_file.flush()
+            content = (
+                "version: 1\n"
+                f"metadata:\n  name: {name}\n"
+                f"context:\n  env: !Env {env_key}\n  file: !File {value_file.name}\n"
+                "entries: []\n"
+            )
+            file.write(content)
+            file.flush()
+            blueprints_discovery.send()
+            instance = BlueprintInstance.objects.get(name=name)
+            first_hash = instance.last_applied_hash
+            self.assertNotEqual(first_hash, sha512(content.encode()).hexdigest())
+
+            # Unchanged values don't reapply
+            blueprints_discovery.send()
+            instance.refresh_from_db()
+            self.assertEqual(instance.last_applied_hash, first_hash)
+
+            with patch.dict("os.environ", {env_key: "bar"}):
+                blueprints_discovery.send()
+            instance.refresh_from_db()
+            env_hash = instance.last_applied_hash
+            self.assertNotEqual(env_hash, first_hash)
+
+            value_file.seek(0)
+            value_file.write("bar")
+            value_file.flush()
+            blueprints_discovery.send()
+            instance.refresh_from_db()
+            self.assertNotIn(instance.last_applied_hash, [first_hash, env_hash])
 
     @CONFIG.patch("blueprints_dir", TMP)
     def test_valid_disabled(self):
@@ -290,8 +335,13 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 ):
                     content = f"version: 1\nentries: []\ncontext:\n  secret: {reference}\n"
                     expected = sha512(content.encode())
-                    for _ in range(routes):
-                        expected.update(sha512(b"initial").digest())
+                    expected.update(
+                        salted_hmac(
+                            "goauthentik.io/blueprints/v1/external-values",
+                            sha512(b"initial").digest() * routes,
+                            algorithm="sha512",
+                        ).digest()
+                    )
                     self.assertEqual(self.write_blueprint(file, reference), expected.hexdigest())
 
     @CONFIG.patch("blueprints_dir", TMP)
@@ -332,6 +382,8 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
             ("path from a mapping", f'!File {{path: "{TMP}/fallback"}}'),
             ("path no syscall can take", '!File "\\0"'),
             ("path outside the filesystem encoding", '!File "\\ud800"'),
+            ("env key with a null byte", '!Env "\\0"'),
+            ("env key outside the filesystem encoding", '!Env "\\ud800"'),
             ("sequence containing itself", "&anchor [*anchor]"),
             ("mapping containing itself", "&anchor {key: *anchor}"),
             ("two anchors containing each other", "&outer [{inner: &inner [*outer]}, *inner]"),
