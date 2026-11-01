@@ -17,7 +17,7 @@ from authentik.flows.models import (
     Stage,
     in_memory_stage,
 )
-from authentik.flows.planner import FlowPlan, FlowPlanner
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan, FlowPlanner
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 
@@ -58,7 +58,7 @@ def plan_required_action(
     planner = FlowPlanner(action)
     planner.use_cache = False
     planner.allow_empty_flows = True
-    plan = planner.plan(request)
+    plan = planner.plan(request, {PLAN_CONTEXT_PENDING_USER: request.user})
     plan.append_stage(
         in_memory_stage(
             RequiredActionCompleteStageView,

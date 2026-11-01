@@ -1,9 +1,10 @@
 """Required action enforcement tests"""
 
-from unittest.mock import patch
+from unittest.mock import PropertyMock, patch
 from urllib.parse import urlencode
 
 from django.core.cache import cache
+from django.core.mail.backends.locmem import EmailBackend
 from django.urls import reverse
 
 from authentik.core.models import User
@@ -32,6 +33,7 @@ from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.stages.dummy.models import DummyStage
+from authentik.stages.email.models import EmailStage
 from authentik.stages.user_login.models import UserLoginStage
 
 
@@ -270,6 +272,26 @@ class TestRequiredActions(RequiredActionsTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.user.refresh_from_db()
         self.assertNotIn(USER_ATTRIBUTE_REQUIRED_ACTIONS, self.user.attributes)
+
+    @enterprise_test()
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_action_plan_has_pending_user(self):
+        action = create_test_flow(
+            FlowDesignation.STAGE_CONFIGURATION,
+            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED,
+        )
+        FlowStageBinding.objects.create(
+            target=action, stage=EmailStage.objects.create(name=generate_id()), order=0
+        )
+        self.require([action.slug])
+        self.client.force_login(self.user)
+        self.assertRedirectsToAction(reverse("authentik_core:if-user"), action)
+        self.assertStageResponse(
+            self.client.get(executor_url(action)), action, component="ak-stage-email"
+        )
 
     @enterprise_test()
     def test_completion_preserves_concurrent_updates(self):
