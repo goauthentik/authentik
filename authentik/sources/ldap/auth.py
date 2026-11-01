@@ -1,7 +1,6 @@
 """authentik LDAP Authentication Backend"""
 
 from django.http import HttpRequest
-from ldap3.core.exceptions import LDAPException, LDAPInvalidCredentialsResult
 from structlog.stdlib import get_logger
 
 from authentik.core.auth import InbuiltBackend
@@ -57,6 +56,8 @@ class LDAPBackend(InbuiltBackend):
     def auth_user_by_bind(self, source: LDAPSource, user: User, password: str) -> User | None:
         """Attempt authentication by binding to the LDAP server as `user`. This
         method should be avoided as its slow to do the bind."""
+        from ldap3.core.exceptions import LDAPException, LDAPInvalidCredentialsResult
+
         # Try to bind as new user
         LOGGER.debug("Attempting to bind as user", user=user)
         try:

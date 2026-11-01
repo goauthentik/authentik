@@ -20,8 +20,6 @@ describe("isSentryEnabled", () => {
     });
 
     it("is false when the config is absent entirely", () => {
-        // `Config` types `errorReporting` as required, but the server may not
-        // have injected `window.authentik` at all.
         expect(isSentryEnabled({ debug: false, search: "" })).toBe(false);
     });
 
