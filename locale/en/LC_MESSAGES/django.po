@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-27 00:19+0000\n"
+"POT-Creation-Date: 2026-10-28 00:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -391,6 +391,17 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "This field is required."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid ""
+"Import a valid password hash even when its parameters do not match "
+"authentik's current password hashing settings."
+msgstr ""
+
+#: authentik/core/api/users.py
+#, python-format
+msgid "%(reason)s Set \"override\" to true to import it anyway."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -2271,10 +2282,6 @@ msgstr ""
 #: authentik/lib/utils/time.py
 #, python-format
 msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
-msgstr ""
-
-#: authentik/lib/validators.py
-msgid "Invalid password hash format. Must be a valid Django password hash."
 msgstr ""
 
 #: authentik/lib/validators.py

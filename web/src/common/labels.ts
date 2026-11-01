@@ -73,6 +73,8 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.AccessRequestApproved]: () => msg("Access request approved"),
     [EventActions.AccessRequestDenied]: () => msg("Access request denied"),
     [EventActions.AccessRequestRevoked]: () => msg("Access request revoked"),
+    [EventActions.RequiredActionCompleted]: () =>
+        msg("Required action completed", { id: "events.action.required-action-completed.label" }),
     [EventActions.UnknownDefaultOpenApi]: () => msg("Unknown action"),
     [EventActions.Custom]: () => msg("Custom action"),
 };
