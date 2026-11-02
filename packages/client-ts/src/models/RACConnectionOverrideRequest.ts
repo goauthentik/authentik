@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { ProtocolEnum } from "./ProtocolEnum";
-import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum";
+import type { ProtocolEnum } from "./ProtocolEnum.js";
+import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum.js";
 
 /**
  * RACConnectionOverride Serializer

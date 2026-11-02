@@ -43,7 +43,7 @@ import { customElement, state } from "lit/decorators.js";
 const applicationSource: SearchSelectSource<Application> = {
     fetchObjects: (query) =>
         aki(CoreApi)
-            .coreApplicationsList(withQuery(query, { ordering: "name", superuserFullList: true }))
+            .coreApplicationsList(withQuery(query, { ordering: "name" }))
             .then(({ results }) => results),
     keyOf: (application) => application.pk,
     labelOf: (application) => application.name,

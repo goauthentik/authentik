@@ -1,6 +1,5 @@
 """authentik administration overview"""
 
-from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
 from packaging.version import parse
 from rest_framework.fields import SerializerMethodField
@@ -10,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik import authentik_build_hash, authentik_version
-from authentik.admin.tasks import VERSION_CACHE_KEY, VERSION_NULL, update_latest_version
+from authentik.admin.tasks import UpdateVersionInfo
 from authentik.core.api.utils import PassiveSerializer
 from authentik.outposts.models import Outpost
 
@@ -20,7 +19,6 @@ class VersionSerializer(PassiveSerializer):
 
     version_current = SerializerMethodField()
     version_latest = SerializerMethodField()
-    version_latest_valid = SerializerMethodField()
     build_hash = SerializerMethodField()
     outdated = SerializerMethodField()
     outpost_outdated = SerializerMethodField()
@@ -33,21 +31,16 @@ class VersionSerializer(PassiveSerializer):
         """Get current version"""
         return authentik_version()
 
-    def get_version_latest(self, _) -> str:
+    def get_version_latest(self, _) -> UpdateVersionInfo:
         """Get latest version from cache"""
-        version_in_cache = cache.get(VERSION_CACHE_KEY)
-        if not version_in_cache:  # pragma: no cover
-            update_latest_version.send()
-            return authentik_version()
-        return version_in_cache
-
-    def get_version_latest_valid(self, _) -> bool:
-        """Check if latest version is valid"""
-        return cache.get(VERSION_CACHE_KEY) != VERSION_NULL
+        return UpdateVersionInfo.get_cached().model_dump(mode="json")
 
     def get_outdated(self, instance) -> bool:
         """Check if we're running the latest version"""
-        return parse(self.get_version_current(instance)) < parse(self.get_version_latest(instance))
+        cached = UpdateVersionInfo.get_cached()
+        if not cached:
+            return False
+        return parse(self.get_version_current(instance)) < parse(cached.version)
 
     def get_outpost_outdated(self, _) -> bool:
         """Check if any outpost is outdated/has a version mismatch"""

@@ -153,8 +153,6 @@ export default /** @type {import("@docusaurus/types").Config} */ (
                     groupBy: "topic",
                     // Normalized section headings for the top-level topics.
                     categories: topics,
-                    // Split the glossary out of "Core Concepts" into its own section.
-                    regroup: [["core/glossary", "glossary"]],
                     crossLinks: [
                         {
                             label: "Integrations",

@@ -13,150 +13,153 @@
 import {
     type AgentAuthenticationResponse,
     AgentAuthenticationResponseFromJSON,
-} from "../models/AgentAuthenticationResponse";
-import { type AgentConfig, AgentConfigFromJSON } from "../models/AgentConfig";
-import { type AgentConnector, AgentConnectorFromJSON } from "../models/AgentConnector";
+} from "../models/AgentAuthenticationResponse.js";
+import { type AgentConfig, AgentConfigFromJSON } from "../models/AgentConfig.js";
+import { type AgentConnector, AgentConnectorFromJSON } from "../models/AgentConnector.js";
 import {
     type AgentConnectorRequest,
     AgentConnectorRequestToJSON,
-} from "../models/AgentConnectorRequest";
+} from "../models/AgentConnectorRequest.js";
 import {
     type AgentPSSODeviceRegistrationRequest,
     AgentPSSODeviceRegistrationRequestToJSON,
-} from "../models/AgentPSSODeviceRegistrationRequest";
+} from "../models/AgentPSSODeviceRegistrationRequest.js";
 import {
     type AgentPSSODeviceRegistrationResponse,
     AgentPSSODeviceRegistrationResponseFromJSON,
-} from "../models/AgentPSSODeviceRegistrationResponse";
+} from "../models/AgentPSSODeviceRegistrationResponse.js";
 import {
     type AgentPSSOUserRegistrationRequest,
     AgentPSSOUserRegistrationRequestToJSON,
-} from "../models/AgentPSSOUserRegistrationRequest";
-import { type AgentTokenResponse, AgentTokenResponseFromJSON } from "../models/AgentTokenResponse";
+} from "../models/AgentPSSOUserRegistrationRequest.js";
+import {
+    type AgentTokenResponse,
+    AgentTokenResponseFromJSON,
+} from "../models/AgentTokenResponse.js";
 import {
     type AppleIndependentSecureEnclave,
     AppleIndependentSecureEnclaveFromJSON,
-} from "../models/AppleIndependentSecureEnclave";
+} from "../models/AppleIndependentSecureEnclave.js";
 import {
     type AppleIndependentSecureEnclaveRequest,
     AppleIndependentSecureEnclaveRequestToJSON,
-} from "../models/AppleIndependentSecureEnclaveRequest";
-import { type Connector, ConnectorFromJSON } from "../models/Connector";
-import { type DeviceAccessGroup, DeviceAccessGroupFromJSON } from "../models/DeviceAccessGroup";
+} from "../models/AppleIndependentSecureEnclaveRequest.js";
+import { type Connector, ConnectorFromJSON } from "../models/Connector.js";
+import { type DeviceAccessGroup, DeviceAccessGroupFromJSON } from "../models/DeviceAccessGroup.js";
 import {
     type DeviceAccessGroupRequest,
     DeviceAccessGroupRequestToJSON,
-} from "../models/DeviceAccessGroupRequest";
-import { type DeviceFactsRequest, DeviceFactsRequestToJSON } from "../models/DeviceFactsRequest";
-import { type DeviceSummary, DeviceSummaryFromJSON } from "../models/DeviceSummary";
-import { type DeviceUserBinding, DeviceUserBindingFromJSON } from "../models/DeviceUserBinding";
+} from "../models/DeviceAccessGroupRequest.js";
+import { type DeviceFactsRequest, DeviceFactsRequestToJSON } from "../models/DeviceFactsRequest.js";
+import { type DeviceSummary, DeviceSummaryFromJSON } from "../models/DeviceSummary.js";
+import { type DeviceUserBinding, DeviceUserBindingFromJSON } from "../models/DeviceUserBinding.js";
 import {
     type DeviceUserBindingRequest,
     DeviceUserBindingRequestToJSON,
-} from "../models/DeviceUserBindingRequest";
-import { type EndpointDevice, EndpointDeviceFromJSON } from "../models/EndpointDevice";
+} from "../models/DeviceUserBindingRequest.js";
+import { type EndpointDevice, EndpointDeviceFromJSON } from "../models/EndpointDevice.js";
 import {
     type EndpointDeviceDetails,
     EndpointDeviceDetailsFromJSON,
-} from "../models/EndpointDeviceDetails";
+} from "../models/EndpointDeviceDetails.js";
 import {
     type EndpointDeviceRequest,
     EndpointDeviceRequestToJSON,
-} from "../models/EndpointDeviceRequest";
-import { type EnrollmentToken, EnrollmentTokenFromJSON } from "../models/EnrollmentToken";
+} from "../models/EndpointDeviceRequest.js";
+import { type EnrollmentToken, EnrollmentTokenFromJSON } from "../models/EnrollmentToken.js";
 import {
     type EnrollmentTokenRequest,
     EnrollmentTokenRequestToJSON,
-} from "../models/EnrollmentTokenRequest";
-import { type EnrollRequest, EnrollRequestToJSON } from "../models/EnrollRequest";
-import { type FleetConnector, FleetConnectorFromJSON } from "../models/FleetConnector";
+} from "../models/EnrollmentTokenRequest.js";
+import { type EnrollRequest, EnrollRequestToJSON } from "../models/EnrollRequest.js";
+import { type FleetConnector, FleetConnectorFromJSON } from "../models/FleetConnector.js";
 import {
     type FleetConnectorRequest,
     FleetConnectorRequestToJSON,
-} from "../models/FleetConnectorRequest";
+} from "../models/FleetConnectorRequest.js";
 import {
     type GoogleChromeConnector,
     GoogleChromeConnectorFromJSON,
-} from "../models/GoogleChromeConnector";
+} from "../models/GoogleChromeConnector.js";
 import {
     type GoogleChromeConnectorRequest,
     GoogleChromeConnectorRequestToJSON,
-} from "../models/GoogleChromeConnectorRequest";
-import { type MDMConfigRequest, MDMConfigRequestToJSON } from "../models/MDMConfigRequest";
-import { type MDMConfigResponse, MDMConfigResponseFromJSON } from "../models/MDMConfigResponse";
+} from "../models/GoogleChromeConnectorRequest.js";
+import { type MDMConfigRequest, MDMConfigRequestToJSON } from "../models/MDMConfigRequest.js";
+import { type MDMConfigResponse, MDMConfigResponseFromJSON } from "../models/MDMConfigResponse.js";
 import {
     type PaginatedAgentConnectorList,
     PaginatedAgentConnectorListFromJSON,
-} from "../models/PaginatedAgentConnectorList";
+} from "../models/PaginatedAgentConnectorList.js";
 import {
     type PaginatedAppleIndependentSecureEnclaveList,
     PaginatedAppleIndependentSecureEnclaveListFromJSON,
-} from "../models/PaginatedAppleIndependentSecureEnclaveList";
+} from "../models/PaginatedAppleIndependentSecureEnclaveList.js";
 import {
     type PaginatedConnectorList,
     PaginatedConnectorListFromJSON,
-} from "../models/PaginatedConnectorList";
+} from "../models/PaginatedConnectorList.js";
 import {
     type PaginatedDeviceAccessGroupList,
     PaginatedDeviceAccessGroupListFromJSON,
-} from "../models/PaginatedDeviceAccessGroupList";
+} from "../models/PaginatedDeviceAccessGroupList.js";
 import {
     type PaginatedDeviceUserBindingList,
     PaginatedDeviceUserBindingListFromJSON,
-} from "../models/PaginatedDeviceUserBindingList";
+} from "../models/PaginatedDeviceUserBindingList.js";
 import {
     type PaginatedEndpointDeviceList,
     PaginatedEndpointDeviceListFromJSON,
-} from "../models/PaginatedEndpointDeviceList";
+} from "../models/PaginatedEndpointDeviceList.js";
 import {
     type PaginatedEnrollmentTokenList,
     PaginatedEnrollmentTokenListFromJSON,
-} from "../models/PaginatedEnrollmentTokenList";
+} from "../models/PaginatedEnrollmentTokenList.js";
 import {
     type PaginatedFleetConnectorList,
     PaginatedFleetConnectorListFromJSON,
-} from "../models/PaginatedFleetConnectorList";
+} from "../models/PaginatedFleetConnectorList.js";
 import {
     type PaginatedGoogleChromeConnectorList,
     PaginatedGoogleChromeConnectorListFromJSON,
-} from "../models/PaginatedGoogleChromeConnectorList";
+} from "../models/PaginatedGoogleChromeConnectorList.js";
 import {
     type PatchedAgentConnectorRequest,
     PatchedAgentConnectorRequestToJSON,
-} from "../models/PatchedAgentConnectorRequest";
+} from "../models/PatchedAgentConnectorRequest.js";
 import {
     type PatchedAppleIndependentSecureEnclaveRequest,
     PatchedAppleIndependentSecureEnclaveRequestToJSON,
-} from "../models/PatchedAppleIndependentSecureEnclaveRequest";
+} from "../models/PatchedAppleIndependentSecureEnclaveRequest.js";
 import {
     type PatchedDeviceAccessGroupRequest,
     PatchedDeviceAccessGroupRequestToJSON,
-} from "../models/PatchedDeviceAccessGroupRequest";
+} from "../models/PatchedDeviceAccessGroupRequest.js";
 import {
     type PatchedDeviceUserBindingRequest,
     PatchedDeviceUserBindingRequestToJSON,
-} from "../models/PatchedDeviceUserBindingRequest";
+} from "../models/PatchedDeviceUserBindingRequest.js";
 import {
     type PatchedEndpointDeviceRequest,
     PatchedEndpointDeviceRequestToJSON,
-} from "../models/PatchedEndpointDeviceRequest";
+} from "../models/PatchedEndpointDeviceRequest.js";
 import {
     type PatchedEnrollmentTokenRequest,
     PatchedEnrollmentTokenRequestToJSON,
-} from "../models/PatchedEnrollmentTokenRequest";
+} from "../models/PatchedEnrollmentTokenRequest.js";
 import {
     type PatchedFleetConnectorRequest,
     PatchedFleetConnectorRequestToJSON,
-} from "../models/PatchedFleetConnectorRequest";
+} from "../models/PatchedFleetConnectorRequest.js";
 import {
     type PatchedGoogleChromeConnectorRequest,
     PatchedGoogleChromeConnectorRequestToJSON,
-} from "../models/PatchedGoogleChromeConnectorRequest";
-import { type TokenView, TokenViewFromJSON } from "../models/TokenView";
-import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import { type UserSelf, UserSelfFromJSON } from "../models/UserSelf";
-import * as runtime from "../runtime";
+} from "../models/PatchedGoogleChromeConnectorRequest.js";
+import { type TokenView, TokenViewFromJSON } from "../models/TokenView.js";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import { type UserSelf, UserSelfFromJSON } from "../models/UserSelf.js";
+import * as runtime from "../runtime.js";
 
 export interface EndpointsAgentsConnectorsAuthFedCreateRequest {
     device: string;

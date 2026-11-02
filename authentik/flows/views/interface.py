@@ -1,5 +1,6 @@
 """Interface views"""
 
+from collections import defaultdict
 from typing import Any
 
 from django.shortcuts import get_object_or_404
@@ -34,6 +35,15 @@ class FlowInterfaceView(InterfaceView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
+        # Flow title formatted with a default dict, as we don't know the keys used
+        # Only format titles with named placeholders, as a bare "% s" would
+        # otherwise inline the dict's repr
+        if "%(" in flow.title:
+            try:
+                flow.title = (flow.title % defaultdict(str)).strip()
+            except TypeError, ValueError:
+                # If title formatting is invalid, keep the original title unchanged.
+                pass
         kwargs["flow"] = flow
         kwargs["flow_background_url"] = flow.background_url(self.request)
         kwargs["inspector"] = "inspector" in self.request.GET

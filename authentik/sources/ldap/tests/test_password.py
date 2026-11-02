@@ -3,8 +3,12 @@
 from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
+from ldap3.core.exceptions import LDAPUnwillingToPerformResult
+from rest_framework.serializers import ValidationError
 
 from authentik.core.models import User
+from authentik.events.models import Event, EventAction
+from authentik.lib.generators import generate_id
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.password import LDAPPasswordChanger
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
@@ -114,3 +118,34 @@ class LDAPPasswordTests(TestCase):
             return_value=[{"attributes": user_attributes}],
         ):
             self.assertTrue(pwc._ad_check_password_existing("AB1!", "user"))
+
+    @patch("authentik.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
+    def test_sync_password_ad_error(self):
+        """Test that a rejected password is reported with the correct error"""
+        user = User.objects.create(
+            username="test",
+            attributes={
+                "distinguishedName": "CN=Erin M. Hagens,OU=ak-test,DC=t,DC=goauthentik,DC=io"
+            },
+        )
+        with (
+            patch.object(
+                LDAP_CONNECTION_PATCH.return_value.extend.microsoft,
+                "modify_password",
+                side_effect=LDAPUnwillingToPerformResult(
+                    result=53,
+                    description="unwillingToPerform",
+                    message=(
+                        "0000052D: SvcErr: DSID-031A124C, problem 5003 (WILL_NOT_PERFORM), "
+                        "data 0\n\x00"
+                    ),
+                ),
+            ),
+            self.assertRaises(ValidationError),
+        ):
+            user.set_password(generate_id())
+
+        event = Event.objects.filter(
+            action=EventAction.CONFIGURATION_ERROR, user__pk=user.pk
+        ).first()
+        self.assertIn("0000052D", event.context["message"])

@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { GrantTypeEnum } from "./GrantTypeEnum";
-import { GrantTypeEnumFromJSON, GrantTypeEnumToJSON } from "./GrantTypeEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { GrantTypeEnum } from "./GrantTypeEnum.js";
+import { GrantTypeEnumFromJSON, GrantTypeEnumToJSON } from "./GrantTypeEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * Serializer for OAuth2DynamicClientRegistration

@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { LoginChallengeTypes } from "./LoginChallengeTypes";
-import { LoginChallengeTypesFromJSON, LoginChallengeTypesToJSON } from "./LoginChallengeTypes";
+import type { LoginChallengeTypes } from "./LoginChallengeTypes.js";
+import { LoginChallengeTypesFromJSON, LoginChallengeTypesToJSON } from "./LoginChallengeTypes.js";
 
 /**
  * Serializer for Login buttons of sources
