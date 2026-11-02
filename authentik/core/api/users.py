@@ -14,7 +14,7 @@ from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,

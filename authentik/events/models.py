@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from requests import RequestException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -500,12 +500,12 @@ class NotificationTransport(TasksModel, SerializerModel):
         """Send notification to slack or slack-compatible endpoints"""
         fields = [
             {
-                "title": _("Severity"),
+                "title": str(_("Severity")),
                 "value": notification.severity,
                 "short": True,
             },
             {
-                "title": _("Dispatched for user"),
+                "title": str(_("Dispatched for user")),
                 "value": str(notification.user),
                 "short": True,
             },
@@ -514,7 +514,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             if notification.event.user:
                 fields.append(
                     {
-                        "title": _("Event user"),
+                        "title": str(_("Event user")),
                         "value": str(notification.event.user.get("username")),
                         "short": True,
                     },

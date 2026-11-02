@@ -69,11 +69,9 @@ class LDAPSourceSerializer(SourceSerializer):
                 raise ValidationError(
                     {
                         mappings_field: _(
-                            (
-                                "When 'Sync {type}s' is enabled, '{type}s property "
-                                "mappings' cannot be empty."
-                            ).format(type=type)
-                        )
+                            "When 'Sync {type}s' is enabled, '{type}s property "
+                            "mappings' cannot be empty."
+                        ).format(type=type)
                     }
                 )
         service_bind_method = attrs.get(

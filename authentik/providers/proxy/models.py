@@ -8,7 +8,7 @@ from uuid import uuid4
 
 from django.db import models
 from django.templatetags.static import static
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.crypto.models import CertificateKeyPair

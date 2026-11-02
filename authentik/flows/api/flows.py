@@ -194,10 +194,8 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         except FlowNonApplicableException as exc:
             return bad_request_message(
                 request,
-                _(
-                    "Flow not applicable to current user/request: {messages}".format_map(
-                        {"messages": exc.messages}
-                    )
+                _("Flow not applicable to current user/request: {messages}").format_map(
+                    {"messages": str(exc.messages)}
                 ),
             )
         return Response(
