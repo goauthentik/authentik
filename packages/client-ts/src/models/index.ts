@@ -12,6 +12,8 @@ export * from "./AgentGrantRequestCreateRequest.js";
 export * from "./AgentGrantRequestCreated.js";
 export * from "./AgentPSSODeviceRegistrationRequest.js";
 export * from "./AgentPSSODeviceRegistrationResponse.js";
+export * from "./AgentPSSODeviceState.js";
+export * from "./AgentPSSODeviceStateUser.js";
 export * from "./AgentPSSOUserRegistrationRequest.js";
 export * from "./AgentRequest.js";
 export * from "./AgentTokenResponse.js";
