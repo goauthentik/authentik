@@ -2,9 +2,10 @@
 
 from unittest.mock import MagicMock, patch
 
+from django.db.models.signals import m2m_changed
 from django.test import TestCase
 
-from authentik.core.models import Group, User
+from authentik.core.models import Group, User, UserGroup
 from authentik.lib.generators import generate_id
 from authentik.sources.ldap.models import (
     GroupLDAPSourceConnection,
@@ -141,3 +142,66 @@ class LDAPMembershipSyncTests(TestCase):
         MembershipLDAPSynchronizer(self.source, Task()).sync([self.group_data])
 
         self.assertQuerySetEqual(self.group.users.all(), [member], ordered=False)
+
+    def test_membership_changes_preserve_signals_and_existing_rows(self):
+        """Only changed memberships notify audit and outgoing sync signal receivers."""
+        retained = User.objects.create(
+            username=generate_id(), attributes={"distinguishedName": "retained"}
+        )
+        departed = User.objects.create(
+            username=generate_id(), attributes={"distinguishedName": "departed"}
+        )
+        added = User.objects.create(
+            username=generate_id(), attributes={"distinguishedName": ["added"]}
+        )
+        retained_membership = UserGroup.objects.create(user=retained, group=self.group)
+        UserGroup.objects.create(user=departed, group=self.group)
+        self.group_data["attributes"]["member"] = ["retained", "added"]
+        receiver = MagicMock()
+        m2m_changed.connect(receiver, sender=UserGroup)
+        self.addCleanup(m2m_changed.disconnect, receiver, sender=UserGroup)
+
+        synchronizer = MembershipLDAPSynchronizer(self.source, Task())
+        self.assertEqual(synchronizer.sync([self.group_data]), 3)
+
+        self.assertEqual(
+            [(call.kwargs["action"], call.kwargs["pk_set"]) for call in receiver.call_args_list],
+            [
+                ("pre_remove", {departed.pk}),
+                ("post_remove", {departed.pk}),
+                ("pre_add", {added.pk}),
+                ("post_add", {added.pk}),
+            ],
+        )
+        for call in receiver.call_args_list:
+            self.assertEqual(call.kwargs["instance"], self.group)
+            self.assertTrue(call.kwargs["reverse"])
+            self.assertIs(call.kwargs["model"], User)
+        self.assertEqual(
+            set(UserGroup.objects.filter(group=self.group).values_list("user_id", flat=True)),
+            {retained.pk, added.pk},
+        )
+        retained_membership.refresh_from_db()
+
+        receiver.reset_mock()
+        self.assertEqual(synchronizer.sync([self.group_data]), 3)
+        receiver.assert_not_called()
+        retained_membership.refresh_from_db()
+
+    def test_membership_changes_are_atomic(self):
+        """A failed addition rolls back removals from the same reconciliation."""
+        departed = User.objects.create(
+            username=generate_id(), attributes={"distinguishedName": "departed"}
+        )
+        added = User.objects.create(
+            username=generate_id(), attributes={"distinguishedName": "added"}
+        )
+        membership = UserGroup.objects.create(user=departed, group=self.group)
+        self.group_data["attributes"]["member"] = ["added"]
+
+        with patch.object(type(self.group.users), "add", side_effect=RuntimeError("add failed")):
+            with self.assertRaisesMessage(RuntimeError, "add failed"):
+                MembershipLDAPSynchronizer(self.source, Task()).sync([self.group_data])
+
+        membership.refresh_from_db()
+        self.assertFalse(UserGroup.objects.filter(user=added, group=self.group).exists())
