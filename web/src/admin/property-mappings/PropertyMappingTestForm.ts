@@ -91,7 +91,7 @@ export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
 
                           <ak-code-editor
                               id="result"
-                              mode="javascript"
+                              mode="json"
                               readonly
                               value="${ifDefined(this.result?.result)}"
                           >

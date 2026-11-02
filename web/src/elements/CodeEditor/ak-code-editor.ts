@@ -3,6 +3,7 @@ import { pluckErrorDetail } from "#common/errors/network";
 import type { MonacoEditor } from "#elements/CodeEditor/editor";
 import {
     CodeEditorMode,
+    CodeEditorSchema,
     parseCodeEditorSource,
     stringifyCodeEditorSource,
 } from "#elements/CodeEditor/shared";
@@ -48,6 +49,15 @@ export class CodeEditor<T extends Jsonifiable = Jsonifiable> extends FormAssocia
 
     @property({ type: Boolean })
     public raw?: boolean;
+
+    /**
+     * A JSON Schema for JSON and YAML content, as a URL or the schema itself.
+     *
+     * Hovers describe the content from the schema, suggestions follow it, and content that
+     * doesn't match it is underlined.
+     */
+    @property({ attribute: "schema" })
+    public schema?: CodeEditorSchema;
 
     @property()
     public set value(nextValue: T) {
@@ -142,6 +152,7 @@ export class CodeEditor<T extends Jsonifiable = Jsonifiable> extends FormAssocia
             theme: this.activeTheme,
             readOnly: this.readOnly || this.disabled,
             value: this.#source || "",
+            schema: this.schema,
             onChange: (source) => {
                 this.#source = source;
                 this.#syncValidity();
@@ -175,6 +186,10 @@ export class CodeEditor<T extends Jsonifiable = Jsonifiable> extends FormAssocia
 
         if (changedProperties.has("mode")) {
             this.#editor.setMode(this.mode);
+        }
+
+        if (changedProperties.has("schema")) {
+            this.#editor.setSchema(this.schema);
         }
 
         if (changedProperties.has("readOnly") || changedProperties.has("disabled")) {
