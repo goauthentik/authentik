@@ -110,3 +110,91 @@ class TestAppleRegister(APITestCase):
         binding.refresh_from_db()
         self.assertEqual(binding.apple_secure_enclave_key, new_enclave_key)
         self.assertEqual(binding.apple_enclave_key_id, new_enclave_key_id)
+
+    @enterprise_test()
+    @reconcile_app("authentik_crypto")
+    def test_registration_state(self):
+        self.connection.apple_signing_key = generate_id()
+        self.connection.apple_sign_key_id = generate_id()
+        self.connection.apple_enc_key_id = generate_id()
+        self.connection.save()
+        binding = AgentDeviceUserBinding.objects.create(
+            target=self.device,
+            user=self.user,
+            connector=self.connector,
+            order=0,
+            apple_enclave_key_id=generate_id(),
+        )
+        response = self.client.get(
+            reverse("authentik_api:psso-register-device"),
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "device_registered": True,
+                "sign_key_id": self.connection.apple_sign_key_id,
+                "enc_key_id": self.connection.apple_enc_key_id,
+                "users": [
+                    {
+                        "username": self.user.username,
+                        "enclave_key_id": binding.apple_enclave_key_id,
+                    }
+                ],
+            },
+        )
+
+    @enterprise_test()
+    @reconcile_app("authentik_crypto")
+    def test_registration_state_unregistered(self):
+        response = self.client.get(
+            reverse("authentik_api:psso-register-device"),
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertFalse(body["device_registered"])
+        self.assertEqual(body["users"], [])
+
+    @enterprise_test()
+    @reconcile_app("authentik_crypto")
+    def test_unregister_device(self):
+        self.connection.apple_signing_key = generate_id()
+        self.connection.apple_encryption_key = generate_id()
+        self.connection.apple_key_exchange_key = generate_id()
+        self.connection.apple_sign_key_id = generate_id()
+        self.connection.apple_enc_key_id = generate_id()
+        self.connection.save()
+        binding = AgentDeviceUserBinding.objects.create(
+            target=self.device,
+            user=self.user,
+            connector=self.connector,
+            order=0,
+            apple_secure_enclave_key=generate_id(),
+            apple_enclave_key_id=generate_id(),
+        )
+        DeviceAuthenticationToken.objects.create(
+            device=self.device,
+            device_token=self.device_token,
+            connector=self.connector,
+            user=self.user,
+            token=generate_id(),
+        )
+        response = self.client.delete(
+            reverse("authentik_api:psso-register-device"),
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+        self.assertEqual(response.status_code, 204)
+        self.connection.refresh_from_db()
+        self.assertEqual(self.connection.apple_signing_key, "")
+        self.assertEqual(self.connection.apple_encryption_key, "")
+        self.assertEqual(self.connection.apple_key_exchange_key, "")
+        self.assertEqual(self.connection.apple_sign_key_id, "")
+        self.assertEqual(self.connection.apple_enc_key_id, "")
+        binding.refresh_from_db()
+        self.assertEqual(binding.apple_secure_enclave_key, "")
+        self.assertEqual(binding.apple_enclave_key_id, "")
+        self.assertFalse(DeviceAuthenticationToken.objects.filter(device=self.device).exists())
+        # The device itself stays enrolled, only Platform SSO state is cleared
+        self.assertTrue(DeviceToken.objects.filter(pk=self.device_token.pk).exists())
