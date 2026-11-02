@@ -28,7 +28,7 @@ dependencies = [
   "django-tenants==3.10.1",
   "django==5.2.17",
   "djangoql==0.19.1",
-  "djangorestframework==3.17.1",
+  "djangorestframework==3.18.3",
   "docker==7.1.0",
   "drf-orjson-renderer==1.8.0",
   "drf-spectacular==0.29.0",
