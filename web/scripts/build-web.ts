@@ -11,7 +11,7 @@ import { copyAssets } from "./build-assets.ts";
 import { localeManifestPlugin } from "#bundler/locale-manifest-plugin/node";
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
-import { createBundleDefinitions } from "#bundler/utils/node";
+import { createBundleAliases, createBundleDefinitions } from "#bundler/utils/node";
 import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
 
@@ -126,6 +126,7 @@ const BASE_ESBUILD_OPTIONS: BuildOptions = {
         ...(NodeEnvironment === "production" ? ["production"] : ["development", "production"]),
     ],
     plugins: BASE_ESBUILD_PLUGINS,
+    alias: createBundleAliases(),
     define: bundleDefinitions,
     format: "esm",
 };

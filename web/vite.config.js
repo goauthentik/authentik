@@ -2,7 +2,7 @@
 
 import { join } from "node:path";
 
-import { createBundleDefinitions } from "#bundler/utils/node";
+import { createBundleAliases, createBundleDefinitions } from "#bundler/utils/node";
 import { inlineCSSPlugin } from "#bundler/vite-plugin-lit-css/node";
 
 import { resolvePackage } from "@goauthentik/core/paths/node";
@@ -12,14 +12,24 @@ import { defineConfig } from "vite";
 
 const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
 
+/**
+ * @satisfies {import("vite").UserConfig["resolve"]}
+ */
+const resolve = {
+    alias: [
+        // `inlineCSSPlugin` appends `?inline` to CSS imports, which a string alias won't match.
+        ...Object.entries(createBundleAliases()).map(([find, replacement]) => ({
+            find: new RegExp(`^${RegExp.escape(find)}(?=\\?|$)`),
+            replacement,
+        })),
+        { find: "./assets/fonts", replacement: join(patternflyPath, "assets", "fonts") },
+        { find: "./assets/pficon", replacement: join(patternflyPath, "assets", "pficon") },
+    ],
+};
+
 export default defineConfig({
     define: createBundleDefinitions(),
-    resolve: {
-        alias: {
-            "./assets/fonts": join(patternflyPath, "assets", "fonts"),
-            "./assets/pficon": join(patternflyPath, "assets", "pficon"),
-        },
-    },
+    resolve,
     optimizeDeps: {
         // Fixes dependency resolution issue associated with `npm link`ed packages.
         include: ["@goauthentik/api"],
@@ -66,6 +76,8 @@ export default defineConfig({
                 // this the CSS resolves to a Vite style side-effect with no
                 // default export, and importing any AKElement throws.
                 plugins: [inlineCSSPlugin()],
+                // Nor the root aliases, which the code editor needs for Monaco's stylesheet.
+                resolve,
                 test: {
                     setupFiles: ["./test/lit/setup.js"],
 
