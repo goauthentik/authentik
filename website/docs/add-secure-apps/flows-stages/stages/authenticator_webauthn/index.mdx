@@ -48,6 +48,10 @@ For passkey-based passwordless login, set **Resident key requirement** to **Pref
 
 Use **Authenticator Attachment** when the flow should prefer either removable authenticators such as YubiKeys or built-in authenticators such as Touch ID, Windows Hello, or password-manager passkeys.
 
+### Signature algorithms
+
+Registration accepts EdDSA, ES256, and RS256 credentials, and the post-quantum ML-DSA-44, ML-DSA-65, and ML-DSA-87 algorithms (FIPS 204). Authenticators pick the first algorithm they support, so ML-DSA is only used by devices that offer nothing else. No shipping authenticator supports ML-DSA yet.
+
 This controls the `authenticatorAttachment` parameter sent to the browser during WebAuthn registration:
 
 - **No preference is sent**: the browser can offer any available authenticator.
@@ -77,6 +81,8 @@ For backward compatibility with older browsers that do not support hints, authen
 - If both client-device and cross-platform hints are selected, no value is inferred
 
 ### Duplicate devices
+
+During registration, authentik sends the user's already-enrolled credentials in the `excludeCredentials` parameter. An authenticator that already holds a credential for the account refuses to create another one, and the user is told that the device is already registered. Because the list only contains the current user's credentials, the same authenticator can still be enrolled by different users.
 
 The **Prevent duplicate devices** option was removed in 2026.8. It compared attestation certificates, which manufacturers share across entire production batches, so it rejected legitimate enrollments of a second security key. No configuration replaces it, and no action is needed when upgrading.
 

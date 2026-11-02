@@ -164,7 +164,6 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
                 this.#coreApi.coreApplicationsList({
                     ordering: "name",
                     search: query,
-                    superuserFullList: true,
                 }),
             )
             .with(ContentTypeEnum.AuthentikCoreGroup, () =>

@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { GroupOAuthSourceConnection } from "./GroupOAuthSourceConnection";
+import type { GroupOAuthSourceConnection } from "./GroupOAuthSourceConnection.js";
 import {
     GroupOAuthSourceConnectionFromJSON,
     GroupOAuthSourceConnectionToJSON,
-} from "./GroupOAuthSourceConnection";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./GroupOAuthSourceConnection.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

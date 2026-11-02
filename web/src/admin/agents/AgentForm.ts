@@ -97,11 +97,11 @@ export class AgentForm extends Form<AgentCreateRequest> {
     };
 
     protected override renderForm(): SlottedTemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Parent user")} name="parent" required>
+        return html`<ak-form-element-horizontal label=${msg("Parent user")} name="parent">
                 ${AKSearchSelect({
                     name: "parent",
                     source: userSource,
-                    blankable: false,
+                    blankable: true,
                 })}
                 <p class="pf-c-form__helper-text">
                     ${msg("The user this agent acts on behalf of.")}

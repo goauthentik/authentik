@@ -68,12 +68,6 @@ class TestRACDevicesAPI(APITestCase):
         response = self.client.get(reverse("authentik_api:rac_device-list"))
         self.assertEqual(response.status_code, 400)
 
-    def test_list_superuser_full_list(self):
-        """Test list operation with superuser_full_list"""
-        self.client.force_login(self.user)
-        pks = [device["device_uuid"] for device in self.list_devices(superuser_full_list="true")]
-        self.assertCountEqual(pks, [str(self.allowed.pk), str(self.denied.pk)])
-
     def test_list_access_group(self):
         """A provider limited to an access group only lists devices in it"""
         group = DeviceAccessGroup.objects.create(name=generate_id())

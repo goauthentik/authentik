@@ -9,13 +9,13 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.user_delete.models import UserDeleteStage
 
 
-class TestUserDeleteStage(FlowTestCase):
+class TestUserDeleteStage(APIFlowTestCase):
     """Delete tests"""
 
     def setUp(self):

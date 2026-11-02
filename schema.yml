@@ -2962,12 +2962,8 @@ paths:
   /core/applications/:
     get:
       operationId: core_applications_list
-      description: Custom list method that checks Policy based access instead of guardian
+      description: Application Viewset
       parameters:
-      - in: query
-        name: for_user
-        schema:
-          type: integer
       - in: query
         name: group
         schema:
@@ -2985,10 +2981,6 @@ paths:
         schema:
           type: string
       - $ref: '#/components/parameters/QueryName'
-      - in: query
-        name: only_with_launch_url
-        schema:
-          type: boolean
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -2997,10 +2989,6 @@ paths:
         name: slug
         schema:
           type: string
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
       tags:
       - core
       security:
@@ -3201,6 +3189,60 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/applications/@accessible/:
+    get:
+      operationId: core_applications_accessible_list
+      description: List applications the user passes policies for, regardless of RBAC
+        permissions
+      parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
+      - in: query
+        name: group
+        schema:
+          type: string
+      - in: query
+        name: meta_description
+        schema:
+          type: string
+      - in: query
+        name: meta_launch_url
+        schema:
+          type: string
+      - in: query
+        name: meta_publisher
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - in: query
+        name: only_with_launch_url
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: slug
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApplicationList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -11044,6 +11086,29 @@ paths:
                 items:
                   $ref: '#/components/schemas/OutpostHealth'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/instances/{uuid}/rebuild_permissions/:
+    post:
+      operationId: outposts_instances_rebuild_permissions_create
+      description: Delete and recreate all permissions of the outpost's service account
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Permissions rebuilt
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -19918,6 +19983,14 @@ paths:
         schema:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
       - in: query
+        name: encryption_algorithm
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: |+
+            Block cipher used to encrypt the assertion.
+
+      - in: query
         name: encryption_kp
         schema:
           type: string
@@ -19935,6 +20008,14 @@ paths:
         name: issuer_override
         schema:
           type: string
+      - in: query
+        name: jwt_federation_providers
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - in: query
         name: logout_method
         schema:
@@ -21110,6 +21191,14 @@ paths:
         schema:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
       - in: query
+        name: encryption_algorithm
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: |+
+            Block cipher used to encrypt the assertion.
+
+      - in: query
         name: encryption_kp
         schema:
           type: string
@@ -21127,6 +21216,14 @@ paths:
         name: issuer_override
         schema:
           type: string
+      - in: query
+        name: jwt_federation_providers
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - in: query
         name: logout_method
         schema:
@@ -21656,10 +21753,6 @@ paths:
           type: integer
         required: true
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
       tags:
       - rac
       security:
@@ -35579,6 +35672,7 @@ components:
       properties:
         parent:
           type: integer
+          nullable: true
         label:
           type: string
         expiring:
@@ -35761,6 +35855,9 @@ components:
       - ecdsa
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       type: string
     App:
       type: object
@@ -38054,6 +38151,9 @@ components:
       - dsa
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       type: string
     CertificateKeyPairRequest:
       type: object
@@ -38171,10 +38271,16 @@ components:
           type: integer
         cache_timeout_policies:
           type: integer
+        cache_timeout_brands:
+          type: integer
+        cache_timeout_system_settings:
+          type: integer
       required:
       - cache_timeout
+      - cache_timeout_brands
       - cache_timeout_flows
       - cache_timeout_policies
+      - cache_timeout_system_settings
       - capabilities
       - error_reporting
     ConnectionToken:
@@ -40015,6 +40121,13 @@ components:
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+    EncryptionAlgorithmEnum:
+      enum:
+      - http://www.w3.org/2001/04/xmlenc#aes128-cbc
+      - http://www.w3.org/2001/04/xmlenc#aes256-cbc
+      - http://www.w3.org/2009/xmlenc11#aes128-gcm
+      - http://www.w3.org/2009/xmlenc11#aes256-gcm
+      type: string
     EndpointAgentChallenge:
       type: object
       description: Signed challenge for authentik agent to respond to
@@ -40409,6 +40522,7 @@ components:
       - user_offboarded
       - suspicious_request
       - password_set
+      - required_action_completed
       - secret_view
       - secret_rotate
       - invitation_used
@@ -43492,6 +43606,9 @@ components:
       - ec
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       - rsa
     KubernetesServiceConnection:
       type: object
@@ -52987,6 +53104,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -53019,6 +53140,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
     PatchedSAMLSourcePropertyMappingRequest:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -53963,6 +54090,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
@@ -56911,6 +57042,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -56943,6 +57078,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
         url_download_metadata:
           type: string
           description: Get metadata download URL
@@ -57122,6 +57263,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -57154,6 +57299,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
       required:
       - acs_url
       - authorization_flow
@@ -59440,6 +59591,33 @@ components:
           type: string
           description: Configured external base URL. Can be empty
           readOnly: true
+        postgresql:
+          type: object
+          description: PostgreSQL information for this request's database connection
+          properties:
+            version:
+              type: string
+            jit:
+              type: string
+            jit_source:
+              type: string
+            ssl:
+              type: boolean
+            ssl_version:
+              type: string
+              nullable: true
+            ssl_cipher:
+              type: string
+              nullable: true
+          required:
+          - jit
+          - jit_source
+          - ssl
+          - ssl_cipher
+          - ssl_version
+          - version
+          readOnly: true
+          nullable: true
       required:
       - base_url
       - brand
@@ -59448,6 +59626,7 @@ components:
       - http_headers
       - http_host
       - http_is_secure
+      - postgresql
       - runtime
       - server_time
     TOTPDevice:
@@ -59952,7 +60131,7 @@ components:
           type: integer
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         description:
           type: string
@@ -60245,6 +60424,42 @@ components:
           description: Number of passwords to check against.
       required:
       - name
+    UpdateVersionInfo:
+      properties:
+        version:
+          title: Version
+          type: string
+        changelog:
+          title: Changelog
+          type: string
+        changelog_url:
+          format: uri
+          maxLength: 2083
+          minLength: 1
+          title: Changelog Url
+          type: string
+        reason:
+          $ref: '#/components/schemas/UpdateVersionReason'
+        valid:
+          default: true
+          title: Valid
+          type: boolean
+      required:
+      - version
+      - changelog
+      - changelog_url
+      - reason
+      title: UpdateVersionInfo
+      type: object
+    UpdateVersionReason:
+      description: Reason why an authentik update was released
+      enum:
+      - bugfix
+      - feature
+      - security
+      - other
+      title: UpdateVersionReason
+      type: string
     UsageEnum:
       enum:
       - media
@@ -60877,6 +61092,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/OffboardingStatusEnum'
           readOnly: true
+          default: pending
         created_by_obj:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
@@ -60929,6 +61145,11 @@ components:
         password:
           type: string
           minLength: 1
+        override:
+          type: boolean
+          default: false
+          description: Import a valid password hash even when its parameters do not
+            match authentik's current password hashing settings.
       required:
       - password
     UserPasswordSetRequest:
@@ -61514,12 +61735,8 @@ components:
           description: Get current version
           readOnly: true
         version_latest:
-          type: string
-          description: Get latest version from cache
-          readOnly: true
-        version_latest_valid:
-          type: boolean
-          description: Check if latest version is valid
+          allOf:
+          - $ref: '#/components/schemas/UpdateVersionInfo'
           readOnly: true
         build_hash:
           type: string
@@ -61539,7 +61756,6 @@ components:
       - outpost_outdated
       - version_current
       - version_latest
-      - version_latest_valid
     VersionHistory:
       type: object
       description: VersionHistory Serializer
@@ -61686,6 +61902,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
@@ -61810,6 +62030,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:

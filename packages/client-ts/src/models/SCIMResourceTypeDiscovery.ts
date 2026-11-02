@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { SCIMResourceType } from "./SCIMResourceType";
-import { SCIMResourceTypeFromJSON } from "./SCIMResourceType";
-import type { SCIMResourceTypeDiscoveryStatusEnum } from "./SCIMResourceTypeDiscoveryStatusEnum";
-import { SCIMResourceTypeDiscoveryStatusEnumFromJSON } from "./SCIMResourceTypeDiscoveryStatusEnum";
+import { parseDateTime } from "../runtime.js";
+import type { SCIMResourceType } from "./SCIMResourceType.js";
+import { SCIMResourceTypeFromJSON } from "./SCIMResourceType.js";
+import type { SCIMResourceTypeDiscoveryStatusEnum } from "./SCIMResourceTypeDiscoveryStatusEnum.js";
+import { SCIMResourceTypeDiscoveryStatusEnumFromJSON } from "./SCIMResourceTypeDiscoveryStatusEnum.js";
 
 /**
  * Diagnostic result of querying the destination's ResourceTypes endpoint.

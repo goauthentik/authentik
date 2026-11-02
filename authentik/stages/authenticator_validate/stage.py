@@ -89,7 +89,10 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         self._challenge_allowed(
             [DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS, DeviceClasses.EMAIL]
         )
-        self.device = validate_challenge_code(code, self.stage, self.stage.get_pending_user())
+        challenges = self.stage.executor.plan.context.get(PLAN_CONTEXT_DEVICE_CHALLENGES, [])
+        self.device = validate_challenge_code(
+            code, self.stage, self.stage.get_pending_user(), challenges
+        )
         return code
 
     def validate_webauthn(self, webauthn: dict) -> dict:

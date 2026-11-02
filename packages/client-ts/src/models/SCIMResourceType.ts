@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { SCIMResourceTypeExtension } from "./SCIMResourceTypeExtension";
-import { SCIMResourceTypeExtensionFromJSON } from "./SCIMResourceTypeExtension";
+import type { SCIMResourceTypeExtension } from "./SCIMResourceTypeExtension.js";
+import { SCIMResourceTypeExtensionFromJSON } from "./SCIMResourceTypeExtension.js";
 
 /**
  * A resource type advertised by the SCIM destination.

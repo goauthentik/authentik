@@ -78,6 +78,27 @@ A verification certificate in authentik acts as the public key used to verify di
 
 An encryption certificate is a public key certificate used by authentik to encrypt sensitive data in SAML assertions before sending them to an SP. This ensures that sensitive data within the assertion, such as user attributes and authentication details, remain confidential and can only be decrypted by the SP possessing the corresponding private key.
 
+When an encryption certificate is configured, authentik encrypts the assertion in an `<EncryptedAssertion>` element. If assertion signing is enabled and a signing certificate is configured, authentik signs the assertion before encrypting it. If response signing is enabled and a signing certificate is configured, authentik signs the response after encrypting the assertion. The SP must decrypt the assertion before verifying its signature.
+
+#### Encryption algorithm:ak-version[2026.11]
+
+The **Encryption algorithm** field under **Advanced protocol settings** specifies the algorithm that authentik uses to encrypt SAML assertions. This field is available only when an encryption certificate is configured.
+
+| Encryption algorithm | XML Encryption identifier                     |
+| -------------------- | --------------------------------------------- |
+| AES128-CBC           | `http://www.w3.org/2001/04/xmlenc#aes128-cbc` |
+| AES256-CBC           | `http://www.w3.org/2001/04/xmlenc#aes256-cbc` |
+| AES128-GCM           | `http://www.w3.org/2009/xmlenc11#aes128-gcm`  |
+| AES256-GCM (default) | `http://www.w3.org/2009/xmlenc11#aes256-gcm`  |
+
+AES256-GCM is the recommended algorithm and the default for new providers. The other algorithms provide compatibility with SPs that do not support AES256-GCM.
+
+Providers created before authentik 2026.11 retain AES128-CBC to preserve compatibility. To use AES256-GCM with an existing provider, change its **Encryption algorithm** and verify that you can still log in to the SP.
+
+Regardless of the selected algorithm, authentik encrypts the assertion's symmetric key with the encryption certificate's public key using RSA-OAEP (`http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p`).
+
+When you [import SP metadata](./create-saml-provider.mdx#create-a-saml-provider-from-sp-metadata-import-sp-metadata), authentik reads the `<EncryptionMethod>` elements associated with the SP's encryption key. It selects the first supported algorithm in the SP's order of preference. If none of the listed algorithms are supported, or no algorithms are listed, authentik uses the default, AES256-GCM.
+
 ## SAML property mappings
 
 During a SAML authentication process, communication between the SP and the IdP relies on property mappings to align, or "map", user attributes values between the IdP and SP.

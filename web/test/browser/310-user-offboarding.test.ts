@@ -94,7 +94,7 @@ async function openAdminNavLink(
 
     await test.step(`Open ${linkName} from the admin navigation`, async () => {
         if (!(await link.isVisible())) {
-            await page.getByRole("button", { name: `Expand ${group}` }).click();
+            await page.getByRole("button", { name: group, exact: true }).click();
         }
 
         await expect(link, `${linkName} navigation link is visible`).toBeVisible();

@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { BackendsEnum } from "./BackendsEnum";
-import { BackendsEnumFromJSON, BackendsEnumToJSON } from "./BackendsEnum";
+import type { BackendsEnum } from "./BackendsEnum.js";
+import { BackendsEnumFromJSON, BackendsEnumToJSON } from "./BackendsEnum.js";
 
 /**
  * PasswordStage Serializer

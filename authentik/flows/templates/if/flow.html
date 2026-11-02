@@ -48,10 +48,18 @@
         loading
     >
         {% include "base/placeholder.html" %}
-        
+
+        <div class="ak-c-flow-overlay" slot="overlay-viewport">
+            {% include "base/spinner.html" %}
+        </div>
+
+        <div class="ak-c-flow-overlay" slot="overlay-card">
+            {% include "base/spinner.html" %}
+        </div>
+
         <ak-brand-links name="flow-links" slot="footer"></ak-brand-links>
     </ak-flow-executor>
-    
+
     <ak-flow-inspector
         slot="panel"
         id="flow-inspector"

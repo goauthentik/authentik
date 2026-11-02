@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { WebAuthnDevice } from "./WebAuthnDevice";
-import { WebAuthnDeviceFromJSON, WebAuthnDeviceToJSON } from "./WebAuthnDevice";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { WebAuthnDevice } from "./WebAuthnDevice.js";
+import { WebAuthnDeviceFromJSON, WebAuthnDeviceToJSON } from "./WebAuthnDevice.js";
 
 /**
  * @export

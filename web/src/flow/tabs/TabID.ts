@@ -1,7 +1,8 @@
+import type { PersistenceKey } from "#common/storage/shared";
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 export class TabID {
-    public static readonly SessionStorageKey = "authentik_tab_id";
+    public static readonly SessionStorageKey = "ak:tab_id" satisfies PersistenceKey;
     public static readonly shared: TabID = new TabID();
 
     #id: string;

@@ -12,8 +12,16 @@ There are similarities between WS-Federation and SAML protocols, but there are s
 - WS-Federation term: **STS (Security Token Service)**
 - SAML term: **IdP (Identity Provider)**
 
-:::info SAML2 token support
-Note that we only support the SAML2 token type within WS-Federation providers, and that using the WS-Federation provider with Entra ID is not supported because Entra ID requires a SAML 1.0 token.
+## SAML assertion support
+
+The authentik WS-Federation provider supports SAML 2.0 assertions by default. Starting with authentik 2026.8, it also supports SAML 1.1 assertions. The assertion version determines the format of the security token carried by WS-Federation; the federation protocol remains WS-Federation.
+
+To issue SAML 1.1 assertions, select **SAML 1.1** in the **SAML assertion version** field under **Advanced protocol settings** when [configuring a WS-Federation provider](./create-wsfed-provider.mdx).
+
+Microsoft Entra ID integration is supported using WS-Federation with SAML 1.1 assertions. For configuration instructions, follow the [Microsoft 365 WS-Federation integration guide](/integrations/platforms/microsoft-ws-federation/).
+
+:::warning Passive authentication only
+The authentik WS-Federation provider supports browser-based passive authentication. It does not provide WS-Trust active authentication or Metadata Exchange (MEX) endpoints. Clients must support browser-based authentication.
 :::
 
 ## Supported URL request parameters

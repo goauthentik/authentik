@@ -10,19 +10,27 @@
  * Do not edit the class manually.
  */
 
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
-import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
-import type { SAMLLogoutMethods } from "./SAMLLogoutMethods";
-import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum.js";
+import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum.js";
+import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum.js";
+import {
+    EncryptionAlgorithmEnumFromJSON,
+    EncryptionAlgorithmEnumToJSON,
+} from "./EncryptionAlgorithmEnum.js";
+import type { SAMLBindingsEnum } from "./SAMLBindingsEnum.js";
+import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum.js";
+import type { SAMLLogoutMethods } from "./SAMLLogoutMethods.js";
+import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods.js";
+import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum.js";
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from "./SAMLNameIDPolicyEnum.js";
+import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum.js";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
+} from "./SignatureAlgorithmEnum.js";
 
 /**
  * SAMLProvider Serializer
@@ -136,6 +144,10 @@ export interface SAMLProvider {
      * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
+    /**
+     * Block cipher used to encrypt the assertion.
+     */
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     signAssertion?: boolean;
     signResponse?: boolean;
     signLogoutRequest?: boolean;
@@ -160,6 +172,11 @@ export interface SAMLProvider {
      */
     defaultRelayState?: string;
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
+    /**
+     * OAuth2 providers which can exchange their JWTs for a SAML Response of this provider via token
+     * exchange.
+     */
+    jwtFederationProviders?: Array<number>;
     /**
      * Get metadata download URL
      */
@@ -423,6 +440,10 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["encryption_kp"] === null
                   ? null
                   : json["encryption_kp"],
+        encryptionAlgorithm:
+            json["encryption_algorithm"] == null
+                ? undefined
+                : EncryptionAlgorithmEnumFromJSON(json["encryption_algorithm"]),
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signResponse: json["sign_response"] == null ? undefined : json["sign_response"],
         signLogoutRequest:
@@ -443,6 +464,8 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
             json["default_name_id_policy"] == null
                 ? undefined
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
+        jwtFederationProviders:
+            json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
         urlDownloadMetadata: json["url_download_metadata"],
         urlIssuer: json["url_issuer"],
         urlUnified: json["url_unified"],
@@ -507,6 +530,7 @@ export function SAMLProviderToJSONTyped(
         signing_kp: value["signingKp"],
         verification_kp: value["verificationKp"],
         encryption_kp: value["encryptionKp"],
+        encryption_algorithm: EncryptionAlgorithmEnumToJSON(value["encryptionAlgorithm"]),
         sign_assertion: value["signAssertion"],
         sign_response: value["signResponse"],
         sign_logout_request: value["signLogoutRequest"],
@@ -516,5 +540,6 @@ export function SAMLProviderToJSONTyped(
         logout_method: SAMLLogoutMethodsToJSON(value["logoutMethod"]),
         default_relay_state: value["defaultRelayState"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
+        jwt_federation_providers: value["jwtFederationProviders"],
     };
 }

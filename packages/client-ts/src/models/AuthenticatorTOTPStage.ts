@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { DigitsEnum } from "./DigitsEnum";
-import { DigitsEnumFromJSON, DigitsEnumToJSON } from "./DigitsEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { DigitsEnum } from "./DigitsEnum.js";
+import { DigitsEnumFromJSON, DigitsEnumToJSON } from "./DigitsEnum.js";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
 
 /**
  * AuthenticatorTOTPStage Serializer

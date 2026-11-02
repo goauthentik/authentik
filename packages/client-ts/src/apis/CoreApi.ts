@@ -10,137 +10,158 @@
  * Do not edit the class manually.
  */
 
-import { type Application, ApplicationFromJSON } from "../models/Application";
+import { type Application, ApplicationFromJSON } from "../models/Application.js";
 import {
     type ApplicationEntitlement,
     ApplicationEntitlementFromJSON,
-} from "../models/ApplicationEntitlement";
+} from "../models/ApplicationEntitlement.js";
 import {
     type ApplicationEntitlementRequest,
     ApplicationEntitlementRequestToJSON,
-} from "../models/ApplicationEntitlementRequest";
-import { type ApplicationRequest, ApplicationRequestToJSON } from "../models/ApplicationRequest";
+} from "../models/ApplicationEntitlementRequest.js";
+import { type ApplicationRequest, ApplicationRequestToJSON } from "../models/ApplicationRequest.js";
 import {
     type AuthenticatedSession,
     AuthenticatedSessionFromJSON,
-} from "../models/AuthenticatedSession";
-import { type Brand, BrandFromJSON } from "../models/Brand";
-import { type BrandRequest, BrandRequestToJSON } from "../models/BrandRequest";
+} from "../models/AuthenticatedSession.js";
+import { type Brand, BrandFromJSON } from "../models/Brand.js";
+import { type BrandRequest, BrandRequestToJSON } from "../models/BrandRequest.js";
 import {
     type BulkDeleteSessionResponse,
     BulkDeleteSessionResponseFromJSON,
-} from "../models/BulkDeleteSessionResponse";
-import { type CurrentBrand, CurrentBrandFromJSON } from "../models/CurrentBrand";
-import { type DataExport, DataExportFromJSON } from "../models/DataExport";
-import { type Group, GroupFromJSON } from "../models/Group";
-import { type GroupRequest, GroupRequestToJSON } from "../models/GroupRequest";
+} from "../models/BulkDeleteSessionResponse.js";
+import { type CurrentBrand, CurrentBrandFromJSON } from "../models/CurrentBrand.js";
+import { type DataExport, DataExportFromJSON } from "../models/DataExport.js";
+import { type Group, GroupFromJSON } from "../models/Group.js";
+import { type GroupRequest, GroupRequestToJSON } from "../models/GroupRequest.js";
 import {
     type ImpersonationRequest,
     ImpersonationRequestToJSON,
-} from "../models/ImpersonationRequest";
-import { type IntentEnum } from "../models/IntentEnum";
-import { type Link, LinkFromJSON } from "../models/Link";
-import { type ObjectAttribute, ObjectAttributeFromJSON } from "../models/ObjectAttribute";
+} from "../models/ImpersonationRequest.js";
+import { type IntentEnum } from "../models/IntentEnum.js";
+import { type Link, LinkFromJSON } from "../models/Link.js";
+import { type ObjectAttribute, ObjectAttributeFromJSON } from "../models/ObjectAttribute.js";
 import {
     type ObjectAttributeRequest,
     ObjectAttributeRequestToJSON,
-} from "../models/ObjectAttributeRequest";
+} from "../models/ObjectAttributeRequest.js";
 import {
     type PaginatedApplicationEntitlementList,
     PaginatedApplicationEntitlementListFromJSON,
-} from "../models/PaginatedApplicationEntitlementList";
+} from "../models/PaginatedApplicationEntitlementList.js";
 import {
     type PaginatedApplicationList,
     PaginatedApplicationListFromJSON,
-} from "../models/PaginatedApplicationList";
+} from "../models/PaginatedApplicationList.js";
 import {
     type PaginatedAuthenticatedSessionList,
     PaginatedAuthenticatedSessionListFromJSON,
-} from "../models/PaginatedAuthenticatedSessionList";
-import { type PaginatedBrandList, PaginatedBrandListFromJSON } from "../models/PaginatedBrandList";
-import { type PaginatedGroupList, PaginatedGroupListFromJSON } from "../models/PaginatedGroupList";
+} from "../models/PaginatedAuthenticatedSessionList.js";
+import {
+    type PaginatedBrandList,
+    PaginatedBrandListFromJSON,
+} from "../models/PaginatedBrandList.js";
+import {
+    type PaginatedGroupList,
+    PaginatedGroupListFromJSON,
+} from "../models/PaginatedGroupList.js";
 import {
     type PaginatedObjectAttributeList,
     PaginatedObjectAttributeListFromJSON,
-} from "../models/PaginatedObjectAttributeList";
+} from "../models/PaginatedObjectAttributeList.js";
 import {
     type PaginatedRequestableTargetList,
     PaginatedRequestableTargetListFromJSON,
-} from "../models/PaginatedRequestableTargetList";
-import { type PaginatedTokenList, PaginatedTokenListFromJSON } from "../models/PaginatedTokenList";
+} from "../models/PaginatedRequestableTargetList.js";
+import {
+    type PaginatedTokenList,
+    PaginatedTokenListFromJSON,
+} from "../models/PaginatedTokenList.js";
 import {
     type PaginatedUserConsentList,
     PaginatedUserConsentListFromJSON,
-} from "../models/PaginatedUserConsentList";
-import { type PaginatedUserList, PaginatedUserListFromJSON } from "../models/PaginatedUserList";
+} from "../models/PaginatedUserConsentList.js";
+import { type PaginatedUserList, PaginatedUserListFromJSON } from "../models/PaginatedUserList.js";
 import {
     type PatchedApplicationEntitlementRequest,
     PatchedApplicationEntitlementRequestToJSON,
-} from "../models/PatchedApplicationEntitlementRequest";
+} from "../models/PatchedApplicationEntitlementRequest.js";
 import {
     type PatchedApplicationRequest,
     PatchedApplicationRequestToJSON,
-} from "../models/PatchedApplicationRequest";
-import { type PatchedBrandRequest, PatchedBrandRequestToJSON } from "../models/PatchedBrandRequest";
-import { type PatchedGroupRequest, PatchedGroupRequestToJSON } from "../models/PatchedGroupRequest";
+} from "../models/PatchedApplicationRequest.js";
+import {
+    type PatchedBrandRequest,
+    PatchedBrandRequestToJSON,
+} from "../models/PatchedBrandRequest.js";
+import {
+    type PatchedGroupRequest,
+    PatchedGroupRequestToJSON,
+} from "../models/PatchedGroupRequest.js";
 import {
     type PatchedObjectAttributeRequest,
     PatchedObjectAttributeRequestToJSON,
-} from "../models/PatchedObjectAttributeRequest";
-import { type PatchedTokenRequest, PatchedTokenRequestToJSON } from "../models/PatchedTokenRequest";
-import { type PatchedUserRequest, PatchedUserRequestToJSON } from "../models/PatchedUserRequest";
-import { type PolicyTestResult, PolicyTestResultFromJSON } from "../models/PolicyTestResult";
-import { type SessionUser, SessionUserFromJSON } from "../models/SessionUser";
-import { type Token, TokenFromJSON } from "../models/Token";
-import { type TokenRequest, TokenRequestToJSON } from "../models/TokenRequest";
-import { type TokenSetKeyRequest, TokenSetKeyRequestToJSON } from "../models/TokenSetKeyRequest";
-import { type TokenView, TokenViewFromJSON } from "../models/TokenView";
+} from "../models/PatchedObjectAttributeRequest.js";
+import {
+    type PatchedTokenRequest,
+    PatchedTokenRequestToJSON,
+} from "../models/PatchedTokenRequest.js";
+import { type PatchedUserRequest, PatchedUserRequestToJSON } from "../models/PatchedUserRequest.js";
+import { type PolicyTestResult, PolicyTestResultFromJSON } from "../models/PolicyTestResult.js";
+import { type SessionUser, SessionUserFromJSON } from "../models/SessionUser.js";
+import { type Token, TokenFromJSON } from "../models/Token.js";
+import { type TokenRequest, TokenRequestToJSON } from "../models/TokenRequest.js";
+import { type TokenSetKeyRequest, TokenSetKeyRequestToJSON } from "../models/TokenSetKeyRequest.js";
+import { type TokenView, TokenViewFromJSON } from "../models/TokenView.js";
 import {
     type TransactionApplicationRequest,
     TransactionApplicationRequestToJSON,
-} from "../models/TransactionApplicationRequest";
+} from "../models/TransactionApplicationRequest.js";
 import {
     type TransactionApplicationResponse,
     TransactionApplicationResponseFromJSON,
-} from "../models/TransactionApplicationResponse";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import { type User, UserFromJSON } from "../models/User";
+} from "../models/TransactionApplicationResponse.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import { type User, UserFromJSON } from "../models/User.js";
 import {
     type UserAccountLockdownRequest,
     UserAccountLockdownRequestToJSON,
-} from "../models/UserAccountLockdownRequest";
-import { type UserAccountRequest, UserAccountRequestToJSON } from "../models/UserAccountRequest";
-import { type UserConsent, UserConsentFromJSON } from "../models/UserConsent";
+} from "../models/UserAccountLockdownRequest.js";
+import { type UserAccountRequest, UserAccountRequestToJSON } from "../models/UserAccountRequest.js";
+import { type UserConsent, UserConsentFromJSON } from "../models/UserConsent.js";
 import {
     type UserPasswordHashSetRequest,
     UserPasswordHashSetRequestToJSON,
-} from "../models/UserPasswordHashSetRequest";
+} from "../models/UserPasswordHashSetRequest.js";
 import {
     type UserPasswordSetRequest,
     UserPasswordSetRequestToJSON,
-} from "../models/UserPasswordSetRequest";
-import { type UserPath, UserPathFromJSON } from "../models/UserPath";
+} from "../models/UserPasswordSetRequest.js";
+import { type UserPath, UserPathFromJSON } from "../models/UserPath.js";
 import {
     type UserRecoveryEmailRequest,
     UserRecoveryEmailRequestToJSON,
-} from "../models/UserRecoveryEmailRequest";
+} from "../models/UserRecoveryEmailRequest.js";
 import {
     type UserRecoveryLinkRequest,
     UserRecoveryLinkRequestToJSON,
-} from "../models/UserRecoveryLinkRequest";
-import { type UserRequest, UserRequestToJSON } from "../models/UserRequest";
+} from "../models/UserRecoveryLinkRequest.js";
+import { type UserRequest, UserRequestToJSON } from "../models/UserRequest.js";
 import {
     type UserServiceAccountRequest,
     UserServiceAccountRequestToJSON,
-} from "../models/UserServiceAccountRequest";
+} from "../models/UserServiceAccountRequest.js";
 import {
     type UserServiceAccountResponse,
     UserServiceAccountResponseFromJSON,
-} from "../models/UserServiceAccountResponse";
-import { type UserSwitchRequest, UserSwitchRequestToJSON } from "../models/UserSwitchRequest";
-import { type UserSwitchResponse, UserSwitchResponseFromJSON } from "../models/UserSwitchResponse";
-import { type UserTypeEnum } from "../models/UserTypeEnum";
-import * as runtime from "../runtime";
+} from "../models/UserServiceAccountResponse.js";
+import { type UserSwitchRequest, UserSwitchRequestToJSON } from "../models/UserSwitchRequest.js";
+import {
+    type UserSwitchResponse,
+    UserSwitchResponseFromJSON,
+} from "../models/UserSwitchResponse.js";
+import { type UserTypeEnum } from "../models/UserTypeEnum.js";
+import * as runtime from "../runtime.js";
 
 export interface CoreApplicationEntitlementsCreateRequest {
     applicationEntitlementRequest: ApplicationEntitlementRequest;
@@ -237,20 +258,7 @@ export interface CoreApplicationEntitlementsUsedByListRequest {
     pbmUuid: string;
 }
 
-export interface CoreApplicationsCheckAccessRetrieveRequest {
-    slug: string;
-    forUser?: number;
-}
-
-export interface CoreApplicationsCreateRequest {
-    applicationRequest: ApplicationRequest;
-}
-
-export interface CoreApplicationsDestroyRequest {
-    slug: string;
-}
-
-export interface CoreApplicationsListRequest {
+export interface CoreApplicationsAccessibleListRequest {
     forUser?: number;
     group?: string;
     metaDescription?: string;
@@ -275,7 +283,44 @@ export interface CoreApplicationsListRequest {
      */
     search?: string;
     slug?: string;
-    superuserFullList?: boolean;
+}
+
+export interface CoreApplicationsCheckAccessRetrieveRequest {
+    slug: string;
+    forUser?: number;
+}
+
+export interface CoreApplicationsCreateRequest {
+    applicationRequest: ApplicationRequest;
+}
+
+export interface CoreApplicationsDestroyRequest {
+    slug: string;
+}
+
+export interface CoreApplicationsListRequest {
+    group?: string;
+    metaDescription?: string;
+    metaLaunchUrl?: string;
+    metaPublisher?: string;
+    name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+    slug?: string;
 }
 
 export interface CoreApplicationsPartialUpdateRequest {
@@ -1489,6 +1534,113 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for coreApplicationsAccessibleList without sending the request
+     */
+    async coreApplicationsAccessibleListRequestOpts(
+        requestParameters: CoreApplicationsAccessibleListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
+        }
+
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
+        }
+
+        if (requestParameters["metaDescription"] != null) {
+            queryParameters["meta_description"] = requestParameters["metaDescription"];
+        }
+
+        if (requestParameters["metaLaunchUrl"] != null) {
+            queryParameters["meta_launch_url"] = requestParameters["metaLaunchUrl"];
+        }
+
+        if (requestParameters["metaPublisher"] != null) {
+            queryParameters["meta_publisher"] = requestParameters["metaPublisher"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["onlyWithLaunchUrl"] != null) {
+            queryParameters["only_with_launch_url"] = requestParameters["onlyWithLaunchUrl"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/core/applications/@accessible/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List applications the user passes policies for, regardless of RBAC permissions
+     */
+    async coreApplicationsAccessibleListRaw(
+        requestParameters: CoreApplicationsAccessibleListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedApplicationList>> {
+        const requestOptions =
+            await this.coreApplicationsAccessibleListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedApplicationListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * List applications the user passes policies for, regardless of RBAC permissions
+     */
+    async coreApplicationsAccessibleList(
+        requestParameters: CoreApplicationsAccessibleListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedApplicationList> {
+        const response = await this.coreApplicationsAccessibleListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
      * Creates request options for coreApplicationsCheckAccessRetrieve without sending the request
      */
     async coreApplicationsCheckAccessRetrieveRequestOpts(
@@ -1690,10 +1842,6 @@ export class CoreApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters["forUser"] != null) {
-            queryParameters["for_user"] = requestParameters["forUser"];
-        }
-
         if (requestParameters["group"] != null) {
             queryParameters["group"] = requestParameters["group"];
         }
@@ -1714,10 +1862,6 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters["onlyWithLaunchUrl"] != null) {
-            queryParameters["only_with_launch_url"] = requestParameters["onlyWithLaunchUrl"];
-        }
-
         if (requestParameters["ordering"] != null) {
             queryParameters["ordering"] = requestParameters["ordering"];
         }
@@ -1736,10 +1880,6 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["slug"] != null) {
             queryParameters["slug"] = requestParameters["slug"];
-        }
-
-        if (requestParameters["superuserFullList"] != null) {
-            queryParameters["superuser_full_list"] = requestParameters["superuserFullList"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1764,7 +1904,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Custom list method that checks Policy based access instead of guardian
+     * Application Viewset
      */
     async coreApplicationsListRaw(
         requestParameters: CoreApplicationsListRequest,
@@ -1779,7 +1919,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Custom list method that checks Policy based access instead of guardian
+     * Application Viewset
      */
     async coreApplicationsList(
         requestParameters: CoreApplicationsListRequest = {},
