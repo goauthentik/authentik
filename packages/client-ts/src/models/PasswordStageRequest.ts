@@ -36,6 +36,21 @@ export interface PasswordStageRequest {
      */
     failedAttemptsBeforeCancel?: number;
     /**
+     * How many consecutive failed attempts lock the user's password until an administrator unlocks
+     * it. Set to 0 to never lock.
+     */
+    failedAttemptsBeforeLockout?: number;
+    /**
+     * Warning shown when the user has one password attempt remaining. Leave blank to show no
+     * warning.
+     */
+    lastAttemptWarningMessage?: string;
+    /**
+     * Message shown when the user's password has been locked. Leave blank to show a generic
+     * authentication error.
+     */
+    lockoutMessage?: string;
+    /**
      * When enabled, provides a 'show password' button with the password input field.
      */
     allowShowPassword?: boolean;
@@ -74,6 +89,15 @@ export function PasswordStageRequestFromJSONTyped(
             json["failed_attempts_before_cancel"] == null
                 ? undefined
                 : json["failed_attempts_before_cancel"],
+        failedAttemptsBeforeLockout:
+            json["failed_attempts_before_lockout"] == null
+                ? undefined
+                : json["failed_attempts_before_lockout"],
+        lastAttemptWarningMessage:
+            json["last_attempt_warning_message"] == null
+                ? undefined
+                : json["last_attempt_warning_message"],
+        lockoutMessage: json["lockout_message"] == null ? undefined : json["lockout_message"],
         allowShowPassword:
             json["allow_show_password"] == null ? undefined : json["allow_show_password"],
     };
@@ -96,6 +120,9 @@ export function PasswordStageRequestToJSONTyped(
         backends: (value["backends"] as Array<any>).map(BackendsEnumToJSON),
         configure_flow: value["configureFlow"],
         failed_attempts_before_cancel: value["failedAttemptsBeforeCancel"],
+        failed_attempts_before_lockout: value["failedAttemptsBeforeLockout"],
+        last_attempt_warning_message: value["lastAttemptWarningMessage"],
+        lockout_message: value["lockoutMessage"],
         allow_show_password: value["allowShowPassword"],
     };
 }

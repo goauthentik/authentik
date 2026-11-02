@@ -134,6 +134,9 @@ class UserTypes(models.TextChoices):
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
+SERVICE_ACCOUNT_TYPES = (UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT)
+
+
 class AttributesMixin(models.Model):
     """Adds an attributes property to a model"""
 
