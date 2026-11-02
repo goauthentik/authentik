@@ -280,6 +280,8 @@ class SAMLProviderSerializer(ProviderSerializer):
         extra_kwargs = {
             **ProviderSerializer.Meta.extra_write_kwargs,
             "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "verification_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "encryption_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
         }
 
 
