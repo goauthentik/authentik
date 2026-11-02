@@ -18,7 +18,7 @@ class TestFlowInterfaceTitle(FlowTestCase):
             reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<meta name="ak-flow-title" content="Welcome to">')
+        self.assertContains(response, '"title": "Welcome to",')
         flow.refresh_from_db()
         self.assertEqual(flow.title, "Welcome to %(app)s")
 
@@ -30,4 +30,4 @@ class TestFlowInterfaceTitle(FlowTestCase):
         response = self.client.get(
             reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         )
-        self.assertContains(response, '<meta name="ak-flow-title" content="100% secure">')
+        self.assertContains(response, '"title": "100% secure",')
