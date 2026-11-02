@@ -31,8 +31,8 @@ export interface PasswordStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * How many attempts a user has before the flow is canceled. To lock the user out, use a
-     * reputation policy and a user_write stage.
+     * How many attempts a user has before the flow is canceled. This only cancels the flow, it does
+     * not lock the user's password.
      */
     failedAttemptsBeforeCancel?: number;
     /**
