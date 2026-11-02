@@ -1,9 +1,11 @@
 # @goauthentik/geo
 
-Generator for the hexworld basemap archive that authentik's events map renders.
+Generators for authentik's geo data: the hexworld basemap archive that the
+events map renders, and the ASN database the GeoIP features read (see
+[ASN database](#asn-database)).
 
 This package is build-time machinery only — nothing here ships to the browser.
-It turns Natural Earth vector data and a Protomaps planet dump into
+The basemap generator turns Natural Earth vector data and a Protomaps planet dump into
 `tiles/hexworld.pmtiles`, the archive `web` copies into its bundle. The map
 element itself, and the styles that read this archive, live in
 `web/src/elements/maps/`.
@@ -105,3 +107,59 @@ git add tiles/hexworld.pmtiles && git commit
 A brand can point the events map at its own tile server (**System > Brands >
 Map tiles**), which bypasses this archive entirely — see
 `web/src/elements/maps/basemap-style.ts`.
+
+## ASN database
+
+`scripts/build-asn.ts` builds `out/authentik-asn.mmdb`, an IP → autonomous
+system database in the MaxMind DB format. authentik reads it through the same
+code path as MaxMind's GeoLite2-ASN, so the field names match
+(`autonomous_system_number`, `autonomous_system_organization`) and the database
+type contains `GeoLite2-ASN`, which geoip2's `Reader.asn()` requires.
+
+```bash
+pnpm run asn:build                # downloads sources into out/sources/ on first run
+pnpm run asn:build -- --refresh   # re-download the sources
+```
+
+It takes about ten seconds and writes a ~10 MB file.
+
+### Sources
+
+| Source                                                                              | Provides                       | Updated         |
+| ----------------------------------------------------------------------------------- | ------------------------------ | --------------- |
+| [RIPE RIS dumps](https://ris.ripe.net/docs/ris-whois/) (`riswhoisdump.IPv{4,6}.gz`) | prefix → origin AS, peer count | every few hours |
+| [RIPE AS names](https://ftp.ripe.net/ripe/asnames/asn.txt) (`asn.txt`)              | AS number → organization       | daily           |
+
+Routes are filtered before they reach the tree (`DEFAULT_ROUTE_FILTER` in
+`src/asn/sources.ts`):
+
+- When several networks announce the same prefix, the origin most RIS peers see wins.
+- Routes fewer than three peers see are dropped as leaks.
+- Prefixes shorter than /8 (IPv4) or /16 (IPv6) are dropped. Default routes and
+  bogus aggregates like a `2000::/6` show up in the dumps.
+- Prefixes longer than /24 (IPv4) or /48 (IPv6) are dropped. Most networks
+  filter them, so they don't reflect where traffic goes.
+- AS sets and routes inside special-purpose ranges (RFC 6890) are dropped.
+
+Do not add RIR WHOIS or IRR data as a source. Several registries' terms forbid
+using it for IP geolocation.
+
+### Attribution
+
+The RIS data comes with RIPE NCC's
+[commercial use conditions](https://ripe.net/analyse/internet-measurements/routing-information-service-ris/commercial-use):
+anything that ships this database must credit RIPE NCC and RIS as the source,
+show the RIPE NCC logo, link to <https://www.ripe.net/ris>, and include RIPE's
+standard description of RIS from that page. The database's own metadata
+description carries the source credit (`ASN_ATTRIBUTION` in `src/asn/build.ts`).
+
+### The MMDB writer
+
+`src/mmdb/` is a small writer for the
+[MaxMind DB format](https://maxmind.github.io/MaxMind-DB/); npm has maintained
+readers but no maintained writer. It builds an IPv6 tree with IPv4 under
+`::/96`, aliases `::ffff:0:0/96` and `2002::/16` to the IPv4 tree the way
+MaxMind's databases do, merges sibling networks that hold the same record, and
+stores repeated records and strings once. Insert less specific networks first:
+an insert replaces everything below its prefix. The tests read the output back
+with `mmdb-lib`.
