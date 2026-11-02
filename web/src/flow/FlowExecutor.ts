@@ -61,7 +61,7 @@ import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -76,6 +76,19 @@ const DefaultFlowMeta: FlowMeta = {
     layout: flow?.layout || FlowLayoutEnum.Stacked,
     title: flow?.title ?? "",
 };
+
+/**
+ * What the executor is doing with its current challenge.
+ */
+export type FlowExecutorState =
+    | { kind: "loading"; challenge: ChallengeTypes | null }
+    | { kind: "ready"; challenge: ChallengeTypes | null }
+    | {
+          kind: "submitting";
+          challenge: ChallengeTypes | null;
+          submission: Promise<boolean>;
+          invisible: boolean;
+      };
 
 /**
  * An executor for authentik flows.
@@ -101,8 +114,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     /**
      * Milliseconds before an in-flight challenge submission is aborted.
+     * Longer than the server's write timeout, which bounds blocking stages like Duo push.
      */
-    public static readonly SubmitTimeout = 60_000;
+    public static readonly SubmitTimeout = 90_000;
 
     //#region Styles
 
@@ -125,11 +139,39 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     @property({ type: String, attribute: "slug", useDefault: true })
     public flowSlug: string = window.location.pathname.split("/")[3];
 
-    @property({ attribute: false })
-    public challenge: ChallengeTypes | null = null;
+    @state()
+    protected executorState: FlowExecutorState = { kind: "loading", challenge: null };
 
-    @property({ type: Boolean })
-    public loading = true;
+    @property({ attribute: false })
+    public get challenge(): ChallengeTypes | null {
+        return this.executorState.challenge;
+    }
+
+    public set challenge(challenge: ChallengeTypes | null) {
+        const previous = this.executorState.challenge;
+
+        this.executorState = { ...this.executorState, challenge };
+        this.requestUpdate("challenge", previous);
+    }
+
+    public get loading(): boolean {
+        const { executorState } = this;
+
+        return (
+            executorState.kind === "loading" ||
+            (executorState.kind === "submitting" && !executorState.invisible)
+        );
+    }
+
+    public set loading(loading: boolean) {
+        // A submission settles its own state.
+        if (this.executorState.kind === "submitting") return;
+
+        this.executorState = {
+            kind: loading ? "loading" : "ready",
+            challenge: this.executorState.challenge,
+        };
+    }
 
     @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
     public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
@@ -147,11 +189,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     // Listen for authentik state-change events from other tabs
     #flowMultitabController = new FlowMultitabController(this);
-
-    /**
-     * The in-flight challenge submission, shared with any duplicate submit calls.
-     */
-    #pendingSubmission: Promise<boolean> | null = null;
 
     //#endregion
 
@@ -302,10 +339,10 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         payload?: FlowChallengeResponseRequestBody,
         options?: SubmitOptions,
     ): Promise<boolean> => {
-        if (this.#pendingSubmission) {
+        if (this.executorState.kind === "submitting") {
             this.#logger.debug("Skipping submit, a submission is already in flight");
 
-            return this.#pendingSubmission;
+            return this.executorState.submission;
         }
 
         if (!payload) throw new Error("No payload provided");
@@ -328,11 +365,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             component: this.challenge.component as FlowChallengeResponseRequest["component"],
         } as FlowChallengeResponseRequest;
 
-        if (!options?.invisible) {
-            this.loading = true;
-        }
-
-        this.#pendingSubmission = this.#api
+        const submission = this.#api
             .flowsExecutorSolve(
                 {
                     flowSlug: this.flowSlug,
@@ -371,11 +404,17 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 return false;
             })
             .finally(() => {
-                this.#pendingSubmission = null;
-                this.loading = false;
+                this.executorState = { kind: "ready", challenge: this.executorState.challenge };
             });
 
-        return this.#pendingSubmission;
+        this.executorState = {
+            kind: "submitting",
+            challenge: this.executorState.challenge,
+            submission,
+            invisible: !!options?.invisible,
+        };
+
+        return submission;
     };
 
     //#region Render Challenge
