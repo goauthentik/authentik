@@ -9,24 +9,30 @@ authentik reads two databases in the MaxMind DB (`.mmdb`) format:
 
 ## Bundled databases
 
-The authentik server image includes the free [DB-IP](https://db-ip.com) Lite City and ASN databases, so GeoIP works without any additional setup. DB-IP publishes a new edition of these databases each month, and each authentik image contains the edition that was current when the image was built.
+The authentik server image includes a City and an ASN database, so GeoIP works without any additional setup.
 
-| Database | Default path                 |
-| -------- | ---------------------------- |
-| City     | `/geoip/dbip-city-lite.mmdb` |
-| ASN      | `/geoip/dbip-asn-lite.mmdb`  |
+| Database | Default path                 | Source                                                                        | Updated |
+| -------- | ---------------------------- | ----------------------------------------------------------------------------- | ------- |
+| City     | `/geoip/dbip-city-lite.mmdb` | [DB-IP](https://db-ip.com) Lite                                               | Monthly |
+| ASN      | `/geoip/authentik-asn.mmdb`  | Built by authentik from [RIPE NCC RIS](https://www.ripe.net/ris) routing data | Weekly  |
+
+Each authentik image contains the editions that were current when the image was built.
 
 To load a database from another path, set [`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`](../../install-config/configuration/configuration.mdx#authentik_events__context_processors__geoip) and [`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`](../../install-config/configuration/configuration.mdx#authentik_events__context_processors__asn). authentik automatically reloads a database file when it changes.
 
-:::info Attribution
-The DB-IP Lite databases are licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). IP geolocation by [DB-IP](https://db-ip.com).
-:::
+### Attribution
+
+The DB-IP Lite City database is licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). IP geolocation by [DB-IP](https://db-ip.com).
+
+The ASN database uses routing data from the [RIPE NCC Routing Information Service (RIS)](https://www.ripe.net/ris).
+
+{/* TODO: add the RIPE NCC logo and RIPE's standard RIS description, per https://ripe.net/analyse/internet-measurements/routing-information-service-ris/commercial-use */}
 
 ### MaxMind GeoLite2 databases
 
 authentik versions before 2026.11 bundled the MaxMind GeoLite2 databases. You can still use them, or any other database in the same format, by mounting the files into the container and setting the paths described above.
 
-If the default DB-IP file is missing and a MaxMind file exists at its previous default path (`/geoip/GeoLite2-City.mmdb` or `/geoip/GeoLite2-ASN.mmdb`), authentik loads the MaxMind file instead and logs a warning. This keeps existing setups that mount a volume over `/geoip` working. To silence the warning, set the paths explicitly.
+If a default file is missing and a MaxMind file exists at its previous default path (`/geoip/GeoLite2-City.mmdb` or `/geoip/GeoLite2-ASN.mmdb`), authentik loads the MaxMind file instead and logs a warning. This keeps existing setups that mount a volume over `/geoip` working. To silence the warning, set the paths explicitly.
 
 ## Deactivate GeoIP
 
@@ -70,37 +76,39 @@ Afterwards, run the upgrade commands from the latest release notes.
 
 ## External updates
 
-To get database updates without upgrading authentik, mount a volume to `/geoip` and keep the files in it up to date. The volume replaces the bundled databases.
+To get database updates without upgrading authentik, keep the files in a volume and point the path settings at them.
 
 ### DB-IP
 
-DB-IP does not require an account. The following Docker Compose example downloads the current edition once a day:
+DB-IP does not require an account. The following Docker Compose example downloads the current City edition once a day. The bundled ASN database stays in use.
 
 Add the following block to a `compose.override.yml` file in the same folder as the authentik `compose.yml` file:
 
 ```yaml
 services:
     server:
+        environment:
+            AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP: /geoip-updates/dbip-city-lite.mmdb
         volumes:
-            - geoip:/geoip
+            - geoip:/geoip-updates
     worker:
+        environment:
+            AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP: /geoip-updates/dbip-city-lite.mmdb
         volumes:
-            - geoip:/geoip
+            - geoip:/geoip-updates
     geoipupdate:
         image: docker.io/library/alpine:3.22
         volumes:
-            - geoip:/geoip
+            - geoip:/geoip-updates
         command:
             - sh
             - -c
             - |
                 while true; do
                     month="$$(date -u +%Y-%m)"
-                    for edition in city asn; do
-                        wget -q -O - "https://download.db-ip.com/free/dbip-$$edition-lite-$$month.mmdb.gz" \
-                            | gunzip > "/geoip/dbip-$$edition-lite.mmdb.tmp" \
-                            && mv "/geoip/dbip-$$edition-lite.mmdb.tmp" "/geoip/dbip-$$edition-lite.mmdb"
-                    done
+                    wget -q -O - "https://download.db-ip.com/free/dbip-city-lite-$$month.mmdb.gz" \
+                        | gunzip > /geoip-updates/dbip-city-lite.mmdb.tmp \
+                        && mv /geoip-updates/dbip-city-lite.mmdb.tmp /geoip-updates/dbip-city-lite.mmdb
                     sleep 86400
                 done
 volumes:

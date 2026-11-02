@@ -76,6 +76,15 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - id: geoip
+        name: Resolve and verify the GeoIP image
+        if: ${{ endsWith(inputs.image-dockerfile, '/Dockerfile') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          digest="$(docker buildx imagetools inspect ghcr.io/goauthentik/geoip:latest --format '{{json .Manifest}}' | jq -r .digest)"
+          gh attestation verify "oci://ghcr.io/goauthentik/geoip@${digest}" --owner goauthentik
+          echo "image=ghcr.io/goauthentik/geoip@${digest}" >> "$GITHUB_OUTPUT"
       - id: build
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -83,7 +92,9 @@ jobs:
           context: .
           file: "${{ inputs.image-dockerfile }}"
           target: "${{ inputs.image-target }}"
-          build-args: ${{ inputs.image-build-args }}
+          build-args: |
+            ${{ inputs.image-build-args }}
+            GEOIP_IMAGE=${{ steps.geoip.outputs.image }}
           # outputs
           push: false
           cache-from: |
