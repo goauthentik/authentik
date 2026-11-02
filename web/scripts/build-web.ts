@@ -8,10 +8,15 @@ import * as path from "node:path";
 
 import { copyAssets } from "./build-assets.ts";
 
+import { assetURLPlugin } from "#bundler/asset-url-plugin/node";
 import { localeManifestPlugin } from "#bundler/locale-manifest-plugin/node";
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
-import { createBundleAliases, createBundleDefinitions } from "#bundler/utils/node";
+import {
+    createBundleAliases,
+    createBundleDefinitions,
+    createWorkerBundleAliases,
+} from "#bundler/utils/node";
 import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
 
@@ -36,6 +41,25 @@ logger.info(publicBundledDefinitions, "Bundle definitions");
 const entryPointNames = Object.keys(EntryPoint);
 const entryPoints = Object.values(EntryPoint);
 const entryPointsDescription = entryPointNames.join("\n\t");
+
+/**
+ * Conditions for module resolution.
+ *
+ * `bundler` lets workspace packages that ship TypeScript sources (e.g.
+ * `@goauthentik/theme`) expose `src/*.ts` to this build while keeping a
+ * compiled `default` entry for plain Node consumers. esbuild does not
+ * imply it, so without this the resolver falls through to the built
+ * output and every edit needs a rebuild of the dependency first.
+ *
+ * @see https://esbuild.github.io/api/#conditions
+ * @see https://nodejs.org/api/packages.html#packages_conditional_exports
+ */
+function createBundleConditions(): string[] {
+    return [
+        "bundler",
+        ...(NodeEnvironment === "production" ? ["production"] : ["development", "production"]),
+    ];
+}
 
 const BASE_ESBUILD_PLUGINS: Plugin[] = [
     {
@@ -74,6 +98,14 @@ const BASE_ESBUILD_PLUGINS: Plugin[] = [
     mdxPlugin({
         root: MonoRepoRoot,
     }),
+
+    assetURLPlugin({
+        alias: createWorkerBundleAliases(),
+        define: bundleDefinitions,
+        conditions: createBundleConditions(),
+        minify: NodeEnvironment === "production",
+        tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
+    }),
 ];
 
 const BASE_ESBUILD_OPTIONS: BuildOptions = {
@@ -109,22 +141,7 @@ const BASE_ESBUILD_OPTIONS: BuildOptions = {
         ".png": "file",
         ".svg": "file",
     },
-    /**
-     * Conditions for module resolution.
-     *
-     * `bundler` lets workspace packages that ship TypeScript sources (e.g.
-     * `@goauthentik/theme`) expose `src/*.ts` to this build while keeping a
-     * compiled `default` entry for plain Node consumers. esbuild does not
-     * imply it, so without this the resolver falls through to the built
-     * output and every edit needs a rebuild of the dependency first.
-     *
-     * @see https://esbuild.github.io/api/#conditions
-     * @see https://nodejs.org/api/packages.html#packages_conditional_exports
-     */
-    conditions: [
-        "bundler",
-        ...(NodeEnvironment === "production" ? ["production"] : ["development", "production"]),
-    ],
+    conditions: createBundleConditions(),
     plugins: BASE_ESBUILD_PLUGINS,
     alias: createBundleAliases(),
     define: bundleDefinitions,
