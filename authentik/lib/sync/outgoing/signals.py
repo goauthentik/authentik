@@ -20,11 +20,16 @@ def sync_outgoing_inhibit_dispatch():
     """
     Prevent direct and m2m tasks from being dispatched when User/Group/membership change
     """
-    _CTX_INHIBIT_DISPATCH.set(True)
+    token = _CTX_INHIBIT_DISPATCH.set(True)
     try:
         yield
     finally:
-        _CTX_INHIBIT_DISPATCH.set(False)
+        _CTX_INHIBIT_DISPATCH.reset(token)
+
+
+def sync_outgoing_dispatch_inhibited() -> bool:
+    """Whether outgoing synchronization is inhibited in this context."""
+    return _CTX_INHIBIT_DISPATCH.get()
 
 
 def register_signals(

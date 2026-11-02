@@ -1,5 +1,6 @@
 """SCIM Provider tasks"""
 
+from django.db import transaction
 from django.db.models import Model, Q
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
@@ -7,15 +8,107 @@ from dramatiq.errors import Retry
 
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
-from authentik.lib.sync.outgoing.exceptions import DryRunRejected, StopSync, TransientSyncException
+from authentik.lib.sync.outgoing.exceptions import (
+    BaseSyncException,
+    DryRunRejected,
+    NotFoundSyncException,
+    StopSync,
+    TransientSyncException,
+)
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.sync.outgoing.tasks import SyncTasks
 from authentik.lib.utils.reflection import class_to_path
 from authentik.providers.scim.clients.groups import SCIMGroupClient
-from authentik.providers.scim.models import SCIMProvider
+from authentik.providers.scim.models import SCIMProvider, SCIMProviderUser
 from authentik.tasks.middleware import CurrentTask
 
 sync_tasks = SyncTasks(SCIMProvider)
+SCOPE_SYNC_PAGE_SIZE = 100
+
+
+@actor(description=_("Reconcile a page of SCIM application access changes."))
+def scim_sync_scope(provider_pk: int, user_pks: list[int]):
+    """Reconcile current access without discovering or rewriting managed users."""
+    provider = (
+        SCIMProvider.objects.filter(pk=provider_pk, backchannel_application__isnull=False)
+        .select_related("backchannel_application")
+        .first()
+    )
+    if not provider:
+        return
+    users = User.objects.filter(pk__in=user_pks).exclude_anonymous()
+    in_scope = set(
+        provider.get_object_qs(User, pk__in=user_pks, use_cache=False).values_list("pk", flat=True)
+    )
+    mapped = set(
+        SCIMProviderUser.objects.filter(provider=provider, user_id__in=user_pks).values_list(
+            "user_id", flat=True
+        )
+    )
+    changed = in_scope ^ mapped
+    if not changed:
+        return
+    task = CurrentTask.get_task()
+    try:
+        client = provider.client_for_model(User)
+        for user in users.filter(pk__in=changed).iterator():
+            try:
+                with client.object_lock(user):
+                    allowed = provider.get_object_qs(User, pk=user.pk, use_cache=False).exists()
+                    connection = SCIMProviderUser.objects.filter(
+                        provider=provider, user=user
+                    ).first()
+                    if allowed:
+                        if connection is None:
+                            with transaction.atomic():
+                                connection, created = client.write(user)
+                                if connection is not None and created:
+                                    _queue_user_memberships(user, provider)
+                    elif connection is not None:
+                        try:
+                            client.delete(connection.scim_id)
+                        except NotFoundSyncException:
+                            pass
+            except SkipObjectException:
+                continue
+            except DryRunRejected:
+                continue
+            except TransientSyncException:
+                raise
+            except BaseSyncException as exc:
+                task.warning(exc.detail())
+    except TransientSyncException as exc:
+        raise Retry() from exc
+
+
+@actor(description=_("Dispatch a paged SCIM application access reconciliation."))
+def scim_sync_scope_dispatch(provider_pk: int, after_pk: int = 0):
+    """Walk users by primary key, with bounded messages and no count or offset query."""
+    provider = (
+        SCIMProvider.objects.filter(pk=provider_pk, backchannel_application__isnull=False)
+        .only("pk")
+        .first()
+    )
+    if not provider:
+        return
+    user_pks = list(
+        User.objects.exclude_anonymous()
+        .filter(pk__gt=after_pk)
+        .order_by("pk")
+        .values_list("pk", flat=True)[:SCOPE_SYNC_PAGE_SIZE]
+    )
+    if not user_pks:
+        return
+    with transaction.atomic():
+        scim_sync_scope.send_with_options(
+            args=(provider_pk, user_pks), rel_obj=provider, uid=f"{provider_pk}:scope:{user_pks[0]}"
+        )
+        if len(user_pks) == SCOPE_SYNC_PAGE_SIZE:
+            scim_sync_scope_dispatch.send_with_options(
+                args=(provider_pk, user_pks[-1]),
+                rel_obj=provider,
+                uid=f"{provider_pk}:scope:after:{user_pks[-1]}",
+            )
 
 
 @actor(description=_("Sync SCIM provider objects."))

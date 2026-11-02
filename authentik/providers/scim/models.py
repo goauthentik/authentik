@@ -199,7 +199,9 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         cache.delete(cache_key)
         super().save(*args, **kwargs)
 
-    def get_object_qs(self, type: type[User | Group], **kwargs) -> QuerySet[User | Group]:
+    def get_object_qs(
+        self, type: type[User | Group], *, use_cache: bool = True, **kwargs
+    ) -> QuerySet[User | Group]:
         if type == User:
             # Get queryset of all users with consistent ordering
             # according to the provider's settings
@@ -213,6 +215,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
             if self.backchannel_application:
                 engine = FilterPolicyEngine(self.backchannel_application, base)
                 engine.empty_result = AppAccessWithoutBindings.get()
+                engine.use_cache = use_cache
                 base = engine.build().result
             return base.order_by("pk")
 

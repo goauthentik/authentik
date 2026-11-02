@@ -10,7 +10,11 @@ from pydantic import ValidationError
 from authentik.core.models import User
 from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
+from authentik.lib.sync.outgoing.exceptions import (
+    NotFoundSyncException,
+    ObjectExistsSyncException,
+    StopSync,
+)
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
@@ -51,8 +55,13 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
 
     def delete(self, identifier: str):
         """Delete user"""
+        try:
+            response = self._request("DELETE", f"/Users/{identifier}")
+        except NotFoundSyncException:
+            SCIMProviderUser.objects.filter(provider=self.provider, scim_id=identifier).delete()
+            raise
         SCIMProviderUser.objects.filter(provider=self.provider, scim_id=identifier).delete()
-        return self._request("DELETE", f"/Users/{identifier}")
+        return response
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
