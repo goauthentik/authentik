@@ -1,5 +1,6 @@
 """SCIM Provider tasks"""
 
+from django.core.cache import cache
 from django.db import transaction
 from django.db.models import Model, Q
 from django.utils.translation import gettext_lazy as _
@@ -18,12 +19,32 @@ from authentik.lib.sync.outgoing.exceptions import (
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.sync.outgoing.tasks import SyncTasks
 from authentik.lib.utils.reflection import class_to_path
+from authentik.policies.engine import effective_policy_user
+from authentik.policies.process import cache_key
+from authentik.policies.types import PolicyRequest
 from authentik.providers.scim.clients.groups import SCIMGroupClient
 from authentik.providers.scim.models import SCIMProvider, SCIMProviderUser
 from authentik.tasks.middleware import CurrentTask
 
 sync_tasks = SyncTasks(SCIMProvider)
 SCOPE_SYNC_PAGE_SIZE = 100
+
+
+def _invalidate_scope_policy_cache(provider: SCIMProvider, users):
+    """Invalidate only requestless decisions used by this provider's affected users."""
+    bindings = list(
+        provider.backchannel_application.bindings.filter(policy__isnull=False).only("pk")
+    )
+    if not bindings:
+        return
+    requests = {
+        effective.pk: PolicyRequest(effective)
+        for user in users.only("pk", "type")
+        for effective in (effective_policy_user(user),)
+    }
+    cache.delete_many(
+        [cache_key(binding, request) for binding in bindings for request in requests.values()]
+    )
 
 
 @actor(description=_("Reconcile a page of SCIM application access changes."))
@@ -37,6 +58,7 @@ def scim_sync_scope(provider_pk: int, user_pks: list[int]):
     if not provider:
         return
     users = User.objects.filter(pk__in=user_pks).exclude_anonymous()
+    _invalidate_scope_policy_cache(provider, users)
     in_scope = set(
         provider.get_object_qs(User, pk__in=user_pks, use_cache=False).values_list("pk", flat=True)
     )

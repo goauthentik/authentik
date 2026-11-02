@@ -4,10 +4,11 @@ from itertools import batched
 
 from django.db import transaction
 from django.db.models import Q
+from django.db.models.expressions import RawSQL
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 
-from authentik.core.models import Application, Group, User
+from authentik.core.models import ActorPolicyInheritance, Application, Group, User, UserTypes
 from authentik.lib.sync.outgoing.signals import register_signals, sync_outgoing_dispatch_inhibited
 from authentik.policies.models import PolicyBinding
 from authentik.providers.scim.models import SCIMProvider
@@ -62,6 +63,40 @@ def _providers_for_groups(group_pks):
         .only("pk")
         .distinct()
     )
+
+
+def _queue_scope_for_users(provider: SCIMProvider, user_pks):
+    """Stream affected users and their transitive MIRROR actors into bounded jobs."""
+    for roots in batched(user_pks, SCOPE_SYNC_PAGE_SIZE, strict=False):
+        affected = User.objects.filter(
+            pk__in=RawSQL(
+                """
+                WITH RECURSIVE affected(id) AS (
+                    SELECT unnest(%s::integer[])
+                    UNION
+                    SELECT actor.user_ptr_id
+                    FROM authentik_core_actor actor
+                    JOIN affected ON actor.parent_id = affected.id
+                    JOIN authentik_core_user account ON account.id = actor.user_ptr_id
+                    WHERE actor.policy_behavior = %s AND account.type = ANY(%s)
+                )
+                SELECT id FROM affected
+                """,
+                (
+                    list(roots),
+                    ActorPolicyInheritance.MIRROR,
+                    [UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT],
+                ),
+            )
+        ).order_by("pk")
+        for page in batched(
+            affected.values_list("pk", flat=True).iterator(), SCOPE_SYNC_PAGE_SIZE, strict=False
+        ):
+            scim_sync_scope.send_with_options(
+                args=(provider.pk, list(page)),
+                rel_obj=provider,
+                uid=f"{provider.pk}:scope:{page[0]}",
+            )
 
 
 @receiver(pre_save, sender=PolicyBinding)
@@ -163,12 +198,7 @@ def scim_application_membership_changed(
     group_pks = [instance.pk] if reverse else pk_set
     user_pks = pk_set if reverse else [instance.pk]
     for provider in _providers_for_groups(group_pks):
-        for page in batched(user_pks, SCOPE_SYNC_PAGE_SIZE, strict=False):
-            scim_sync_scope.send_with_options(
-                args=(provider.pk, list(page)),
-                rel_obj=provider,
-                uid=f"{provider.pk}:scope:{page[0]}",
-            )
+        _queue_scope_for_users(provider, user_pks)
 
 
 @receiver(m2m_changed, sender=Group.parents.through)
@@ -195,9 +225,4 @@ def scim_group_parentage_changed(
     children = Group.objects.filter(pk__in=child_pks).with_descendants()
     users = User.objects.filter(groups__in=children).values_list("pk", flat=True).distinct()
     for provider in _providers_for_groups(parent_pks):
-        for page in batched(users.iterator(), SCOPE_SYNC_PAGE_SIZE, strict=False):
-            scim_sync_scope.send_with_options(
-                args=(provider.pk, list(page)),
-                rel_obj=provider,
-                uid=f"{provider.pk}:scope:{page[0]}",
-            )
+        _queue_scope_for_users(provider, users.iterator())

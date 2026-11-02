@@ -6,6 +6,7 @@ Includes regression scenarios from #26265 (upramod) and #23395 (dominic-r).
 import re
 from unittest.mock import Mock, patch
 
+from django.core.cache import cache
 from django.db import connection, transaction
 from django.test import TestCase
 from django.test.utils import CaptureQueriesContext
@@ -14,7 +15,14 @@ from requests_mock import Mocker
 
 from authentik.admin.models import SystemSettings
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application, Group, User, UserTypes
+from authentik.core.models import (
+    Actor,
+    ActorPolicyInheritance,
+    Application,
+    Group,
+    User,
+    UserTypes,
+)
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.signals import (
     sync_outgoing_dispatch_inhibited,
@@ -22,10 +30,14 @@ from authentik.lib.sync.outgoing.signals import (
 )
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
+from authentik.policies.process import cache_key
+from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.providers.scim.clients.groups import SCIMGroupClient
 from authentik.providers.scim.clients.users import SCIMUserClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import (
     SCOPE_SYNC_PAGE_SIZE,
+    scim_sync_direct,
     scim_sync_direct_dispatch,
     scim_sync_m2m_dispatch,
     scim_sync_scope,
@@ -451,6 +463,124 @@ class SCIMScopeTests(TestCase):
         self.other_group.users.remove(self.other_user)
         self._drain()
         self.assertFalse(self._mapped(self.other_user))
+
+    def _dynamic_membership_policy(self):
+        with sync_outgoing_inhibit_dispatch():
+            self.binding.delete()
+            policy = ExpressionPolicy.objects.create(
+                name=generate_id(),
+                expression=(
+                    f'return request.user.groups.filter(name="{self.other_group.name}").exists()'
+                ),
+            )
+            return PolicyBinding.objects.create(target=self.app, policy=policy, order=0)
+
+    def _mirror_actor(self, parent):
+        return Actor.objects.create(
+            username=generate_id(),
+            type=UserTypes.SERVICE_ACCOUNT,
+            parent=parent,
+            policy_behavior=ActorPolicyInheritance.MIRROR,
+        )
+
+    def test_cached_denial_does_not_skip_membership_repair(self):
+        binding = self._dynamic_membership_policy()
+        with sync_outgoing_inhibit_dispatch():
+            self.exported_group.users.add(self.other_user)
+        self.assertFalse(self.provider.get_object_qs(User, pk=self.other_user.pk).exists())
+        unrelated_key = cache_key(binding, PolicyRequest(self.user))
+        cache.set(unrelated_key, PolicyResult(True))
+        with patch.object(cache, "keys", side_effect=AssertionError("unbounded cache scan")):
+            self.other_group.users.add(self.other_user)
+            self._drain()
+        self.assertTrue(self._mapped(self.other_user))
+        self.assertTrue(cache.get(unrelated_key).passing)
+        with patch.object(SCIMGroupClient, "add_user_to_group") as add:
+            scim_sync_user_memberships(self.other_user.pk, self.provider.pk)
+        add.assert_called_once_with(self.exported_group, self.other_user.pk)
+
+    def test_cached_allowance_does_not_recreate_revoked_user(self):
+        self._dynamic_membership_policy()
+        with sync_outgoing_inhibit_dispatch():
+            self.other_group.users.add(self.other_user)
+        self.assertTrue(self.provider.get_object_qs(User, pk=self.other_user.pk).exists())
+        self._map(self.other_user)
+        self.other_group.users.remove(self.other_user)
+        self._drain()
+        self.assertFalse(self._mapped(self.other_user))
+        scim_sync_direct("authentik.core.models.User", self.other_user.pk, self.provider.pk)
+        self.assertFalse(self._mapped(self.other_user))
+        self.assertFalse(self.provider.get_object_qs(User, pk=self.other_user.pk).exists())
+
+    def test_mirror_actor_membership_changes(self):
+        with sync_outgoing_inhibit_dispatch():
+            actor = self._mirror_actor(self.other_user)
+            nested = self._mirror_actor(actor)
+        self.group.users.add(self.other_user)
+        self._drain()
+        self.assertTrue(self._mapped(actor))
+        self.assertTrue(self._mapped(nested))
+        self.group.users.remove(self.other_user)
+        self._drain()
+        self.assertFalse(self._mapped(actor))
+        self.assertFalse(self._mapped(nested))
+
+    def test_mirror_actor_parentage_changes(self):
+        with sync_outgoing_inhibit_dispatch():
+            self.other_group.users.add(self.other_user)
+            actor = self._mirror_actor(self.other_user)
+        self.other_group.parents.add(self.group)
+        self._drain()
+        self.assertTrue(self._mapped(actor))
+        self.other_group.parents.clear()
+        self._drain()
+        self.assertFalse(self._mapped(actor))
+
+    def test_mirror_actor_clear_membership(self):
+        with sync_outgoing_inhibit_dispatch():
+            actor = self._mirror_actor(self.user)
+        self._map(actor)
+        self.user.groups.clear()
+        self._drain()
+        self.assertFalse(self._mapped(actor))
+
+    def test_bounded_mirror_actor_messages(self):
+        page_size = 2
+        with sync_outgoing_inhibit_dispatch():
+            actors = [self._mirror_actor(self.other_user) for _ in range(5)]
+            nested = self._mirror_actor(actors[0])
+            independent = self._mirror_actor(self.other_user)
+            Actor.objects.filter(pk=independent.pk).update(
+                policy_behavior=ActorPolicyInheritance.NONE
+            )
+        with patch("authentik.providers.scim.signals.SCOPE_SYNC_PAGE_SIZE", page_size):
+            self.group.users.add(self.other_user)
+        dispatched = {user_pk for _, args in self.jobs for user_pk in args[1]}
+        self.assertEqual(
+            dispatched, {self.other_user.pk, nested.pk, *(actor.pk for actor in actors)}
+        )
+        self.assertTrue(all(len(args[1]) <= page_size for _, args in self.jobs))
+
+    def test_mirror_cycle_dispatch_terminates(self):
+        with sync_outgoing_inhibit_dispatch():
+            actor = self._mirror_actor(self.other_user)
+            nested = self._mirror_actor(actor)
+            Actor.objects.filter(pk=actor.pk).update(parent=nested)
+        self.group.users.add(actor)
+        self.assertEqual(len(self.jobs), 1)
+        self.assertEqual(set(self.jobs[0][1][1]), {actor.pk, nested.pk})
+
+    def test_mirror_actor_invalidates_effective_user_cache(self):
+        binding = self._dynamic_membership_policy()
+        with sync_outgoing_inhibit_dispatch():
+            actor = self._mirror_actor(self.other_user)
+        self.assertFalse(self.provider.get_object_qs(User, pk=actor.pk).exists())
+        with sync_outgoing_inhibit_dispatch():
+            self.other_group.users.add(self.other_user)
+        scim_sync_scope(self.provider.pk, [actor.pk])
+        self.assertTrue(self._mapped(actor))
+        self.assertIsNone(cache.get(cache_key(binding, PolicyRequest(self.other_user))))
+        self.assertTrue(self.provider.get_object_qs(User, pk=actor.pk).exists())
 
     def test_transaction_rollback_does_not_change_remote(self):
         with self.assertRaisesMessage(RuntimeError, "rollback"):
