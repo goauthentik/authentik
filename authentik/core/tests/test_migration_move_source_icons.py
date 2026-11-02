@@ -12,7 +12,7 @@ from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 
 move_source_icons = import_module(
-    "authentik.core.migrations.0067_move_source_icons"
+    "authentik.core.migrations.0068_move_source_icons"
 ).move_source_icons
 
 

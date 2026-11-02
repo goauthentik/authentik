@@ -64,7 +64,7 @@ def move_source_icons(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0066_user_authentik_core_user_email_idx"),
+        ("authentik_core", "0067_password_devices"),
         ("authentik_brands", "0016_brand_branding_map_tiles"),
         ("authentik_flows", "0031_alter_flow_layout"),
     ]
