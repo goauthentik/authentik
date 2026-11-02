@@ -8,6 +8,7 @@ import { AKRefreshEvent } from "#common/events";
 
 import { DialogInit } from "#elements/dialogs/shared";
 import { RouteChangeEvent } from "#elements/router/events";
+import { findMessageContainer } from "#elements/messages/MessageContainer";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { html, render } from "lit";
@@ -120,6 +121,18 @@ export function renderDialog(
 
         dialog.close();
         dialog.remove();
+
+        // Messages shown in the dialog, such as a confirmation after submitting it, outlive it.
+        // Closing the dialog runs this again, so the messages are only handed over once.
+        const { messages } = messageContainer;
+        messageContainer.messages = [];
+
+        const nextContainer = findMessageContainer(ownerDocument);
+
+        for (const message of messages) {
+            nextContainer?.addMessage(message);
+        }
+
         resolvers.resolve();
 
         setDialogCountAttribute(-1, ownerDocument);
