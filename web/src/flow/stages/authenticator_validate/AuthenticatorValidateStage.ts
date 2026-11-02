@@ -194,10 +194,14 @@ export class AuthenticatorValidateStage
                 // errors without copying the expected non-field "Empty response" error.
                 const errors = challenge.responseErrors?.selected_challenge;
 
-                this.challenge = {
-                    ...this.challenge,
-                    responseErrors: errors ? { selected_challenge: errors } : undefined,
-                };
+                // A successful selection acknowledgement is not a new challenge.
+                // Replacing it would restart an in-flight WebAuthn ceremony.
+                if (errors?.length || this.challenge.responseErrors?.selected_challenge?.length) {
+                    this.challenge = {
+                        ...this.challenge,
+                        responseErrors: errors?.length ? { selected_challenge: errors } : undefined,
+                    };
+                }
             }
 
             return challenge;

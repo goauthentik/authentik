@@ -138,6 +138,52 @@ for (const kind of ["setup", "validation"] as const) {
 describe("validation resend result", () => {
     afterEach(() => vi.restoreAllMocks());
 
+    it("clears a previous selection error after a successful retry", async () => {
+        const device = {
+            deviceClass: DeviceClassesEnum.Email,
+            deviceUid: "test-email",
+            lastUsed: new Date(),
+            challenge: {},
+        };
+
+        const challenge = {
+            component: "ak-stage-authenticator-validate" as const,
+            deviceChallenges: [device],
+            configurationStages: [],
+            pendingUser: "",
+            pendingUserAvatar: "",
+        };
+
+        const api = vi
+            .spyOn(FlowsApi.prototype, "flowsExecutorSolve")
+            .mockResolvedValueOnce({
+                ...challenge,
+                responseErrors: {
+                    selected_challenge: [{ string: "Rate limited", code: "throttled" }],
+                },
+            })
+            .mockResolvedValue({
+                ...challenge,
+                responseErrors: {
+                    non_field_errors: [{ string: "Empty response", code: "invalid" }],
+                },
+            });
+
+        const stage = document.createElement("ak-stage-authenticator-validate");
+        stage.host = { submit: vi.fn(), loading: false } as unknown as StageHost;
+        stage.challenge = challenge;
+        document.body.append(stage);
+        mounted.push(stage);
+
+        await vi.waitFor(() =>
+            expect(stage.challenge?.responseErrors?.selected_challenge).toHaveLength(1),
+        );
+
+        expect(await stage.resendSelectedChallenge()).toBe(true);
+        expect(api).toHaveBeenCalledTimes(2);
+        expect(stage.challenge?.responseErrors).toBeUndefined();
+    });
+
     for (const rejected of [false, true]) {
         it(`reports success=${!rejected} from the actual selection response`, async () => {
             vi.spyOn(FlowsApi.prototype, "flowsExecutorSolve").mockResolvedValue({

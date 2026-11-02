@@ -1,10 +1,12 @@
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
+import "#flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { StageHost } from "#flow/types";
 
 import {
     AuthenticatorValidationChallenge,
     DeviceChallenge,
     DeviceClassesEnum,
+    FlowsApi,
 } from "@goauthentik/api";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -128,6 +130,36 @@ describe("AuthenticatorValidateStageWebAuthn", () => {
         // The regression: no retry button, no error, no flicker out of the spinner.
         expect(retryButton(stage)).toBeUndefined();
         expect(spinning(stage)).toBe(true);
+    });
+
+    it("does not start another ceremony when the parent receives a selection acknowledgement", async () => {
+        const acknowledgement =
+            Promise.withResolvers<Awaited<ReturnType<FlowsApi["flowsExecutorSolve"]>>>();
+
+        vi.spyOn(FlowsApi.prototype, "flowsExecutorSolve").mockReturnValue(acknowledgement.promise);
+        const stage = document.createElement("ak-stage-authenticator-validate");
+        stage.host = { submit, refresh, loading: false } as unknown as StageHost;
+        stage.challenge = challengeOf({ component: "ak-stage-authenticator-validate" });
+        document.body.append(stage);
+        mounted.push(stage);
+        await vi.waitFor(() => expect(submit).toHaveBeenCalledOnce());
+
+        acknowledgement.resolve({
+            ...challengeOf(),
+            component: "ak-stage-authenticator-validate",
+            responseErrors: {
+                non_field_errors: [{ code: "invalid", string: "Empty response" }],
+            },
+        });
+
+        await acknowledgement.promise;
+        await stage.updateComplete;
+        const child = stage.shadowRoot!.querySelector("ak-stage-authenticator-validate-webauthn")!;
+        await child.updateComplete;
+        await new Promise(requestAnimationFrame);
+
+        expect(credentialsGet).toHaveBeenCalledOnce();
+        expect(submit).toHaveBeenCalledOnce();
     });
 
     it("offers retry when the ceremony fails", async () => {
