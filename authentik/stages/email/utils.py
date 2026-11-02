@@ -18,7 +18,7 @@ def logo_data() -> MIMEImage:
     path = Path("web/dist/assets/icons/icon_left_brand.png")
     # When running tests, assets might not exist, so fallback to a different icon
     if settings.TEST:
-        path = Path("web/authentik/sources/saml.png")
+        path = Path("web/authentik/sources/saml/light.png")
     with open(path, "rb") as _logo_file:
         logo = MIMEImage(_logo_file.read())
     logo.add_header("Content-ID", "<logo>")

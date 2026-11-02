@@ -99,12 +99,13 @@ class FileManager:
         use_cache: bool = True,
     ) -> dict[str, str] | None:
         """
-        Get URLs for each theme variant when filename contains %(theme)s.
+        Get URLs for each theme variant when filename contains %(theme)s, or when it is
+        one variant of a built-in source icon.
 
         ``use_cache`` has the same semantics as ``file_url()`` and allows
         callers to force regeneration of expiring signed URLs.
 
-        Returns dict mapping theme to URL if %(theme)s present, None otherwise.
+        Returns dict mapping theme to URL if there are theme variants, None otherwise.
         """
         if not name:
             return None
