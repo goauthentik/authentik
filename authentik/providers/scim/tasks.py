@@ -1,6 +1,7 @@
 """SCIM Provider tasks"""
 
-from django.core.cache import cache
+from itertools import batched
+
 from django.db import transaction
 from django.db.models import Model, Q
 from django.utils.translation import gettext_lazy as _
@@ -10,95 +11,89 @@ from dramatiq.errors import Retry
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
 from authentik.lib.sync.outgoing.exceptions import (
-    BaseSyncException,
     DryRunRejected,
-    NotFoundSyncException,
     StopSync,
     TransientSyncException,
 )
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.sync.outgoing.tasks import SyncTasks
 from authentik.lib.utils.reflection import class_to_path
-from authentik.policies.engine import effective_policy_user
-from authentik.policies.process import cache_key
-from authentik.policies.types import PolicyRequest
 from authentik.providers.scim.clients.groups import SCIMGroupClient
-from authentik.providers.scim.models import SCIMProvider, SCIMProviderUser
+from authentik.providers.scim.models import SCIMProvider
+from authentik.providers.scim.reconciliation import (
+    providers_for_groups,
+    providers_for_targets,
+    reconcile_scope,
+    users_for_group_subtrees,
+    users_with_mirror_dependents,
+)
 from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 sync_tasks = SyncTasks(SCIMProvider)
 SCOPE_SYNC_PAGE_SIZE = 100
 
 
-def _invalidate_scope_policy_cache(provider: SCIMProvider, users):
-    """Invalidate only requestless decisions used by this provider's affected users."""
-    bindings = list(
-        provider.backchannel_application.bindings.filter(policy__isnull=False).only("pk")
-    )
-    if not bindings:
-        return
-    requests = {
-        effective.pk: PolicyRequest(effective)
-        for user in users.only("pk", "type")
-        for effective in (effective_policy_user(user),)
-    }
-    cache.delete_many(
-        [cache_key(binding, request) for binding in bindings for request in requests.values()]
-    )
+def queue_scope_for_targets(target_pks):
+    """Coalesce queued sweeps while locking their consumption until access changes commit."""
+    with transaction.atomic():
+        providers = providers_for_targets(target_pks).order_by("pk").select_for_update(of=("self",))
+        for provider in providers:
+            uid = f"{provider.pk}:scope"
+            pending = Task.objects.select_for_update().filter(
+                actor_name=scim_sync_scope_dispatch.actor_name,
+                _uid=uid,
+                state=TaskStatus.QUEUED,
+            )
+            if not pending.exists():
+                scim_sync_scope_dispatch.send_with_options(
+                    args=(provider.pk,), rel_obj=provider, uid=uid
+                )
+
+
+def _queue_scope_for_users(provider: SCIMProvider, user_pks):
+    """Stream affected users and their transitive MIRROR actors into bounded jobs."""
+    for roots in batched(user_pks, SCOPE_SYNC_PAGE_SIZE, strict=False):
+        affected = users_with_mirror_dependents(roots)
+        for page in batched(
+            affected.values_list("pk", flat=True).iterator(), SCOPE_SYNC_PAGE_SIZE, strict=False
+        ):
+            scim_sync_scope.send_with_options(
+                args=(provider.pk, list(page)),
+                rel_obj=provider,
+                uid=f"{provider.pk}:scope:{page[0]}",
+            )
+
+
+def queue_scope_for_membership(group_pks, user_pks):
+    """Schedule access reconciliation for a membership change."""
+    for provider in providers_for_groups(group_pks):
+        _queue_scope_for_users(provider, user_pks)
+
+
+def queue_scope_for_parentage(parent_pks, child_pks):
+    """Schedule access reconciliation for users in the affected child subtrees."""
+    users = users_for_group_subtrees(child_pks)
+    for provider in providers_for_groups(parent_pks):
+        _queue_scope_for_users(provider, users.iterator())
+
+
+def queue_cleared_memberships(instance_pk: int, related_pks, reverse: bool):
+    """Dispatch removed memberships in bounded jobs after their pre-clear capture."""
+    for page in batched(related_pks, SCOPE_SYNC_PAGE_SIZE, strict=False):
+        scim_sync_m2m_dispatch.send(instance_pk, "post_remove", list(page), reverse)
 
 
 @actor(description=_("Reconcile a page of SCIM application access changes."))
 def scim_sync_scope(provider_pk: int, user_pks: list[int]):
     """Reconcile current access without discovering or rewriting managed users."""
-    provider = (
-        SCIMProvider.objects.filter(pk=provider_pk, backchannel_application__isnull=False)
-        .select_related("backchannel_application")
-        .first()
-    )
-    if not provider:
-        return
-    users = User.objects.filter(pk__in=user_pks).exclude_anonymous()
-    _invalidate_scope_policy_cache(provider, users)
-    in_scope = set(
-        provider.get_object_qs(User, pk__in=user_pks, use_cache=False).values_list("pk", flat=True)
-    )
-    mapped = set(
-        SCIMProviderUser.objects.filter(provider=provider, user_id__in=user_pks).values_list(
-            "user_id", flat=True
-        )
-    )
-    changed = in_scope ^ mapped
-    if not changed:
-        return
-    task = CurrentTask.get_task()
     try:
-        client = provider.client_for_model(User)
-        for user in users.filter(pk__in=changed).iterator():
-            try:
-                with client.object_lock(user):
-                    allowed = provider.get_object_qs(User, pk=user.pk, use_cache=False).exists()
-                    connection = SCIMProviderUser.objects.filter(
-                        provider=provider, user=user
-                    ).first()
-                    if allowed:
-                        if connection is None:
-                            with transaction.atomic():
-                                connection, created = client.write(user)
-                                if connection is not None and created:
-                                    _queue_user_memberships(user, provider)
-                    elif connection is not None:
-                        try:
-                            client.delete(connection.scim_id)
-                        except NotFoundSyncException:
-                            pass
-            except SkipObjectException:
-                continue
-            except DryRunRejected:
-                continue
-            except TransientSyncException:
-                raise
-            except BaseSyncException as exc:
-                task.warning(exc.detail())
+        reconcile_scope(
+            provider_pk,
+            user_pks,
+            on_create=_queue_user_memberships,
+            on_error=lambda exc: CurrentTask.get_task().warning(exc.detail()),
+        )
     except TransientSyncException as exc:
         raise Retry() from exc
 

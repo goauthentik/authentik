@@ -1,26 +1,21 @@
 """SCIM provider signals"""
 
-from itertools import batched
-
-from django.db import transaction
-from django.db.models import Q
-from django.db.models.expressions import RawSQL
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 
-from authentik.core.models import ActorPolicyInheritance, Application, Group, User, UserTypes
+from authentik.core.models import Application, Group, User
 from authentik.lib.sync.outgoing.signals import register_signals, sync_outgoing_dispatch_inhibited
 from authentik.policies.models import PolicyBinding
 from authentik.providers.scim.models import SCIMProvider
 from authentik.providers.scim.tasks import (
-    SCOPE_SYNC_PAGE_SIZE,
+    queue_cleared_memberships,
+    queue_scope_for_membership,
+    queue_scope_for_parentage,
+    queue_scope_for_targets,
     scim_sync_delete_dispatch,
     scim_sync_direct_dispatch,
     scim_sync_m2m_dispatch,
-    scim_sync_scope,
-    scim_sync_scope_dispatch,
 )
-from authentik.tasks.models import Task, TaskStatus
 
 register_signals(
     SCIMProvider,
@@ -28,75 +23,6 @@ register_signals(
     task_sync_delete_dispatch=scim_sync_delete_dispatch,
     task_sync_m2m_dispatch=scim_sync_m2m_dispatch,
 )
-
-
-def _queue_scope_for_targets(target_pks):
-    """Coalesce queued sweeps while locking their consumption until access changes commit."""
-    with transaction.atomic():
-        providers = (
-            SCIMProvider.objects.filter(backchannel_application_id__in=target_pks)
-            .only("pk")
-            .order_by("pk")
-            .select_for_update(of=("self",))
-        )
-        for provider in providers:
-            uid = f"{provider.pk}:scope"
-            pending = Task.objects.select_for_update().filter(
-                actor_name=scim_sync_scope_dispatch.actor_name,
-                _uid=uid,
-                state=TaskStatus.QUEUED,
-            )
-            if not pending.exists():
-                scim_sync_scope_dispatch.send_with_options(
-                    args=(provider.pk,), rel_obj=provider, uid=uid
-                )
-
-
-def _providers_for_groups(group_pks):
-    groups = Group.objects.filter(pk__in=group_pks).with_ancestors()
-    return (
-        SCIMProvider.objects.filter(backchannel_application__bindings__enabled=True)
-        .filter(
-            Q(backchannel_application__bindings__group__in=groups)
-            | Q(backchannel_application__bindings__policy__isnull=False)
-        )
-        .only("pk")
-        .distinct()
-    )
-
-
-def _queue_scope_for_users(provider: SCIMProvider, user_pks):
-    """Stream affected users and their transitive MIRROR actors into bounded jobs."""
-    for roots in batched(user_pks, SCOPE_SYNC_PAGE_SIZE, strict=False):
-        affected = User.objects.filter(
-            pk__in=RawSQL(
-                """
-                WITH RECURSIVE affected(id) AS (
-                    SELECT unnest(%s::integer[])
-                    UNION
-                    SELECT actor.user_ptr_id
-                    FROM authentik_core_actor actor
-                    JOIN affected ON actor.parent_id = affected.id
-                    JOIN authentik_core_user account ON account.id = actor.user_ptr_id
-                    WHERE actor.policy_behavior = %s AND account.type = ANY(%s)
-                )
-                SELECT id FROM affected
-                """,
-                (
-                    list(roots),
-                    ActorPolicyInheritance.MIRROR,
-                    [UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT],
-                ),
-            )
-        ).order_by("pk")
-        for page in batched(
-            affected.values_list("pk", flat=True).iterator(), SCOPE_SYNC_PAGE_SIZE, strict=False
-        ):
-            scim_sync_scope.send_with_options(
-                args=(provider.pk, list(page)),
-                rel_obj=provider,
-                uid=f"{provider.pk}:scope:{page[0]}",
-            )
 
 
 @receiver(pre_save, sender=PolicyBinding)
@@ -137,14 +63,14 @@ def scim_binding_post_save(sender, instance: PolicyBinding, raw=False, **_):
     """Binding changes can affect every user, including default access without bindings."""
     if raw or sync_outgoing_dispatch_inhibited():
         return
-    _queue_scope_for_targets(getattr(instance, "_scim_scope_targets", {instance.target_id}))
+    queue_scope_for_targets(getattr(instance, "_scim_scope_targets", {instance.target_id}))
 
 
 @receiver(post_delete, sender=PolicyBinding)
 def scim_binding_post_delete(sender, instance: PolicyBinding, **_):
     """Reconcile access after the binding has actually been removed."""
     if not sync_outgoing_dispatch_inhibited():
-        _queue_scope_for_targets({instance.target_id})
+        queue_scope_for_targets({instance.target_id})
 
 
 @receiver(pre_save, sender=Application)
@@ -171,7 +97,7 @@ def scim_application_post_save(sender, instance: Application, raw=False, **_):
         and not sync_outgoing_dispatch_inhibited()
         and getattr(instance, "_scim_scope_changed", False)
     ):
-        _queue_scope_for_targets({instance.pk})
+        queue_scope_for_targets({instance.pk})
 
 
 @receiver(m2m_changed, sender=User.groups.through)
@@ -189,16 +115,14 @@ def scim_application_membership_changed(
         return
     if action == "post_clear":
         pk_set = instance.__dict__.pop("_scim_clear_pks", [])
-        for page in batched(pk_set, SCOPE_SYNC_PAGE_SIZE, strict=False):
-            scim_sync_m2m_dispatch.send(instance.pk, "post_remove", list(page), reverse)
+        queue_cleared_memberships(instance.pk, pk_set, reverse)
     elif action not in {"post_add", "post_remove"}:
         return
     if not pk_set:
         return
     group_pks = [instance.pk] if reverse else pk_set
     user_pks = pk_set if reverse else [instance.pk]
-    for provider in _providers_for_groups(group_pks):
-        _queue_scope_for_users(provider, user_pks)
+    queue_scope_for_membership(group_pks, user_pks)
 
 
 @receiver(m2m_changed, sender=Group.parents.through)
@@ -222,7 +146,4 @@ def scim_group_parentage_changed(
         return
     parent_pks = [instance.pk] if reverse else pk_set
     child_pks = pk_set if reverse else [instance.pk]
-    children = Group.objects.filter(pk__in=child_pks).with_descendants()
-    users = User.objects.filter(groups__in=children).values_list("pk", flat=True).distinct()
-    for provider in _providers_for_groups(parent_pks):
-        _queue_scope_for_users(provider, users.iterator())
+    queue_scope_for_parentage(parent_pks, child_pks)

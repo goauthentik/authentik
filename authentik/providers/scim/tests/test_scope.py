@@ -24,6 +24,7 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.lib.generators import generate_id
+from authentik.lib.sync.outgoing.exceptions import BaseSyncException
 from authentik.lib.sync.outgoing.signals import (
     sync_outgoing_dispatch_inhibited,
     sync_outgoing_inhibit_dispatch,
@@ -35,6 +36,7 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.providers.scim.clients.groups import SCIMGroupClient
 from authentik.providers.scim.clients.users import SCIMUserClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
+from authentik.providers.scim.reconciliation import reconcile_scope
 from authentik.providers.scim.tasks import (
     SCOPE_SYNC_PAGE_SIZE,
     scim_sync_direct,
@@ -143,6 +145,53 @@ class SCIMScopeTests(TestCase):
         self.assertTrue(self._mapped(self.other_user))
         self.assertFalse(self._mapped())
         self.memberships.assert_called_once()
+
+    def test_reconciliation_without_task_context(self):
+        initial_depth = len(connection.savepoint_ids)
+        on_error = Mock()
+
+        def on_create(user, provider):
+            self.assertEqual(user.pk, self.user.pk)
+            self.assertEqual(provider.pk, self.provider.pk)
+            self.assertTrue(self._mapped())
+            self.assertGreater(len(connection.savepoint_ids), initial_depth)
+
+        on_create_callback = Mock(side_effect=on_create)
+        with patch(
+            "authentik.providers.scim.tasks.CurrentTask.get_task",
+            side_effect=AssertionError("reconciliation must not require a task"),
+        ):
+            reconcile_scope(
+                self.provider.pk,
+                [self.user.pk],
+                on_create=on_create_callback,
+                on_error=on_error,
+            )
+        on_create_callback.assert_called_once()
+        on_error.assert_not_called()
+        self.memberships.assert_not_called()
+
+    def test_reconciliation_reports_errors_without_task_context(self):
+        self._map()
+        with sync_outgoing_inhibit_dispatch():
+            self.group.users.remove(self.user)
+        error = BaseSyncException()
+        self._patch(SCIMUserClient, "delete", side_effect=error)
+        on_create = Mock()
+        on_error = Mock()
+        with patch(
+            "authentik.providers.scim.tasks.CurrentTask.get_task",
+            side_effect=AssertionError("reconciliation must not require a task"),
+        ):
+            reconcile_scope(
+                self.provider.pk,
+                [self.user.pk],
+                on_create=on_create,
+                on_error=on_error,
+            )
+        on_error.assert_called_once_with(error)
+        on_create.assert_not_called()
+        self.assertTrue(self._mapped())
 
     def test_member_removed(self):
         self._map()
@@ -553,7 +602,7 @@ class SCIMScopeTests(TestCase):
             Actor.objects.filter(pk=independent.pk).update(
                 policy_behavior=ActorPolicyInheritance.NONE
             )
-        with patch("authentik.providers.scim.signals.SCOPE_SYNC_PAGE_SIZE", page_size):
+        with patch("authentik.providers.scim.tasks.SCOPE_SYNC_PAGE_SIZE", page_size):
             self.group.users.add(self.other_user)
         dispatched = {user_pk for _, args in self.jobs for user_pk in args[1]}
         self.assertEqual(
