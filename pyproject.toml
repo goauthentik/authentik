@@ -44,7 +44,7 @@ dependencies = [
   "kubernetes==37.0.1",
   "ldap3==2.9.1",
   "lxml==6.1.3",
-  "msgraph-sdk==1.64.0",
+  "msgraph-sdk==1.65.0",
   "msgspec==0.22.0",
   "opencontainers==0.0.15",
   "opentelemetry-api==1.44.0",
