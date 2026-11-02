@@ -11,12 +11,13 @@ from webauthn.helpers.cose import COSEAlgorithmIdentifier
 
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import FlowStageBinding, NotConfiguredAction
+from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id
+from authentik.policies.reputation.models import Reputation
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     get_webauthn_challenge_without_user,
@@ -781,3 +782,65 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         device.refresh_from_db()
         self.assertEqual(device.sign_count, 1)
+
+    def test_validate_challenge_after_other_flow_replaced_plan(self):
+        """Test that an assertion for a plan that another flow replaced (e.g. another tab
+        of the same browser started a different flow) gets a new challenge for the newly
+        planned flow, instead of being rejected without any device challenge to retry"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=flow,
+            stage=AuthenticatorValidateStage.objects.create(
+                name=generate_id(),
+                not_configured_action=NotConfiguredAction.DENY,
+                device_classes=[DeviceClasses.WEBAUTHN],
+            ),
+            order=0,
+        )
+        FlowStageBinding.objects.create(
+            target=flow, stage=UserLoginStage.objects.create(name=generate_id()), order=1
+        )
+        other_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=other_flow,
+            stage=IdentificationStage.objects.create(
+                name=generate_id(), user_fields=[UserFields.USERNAME]
+            ),
+            order=0,
+        )
+        exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.get(exec_url, SERVER_NAME="localhost", SERVER_PORT="9000")
+        self.assertStageResponse(response, flow, component="ak-stage-authenticator-validate")
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": other_flow.slug}),
+        )
+        self.assertStageResponse(response, other_flow, component="ak-stage-identification")
+
+        response = self.client.post(
+            exec_url,
+            data={
+                "webauthn": {
+                    "id": "QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
+                    "rawId": "QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
+                    "type": "public-key",
+                    "assertionClientExtensions": "{}",
+                    "response": {
+                        "clientDataJSON": "e30=",
+                        "signature": "MEQCIA==",
+                        "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABQ==",
+                        "userHandle": None,
+                    },
+                },
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, exec_url)
+        self.assertFalse(Reputation.objects.exists())
+        response = self.client.get(exec_url, SERVER_NAME="localhost", SERVER_PORT="9000")
+        body = self.assertStageResponse(response, flow, component="ak-stage-authenticator-validate")
+        self.assertNotIn("response_errors", body)
+        self.assertEqual(len(body["device_challenges"]), 1)
+        self.assertEqual(body["device_challenges"][0]["device_class"], DeviceClasses.WEBAUTHN)
+        self.assertFalse(Reputation.objects.exists())

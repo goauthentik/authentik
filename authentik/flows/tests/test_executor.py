@@ -294,6 +294,92 @@ class TestFlowExecutor(APIFlowTestCase):
         plan: FlowPlan = session[SESSION_KEY_PLAN]
         self.assertEqual(len(plan.bindings), 1)
 
+    def test_post_after_other_flow_replaced_plan(self):
+        """A response for a plan that another flow replaced (e.g. another tab of the same
+        browser started a different flow) isn't applied to the newly planned flow: the
+        current stage is sent instead, and the next response is processed as usual"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
+        )
+        FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=1
+        )
+        other_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=other_flow, stage=DummyStage.objects.create(name=generate_id()), order=0
+        )
+        exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+
+        self.assertEqual(self.client.get(exec_url).status_code, 200)
+        other_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": other_flow.slug})
+        self.assertEqual(self.client.get(other_url).status_code, 200)
+
+        response = self.client.post(exec_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, exec_url)
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        self.assertEqual(plan.flow_pk, flow.pk.hex)
+        self.assertEqual(len(plan.bindings), 2)
+        self.assertStageResponse(self.client.get(exec_url), flow, component="ak-stage-dummy")
+
+        response = self.client.post(exec_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, exec_url)
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        self.assertEqual(len(plan.bindings), 1)
+
+    def test_post_after_other_flow_replaced_plan_no_validation(self):
+        """A response for a replaced plan isn't validated against the newly planned flow's
+        current stage, which was never sent to the client"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=flow,
+            stage=IdentificationStage.objects.create(
+                name=generate_id(), user_fields=[UserFields.USERNAME]
+            ),
+            order=0,
+        )
+        other_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=other_flow, stage=DummyStage.objects.create(name=generate_id()), order=0
+        )
+        other_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": other_flow.slug})
+        self.assertEqual(self.client.get(other_url).status_code, 200)
+
+        exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.post(
+            exec_url, {"component": "ak-stage-authenticator-validate", "code": "123456"}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, exec_url)
+        body = self.assertStageResponse(
+            self.client.get(exec_url), flow, component="ak-stage-identification"
+        )
+        self.assertNotIn("response_errors", body)
+
+    def test_post_after_other_flow_replaced_plan_stage_dispatch(self):
+        """A response for a replaced plan reaches the newly planned flow's current stage the
+        same way a GET does, including stages that override dispatch()"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=flow, stage=DenyStage.objects.create(name=generate_id()), order=0
+        )
+        other_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        FlowStageBinding.objects.create(
+            target=other_flow, stage=DummyStage.objects.create(name=generate_id()), order=0
+        )
+        other_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": other_flow.slug})
+        self.assertEqual(self.client.get(other_url).status_code, 200)
+
+        exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.post(exec_url, {"component": "ak-stage-dummy"})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, exec_url)
+        self.assertStageResponse(
+            self.client.get(exec_url), flow, component="ak-stage-access-denied"
+        )
+
     @patch(
         "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,
