@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { BackendsEnum } from "./BackendsEnum";
-import { BackendsEnumFromJSON, BackendsEnumToJSON } from "./BackendsEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { BackendsEnum } from "./BackendsEnum.js";
+import { BackendsEnumFromJSON, BackendsEnumToJSON } from "./BackendsEnum.js";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
 
 /**
  * PasswordStage Serializer

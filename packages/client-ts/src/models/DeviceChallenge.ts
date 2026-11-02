@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceClassesEnum } from "./DeviceClassesEnum";
-import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceClassesEnum } from "./DeviceClassesEnum.js";
+import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum.js";
 
 /**
  * Single device challenge

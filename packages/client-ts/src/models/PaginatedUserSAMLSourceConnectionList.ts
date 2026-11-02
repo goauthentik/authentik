@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserSAMLSourceConnection } from "./UserSAMLSourceConnection";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { UserSAMLSourceConnection } from "./UserSAMLSourceConnection.js";
 import {
     UserSAMLSourceConnectionFromJSON,
     UserSAMLSourceConnectionToJSON,
-} from "./UserSAMLSourceConnection";
+} from "./UserSAMLSourceConnection.js";
 
 /**
  * @export

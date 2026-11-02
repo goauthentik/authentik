@@ -40,7 +40,16 @@ ALTER ROLE <authentik_user> IN DATABASE <authentik_database> SET jit = on;
 
 ## Check whether JIT compilation adds latency
 
-Connect to the authentik database as the user that authentik uses, because authentik changes `jit` only for that user. Run `SHOW jit;` to see whether JIT is enabled for authentik.
+To see whether JIT is enabled for authentik, open the system info API endpoint of your authentik instance at https://authentik.company/api/v3/admin/system/ while logged in as an administrator. Its `postgresql` section shows `jit` and `jit_source` for authentik's own database connection:
+
+| `jit`         | `jit_source`     | Meaning                                                                                                                                                              |
+| ------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `off`         | `database user`  | The setting from [authentik disables JIT compilation](#authentik-disables-jit-compilation) is in effect.                                                             |
+| `on`          | `database user`  | JIT was [kept enabled](#keep-jit-compilation-enabled) for authentik's database user.                                                                                 |
+| `on`          | `default`        | authentik has not changed the setting. Check the startup logs for a warning. If you use a connection pooler, its server connections might be older than the setting. |
+| `on` or `off` | any other source | `jit` is set explicitly elsewhere, for example in the PostgreSQL server configuration or with `ALTER DATABASE`.                                                      |
+
+For the following steps, connect to the authentik database as the user that authentik uses, because authentik changes `jit` only for that user.
 
 Run `EXPLAIN (ANALYZE, BUFFERS)` on a slow, read-only query and look for a `JIT` section. `EXPLAIN ANALYZE` executes the query, so do not use it with a query that changes data. The timing in the `JIT` section shows how long PostgreSQL spent generating, optimizing, and emitting compiled code. If JIT time accounts for most of the query time, refresh table statistics first. Better estimates can prevent PostgreSQL from choosing an expensive plan that triggers JIT unnecessarily.
 

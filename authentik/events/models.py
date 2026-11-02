@@ -50,7 +50,6 @@ from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.models import EmailTemplates
@@ -83,6 +82,16 @@ def django_app_names() -> list[str]:
     return [x.name for x in apps.app_configs.values()]
 
 
+@lru_cache
+def app_for_module(module: str) -> str:
+    """Match a module to the django app it belongs to, or keep the module name"""
+    django_apps: list[str] = get_close_matches(module, django_app_names(), n=1)
+    # Also ensure that closest django app has the correct prefix
+    if len(django_apps) > 0 and django_apps[0].startswith(module):
+        return django_apps[0]
+    return module
+
+
 class NotificationTransportError(TracingIgnoredException):
     """Error raised when a notification fails to be delivered"""
 
@@ -98,6 +107,8 @@ class EventAction(models.TextChoices):
     USER_OFFBOARDED = "user_offboarded"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
+
+    REQUIRED_ACTION_COMPLETED = "required_action_completed"
 
     SECRET_VIEW = "secret_view"  # noqa # nosec
     SECRET_ROTATE = "secret_rotate"  # noqa # nosec
@@ -182,13 +193,7 @@ class Event(SerializerModel, ExpiringModel):
         if not app:
             current = currentframe()
             parent = current.f_back
-            app = parent.f_globals["__name__"]
-            # Attempt to match the calling module to the django app it belongs to
-            # if we can't find a match, keep the module name
-            django_apps: list[str] = get_close_matches(app, django_app_names(), n=1)
-            # Also ensure that closest django app has the correct prefix
-            if len(django_apps) > 0 and django_apps[0].startswith(app):
-                app = django_apps[0]
+            app = app_for_module(parent.f_globals["__name__"])
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
@@ -228,10 +233,10 @@ class Event(SerializerModel, ExpiringModel):
         if hasattr(request, "brand"):
             brand: Brand = request.brand
             self.brand = sanitize_dict(model_to_dict(brand))
-        if hasattr(request, "user"):
-            self.user = get_user(request.user)
         if user:
             self.user = get_user(user)
+        elif hasattr(request, "user"):
+            self.user = get_user(request.user)
         if hasattr(request, "session"):
             from authentik.flows.views.executor import SESSION_KEY_PLAN
 
@@ -484,6 +489,9 @@ class NotificationTransport(TasksModel, SerializerModel):
             ]
 
         if self.webhook_ca:
+            # Imports the docker client, only load it when a custom CA is set
+            from authentik.outposts.docker_tls import DockerInlineTLS
+
             with DockerInlineTLS(self.webhook_ca, authentication_kp=None) as tls:
                 return send(verify=tls.ca_cert)
         return send()

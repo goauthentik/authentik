@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { CustomPermission } from "./CustomPermission";
-import { CustomPermissionFromJSON, CustomPermissionToJSON } from "./CustomPermission";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { CustomPermission } from "./CustomPermission.js";
+import { CustomPermissionFromJSON, CustomPermissionToJSON } from "./CustomPermission.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

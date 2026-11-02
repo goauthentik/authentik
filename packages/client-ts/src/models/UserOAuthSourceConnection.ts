@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Source } from "./Source";
-import { SourceFromJSON } from "./Source";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { Source } from "./Source.js";
+import { SourceFromJSON } from "./Source.js";
 
 /**
  * User source connection

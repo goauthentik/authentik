@@ -10,88 +10,91 @@
  * Do not edit the class manually.
  */
 
-import { type Device, DeviceFromJSON } from "../models/Device";
-import { type DuoDevice, DuoDeviceFromJSON } from "../models/DuoDevice";
-import { type DuoDeviceRequest, DuoDeviceRequestToJSON } from "../models/DuoDeviceRequest";
-import { type EmailDevice, EmailDeviceFromJSON } from "../models/EmailDevice";
-import { type EmailDeviceRequest, EmailDeviceRequestToJSON } from "../models/EmailDeviceRequest";
+import { type Device, DeviceFromJSON } from "../models/Device.js";
+import { type DuoDevice, DuoDeviceFromJSON } from "../models/DuoDevice.js";
+import { type DuoDeviceRequest, DuoDeviceRequestToJSON } from "../models/DuoDeviceRequest.js";
+import { type EmailDevice, EmailDeviceFromJSON } from "../models/EmailDevice.js";
+import { type EmailDeviceRequest, EmailDeviceRequestToJSON } from "../models/EmailDeviceRequest.js";
 import {
     type GoogleEndpointDevice,
     GoogleEndpointDeviceFromJSON,
-} from "../models/GoogleEndpointDevice";
+} from "../models/GoogleEndpointDevice.js";
 import {
     type GoogleEndpointDeviceRequest,
     GoogleEndpointDeviceRequestToJSON,
-} from "../models/GoogleEndpointDeviceRequest";
+} from "../models/GoogleEndpointDeviceRequest.js";
 import {
     type PaginatedDuoDeviceList,
     PaginatedDuoDeviceListFromJSON,
-} from "../models/PaginatedDuoDeviceList";
+} from "../models/PaginatedDuoDeviceList.js";
 import {
     type PaginatedEmailDeviceList,
     PaginatedEmailDeviceListFromJSON,
-} from "../models/PaginatedEmailDeviceList";
+} from "../models/PaginatedEmailDeviceList.js";
 import {
     type PaginatedGoogleEndpointDeviceList,
     PaginatedGoogleEndpointDeviceListFromJSON,
-} from "../models/PaginatedGoogleEndpointDeviceList";
+} from "../models/PaginatedGoogleEndpointDeviceList.js";
 import {
     type PaginatedSMSDeviceList,
     PaginatedSMSDeviceListFromJSON,
-} from "../models/PaginatedSMSDeviceList";
+} from "../models/PaginatedSMSDeviceList.js";
 import {
     type PaginatedStaticDeviceList,
     PaginatedStaticDeviceListFromJSON,
-} from "../models/PaginatedStaticDeviceList";
+} from "../models/PaginatedStaticDeviceList.js";
 import {
     type PaginatedTOTPDeviceList,
     PaginatedTOTPDeviceListFromJSON,
-} from "../models/PaginatedTOTPDeviceList";
+} from "../models/PaginatedTOTPDeviceList.js";
 import {
     type PaginatedWebAuthnDeviceList,
     PaginatedWebAuthnDeviceListFromJSON,
-} from "../models/PaginatedWebAuthnDeviceList";
+} from "../models/PaginatedWebAuthnDeviceList.js";
 import {
     type PatchedDuoDeviceRequest,
     PatchedDuoDeviceRequestToJSON,
-} from "../models/PatchedDuoDeviceRequest";
+} from "../models/PatchedDuoDeviceRequest.js";
 import {
     type PatchedEmailDeviceRequest,
     PatchedEmailDeviceRequestToJSON,
-} from "../models/PatchedEmailDeviceRequest";
+} from "../models/PatchedEmailDeviceRequest.js";
 import {
     type PatchedGoogleEndpointDeviceRequest,
     PatchedGoogleEndpointDeviceRequestToJSON,
-} from "../models/PatchedGoogleEndpointDeviceRequest";
+} from "../models/PatchedGoogleEndpointDeviceRequest.js";
 import {
     type PatchedSMSDeviceRequest,
     PatchedSMSDeviceRequestToJSON,
-} from "../models/PatchedSMSDeviceRequest";
+} from "../models/PatchedSMSDeviceRequest.js";
 import {
     type PatchedStaticDeviceRequest,
     PatchedStaticDeviceRequestToJSON,
-} from "../models/PatchedStaticDeviceRequest";
+} from "../models/PatchedStaticDeviceRequest.js";
 import {
     type PatchedTOTPDeviceRequest,
     PatchedTOTPDeviceRequestToJSON,
-} from "../models/PatchedTOTPDeviceRequest";
+} from "../models/PatchedTOTPDeviceRequest.js";
 import {
     type PatchedWebAuthnDeviceRequest,
     PatchedWebAuthnDeviceRequestToJSON,
-} from "../models/PatchedWebAuthnDeviceRequest";
-import { type SMSDevice, SMSDeviceFromJSON } from "../models/SMSDevice";
-import { type SMSDeviceRequest, SMSDeviceRequestToJSON } from "../models/SMSDeviceRequest";
-import { type StaticDevice, StaticDeviceFromJSON } from "../models/StaticDevice";
-import { type StaticDeviceRequest, StaticDeviceRequestToJSON } from "../models/StaticDeviceRequest";
-import { type TOTPDevice, TOTPDeviceFromJSON } from "../models/TOTPDevice";
-import { type TOTPDeviceRequest, TOTPDeviceRequestToJSON } from "../models/TOTPDeviceRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import { type WebAuthnDevice, WebAuthnDeviceFromJSON } from "../models/WebAuthnDevice";
+} from "../models/PatchedWebAuthnDeviceRequest.js";
+import { type SMSDevice, SMSDeviceFromJSON } from "../models/SMSDevice.js";
+import { type SMSDeviceRequest, SMSDeviceRequestToJSON } from "../models/SMSDeviceRequest.js";
+import { type StaticDevice, StaticDeviceFromJSON } from "../models/StaticDevice.js";
+import {
+    type StaticDeviceRequest,
+    StaticDeviceRequestToJSON,
+} from "../models/StaticDeviceRequest.js";
+import { type TOTPDevice, TOTPDeviceFromJSON } from "../models/TOTPDevice.js";
+import { type TOTPDeviceRequest, TOTPDeviceRequestToJSON } from "../models/TOTPDeviceRequest.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import { type WebAuthnDevice, WebAuthnDeviceFromJSON } from "../models/WebAuthnDevice.js";
 import {
     type WebAuthnDeviceRequest,
     WebAuthnDeviceRequestToJSON,
-} from "../models/WebAuthnDeviceRequest";
-import * as runtime from "../runtime";
+} from "../models/WebAuthnDeviceRequest.js";
+import * as runtime from "../runtime.js";
 
 export interface AuthenticatorsAdminAllListRequest {
     user?: number;

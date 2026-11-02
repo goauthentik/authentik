@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { LogLevelEnum } from "./LogLevelEnum";
-import { LogLevelEnumFromJSON, LogLevelEnumToJSON } from "./LogLevelEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { LogLevelEnum } from "./LogLevelEnum.js";
+import { LogLevelEnumFromJSON, LogLevelEnumToJSON } from "./LogLevelEnum.js";
 
 /**
  * Single log message with all context logged.
