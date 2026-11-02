@@ -269,7 +269,7 @@ RUN ln -s /ak-root/packages /packages && \
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/
-COPY --from=geoip:latest /geoip /geoip
+COPY --from=ghcr.io/goauthentik/geoip:latest /geoip /geoip
 
 # Stage: distroless root filesystem
 # prune.sh copies the files the distroless image needs into /out
