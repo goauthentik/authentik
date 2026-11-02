@@ -123,17 +123,6 @@ export class MessageContainer extends AKElement {
 
     static styles: CSSResult[] = [PFAlertGroup, Styles];
 
-    constructor() {
-        super();
-
-        // Note: This seems to be susceptible to race conditions.
-        // Events are dispatched regardless if the message container is listening.
-
-        window.addEventListener("ak-message", (event) => {
-            this.addMessage(event.message);
-        });
-    }
-
     public override connectedCallback(): void {
         super.connectedCallback();
 
