@@ -107,6 +107,15 @@ class TestUserinfo(OAuthTestCase):
             "Failed to evaluate property-mapping: 'test'",
         )
 
+    def test_userinfo_invalid_token_challenge(self):
+        """RFC 6750 section 3: the challenge uses the Bearer auth-scheme"""
+        res = self.client.get(
+            reverse("authentik_providers_oauth2:userinfo"),
+            HTTP_AUTHORIZATION=f"Bearer {generate_id()}",
+        )
+        self.assertEqual(res.status_code, 401)
+        self.assertTrue(res["WWW-Authenticate"].startswith('Bearer error="invalid_token"'))
+
     def test_userinfo_non_dict_scope(self):
         """test user info with a scope returning a non-dict value"""
         scope = ScopeMapping.objects.create(
