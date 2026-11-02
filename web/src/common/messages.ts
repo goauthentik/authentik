@@ -27,17 +27,3 @@ export interface APIMessage {
      */
     key?: PropertyKey;
 }
-
-export class AKMessageEvent extends Event {
-    static readonly eventName = "ak-message";
-
-    constructor(public readonly message: APIMessage) {
-        super(AKMessageEvent.eventName, { bubbles: true, composed: true });
-    }
-}
-
-declare global {
-    interface WindowEventMap {
-        [AKMessageEvent.eventName]: AKMessageEvent;
-    }
-}
