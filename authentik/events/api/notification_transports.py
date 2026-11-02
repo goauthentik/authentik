@@ -11,7 +11,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import (
     Event,
@@ -78,7 +77,7 @@ class NotificationTransportTestSerializer(PassiveSerializer):
     messages = ListField(child=CharField())
 
 
-class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
+class NotificationTransportViewSet(ModelViewSet):
     """NotificationTransport Viewset"""
 
     queryset = NotificationTransport.objects.all()

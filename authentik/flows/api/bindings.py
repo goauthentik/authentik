@@ -5,7 +5,6 @@ from typing import Any
 from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.flows.models import FlowStageBinding
@@ -39,7 +38,7 @@ class FlowStageBindingSerializer(ModelSerializer):
         ]
 
 
-class FlowStageBindingViewSet(UsedByMixin, ModelViewSet):
+class FlowStageBindingViewSet(ModelViewSet):
     """FlowStageBinding Viewset"""
 
     queryset = FlowStageBinding.objects.prefetch_related("stage__flow_set")

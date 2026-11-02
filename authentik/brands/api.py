@@ -26,7 +26,6 @@ from authentik.admin.flags import Flag
 from authentik.admin.utils import get_system_settings
 from authentik.brands.models import Brand
 from authentik.brands.utils import session_safe_mode
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
 from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.rbac.filters import SecretKeyFilter
@@ -184,7 +183,7 @@ class CurrentBrandSerializer(PassiveSerializer):
         return data
 
 
-class BrandViewSet(UsedByMixin, ModelViewSet):
+class BrandViewSet(ModelViewSet):
     """Brand Viewset"""
 
     queryset = Brand.objects.all()

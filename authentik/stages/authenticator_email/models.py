@@ -178,3 +178,4 @@ class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
         verbose_name = _("Email Device")
         verbose_name_plural = _("Email Devices")
         unique_together = (("user", "email"),)
+        authentik_used_by_owner_field = "user"

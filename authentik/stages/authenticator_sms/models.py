@@ -245,3 +245,4 @@ class SMSDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
         verbose_name = _("SMS Device")
         verbose_name_plural = _("SMS Devices")
         unique_together = (("stage", "phone_number"),)
+        authentik_used_by_owner_field = "user"

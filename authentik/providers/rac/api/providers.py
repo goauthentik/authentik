@@ -4,7 +4,6 @@ from rest_framework.fields import CharField, ListField
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.providers.rac.models import RACProvider
 
 
@@ -53,7 +52,7 @@ class RACProviderSerializer(ProviderSerializer):
         }
 
 
-class RACProviderViewSet(UsedByMixin, ModelViewSet):
+class RACProviderViewSet(ModelViewSet):
     """RACProvider Viewset"""
 
     queryset = RACProvider.objects.all()

@@ -19,7 +19,6 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.validation import validate
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.enterprise.license import LicenseKey, LicenseSummarySerializer
@@ -135,7 +134,7 @@ class LicenseUserCountsSerializer(PassiveSerializer):
     ranges = LicenseUserCountRangeSerializer(many=True, required=True)
 
 
-class LicenseViewSet(UsedByMixin, ModelViewSet):
+class LicenseViewSet(ModelViewSet):
     """License Viewset"""
 
     queryset = License.objects.all()

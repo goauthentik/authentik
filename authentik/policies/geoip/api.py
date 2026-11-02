@@ -8,7 +8,6 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.geoip.models import GeoIPPolicy
 from authentik.policies.geoip.serializer_fields import DetailedCountryField
@@ -51,7 +50,7 @@ class GeoIPPolicySerializer(CountryFieldMixin, PolicySerializer):
         ]
 
 
-class GeoIPPolicyViewSet(UsedByMixin, ModelViewSet):
+class GeoIPPolicyViewSet(ModelViewSet):
     """GeoIP Viewset"""
 
     queryset = GeoIPPolicy.objects.all()

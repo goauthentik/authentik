@@ -2,7 +2,6 @@
 
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.user_login.models import UserLoginStage
 
@@ -22,7 +21,7 @@ class UserLoginStageSerializer(StageSerializer):
         ]
 
 
-class UserLoginStageViewSet(UsedByMixin, ModelViewSet):
+class UserLoginStageViewSet(ModelViewSet):
     """UserLoginStage Viewset"""
 
     queryset = UserLoginStage.objects.all()

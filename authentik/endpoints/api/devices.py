@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.endpoints.api.device_access_group import DeviceAccessGroupSerializer
 from authentik.endpoints.api.device_connections import DeviceConnectionSerializer
@@ -100,7 +99,7 @@ class EndpointDeviceDetailsSerializer(EndpointDeviceSerializer):
         ]
 
 
-class DeviceViewSet(UsedByMixin, ModelViewSet):
+class DeviceViewSet(ModelViewSet):
 
     queryset = (
         Device.objects.all()

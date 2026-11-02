@@ -5,7 +5,6 @@ from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.used_by import UsedByMixin
 from authentik.endpoints.api.connectors import ConnectorSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.endpoints.connectors.google_chrome.models import GoogleChromeConnector
@@ -31,7 +30,7 @@ class GoogleChromeConnectorSerializer(EnterpriseRequiredMixin, ConnectorSerializ
         secret_fields = ["credentials"]
 
 
-class GoogleChromeConnectorViewSet(UsedByMixin, ModelViewSet):
+class GoogleChromeConnectorViewSet(ModelViewSet):
     """GoogleChromeConnector Viewset"""
 
     queryset = GoogleChromeConnector.objects.all()

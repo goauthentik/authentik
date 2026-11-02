@@ -4,7 +4,6 @@ from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import PartialUserSerializer
-from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProviderUser
 from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
@@ -34,7 +33,6 @@ class MicrosoftEntraProviderUserViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
