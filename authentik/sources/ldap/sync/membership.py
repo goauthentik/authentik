@@ -3,11 +3,12 @@
 from collections.abc import Generator
 from typing import Any
 
+from django.db import transaction
 from django.db.models import Q
 from ldap3 import SUBTREE
 from ldap3.utils.conv import escape_filter_chars
 
-from authentik.core.models import Group, User
+from authentik.core.models import Group, User, UserGroup
 from authentik.sources.ldap.models import (
     LDAP_DISTINGUISHED_NAME,
     GroupLDAPSourceConnection,
@@ -125,13 +126,17 @@ class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
                 | Q(
                     **{
                         f"attributes__{self._source.user_membership_attribute}__isnull": True,
-                        "groups__in": [group],
+                        "pk__in": UserGroup.objects.filter(group=group).values("user_id"),
                     }
                 )
             ).distinct()
-            membership_count += 1
-            membership_count += users.count()
-            group.users.set(users)
+            user_ids = set(users.values_list("pk", flat=True))
+            with transaction.atomic():
+                memberships = UserGroup.objects.filter(group=group)
+                current_user_ids = set(memberships.values_list("user_id", flat=True))
+                group.users.remove(*(current_user_ids - user_ids))
+                group.users.add(*(user_ids - current_user_ids))
+            membership_count += 1 + len(user_ids)
             group.save()
         self._logger.debug("Successfully updated group membership")
         return membership_count
