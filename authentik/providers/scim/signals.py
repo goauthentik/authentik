@@ -4,7 +4,10 @@ from django.db.models.signals import m2m_changed, post_delete, post_save, pre_sa
 from django.dispatch import receiver
 
 from authentik.core.models import Application, Group, User
-from authentik.lib.sync.outgoing.signals import register_signals, sync_outgoing_dispatch_inhibited
+from authentik.lib.sync.outgoing.signals import (
+    register_signals,
+    sync_outgoing_dispatch_is_inhibited,
+)
 from authentik.policies.models import PolicyBinding
 from authentik.providers.scim.models import SCIMProvider
 from authentik.providers.scim.tasks import (
@@ -28,7 +31,7 @@ register_signals(
 @receiver(pre_save, sender=PolicyBinding)
 def scim_binding_pre_save(sender, instance: PolicyBinding, raw=False, **_):
     """Remember both applications when a binding is moved or its access rules change."""
-    if raw or sync_outgoing_dispatch_inhibited():
+    if raw or sync_outgoing_dispatch_is_inhibited():
         return
     fields = (
         "target_id",
@@ -61,7 +64,7 @@ def scim_binding_pre_save(sender, instance: PolicyBinding, raw=False, **_):
 @receiver(post_save, sender=PolicyBinding)
 def scim_binding_post_save(sender, instance: PolicyBinding, raw=False, **_):
     """Binding changes can affect every user, including default access without bindings."""
-    if raw or sync_outgoing_dispatch_inhibited():
+    if raw or sync_outgoing_dispatch_is_inhibited():
         return
     queue_scope_for_targets(getattr(instance, "_scim_scope_targets", {instance.target_id}))
 
@@ -69,14 +72,14 @@ def scim_binding_post_save(sender, instance: PolicyBinding, raw=False, **_):
 @receiver(post_delete, sender=PolicyBinding)
 def scim_binding_post_delete(sender, instance: PolicyBinding, **_):
     """Reconcile access after the binding has actually been removed."""
-    if not sync_outgoing_dispatch_inhibited():
+    if not sync_outgoing_dispatch_is_inhibited():
         queue_scope_for_targets({instance.target_id})
 
 
 @receiver(pre_save, sender=Application)
 def scim_application_pre_save(sender, instance: Application, raw=False, update_fields=None, **_):
     """Only policy-engine mode changes require a scope sweep on application save."""
-    if raw or sync_outgoing_dispatch_inhibited() or instance._state.adding:
+    if raw or sync_outgoing_dispatch_is_inhibited() or instance._state.adding:
         return
     instance._scim_scope_changed = False
     if update_fields is not None and "policy_engine_mode" not in update_fields:
@@ -94,7 +97,7 @@ def scim_application_post_save(sender, instance: Application, raw=False, **_):
     """Evaluate the application's saved mode, not the previous value."""
     if (
         not raw
-        and not sync_outgoing_dispatch_inhibited()
+        and not sync_outgoing_dispatch_is_inhibited()
         and getattr(instance, "_scim_scope_changed", False)
     ):
         queue_scope_for_targets({instance.pk})
@@ -105,7 +108,7 @@ def scim_application_membership_changed(
     sender, instance: User | Group, action: str, pk_set: set | None, reverse: bool, **_
 ):
     """Only reevaluate affected users and applications, independently of exported groups."""
-    if sync_outgoing_dispatch_inhibited():
+    if sync_outgoing_dispatch_is_inhibited():
         return
     if action == "pre_clear":
         if not SCIMProvider.objects.filter(backchannel_application__isnull=False).exists():
@@ -130,7 +133,7 @@ def scim_group_parentage_changed(
     sender, instance: Group, action: str, pk_set: set | None, reverse: bool, **_
 ):
     """Changing group ancestry changes access for users in the child subtree."""
-    if sync_outgoing_dispatch_inhibited():
+    if sync_outgoing_dispatch_is_inhibited():
         return
     if action == "pre_clear":
         if not SCIMProvider.objects.filter(backchannel_application__isnull=False).exists():

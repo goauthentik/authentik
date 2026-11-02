@@ -26,7 +26,7 @@ from authentik.core.models import (
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.exceptions import BaseSyncException
 from authentik.lib.sync.outgoing.signals import (
-    sync_outgoing_dispatch_inhibited,
+    sync_outgoing_dispatch_is_inhibited,
     sync_outgoing_inhibit_dispatch,
 )
 from authentik.policies.expression.models import ExpressionPolicy
@@ -439,10 +439,10 @@ class SCIMScopeTests(TestCase):
         with sync_outgoing_inhibit_dispatch():
             with sync_outgoing_inhibit_dispatch():
                 pass
-            self.assertTrue(sync_outgoing_dispatch_inhibited())
+            self.assertTrue(sync_outgoing_dispatch_is_inhibited())
             self.group.users.remove(self.user)
             self.binding.delete()
-        self.assertFalse(sync_outgoing_dispatch_inhibited())
+        self.assertFalse(sync_outgoing_dispatch_is_inhibited())
         self.assertEqual(self.jobs, [])
 
     def test_bounded_membership_messages(self):

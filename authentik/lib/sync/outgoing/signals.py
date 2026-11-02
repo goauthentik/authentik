@@ -27,7 +27,7 @@ def sync_outgoing_inhibit_dispatch():
         _CTX_INHIBIT_DISPATCH.reset(token)
 
 
-def sync_outgoing_dispatch_inhibited() -> bool:
+def sync_outgoing_dispatch_is_inhibited() -> bool:
     """Whether outgoing synchronization is inhibited in this context."""
     return _CTX_INHIBIT_DISPATCH.get()
 
