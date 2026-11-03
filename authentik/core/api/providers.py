@@ -63,7 +63,8 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         # is up to the child serializer
         extra_kwargs = {}
         extra_write_kwargs = {
-            "authorization_flow": {"required": True, "allow_null": False},
+            # Optional: falls back to the brand's flow_provider_authorization when unset
+            "authorization_flow": {"required": False, "allow_null": True},
             "invalidation_flow": {"required": True, "allow_null": False},
         }
 

@@ -3540,6 +3540,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: flow_provider_authorization
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: flow_recovery
         schema:
           type: string
@@ -38187,6 +38192,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_provider_authorization:
+          type: string
+          format: uuid
         flow_invalidation:
           type: string
           format: uuid
@@ -38238,6 +38246,7 @@ components:
       required:
       - brand_uuid
       - domain
+      - flow_provider_authorization
     BrandRequest:
       type: object
       description: Brand Serializer
@@ -38278,6 +38287,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_provider_authorization:
+          type: string
+          format: uuid
         flow_invalidation:
           type: string
           format: uuid
@@ -38328,6 +38340,7 @@ components:
           additionalProperties: {}
       required:
       - domain
+      - flow_provider_authorization
     BulkDeleteSessionResponse:
       type: object
       properties:
@@ -44254,6 +44267,7 @@ components:
           description: DN under which objects are accessible.
         bind_flow_slug:
           type: string
+          readOnly: true
         unbind_flow_slug:
           type: string
           nullable: true
@@ -44320,6 +44334,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -44411,7 +44426,6 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
       - invalidation_flow
       - meta_model_name
@@ -44436,6 +44450,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -44483,7 +44498,6 @@ components:
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
       required:
-      - authorization_flow
       - invalidation_flow
       - name
     LDAPSource:
@@ -46495,6 +46509,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -46626,7 +46641,6 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
       - invalidation_flow
       - meta_model_name
@@ -46656,6 +46670,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -46752,7 +46767,6 @@ components:
           items:
             type: integer
       required:
-      - authorization_flow
       - invalidation_flow
       - name
       - redirect_uris
@@ -51032,6 +51046,9 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_provider_authorization:
+          type: string
+          format: uuid
         flow_invalidation:
           type: string
           format: uuid
@@ -52153,6 +52170,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -52662,6 +52680,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -53285,6 +53304,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -53398,6 +53418,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -53465,6 +53486,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -53650,6 +53672,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -54652,6 +54675,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -55953,6 +55977,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -56080,7 +56105,6 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - client_id
       - component
       - external_host
@@ -56108,6 +56132,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -56185,7 +56210,6 @@ components:
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
       required:
-      - authorization_flow
       - external_host
       - invalidation_flow
       - name
@@ -56344,6 +56368,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -56421,7 +56446,6 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
       - meta_model_name
       - name
@@ -56450,6 +56474,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -56483,7 +56508,6 @@ components:
           type: boolean
           description: When set to true, connection tokens will be deleted upon disconnect.
       required:
-      - authorization_flow
       - name
     RadiusCheckAccess:
       type: object
@@ -56509,6 +56533,7 @@ components:
           type: string
         auth_flow_slug:
           type: string
+          readOnly: true
         client_networks:
           type: string
           description: List of CIDRs (comma-separated) that clients can connect from.
@@ -56552,6 +56577,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -56627,7 +56653,6 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
       - invalidation_flow
       - meta_model_name
@@ -56719,6 +56744,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -56751,7 +56777,6 @@ components:
           format: uuid
           nullable: true
       required:
-      - authorization_flow
       - invalidation_flow
       - name
     RedirectChallenge:
@@ -57614,6 +57639,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -57813,7 +57839,6 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
       - invalidation_flow
       - meta_model_name
@@ -57867,6 +57892,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -57994,7 +58020,6 @@ components:
             of this provider via token exchange.
       required:
       - acs_url
-      - authorization_flow
       - invalidation_flow
       - name
     SAMLSource:
@@ -62432,6 +62457,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -62562,7 +62588,6 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
       - invalidation_flow
       - meta_model_name
@@ -62591,6 +62616,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
@@ -62674,7 +62700,6 @@ components:
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
       required:
-      - authorization_flow
       - invalidation_flow
       - name
       - reply_url

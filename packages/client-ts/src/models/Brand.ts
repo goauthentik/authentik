@@ -37,6 +37,7 @@ export interface Brand {
     brandingMapTiles?: string;
     flowAuthentication?: string | null;
     flowUserSwitch?: string | null;
+    flowProviderAuthorization: string;
     flowInvalidation?: string | null;
     flowRecovery?: string | null;
     flowUnenrollment?: string | null;
@@ -71,6 +72,13 @@ export function instanceOfBrand(value: object): value is Brand {
     )
         return false;
     if (!("domain" in value) || value["domain"] === undefined) return false;
+    if (
+        (!("flowProviderAuthorization" in (value as Record<string, any>)) &&
+            !("flow_provider_authorization" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["flowProviderAuthorization"] === undefined &&
+            (value as Record<string, any>)["flow_provider_authorization"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -109,6 +117,7 @@ export function BrandFromJSONTyped(json: any, ignoreDiscriminator: boolean): Bra
                 : json["flow_user_switch"] === null
                   ? null
                   : json["flow_user_switch"],
+        flowProviderAuthorization: json["flow_provider_authorization"],
         flowInvalidation:
             json["flow_invalidation"] === undefined
                 ? undefined
@@ -192,6 +201,7 @@ export function BrandToJSONTyped(
         branding_map_tiles: value["brandingMapTiles"],
         flow_authentication: value["flowAuthentication"],
         flow_user_switch: value["flowUserSwitch"],
+        flow_provider_authorization: value["flowProviderAuthorization"],
         flow_invalidation: value["flowInvalidation"],
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
