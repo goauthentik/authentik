@@ -72,7 +72,7 @@ dependencies = [
   "watchdog==6.0.0",
   "webauthn==3.0.0",
   "wsproto==1.3.2",
-  "xmlsec==1.3.17",
+  "xmlsec==1.3.18",
   "zxcvbn==4.5.0",
 ]
 
