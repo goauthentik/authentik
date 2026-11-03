@@ -514,7 +514,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
             if isinstance(response, HttpResponseRedirect):
                 parsed_url = urlparse(response.url)
-                args = parse_qs(parsed_url.query)
+                args = parse_qs(parsed_url.query, keep_blank_values=True)
                 args["locale"] = selected_language
                 response["Location"] = urlunparse(
                     parsed_url._replace(query=urlencode(args, quote_via=quote, doseq=True))
@@ -627,7 +627,8 @@ class OAuthFulfillmentStage(StageView):
             # this picks the first item in the list if the value is a list,
             # otherwise just the value as-is
             query_params = dict(
-                (k, v[0] if isinstance(v, list) else v) for k, v in parse_qs(parsed.query).items()
+                (k, v[0] if isinstance(v, list) else v)
+                for k, v in parse_qs(parsed.query, keep_blank_values=True).items()
             )
 
             challenge = AutosubmitChallenge(
@@ -706,7 +707,7 @@ class OAuthFulfillmentStage(StageView):
             if self.params.response_mode == ResponseMode.QUERY:
                 query_params = parse_qs(uri.query)
                 query_params["code"] = code.code
-                if self.params.state:
+                if self.params.state is not None:
                     query_params["state"] = self.params.state
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
@@ -716,7 +717,7 @@ class OAuthFulfillmentStage(StageView):
                 query_fragment = {}
                 if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     query_fragment["code"] = code.code
-                    if self.params.state:
+                    if self.params.state is not None:
                         query_fragment["state"] = self.params.state
                 else:
                     query_fragment = self.create_implicit_response(code)
@@ -731,7 +732,7 @@ class OAuthFulfillmentStage(StageView):
                 post_params = {}
                 if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     post_params["code"] = code.code
-                    if self.params.state:
+                    if self.params.state is not None:
                         post_params["state"] = self.params.state
                 else:
                     post_params = self.create_implicit_response(code)
@@ -808,6 +809,6 @@ class OAuthFulfillmentStage(StageView):
         query_fragment["expires_in"] = int(
             timedelta_from_string(self.provider.access_token_validity).total_seconds()
         )
-        if self.params.state:
+        if self.params.state is not None:
             query_fragment["state"] = self.params.state
         return query_fragment
