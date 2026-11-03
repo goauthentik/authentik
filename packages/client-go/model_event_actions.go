@@ -33,7 +33,6 @@ const (
 	EVENTACTIONS_SECRET_ROTATE              EventActions = "secret_rotate"
 	EVENTACTIONS_INVITATION_USED            EventActions = "invitation_used"
 	EVENTACTIONS_AUTHORIZE_APPLICATION      EventActions = "authorize_application"
-	EVENTACTIONS_TOKEN_REFRESH              EventActions = "token_refresh"
 	EVENTACTIONS_SOURCE_LINKED              EventActions = "source_linked"
 	EVENTACTIONS_IMPERSONATION_STARTED      EventActions = "impersonation_started"
 	EVENTACTIONS_IMPERSONATION_ENDED        EventActions = "impersonation_ended"
@@ -77,7 +76,6 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"secret_rotate",
 	"invitation_used",
 	"authorize_application",
-	"token_refresh",
 	"source_linked",
 	"impersonation_started",
 	"impersonation_ended",

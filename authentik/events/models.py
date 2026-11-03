@@ -115,7 +115,6 @@ class EventAction(models.TextChoices):
     INVITE_USED = "invitation_used"
 
     AUTHORIZE_APPLICATION = "authorize_application"
-    TOKEN_REFRESH = "token_refresh"
     SOURCE_LINKED = "source_linked"
 
     IMPERSONATION_STARTED = "impersonation_started"
