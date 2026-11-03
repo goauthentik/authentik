@@ -85,7 +85,7 @@ class MLDSAAlgorithm(Algorithm):
 
     @staticmethod
     def to_jwk(key_obj: Any, as_dict: bool = False) -> dict | str:
-        name = algorithm_for_key(key_obj)
+        name = MLDSAAlgorithm.algorithm_for_key(key_obj)
         private_key_cls, _ = MLDSA_ALGORITHMS[name]
         jwk: dict[str, str] = {"kty": JWK_KTY_AKP, "alg": name}
         if isinstance(key_obj, private_key_cls):
@@ -116,18 +116,13 @@ class MLDSAAlgorithm(Algorithm):
             raise InvalidKeyError(f"Invalid {name} key: {exc}") from exc
         raise InvalidKeyError("AKP key has neither pub nor priv")
 
-
-def algorithm_for_key(key: Any) -> str:
-    """Return the JOSE algorithm name for an ML-DSA key, or raise ValueError"""
-    for name, classes in MLDSA_ALGORITHMS.items():
-        if isinstance(key, classes):
-            return name
-    raise ValueError(f"Not an ML-DSA key: {type(key).__name__}")
-
-
-def is_mldsa_key(key: Any) -> bool:
-    """Whether the key is an ML-DSA private or public key"""
-    return isinstance(key, MLDSAKey)
+    @staticmethod
+    def algorithm_for_key(key: Any) -> str:
+        """Return the JOSE algorithm name for an ML-DSA key, or raise ValueError"""
+        for name, classes in MLDSA_ALGORITHMS.items():
+            if isinstance(key, classes):
+                return name
+        raise ValueError(f"Not an ML-DSA key: {type(key).__name__}")
 
 
 def key_from_jwk(jwk: dict) -> tuple[Any, str]:
