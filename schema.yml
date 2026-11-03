@@ -2768,7 +2768,7 @@ paths:
       - in: query
         name: for_user
         schema:
-          type: string
+          type: integer
         description: Entitlements assigned to this user, directly or through a group,
           regardless of the user's access to the application.
       - $ref: '#/components/parameters/QueryName'
@@ -2975,7 +2975,7 @@ paths:
       - in: query
         name: for_user
         schema:
-          type: string
+          type: integer
         description: Entitlements assigned to this user, directly or through a group,
           regardless of the user's access to the application.
       - $ref: '#/components/parameters/QueryName'
@@ -36585,11 +36585,21 @@ components:
         app:
           type: string
           format: uuid
+        app_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        app_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
         attributes:
           type: object
           additionalProperties: {}
       required:
       - app
+      - app_name
+      - app_slug
       - name
       - pbm_uuid
     ApplicationEntitlementRequest:

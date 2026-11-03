@@ -503,7 +503,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def app_entitlements(self, app: Application | None) -> QuerySet[ApplicationEntitlement]:
         """Get all entitlements this user has for `app`."""
         if not app:
-            return []
+            return ApplicationEntitlement.objects.none()
         return self.all_app_entitlements().filter(app=app)
 
     def all_app_entitlements(self) -> QuerySet[ApplicationEntitlement]:
