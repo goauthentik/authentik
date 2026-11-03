@@ -101,9 +101,12 @@ def discard_interrupted_transactions() -> None:
             pass
         del connections[conn.alias]
         # django-tenants keeps the active tenant on the connection, and a new one starts on the
-        # public schema. Keep the task's tenant for the hooks that run after this.
+        # public schema. Keep the task's tenant for the hooks that run after this. This package
+        # does not depend on django-tenants, so its connection attributes are not typed here.
         if (tenant := getattr(conn, "tenant", None)) is not None:
-            connections[conn.alias].set_tenant(tenant, conn.include_public_schema)
+            connections[conn.alias].set_tenant(  # type: ignore[attr-defined]
+                tenant, conn.include_public_schema  # type: ignore[attr-defined]
+            )
 
 
 class PostgresBroker(Broker):
