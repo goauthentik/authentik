@@ -20,11 +20,11 @@ Only activity attributed to the user counts. Actions performed on another user's
 
 For users with no recorded activity, the account creation date starts the inactivity period. Provisioned or invited accounts that are never used can therefore expire.
 
-A successful OAuth refresh normally creates an activity record only once per user every 24 hours across applications. Expiration calculations add a 24-hour allowance for refresh activity, which can delay expiration by up to 24 hours. Other activity receives no allowance.
+Successful activity is recorded at most once per user every five minutes across applications. Last activity calculations include a matching allowance, which can delay expiration by up to five minutes.
 
-### Event retention
+### Existing activity
 
-Event retention defaults to 365 days. For **Last activity**, retain events for at least the inactivity duration plus 24 hours. Check this setting when using long durations or shortened retention. Increasing retention does not recover deleted events, and deleting activity events can cause earlier expiration.
+Activity is stored independently of audit events, so event retention does not affect expiration after setup. On upgrade, retained successful login and application authorization events initialize activity history. Deleted events cannot be recovered; the last login and account creation date remain the baseline.
 
 ## Create a user expiration rule
 
@@ -32,7 +32,7 @@ Event retention defaults to 365 days. For **Last activity**, retain events for a
 2. Enter a **Name**.
 3. Optionally select a **Group**. The rule applies to members of that group and its child groups. Leave **Group** empty to apply the rule to every user.
 4. Select the **User types** to which the rule applies. Internal service accounts never expire.
-5. Choose the **Activity basis** and enter the **Inactivity duration**, for example `days=90`. For **Last activity**, check that event retention covers the duration plus 24 hours.
+5. Choose the **Activity basis** and enter the **Inactivity duration**, for example `days=90`.
 6. Select **Deactivate** or **Delete** for the **Action**, and configure **Revoke sessions** and **Revoke tokens**.
 7. Optionally enter a **Warning period**, for example `days=7`, and select the **Notification transports** used to warn the user. The warning period must be shorter than the inactivity duration.
 8. Leave **Exclude superusers** enabled unless you want to include members of superuser groups.
@@ -59,7 +59,7 @@ A login before the scheduled time removes the pending offboarding and resets the
 
 Under **Events** > **Logs**, the **User Offboarded** event identifies the rule that triggered the offboarding.
 
-For **Last activity** rules, activity recorded after scheduling removes the pending offboarding at the next hourly evaluation or execution check. The row can remain visible until that check. Refreshes that are not recorded because of the 24-hour interval can leave an offboarding pending, including after an activity basis change or rule takeover. Its recalculated deadline includes the refresh allowance.
+For **Last activity** rules, activity recorded after scheduling removes the pending offboarding at the next hourly evaluation or execution check. The row can remain visible until that check. Activity that is not recorded because of the five-minute interval can leave an offboarding pending, including after an activity basis change or rule takeover. Its recalculated deadline includes the activity allowance.
 
 ## Exclusions and overlapping rules
 
