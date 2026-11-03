@@ -17,8 +17,7 @@ class TestFIPS(SimpleTestCase):
     checked: they're approved, the current FIPS provider just doesn't have them."""
 
     def test_hashlib_md5(self):
-        """MD5 for security use, which CPython 3.14.10 allows,
-        https://github.com/python/cpython/issues/160923"""
+        """MD5 for security use"""
         with self.assertRaises(ValueError):
             hashlib.md5(b"")  # nosec
 
