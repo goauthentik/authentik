@@ -12,6 +12,7 @@ from authentik.core.models import User
 from authentik.core.signals import password_changed, password_hash_changed
 from authentik.events.models import Event
 from authentik.lib.generators import generate_id
+from authentik.stages.password.models import PasswordDevice
 
 
 class TestUsers(TestCase):
@@ -112,8 +113,7 @@ class TestUsers(TestCase):
                     "UserKerberosSourceConnection.objects.select_related"
                 ) as kerberos_connections_select,
             ):
-                user.set_password_from_hash(make_password("new-password"))  # nosec
-                user.save()
+                PasswordDevice.set_password_from_hash(user, make_password("new-password"))  # nosec
         finally:
             password_changed.disconnect(dispatch_uid=dispatch_uid)
             password_hash_changed.disconnect(dispatch_uid=hash_dispatch_uid)
