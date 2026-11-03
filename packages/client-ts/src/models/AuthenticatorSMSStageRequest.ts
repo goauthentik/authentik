@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,81 +10,39 @@
  * Do not edit the class manually.
  */
 
-import type { AuthTypeEnum } from "./AuthTypeEnum";
-import { AuthTypeEnumFromJSON, AuthTypeEnumToJSON } from "./AuthTypeEnum";
-import type { ProviderEnum } from "./ProviderEnum";
-import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
+import type { AuthTypeEnum } from "./AuthTypeEnum.js";
+import { AuthTypeEnumFromJSON, AuthTypeEnumToJSON } from "./AuthTypeEnum.js";
+import type { ProviderEnum } from "./ProviderEnum.js";
+import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum.js";
 
 /**
  * AuthenticatorSMSStage Serializer
+ *
  * @export
  * @interface AuthenticatorSMSStageRequest
  */
 export interface AuthenticatorSMSStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
-     */
     name: string;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
-     */
     friendlyName?: string;
-    /**
-     *
-     * @type {ProviderEnum}
-     * @memberof AuthenticatorSMSStageRequest
-     */
     provider: ProviderEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
-     */
     fromNumber: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
-     */
     accountSid: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
-     */
     auth: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
-     */
     authPassword?: string;
-    /**
-     *
-     * @type {AuthTypeEnum}
-     * @memberof AuthenticatorSMSStageRequest
-     */
     authType?: AuthTypeEnum;
     /**
-     * When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
-     * @type {boolean}
-     * @memberof AuthenticatorSMSStageRequest
+     * When enabled, the Phone number is only used during enrollment to verify the users
+     * authenticity. Only a hash of the phone number is saved to ensure it is not reused in the
+     * future.
      */
     verifyOnly?: boolean;
     /**
      * Optionally modify the payload being sent to custom providers.
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
      */
     mapping?: string | null;
 }

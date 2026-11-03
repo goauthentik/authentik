@@ -4,7 +4,6 @@
 
 import "#elements/messages/MessageContainer";
 import "../ToggleGroup";
-
 import { ToggleGroup, ToggleGroupEvent } from "../ToggleGroup";
 
 import { Meta } from "@storybook/web-components";

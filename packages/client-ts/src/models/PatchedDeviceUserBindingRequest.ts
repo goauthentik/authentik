@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,69 +12,33 @@
 
 /**
  * PolicyBinding Serializer
+ *
  * @export
  * @interface PatchedDeviceUserBindingRequest
  */
 export interface PatchedDeviceUserBindingRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedDeviceUserBindingRequest
-     */
     policy?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedDeviceUserBindingRequest
-     */
     group?: string | null;
-    /**
-     *
-     * @type {number}
-     * @memberof PatchedDeviceUserBindingRequest
-     */
     user?: number | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedDeviceUserBindingRequest
-     */
     target?: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     negate?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedDeviceUserBindingRequest
-     */
     enabled?: boolean;
     /**
-     *
-     * @type {number}
-     * @memberof PatchedDeviceUserBindingRequest
+     * Execute the policy but ignore its result.
      */
+    dryRun?: boolean;
     order?: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     failureResult?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedDeviceUserBindingRequest
-     */
     isPrimary?: boolean;
 }
 
@@ -115,6 +77,7 @@ export function PatchedDeviceUserBindingRequestFromJSONTyped(
         target: json["target"] == null ? undefined : json["target"],
         negate: json["negate"] == null ? undefined : json["negate"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         order: json["order"] == null ? undefined : json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
@@ -141,6 +104,7 @@ export function PatchedDeviceUserBindingRequestToJSONTyped(
         target: value["target"],
         negate: value["negate"],
         enabled: value["enabled"],
+        dry_run: value["dryRun"],
         order: value["order"],
         timeout: value["timeout"],
         failure_result: value["failureResult"],

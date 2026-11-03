@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Brand } from "./Brand";
-import { BrandFromJSON, BrandToJSON } from "./Brand";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Brand } from "./Brand.js";
+import { BrandFromJSON, BrandToJSON } from "./Brand.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedBrandList
  */
 export interface PaginatedBrandList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedBrandList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<Brand>}
-     * @memberof PaginatedBrandList
-     */
     results: Array<Brand>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedBrandList
-     */
     autocomplete: { [key: string]: any };
 }
 

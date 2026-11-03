@@ -13,7 +13,6 @@ from django.urls import reverse
 from django.views.generic.base import View
 from prometheus_client import Histogram
 from rest_framework.request import Request
-from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.common.oauth.constants import PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI
@@ -33,6 +32,7 @@ from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import class_to_path
 
 if TYPE_CHECKING:
@@ -134,7 +134,7 @@ class ChallengeStageView(StageView):
                 )
                 return self.executor.restart_flow(keep_context)
             with (
-                start_span(
+                active_tracer().start_span(
                     op="authentik.flow.stage.challenge_invalid",
                     name=self.__class__.__name__,
                 ),
@@ -144,7 +144,7 @@ class ChallengeStageView(StageView):
             ):
                 return self.challenge_invalid(challenge)
         with (
-            start_span(
+            active_tracer().start_span(
                 op="authentik.flow.stage.challenge_valid",
                 name=self.__class__.__name__,
             ),
@@ -180,7 +180,7 @@ class ChallengeStageView(StageView):
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
         with (
-            start_span(
+            active_tracer().start_span(
                 op="authentik.flow.stage.get_challenge",
                 name=self.__class__.__name__,
             ),
@@ -189,7 +189,7 @@ class ChallengeStageView(StageView):
             ).time(),
         ):
             challenge = self.get_challenge(*args, **kwargs)
-        with start_span(
+        with active_tracer().start_span(
             op="authentik.flow.stage._get_challenge",
             name=self.__class__.__name__,
         ):

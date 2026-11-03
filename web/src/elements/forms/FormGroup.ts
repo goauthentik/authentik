@@ -1,3 +1,7 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/forms/FormGroup.css";
 import { SlottedTemplateResult } from "#elements/types";
@@ -7,17 +11,13 @@ import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-
 /**
  * Form Group
  *
  * Mostly visual effects, with a single interaction for opening/closing the view.
  *
  * @todo Listen for custom events from its children about 'invalidation' events, and
- * trigger the `expanded` property as needed.
+ *   trigger the `expanded` property as needed.
  */
 @customElement("ak-form-group")
 export class AKFormGroup extends AKElement {
@@ -152,28 +152,34 @@ export class AKFormGroup extends AKElement {
                             role="heading"
                             aria-level="3"
                         >
-                            ${this.label || !headerSlotted
-                                ? html`<div part="label">
-                                      ${this.label ||
-                                      (!headerSlotted
-                                          ? msg("Details", {
-                                                id: "form-group.default-label",
-                                            })
-                                          : null)}
-                                  </div>`
-                                : null}
+                            ${
+                                this.label || !headerSlotted
+                                    ? html`<div part="label">
+                                          ${
+                                              this.label ||
+                                              (!headerSlotted
+                                                  ? msg("Details", {
+                                                        id: "form-group.default-label",
+                                                    })
+                                                  : null)
+                                          }
+                                      </div>`
+                                    : null
+                            }
                             ${headerSlotted ? this.headerSlot : null}
                         </div>
                     </header>
-                    ${this.description || descriptionSlotted
-                        ? html`<div
-                              class="pf-c-form__field-group-header-description"
-                              data-test-id="form-group-header-description"
-                              id="form-group-expandable-content-description"
-                          >
-                              ${this.description} ${this.descriptionSlot}
-                          </div>`
-                        : null}
+                    ${
+                        this.description || descriptionSlotted
+                            ? html`<div
+                                  class="pf-c-form__field-group-header-description"
+                                  data-test-id="form-group-header-description"
+                                  id="form-group-expandable-content-description"
+                              >
+                                  ${this.description} ${this.descriptionSlot}
+                              </div>`
+                            : null
+                    }
                 </div>
             </summary>
             ${this.defaultSlot}
@@ -190,6 +196,7 @@ export class AKFormGroup extends AKElement {
  * to reveal invalid inputs.
  *
  * @param form The form element to check.
+ *
  * @returns Whether the form is valid.
  */
 export function reportValidityDeep(

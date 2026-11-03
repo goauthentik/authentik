@@ -1,5 +1,7 @@
+from typing import Any
 from uuid import UUID
 
+from django.db.models import Q
 from django.http import HttpRequest
 
 from authentik.common.oauth.constants import (
@@ -7,6 +9,7 @@ from authentik.common.oauth.constants import (
     TOKEN_EXCHANGE_TOKEN_TYPES,
     TOKEN_TYPE_URI_ACCESS_TOKEN,
     TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
+    TOKEN_TYPE_URI_SAML2,
 )
 from authentik.core.models import Actor, Application, Token, TokenIntents
 from authentik.events.models import Event, EventAction
@@ -14,10 +17,36 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.providers.oauth2.errors import TokenExchangeError
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.oauth2.token.base_fed import FederatedTokenRequest
+from authentik.providers.saml.models import SAMLProvider
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
+
+# Upper bound on nested `act` claims, so repeated exchanges can't grow tokens unbounded
+MAX_ACT_DEPTH = 10
 
 
 class TokenExchangeTokenRequest(FederatedTokenRequest):
+
+    def resolve_saml_audience(self, audiences: list[str]) -> None:
+        """A SAML Response is requested for the SAML provider whose application's `slug` or
+        `pbm_uuid` is the `audience`, which must federate with the requesting provider."""
+        if len(audiences) != 1 or not audiences[0]:
+            self.logger.warning("SAML token exchange requires exactly one audience")
+            raise TokenExchangeError("invalid_target").with_cause("saml_audience_required")
+        audience = audiences[0]
+        query = Q(application__slug=audience)
+        try:
+            query |= Q(application__pbm_uuid=UUID(audience))
+        except ValueError:
+            # Audience is not a UUID; keep slug-only lookup.
+            pass
+        target = SAMLProvider.objects.filter(query).first()
+        if not target:
+            self.logger.warning("Audience does not match any provider", audience=audience)
+            raise TokenExchangeError("invalid_target").with_cause("unknown_target")
+        if not target.jwt_federation_providers.filter(pk=self.provider.pk).exists():
+            self.logger.warning("Audience does not federate with the requesting provider")
+            raise TokenExchangeError("invalid_target").with_cause("target_not_federated")
+        self.saml_provider = target
 
     def resolve_audience(self, request: HttpRequest) -> None:
         """RFC 8693 §2.1 `audience`: the provider the issued token is for, named by its
@@ -28,6 +57,8 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             self.logger.warning("Resource indicators are not supported")
             raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
         audiences = request.POST.getlist("audience")
+        if request.POST.get("requested_token_type") == TOKEN_TYPE_URI_SAML2:
+            return self.resolve_saml_audience(audiences)
         if not audiences:
             return
         # Multi-provider tokens are not supported.
@@ -68,7 +99,10 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             raise TokenExchangeError("invalid_request").with_cause("unsupported_subject_token_type")
         if self.requested_token_type is None:
             self.requested_token_type = TOKEN_TYPE_URI_ACCESS_TOKEN
-        if self.requested_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
+        if (
+            self.requested_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES
+            and self.requested_token_type != TOKEN_TYPE_URI_SAML2
+        ):
             self.logger.warning(
                 "Unsupported requested token type", token_type=self.requested_token_type
             )
@@ -102,7 +136,12 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
                 self.logger.info("Audience provider has no application")
                 raise TokenExchangeError("invalid_target").with_cause("target_without_application")
             self.check_policy_access(target_app, request, oauth_jwt=federated_party.parsed_token)
+        if self.saml_provider:
+            self.check_policy_access(
+                self.saml_provider.application, request, oauth_jwt=federated_party.parsed_token
+            )
 
+        self.prior_act = self.validate_prior_act(federated_party.parsed_token.get("act"))
         self.post_init_token_exchange_actor(request)
 
         method_args = {
@@ -113,6 +152,15 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         }
         if self.audience_provider:
             method_args["audience"] = self.audience_provider.client_id
+        if self.saml_provider:
+            method_args["audience"] = str(self.saml_provider.application.pbm_uuid)
+        # The validated delegation chain the subject token carried; the new actor (if any)
+        # is recorded as the event's user.
+        if self.prior_act:
+            method_args["act"] = self.prior_act
+        # A delegated exchange is performed by the actor, so attribute the event to it; the
+        # audit log then records it as an agent acting on behalf of the verified subject,
+        # matching how direct API calls by an actor are attributed.
         Event.new(
             action=EventAction.LOGIN,
             **{
@@ -120,7 +168,29 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
                 PLAN_CONTEXT_METHOD_ARGS: method_args,
                 PLAN_CONTEXT_APPLICATION: app,
             },
-        ).from_http(request, user=self.user)
+        ).from_http(request, user=self.actor or self.user)
+
+    def validate_prior_act(self, act: Any, depth: int = 0) -> dict | None:
+        """RFC 8693 §4.1: validate the delegation chain the verified subject_token carries
+        in its `act` claim. Only `sub`, `iss` and a nested `act` are kept; other claims are
+        not meaningful for delegation (§4.1) and are dropped."""
+        if act is None:
+            return None
+        if depth >= MAX_ACT_DEPTH:
+            self.logger.warning("Subject token delegation chain is too deep")
+            raise TokenExchangeError("invalid_grant").with_cause("act_chain_too_deep")
+        if not isinstance(act, dict) or not isinstance(act.get("sub"), str):
+            self.logger.warning("Subject token has a malformed act claim")
+            raise TokenExchangeError("invalid_grant").with_cause("invalid_act_claim")
+        valid = {"sub": act["sub"]}
+        if "iss" in act:
+            if not isinstance(act["iss"], str):
+                self.logger.warning("Subject token has a malformed act claim")
+                raise TokenExchangeError("invalid_grant").with_cause("invalid_act_claim")
+            valid["iss"] = act["iss"]
+        if "act" in act:
+            valid["act"] = self.validate_prior_act(act["act"], depth + 1)
+        return valid
 
     def post_init_token_exchange_actor(self, request: HttpRequest):
         """RFC 8693 §4.1 delegation: validate an optional `actor_token`, identifying who

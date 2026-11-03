@@ -5,8 +5,8 @@ from json import loads
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.admin.utils import get_system_settings
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
-from authentik.tenants.utils import get_current_tenant
 
 
 class TestImpersonation(APITestCase):
@@ -102,9 +102,9 @@ class TestImpersonation(APITestCase):
 
     def test_impersonate_disabled(self):
         """test impersonation that is disabled"""
-        tenant = get_current_tenant()
-        tenant.impersonation = False
-        tenant.save()
+        settings = get_system_settings()
+        settings.impersonation = False
+        settings.save()
         self.client.force_login(self.user)
 
         response = self.client.post(

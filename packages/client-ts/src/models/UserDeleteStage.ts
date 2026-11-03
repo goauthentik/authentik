@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,56 +10,34 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
 
 /**
  * UserDeleteStage Serializer
+ *
  * @export
  * @interface UserDeleteStage
  */
 export interface UserDeleteStage {
-    /**
-     *
-     * @type {string}
-     * @memberof UserDeleteStage
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserDeleteStage
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof UserDeleteStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof UserDeleteStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof UserDeleteStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof UserDeleteStage
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {Array<FlowSet>}
-     * @memberof UserDeleteStage
-     */
     readonly flowSet: Array<FlowSet>;
 }
 

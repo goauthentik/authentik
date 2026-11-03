@@ -1,11 +1,9 @@
 /**
+ * @import {SidebarItemConfig} from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
  * @file Sidebar configuration for documentation entries.
- *
- * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
  */
 
 import "./ensure-reference-sidebar.mjs";
-
 // No file extensions for Docusaurus's automatic resolution.
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - Allows for project-wide type checking when partially building docs.

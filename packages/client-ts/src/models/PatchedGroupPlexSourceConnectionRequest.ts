@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Group Source Connection
+ *
  * @export
  * @interface PatchedGroupPlexSourceConnectionRequest
  */
 export interface PatchedGroupPlexSourceConnectionRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedGroupPlexSourceConnectionRequest
-     */
     source?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedGroupPlexSourceConnectionRequest
-     */
     identifier?: string;
 }
 

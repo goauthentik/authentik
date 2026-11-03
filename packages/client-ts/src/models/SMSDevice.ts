@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Serializer for sms authenticator devices
+ *
  * @export
  * @interface SMSDevice
  */
 export interface SMSDevice {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof SMSDevice
      */
     name: string;
-    /**
-     *
-     * @type {number}
-     * @memberof SMSDevice
-     */
     readonly pk: number;
-    /**
-     *
-     * @type {string}
-     * @memberof SMSDevice
-     */
     readonly phoneNumber: string;
-    /**
-     *
-     * @type {PartialUser}
-     * @memberof SMSDevice
-     */
     readonly user: PartialUser;
 }
 

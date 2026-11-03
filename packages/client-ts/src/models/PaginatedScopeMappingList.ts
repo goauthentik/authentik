@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { ScopeMapping } from "./ScopeMapping";
-import { ScopeMappingFromJSON, ScopeMappingToJSON } from "./ScopeMapping";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { ScopeMapping } from "./ScopeMapping.js";
+import { ScopeMappingFromJSON, ScopeMappingToJSON } from "./ScopeMapping.js";
 
 /**
- *
  * @export
  * @interface PaginatedScopeMappingList
  */
 export interface PaginatedScopeMappingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedScopeMappingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<ScopeMapping>}
-     * @memberof PaginatedScopeMappingList
-     */
     results: Array<ScopeMapping>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedScopeMappingList
-     */
     autocomplete: { [key: string]: any };
 }
 

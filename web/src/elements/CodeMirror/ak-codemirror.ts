@@ -100,12 +100,22 @@ export class CodeMirrorTextarea<
     #parsedValue?: string;
 
     #parse(editorState?: EditorState): string {
-        if (!editorState) {
+        if (editorState) {
+            return this.#parseSource(editorState.doc.toString());
+        }
+
+        // The editor module is imported lazily.
+        // A form submitted before that import resolves has no editor state to read.
+        // So we fall back to the pending value stored in `#parsedValue`.
+
+        if (typeof this.#parsedValue === "undefined") {
             return "";
         }
 
-        const innerValue = editorState.doc.toString();
+        return this.#parseSource(this.#parsedValue);
+    }
 
+    #parseSource(innerValue: string): string {
         if (this.raw) {
             return innerValue;
         }
@@ -114,6 +124,7 @@ export class CodeMirrorTextarea<
             return parseCodeMirrorSource(innerValue, this.mode);
         } catch (error: unknown) {
             const message = pluckErrorDetail(error);
+
             console.debug("codemirror/parse-error", message);
 
             return innerValue;
@@ -126,6 +137,7 @@ export class CodeMirrorTextarea<
 
     async #initialize(root: ShadowRoot | Document) {
         console.debug("ak-codemirror: initializing editor...");
+
         const { CodeMirrorEditor } = await import("#elements/CodeMirror/editor");
 
         this.#editor = new CodeMirrorEditor({
@@ -174,6 +186,7 @@ export class CodeMirrorTextarea<
 
         if (this.#editor) {
             console.debug("ak-codemirror: destroying editor");
+
             this.#editor.dispose();
         }
     }

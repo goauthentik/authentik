@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SMSDevice } from "./SMSDevice";
-import { SMSDeviceFromJSON, SMSDeviceToJSON } from "./SMSDevice";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { SMSDevice } from "./SMSDevice.js";
+import { SMSDeviceFromJSON, SMSDeviceToJSON } from "./SMSDevice.js";
 
 /**
- *
  * @export
  * @interface PaginatedSMSDeviceList
  */
 export interface PaginatedSMSDeviceList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedSMSDeviceList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<SMSDevice>}
-     * @memberof PaginatedSMSDeviceList
-     */
     results: Array<SMSDevice>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSMSDeviceList
-     */
     autocomplete: { [key: string]: any };
 }
 

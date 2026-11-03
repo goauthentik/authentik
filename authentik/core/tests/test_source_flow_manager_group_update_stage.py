@@ -7,13 +7,13 @@ from authentik.core.sources.flow_manager import PLAN_CONTEXT_SOURCE_GROUPS, Grou
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import GroupOAuthSourceConnection, OAuthSource
 
 
-class TestSourceFlowManager(FlowTestCase):
+class TestSourceFlowManager(APIFlowTestCase):
     """Test Source flow_manager group update stage"""
 
     def setUp(self) -> None:

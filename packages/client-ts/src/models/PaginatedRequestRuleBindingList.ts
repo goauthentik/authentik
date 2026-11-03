@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RequestRuleBinding } from "./RequestRuleBinding";
-import { RequestRuleBindingFromJSON, RequestRuleBindingToJSON } from "./RequestRuleBinding";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { RequestRuleBinding } from "./RequestRuleBinding.js";
+import { RequestRuleBindingFromJSON, RequestRuleBindingToJSON } from "./RequestRuleBinding.js";
 
 /**
- *
  * @export
  * @interface PaginatedRequestRuleBindingList
  */
 export interface PaginatedRequestRuleBindingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedRequestRuleBindingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<RequestRuleBinding>}
-     * @memberof PaginatedRequestRuleBindingList
-     */
     results: Array<RequestRuleBinding>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRequestRuleBindingList
-     */
     autocomplete: { [key: string]: any };
 }
 

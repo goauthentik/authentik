@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Response for native browser logout
+ *
  * @export
  * @interface NativeLogoutChallengeResponseRequest
  */
 export interface NativeLogoutChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof NativeLogoutChallengeResponseRequest
-     */
     component?: string;
 }
 

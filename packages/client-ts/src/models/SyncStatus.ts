@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,35 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum.js";
 import {
     TaskAggregatedStatusEnumFromJSON,
     TaskAggregatedStatusEnumToJSON,
-} from "./TaskAggregatedStatusEnum";
+} from "./TaskAggregatedStatusEnum.js";
 
 /**
  * Provider/source sync status
+ *
  * @export
  * @interface SyncStatus
  */
 export interface SyncStatus {
-    /**
-     *
-     * @type {boolean}
-     * @memberof SyncStatus
-     */
     isRunning: boolean;
-    /**
-     *
-     * @type {Date}
-     * @memberof SyncStatus
-     */
     lastSuccessfulSync?: Date;
-    /**
-     *
-     * @type {TaskAggregatedStatusEnum}
-     * @memberof SyncStatus
-     */
     lastSyncStatus?: TaskAggregatedStatusEnum;
 }
 
@@ -71,7 +56,7 @@ export function SyncStatusFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         lastSuccessfulSync:
             json["last_successful_sync"] == null
                 ? undefined
-                : new Date(json["last_successful_sync"]),
+                : parseDateTime(json["last_successful_sync"]),
         lastSyncStatus:
             json["last_sync_status"] == null
                 ? undefined
@@ -96,7 +81,7 @@ export function SyncStatusToJSONTyped(
         last_successful_sync:
             value["lastSuccessfulSync"] == null
                 ? value["lastSuccessfulSync"]
-                : value["lastSuccessfulSync"].toISOString(),
+                : serializeDateTime(value["lastSuccessfulSync"]),
         last_sync_status: TaskAggregatedStatusEnumToJSON(value["lastSyncStatus"]),
     };
 }

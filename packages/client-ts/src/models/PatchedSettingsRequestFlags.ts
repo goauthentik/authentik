@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,27 +11,20 @@
  */
 
 /**
- *
  * @export
  * @interface PatchedSettingsRequestFlags
  */
 export interface PatchedSettingsRequestFlags {
     /**
      * Applications with no policies bound can be accessed by any user.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequestFlags
      */
     coreDefaultAppAccess: boolean;
     /**
      * Include additional information in audit logs, may incur a performance penalty.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequestFlags
      */
     enterpriseAuditIncludeExpandedDiff: boolean;
     /**
      * Upon successful authentication, re-start authentication in other open tabs.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequestFlags
      */
     flowsContinuousLogin: boolean;
 }

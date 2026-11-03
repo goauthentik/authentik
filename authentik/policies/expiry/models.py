@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.stages.password.models import PasswordDevice
 
 LOGGER = get_logger()
 
@@ -40,8 +41,7 @@ class PasswordExpiryPolicy(Policy):
         ).days
         if actual_days >= self.days:
             if not self.deny_only:
-                request.user.set_unusable_password()
-                request.user.save()
+                PasswordDevice.set_unusable_password(request.user)
                 message = _(
                     "Password expired {days} days ago. Please update your password.".format(
                         days=days_since_expiry

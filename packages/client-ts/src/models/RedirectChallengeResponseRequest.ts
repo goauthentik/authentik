@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * Redirect challenge response
+ *
  * @export
  * @interface RedirectChallengeResponseRequest
  */
 export interface RedirectChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof RedirectChallengeResponseRequest
-     */
     component?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RedirectChallengeResponseRequest
-     */
     to: string;
 }
 

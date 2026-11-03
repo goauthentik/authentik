@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * User login challenge
+ *
  * @export
  * @interface UserLoginChallengeResponseRequest
  */
 export interface UserLoginChallengeResponseRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof UserLoginChallengeResponseRequest
-     */
     component?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof UserLoginChallengeResponseRequest
-     */
     rememberMe: boolean;
 }
 

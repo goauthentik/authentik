@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,22 +11,11 @@
  */
 
 /**
- *
  * @export
  * @interface AuthenticatorDuoStageDeviceImportResponse
  */
 export interface AuthenticatorDuoStageDeviceImportResponse {
-    /**
-     *
-     * @type {number}
-     * @memberof AuthenticatorDuoStageDeviceImportResponse
-     */
     readonly count: number;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageDeviceImportResponse
-     */
     readonly error: string;
 }
 

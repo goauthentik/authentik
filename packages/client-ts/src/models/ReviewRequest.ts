@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -15,21 +13,12 @@
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface ReviewRequest
  */
 export interface ReviewRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof ReviewRequest
-     */
     iteration: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ReviewRequest
-     */
     note?: string | null;
 }
 

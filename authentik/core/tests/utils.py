@@ -7,6 +7,7 @@ from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.http import HttpRequest
 from django.test import RequestFactory as BaseRequestFactory
+from django.urls import ResolverMatch
 from django.utils.text import slugify
 
 from authentik.brands.models import Brand
@@ -22,6 +23,7 @@ from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.generators import generate_id
+from authentik.stages.password.models import PasswordDevice
 
 
 def create_test_flow(
@@ -43,8 +45,7 @@ def create_test_user(name: str | None = None, **kwargs) -> User:
         name=uid,
         **kwargs,
     )
-    user.set_password(uid)
-    user.save()
+    PasswordDevice.set_password(user, uid)
     return user
 
 
@@ -135,5 +136,10 @@ class RequestFactory(BaseRequestFactory):
         middleware = MessageMiddleware(dummy_get_response)
         middleware.process_request(request)
         request.session.save()
+
+        # Not explicitly required for testing, however a `ResolverMatch` instance
+        # cannot be pickled, which has caused numerous issues in the past
+        # and as such we always inject this here.
+        request.resolver_match = ResolverMatch(dummy_get_response, (), {})
 
         return request

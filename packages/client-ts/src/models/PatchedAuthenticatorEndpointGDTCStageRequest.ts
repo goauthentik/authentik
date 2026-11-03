@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,33 +12,18 @@
 
 /**
  * AuthenticatorEndpointGDTCStage Serializer
+ *
  * @export
  * @interface PatchedAuthenticatorEndpointGDTCStageRequest
  */
 export interface PatchedAuthenticatorEndpointGDTCStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorEndpointGDTCStageRequest
-     */
     name?: string;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof PatchedAuthenticatorEndpointGDTCStageRequest
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedAuthenticatorEndpointGDTCStageRequest
-     */
     friendlyName?: string;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedAuthenticatorEndpointGDTCStageRequest
-     */
     credentials?: { [key: string]: any };
 }
 

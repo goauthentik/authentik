@@ -40,4 +40,30 @@ describe("Route", () => {
 
         expect(render).toHaveBeenCalledWith({ id: "42" });
     });
+
+    it("resolves a synchronous callback to a promise", async () => {
+        const route = new Route("/x", () => html`ok`);
+
+        await expect(route.resolve({})).resolves.toBeDefined();
+    });
+
+    it("resolves an asynchronous callback to its awaited value", async () => {
+        const route = new Route("/x", async () => html`async ok`);
+
+        await expect(route.resolve({})).resolves.toBeDefined();
+    });
+
+    it("propagates a rejection from an async callback", async () => {
+        const route = new Route("/x", () => Promise.reject(new Error("boom")));
+
+        await expect(route.resolve({})).rejects.toThrow("boom");
+    });
+
+    it("surfaces a synchronous throw as a rejection", async () => {
+        const route = new Route("/x", () => {
+            throw new Error("sync boom");
+        });
+
+        await expect(route.resolve({})).rejects.toThrow("sync boom");
+    });
 });

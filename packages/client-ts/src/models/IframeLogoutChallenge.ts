@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,41 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
-import type { LogoutURL } from "./LogoutURL";
-import { LogoutURLFromJSON, LogoutURLToJSON } from "./LogoutURL";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
+import type { LogoutURL } from "./LogoutURL.js";
+import { LogoutURLFromJSON, LogoutURLToJSON } from "./LogoutURL.js";
 
 /**
  * Challenge for iframe logout
+ *
  * @export
  * @interface IframeLogoutChallenge
  */
 export interface IframeLogoutChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof IframeLogoutChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof IframeLogoutChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof IframeLogoutChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {Array<LogoutURL>}
-     * @memberof IframeLogoutChallenge
-     */
     logoutUrls?: Array<LogoutURL>;
 }
 

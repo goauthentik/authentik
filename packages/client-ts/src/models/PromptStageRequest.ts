@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * PromptStage Serializer
+ *
  * @export
  * @interface PromptStageRequest
  */
 export interface PromptStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PromptStageRequest
-     */
     name: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PromptStageRequest
-     */
     fields: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PromptStageRequest
-     */
     validationPolicies?: Array<string>;
 }
 

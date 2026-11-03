@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -15,419 +13,434 @@
 import {
     type AccountLockdownStage,
     AccountLockdownStageFromJSON,
-} from "../models/AccountLockdownStage";
+} from "../models/AccountLockdownStage.js";
 import {
     type AccountLockdownStageRequest,
     AccountLockdownStageRequestToJSON,
-} from "../models/AccountLockdownStageRequest";
-import { type AuthenticatorAttachmentEnum } from "../models/AuthenticatorAttachmentEnum";
+} from "../models/AccountLockdownStageRequest.js";
+import { type AuthenticatorAttachmentEnum } from "../models/AuthenticatorAttachmentEnum.js";
 import {
     type AuthenticatorDuoStage,
     AuthenticatorDuoStageFromJSON,
-} from "../models/AuthenticatorDuoStage";
+} from "../models/AuthenticatorDuoStage.js";
 import {
     type AuthenticatorDuoStageDeviceImportResponse,
     AuthenticatorDuoStageDeviceImportResponseFromJSON,
-} from "../models/AuthenticatorDuoStageDeviceImportResponse";
+} from "../models/AuthenticatorDuoStageDeviceImportResponse.js";
 import {
     type AuthenticatorDuoStageManualDeviceImportRequest,
     AuthenticatorDuoStageManualDeviceImportRequestToJSON,
-} from "../models/AuthenticatorDuoStageManualDeviceImportRequest";
+} from "../models/AuthenticatorDuoStageManualDeviceImportRequest.js";
 import {
     type AuthenticatorDuoStageRequest,
     AuthenticatorDuoStageRequestToJSON,
-} from "../models/AuthenticatorDuoStageRequest";
+} from "../models/AuthenticatorDuoStageRequest.js";
 import {
     type AuthenticatorEmailStage,
     AuthenticatorEmailStageFromJSON,
-} from "../models/AuthenticatorEmailStage";
+} from "../models/AuthenticatorEmailStage.js";
 import {
     type AuthenticatorEmailStageRequest,
     AuthenticatorEmailStageRequestToJSON,
-} from "../models/AuthenticatorEmailStageRequest";
+} from "../models/AuthenticatorEmailStageRequest.js";
 import {
     type AuthenticatorEndpointGDTCStage,
     AuthenticatorEndpointGDTCStageFromJSON,
-} from "../models/AuthenticatorEndpointGDTCStage";
+} from "../models/AuthenticatorEndpointGDTCStage.js";
 import {
     type AuthenticatorEndpointGDTCStageRequest,
     AuthenticatorEndpointGDTCStageRequestToJSON,
-} from "../models/AuthenticatorEndpointGDTCStageRequest";
+} from "../models/AuthenticatorEndpointGDTCStageRequest.js";
 import {
     type AuthenticatorSMSStage,
     AuthenticatorSMSStageFromJSON,
-} from "../models/AuthenticatorSMSStage";
+} from "../models/AuthenticatorSMSStage.js";
 import {
     type AuthenticatorSMSStageRequest,
     AuthenticatorSMSStageRequestToJSON,
-} from "../models/AuthenticatorSMSStageRequest";
+} from "../models/AuthenticatorSMSStageRequest.js";
 import {
     type AuthenticatorStaticStage,
     AuthenticatorStaticStageFromJSON,
-} from "../models/AuthenticatorStaticStage";
+} from "../models/AuthenticatorStaticStage.js";
 import {
     type AuthenticatorStaticStageRequest,
     AuthenticatorStaticStageRequestToJSON,
-} from "../models/AuthenticatorStaticStageRequest";
+} from "../models/AuthenticatorStaticStageRequest.js";
 import {
     type AuthenticatorTOTPStage,
     AuthenticatorTOTPStageFromJSON,
-} from "../models/AuthenticatorTOTPStage";
+} from "../models/AuthenticatorTOTPStage.js";
 import {
     type AuthenticatorTOTPStageRequest,
     AuthenticatorTOTPStageRequestToJSON,
-} from "../models/AuthenticatorTOTPStageRequest";
+} from "../models/AuthenticatorTOTPStageRequest.js";
 import {
     type AuthenticatorValidateStage,
     AuthenticatorValidateStageFromJSON,
-} from "../models/AuthenticatorValidateStage";
+} from "../models/AuthenticatorValidateStage.js";
 import {
     type AuthenticatorValidateStageRequest,
     AuthenticatorValidateStageRequestToJSON,
-} from "../models/AuthenticatorValidateStageRequest";
+} from "../models/AuthenticatorValidateStageRequest.js";
 import {
     type AuthenticatorWebAuthnStage,
     AuthenticatorWebAuthnStageFromJSON,
-} from "../models/AuthenticatorWebAuthnStage";
+} from "../models/AuthenticatorWebAuthnStage.js";
 import {
     type AuthenticatorWebAuthnStageRequest,
     AuthenticatorWebAuthnStageRequestToJSON,
-} from "../models/AuthenticatorWebAuthnStageRequest";
-import { type AuthTypeEnum } from "../models/AuthTypeEnum";
-import { type CaptchaStage, CaptchaStageFromJSON } from "../models/CaptchaStage";
-import { type CaptchaStageRequest, CaptchaStageRequestToJSON } from "../models/CaptchaStageRequest";
-import { type CertAttributeEnum } from "../models/CertAttributeEnum";
-import { type ConsentModeEnum } from "../models/ConsentModeEnum";
-import { type ConsentStage, ConsentStageFromJSON } from "../models/ConsentStage";
-import { type ConsentStageRequest, ConsentStageRequestToJSON } from "../models/ConsentStageRequest";
-import { type DenyStage, DenyStageFromJSON } from "../models/DenyStage";
-import { type DenyStageRequest, DenyStageRequestToJSON } from "../models/DenyStageRequest";
-import { type DigitsEnum } from "../models/DigitsEnum";
-import { type DummyStage, DummyStageFromJSON } from "../models/DummyStage";
-import { type DummyStageRequest, DummyStageRequestToJSON } from "../models/DummyStageRequest";
+} from "../models/AuthenticatorWebAuthnStageRequest.js";
+import { type AuthTypeEnum } from "../models/AuthTypeEnum.js";
+import { type CaptchaStage, CaptchaStageFromJSON } from "../models/CaptchaStage.js";
+import {
+    type CaptchaStageRequest,
+    CaptchaStageRequestToJSON,
+} from "../models/CaptchaStageRequest.js";
+import { type CertAttributeEnum } from "../models/CertAttributeEnum.js";
+import { type ConsentModeEnum } from "../models/ConsentModeEnum.js";
+import { type ConsentStage, ConsentStageFromJSON } from "../models/ConsentStage.js";
+import {
+    type ConsentStageRequest,
+    ConsentStageRequestToJSON,
+} from "../models/ConsentStageRequest.js";
+import { type DenyStage, DenyStageFromJSON } from "../models/DenyStage.js";
+import { type DenyStageRequest, DenyStageRequestToJSON } from "../models/DenyStageRequest.js";
+import { type DigitsEnum } from "../models/DigitsEnum.js";
+import { type DummyStage, DummyStageFromJSON } from "../models/DummyStage.js";
+import { type DummyStageRequest, DummyStageRequestToJSON } from "../models/DummyStageRequest.js";
 import {
     type DuoDeviceEnrollmentStatus,
     DuoDeviceEnrollmentStatusFromJSON,
-} from "../models/DuoDeviceEnrollmentStatus";
-import { type EmailStage, EmailStageFromJSON } from "../models/EmailStage";
-import { type EmailStageRequest, EmailStageRequestToJSON } from "../models/EmailStageRequest";
-import { type EndpointStage, EndpointStageFromJSON } from "../models/EndpointStage";
+} from "../models/DuoDeviceEnrollmentStatus.js";
+import { type EmailStage, EmailStageFromJSON } from "../models/EmailStage.js";
+import { type EmailStageRequest, EmailStageRequestToJSON } from "../models/EmailStageRequest.js";
+import { type EndpointStage, EndpointStageFromJSON } from "../models/EndpointStage.js";
 import {
     type EndpointStageRequest,
     EndpointStageRequestToJSON,
-} from "../models/EndpointStageRequest";
-import { type GeoipBindingEnum } from "../models/GeoipBindingEnum";
+} from "../models/EndpointStageRequest.js";
+import { type GeoipBindingEnum } from "../models/GeoipBindingEnum.js";
 import {
     type IdentificationStage,
     IdentificationStageFromJSON,
-} from "../models/IdentificationStage";
+} from "../models/IdentificationStage.js";
 import {
     type IdentificationStageRequest,
     IdentificationStageRequestToJSON,
-} from "../models/IdentificationStageRequest";
-import { type Invitation, InvitationFromJSON } from "../models/Invitation";
-import { type InvitationRequest, InvitationRequestToJSON } from "../models/InvitationRequest";
+} from "../models/IdentificationStageRequest.js";
+import { type Invitation, InvitationFromJSON } from "../models/Invitation.js";
+import { type InvitationRequest, InvitationRequestToJSON } from "../models/InvitationRequest.js";
 import {
     type InvitationSendEmailRequest,
     InvitationSendEmailRequestToJSON,
-} from "../models/InvitationSendEmailRequest";
-import { type InvitationStage, InvitationStageFromJSON } from "../models/InvitationStage";
+} from "../models/InvitationSendEmailRequest.js";
+import { type InvitationStage, InvitationStageFromJSON } from "../models/InvitationStage.js";
 import {
     type InvitationStageRequest,
     InvitationStageRequestToJSON,
-} from "../models/InvitationStageRequest";
-import { type MutualTLSStage, MutualTLSStageFromJSON } from "../models/MutualTLSStage";
+} from "../models/InvitationStageRequest.js";
+import { type MutualTLSStage, MutualTLSStageFromJSON } from "../models/MutualTLSStage.js";
 import {
     type MutualTLSStageRequest,
     MutualTLSStageRequestToJSON,
-} from "../models/MutualTLSStageRequest";
-import { type NetworkBindingEnum } from "../models/NetworkBindingEnum";
-import { type NotConfiguredActionEnum } from "../models/NotConfiguredActionEnum";
+} from "../models/MutualTLSStageRequest.js";
+import { type NetworkBindingEnum } from "../models/NetworkBindingEnum.js";
+import { type NotConfiguredActionEnum } from "../models/NotConfiguredActionEnum.js";
 import {
     type PaginatedAccountLockdownStageList,
     PaginatedAccountLockdownStageListFromJSON,
-} from "../models/PaginatedAccountLockdownStageList";
+} from "../models/PaginatedAccountLockdownStageList.js";
 import {
     type PaginatedAuthenticatorDuoStageList,
     PaginatedAuthenticatorDuoStageListFromJSON,
-} from "../models/PaginatedAuthenticatorDuoStageList";
+} from "../models/PaginatedAuthenticatorDuoStageList.js";
 import {
     type PaginatedAuthenticatorEmailStageList,
     PaginatedAuthenticatorEmailStageListFromJSON,
-} from "../models/PaginatedAuthenticatorEmailStageList";
+} from "../models/PaginatedAuthenticatorEmailStageList.js";
 import {
     type PaginatedAuthenticatorEndpointGDTCStageList,
     PaginatedAuthenticatorEndpointGDTCStageListFromJSON,
-} from "../models/PaginatedAuthenticatorEndpointGDTCStageList";
+} from "../models/PaginatedAuthenticatorEndpointGDTCStageList.js";
 import {
     type PaginatedAuthenticatorSMSStageList,
     PaginatedAuthenticatorSMSStageListFromJSON,
-} from "../models/PaginatedAuthenticatorSMSStageList";
+} from "../models/PaginatedAuthenticatorSMSStageList.js";
 import {
     type PaginatedAuthenticatorStaticStageList,
     PaginatedAuthenticatorStaticStageListFromJSON,
-} from "../models/PaginatedAuthenticatorStaticStageList";
+} from "../models/PaginatedAuthenticatorStaticStageList.js";
 import {
     type PaginatedAuthenticatorTOTPStageList,
     PaginatedAuthenticatorTOTPStageListFromJSON,
-} from "../models/PaginatedAuthenticatorTOTPStageList";
+} from "../models/PaginatedAuthenticatorTOTPStageList.js";
 import {
     type PaginatedAuthenticatorValidateStageList,
     PaginatedAuthenticatorValidateStageListFromJSON,
-} from "../models/PaginatedAuthenticatorValidateStageList";
+} from "../models/PaginatedAuthenticatorValidateStageList.js";
 import {
     type PaginatedAuthenticatorWebAuthnStageList,
     PaginatedAuthenticatorWebAuthnStageListFromJSON,
-} from "../models/PaginatedAuthenticatorWebAuthnStageList";
+} from "../models/PaginatedAuthenticatorWebAuthnStageList.js";
 import {
     type PaginatedCaptchaStageList,
     PaginatedCaptchaStageListFromJSON,
-} from "../models/PaginatedCaptchaStageList";
+} from "../models/PaginatedCaptchaStageList.js";
 import {
     type PaginatedConsentStageList,
     PaginatedConsentStageListFromJSON,
-} from "../models/PaginatedConsentStageList";
+} from "../models/PaginatedConsentStageList.js";
 import {
     type PaginatedDenyStageList,
     PaginatedDenyStageListFromJSON,
-} from "../models/PaginatedDenyStageList";
+} from "../models/PaginatedDenyStageList.js";
 import {
     type PaginatedDummyStageList,
     PaginatedDummyStageListFromJSON,
-} from "../models/PaginatedDummyStageList";
+} from "../models/PaginatedDummyStageList.js";
 import {
     type PaginatedEmailStageList,
     PaginatedEmailStageListFromJSON,
-} from "../models/PaginatedEmailStageList";
+} from "../models/PaginatedEmailStageList.js";
 import {
     type PaginatedEndpointStageList,
     PaginatedEndpointStageListFromJSON,
-} from "../models/PaginatedEndpointStageList";
+} from "../models/PaginatedEndpointStageList.js";
 import {
     type PaginatedIdentificationStageList,
     PaginatedIdentificationStageListFromJSON,
-} from "../models/PaginatedIdentificationStageList";
+} from "../models/PaginatedIdentificationStageList.js";
 import {
     type PaginatedInvitationList,
     PaginatedInvitationListFromJSON,
-} from "../models/PaginatedInvitationList";
+} from "../models/PaginatedInvitationList.js";
 import {
     type PaginatedInvitationStageList,
     PaginatedInvitationStageListFromJSON,
-} from "../models/PaginatedInvitationStageList";
+} from "../models/PaginatedInvitationStageList.js";
 import {
     type PaginatedMutualTLSStageList,
     PaginatedMutualTLSStageListFromJSON,
-} from "../models/PaginatedMutualTLSStageList";
+} from "../models/PaginatedMutualTLSStageList.js";
 import {
     type PaginatedPasswordStageList,
     PaginatedPasswordStageListFromJSON,
-} from "../models/PaginatedPasswordStageList";
+} from "../models/PaginatedPasswordStageList.js";
 import {
     type PaginatedPromptList,
     PaginatedPromptListFromJSON,
-} from "../models/PaginatedPromptList";
+} from "../models/PaginatedPromptList.js";
 import {
     type PaginatedPromptStageList,
     PaginatedPromptStageListFromJSON,
-} from "../models/PaginatedPromptStageList";
+} from "../models/PaginatedPromptStageList.js";
 import {
     type PaginatedRedirectStageList,
     PaginatedRedirectStageListFromJSON,
-} from "../models/PaginatedRedirectStageList";
+} from "../models/PaginatedRedirectStageList.js";
 import {
     type PaginatedSourceStageList,
     PaginatedSourceStageListFromJSON,
-} from "../models/PaginatedSourceStageList";
-import { type PaginatedStageList, PaginatedStageListFromJSON } from "../models/PaginatedStageList";
+} from "../models/PaginatedSourceStageList.js";
+import {
+    type PaginatedStageList,
+    PaginatedStageListFromJSON,
+} from "../models/PaginatedStageList.js";
 import {
     type PaginatedUserDeleteStageList,
     PaginatedUserDeleteStageListFromJSON,
-} from "../models/PaginatedUserDeleteStageList";
+} from "../models/PaginatedUserDeleteStageList.js";
 import {
     type PaginatedUserLoginStageList,
     PaginatedUserLoginStageListFromJSON,
-} from "../models/PaginatedUserLoginStageList";
+} from "../models/PaginatedUserLoginStageList.js";
 import {
     type PaginatedUserLogoutStageList,
     PaginatedUserLogoutStageListFromJSON,
-} from "../models/PaginatedUserLogoutStageList";
+} from "../models/PaginatedUserLogoutStageList.js";
 import {
     type PaginatedUserWriteStageList,
     PaginatedUserWriteStageListFromJSON,
-} from "../models/PaginatedUserWriteStageList";
+} from "../models/PaginatedUserWriteStageList.js";
 import {
     type PaginatedWebAuthnDeviceTypeList,
     PaginatedWebAuthnDeviceTypeListFromJSON,
-} from "../models/PaginatedWebAuthnDeviceTypeList";
-import { type PasswordStage, PasswordStageFromJSON } from "../models/PasswordStage";
+} from "../models/PaginatedWebAuthnDeviceTypeList.js";
+import { type PasswordStage, PasswordStageFromJSON } from "../models/PasswordStage.js";
 import {
     type PasswordStageRequest,
     PasswordStageRequestToJSON,
-} from "../models/PasswordStageRequest";
+} from "../models/PasswordStageRequest.js";
 import {
     type PatchedAccountLockdownStageRequest,
     PatchedAccountLockdownStageRequestToJSON,
-} from "../models/PatchedAccountLockdownStageRequest";
+} from "../models/PatchedAccountLockdownStageRequest.js";
 import {
     type PatchedAuthenticatorDuoStageRequest,
     PatchedAuthenticatorDuoStageRequestToJSON,
-} from "../models/PatchedAuthenticatorDuoStageRequest";
+} from "../models/PatchedAuthenticatorDuoStageRequest.js";
 import {
     type PatchedAuthenticatorEmailStageRequest,
     PatchedAuthenticatorEmailStageRequestToJSON,
-} from "../models/PatchedAuthenticatorEmailStageRequest";
+} from "../models/PatchedAuthenticatorEmailStageRequest.js";
 import {
     type PatchedAuthenticatorEndpointGDTCStageRequest,
     PatchedAuthenticatorEndpointGDTCStageRequestToJSON,
-} from "../models/PatchedAuthenticatorEndpointGDTCStageRequest";
+} from "../models/PatchedAuthenticatorEndpointGDTCStageRequest.js";
 import {
     type PatchedAuthenticatorSMSStageRequest,
     PatchedAuthenticatorSMSStageRequestToJSON,
-} from "../models/PatchedAuthenticatorSMSStageRequest";
+} from "../models/PatchedAuthenticatorSMSStageRequest.js";
 import {
     type PatchedAuthenticatorStaticStageRequest,
     PatchedAuthenticatorStaticStageRequestToJSON,
-} from "../models/PatchedAuthenticatorStaticStageRequest";
+} from "../models/PatchedAuthenticatorStaticStageRequest.js";
 import {
     type PatchedAuthenticatorTOTPStageRequest,
     PatchedAuthenticatorTOTPStageRequestToJSON,
-} from "../models/PatchedAuthenticatorTOTPStageRequest";
+} from "../models/PatchedAuthenticatorTOTPStageRequest.js";
 import {
     type PatchedAuthenticatorValidateStageRequest,
     PatchedAuthenticatorValidateStageRequestToJSON,
-} from "../models/PatchedAuthenticatorValidateStageRequest";
+} from "../models/PatchedAuthenticatorValidateStageRequest.js";
 import {
     type PatchedAuthenticatorWebAuthnStageRequest,
     PatchedAuthenticatorWebAuthnStageRequestToJSON,
-} from "../models/PatchedAuthenticatorWebAuthnStageRequest";
+} from "../models/PatchedAuthenticatorWebAuthnStageRequest.js";
 import {
     type PatchedCaptchaStageRequest,
     PatchedCaptchaStageRequestToJSON,
-} from "../models/PatchedCaptchaStageRequest";
+} from "../models/PatchedCaptchaStageRequest.js";
 import {
     type PatchedConsentStageRequest,
     PatchedConsentStageRequestToJSON,
-} from "../models/PatchedConsentStageRequest";
+} from "../models/PatchedConsentStageRequest.js";
 import {
     type PatchedDenyStageRequest,
     PatchedDenyStageRequestToJSON,
-} from "../models/PatchedDenyStageRequest";
+} from "../models/PatchedDenyStageRequest.js";
 import {
     type PatchedDummyStageRequest,
     PatchedDummyStageRequestToJSON,
-} from "../models/PatchedDummyStageRequest";
+} from "../models/PatchedDummyStageRequest.js";
 import {
     type PatchedEmailStageRequest,
     PatchedEmailStageRequestToJSON,
-} from "../models/PatchedEmailStageRequest";
+} from "../models/PatchedEmailStageRequest.js";
 import {
     type PatchedEndpointStageRequest,
     PatchedEndpointStageRequestToJSON,
-} from "../models/PatchedEndpointStageRequest";
+} from "../models/PatchedEndpointStageRequest.js";
 import {
     type PatchedIdentificationStageRequest,
     PatchedIdentificationStageRequestToJSON,
-} from "../models/PatchedIdentificationStageRequest";
+} from "../models/PatchedIdentificationStageRequest.js";
 import {
     type PatchedInvitationRequest,
     PatchedInvitationRequestToJSON,
-} from "../models/PatchedInvitationRequest";
+} from "../models/PatchedInvitationRequest.js";
 import {
     type PatchedInvitationStageRequest,
     PatchedInvitationStageRequestToJSON,
-} from "../models/PatchedInvitationStageRequest";
+} from "../models/PatchedInvitationStageRequest.js";
 import {
     type PatchedMutualTLSStageRequest,
     PatchedMutualTLSStageRequestToJSON,
-} from "../models/PatchedMutualTLSStageRequest";
+} from "../models/PatchedMutualTLSStageRequest.js";
 import {
     type PatchedPasswordStageRequest,
     PatchedPasswordStageRequestToJSON,
-} from "../models/PatchedPasswordStageRequest";
+} from "../models/PatchedPasswordStageRequest.js";
 import {
     type PatchedPromptRequest,
     PatchedPromptRequestToJSON,
-} from "../models/PatchedPromptRequest";
+} from "../models/PatchedPromptRequest.js";
 import {
     type PatchedPromptStageRequest,
     PatchedPromptStageRequestToJSON,
-} from "../models/PatchedPromptStageRequest";
+} from "../models/PatchedPromptStageRequest.js";
 import {
     type PatchedRedirectStageRequest,
     PatchedRedirectStageRequestToJSON,
-} from "../models/PatchedRedirectStageRequest";
+} from "../models/PatchedRedirectStageRequest.js";
 import {
     type PatchedSourceStageRequest,
     PatchedSourceStageRequestToJSON,
-} from "../models/PatchedSourceStageRequest";
+} from "../models/PatchedSourceStageRequest.js";
 import {
     type PatchedUserDeleteStageRequest,
     PatchedUserDeleteStageRequestToJSON,
-} from "../models/PatchedUserDeleteStageRequest";
+} from "../models/PatchedUserDeleteStageRequest.js";
 import {
     type PatchedUserLoginStageRequest,
     PatchedUserLoginStageRequestToJSON,
-} from "../models/PatchedUserLoginStageRequest";
+} from "../models/PatchedUserLoginStageRequest.js";
 import {
     type PatchedUserLogoutStageRequest,
     PatchedUserLogoutStageRequestToJSON,
-} from "../models/PatchedUserLogoutStageRequest";
+} from "../models/PatchedUserLogoutStageRequest.js";
 import {
     type PatchedUserWriteStageRequest,
     PatchedUserWriteStageRequestToJSON,
-} from "../models/PatchedUserWriteStageRequest";
-import { type Prompt, PromptFromJSON } from "../models/Prompt";
-import { type PromptChallenge, PromptChallengeFromJSON } from "../models/PromptChallenge";
-import { type PromptRequest, PromptRequestToJSON } from "../models/PromptRequest";
-import { type PromptStage, PromptStageFromJSON } from "../models/PromptStage";
-import { type PromptStageRequest, PromptStageRequestToJSON } from "../models/PromptStageRequest";
-import { type PromptTypeEnum } from "../models/PromptTypeEnum";
-import { type ProviderEnum } from "../models/ProviderEnum";
-import { type RedirectStage, RedirectStageFromJSON } from "../models/RedirectStage";
+} from "../models/PatchedUserWriteStageRequest.js";
+import { type Prompt, PromptFromJSON } from "../models/Prompt.js";
+import { type PromptChallenge, PromptChallengeFromJSON } from "../models/PromptChallenge.js";
+import { type PromptRequest, PromptRequestToJSON } from "../models/PromptRequest.js";
+import { type PromptStage, PromptStageFromJSON } from "../models/PromptStage.js";
+import { type PromptStageRequest, PromptStageRequestToJSON } from "../models/PromptStageRequest.js";
+import { type PromptTypeEnum } from "../models/PromptTypeEnum.js";
+import { type ProviderEnum } from "../models/ProviderEnum.js";
+import { type RedirectStage, RedirectStageFromJSON } from "../models/RedirectStage.js";
 import {
     type RedirectStageRequest,
     RedirectStageRequestToJSON,
-} from "../models/RedirectStageRequest";
-import { type SourceStage, SourceStageFromJSON } from "../models/SourceStage";
-import { type SourceStageRequest, SourceStageRequestToJSON } from "../models/SourceStageRequest";
-import { type Stage, StageFromJSON } from "../models/Stage";
-import { type StageModeEnum } from "../models/StageModeEnum";
-import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import { type UserAttributeEnum } from "../models/UserAttributeEnum";
-import { type UserCreationModeEnum } from "../models/UserCreationModeEnum";
-import { type UserDeleteStage, UserDeleteStageFromJSON } from "../models/UserDeleteStage";
+} from "../models/RedirectStageRequest.js";
+import { type SourceStage, SourceStageFromJSON } from "../models/SourceStage.js";
+import { type SourceStageRequest, SourceStageRequestToJSON } from "../models/SourceStageRequest.js";
+import { type Stage, StageFromJSON } from "../models/Stage.js";
+import { type StageModeEnum } from "../models/StageModeEnum.js";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import { type UserAttributeEnum } from "../models/UserAttributeEnum.js";
+import { type UserCreationModeEnum } from "../models/UserCreationModeEnum.js";
+import { type UserDeleteStage, UserDeleteStageFromJSON } from "../models/UserDeleteStage.js";
 import {
     type UserDeleteStageRequest,
     UserDeleteStageRequestToJSON,
-} from "../models/UserDeleteStageRequest";
-import { type UserLoginStage, UserLoginStageFromJSON } from "../models/UserLoginStage";
+} from "../models/UserDeleteStageRequest.js";
+import { type UserLoginStage, UserLoginStageFromJSON } from "../models/UserLoginStage.js";
 import {
     type UserLoginStageRequest,
     UserLoginStageRequestToJSON,
-} from "../models/UserLoginStageRequest";
-import { type UserLogoutStage, UserLogoutStageFromJSON } from "../models/UserLogoutStage";
+} from "../models/UserLoginStageRequest.js";
+import { type UserLogoutStage, UserLogoutStageFromJSON } from "../models/UserLogoutStage.js";
 import {
     type UserLogoutStageRequest,
     UserLogoutStageRequestToJSON,
-} from "../models/UserLogoutStageRequest";
-import { type UserSetting, UserSettingFromJSON } from "../models/UserSetting";
-import { type UserTypeEnum } from "../models/UserTypeEnum";
-import { type UserVerificationEnum } from "../models/UserVerificationEnum";
-import { type UserWriteStage, UserWriteStageFromJSON } from "../models/UserWriteStage";
+} from "../models/UserLogoutStageRequest.js";
+import { type UserSetting, UserSettingFromJSON } from "../models/UserSetting.js";
+import { type UserTypeEnum } from "../models/UserTypeEnum.js";
+import { type UserVerificationEnum } from "../models/UserVerificationEnum.js";
+import { type UserWriteStage, UserWriteStageFromJSON } from "../models/UserWriteStage.js";
 import {
     type UserWriteStageRequest,
     UserWriteStageRequestToJSON,
-} from "../models/UserWriteStageRequest";
-import { type WebAuthnDeviceType, WebAuthnDeviceTypeFromJSON } from "../models/WebAuthnDeviceType";
-import * as runtime from "../runtime";
+} from "../models/UserWriteStageRequest.js";
+import {
+    type WebAuthnDeviceType,
+    WebAuthnDeviceTypeFromJSON,
+} from "../models/WebAuthnDeviceType.js";
+import * as runtime from "../runtime.js";
 
 export interface StagesAccountLockdownCreateRequest {
     accountLockdownStageRequest: AccountLockdownStageRequest;
 }
 
 export interface StagesAccountLockdownDestroyRequest {
+    /**
+     * A UUID string identifying this Account Lockdown Stage.
+     */
     stageUuid: string;
 }
 
@@ -435,10 +448,22 @@ export interface StagesAccountLockdownListRequest {
     deactivateUser?: boolean;
     deleteSessions?: boolean;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     revokeTokens?: boolean;
+    /**
+     * A search term.
+     */
     search?: string;
     selfServiceCompletionFlow?: string;
     setUnusablePassword?: boolean;
@@ -446,40 +471,73 @@ export interface StagesAccountLockdownListRequest {
 }
 
 export interface StagesAccountLockdownPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Account Lockdown Stage.
+     */
     stageUuid: string;
     patchedAccountLockdownStageRequest?: PatchedAccountLockdownStageRequest;
 }
 
 export interface StagesAccountLockdownRetrieveRequest {
+    /**
+     * A UUID string identifying this Account Lockdown Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAccountLockdownUpdateRequest {
+    /**
+     * A UUID string identifying this Account Lockdown Stage.
+     */
     stageUuid: string;
     accountLockdownStageRequest: AccountLockdownStageRequest;
 }
 
 export interface StagesAccountLockdownUsedByListRequest {
+    /**
+     * A UUID string identifying this Account Lockdown Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAllDestroyRequest {
+    /**
+     * A UUID string identifying this stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAllListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesAllRetrieveRequest {
+    /**
+     * A UUID string identifying this stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAllUsedByListRequest {
+    /**
+     * A UUID string identifying this stage.
+     */
     stageUuid: string;
 }
 
@@ -488,19 +546,31 @@ export interface StagesAuthenticatorDuoCreateRequest {
 }
 
 export interface StagesAuthenticatorDuoDestroyRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorDuoEnrollmentStatusCreateRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorDuoImportDeviceManualCreateRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
     authenticatorDuoStageManualDeviceImportRequest: AuthenticatorDuoStageManualDeviceImportRequest;
 }
 
 export interface StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -509,27 +579,51 @@ export interface StagesAuthenticatorDuoListRequest {
     clientId?: string;
     configureFlow?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesAuthenticatorDuoPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
     patchedAuthenticatorDuoStageRequest?: PatchedAuthenticatorDuoStageRequest;
 }
 
 export interface StagesAuthenticatorDuoRetrieveRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorDuoUpdateRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
     authenticatorDuoStageRequest: AuthenticatorDuoStageRequest;
 }
 
 export interface StagesAuthenticatorDuoUsedByListRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -538,6 +632,9 @@ export interface StagesAuthenticatorEmailCreateRequest {
 }
 
 export interface StagesAuthenticatorEmailDestroyRequest {
+    /**
+     * A UUID string identifying this Email Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -547,11 +644,23 @@ export interface StagesAuthenticatorEmailListRequest {
     fromAddress?: string;
     host?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     password?: string;
     port?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
     subject?: string;
@@ -565,20 +674,32 @@ export interface StagesAuthenticatorEmailListRequest {
 }
 
 export interface StagesAuthenticatorEmailPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Email Authenticator Setup Stage.
+     */
     stageUuid: string;
     patchedAuthenticatorEmailStageRequest?: PatchedAuthenticatorEmailStageRequest;
 }
 
 export interface StagesAuthenticatorEmailRetrieveRequest {
+    /**
+     * A UUID string identifying this Email Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorEmailUpdateRequest {
+    /**
+     * A UUID string identifying this Email Authenticator Setup Stage.
+     */
     stageUuid: string;
     authenticatorEmailStageRequest: AuthenticatorEmailStageRequest;
 }
 
 export interface StagesAuthenticatorEmailUsedByListRequest {
+    /**
+     * A UUID string identifying this Email Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -587,33 +708,60 @@ export interface StagesAuthenticatorEndpointGdtcCreateRequest {
 }
 
 export interface StagesAuthenticatorEndpointGdtcDestroyRequest {
+    /**
+     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorEndpointGdtcListRequest {
     configureFlow?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesAuthenticatorEndpointGdtcPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
+     */
     stageUuid: string;
     patchedAuthenticatorEndpointGDTCStageRequest?: PatchedAuthenticatorEndpointGDTCStageRequest;
 }
 
 export interface StagesAuthenticatorEndpointGdtcRetrieveRequest {
+    /**
+     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorEndpointGdtcUpdateRequest {
+    /**
+     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
+     */
     stageUuid: string;
     authenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStageRequest;
 }
 
 export interface StagesAuthenticatorEndpointGdtcUsedByListRequest {
+    /**
+     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
+     */
     stageUuid: string;
 }
 
@@ -622,6 +770,9 @@ export interface StagesAuthenticatorSmsCreateRequest {
 }
 
 export interface StagesAuthenticatorSmsDestroyRequest {
+    /**
+     * A UUID string identifying this SMS Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -635,30 +786,54 @@ export interface StagesAuthenticatorSmsListRequest {
     fromNumber?: string;
     mapping?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     provider?: ProviderEnum;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
     verifyOnly?: boolean;
 }
 
 export interface StagesAuthenticatorSmsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this SMS Authenticator Setup Stage.
+     */
     stageUuid: string;
     patchedAuthenticatorSMSStageRequest?: PatchedAuthenticatorSMSStageRequest;
 }
 
 export interface StagesAuthenticatorSmsRetrieveRequest {
+    /**
+     * A UUID string identifying this SMS Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorSmsUpdateRequest {
+    /**
+     * A UUID string identifying this SMS Authenticator Setup Stage.
+     */
     stageUuid: string;
     authenticatorSMSStageRequest: AuthenticatorSMSStageRequest;
 }
 
 export interface StagesAuthenticatorSmsUsedByListRequest {
+    /**
+     * A UUID string identifying this SMS Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -667,6 +842,9 @@ export interface StagesAuthenticatorStaticCreateRequest {
 }
 
 export interface StagesAuthenticatorStaticDestroyRequest {
+    /**
+     * A UUID string identifying this Static Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -674,9 +852,21 @@ export interface StagesAuthenticatorStaticListRequest {
     configureFlow?: string;
     friendlyName?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
     tokenCount?: number;
@@ -684,20 +874,32 @@ export interface StagesAuthenticatorStaticListRequest {
 }
 
 export interface StagesAuthenticatorStaticPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Static Authenticator Setup Stage.
+     */
     stageUuid: string;
     patchedAuthenticatorStaticStageRequest?: PatchedAuthenticatorStaticStageRequest;
 }
 
 export interface StagesAuthenticatorStaticRetrieveRequest {
+    /**
+     * A UUID string identifying this Static Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorStaticUpdateRequest {
+    /**
+     * A UUID string identifying this Static Authenticator Setup Stage.
+     */
     stageUuid: string;
     authenticatorStaticStageRequest: AuthenticatorStaticStageRequest;
 }
 
 export interface StagesAuthenticatorStaticUsedByListRequest {
+    /**
+     * A UUID string identifying this Static Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -706,6 +908,9 @@ export interface StagesAuthenticatorTotpCreateRequest {
 }
 
 export interface StagesAuthenticatorTotpDestroyRequest {
+    /**
+     * A UUID string identifying this TOTP Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -714,28 +919,52 @@ export interface StagesAuthenticatorTotpListRequest {
     digits?: DigitsEnum;
     friendlyName?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
 }
 
 export interface StagesAuthenticatorTotpPartialUpdateRequest {
+    /**
+     * A UUID string identifying this TOTP Authenticator Setup Stage.
+     */
     stageUuid: string;
     patchedAuthenticatorTOTPStageRequest?: PatchedAuthenticatorTOTPStageRequest;
 }
 
 export interface StagesAuthenticatorTotpRetrieveRequest {
+    /**
+     * A UUID string identifying this TOTP Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorTotpUpdateRequest {
+    /**
+     * A UUID string identifying this TOTP Authenticator Setup Stage.
+     */
     stageUuid: string;
     authenticatorTOTPStageRequest: AuthenticatorTOTPStageRequest;
 }
 
 export interface StagesAuthenticatorTotpUsedByListRequest {
+    /**
+     * A UUID string identifying this TOTP Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -744,6 +973,9 @@ export interface StagesAuthenticatorValidateCreateRequest {
 }
 
 export interface StagesAuthenticatorValidateDestroyRequest {
+    /**
+     * A UUID string identifying this Authenticator Validation Stage.
+     */
     stageUuid: string;
 }
 
@@ -751,27 +983,51 @@ export interface StagesAuthenticatorValidateListRequest {
     configurationStages?: Array<string>;
     name?: string;
     notConfiguredAction?: NotConfiguredActionEnum;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesAuthenticatorValidatePartialUpdateRequest {
+    /**
+     * A UUID string identifying this Authenticator Validation Stage.
+     */
     stageUuid: string;
     patchedAuthenticatorValidateStageRequest?: PatchedAuthenticatorValidateStageRequest;
 }
 
 export interface StagesAuthenticatorValidateRetrieveRequest {
+    /**
+     * A UUID string identifying this Authenticator Validation Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorValidateUpdateRequest {
+    /**
+     * A UUID string identifying this Authenticator Validation Stage.
+     */
     stageUuid: string;
     authenticatorValidateStageRequest: AuthenticatorValidateStageRequest;
 }
 
 export interface StagesAuthenticatorValidateUsedByListRequest {
+    /**
+     * A UUID string identifying this Authenticator Validation Stage.
+     */
     stageUuid: string;
 }
 
@@ -780,6 +1036,9 @@ export interface StagesAuthenticatorWebauthnCreateRequest {
 }
 
 export interface StagesAuthenticatorWebauthnDestroyRequest {
+    /**
+     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -787,13 +1046,28 @@ export interface StagesAuthenticatorWebauthnDeviceTypesListRequest {
     aaguid?: string;
     description?: string;
     icon?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest {
+    /**
+     * A UUID string identifying this WebAuthn Device type.
+     */
     aaguid: string;
 }
 
@@ -803,29 +1077,53 @@ export interface StagesAuthenticatorWebauthnListRequest {
     deviceTypeRestrictions?: Array<string>;
     maxAttempts?: number;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     residentKeyRequirement?: UserVerificationEnum;
+    /**
+     * A search term.
+     */
     search?: string;
     userVerification?: UserVerificationEnum;
 }
 
 export interface StagesAuthenticatorWebauthnPartialUpdateRequest {
+    /**
+     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
+     */
     stageUuid: string;
     patchedAuthenticatorWebAuthnStageRequest?: PatchedAuthenticatorWebAuthnStageRequest;
 }
 
 export interface StagesAuthenticatorWebauthnRetrieveRequest {
+    /**
+     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorWebauthnUpdateRequest {
+    /**
+     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
+     */
     stageUuid: string;
     authenticatorWebAuthnStageRequest: AuthenticatorWebAuthnStageRequest;
 }
 
 export interface StagesAuthenticatorWebauthnUsedByListRequest {
+    /**
+     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
@@ -834,33 +1132,60 @@ export interface StagesCaptchaCreateRequest {
 }
 
 export interface StagesCaptchaDestroyRequest {
+    /**
+     * A UUID string identifying this Captcha Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesCaptchaListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     publicKey?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesCaptchaPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Captcha Stage.
+     */
     stageUuid: string;
     patchedCaptchaStageRequest?: PatchedCaptchaStageRequest;
 }
 
 export interface StagesCaptchaRetrieveRequest {
+    /**
+     * A UUID string identifying this Captcha Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesCaptchaUpdateRequest {
+    /**
+     * A UUID string identifying this Captcha Stage.
+     */
     stageUuid: string;
     captchaStageRequest: CaptchaStageRequest;
 }
 
 export interface StagesCaptchaUsedByListRequest {
+    /**
+     * A UUID string identifying this Captcha Stage.
+     */
     stageUuid: string;
 }
 
@@ -869,6 +1194,9 @@ export interface StagesConsentCreateRequest {
 }
 
 export interface StagesConsentDestroyRequest {
+    /**
+     * A UUID string identifying this Consent Stage.
+     */
     stageUuid: string;
 }
 
@@ -876,28 +1204,52 @@ export interface StagesConsentListRequest {
     consentExpireIn?: string;
     mode?: ConsentModeEnum;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
 }
 
 export interface StagesConsentPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Consent Stage.
+     */
     stageUuid: string;
     patchedConsentStageRequest?: PatchedConsentStageRequest;
 }
 
 export interface StagesConsentRetrieveRequest {
+    /**
+     * A UUID string identifying this Consent Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesConsentUpdateRequest {
+    /**
+     * A UUID string identifying this Consent Stage.
+     */
     stageUuid: string;
     consentStageRequest: ConsentStageRequest;
 }
 
 export interface StagesConsentUsedByListRequest {
+    /**
+     * A UUID string identifying this Consent Stage.
+     */
     stageUuid: string;
 }
 
@@ -906,34 +1258,61 @@ export interface StagesDenyCreateRequest {
 }
 
 export interface StagesDenyDestroyRequest {
+    /**
+     * A UUID string identifying this Deny Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesDenyListRequest {
     denyMessage?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
 }
 
 export interface StagesDenyPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Deny Stage.
+     */
     stageUuid: string;
     patchedDenyStageRequest?: PatchedDenyStageRequest;
 }
 
 export interface StagesDenyRetrieveRequest {
+    /**
+     * A UUID string identifying this Deny Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesDenyUpdateRequest {
+    /**
+     * A UUID string identifying this Deny Stage.
+     */
     stageUuid: string;
     denyStageRequest: DenyStageRequest;
 }
 
 export interface StagesDenyUsedByListRequest {
+    /**
+     * A UUID string identifying this Deny Stage.
+     */
     stageUuid: string;
 }
 
@@ -942,34 +1321,61 @@ export interface StagesDummyCreateRequest {
 }
 
 export interface StagesDummyDestroyRequest {
+    /**
+     * A UUID string identifying this Dummy Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesDummyListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
     throwError?: boolean;
 }
 
 export interface StagesDummyPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Dummy Stage.
+     */
     stageUuid: string;
     patchedDummyStageRequest?: PatchedDummyStageRequest;
 }
 
 export interface StagesDummyRetrieveRequest {
+    /**
+     * A UUID string identifying this Dummy Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesDummyUpdateRequest {
+    /**
+     * A UUID string identifying this Dummy Stage.
+     */
     stageUuid: string;
     dummyStageRequest: DummyStageRequest;
 }
 
 export interface StagesDummyUsedByListRequest {
+    /**
+     * A UUID string identifying this Dummy Stage.
+     */
     stageUuid: string;
 }
 
@@ -978,6 +1384,9 @@ export interface StagesEmailCreateRequest {
 }
 
 export interface StagesEmailDestroyRequest {
+    /**
+     * A UUID string identifying this Email Stage.
+     */
     stageUuid: string;
 }
 
@@ -986,10 +1395,22 @@ export interface StagesEmailListRequest {
     fromAddress?: string;
     host?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     port?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     subject?: string;
     template?: string;
@@ -1002,20 +1423,32 @@ export interface StagesEmailListRequest {
 }
 
 export interface StagesEmailPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Email Stage.
+     */
     stageUuid: string;
     patchedEmailStageRequest?: PatchedEmailStageRequest;
 }
 
 export interface StagesEmailRetrieveRequest {
+    /**
+     * A UUID string identifying this Email Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesEmailUpdateRequest {
+    /**
+     * A UUID string identifying this Email Stage.
+     */
     stageUuid: string;
     emailStageRequest: EmailStageRequest;
 }
 
 export interface StagesEmailUsedByListRequest {
+    /**
+     * A UUID string identifying this Email Stage.
+     */
     stageUuid: string;
 }
 
@@ -1024,32 +1457,59 @@ export interface StagesEndpointsCreateRequest {
 }
 
 export interface StagesEndpointsDestroyRequest {
+    /**
+     * A UUID string identifying this Endpoint Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesEndpointsListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesEndpointsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Endpoint Stage.
+     */
     stageUuid: string;
     patchedEndpointStageRequest?: PatchedEndpointStageRequest;
 }
 
 export interface StagesEndpointsRetrieveRequest {
+    /**
+     * A UUID string identifying this Endpoint Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesEndpointsUpdateRequest {
+    /**
+     * A UUID string identifying this Endpoint Stage.
+     */
     stageUuid: string;
     endpointStageRequest: EndpointStageRequest;
 }
 
 export interface StagesEndpointsUsedByListRequest {
+    /**
+     * A UUID string identifying this Endpoint Stage.
+     */
     stageUuid: string;
 }
 
@@ -1058,6 +1518,9 @@ export interface StagesIdentificationCreateRequest {
 }
 
 export interface StagesIdentificationDestroyRequest {
+    /**
+     * A UUID string identifying this Identification Stage.
+     */
     stageUuid: string;
 }
 
@@ -1066,12 +1529,24 @@ export interface StagesIdentificationListRequest {
     caseInsensitiveMatching?: boolean;
     enrollmentFlow?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     passwordStage?: string;
     passwordlessFlow?: string;
     recoveryFlow?: string;
+    /**
+     * A search term.
+     */
     search?: string;
     showMatchedUser?: boolean;
     showSourceLabels?: boolean;
@@ -1079,20 +1554,32 @@ export interface StagesIdentificationListRequest {
 }
 
 export interface StagesIdentificationPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Identification Stage.
+     */
     stageUuid: string;
     patchedIdentificationStageRequest?: PatchedIdentificationStageRequest;
 }
 
 export interface StagesIdentificationRetrieveRequest {
+    /**
+     * A UUID string identifying this Identification Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesIdentificationUpdateRequest {
+    /**
+     * A UUID string identifying this Identification Stage.
+     */
     stageUuid: string;
     identificationStageRequest: IdentificationStageRequest;
 }
 
 export interface StagesIdentificationUsedByListRequest {
+    /**
+     * A UUID string identifying this Identification Stage.
+     */
     stageUuid: string;
 }
 
@@ -1101,6 +1588,9 @@ export interface StagesInvitationInvitationsCreateRequest {
 }
 
 export interface StagesInvitationInvitationsDestroyRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
 }
 
@@ -1109,32 +1599,59 @@ export interface StagesInvitationInvitationsListRequest {
     expires?: Date;
     flowSlug?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesInvitationInvitationsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
     patchedInvitationRequest?: PatchedInvitationRequest;
 }
 
 export interface StagesInvitationInvitationsRetrieveRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
 }
 
 export interface StagesInvitationInvitationsSendEmailCreateRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
     invitationSendEmailRequest: InvitationSendEmailRequest;
 }
 
 export interface StagesInvitationInvitationsUpdateRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
     invitationRequest: InvitationRequest;
 }
 
 export interface StagesInvitationInvitationsUsedByListRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
 }
 
@@ -1143,6 +1660,9 @@ export interface StagesInvitationStagesCreateRequest {
 }
 
 export interface StagesInvitationStagesDestroyRequest {
+    /**
+     * A UUID string identifying this Invitation Stage.
+     */
     stageUuid: string;
 }
 
@@ -1150,28 +1670,52 @@ export interface StagesInvitationStagesListRequest {
     continueFlowWithoutInvitation?: boolean;
     name?: string;
     noFlows?: boolean;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
 }
 
 export interface StagesInvitationStagesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Invitation Stage.
+     */
     stageUuid: string;
     patchedInvitationStageRequest?: PatchedInvitationStageRequest;
 }
 
 export interface StagesInvitationStagesRetrieveRequest {
+    /**
+     * A UUID string identifying this Invitation Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesInvitationStagesUpdateRequest {
+    /**
+     * A UUID string identifying this Invitation Stage.
+     */
     stageUuid: string;
     invitationStageRequest: InvitationStageRequest;
 }
 
 export interface StagesInvitationStagesUsedByListRequest {
+    /**
+     * A UUID string identifying this Invitation Stage.
+     */
     stageUuid: string;
 }
 
@@ -1180,6 +1724,9 @@ export interface StagesMtlsCreateRequest {
 }
 
 export interface StagesMtlsDestroyRequest {
+    /**
+     * A UUID string identifying this Mutual TLS Stage.
+     */
     stageUuid: string;
 }
 
@@ -1188,29 +1735,53 @@ export interface StagesMtlsListRequest {
     certificateAuthorities?: Array<string>;
     mode?: StageModeEnum;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
     userAttribute?: UserAttributeEnum;
 }
 
 export interface StagesMtlsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Mutual TLS Stage.
+     */
     stageUuid: string;
     patchedMutualTLSStageRequest?: PatchedMutualTLSStageRequest;
 }
 
 export interface StagesMtlsRetrieveRequest {
+    /**
+     * A UUID string identifying this Mutual TLS Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesMtlsUpdateRequest {
+    /**
+     * A UUID string identifying this Mutual TLS Stage.
+     */
     stageUuid: string;
     mutualTLSStageRequest: MutualTLSStageRequest;
 }
 
 export interface StagesMtlsUsedByListRequest {
+    /**
+     * A UUID string identifying this Mutual TLS Stage.
+     */
     stageUuid: string;
 }
 
@@ -1219,6 +1790,9 @@ export interface StagesPasswordCreateRequest {
 }
 
 export interface StagesPasswordDestroyRequest {
+    /**
+     * A UUID string identifying this Password Stage.
+     */
     stageUuid: string;
 }
 
@@ -1226,28 +1800,53 @@ export interface StagesPasswordListRequest {
     allowShowPassword?: boolean;
     configureFlow?: string;
     failedAttemptsBeforeCancel?: number;
+    failedAttemptsBeforeLockout?: number;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesPasswordPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Password Stage.
+     */
     stageUuid: string;
     patchedPasswordStageRequest?: PatchedPasswordStageRequest;
 }
 
 export interface StagesPasswordRetrieveRequest {
+    /**
+     * A UUID string identifying this Password Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesPasswordUpdateRequest {
+    /**
+     * A UUID string identifying this Password Stage.
+     */
     stageUuid: string;
     passwordStageRequest: PasswordStageRequest;
 }
 
 export interface StagesPasswordUsedByListRequest {
+    /**
+     * A UUID string identifying this Password Stage.
+     */
     stageUuid: string;
 }
 
@@ -1256,6 +1855,9 @@ export interface StagesPromptPromptsCreateRequest {
 }
 
 export interface StagesPromptPromptsDestroyRequest {
+    /**
+     * A UUID string identifying this Prompt.
+     */
     promptUuid: string;
 }
 
@@ -1263,15 +1865,30 @@ export interface StagesPromptPromptsListRequest {
     fieldKey?: string;
     label?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     placeholder?: string;
+    /**
+     * A search term.
+     */
     search?: string;
     type?: PromptTypeEnum;
 }
 
 export interface StagesPromptPromptsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Prompt.
+     */
     promptUuid: string;
     patchedPromptRequest?: PatchedPromptRequest;
 }
@@ -1281,15 +1898,24 @@ export interface StagesPromptPromptsPreviewCreateRequest {
 }
 
 export interface StagesPromptPromptsRetrieveRequest {
+    /**
+     * A UUID string identifying this Prompt.
+     */
     promptUuid: string;
 }
 
 export interface StagesPromptPromptsUpdateRequest {
+    /**
+     * A UUID string identifying this Prompt.
+     */
     promptUuid: string;
     promptRequest: PromptRequest;
 }
 
 export interface StagesPromptPromptsUsedByListRequest {
+    /**
+     * A UUID string identifying this Prompt.
+     */
     promptUuid: string;
 }
 
@@ -1298,35 +1924,62 @@ export interface StagesPromptStagesCreateRequest {
 }
 
 export interface StagesPromptStagesDestroyRequest {
+    /**
+     * A UUID string identifying this Prompt Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesPromptStagesListRequest {
     fields?: Array<string>;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
     validationPolicies?: Array<string>;
 }
 
 export interface StagesPromptStagesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Prompt Stage.
+     */
     stageUuid: string;
     patchedPromptStageRequest?: PatchedPromptStageRequest;
 }
 
 export interface StagesPromptStagesRetrieveRequest {
+    /**
+     * A UUID string identifying this Prompt Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesPromptStagesUpdateRequest {
+    /**
+     * A UUID string identifying this Prompt Stage.
+     */
     stageUuid: string;
     promptStageRequest: PromptStageRequest;
 }
 
 export interface StagesPromptStagesUsedByListRequest {
+    /**
+     * A UUID string identifying this Prompt Stage.
+     */
     stageUuid: string;
 }
 
@@ -1335,32 +1988,59 @@ export interface StagesRedirectCreateRequest {
 }
 
 export interface StagesRedirectDestroyRequest {
+    /**
+     * A UUID string identifying this Redirect Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesRedirectListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesRedirectPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Redirect Stage.
+     */
     stageUuid: string;
     patchedRedirectStageRequest?: PatchedRedirectStageRequest;
 }
 
 export interface StagesRedirectRetrieveRequest {
+    /**
+     * A UUID string identifying this Redirect Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesRedirectUpdateRequest {
+    /**
+     * A UUID string identifying this Redirect Stage.
+     */
     stageUuid: string;
     redirectStageRequest: RedirectStageRequest;
 }
 
 export interface StagesRedirectUsedByListRequest {
+    /**
+     * A UUID string identifying this Redirect Stage.
+     */
     stageUuid: string;
 }
 
@@ -1369,35 +2049,62 @@ export interface StagesSourceCreateRequest {
 }
 
 export interface StagesSourceDestroyRequest {
+    /**
+     * A UUID string identifying this Source Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesSourceListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     resumeTimeout?: string;
+    /**
+     * A search term.
+     */
     search?: string;
     source?: string;
     stageUuid?: string;
 }
 
 export interface StagesSourcePartialUpdateRequest {
+    /**
+     * A UUID string identifying this Source Stage.
+     */
     stageUuid: string;
     patchedSourceStageRequest?: PatchedSourceStageRequest;
 }
 
 export interface StagesSourceRetrieveRequest {
+    /**
+     * A UUID string identifying this Source Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesSourceUpdateRequest {
+    /**
+     * A UUID string identifying this Source Stage.
+     */
     stageUuid: string;
     sourceStageRequest: SourceStageRequest;
 }
 
 export interface StagesSourceUsedByListRequest {
+    /**
+     * A UUID string identifying this Source Stage.
+     */
     stageUuid: string;
 }
 
@@ -1406,33 +2113,60 @@ export interface StagesUserDeleteCreateRequest {
 }
 
 export interface StagesUserDeleteDestroyRequest {
+    /**
+     * A UUID string identifying this User Delete Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserDeleteListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
 }
 
 export interface StagesUserDeletePartialUpdateRequest {
+    /**
+     * A UUID string identifying this User Delete Stage.
+     */
     stageUuid: string;
     patchedUserDeleteStageRequest?: PatchedUserDeleteStageRequest;
 }
 
 export interface StagesUserDeleteRetrieveRequest {
+    /**
+     * A UUID string identifying this User Delete Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserDeleteUpdateRequest {
+    /**
+     * A UUID string identifying this User Delete Stage.
+     */
     stageUuid: string;
     userDeleteStageRequest: UserDeleteStageRequest;
 }
 
 export interface StagesUserDeleteUsedByListRequest {
+    /**
+     * A UUID string identifying this User Delete Stage.
+     */
     stageUuid: string;
 }
 
@@ -1441,6 +2175,9 @@ export interface StagesUserLoginCreateRequest {
 }
 
 export interface StagesUserLoginDestroyRequest {
+    /**
+     * A UUID string identifying this User Login Stage.
+     */
     stageUuid: string;
 }
 
@@ -1448,11 +2185,23 @@ export interface StagesUserLoginListRequest {
     geoipBinding?: GeoipBindingEnum;
     name?: string;
     networkBinding?: NetworkBindingEnum;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
     rememberDevice?: string;
     rememberMeOffset?: string;
+    /**
+     * A search term.
+     */
     search?: string;
     sessionDuration?: string;
     stageUuid?: string;
@@ -1460,20 +2209,32 @@ export interface StagesUserLoginListRequest {
 }
 
 export interface StagesUserLoginPartialUpdateRequest {
+    /**
+     * A UUID string identifying this User Login Stage.
+     */
     stageUuid: string;
     patchedUserLoginStageRequest?: PatchedUserLoginStageRequest;
 }
 
 export interface StagesUserLoginRetrieveRequest {
+    /**
+     * A UUID string identifying this User Login Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserLoginUpdateRequest {
+    /**
+     * A UUID string identifying this User Login Stage.
+     */
     stageUuid: string;
     userLoginStageRequest: UserLoginStageRequest;
 }
 
 export interface StagesUserLoginUsedByListRequest {
+    /**
+     * A UUID string identifying this User Login Stage.
+     */
     stageUuid: string;
 }
 
@@ -1482,33 +2243,60 @@ export interface StagesUserLogoutCreateRequest {
 }
 
 export interface StagesUserLogoutDestroyRequest {
+    /**
+     * A UUID string identifying this User Logout Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserLogoutListRequest {
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
 }
 
 export interface StagesUserLogoutPartialUpdateRequest {
+    /**
+     * A UUID string identifying this User Logout Stage.
+     */
     stageUuid: string;
     patchedUserLogoutStageRequest?: PatchedUserLogoutStageRequest;
 }
 
 export interface StagesUserLogoutRetrieveRequest {
+    /**
+     * A UUID string identifying this User Logout Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserLogoutUpdateRequest {
+    /**
+     * A UUID string identifying this User Logout Stage.
+     */
     stageUuid: string;
     userLogoutStageRequest: UserLogoutStageRequest;
 }
 
 export interface StagesUserLogoutUsedByListRequest {
+    /**
+     * A UUID string identifying this User Logout Stage.
+     */
     stageUuid: string;
 }
 
@@ -1517,6 +2305,9 @@ export interface StagesUserWriteCreateRequest {
 }
 
 export interface StagesUserWriteDestroyRequest {
+    /**
+     * A UUID string identifying this User Write Stage.
+     */
     stageUuid: string;
 }
 
@@ -1524,9 +2315,21 @@ export interface StagesUserWriteListRequest {
     createUsersAsInactive?: boolean;
     createUsersGroup?: string;
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
     stageUuid?: string;
     userCreationMode?: UserCreationModeEnum;
@@ -1535,26 +2338,35 @@ export interface StagesUserWriteListRequest {
 }
 
 export interface StagesUserWritePartialUpdateRequest {
+    /**
+     * A UUID string identifying this User Write Stage.
+     */
     stageUuid: string;
     patchedUserWriteStageRequest?: PatchedUserWriteStageRequest;
 }
 
 export interface StagesUserWriteRetrieveRequest {
+    /**
+     * A UUID string identifying this User Write Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserWriteUpdateRequest {
+    /**
+     * A UUID string identifying this User Write Stage.
+     */
     stageUuid: string;
     userWriteStageRequest: UserWriteStageRequest;
 }
 
 export interface StagesUserWriteUsedByListRequest {
+    /**
+     * A UUID string identifying this User Write Stage.
+     */
     stageUuid: string;
 }
 
-/**
- *
- */
 export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesAccountLockdownCreate without sending the request
@@ -1584,7 +2396,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/account_lockdown/`;
+        const urlPath = `/stages/account_lockdown/`;
 
         return {
             path: urlPath,
@@ -1754,7 +2566,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/account_lockdown/`;
+        const urlPath = `/stages/account_lockdown/`;
 
         return {
             path: urlPath,
@@ -2186,7 +2998,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/all/`;
+        const urlPath = `/stages/all/`;
 
         return {
             path: urlPath,
@@ -2303,7 +3115,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/all/types/`;
+        const urlPath = `/stages/all/types/`;
 
         return {
             path: urlPath,
@@ -2418,7 +3230,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/all/user_settings/`;
+        const urlPath = `/stages/all/user_settings/`;
 
         return {
             path: urlPath,
@@ -2480,7 +3292,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/duo/`;
+        const urlPath = `/stages/authenticator/duo/`;
 
         return {
             path: urlPath,
@@ -2588,7 +3400,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorDuoEnrollmentStatusCreate without sending the request
+     * Creates request options for stagesAuthenticatorDuoEnrollmentStatusCreate without sending the
+     * request
      */
     async stagesAuthenticatorDuoEnrollmentStatusCreateRequestOpts(
         requestParameters: StagesAuthenticatorDuoEnrollmentStatusCreateRequest,
@@ -2649,7 +3462,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorDuoImportDeviceManualCreate without sending the request
+     * Creates request options for stagesAuthenticatorDuoImportDeviceManualCreate without sending
+     * the request
      */
     async stagesAuthenticatorDuoImportDeviceManualCreateRequestOpts(
         requestParameters: StagesAuthenticatorDuoImportDeviceManualCreateRequest,
@@ -2728,7 +3542,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorDuoImportDevicesAutomaticCreate without sending the request
+     * Creates request options for stagesAuthenticatorDuoImportDevicesAutomaticCreate without
+     * sending the request
      */
     async stagesAuthenticatorDuoImportDevicesAutomaticCreateRequestOpts(
         requestParameters: StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest,
@@ -2850,7 +3665,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/duo/`;
+        const urlPath = `/stages/authenticator/duo/`;
 
         return {
             path: urlPath,
@@ -3209,7 +4024,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/email/`;
+        const urlPath = `/stages/authenticator/email/`;
 
         return {
             path: urlPath,
@@ -3415,7 +4230,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/email/`;
+        const urlPath = `/stages/authenticator/email/`;
 
         return {
             path: urlPath,
@@ -3778,7 +4593,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/endpoint_gdtc/`;
+        const urlPath = `/stages/authenticator/endpoint_gdtc/`;
 
         return {
             path: urlPath,
@@ -3822,7 +4637,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorEndpointGdtcDestroy without sending the request
+     * Creates request options for stagesAuthenticatorEndpointGdtcDestroy without sending the
+     * request
      */
     async stagesAuthenticatorEndpointGdtcDestroyRequestOpts(
         requestParameters: StagesAuthenticatorEndpointGdtcDestroyRequest,
@@ -3928,7 +4744,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/endpoint_gdtc/`;
+        const urlPath = `/stages/authenticator/endpoint_gdtc/`;
 
         return {
             path: urlPath,
@@ -3969,7 +4785,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorEndpointGdtcPartialUpdate without sending the request
+     * Creates request options for stagesAuthenticatorEndpointGdtcPartialUpdate without sending the
+     * request
      */
     async stagesAuthenticatorEndpointGdtcPartialUpdateRequestOpts(
         requestParameters: StagesAuthenticatorEndpointGdtcPartialUpdateRequest,
@@ -4044,7 +4861,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorEndpointGdtcRetrieve without sending the request
+     * Creates request options for stagesAuthenticatorEndpointGdtcRetrieve without sending the
+     * request
      */
     async stagesAuthenticatorEndpointGdtcRetrieveRequestOpts(
         requestParameters: StagesAuthenticatorEndpointGdtcRetrieveRequest,
@@ -4196,7 +5014,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorEndpointGdtcUsedByList without sending the request
+     * Creates request options for stagesAuthenticatorEndpointGdtcUsedByList without sending the
+     * request
      */
     async stagesAuthenticatorEndpointGdtcUsedByListRequestOpts(
         requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest,
@@ -4291,7 +5110,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/sms/`;
+        const urlPath = `/stages/authenticator/sms/`;
 
         return {
             path: urlPath,
@@ -4481,7 +5300,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/sms/`;
+        const urlPath = `/stages/authenticator/sms/`;
 
         return {
             path: urlPath,
@@ -4840,7 +5659,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/static/`;
+        const urlPath = `/stages/authenticator/static/`;
 
         return {
             path: urlPath,
@@ -5006,7 +5825,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/static/`;
+        const urlPath = `/stages/authenticator/static/`;
 
         return {
             path: urlPath,
@@ -5047,7 +5866,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorStaticPartialUpdate without sending the request
+     * Creates request options for stagesAuthenticatorStaticPartialUpdate without sending the
+     * request
      */
     async stagesAuthenticatorStaticPartialUpdateRequestOpts(
         requestParameters: StagesAuthenticatorStaticPartialUpdateRequest,
@@ -5369,7 +6189,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/totp/`;
+        const urlPath = `/stages/authenticator/totp/`;
 
         return {
             path: urlPath,
@@ -5531,7 +6351,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/totp/`;
+        const urlPath = `/stages/authenticator/totp/`;
 
         return {
             path: urlPath,
@@ -5893,7 +6713,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/validate/`;
+        const urlPath = `/stages/authenticator/validate/`;
 
         return {
             path: urlPath,
@@ -6047,7 +6867,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/validate/`;
+        const urlPath = `/stages/authenticator/validate/`;
 
         return {
             path: urlPath,
@@ -6088,7 +6908,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorValidatePartialUpdate without sending the request
+     * Creates request options for stagesAuthenticatorValidatePartialUpdate without sending the
+     * request
      */
     async stagesAuthenticatorValidatePartialUpdateRequestOpts(
         requestParameters: StagesAuthenticatorValidatePartialUpdateRequest,
@@ -6410,7 +7231,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/webauthn/`;
+        const urlPath = `/stages/authenticator/webauthn/`;
 
         return {
             path: urlPath,
@@ -6518,7 +7339,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorWebauthnDeviceTypesList without sending the request
+     * Creates request options for stagesAuthenticatorWebauthnDeviceTypesList without sending the
+     * request
      */
     async stagesAuthenticatorWebauthnDeviceTypesListRequestOpts(
         requestParameters: StagesAuthenticatorWebauthnDeviceTypesListRequest,
@@ -6564,7 +7386,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/webauthn_device_types/`;
+        const urlPath = `/stages/authenticator/webauthn_device_types/`;
 
         return {
             path: urlPath,
@@ -6605,7 +7427,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorWebauthnDeviceTypesRetrieve without sending the request
+     * Creates request options for stagesAuthenticatorWebauthnDeviceTypesRetrieve without sending
+     * the request
      */
     async stagesAuthenticatorWebauthnDeviceTypesRetrieveRequestOpts(
         requestParameters: StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest,
@@ -6740,7 +7563,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/authenticator/webauthn/`;
+        const urlPath = `/stages/authenticator/webauthn/`;
 
         return {
             path: urlPath,
@@ -6781,7 +7604,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesAuthenticatorWebauthnPartialUpdate without sending the request
+     * Creates request options for stagesAuthenticatorWebauthnPartialUpdate without sending the
+     * request
      */
     async stagesAuthenticatorWebauthnPartialUpdateRequestOpts(
         requestParameters: StagesAuthenticatorWebauthnPartialUpdateRequest,
@@ -7103,7 +7927,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/captcha/`;
+        const urlPath = `/stages/captcha/`;
 
         return {
             path: urlPath,
@@ -7246,7 +8070,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/captcha/`;
+        const urlPath = `/stages/captcha/`;
 
         return {
             path: urlPath,
@@ -7585,7 +8409,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/consent/`;
+        const urlPath = `/stages/consent/`;
 
         return {
             path: urlPath,
@@ -7736,7 +8560,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/consent/`;
+        const urlPath = `/stages/consent/`;
 
         return {
             path: urlPath,
@@ -8075,7 +8899,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/deny/`;
+        const urlPath = `/stages/deny/`;
 
         return {
             path: urlPath,
@@ -8220,7 +9044,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/deny/`;
+        const urlPath = `/stages/deny/`;
 
         return {
             path: urlPath,
@@ -8553,7 +9377,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/dummy/`;
+        const urlPath = `/stages/dummy/`;
 
         return {
             path: urlPath,
@@ -8698,7 +9522,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/dummy/`;
+        const urlPath = `/stages/dummy/`;
 
         return {
             path: urlPath,
@@ -9031,7 +9855,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/email/`;
+        const urlPath = `/stages/email/`;
 
         return {
             path: urlPath,
@@ -9217,7 +10041,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/email/`;
+        const urlPath = `/stages/email/`;
 
         return {
             path: urlPath,
@@ -9401,7 +10225,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/email/templates/`;
+        const urlPath = `/stages/email/templates/`;
 
         return {
             path: urlPath,
@@ -9601,7 +10425,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/endpoints/`;
+        const urlPath = `/stages/endpoints/`;
 
         return {
             path: urlPath,
@@ -9740,7 +10564,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/endpoints/`;
+        const urlPath = `/stages/endpoints/`;
 
         return {
             path: urlPath,
@@ -10085,7 +10909,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/identification/`;
+        const urlPath = `/stages/identification/`;
 
         return {
             path: urlPath,
@@ -10261,7 +11085,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/identification/`;
+        const urlPath = `/stages/identification/`;
 
         return {
             path: urlPath,
@@ -10614,7 +11438,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/invitation/invitations/`;
+        const urlPath = `/stages/invitation/invitations/`;
 
         return {
             path: urlPath,
@@ -10730,7 +11554,9 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["expires"] != null) {
-            queryParameters["expires"] = (requestParameters["expires"] as any).toISOString();
+            queryParameters["expires"] = runtime.serializeDateTime(
+                requestParameters["expires"] as any,
+            );
         }
 
         if (requestParameters["flowSlug"] != null) {
@@ -10768,7 +11594,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/invitation/invitations/`;
+        const urlPath = `/stages/invitation/invitations/`;
 
         return {
             path: urlPath,
@@ -10809,7 +11635,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesInvitationInvitationsPartialUpdate without sending the request
+     * Creates request options for stagesInvitationInvitationsPartialUpdate without sending the
+     * request
      */
     async stagesInvitationInvitationsPartialUpdateRequestOpts(
         requestParameters: StagesInvitationInvitationsPartialUpdateRequest,
@@ -10948,7 +11775,8 @@ export class StagesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stagesInvitationInvitationsSendEmailCreate without sending the request
+     * Creates request options for stagesInvitationInvitationsSendEmailCreate without sending the
+     * request
      */
     async stagesInvitationInvitationsSendEmailCreateRequestOpts(
         requestParameters: StagesInvitationInvitationsSendEmailCreateRequest,
@@ -11195,7 +12023,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/invitation/stages/`;
+        const urlPath = `/stages/invitation/stages/`;
 
         return {
             path: urlPath,
@@ -11352,7 +12180,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/invitation/stages/`;
+        const urlPath = `/stages/invitation/stages/`;
 
         return {
             path: urlPath,
@@ -11709,7 +12537,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/mtls/`;
+        const urlPath = `/stages/mtls/`;
 
         return {
             path: urlPath,
@@ -11869,7 +12697,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/mtls/`;
+        const urlPath = `/stages/mtls/`;
 
         return {
             path: urlPath,
@@ -12210,7 +13038,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/password/`;
+        const urlPath = `/stages/password/`;
 
         return {
             path: urlPath,
@@ -12331,6 +13159,11 @@ export class StagesApi extends runtime.BaseAPI {
                 requestParameters["failedAttemptsBeforeCancel"];
         }
 
+        if (requestParameters["failedAttemptsBeforeLockout"] != null) {
+            queryParameters["failed_attempts_before_lockout"] =
+                requestParameters["failedAttemptsBeforeLockout"];
+        }
+
         if (requestParameters["name"] != null) {
             queryParameters["name"] = requestParameters["name"];
         }
@@ -12362,7 +13195,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/password/`;
+        const urlPath = `/stages/password/`;
 
         return {
             path: urlPath,
@@ -12706,7 +13539,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/prompt/prompts/`;
+        const urlPath = `/stages/prompt/prompts/`;
 
         return {
             path: urlPath,
@@ -12859,7 +13692,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/prompt/prompts/`;
+        const urlPath = `/stages/prompt/prompts/`;
 
         return {
             path: urlPath,
@@ -12994,7 +13827,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/prompt/prompts/preview/`;
+        const urlPath = `/stages/prompt/prompts/preview/`;
 
         return {
             path: urlPath,
@@ -13272,7 +14105,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/prompt/stages/`;
+        const urlPath = `/stages/prompt/stages/`;
 
         return {
             path: urlPath,
@@ -13421,7 +14254,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/prompt/stages/`;
+        const urlPath = `/stages/prompt/stages/`;
 
         return {
             path: urlPath,
@@ -13762,7 +14595,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/redirect/`;
+        const urlPath = `/stages/redirect/`;
 
         return {
             path: urlPath,
@@ -13901,7 +14734,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/redirect/`;
+        const urlPath = `/stages/redirect/`;
 
         return {
             path: urlPath,
@@ -14245,7 +15078,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/source/`;
+        const urlPath = `/stages/source/`;
 
         return {
             path: urlPath,
@@ -14394,7 +15227,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/source/`;
+        const urlPath = `/stages/source/`;
 
         return {
             path: urlPath,
@@ -14727,7 +15560,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_delete/`;
+        const urlPath = `/stages/user_delete/`;
 
         return {
             path: urlPath,
@@ -14870,7 +15703,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_delete/`;
+        const urlPath = `/stages/user_delete/`;
 
         return {
             path: urlPath,
@@ -15215,7 +16048,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_login/`;
+        const urlPath = `/stages/user_login/`;
 
         return {
             path: urlPath,
@@ -15383,7 +16216,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_login/`;
+        const urlPath = `/stages/user_login/`;
 
         return {
             path: urlPath,
@@ -15728,7 +16561,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_logout/`;
+        const urlPath = `/stages/user_logout/`;
 
         return {
             path: urlPath,
@@ -15871,7 +16704,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_logout/`;
+        const urlPath = `/stages/user_logout/`;
 
         return {
             path: urlPath,
@@ -16216,7 +17049,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_write/`;
+        const urlPath = `/stages/user_write/`;
 
         return {
             path: urlPath,
@@ -16380,7 +17213,7 @@ export class StagesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/stages/user_write/`;
+        const urlPath = `/stages/user_write/`;
 
         return {
             path: urlPath,

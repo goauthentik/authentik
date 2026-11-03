@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SCIMProvider } from "./SCIMProvider";
-import { SCIMProviderFromJSON, SCIMProviderToJSON } from "./SCIMProvider";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { SCIMProvider } from "./SCIMProvider.js";
+import { SCIMProviderFromJSON, SCIMProviderToJSON } from "./SCIMProvider.js";
 
 /**
- *
  * @export
  * @interface PaginatedSCIMProviderList
  */
 export interface PaginatedSCIMProviderList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedSCIMProviderList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<SCIMProvider>}
-     * @memberof PaginatedSCIMProviderList
-     */
     results: Array<SCIMProvider>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSCIMProviderList
-     */
     autocomplete: { [key: string]: any };
 }
 

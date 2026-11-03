@@ -3,7 +3,6 @@
  */
 
 import "#components/tasks/ScheduleList";
-
 import { ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";

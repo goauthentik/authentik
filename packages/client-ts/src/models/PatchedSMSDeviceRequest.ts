@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,14 +12,13 @@
 
 /**
  * Serializer for sms authenticator devices
+ *
  * @export
  * @interface PatchedSMSDeviceRequest
  */
 export interface PatchedSMSDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof PatchedSMSDeviceRequest
      */
     name?: string;
 }

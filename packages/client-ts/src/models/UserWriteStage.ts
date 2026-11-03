@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,90 +10,52 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { UserCreationModeEnum } from "./UserCreationModeEnum";
-import { UserCreationModeEnumFromJSON, UserCreationModeEnumToJSON } from "./UserCreationModeEnum";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { UserCreationModeEnum } from "./UserCreationModeEnum.js";
+import {
+    UserCreationModeEnumFromJSON,
+    UserCreationModeEnumToJSON,
+} from "./UserCreationModeEnum.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * UserWriteStage Serializer
+ *
  * @export
  * @interface UserWriteStage
  */
 export interface UserWriteStage {
-    /**
-     *
-     * @type {string}
-     * @memberof UserWriteStage
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserWriteStage
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof UserWriteStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof UserWriteStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof UserWriteStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof UserWriteStage
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {Array<FlowSet>}
-     * @memberof UserWriteStage
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     * @type {UserCreationModeEnum}
-     * @memberof UserWriteStage
-     */
     userCreationMode?: UserCreationModeEnum;
     /**
      * When set, newly created users are inactive and cannot login.
-     * @type {boolean}
-     * @memberof UserWriteStage
      */
     createUsersAsInactive?: boolean;
     /**
      * Optionally add newly created users to this group.
-     * @type {string}
-     * @memberof UserWriteStage
      */
     createUsersGroup?: string | null;
-    /**
-     *
-     * @type {UserTypeEnum}
-     * @memberof UserWriteStage
-     */
     userType?: UserTypeEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof UserWriteStage
-     */
     userPathTemplate?: string;
 }
 

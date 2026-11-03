@@ -3,13 +3,10 @@
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from django_filters import FilterSet, ModelChoiceFilter
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ReadOnlyField
-from rest_framework.request import Request
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
@@ -54,6 +51,39 @@ class ApplicationEntitlementSerializer(AttributesMixinSerializer, ModelSerialize
         ]
 
 
+class ApplicationEntitlementFilter(FilterSet):
+    """Filter for application entitlements"""
+
+    for_user = ModelChoiceFilter(
+        queryset=User.objects.all(),
+        method="filter_for_user",
+        label=_(
+            "Entitlements assigned to this user, directly or through a group, "
+            "regardless of the user's access to the application."
+        ),
+    )
+
+    def filter_for_user(
+        self, queryset: QuerySet[ApplicationEntitlement], name, value: User
+    ) -> QuerySet[ApplicationEntitlement]:
+        if (
+            not get_objects_for_user(self.request.user, "authentik_core.view_user_applications")
+            .filter(pk=value.pk)
+            .exists()
+        ):
+            raise ValidationError({"for_user": "User not found"})
+        return queryset.filter(pk__in=value.all_app_entitlements().values("pk"))
+
+    class Meta:
+        model = ApplicationEntitlement
+        fields = [
+            "pbm_uuid",
+            "name",
+            "app",
+            "for_user",
+        ]
+
+
 class ApplicationEntitlementViewSet(
     ConditionalInheritance(
         "authentik.enterprise.requests.api.apps.ApplicationEntitlementsRequestableMixin"
@@ -72,43 +102,6 @@ class ApplicationEntitlementViewSet(
         "app__slug",
         "attributes",
     ]
-    filterset_fields = [
-        "pbm_uuid",
-        "name",
-        "app",
-    ]
+    filterset_class = ApplicationEntitlementFilter
     ordering = ["app__name", "name"]
     ordering_fields = ["name", "app__name"]
-
-    def filter_queryset(self, queryset: QuerySet) -> QuerySet:
-        queryset = super().filter_queryset(queryset)
-        for_user_pk = self.request.query_params.get("for_user")
-        if for_user_pk is None:
-            return queryset
-        try:
-            for_user_pk = int(for_user_pk)
-        except ValueError:
-            raise ValidationError({"for_user": "for_user must be numerical"}) from None
-        for_user: User | None = (
-            get_objects_for_user(self.request.user, "authentik_core.view_user_applications")
-            .filter(pk=for_user_pk)
-            .first()
-        )
-        if not for_user:
-            raise ValidationError({"for_user": "User not found"})
-        return queryset.filter(
-            pbm_uuid__in=for_user.all_app_entitlements().values_list("pbm_uuid", flat=True)
-        )
-
-    @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="for_user",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.INT,
-            )
-        ]
-    )
-    def list(self, request: Request, *args, **kwargs) -> Response:
-        """List application entitlements, optionally scoped to a user via `for_user`."""
-        return super().list(request, *args, **kwargs)

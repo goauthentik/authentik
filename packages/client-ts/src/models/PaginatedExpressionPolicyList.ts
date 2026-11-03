@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { ExpressionPolicy } from "./ExpressionPolicy";
-import { ExpressionPolicyFromJSON, ExpressionPolicyToJSON } from "./ExpressionPolicy";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { ExpressionPolicy } from "./ExpressionPolicy.js";
+import { ExpressionPolicyFromJSON, ExpressionPolicyToJSON } from "./ExpressionPolicy.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedExpressionPolicyList
  */
 export interface PaginatedExpressionPolicyList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedExpressionPolicyList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<ExpressionPolicy>}
-     * @memberof PaginatedExpressionPolicyList
-     */
     results: Array<ExpressionPolicy>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedExpressionPolicyList
-     */
     autocomplete: { [key: string]: any };
 }
 

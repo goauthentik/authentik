@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceUserBinding } from "./DeviceUserBinding";
-import { DeviceUserBindingFromJSON, DeviceUserBindingToJSON } from "./DeviceUserBinding";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { DeviceUserBinding } from "./DeviceUserBinding.js";
+import { DeviceUserBindingFromJSON, DeviceUserBindingToJSON } from "./DeviceUserBinding.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedDeviceUserBindingList
  */
 export interface PaginatedDeviceUserBindingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedDeviceUserBindingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<DeviceUserBinding>}
-     * @memberof PaginatedDeviceUserBindingList
-     */
     results: Array<DeviceUserBinding>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedDeviceUserBindingList
-     */
     autocomplete: { [key: string]: any };
 }
 

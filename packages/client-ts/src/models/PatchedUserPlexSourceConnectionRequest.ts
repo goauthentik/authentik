@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * User source connection
+ *
  * @export
  * @interface PatchedUserPlexSourceConnectionRequest
  */
 export interface PatchedUserPlexSourceConnectionRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedUserPlexSourceConnectionRequest
-     */
     source?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedUserPlexSourceConnectionRequest
-     */
     identifier?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedUserPlexSourceConnectionRequest
-     */
     plexToken?: string;
 }
 

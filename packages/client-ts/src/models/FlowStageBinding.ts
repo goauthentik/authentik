@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,80 +10,43 @@
  * Do not edit the class manually.
  */
 
-import type { InvalidResponseActionEnum } from "./InvalidResponseActionEnum";
+import type { InvalidResponseActionEnum } from "./InvalidResponseActionEnum.js";
 import {
     InvalidResponseActionEnumFromJSON,
     InvalidResponseActionEnumToJSON,
-} from "./InvalidResponseActionEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { Stage } from "./Stage";
-import { StageFromJSON } from "./Stage";
+} from "./InvalidResponseActionEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { Stage } from "./Stage.js";
+import { StageFromJSON } from "./Stage.js";
 
 /**
  * FlowStageBinding Serializer
+ *
  * @export
  * @interface FlowStageBinding
  */
 export interface FlowStageBinding {
-    /**
-     *
-     * @type {string}
-     * @memberof FlowStageBinding
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FlowStageBinding
-     */
     readonly policybindingmodelPtrId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FlowStageBinding
-     */
     target: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FlowStageBinding
-     */
     stage: string;
-    /**
-     *
-     * @type {Stage}
-     * @memberof FlowStageBinding
-     */
     readonly stageObj: Stage;
     /**
      * Evaluate policies during the Flow planning process.
-     * @type {boolean}
-     * @memberof FlowStageBinding
      */
     evaluateOnPlan?: boolean;
     /**
      * Evaluate policies when the Stage is presented to the user.
-     * @type {boolean}
-     * @memberof FlowStageBinding
      */
     reEvaluatePolicies?: boolean;
-    /**
-     *
-     * @type {number}
-     * @memberof FlowStageBinding
-     */
     order: number;
-    /**
-     *
-     * @type {PolicyEngineMode}
-     * @memberof FlowStageBinding
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
-     * Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
-     * @type {InvalidResponseActionEnum}
-     * @memberof FlowStageBinding
+     * Configure how the flow executor should handle an invalid response to a challenge. RETRY
+     * returns the error message and a similar challenge to the executor. RESTART restarts the flow
+     * from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current
+     * context.
      */
     invalidResponseAction?: InvalidResponseActionEnum;
 }

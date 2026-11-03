@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserPlexSourceConnection } from "./UserPlexSourceConnection";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { UserPlexSourceConnection } from "./UserPlexSourceConnection.js";
 import {
     UserPlexSourceConnectionFromJSON,
     UserPlexSourceConnectionToJSON,
-} from "./UserPlexSourceConnection";
+} from "./UserPlexSourceConnection.js";
 
 /**
- *
  * @export
  * @interface PaginatedUserPlexSourceConnectionList
  */
 export interface PaginatedUserPlexSourceConnectionList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedUserPlexSourceConnectionList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<UserPlexSourceConnection>}
-     * @memberof PaginatedUserPlexSourceConnectionList
-     */
     results: Array<UserPlexSourceConnection>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserPlexSourceConnectionList
-     */
     autocomplete: { [key: string]: any };
 }
 

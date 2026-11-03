@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,102 +10,36 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { RelatedGroup } from "./RelatedGroup";
-import { RelatedGroupFromJSON } from "./RelatedGroup";
-import type { Role } from "./Role";
-import { RoleFromJSON } from "./Role";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { RelatedGroup } from "./RelatedGroup.js";
+import { RelatedGroupFromJSON } from "./RelatedGroup.js";
+import type { Role } from "./Role.js";
+import { RoleFromJSON } from "./Role.js";
 
 /**
  * Group Serializer
+ *
  * @export
  * @interface Group
  */
 export interface Group {
-    /**
-     *
-     * @type {string}
-     * @memberof Group
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {number}
-     * @memberof Group
-     */
     readonly numPk: number;
-    /**
-     *
-     * @type {string}
-     * @memberof Group
-     */
     name: string;
     /**
      * Users added to this group will be superusers.
-     * @type {boolean}
-     * @memberof Group
      */
     isSuperuser?: boolean;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof Group
-     */
     parents?: Array<string>;
-    /**
-     *
-     * @type {Array<RelatedGroup>}
-     * @memberof Group
-     */
     readonly parentsObj: Array<RelatedGroup> | null;
-    /**
-     *
-     * @type {Array<number>}
-     * @memberof Group
-     */
     users?: Array<number>;
-    /**
-     *
-     * @type {Array<PartialUser>}
-     * @memberof Group
-     */
     readonly usersObj: Array<PartialUser> | null;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof Group
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof Group
-     */
     roles?: Array<string>;
-    /**
-     *
-     * @type {Array<Role>}
-     * @memberof Group
-     */
     readonly rolesObj: Array<Role>;
-    /**
-     *
-     * @type {Array<Role>}
-     * @memberof Group
-     */
     readonly inheritedRolesObj: Array<Role> | null;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof Group
-     */
     readonly children: Array<string>;
-    /**
-     *
-     * @type {Array<RelatedGroup>}
-     * @memberof Group
-     */
     readonly childrenObj: Array<RelatedGroup> | null;
 }
 

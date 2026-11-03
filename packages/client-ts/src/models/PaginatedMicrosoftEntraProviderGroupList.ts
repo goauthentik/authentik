@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { MicrosoftEntraProviderGroup } from "./MicrosoftEntraProviderGroup";
+import type { MicrosoftEntraProviderGroup } from "./MicrosoftEntraProviderGroup.js";
 import {
     MicrosoftEntraProviderGroupFromJSON,
     MicrosoftEntraProviderGroupToJSON,
-} from "./MicrosoftEntraProviderGroup";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./MicrosoftEntraProviderGroup.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedMicrosoftEntraProviderGroupList
  */
 export interface PaginatedMicrosoftEntraProviderGroupList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedMicrosoftEntraProviderGroupList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<MicrosoftEntraProviderGroup>}
-     * @memberof PaginatedMicrosoftEntraProviderGroupList
-     */
     results: Array<MicrosoftEntraProviderGroup>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedMicrosoftEntraProviderGroupList
-     */
     autocomplete: { [key: string]: any };
 }
 

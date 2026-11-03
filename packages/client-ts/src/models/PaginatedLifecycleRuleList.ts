@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { LifecycleRule } from "./LifecycleRule";
-import { LifecycleRuleFromJSON, LifecycleRuleToJSON } from "./LifecycleRule";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { LifecycleRule } from "./LifecycleRule.js";
+import { LifecycleRuleFromJSON, LifecycleRuleToJSON } from "./LifecycleRule.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedLifecycleRuleList
  */
 export interface PaginatedLifecycleRuleList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedLifecycleRuleList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<LifecycleRule>}
-     * @memberof PaginatedLifecycleRuleList
-     */
     results: Array<LifecycleRule>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedLifecycleRuleList
-     */
     autocomplete: { [key: string]: any };
 }
 

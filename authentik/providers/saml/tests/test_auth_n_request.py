@@ -11,13 +11,19 @@ from django.urls import reverse
 from guardian.utils import get_anonymous_user
 from lxml import etree  # nosec
 
+from authentik.admin.flags import patch_flag
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.saml.constants import (
+    AES128_CBC,
+    AES128_GCM,
+    AES256_CBC,
+    AES256_GCM,
     NS_MAP,
     SAML_BINDING_POST,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.core.models import Application
 from authentik.core.tests.utils import (
     RequestFactory,
@@ -39,7 +45,6 @@ from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 from authentik.stages.dummy.models import DummyStage
-from authentik.tenants.flags import patch_flag
 
 POST_REQUEST = (
     "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c2FtbDJwOkF1dGhuUmVxdWVzdCB4bWxuczpzYW1sMn"
@@ -201,31 +206,44 @@ class TestAuthNRequest(TestCase):
         self.assertTrue(body["to"].startswith(self.provider.acs_url))
 
     def test_request_encrypt(self):
-        """Test full SAML Request/Response flow, fully encrypted"""
-        self.provider.encryption_kp = self.cert
-        self.provider.save()
+        """Test full SAML Request/Response flow, fully encrypted, for each supported algorithm"""
         self.source.encryption_kp = self.cert
         self.source.save()
-        http_request = self.request_factory.get("/", user=get_anonymous_user())
+        for algorithm in (AES128_CBC, AES256_CBC, AES128_GCM, AES256_GCM):
+            with self.subTest(algorithm=algorithm):
+                self.provider.encryption_kp = self.cert
+                self.provider.encryption_algorithm = algorithm
+                self.provider.save()
+                http_request = self.request_factory.get("/", user=get_anonymous_user())
 
-        # First create an AuthNRequest
-        request_proc = RequestProcessor(self.source, http_request, "test_state")
-        request = request_proc.build_auth_n()
+                # First create an AuthNRequest
+                request_proc = RequestProcessor(self.source, http_request, "test_state")
+                request = request_proc.build_auth_n()
 
-        # To get an assertion we need a parsed request (parsed by provider)
-        parsed_request = AuthNRequestParser(self.provider).parse(
-            b64encode(request.encode()).decode(), "test_state"
-        )
-        # Now create a response and convert it to string (provider)
-        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
-        response = response_proc.build_response()
+                # To get an assertion we need a parsed request (parsed by provider)
+                parsed_request = AuthNRequestParser(self.provider).parse(
+                    b64encode(request.encode()).decode(), "test_state"
+                )
+                # Now create a response and convert it to string (provider)
+                response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+                response = response_proc.build_response()
 
-        # Now parse the response (source)
-        http_request.POST = QueryDict(mutable=True)
-        http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
+                # The chosen algorithm must be the one advertised on the wire
+                response_xml = lxml_from_string(response.encode())
+                self.assertEqual(
+                    response_xml.xpath(
+                        "//xenc:EncryptedData/xenc:EncryptionMethod/@Algorithm",
+                        namespaces=NS_MAP,
+                    ),
+                    [algorithm],
+                )
 
-        response_parser = ResponseProcessor(self.source, http_request)
-        response_parser.parse()
+                # Now parse the response (source), which decrypts the assertion
+                http_request.POST = QueryDict(mutable=True)
+                http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
+
+                response_parser = ResponseProcessor(self.source, http_request)
+                response_parser.parse()
 
     def test_request_encrypt_cert_only(self):
         """Test SAML encryption with certificate-only keypair (no private key).
@@ -754,3 +772,18 @@ class TestAuthNRequest(TestCase):
             b64encode(request.encode()).decode(), "test_state"
         )
         self.assertTrue(parsed_request.force_authn)
+
+    def test_doctype(self):
+        """Test that a request with a document type declaration is refused"""
+        request = (
+            '<?xml version="1.0"?>'
+            "<!DOCTYPE samlp:AuthnRequest>"
+            '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'ID="_1" Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z" '
+            'AssertionConsumerServiceURL="http://testserver/source/saml/provider/acs/"/>'
+        )
+
+        with self.assertRaisesMessage(
+            CannotHandleAssertion, "XML document contains a DOCTYPE declaration"
+        ):
+            AuthNRequestParser(self.provider).parse(b64encode(request.encode()).decode())

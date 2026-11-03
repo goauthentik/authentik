@@ -4,12 +4,14 @@ import "#admin/reports/ExportButton";
 import "#components/ak-event-info";
 import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -22,8 +24,6 @@ import { Event, EventsApi, EventsEventsExportCreateRequest } from "@goauthentik/
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-event-list")
 export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
@@ -90,6 +90,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                 ></ak-events-map>
             </div>`;
         }
+
         return html`<div class="pf-c-page__main-section pf-m-no-padding-bottom">
             <ak-events-volume-chart
                 .query=${{
@@ -109,7 +110,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
             html`<div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
-            html`<a href="#/events/log/${item.pk}">
+            html`<a href=${toAdminInterface(`events/log/${item.pk}`)}>
                 <pf-tooltip position="top" content=${msg("Show details")}>
                     <i class="fas fa-share-square" aria-hidden="true"></i>
                 </pf-tooltip>

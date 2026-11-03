@@ -23,7 +23,7 @@ class TestProviderProxyForward(SeleniumTestCase):
     def setUp(self):
         super().setUp()
         self.run_container(
-            image="traefik/whoami:latest",
+            image=self.pinned_image("whoami", "e2e/compose.yml"),
             name="ak-whoami",
         )
 
@@ -85,7 +85,7 @@ class TestProviderProxyForward(SeleniumTestCase):
             Path(__file__).parent / "proxy_forward_auth" / "traefik_single" / "config-static.yaml"
         )
         self.run_container(
-            image="docker.io/library/traefik:3.1",
+            image=self.pinned_image("traefik", "e2e/compose.yml"),
             ports={
                 "80": "80",
             },
@@ -127,7 +127,7 @@ class TestProviderProxyForward(SeleniumTestCase):
 
         # Start nginx last so all hosts are resolvable, otherwise nginx exits
         self.run_container(
-            image="docker.io/library/nginx:1.27",
+            image=self.pinned_image("nginx", "e2e/compose.yml"),
             ports={
                 "80": "80",
             },
@@ -163,7 +163,7 @@ class TestProviderProxyForward(SeleniumTestCase):
     def test_envoy(self):
         """Test envoy"""
         self.run_container(
-            image="docker.io/envoyproxy/envoy:v1.25-latest",
+            image=self.pinned_image("envoy", "e2e/compose.yml"),
             ports={
                 "10000": "80",
             },
@@ -207,7 +207,7 @@ class TestProviderProxyForward(SeleniumTestCase):
             Path(__file__).parent / "proxy_forward_auth" / "caddy_single" / "Caddyfile"
         )
         self.run_container(
-            image="docker.io/library/caddy:2.8",
+            image=self.pinned_image("caddy", "e2e/compose.yml"),
             ports={
                 "80": "80",
             },

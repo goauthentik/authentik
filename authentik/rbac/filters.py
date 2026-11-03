@@ -13,6 +13,7 @@ from rest_framework.views import APIView
 
 from authentik.api.authentication import validate_auth
 from authentik.core.models import UserTypes
+from authentik.lib.tracing import active_tracer
 
 
 # Inline fork of https://github.com/rpkilby/django-rest-framework-guardian
@@ -53,6 +54,7 @@ class ObjectPermissionsFilter(BaseFilterBackend):
 
     perm_format = "%(app_label)s.view_%(model_name)s"
 
+    @active_tracer().instrument()
     def filter_queryset(self, request, queryset, view):
         # We want to defer this import until runtime, rather than import-time.
         # See https://github.com/encode/django-rest-framework/issues/4608
@@ -72,6 +74,7 @@ class ObjectFilter(ObjectPermissionsFilter):
     """Object permission filter that grants global permission higher priority than
     per-object permissions"""
 
+    @active_tracer().instrument()
     def filter_queryset(self, request: Request, queryset: QuerySet, view: APIView) -> QuerySet:
         permission = self.perm_format % {
             "app_label": queryset.model._meta.app_label,
@@ -102,6 +105,7 @@ class SecretKeyFilter(DjangoFilterBackend):
 
     Replaces both DjangoFilterBackend and ObjectFilter"""
 
+    @active_tracer().instrument()
     def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
         auth_header = get_authorization_header(request)
         token = validate_auth(auth_header)

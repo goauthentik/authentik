@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,50 +10,28 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface RequestRuleBindingRequest
  */
 export interface RequestRuleBindingRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof RequestRuleBindingRequest
-     */
     uuid?: string;
-    /**
-     *
-     * @type {PolicyEngineMode}
-     * @memberof RequestRuleBindingRequest
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     * @type {string}
-     * @memberof RequestRuleBindingRequest
-     */
     rule: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RequestRuleBindingRequest
-     */
     target: string;
     /**
-     * How long a request against this binding stays pending before it automatically lapses if not approved or denied.
-     * @type {string}
-     * @memberof RequestRuleBindingRequest
+     * How long a request against this binding stays pending before it automatically lapses if not
+     * approved or denied.
      */
     expiryPending?: string;
     /**
      * The maximum duration a grant approved against this binding can last.
-     * @type {string}
-     * @memberof RequestRuleBindingRequest
      */
     expiryGrantedMax?: string;
 }

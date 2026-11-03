@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,45 +10,24 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
 
 /**
  * Base login challenge for Identification stage
+ *
  * @export
  * @interface TelegramLoginChallenge
  */
 export interface TelegramLoginChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof TelegramLoginChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof TelegramLoginChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof TelegramLoginChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      * Telegram bot username
-     * @type {string}
-     * @memberof TelegramLoginChallenge
      */
     botUsername: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof TelegramLoginChallenge
-     */
     requestMessageAccess: boolean;
 }
 

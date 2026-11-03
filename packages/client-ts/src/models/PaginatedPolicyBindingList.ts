@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { PolicyBinding } from "./PolicyBinding";
-import { PolicyBindingFromJSON, PolicyBindingToJSON } from "./PolicyBinding";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { PolicyBinding } from "./PolicyBinding.js";
+import { PolicyBindingFromJSON, PolicyBindingToJSON } from "./PolicyBinding.js";
 
 /**
- *
  * @export
  * @interface PaginatedPolicyBindingList
  */
 export interface PaginatedPolicyBindingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedPolicyBindingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<PolicyBinding>}
-     * @memberof PaginatedPolicyBindingList
-     */
     results: Array<PolicyBinding>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPolicyBindingList
-     */
     autocomplete: { [key: string]: any };
 }
 

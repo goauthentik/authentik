@@ -1,6 +1,7 @@
+import { unsafeHTML } from "lit-html/directives/unsafe-html.js";
+
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit-html";
-import { unsafeHTML } from "lit-html/directives/unsafe-html.js";
 
 const FILE_NAME_REPLACEMENTS = ["theme"] as const;
 
@@ -9,7 +10,9 @@ const PLACEHOLDER_PATTERN = FILE_NAME_REPLACEMENTS.join("|");
 
 export const FileNamePattern = {
     /**
-     * Used by the {@linkcode assertValidFileName} function to validate file names at runtime. This pattern is stricter than the one used in the HTML pattern attribute, as it does not allow for unescaped parentheses or hyphens.
+     * Used by the {@linkcode assertValidFileName} function to validate file names at runtime. This
+     * pattern is stricter than the one used in the HTML pattern attribute, as it does not allow for
+     * unescaped parentheses or hyphens.
      */
     Runtime: new RegExp(`^(?:%\\((?:${PLACEHOLDER_PATTERN})\\)s|[${FILE_NAME_CHARS}])+$`),
 

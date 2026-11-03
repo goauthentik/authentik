@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { GroupTelegramSourceConnection } from "./GroupTelegramSourceConnection";
+import type { GroupTelegramSourceConnection } from "./GroupTelegramSourceConnection.js";
 import {
     GroupTelegramSourceConnectionFromJSON,
     GroupTelegramSourceConnectionToJSON,
-} from "./GroupTelegramSourceConnection";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./GroupTelegramSourceConnection.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedGroupTelegramSourceConnectionList
  */
 export interface PaginatedGroupTelegramSourceConnectionList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedGroupTelegramSourceConnectionList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<GroupTelegramSourceConnection>}
-     * @memberof PaginatedGroupTelegramSourceConnectionList
-     */
     results: Array<GroupTelegramSourceConnection>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGroupTelegramSourceConnectionList
-     */
     autocomplete: { [key: string]: any };
 }
 

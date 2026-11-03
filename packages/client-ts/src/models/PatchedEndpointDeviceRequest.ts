@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,60 +10,31 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest.js";
 import {
     DeviceAccessGroupRequestFromJSON,
     DeviceAccessGroupRequestToJSON,
-} from "./DeviceAccessGroupRequest";
+} from "./DeviceAccessGroupRequest.js";
+import type { RACConnectionOverrideRequest } from "./RACConnectionOverrideRequest.js";
+import {
+    RACConnectionOverrideRequestFromJSON,
+    RACConnectionOverrideRequestToJSON,
+} from "./RACConnectionOverrideRequest.js";
 
 /**
- *
  * @export
  * @interface PatchedEndpointDeviceRequest
  */
 export interface PatchedEndpointDeviceRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedEndpointDeviceRequest
-     */
     deviceUuid?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedEndpointDeviceRequest
-     */
     name?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedEndpointDeviceRequest
-     */
     accessGroup?: string | null;
-    /**
-     *
-     * @type {DeviceAccessGroupRequest}
-     * @memberof PatchedEndpointDeviceRequest
-     */
     accessGroupObj?: DeviceAccessGroupRequest;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedEndpointDeviceRequest
-     */
     expiring?: boolean;
-    /**
-     *
-     * @type {Date}
-     * @memberof PatchedEndpointDeviceRequest
-     */
     expires?: Date | null;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedEndpointDeviceRequest
-     */
     attributes?: { [key: string]: any };
+    rac?: RACConnectionOverrideRequest | null;
 }
 
 /**
@@ -107,8 +76,14 @@ export function PatchedEndpointDeviceRequestFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
+        rac:
+            json["rac"] === undefined
+                ? undefined
+                : json["rac"] === null
+                  ? null
+                  : RACConnectionOverrideRequestFromJSON(json["rac"]),
     };
 }
 
@@ -130,7 +105,8 @@ export function PatchedEndpointDeviceRequestToJSONTyped(
         access_group: value["accessGroup"],
         access_group_obj: DeviceAccessGroupRequestToJSON(value["accessGroupObj"]),
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
+        rac: RACConnectionOverrideRequestToJSON(value["rac"]),
     };
 }

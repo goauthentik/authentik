@@ -20,6 +20,8 @@ from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import TaskBase, TaskState
 
 if TYPE_CHECKING:
+    from prometheus_client import CollectorRegistry
+
     from django_dramatiq_postgres.broker import PostgresBroker
 
 
@@ -241,6 +243,12 @@ class MetricsMiddleware(Middleware):
 
         return [worker_metrics]
 
+    @property
+    def registry(self) -> CollectorRegistry | None:
+        from prometheus_client import REGISTRY
+
+        return REGISTRY
+
     def before_worker_boot(self, broker: Broker, worker: Any) -> None:
         from prometheus_client import Counter, Gauge, Histogram
 
@@ -248,37 +256,45 @@ class MetricsMiddleware(Middleware):
             f"{self.prefix}_tasks_total",
             "The total number of tasks processed.",
             self.labels,
+            registry=self.registry,
         )
         self.total_errored_messages = Counter(
             f"{self.prefix}_tasks_errors_total",
             "The total number of errored tasks.",
             self.labels,
+            registry=self.registry,
         )
         self.total_retried_messages = Counter(
             f"{self.prefix}_tasks_retries_total",
             "The total number of retried tasks.",
             self.labels,
+            registry=self.registry,
         )
         self.total_rejected_messages = Counter(
             f"{self.prefix}_tasks_rejected_total",
             "The total number of dead-lettered tasks.",
             self.labels,
+            registry=self.registry,
         )
         self.in_progress_messages = Gauge(
             f"{self.prefix}_tasks_in_progress",
             "The number of tasks in progress.",
             self.labels,
+            registry=self.registry,
             multiprocess_mode="livesum",
         )
         self.in_progress_delayed_messages = Gauge(
             f"{self.prefix}_tasks_delayed_in_progress",
             "The number of delayed tasks in memory.",
             self.labels,
+            registry=self.registry,
+            multiprocess_mode="livesum",
         )
         self.messages_durations = Histogram(
             f"{self.prefix}_tasks_duration_milliseconds",
             "The time spent processing tasks.",
             self.labels,
+            registry=self.registry,
             buckets=(
                 5,
                 10,

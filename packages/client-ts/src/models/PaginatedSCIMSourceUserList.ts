@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SCIMSourceUser } from "./SCIMSourceUser";
-import { SCIMSourceUserFromJSON, SCIMSourceUserToJSON } from "./SCIMSourceUser";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { SCIMSourceUser } from "./SCIMSourceUser.js";
+import { SCIMSourceUserFromJSON, SCIMSourceUserToJSON } from "./SCIMSourceUser.js";
 
 /**
- *
  * @export
  * @interface PaginatedSCIMSourceUserList
  */
 export interface PaginatedSCIMSourceUserList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedSCIMSourceUserList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<SCIMSourceUser>}
-     * @memberof PaginatedSCIMSourceUserList
-     */
     results: Array<SCIMSourceUser>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSCIMSourceUserList
-     */
     autocomplete: { [key: string]: any };
 }
 

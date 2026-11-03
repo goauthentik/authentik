@@ -4,10 +4,32 @@ from urllib.parse import urlparse
 
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import redirect
-from django.urls import NoReverseMatch, reverse
+from django.urls import NoReverseMatch, URLPattern, URLResolver, reverse
+from django.urls.resolvers import RoutePattern
 from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
+
+
+class hot_path(URLPattern):  # noqa: N801
+    """Drop-in for `path()` for frequently requested views, sorted before other patterns
+    by `sort_hot` so they resolve without walking every other pattern first."""
+
+    def __init__(self, route: str, view, kwargs: dict | None = None, name: str | None = None):
+        super().__init__(RoutePattern(route, name=name, is_endpoint=True), view, kwargs, name)
+
+
+def is_hot(pattern: URLPattern | URLResolver) -> bool:
+    """Check if a pattern is a `hot_path` or an `include()` containing one"""
+    if isinstance(pattern, URLResolver):
+        return any(is_hot(sub_pattern) for sub_pattern in pattern.url_patterns)
+    return isinstance(pattern, hot_path)
+
+
+def sort_hot(patterns: list) -> list:
+    """Move `hot_path` patterns (and includes containing them) to the front,
+    keeping relative order otherwise"""
+    return sorted(patterns, key=lambda pattern: not is_hot(pattern))
 
 
 def is_url_absolute(url):

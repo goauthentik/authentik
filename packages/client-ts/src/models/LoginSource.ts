@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +10,19 @@
  * Do not edit the class manually.
  */
 
-import type { LoginChallengeTypes } from "./LoginChallengeTypes";
-import { LoginChallengeTypesFromJSON, LoginChallengeTypesToJSON } from "./LoginChallengeTypes";
+import type { LoginChallengeTypes } from "./LoginChallengeTypes.js";
+import { LoginChallengeTypesFromJSON, LoginChallengeTypesToJSON } from "./LoginChallengeTypes.js";
 
 /**
  * Serializer for Login buttons of sources
+ *
  * @export
  * @interface LoginSource
  */
 export interface LoginSource {
-    /**
-     *
-     * @type {string}
-     * @memberof LoginSource
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof LoginSource
-     */
     iconUrl?: string | null;
-    /**
-     *
-     * @type {boolean}
-     * @memberof LoginSource
-     */
     promoted?: boolean;
-    /**
-     *
-     * @type {LoginChallengeTypes}
-     * @memberof LoginSource
-     */
     challenge: LoginChallengeTypes;
 }
 

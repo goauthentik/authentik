@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { CertificateKeyPair } from "./CertificateKeyPair";
-import { CertificateKeyPairFromJSON, CertificateKeyPairToJSON } from "./CertificateKeyPair";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { CertificateKeyPair } from "./CertificateKeyPair.js";
+import { CertificateKeyPairFromJSON, CertificateKeyPairToJSON } from "./CertificateKeyPair.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedCertificateKeyPairList
  */
 export interface PaginatedCertificateKeyPairList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedCertificateKeyPairList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<CertificateKeyPair>}
-     * @memberof PaginatedCertificateKeyPairList
-     */
     results: Array<CertificateKeyPair>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedCertificateKeyPairList
-     */
     autocomplete: { [key: string]: any };
 }
 

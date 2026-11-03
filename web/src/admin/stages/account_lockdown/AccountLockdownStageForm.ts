@@ -1,13 +1,12 @@
 import "#elements/forms/HorizontalFormElement";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { AccountLockdownStage, StagesApi } from "@goauthentik/api";
@@ -33,8 +32,12 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                 )}
             </span>
             <ak-text-input
-                label=${msg("Stage Name")}
-                placeholder=${msg("Type a name for this stage...")}
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
                 required
                 name="name"
                 value=${ifPresent(this.instance?.name || "")}
@@ -86,10 +89,7 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                         label=${msg("Completion flow")}
                         name="selfServiceCompletionFlow"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select a completion flow...")}
-                            .currentFlow=${this.instance?.selfServiceCompletionFlow}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "selfServiceCompletionFlow", placeholder: msg("Select a completion flow..."), value: this.instance?.selfServiceCompletionFlow })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted.",

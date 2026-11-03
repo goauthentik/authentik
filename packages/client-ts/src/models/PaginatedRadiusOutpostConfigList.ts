@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RadiusOutpostConfig } from "./RadiusOutpostConfig";
-import { RadiusOutpostConfigFromJSON, RadiusOutpostConfigToJSON } from "./RadiusOutpostConfig";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { RadiusOutpostConfig } from "./RadiusOutpostConfig.js";
+import { RadiusOutpostConfigFromJSON, RadiusOutpostConfigToJSON } from "./RadiusOutpostConfig.js";
 
 /**
- *
  * @export
  * @interface PaginatedRadiusOutpostConfigList
  */
 export interface PaginatedRadiusOutpostConfigList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedRadiusOutpostConfigList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<RadiusOutpostConfig>}
-     * @memberof PaginatedRadiusOutpostConfigList
-     */
     results: Array<RadiusOutpostConfig>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRadiusOutpostConfigList
-     */
     autocomplete: { [key: string]: any };
 }
 

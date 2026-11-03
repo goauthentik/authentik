@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RACPropertyMapping } from "./RACPropertyMapping";
-import { RACPropertyMappingFromJSON, RACPropertyMappingToJSON } from "./RACPropertyMapping";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { RACPropertyMapping } from "./RACPropertyMapping.js";
+import { RACPropertyMappingFromJSON, RACPropertyMappingToJSON } from "./RACPropertyMapping.js";
 
 /**
- *
  * @export
  * @interface PaginatedRACPropertyMappingList
  */
 export interface PaginatedRACPropertyMappingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedRACPropertyMappingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<RACPropertyMapping>}
-     * @memberof PaginatedRACPropertyMappingList
-     */
     results: Array<RACPropertyMapping>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRACPropertyMappingList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { EventMatcherPolicy } from "./EventMatcherPolicy";
-import { EventMatcherPolicyFromJSON, EventMatcherPolicyToJSON } from "./EventMatcherPolicy";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { EventMatcherPolicy } from "./EventMatcherPolicy.js";
+import { EventMatcherPolicyFromJSON, EventMatcherPolicyToJSON } from "./EventMatcherPolicy.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedEventMatcherPolicyList
  */
 export interface PaginatedEventMatcherPolicyList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedEventMatcherPolicyList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<EventMatcherPolicy>}
-     * @memberof PaginatedEventMatcherPolicyList
-     */
     results: Array<EventMatcherPolicy>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedEventMatcherPolicyList
-     */
     autocomplete: { [key: string]: any };
 }
 

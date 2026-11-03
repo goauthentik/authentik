@@ -11,8 +11,7 @@ export enum MessageLevel {
  * An error message returned from an API endpoint.
  *
  * @remarks
- * This interface must align with the server-side event dispatcher.
- *
+ *   This interface must align with the server-side event dispatcher.
  * @see {@link ../authentik/core/templates/base/skeleton.html}
  */
 export interface APIMessage {
@@ -26,18 +25,4 @@ export interface APIMessage {
      * Defaults to the message text.
      */
     key?: PropertyKey;
-}
-
-export class AKMessageEvent extends Event {
-    static readonly eventName = "ak-message";
-
-    constructor(public readonly message: APIMessage) {
-        super(AKMessageEvent.eventName, { bubbles: true, composed: true });
-    }
-}
-
-declare global {
-    interface WindowEventMap {
-        [AKMessageEvent.eventName]: AKMessageEvent;
-    }
 }

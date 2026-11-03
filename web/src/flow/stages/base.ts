@@ -1,5 +1,4 @@
 import "#flow/FormStatic";
-
 import { pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -8,19 +7,23 @@ import { WithLocale } from "#elements/mixins/locale";
 import { findEmptyFocusCandidate, FocusTarget } from "#elements/utils/focus";
 
 import { FlowUserDetails } from "#flow/FormStatic";
-import { IBaseStage, StageChallengeLike, StageHost } from "#flow/types";
+import { IBaseStage, isFormStaticChallengeLike, StageChallengeLike, StageHost } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
-import { html, nothing, PropertyValues } from "lit";
+import { FlowErrorChallenge } from "@goauthentik/api";
+
+import { html, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 export function readFileAsync(file: Blob) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
+
         reader.onload = () => {
             resolve(reader.result);
         };
+
         reader.onerror = reject;
         reader.readAsDataURL(file);
     });
@@ -32,10 +35,10 @@ export function readFileAsync(file: Blob) {
  * Base class for all flow stages.
  *
  * @template Tin The type of the challenge this stage accepts.
- * @prop {StageHost} host The host managing this stage.
- * @prop {Tin} challenge The challenge provided to this stage.
+ * @property {StageHost} host The host managing this stage.
+ * @property {Tin} challenge The challenge provided to this stage.
  */
-export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
+export abstract class BaseStage<Tin extends StageChallengeLike | FlowErrorChallenge, Tout = unknown>
     extends WithLocale(AKElement)
     implements IBaseStage<Tin, Tout>
 {
@@ -66,6 +69,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
         if (!focusTarget) {
             this.logger.info("Skipping focus. No empty candidate.");
+
             return;
         }
 
@@ -75,6 +79,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
     #visibilityListener = () => {
         if (document.visibilityState !== "visible") return;
+
         if (!this.visible) return;
 
         this.focus();
@@ -96,7 +101,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
         document.removeEventListener("visibilitychange", this.#visibilityListener);
     }
 
-    public updated(changed: PropertyValues<this>): void {
+    protected override updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
         // We're especially mindful of how often this runs to avoid
@@ -142,7 +147,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
         const nonFieldErrors = this.challenge?.responseErrors?.non_field_errors;
 
         if (!nonFieldErrors) {
-            return nothing;
+            return null;
         }
 
         return html`<div class="pf-c-form__alert">
@@ -163,20 +168,27 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
         </div>`;
     }
 
+    /**
+     * Renders the user information section of the form, if applicable.
+     */
     protected renderUserInfo() {
-        if (!this.challenge?.pendingUser || !this.challenge?.pendingUserAvatar) {
-            return nothing;
+        const { challenge } = this;
+
+        // Do we have a challenge that isn't shaped like an error?
+        if (!isFormStaticChallengeLike(challenge)) return null;
+
+        // And do we have a pending user or avatar to display?
+        if (!challenge.pendingUser && !challenge.pendingUserAvatar) {
+            return null;
         }
 
-        return html`
-            ${FlowUserDetails({ challenge: this.challenge })}
+        return html`${FlowUserDetails({ challenge })}
             <input
                 name="username"
                 autocomplete="username"
                 type="hidden"
-                value="${this.challenge.pendingUser}"
-            />
-        `;
+                value="${challenge.pendingUser}"
+            />`;
     }
 
     /**

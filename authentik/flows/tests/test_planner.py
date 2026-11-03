@@ -1,5 +1,6 @@
 """flow planner tests"""
 
+from pickle import dumps, loads  # nosec
 from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.core.cache import cache
@@ -180,6 +181,18 @@ class TestFlowPlanner(TestCase):
         self.assertEqual(CACHE_MOCK.set.call_count, 1)  # Ensure nothing is written to cache
         self.assertEqual(CACHE_MOCK.get.call_count, 2)  # Get is called twice
 
+    def test_planner_stage_cached_on_binding(self):
+        """Test that the plan carries subclassed stages, so the executor doesn't re-query them"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage = DummyStage.objects.create(name=generate_id())
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=0)
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        plan = loads(dumps(FlowPlanner(flow).plan(request)))  # nosec
+        with self.assertNumQueries(0):
+            self.assertIsInstance(plan.bindings[0].stage, DummyStage)
+
     def test_planner_default_context(self):
         """Test planner with default_context"""
         flow = create_test_flow()
@@ -196,6 +209,26 @@ class TestFlowPlanner(TestCase):
         planner.plan(request, default_context={PLAN_CONTEXT_PENDING_USER: user})
         key = cache_key(flow, user)
         self.assertTrue(cache.get(key) is not None)
+
+    def test_dry_run_policy_does_not_block_plan(self):
+        """A failing dry-run policy does not block flow planning."""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage_binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        PolicyBinding.objects.create(target=flow, policy=policy, order=0, dry_run=True)
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+
+        plan = FlowPlanner(flow).plan(request)
+
+        self.assertEqual(plan.bindings, [stage_binding])
 
     def test_planner_marker_reevaluate(self):
         """Test that the planner creates the proper marker"""

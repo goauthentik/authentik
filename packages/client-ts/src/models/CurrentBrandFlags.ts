@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,15 +11,12 @@
  */
 
 /**
- *
  * @export
  * @interface CurrentBrandFlags
  */
 export interface CurrentBrandFlags {
     /**
      * Upon successful authentication, re-start authentication in other open tabs.
-     * @type {boolean}
-     * @memberof CurrentBrandFlags
      */
     flowsContinuousLogin: boolean;
 }
