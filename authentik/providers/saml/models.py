@@ -291,7 +291,7 @@ class SAMLProvider(Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/saml.png")
+        return static("authentik/sources/saml/light.png")
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -363,7 +363,7 @@ class SAMLProviderImportModel(CreatableType, Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/saml.png")
+        return static("authentik/sources/saml/light.png")
 
     class Meta:
         abstract = True

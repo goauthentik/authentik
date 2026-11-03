@@ -143,7 +143,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
         """Handle REDIRECT bindings"""
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse_detached(
@@ -179,7 +179,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
             payload = self.request.session.pop(SESSION_KEY_POST)
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse(
