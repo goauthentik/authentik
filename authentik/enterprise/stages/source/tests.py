@@ -331,3 +331,22 @@ class TestSourceStage(APIFlowTestCase):
         self.assertNotIn(SESSION_KEY_OVERRIDE_FLOW_TOKEN, session)
         self.assertNotIn(SESSION_KEY_SOURCE_FLOW_STAGES, session)
         self.assertNotIn(SESSION_KEY_SOURCE_FLOW_CONTEXT, session)
+
+    def test_source_challenge_response(self):
+        """Test that a response sent while the flow waits for the source, for example by
+        another tab, gets the source's challenge again and doesn't complete the stage"""
+        flow, stage, _ = self.run_to_source_redirect()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            data={"uid_field": generate_id()},
+        )
+        self.assertStageResponse(
+            response,
+            flow,
+            component="xak-flow-redirect",
+            to=reverse("authentik_sources_saml:login", kwargs={"source_slug": self.source.slug}),
+            final_redirect=False,
+        )
+        plan: FlowPlan = self.get_flow_plan()
+        self.assertEqual(plan.bindings[0].stage.pk, stage.pk)
