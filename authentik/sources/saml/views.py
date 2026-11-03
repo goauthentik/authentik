@@ -130,8 +130,8 @@ class InitiateView(View):
         # otherwise we default to POST_AUTO, with direct redirect
         if source.binding_type == SAMLBindingTypes.POST:
             injected_stages.append(in_memory_stage(ConsentStageView))
-            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = _(
-                "Continue to {source_name}".format(source_name=source.name)
+            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = _("Continue to {source_name}").format(
+                source_name=source.name
             )
         injected_stages.append(in_memory_stage(AutosubmitStageView))
         return self.handle_login_flow(

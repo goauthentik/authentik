@@ -67,3 +67,32 @@ class TestErrorViewsRouting(TestCase):
                 response = getattr(self.client, method)(url)
                 self.assertEqual(response.status_code, 404)
                 self.assertTemplateUsed(response, "if/error.html")
+
+
+class TestErrorViewsThemedBackground(TestCase):
+    """The error page renders without the UI, so it resolves a themed default flow
+    background itself instead of sending the browser a %(theme)s placeholder."""
+
+    def test_themed_background(self):
+        """The light variant is the default and the dark variant follows data-theme"""
+        create_test_brand(
+            branding_default_flow_background="/static/authentik/sources/kerberos/%(theme)s.png"
+        )
+        response = self.client.get("/this-path-does-not-exist/")
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, "if/error.html")
+        content = response.content.decode()
+        self.assertNotIn("%(theme)s", content)
+        self.assertIn(
+            '<link rel="prefetch" href="/static/authentik/sources/kerberos/light.png"', content
+        )
+        self.assertRegex(
+            content,
+            r":root \{\s*--ak-global--background-image: "
+            r'url\("/static/authentik/sources/kerberos/light.png"\);',
+        )
+        self.assertRegex(
+            content,
+            r':root\[data-theme="dark"\] \{\s*--ak-global--background-image: '
+            r'url\("/static/authentik/sources/kerberos/dark.png"\);',
+        )

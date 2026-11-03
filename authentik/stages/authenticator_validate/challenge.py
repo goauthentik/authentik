@@ -9,7 +9,6 @@ from django.db import transaction
 from django.http import HttpRequest
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField, ChoiceField, DateTimeField
 from rest_framework.serializers import ValidationError
@@ -255,10 +254,8 @@ def validate_challenge_webauthn(
         and not stage.webauthn_allowed_device_types.filter(pk=device.device_type.pk).exists()
     ):
         raise ValidationError(
-            _(
-                "Invalid device type. Contact your {brand} administrator for help.".format(
-                    brand=stage_view.request.brand.branding_title
-                )
+            _("Invalid device type. Contact your {brand} administrator for help.").format(
+                brand=stage_view.request.brand.branding_title
             ),
             "invalid",
         )
@@ -273,7 +270,7 @@ def validate_challenge_webauthn(
             require_user_verification=stage.webauthn_user_verification == UserVerification.REQUIRED,
         )
     except (WebAuthnException, ValueError, InternalError, UnsupportedAlgorithm) as exc:
-        error = __("Assertion failed")
+        error = _("Assertion failed")
         event_context = {}
         if isinstance(
             exc,
@@ -303,7 +300,7 @@ def validate_challenge_webauthn(
             )
             # The user gets a generic error; the details are for administrators in the log and
             # event. Event context keys containing "key" are masked, hence "algorithm".
-            error = __("Invalid security key. Please re-register or contact an administrator.")
+            error = _("Invalid security key. Please re-register or contact an administrator.")
             event_context = {"message": detail, "algorithm": key_type, "fips_enabled": fips_enabled}
         else:
             LOGGER.warning("Assertion failed", exc=exc)
@@ -338,10 +335,10 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
 
     # Get additional context for push
     pushinfo = {
-        __("Domain"): stage_view.request.get_host(),
+        str(_("Domain")): stage_view.request.get_host(),
     }
     if PLAN_CONTEXT_APPLICATION in stage_view.executor.plan.context:
-        pushinfo[__("Application")] = stage_view.executor.plan.context.get(
+        pushinfo[str(_("Application"))] = stage_view.executor.plan.context.get(
             PLAN_CONTEXT_APPLICATION, Application()
         ).name
 
@@ -350,12 +347,8 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
             "auto",
             user_id=device.duo_user_id,
             ipaddr=ClientIPMiddleware.get_client_ip(stage_view.request),
-            type=__(
-                "{brand_name} Login request".format_map(
-                    {
-                        "brand_name": stage_view.request.brand.branding_title,
-                    }
-                )
+            type=_("{brand_name} Login request").format(
+                brand_name=stage_view.request.brand.branding_title
             ),
             display_username=user.username,
             device="auto",
