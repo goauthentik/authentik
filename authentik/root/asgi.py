@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
 import django
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
+from django_prometheus.migrations import ExportMigrations
 
 from authentik.lib.tracing import sentry_enabled
 from authentik.root.setup import setup
@@ -18,6 +19,9 @@ from authentik.root.setup import setup
 
 setup()
 django.setup()
+# Not via PROMETHEUS_EXPORT_MIGRATIONS, as that queries the DB in every django.setup()
+# (mypy's django plugin, management commands), not just in the server
+ExportMigrations()
 
 
 from authentik.root import websocket  # noqa
