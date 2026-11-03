@@ -1037,6 +1037,7 @@ class UserViewSet(
                 "user": user,
                 "expires": token.expires,
             },
+            sensitive_values=[token.key],
         )
         send_mails(stage, message)
         return Response(status=204)
