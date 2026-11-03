@@ -7,6 +7,7 @@ draft: true
 ## Highlights
 
 - **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
+- **Secrets**: :ak-preview Store OAuth2/OpenID and Proxy provider credentials as secrets with their own permissions, rotation, and audit events. More object types follow in later releases.
 
 ## Breaking changes
 
@@ -84,6 +85,18 @@ The built-in source and provider icons have been refreshed, and each now has a l
 
 If you set a custom source icon that relied on the inversion, such as a black logo, it will be hard to see in dark mode. Upload a version for each theme and use `%(theme)s` in the source's **Icon** field. See [Source icons in light and dark themes](../../customize/file-picker.mdx#source-icons-in-light-and-dark-themes).
 
+### OAuth2/OpenID and Proxy provider credentials are stored as secrets
+
+The client secrets of OAuth2/OpenID and Proxy providers and the cookie secrets of Proxy providers are now stored as [secrets](../../sys-mgmt/secrets/index.mdx), which the providers reference. Other providers, sources, stages, and connectors keep their credentials as before in this release.
+
+During the upgrade, authentik creates a secret for each existing credential with its exact value, and copies existing role permissions to the new secrets. See [Permissions after upgrading](../../sys-mgmt/secrets/permissions.mdx#permissions-after-upgrading).
+
+On OAuth2/OpenID providers, the `client_secret` field in the API and blueprints is replaced by `client_secret_ref`, which references a secret. Requests and blueprints that still set `client_secret` fail with a validation error that names the new field. In blueprints, define the secret as its own entry and reference it with `!KeyOf` or `!Find`. Blueprint exports no longer include OAuth2/OpenID client secrets. See [API and blueprints](../../sys-mgmt/secrets/index.mdx#api-and-blueprints).
+
+:::info
+The previous credential database columns are kept until 2027.2, so the upgrade migrations can be reversed. authentik doesn't update them after the upgrade.
+:::
+
 ## New features and improvements
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
@@ -131,6 +144,16 @@ authentik only changes `jit` while it has PostgreSQL's built-in default, and onl
 Define your own permissions on authentik's models and assign them to roles like built-in permissions. A permission check is Python code that you bind to API endpoints. It has the final say on access: it can deny or grant requests, narrow or widen lists, hide fields or make them read-only, and change responses. Permission checks are disabled by default; enable them with the **Custom permissions** [setting](../../sys-mgmt/settings.mdx#custom-permissions). For details, refer to [Custom permissions and permission checks](../../users-sources/access-control/custom_permissions.mdx).
 
 **Initial Permissions** has moved from **Directory** to **Customization** in the Admin interface, next to **Custom Permissions** and **Permission Checks**.
+
+### Secrets :ak-preview
+
+Manage credentials under **System** > **Secrets**, or create them directly from the form that uses them. Each secret has its own permissions, so a role can edit a provider without being able to read its client secret. Viewing a value and replacing or rotating it require their own permissions, and authentik records an event each time someone does either.
+
+Several objects can reference the same secret, so you update a shared credential in one place. You can rotate text secrets from the Admin interface or the API. Rotation changes the value in authentik only, so update the clients that use it afterward. Secret values are stored unencrypted in the database, as these credentials were before.
+
+Secrets are in preview, and authentik moves credentials to them gradually. In this release, OAuth2/OpenID and Proxy providers use secrets. Other providers, sources, stages, and connectors follow in later releases. Send feedback to [hello+feature/secrets@goauthentik.io](mailto:hello+feature/secrets@goauthentik.io).
+
+See [Secrets](../../sys-mgmt/secrets/index.mdx).
 
 ## Upgrading
 
