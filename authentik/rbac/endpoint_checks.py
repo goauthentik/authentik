@@ -15,13 +15,13 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.rbac.apps import EnableCustomPermissions
 from authentik.rbac.endpoints import (
-    ALTER_RESPONSE,
-    HAS_OBJECT_PERMISSION,
-    HAS_PERMISSION,
-    HIDDEN_FIELDS,
-    NARROW_LIST,
-    READONLY_FIELDS,
-    WIDEN_LIST,
+    RBAC_FUNC_ALTER_RESPONSE,
+    RBAC_FUNC_HAS_OBJECT_PERMISSION,
+    RBAC_FUNC_HAS_PERMISSION,
+    RBAC_FUNC_HIDDEN_FIELDS,
+    RBAC_FUNC_NARROW_LIST,
+    RBAC_FUNC_READONLY_FIELDS,
+    RBAC_FUNC_WIDEN_LIST,
     Endpoints,
 )
 from authentik.rbac.field_rules import FieldRules
@@ -81,11 +81,11 @@ class EndpointChecks:
 
     def has_permission(self, allowed: bool) -> bool:
         """The final decision on the request, given whether authentik allows it"""
-        return self.final_decision(HAS_PERMISSION, allowed)
+        return self.final_decision(RBAC_FUNC_HAS_PERMISSION, allowed)
 
     def has_object_permission(self, obj: Model, allowed: bool) -> bool:
         """The final decision on one object, given whether authentik allows it"""
-        return self.final_decision(HAS_OBJECT_PERMISSION, allowed, obj)
+        return self.final_decision(RBAC_FUNC_HAS_OBJECT_PERMISSION, allowed, obj)
 
     def final_decision(self, function: str, allowed: bool, *objects: Model) -> bool:
         """A check returning True keeps authentik's decision, False forbids, and
@@ -115,11 +115,11 @@ class EndpointChecks:
     def filter_list(self, visible: QuerySet, everything: QuerySet) -> QuerySet:
         """authentik's list `visible`, narrowed by narrow_list, plus what widen_list picks from
         `everything` the endpoint can list"""
-        if self.defines(NARROW_LIST):
-            kept = self.run_list_function(NARROW_LIST, visible)
+        if self.defines(RBAC_FUNC_NARROW_LIST):
+            kept = self.run_list_function(RBAC_FUNC_NARROW_LIST, visible)
             visible = visible.filter(pk__in=kept.values("pk"))
-        if self.defines(WIDEN_LIST):
-            added = self.run_list_function(WIDEN_LIST, everything)
+        if self.defines(RBAC_FUNC_WIDEN_LIST):
+            added = self.run_list_function(RBAC_FUNC_WIDEN_LIST, everything)
             visible = everything.filter(
                 Q(pk__in=visible.values("pk")) | Q(pk__in=added.values("pk"))
             )
@@ -143,17 +143,20 @@ class EndpointChecks:
     def field_rules(self, obj: Model | None = None) -> FieldRules:
         """What hidden_fields and readonly_fields protect on one object, or with `obj=None` on
         any object of the endpoint"""
-        if not self.defines(HIDDEN_FIELDS, READONLY_FIELDS):
+        if not self.defines(RBAC_FUNC_HIDDEN_FIELDS, RBAC_FUNC_READONLY_FIELDS):
             return FieldRules()
         key = None if obj is None else obj.pk
         if key not in self.field_rules_by_object:
             rules = FieldRules(
-                self.field_paths(HIDDEN_FIELDS, obj), self.field_paths(READONLY_FIELDS, obj)
+                self.field_paths(RBAC_FUNC_HIDDEN_FIELDS, obj),
+                self.field_paths(RBAC_FUNC_READONLY_FIELDS, obj),
             )
             if key is not None:
                 hidden = FieldRules.without_selectors(rules.hidden)
                 if not hidden <= FieldRules.without_selectors(self.field_rules().hidden):
-                    self.logger(HIDDEN_FIELDS).warning("hidden_fields hides more on one object")
+                    self.logger(RBAC_FUNC_HIDDEN_FIELDS).warning(
+                        "hidden_fields hides more on one object"
+                    )
                     raise PermissionCheckFailed()
             self.field_rules_by_object[key] = rules
         return self.field_rules_by_object[key]
@@ -165,7 +168,9 @@ class EndpointChecks:
         if not new or self.bound_check is None:
             return
         self.reported_fields |= new
-        self.logger(HIDDEN_FIELDS).warning("Field rules name fields the endpoint lacks", fields=new)
+        self.logger(RBAC_FUNC_HIDDEN_FIELDS).warning(
+            "Field rules name fields the endpoint lacks", fields=new
+        )
         key = self.unknown_fields_key(self.bound_check, self.endpoint)
         cache.set(key, sorted(set(cache.get(key, [])) | new), UNKNOWN_FIELDS_TIMEOUT)
 
@@ -192,17 +197,17 @@ class EndpointChecks:
         return set(paths)
 
     def alter_response(self, data: Any) -> Any:
-        if not self.defines(ALTER_RESPONSE):
+        if not self.defines(RBAC_FUNC_ALTER_RESPONSE):
             return data
         try:
             result = self.bound_check.run(
-                ALTER_RESPONSE, self.request, self.endpoint, self.request, data
+                RBAC_FUNC_ALTER_RESPONSE, self.request, self.endpoint, self.request, data
             )
             dumps(result, cls=JSONEncoder)
         except PermissionDenied:
             raise
         except Exception as exc:  # noqa: BLE001
-            self.logger(ALTER_RESPONSE).warning("Permission check failed", exc=exc)
+            self.logger(RBAC_FUNC_ALTER_RESPONSE).warning("Permission check failed", exc=exc)
             raise PermissionCheckFailed() from None
         return result
 

@@ -15,7 +15,7 @@ from authentik.api.authentication import validate_auth
 from authentik.core.models import UserTypes
 from authentik.lib.tracing import active_tracer
 from authentik.rbac.endpoint_checks import EndpointChecks
-from authentik.rbac.endpoints import NARROW_LIST, WIDEN_LIST, Endpoints
+from authentik.rbac.endpoints import RBAC_FUNC_NARROW_LIST, RBAC_FUNC_WIDEN_LIST, Endpoints
 
 
 # Inline fork of https://github.com/rpkilby/django-rest-framework-guardian
@@ -79,7 +79,7 @@ class ObjectFilter(ObjectPermissionsFilter):
     @active_tracer().instrument()
     def filter_queryset(self, request: Request, queryset: QuerySet, view: APIView) -> QuerySet:
         checks = EndpointChecks.for_request(request, "list")
-        if checks.defines(NARROW_LIST, WIDEN_LIST):
+        if checks.defines(RBAC_FUNC_NARROW_LIST, RBAC_FUNC_WIDEN_LIST):
             return checks.filter_list(self.visible_objects(request, queryset, view), queryset)
         return self.visible_objects(request, queryset, view, refuse_if_none=True)
 

@@ -11,21 +11,21 @@ from rest_framework.request import Request
 if TYPE_CHECKING:
     from rest_framework.viewsets import ViewSet
 
-HAS_PERMISSION = "has_permission"
-HAS_OBJECT_PERMISSION = "has_object_permission"
-NARROW_LIST = "narrow_list"
-WIDEN_LIST = "widen_list"
-ALTER_RESPONSE = "alter_response"
-HIDDEN_FIELDS = "hidden_fields"
-READONLY_FIELDS = "readonly_fields"
+RBAC_FUNC_HAS_PERMISSION = "has_permission"
+RBAC_FUNC_HAS_OBJECT_PERMISSION = "has_object_permission"
+RBAC_FUNC_NARROW_LIST = "narrow_list"
+RBAC_FUNC_WIDEN_LIST = "widen_list"
+RBAC_FUNC_ALTER_RESPONSE = "alter_response"
+RBAC_FUNC_HIDDEN_FIELDS = "hidden_fields"
+RBAC_FUNC_READONLY_FIELDS = "readonly_fields"
 FUNCTIONS = (
-    HAS_PERMISSION,
-    HAS_OBJECT_PERMISSION,
-    NARROW_LIST,
-    WIDEN_LIST,
-    ALTER_RESPONSE,
-    HIDDEN_FIELDS,
-    READONLY_FIELDS,
+    RBAC_FUNC_HAS_PERMISSION,
+    RBAC_FUNC_HAS_OBJECT_PERMISSION,
+    RBAC_FUNC_NARROW_LIST,
+    RBAC_FUNC_WIDEN_LIST,
+    RBAC_FUNC_ALTER_RESPONSE,
+    RBAC_FUNC_HIDDEN_FIELDS,
+    RBAC_FUNC_READONLY_FIELDS,
 )
 
 API_PREFIX = "api/v3/"
@@ -94,18 +94,18 @@ class Endpoints:
         for action in dict.fromkeys(view.actions.values()):
             if not cls.is_hookable(permission_classes, getattr(viewset, action)):
                 continue
-            functions = [HAS_PERMISSION]
+            functions = [RBAC_FUNC_HAS_PERMISSION]
             if options.get("detail"):
-                functions.append(HAS_OBJECT_PERMISSION)
+                functions.append(RBAC_FUNC_HAS_OBJECT_PERMISSION)
             if action == "list" and any(
                 issubclass(backend, cls.list_filters()) for backend in backends
             ):
-                functions += [NARROW_LIST, WIDEN_LIST]
+                functions += [RBAC_FUNC_NARROW_LIST, RBAC_FUNC_WIDEN_LIST]
             if action in FIELD_ACTIONS and getattr(viewset, "queryset", None) is not None:
-                functions.append(HIDDEN_FIELDS)
+                functions.append(RBAC_FUNC_HIDDEN_FIELDS)
                 if action in WRITE_ACTIONS:
-                    functions.append(READONLY_FIELDS)
-            functions.append(ALTER_RESPONSE)
+                    functions.append(RBAC_FUNC_READONLY_FIELDS)
+            functions.append(RBAC_FUNC_ALTER_RESPONSE)
             yield Endpoint(f"{prefix}:{action}", tuple(functions))
 
     @classmethod
@@ -115,7 +115,7 @@ class Endpoints:
         if view is None or not cls.is_hookable(view.permission_classes, None):
             return
         path = str(pattern.pattern).strip("/")
-        functions = (HAS_PERMISSION, ALTER_RESPONSE)
+        functions = (RBAC_FUNC_HAS_PERMISSION, RBAC_FUNC_ALTER_RESPONSE)
         for method in view.http_method_names:
             if method != "options" and hasattr(view, method):
                 yield Endpoint(f"{path}:{method}", functions)

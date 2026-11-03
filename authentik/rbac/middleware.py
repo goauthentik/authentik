@@ -13,7 +13,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import User
 from authentik.lib.middleware import SignalMiddleware
 from authentik.rbac.endpoint_checks import EndpointChecks, PermissionCheckFailed
-from authentik.rbac.endpoints import ALTER_RESPONSE
+from authentik.rbac.endpoints import RBAC_FUNC_ALTER_RESPONSE
 from authentik.rbac.permissions import assign_initial_permissions
 
 LOGGER = get_logger()
@@ -53,7 +53,7 @@ class AlterResponseMiddleware:
             not isinstance(response, Response)
             and is_success(response.status_code)
             and getattr(request, "user", None) is not None
-            and EndpointChecks.for_request(request).defines(ALTER_RESPONSE)
+            and EndpointChecks.for_request(request).defines(RBAC_FUNC_ALTER_RESPONSE)
         ):
             LOGGER.warning("alter_response cannot change this response", path=request.path)
             failure = PermissionCheckFailed()

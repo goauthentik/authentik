@@ -7,7 +7,7 @@ from authentik.api.v3.urls import router
 from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
 from authentik.rbac.apps import EnableCustomPermissions
-from authentik.rbac.endpoints import NARROW_LIST, Endpoints
+from authentik.rbac.endpoints import RBAC_FUNC_NARROW_LIST, Endpoints
 from authentik.rbac.models import PermissionCheck, Role
 
 DENY = "def has_permission(request):\n    return False"
@@ -44,7 +44,7 @@ class TestPermissionCheckCoverage(APITestCase):
                 unreachable.append(endpoint.id)
                 continue
             probes = {DENY: 403, FAIL_ALTER: 500}
-            if NARROW_LIST in endpoint.functions:
+            if RBAC_FUNC_NARROW_LIST in endpoint.functions:
                 probes[FAIL_LIST] = 403
             for expression, status in probes.items():
                 check.expression = expression
