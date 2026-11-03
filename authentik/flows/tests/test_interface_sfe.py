@@ -120,3 +120,29 @@ class TestFlowInterfaceTitle(APIFlowTestCase):
             reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         )
         self.assertContains(response, '<meta name="ak-flow-title" content="100% secure">')
+
+
+class TestFlowInterfaceBackground(APIFlowTestCase):
+    """Test the flow background on the interface page"""
+
+    def test_themed_background(self):
+        """A themed background renders its light variant, and its dark variant under
+        data-theme="dark", before the flow executor loads"""
+        flow = create_test_flow()
+        flow.background = "/static/authentik/sources/kerberos/%(theme)s.png"
+        flow.save()
+        response = self.client.get(
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode()
+        self.assertRegex(
+            content,
+            r":root \{\s*--ak-global--background-image: "
+            r'url\("http://testserver/static/authentik/sources/kerberos/light.png"\);',
+        )
+        self.assertRegex(
+            content,
+            r':root\[data-theme="dark"\] \{\s*--ak-global--background-image: '
+            r'url\("http://testserver/static/authentik/sources/kerberos/dark.png"\);',
+        )

@@ -144,7 +144,7 @@ export class BrandForm extends ModelForm<Brand, string> {
             >
             </ak-switch-input>
 
-            <ak-form-group label="${msg("Branding settings")} ">
+            <ak-form-group label=${msg("Branding settings")} open>
                 <div class="pf-c-form">
                     <ak-text-input
                         required
