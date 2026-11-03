@@ -1,11 +1,7 @@
 /**
  * @file Convert authentik MDX into clean Markdown for the .md payload:
-<<<<<<< HEAD
- * inline partial imports, strip custom directives and JSX/imports.
-=======
- *   inline partial imports, strip custom directives and JSX/imports, and
- *   point links at published URLs.
->>>>>>> ef6c7aade (website: resolve links in the Markdown copies of docs pages (#27354))
+ * inline partial imports, strip custom directives and JSX/imports, and
+ * point links at published URLs.
  */
 
 import { readFileSync } from "node:fs";
@@ -133,11 +129,7 @@ function resolvePartialLinks(body, partialPath, resolveLink) {
  *
  * @param {string} content
  * @param {string} filePath
-<<<<<<< HEAD
-=======
  * @param {LinkResolver} [resolveLink]
- *
->>>>>>> ef6c7aade (website: resolve links in the Markdown copies of docs pages (#27354))
  * @returns {string}
  */
 function inlinePartials(content, filePath, resolveLink) {
@@ -239,12 +231,8 @@ function resolveLinksPlugin({ sourceFile, resolveLink }) {
  * @param {object} [options]
  * @param {(filePath: string, err: unknown) => void} [options.onFallback] Called when strict
  *   MDX parsing fails and the regex fallback is used (for caller-side summary logging).
-<<<<<<< HEAD
-=======
  *   The fallback leaves links as written.
  * @param {LinkResolver} [options.resolveLink] Maps links to their published URLs.
- *
->>>>>>> ef6c7aade (website: resolve links in the Markdown copies of docs pages (#27354))
  * @returns {Promise<string>}
  */
 export async function cleanMdxToMarkdown(content, filePath, { onFallback, resolveLink } = {}) {
