@@ -111,6 +111,8 @@ class FlowExecutorView(APIView):
     current_binding: FlowStageBinding | None = None
     current_stage: Stage
     current_stage_view: View
+    # Set when this request deleted the session's plan because it belonged to another flow
+    replaced_other_flow_plan = False
 
     _logger: BoundLogger
 
@@ -158,6 +160,13 @@ class FlowExecutorView(APIView):
         self._logger.debug("f(exec): restored flow plan from token", plan=plan)
         return plan
 
+    def _cancel_other_flow_plan(self):
+        """Delete the session's plan, which belongs to another flow"""
+        # Existing plan is deleted from session and instance
+        self.plan = None
+        self.cancel()
+        self.replaced_other_flow_plan = True
+
     def initialize_request(self, request, *args, **kwargs):
         # Stubbed out `initialize_request` since we call the correct method early on
         # in `dispatch`, and super().dispatch would call it again
@@ -184,9 +193,7 @@ class FlowExecutorView(APIView):
                         "f(exec): Found existing plan for other flow, deleting plan",
                         other_flow=self.plan.flow_pk,
                     )
-                    # Existing plan is deleted from session and instance
-                    self.plan = None
-                    self.cancel()
+                    self._cancel_other_flow_plan()
                 else:
                     self._logger.debug("f(exec): Continuing existing plan")
 
@@ -340,6 +347,22 @@ class FlowExecutorView(APIView):
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Solve the previously retrieved challenge and advanced to the next stage."""
         class_path = class_to_path(self.current_stage_view.__class__)
+        if self.replaced_other_flow_plan:
+            # Another flow replaced the plan this response was meant for, e.g. another tab of
+            # the same browser, and this request planned the flow again. Its current stage was
+            # never sent to the client, so the response can't be for it: send the client to the
+            # current stage, as stage_ok() does, instead of validating the response against it.
+            self._logger.warning(
+                "f(exec): Plan was replaced by another flow, sending current stage",
+                view_class=class_path,
+                stage=self.current_stage,
+            )
+            return to_stage_response(
+                request,
+                redirect_with_qs(
+                    "authentik_api:flow-executor", self.request.GET, flow_slug=self.flow.slug
+                ),
+            )
         self._logger.debug(
             "f(exec): Passing POST",
             view_class=class_path,
