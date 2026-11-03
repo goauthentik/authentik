@@ -51,74 +51,84 @@ class TestFieldRules(APITestCase):
         self.user.roles.add(self.role)
         self.role.assign_perms(["authentik_core.view_user", "authentik_core.change_user"])
         self.employee = create_test_user(attributes={"salary": 100, "level": 3, "team": "a"})
+        self.list_url = reverse("authentik_api:user-list")
+        self.employee_url = reverse("authentik_api:user-detail", kwargs={"pk": self.employee.pk})
         self.client.force_login(self.user)
 
-    def url(self, user: User | None = None) -> str:
-        if user is None:
-            return reverse("authentik_api:user-list")
-        return reverse("authentik_api:user-detail", kwargs={"pk": user.pk})
-
-    def patch(self, data: dict):
-        return self.client.patch(self.url(self.employee), data, format="json")
-
     def test_hidden_key_vanishes(self):
-        body = self.client.get(self.url(self.employee)).json()
+        body = self.client.get(self.employee_url).json()
         self.assertEqual(body["attributes"], {"level": 3, "team": "a"})
 
     def test_hidden_field_is_empty(self):
-        self.assertEqual(self.client.get(self.url(self.employee)).json()["email"], "")
+        self.assertEqual(self.client.get(self.employee_url).json()["email"], "")
 
     def test_object_grant_shows(self):
         self.role.assign_perms("authentik_core.custom_read_salary", self.employee)
-        results = self.client.get(self.url(), {"search": self.employee.username}).json()
+        results = self.client.get(self.list_url, {"search": self.employee.username}).json()
         self.assertEqual(results["results"][0]["attributes"]["salary"], 100)
-        self.assertEqual(self.client.get(self.url(self.user)).json()["email"], "")
+        url = reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk})
+        self.assertEqual(self.client.get(url).json()["email"], "")
 
     def test_rules_apply_on_bound_endpoints_only(self):
         self.check.endpoints = ["core/users:list"]
         self.check.save()
-        results = self.client.get(self.url(), {"search": self.employee.username}).json()
+        results = self.client.get(self.list_url, {"search": self.employee.username}).json()
         self.assertNotIn("salary", results["results"][0]["attributes"])
-        self.assertEqual(
-            self.client.get(self.url(self.employee)).json()["attributes"]["salary"], 100
-        )
+        self.assertEqual(self.client.get(self.employee_url).json()["attributes"]["salary"], 100)
 
     def test_hidden_input_dropped_and_stored_value_kept(self):
-        response = self.patch({"attributes": {"salary": 1, "level": 3, "team": "b"}})
+        response = self.client.patch(
+            self.employee_url, {"attributes": {"salary": 1, "level": 3, "team": "b"}}, format="json"
+        )
         self.assertEqual(response.status_code, 200)
         self.employee.refresh_from_db()
         self.assertEqual(self.employee.attributes, {"salary": 100, "level": 3, "team": "b"})
 
     def test_hidden_field_input_dropped(self):
         email = self.employee.email
-        self.assertEqual(self.patch({"email": "new@goauthentik.io"}).status_code, 200)
+        self.assertEqual(
+            self.client.patch(
+                self.employee_url, {"email": "new@goauthentik.io"}, format="json"
+            ).status_code,
+            200,
+        )
         self.employee.refresh_from_db()
         self.assertEqual(self.employee.email, email)
 
     def test_readonly_change_refused(self):
-        response = self.patch({"attributes": {"level": 4}})
+        response = self.client.patch(self.employee_url, {"attributes": {"level": 4}}, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertIn("attributes.level", response.json())
 
     def test_readonly_current_value_passes(self):
-        self.assertEqual(self.patch({"attributes": {"level": 3, "team": "c"}}).status_code, 200)
+        self.assertEqual(
+            self.client.patch(
+                self.employee_url, {"attributes": {"level": 3, "team": "c"}}, format="json"
+            ).status_code,
+            200,
+        )
 
     def test_readonly_change_allowed_for_holders(self):
         self.role.assign_perms("authentik_core.custom_change_salary", self.employee)
-        self.assertEqual(self.patch({"attributes": {"level": 4}}).status_code, 200)
+        self.assertEqual(
+            self.client.patch(
+                self.employee_url, {"attributes": {"level": 4}}, format="json"
+            ).status_code,
+            200,
+        )
 
     def test_search_by_hidden_key_finds_nothing(self):
-        response = self.client.get(self.url(), {"search": "attributes.salary = 100"})
+        response = self.client.get(self.list_url, {"search": "attributes.salary = 100"})
         self.assertEqual(response.json()["results"], [])
-        response = self.client.get(self.url(), {"search": 'attributes.team = "a"'})
+        response = self.client.get(self.list_url, {"search": 'attributes.team = "a"'})
         self.assertEqual(len(response.json()["results"]), 1)
 
     def test_query_by_hidden_field_refused(self):
         email = self.employee.email
-        self.assertEqual(self.client.get(self.url(), {"ordering": "-email"}).status_code, 400)
-        response = self.client.get(self.url(), {"search": f'email = "{email}"'})
+        self.assertEqual(self.client.get(self.list_url, {"ordering": "-email"}).status_code, 400)
+        response = self.client.get(self.list_url, {"search": f'email = "{email}"'})
         self.assertEqual(response.status_code, 400)
-        response = self.client.get(self.url(), {"search": email})
+        response = self.client.get(self.list_url, {"search": email})
         self.assertEqual(response.json()["results"], [])
 
     def test_hidden_attribute_not_validated(self):
@@ -129,19 +139,24 @@ class TestFieldRules(APITestCase):
             type=ObjectAttribute.AttributeType.TEXT,
             is_required=True,
         )
-        self.assertEqual(self.patch({"attributes": {"level": 3, "team": "b"}}).status_code, 200)
+        self.assertEqual(
+            self.client.patch(
+                self.employee_url, {"attributes": {"level": 3, "team": "b"}}, format="json"
+            ).status_code,
+            200,
+        )
 
     def test_failure_fails_closed(self):
         self.check.expression = "def hidden_fields(request, obj):\n    raise ValueError"
         self.check.save()
-        self.assertEqual(self.client.get(self.url(self.employee)).status_code, 500)
+        self.assertEqual(self.client.get(self.employee_url).status_code, 500)
 
     def test_object_may_not_hide_more_than_endpoint(self):
         self.check.expression = (
             "def hidden_fields(request, obj):\n    return {'name'} if obj else set()"
         )
         self.check.save()
-        self.assertEqual(self.client.get(self.url(self.employee)).status_code, 500)
+        self.assertEqual(self.client.get(self.employee_url).status_code, 500)
 
     def test_full_update_keeps_hidden_required_field(self):
         self.check.endpoints = ["core/groups:update"]
@@ -201,12 +216,10 @@ class TestNestedFieldRules(APITestCase):
         self.client.force_login(self.user)
         self.url = reverse("authentik_api:group-detail", kwargs={"pk": self.group.pk})
 
-    def salaries(self, body: dict) -> dict:
-        return {member["pk"]: member["attributes"].get("salary") for member in body["users_obj"]}
-
     def test_members_decided_one_by_one(self):
         body = self.client.get(self.url).json()
-        self.assertEqual(self.salaries(body), {self.readable.pk: 1, self.hidden.pk: None})
+        salaries = {user["pk"]: user["attributes"].get("salary") for user in body["users_obj"]}
+        self.assertEqual(salaries, {self.readable.pk: 1, self.hidden.pk: None})
 
     def test_path_through_list(self):
         self.check.expression = (
@@ -214,7 +227,8 @@ class TestNestedFieldRules(APITestCase):
         )
         self.check.save()
         body = self.client.get(self.url).json()
-        self.assertEqual(self.salaries(body), {self.readable.pk: None, self.hidden.pk: None})
+        salaries = {user["pk"]: user["attributes"].get("salary") for user in body["users_obj"]}
+        self.assertEqual(salaries, {self.readable.pk: None, self.hidden.pk: None})
 
     def test_writes_echoing_nested_objects(self):
         body = self.client.get(self.url).json()
@@ -222,9 +236,9 @@ class TestNestedFieldRules(APITestCase):
             self.url, {"name": "renamed", "users_obj": body["users_obj"]}, format="json"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            self.salaries(response.json()), {self.readable.pk: 1, self.hidden.pk: None}
-        )
+        members = response.json()["users_obj"]
+        salaries = {user["pk"]: user["attributes"].get("salary") for user in members}
+        self.assertEqual(salaries, {self.readable.pk: 1, self.hidden.pk: None})
         self.hidden.refresh_from_db()
         self.assertEqual(self.hidden.attributes["salary"], 2)
 

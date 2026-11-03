@@ -1,5 +1,4 @@
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Model
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -15,14 +14,8 @@ def has_permission(request):
 """
 
 
-def create_custom_permission(codename: str, model: type[Model]) -> CustomPermission:
-    return CustomPermission.objects.create(
-        codename=codename, name=codename, content_type=ContentType.objects.get_for_model(model)
-    )
-
-
 class PermissionCheckTestCase(APITestCase):
-    """A user with a role, and helpers to bind checks"""
+    """A logged-in user with a role, and custom permissions enabled"""
 
     def setUp(self):
         EnableCustomPermissions.set(True)
@@ -30,15 +23,6 @@ class PermissionCheckTestCase(APITestCase):
         self.role = Role.objects.create(name=generate_id())
         self.user.roles.add(self.role)
         self.client.force_login(self.user)
-
-    def bind(self, expression: str, *endpoints: str) -> PermissionCheck:
-        return PermissionCheck.objects.create(
-            name=generate_id(), expression=expression, endpoints=list(endpoints)
-        )
-
-    def group_names(self) -> list[str]:
-        response = self.client.get(reverse("authentik_api:group-list"))
-        return sorted(group["name"] for group in response.json()["results"])
 
 
 class TestDecisions(PermissionCheckTestCase):
@@ -50,60 +34,89 @@ class TestDecisions(PermissionCheckTestCase):
 
     def test_false_forbids(self):
         self.assertEqual(self.client.get(self.url).status_code, 200)
-        self.bind(DENY, "core/groups:list")
+        PermissionCheck.objects.create(
+            name=generate_id(), expression=DENY, endpoints=["core/groups:list"]
+        )
         self.assertEqual(self.client.get(self.url).status_code, 403)
 
     def test_true_keeps_decision(self):
-        self.bind("def has_permission(request):\n    return True", "admin/system:get")
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def has_permission(request):\n    return True",
+            endpoints=["admin/system:get"],
+        )
         self.assertEqual(self.client.get(self.system).status_code, 403)
 
     def test_skip_exception_grants(self):
-        self.bind(
-            "def has_permission(request):\n    raise PermissionCheckSkipException",
-            "admin/system:get",
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def has_permission(request):\n    raise PermissionCheckSkipException",
+            endpoints=["admin/system:get"],
         )
         self.assertEqual(self.client.get(self.system).status_code, 200)
 
     def test_superuser_skips_checks(self):
-        self.bind(DENY, "core/groups:list")
+        PermissionCheck.objects.create(
+            name=generate_id(), expression=DENY, endpoints=["core/groups:list"]
+        )
         self.client.force_login(create_test_admin_user())
         self.assertEqual(self.client.get(self.url).status_code, 200)
 
     def test_outposts_run_checks(self):
-        self.bind(DENY, "core/groups:list")
+        PermissionCheck.objects.create(
+            name=generate_id(), expression=DENY, endpoints=["core/groups:list"]
+        )
         self.user.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
         self.user.save()
         self.assertEqual(self.client.get(self.url).status_code, 403)
 
     def test_exception_forbids(self):
-        self.bind("def has_permission(request):\n    raise ValueError", "core/groups:list")
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def has_permission(request):\n    raise ValueError",
+            endpoints=["core/groups:list"],
+        )
         self.assertEqual(self.client.get(self.url).status_code, 403)
 
     def test_non_bool_forbids(self):
-        self.bind("def has_permission(request):\n    return 1", "core/groups:list")
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def has_permission(request):\n    return 1",
+            endpoints=["core/groups:list"],
+        )
         self.assertEqual(self.client.get(self.url).status_code, 403)
 
     def test_narrow_list(self):
         kept = Group.objects.create(name=generate_id())
         Group.objects.create(name=generate_id())
-        self.bind(
-            f"def narrow_list(request, queryset):\n    return queryset.filter(name='{kept.name}')",
-            "core/groups:list",
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression=(
+                "def narrow_list(request, queryset):\n"
+                f"    return queryset.filter(name='{kept.name}')"
+            ),
+            endpoints=["core/groups:list"],
         )
-        self.assertEqual(self.group_names(), [kept.name])
+        groups = self.client.get(self.url).json()["results"]
+        self.assertEqual(sorted(group["name"] for group in groups), [kept.name])
 
     def test_narrow_list_wrong_type_forbids(self):
-        self.bind(
-            "def narrow_list(request, queryset):\n    return ak_user_by()", "core/groups:list"
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def narrow_list(request, queryset):\n    return ak_user_by()",
+            endpoints=["core/groups:list"],
         )
         self.assertEqual(self.client.get(self.url).status_code, 403)
 
     def test_retrieve_agrees_with_list(self):
         kept = Group.objects.create(name=generate_id())
         hidden = Group.objects.create(name="x")
-        self.bind(
-            f"def narrow_list(request, queryset):\n    return queryset.filter(pk='{kept.pk}')",
-            "core/groups:list",
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression=(
+                f"def narrow_list(request, queryset):\n    return queryset.filter(pk='{kept.pk}')"
+            ),
+            endpoints=["core/groups:list"],
         )
         detail = "authentik_api:group-detail"
         response = self.client.get(reverse(detail, kwargs={"pk": kept.pk}))
@@ -118,21 +131,30 @@ class TestLists(PermissionCheckTestCase):
         self.visible = Group.objects.create(name=generate_id())
         self.hidden = Group.objects.create(name=generate_id())
         self.role.assign_perms("authentik_core.view_group", self.visible)
+        self.url = reverse("authentik_api:group-list")
 
     def test_narrow_list_cannot_widen(self):
-        self.bind(
-            "def narrow_list(request, queryset):\n    return queryset.model.objects.all()",
-            "core/groups:list",
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression=(
+                "def narrow_list(request, queryset):\n    return queryset.model.objects.all()"
+            ),
+            endpoints=["core/groups:list"],
         )
-        self.assertEqual(self.group_names(), [self.visible.name])
+        groups = self.client.get(self.url).json()["results"]
+        self.assertEqual(sorted(group["name"] for group in groups), [self.visible.name])
 
     def test_widen_list(self):
-        self.bind(
-            f"def widen_list(request, queryset):\n"
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression=f"def widen_list(request, queryset):\n"
             f"    return queryset.filter(pk='{self.hidden.pk}')",
-            "core/groups:list",
+            endpoints=["core/groups:list"],
         )
-        self.assertEqual(self.group_names(), sorted([self.visible.name, self.hidden.name]))
+        groups = self.client.get(self.url).json()["results"]
+        self.assertEqual(
+            sorted(group["name"] for group in groups), sorted([self.visible.name, self.hidden.name])
+        )
 
 
 class TestMembershipDecisions(PermissionCheckTestCase):
@@ -145,18 +167,22 @@ class TestMembershipDecisions(PermissionCheckTestCase):
         self.url = reverse("authentik_api:group-add-user", kwargs={"pk": self.group.pk})
 
     def test_denied_visible_user_is_403(self):
-        self.bind(
-            "def has_object_permission(request, obj):\n    return False",
-            "core/groups:add_user",
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def has_object_permission(request, obj):\n    return False",
+            endpoints=["core/groups:add_user"],
         )
         self.assertEqual(self.client.post(self.url, {"pk": self.member.pk}).status_code, 403)
 
     def test_named_user_follows_users_list(self):
         hidden = create_test_user()
         self.assertEqual(self.client.post(self.url, {"pk": hidden.pk}).status_code, 404)
-        self.bind(
-            f"def widen_list(request, queryset):\n    return queryset.filter(pk={hidden.pk})",
-            "core/users:list",
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression=(
+                f"def widen_list(request, queryset):\n    return queryset.filter(pk={hidden.pk})"
+            ),
+            endpoints=["core/users:list"],
         )
         self.assertEqual(self.client.post(self.url, {"pk": hidden.pk}).status_code, 204)
 
@@ -167,41 +193,49 @@ class TestValidation(PermissionCheckTestCase):
         self.client.force_login(create_test_admin_user())
         self.url = reverse("authentik_api:permissioncheck-list")
 
-    def create(self, expression: str, *endpoints: str):
-        return self.client.post(
-            self.url,
-            {"name": generate_id(), "expression": expression, "endpoints": list(endpoints)},
-            format="json",
-        )
-
     def test_valid(self):
-        self.assertEqual(self.create(DENY, "core/groups:list").status_code, 201)
+        data = {"name": generate_id(), "expression": DENY, "endpoints": ["core/groups:list"]}
+        self.assertEqual(self.client.post(self.url, data, format="json").status_code, 201)
 
     def test_syntax_error(self):
-        self.assertEqual(self.create("def has_permission(", "core/groups:list").status_code, 400)
+        data = {
+            "name": generate_id(),
+            "expression": "def has_permission(",
+            "endpoints": ["core/groups:list"],
+        }
+        self.assertEqual(self.client.post(self.url, data, format="json").status_code, 400)
 
     def test_no_function(self):
-        self.assertEqual(self.create("x = 1", "core/groups:list").status_code, 400)
+        data = {"name": generate_id(), "expression": "x = 1", "endpoints": ["core/groups:list"]}
+        self.assertEqual(self.client.post(self.url, data, format="json").status_code, 400)
 
     def test_unknown_endpoint(self):
-        self.assertEqual(self.create(DENY, "core/nothing:list").status_code, 400)
+        data = {"name": generate_id(), "expression": DENY, "endpoints": ["core/nothing:list"]}
+        self.assertEqual(self.client.post(self.url, data, format="json").status_code, 400)
 
     def test_rbac_endpoints_take_checks(self):
-        self.assertEqual(self.create(DENY, "rbac/roles:add_user").status_code, 201)
+        data = {"name": generate_id(), "expression": DENY, "endpoints": ["rbac/roles:add_user"]}
+        self.assertEqual(self.client.post(self.url, data, format="json").status_code, 201)
 
     def test_endpoint_runs_no_defined_function(self):
-        expression = "def has_object_permission(request, obj):\n    return True"
-        self.assertEqual(self.create(expression, "core/groups:list").status_code, 400)
+        data = {
+            "name": generate_id(),
+            "expression": "def has_object_permission(request, obj):\n    return True",
+            "endpoints": ["core/groups:list"],
+        }
+        self.assertEqual(self.client.post(self.url, data, format="json").status_code, 400)
 
     def test_endpoint_bound_once(self):
-        self.create(DENY, "core/groups:list")
-        self.assertEqual(self.create(DENY, "core/groups:list").status_code, 400)
+        data = {"name": generate_id(), "expression": DENY, "endpoints": ["core/groups:list"]}
+        self.assertEqual(self.client.post(self.url, data, format="json").status_code, 201)
+        data["name"] = generate_id()
+        self.assertEqual(self.client.post(self.url, data, format="json").status_code, 400)
 
     def test_endpoints_required(self):
-        url = reverse("authentik_api:permissioncheck-list")
         data = {"name": generate_id(), "expression": DENY}
-        self.assertEqual(self.client.post(url, data, format="json").status_code, 400)
-        self.assertEqual(self.create(DENY).status_code, 400)
+        self.assertEqual(self.client.post(self.url, data, format="json").status_code, 400)
+        data["endpoints"] = []
+        self.assertEqual(self.client.post(self.url, data, format="json").status_code, 400)
 
     def test_endpoints(self):
         response = self.client.get(reverse("authentik_api:endpoints-list"))
@@ -223,15 +257,20 @@ class TestValidation(PermissionCheckTestCase):
 
 class TestRealWorldExamples(PermissionCheckTestCase):
     def test_delegated_service_accounts(self):
-        create_custom_permission("custom_add_service_account", User)
-        self.bind(
-            """
+        CustomPermission.objects.create(
+            codename="custom_add_service_account",
+            name="custom_add_service_account",
+            content_type=ContentType.objects.get_for_model(User),
+        )
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="""
 def has_permission(request):
     if request.user.has_perm("authentik_core.custom_add_service_account"):
         raise PermissionCheckSkipException
     return True
 """,
-            "core/users:service_account",
+            endpoints=["core/users:service_account"],
         )
         url = reverse("authentik_api:user-service-account")
         data = {"name": generate_id(), "create_group": False}
@@ -241,8 +280,9 @@ def has_permission(request):
         self.assertTrue(User.objects.filter(username=data["name"]).exists())
 
     def test_users_leave_groups(self):
-        self.bind(
-            """
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="""
 def widen_list(request, queryset):
     return queryset.filter(pk=request.user.pk)
 
@@ -254,8 +294,7 @@ def has_object_permission(request, obj):
         raise PermissionCheckSkipException
     return True
 """,
-            "core/users:list",
-            "core/groups:remove_user",
+            endpoints=["core/users:list", "core/groups:remove_user"],
         )
         other = create_test_user()
         group = Group.objects.create(name=generate_id(), attributes={"self_service_leave": True})
@@ -266,8 +305,9 @@ def has_object_permission(request, obj):
         self.assertFalse(group.users.filter(pk=self.user.pk).exists())
 
     def test_managers_place_reports_in_groups(self):
-        self.bind(
-            """
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="""
 def widen_list(request, queryset):
     return queryset.filter(attributes__manager=str(request.user.uuid))
 
@@ -281,8 +321,7 @@ def has_object_permission(request, obj):
         raise PermissionCheckSkipException
     return True
 """,
-            "core/users:list",
-            "core/groups:add_user",
+            endpoints=["core/users:list", "core/groups:add_user"],
         )
         report = create_test_user(attributes={"manager": str(self.user.uuid)})
         stranger = create_test_user()
@@ -294,13 +333,11 @@ def has_object_permission(request, obj):
         users = self.client.get(reverse("authentik_api:user-list")).json()["results"]
         self.assertEqual([user["pk"] for user in users], [report.pk])
 
-        def add(group: Group, user: User) -> int:
-            url = reverse("authentik_api:group-add-user", kwargs={"pk": group.pk})
-            return self.client.post(url, {"pk": user.pk}).status_code
-
-        self.assertEqual(add(opted_in, report), 204)
-        self.assertEqual(add(other, report), 403)
-        self.assertEqual(add(opted_in, stranger), 403)
+        opted_in_url = reverse("authentik_api:group-add-user", kwargs={"pk": opted_in.pk})
+        other_url = reverse("authentik_api:group-add-user", kwargs={"pk": other.pk})
+        self.assertEqual(self.client.post(opted_in_url, {"pk": report.pk}).status_code, 204)
+        self.assertEqual(self.client.post(other_url, {"pk": report.pk}).status_code, 403)
+        self.assertEqual(self.client.post(opted_in_url, {"pk": stranger.pk}).status_code, 403)
 
 
 class TestAlterResponse(PermissionCheckTestCase):
@@ -312,15 +349,20 @@ class TestAlterResponse(PermissionCheckTestCase):
         self.url = reverse("authentik_api:admin_system")
 
     def test_trimming_system_information(self):
-        create_custom_permission("custom_view_runtime_details", SystemPermission)
-        self.bind(
-            """
+        CustomPermission.objects.create(
+            codename="custom_view_runtime_details",
+            name="custom_view_runtime_details",
+            content_type=ContentType.objects.get_for_model(SystemPermission),
+        )
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="""
 def alter_response(request, data):
     if request.user.has_perm("authentik_rbac.custom_view_runtime_details"):
         return data
     return {key: value for key, value in data.items() if key not in {"http_headers", "runtime"}}
 """,
-            "admin/system:get",
+            endpoints=["admin/system:get"],
         )
         body = self.client.get(self.url).json()
         self.assertNotIn("runtime", body)
@@ -329,9 +371,17 @@ def alter_response(request, data):
         self.assertIn("runtime", self.client.get(self.url).json())
 
     def test_exception_fails_closed(self):
-        self.bind("def alter_response(request, data):\n    raise ValueError", "admin/system:get")
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def alter_response(request, data):\n    raise ValueError",
+            endpoints=["admin/system:get"],
+        )
         self.assertEqual(self.client.get(self.url).status_code, 500)
 
     def test_unserializable_fails_closed(self):
-        self.bind("def alter_response(request, data):\n    return object()", "admin/system:get")
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def alter_response(request, data):\n    return object()",
+            endpoints=["admin/system:get"],
+        )
         self.assertEqual(self.client.get(self.url).status_code, 500)

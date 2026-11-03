@@ -30,15 +30,12 @@ class TestRuntime(APITestCase):
         self.client.force_login(self.user)
         self.url = reverse("authentik_api:user-list")
 
-    def bind(self, expression: str, *endpoints: str) -> PermissionCheck:
-        return PermissionCheck.objects.create(
-            name=generate_id(),
-            expression=expression,
-            endpoints=list(endpoints) or ["core/users:list"],
-        )
-
     def test_disabled_runs_no_checks(self):
-        self.bind("def has_permission(request):\n    return False")
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def has_permission(request):\n    return False",
+            endpoints=["core/users:list"],
+        )
         EnableCustomPermissions.set(False)
         with CaptureQueriesContext(connection) as queries:
             response = self.client.get(self.url)
@@ -46,16 +43,20 @@ class TestRuntime(APITestCase):
         self.assertFalse(any("authentik_rbac_permissioncheck" in query["sql"] for query in queries))
 
     def test_reason(self):
-        self.bind(
-            "def has_permission(request):\n"
-            '    raise PermissionDenied("Administrators are managed by IT")'
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def has_permission(request):\n"
+            '    raise PermissionDenied("Administrators are managed by IT")',
+            endpoints=["core/users:list"],
         )
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()["detail"], "Administrators are managed by IT")
 
     def test_grants_loaded_once(self):
-        self.bind(GRANTS, "admin/system:get")
+        PermissionCheck.objects.create(
+            name=generate_id(), expression=GRANTS, endpoints=["admin/system:get"]
+        )
         # The first request of a test loads more than any later one
         self.client.get("/api/v3/admin/system/", {"expected": 0})
         queries = []
@@ -72,16 +73,21 @@ class TestRuntime(APITestCase):
         self.assertEqual(queries[0], queries[1])
 
     def test_anonymous_requests_run_checks(self):
-        self.bind('def has_permission(request):\n    raise PermissionDenied("Log in first")')
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression='def has_permission(request):\n    raise PermissionDenied("Log in first")',
+            endpoints=["core/users:list"],
+        )
         self.client.logout()
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()["detail"], "Log in first")
 
     def test_granted_anonymous_requests_own_nothing(self):
-        self.bind(
-            "def has_permission(request):\n    raise PermissionCheckSkipException()",
-            "events/notifications:list",
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def has_permission(request):\n    raise PermissionCheckSkipException()",
+            endpoints=["events/notifications:list"],
         )
         Notification.objects.create(user=self.user, body=generate_id())
         self.client.logout()
@@ -90,7 +96,11 @@ class TestRuntime(APITestCase):
         self.assertEqual(response.json()["results"], [])
 
     def test_unknown_endpoints_reported(self):
-        check = self.bind("def has_permission(request):\n    return True")
+        check = PermissionCheck.objects.create(
+            name=generate_id(),
+            expression="def has_permission(request):\n    return True",
+            endpoints=["core/users:list"],
+        )
         PermissionCheck.objects.filter(pk=check.pk).update(
             endpoints=["core/users:list", "core/users:renamed"]
         )
@@ -101,7 +111,13 @@ class TestRuntime(APITestCase):
         self.assertEqual(response.json()["unknown_endpoints"], ["core/users:renamed"])
 
     def test_reason_in_alter_response(self):
-        self.bind('def alter_response(request, data):\n    raise PermissionDenied("Not today")')
+        PermissionCheck.objects.create(
+            name=generate_id(),
+            expression=(
+                'def alter_response(request, data):\n    raise PermissionDenied("Not today")'
+            ),
+            endpoints=["core/users:list"],
+        )
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()["detail"], "Not today")

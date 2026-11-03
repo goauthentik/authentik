@@ -16,20 +16,18 @@ class TestBuiltinPermissions(SimpleTestCase):
     """The prefix of custom permissions is not used by authentik"""
 
     def test_no_builtin_uses_custom_prefix(self):
-        builtin = [
-            f"{model._meta.label_lower}.{codename}"
-            for model in apps.get_models()
-            for codename in self.builtin_codenames(model)
-            if codename.startswith(CUSTOM_PERMISSION_PREFIX)
-        ]
+        builtin = []
+        for model in apps.get_models():
+            codenames = [
+                f"{action}_{model._meta.model_name}" for action in model._meta.default_permissions
+            ]
+            codenames += [codename for codename, name in model._meta.permissions]
+            builtin += [
+                f"{model._meta.label_lower}.{codename}"
+                for codename in codenames
+                if codename.startswith(CUSTOM_PERMISSION_PREFIX)
+            ]
         self.assertEqual(builtin, [], f"Codenames prefixed {CUSTOM_PERMISSION_PREFIX} are reserved")
-
-    @staticmethod
-    def builtin_codenames(model) -> list[str]:
-        defaults = [
-            f"{action}_{model._meta.model_name}" for action in model._meta.default_permissions
-        ]
-        return defaults + [codename for codename, name in model._meta.permissions]
 
 
 class TestCustomPermissions(APITestCase):
@@ -39,16 +37,6 @@ class TestCustomPermissions(APITestCase):
         self.user.roles.add(self.role)
         self.client.force_login(self.user)
         self.list_url = reverse("authentik_api:custompermission-list")
-
-    def create(self, codename: str = "custom_rename", model=Group) -> CustomPermission:
-        return CustomPermission.objects.create(
-            codename=codename,
-            name=generate_id(),
-            content_type=ContentType.objects.get_for_model(model),
-        )
-
-    def detail_url(self, permission: CustomPermission) -> str:
-        return reverse("authentik_api:custompermission-detail", kwargs={"pk": permission.pk})
 
     def test_create(self):
         data = {"codename": "custom_rename", "name": "Can rename", "model": "authentik_core.group"}
@@ -65,7 +53,11 @@ class TestCustomPermissions(APITestCase):
             self.assertEqual(self.client.post(self.list_url, data).status_code, 400, codename)
 
     def test_unique_per_model(self):
-        self.create()
+        CustomPermission.objects.create(
+            codename="custom_rename",
+            name=generate_id(),
+            content_type=ContentType.objects.get_for_model(Group),
+        )
         self.role.assign_perms("authentik_rbac.add_custompermission")
         data = {"codename": "custom_rename", "name": "Rename", "model": "authentik_core.group"}
         self.assertEqual(self.client.post(self.list_url, data).status_code, 400)
@@ -73,26 +65,44 @@ class TestCustomPermissions(APITestCase):
         self.assertEqual(self.client.post(self.list_url, data).status_code, 201)
 
     def test_codename_and_model_are_immutable(self):
-        url = self.detail_url(self.create())
+        permission = CustomPermission.objects.create(
+            codename="custom_rename",
+            name=generate_id(),
+            content_type=ContentType.objects.get_for_model(Group),
+        )
+        url = reverse("authentik_api:custompermission-detail", kwargs={"pk": permission.pk})
         self.role.assign_perms("authentik_rbac.change_custompermission")
         self.assertEqual(self.client.patch(url, {"codename": "custom_other"}).status_code, 400)
         self.assertEqual(self.client.patch(url, {"model": "authentik_core.user"}).status_code, 400)
         self.assertEqual(self.client.patch(url, {"name": "Renamed"}).status_code, 200)
 
     def test_lists_only_custom_permissions(self):
-        self.create()
+        CustomPermission.objects.create(
+            codename="custom_rename",
+            name=generate_id(),
+            content_type=ContentType.objects.get_for_model(Group),
+        )
         response = self.client.get(self.list_url)
         self.assertEqual([p["codename"] for p in response.json()["results"]], ["custom_rename"])
 
     def test_delete_removes_assignments(self):
-        permission = self.create()
+        permission = CustomPermission.objects.create(
+            codename="custom_rename",
+            name=generate_id(),
+            content_type=ContentType.objects.get_for_model(Group),
+        )
         self.role.assign_perms("authentik_core.custom_rename")
         self.role.assign_perms("authentik_rbac.delete_custompermission")
-        self.assertEqual(self.client.delete(self.detail_url(permission)).status_code, 204)
+        url = reverse("authentik_api:custompermission-detail", kwargs={"pk": permission.pk})
+        self.assertEqual(self.client.delete(url).status_code, 204)
         self.assertFalse(RoleModelPermission.objects.filter(permission_id=permission.pk).exists())
 
     def test_object_permissions(self):
-        self.create()
+        CustomPermission.objects.create(
+            codename="custom_rename",
+            name=generate_id(),
+            content_type=ContentType.objects.get_for_model(Group),
+        )
         group = Group.objects.create(name=generate_id())
         other = Group.objects.create(name="x")
         self.role.assign_perms("authentik_core.custom_rename", group)
@@ -101,7 +111,13 @@ class TestCustomPermissions(APITestCase):
         self.assertFalse(self.user.has_perm("authentik_core.custom_rename"))
 
     def test_system_permission(self):
-        self.create("custom_view_runtime", apps.get_model("authentik_rbac.systempermission"))
+        CustomPermission.objects.create(
+            codename="custom_view_runtime",
+            name=generate_id(),
+            content_type=ContentType.objects.get_for_model(
+                apps.get_model("authentik_rbac.systempermission")
+            ),
+        )
         self.role.assign_perms("authentik_rbac.custom_view_runtime")
         self.assertTrue(self.user.has_perm("authentik_rbac.custom_view_runtime"))
 

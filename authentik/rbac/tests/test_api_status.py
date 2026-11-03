@@ -18,44 +18,43 @@ class TestAPIStatus(APITestCase):
         self.user.roles.add(self.role)
         self.group = Group.objects.create(name=generate_id())
         self.member = create_test_user()
+        self.detail_url = reverse("authentik_api:group-detail", kwargs={"pk": self.group.pk})
+        self.add_user_url = reverse("authentik_api:group-add-user", kwargs={"pk": self.group.pk})
         self.client.force_login(self.user)
 
-    def group_url(self, group: Group, action: str = "detail") -> str:
-        return reverse(f"authentik_api:group-{action}", kwargs={"pk": group.pk})
-
     def test_detail_nothing_visible(self):
-        self.assertEqual(self.client.get(self.group_url(self.group)).status_code, 403)
+        self.assertEqual(self.client.get(self.detail_url).status_code, 403)
 
     def test_detail_other_object_visible(self):
         self.role.assign_perms("authentik_core.view_group", Group.objects.create(name="x"))
-        self.assertEqual(self.client.get(self.group_url(self.group)).status_code, 404)
+        self.assertEqual(self.client.get(self.detail_url).status_code, 404)
 
     def test_detail_object_visible(self):
         self.role.assign_perms("authentik_core.view_group", self.group)
-        self.assertEqual(self.client.get(self.group_url(self.group)).status_code, 200)
+        self.assertEqual(self.client.get(self.detail_url).status_code, 200)
 
     def test_detail_visible_but_not_changeable(self):
         self.role.assign_perms("authentik_core.view_group", self.group)
-        response = self.client.patch(self.group_url(self.group), {"name": generate_id()})
+        response = self.client.patch(self.detail_url, {"name": generate_id()})
         self.assertEqual(response.status_code, 403)
 
     def test_add_user_without_permission(self):
-        response = self.client.post(self.group_url(self.group, "add-user"), {"pk": "invalid"})
+        response = self.client.post(self.add_user_url, {"pk": "invalid"})
         self.assertEqual(response.status_code, 403)
 
     def test_add_user_invalid_body(self):
         self.role.assign_perms("authentik_core.add_user_to_group", self.group)
-        response = self.client.post(self.group_url(self.group, "add-user"), {"pk": "invalid"})
+        response = self.client.post(self.add_user_url, {"pk": "invalid"})
         self.assertEqual(response.status_code, 400)
 
     def test_add_user_hidden_user(self):
         self.role.assign_perms("authentik_core.add_user_to_group", self.group)
-        response = self.client.post(self.group_url(self.group, "add-user"), {"pk": self.member.pk})
+        response = self.client.post(self.add_user_url, {"pk": self.member.pk})
         self.assertEqual(response.status_code, 404)
 
     def test_add_user_visible_user(self):
         self.role.assign_perms("authentik_core.add_user_to_group", self.group)
         self.role.assign_perms("authentik_core.view_user", self.member)
-        response = self.client.post(self.group_url(self.group, "add-user"), {"pk": self.member.pk})
+        response = self.client.post(self.add_user_url, {"pk": self.member.pk})
         self.assertEqual(response.status_code, 204)
         self.assertTrue(self.group.users.filter(pk=self.member.pk).exists())
