@@ -11,7 +11,7 @@ from webauthn.helpers.cose import COSEAlgorithmIdentifier
 
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import FlowStageBinding, NotConfiguredAction
+from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import APIFlowTestCase
@@ -520,6 +520,86 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
                     }
                 ]
             },
+        )
+
+    def test_validate_challenge_malformed(self):
+        """Test that an assertion whose fields can't be decoded is rejected as an invalid
+        device"""
+        flow = create_test_flow()
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        plan = FlowPlan(flow.pk.hex)
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b"\x01" * 64
+        stage_view = AuthenticatorValidateStageView(
+            FlowExecutorView(flow=flow, current_stage=stage, plan=plan),
+            request=self.request_factory.get("/"),
+        )
+        for field, value in (
+            ("rawId", "a"),
+            ("clientDataJSON", "a"),
+            ("authenticatorData", "a"),
+            ("signature", "\u00e9"),
+            ("userHandle", "a"),
+            ("userHandle", "\u00e9"),
+        ):
+            assertion = {
+                "id": "QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
+                "rawId": "QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
+                "type": "public-key",
+                "response": {
+                    "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0In0",
+                    "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABQ",
+                    "signature": "MEQCIFNlrHf9ablJAalXLWkrqvHB8oIu8kwvRpH3X3rbJVpI",
+                    "userHandle": None,
+                },
+            }
+            if field == "rawId":
+                assertion[field] = value
+            else:
+                assertion["response"][field] = value
+            with self.subTest(field=field, value=value):
+                with self.assertRaises(ValidationError) as cm:
+                    validate_challenge_webauthn(assertion, stage_view, self.user)
+                self.assertEqual(str(cm.exception.detail[0]), "Invalid device")
+                self.assertEqual(cm.exception.detail[0].code, "invalid")
+
+    def test_validate_challenge_malformed_userless(self):
+        """Test that a malformed assertion in a passwordless flow gets a validation error"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.DENY,
+            device_classes=[DeviceClasses.WEBAUTHN],
+        )
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=0)
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.get(url)
+        self.assertStageResponse(response, flow, component="ak-stage-authenticator-validate")
+
+        response = self.client.post(
+            url,
+            data={
+                "webauthn": {
+                    "id": "QKZ97ASJAOIDyipAs6mKUxDUZgDrWrbAsUb5leL7-oU",
+                    "rawId": "a",
+                    "type": "public-key",
+                    "response": {
+                        "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0In0",
+                        "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAABQ",
+                        "signature": "MEQCIFNlrHf9ablJAalXLWkrqvHB8oIu8kwvRpH3X3rbJVpI",
+                        "userHandle": None,
+                    },
+                },
+            },
+        )
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-authenticator-validate",
+            response_errors={"webauthn": [{"string": "Invalid device", "code": "invalid"}]},
         )
 
     def test_validate_challenge_userless(self):
