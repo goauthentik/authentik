@@ -244,7 +244,7 @@ class UserSerializer(
             password_hash = validated_data.pop("password_hash", None)
             permissions = validated_data.pop("permissions", [])
 
-        instance: User = super().create(validated_data)
+        instance = super().update(validated_data)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
             instance.assign_perms_to_managed_role(permissions)
