@@ -17,9 +17,11 @@ from authentik.enterprise.providers.ssf.models import (
     Stream,
     StreamEvent,
 )
+from authentik.events.middleware import audit_ignore
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.password.models import PasswordDevice
 
 
 class TestSignals(APITestCase):
@@ -57,8 +59,7 @@ class TestSignals(APITestCase):
     def _assert_password_credential_change(self, user, change_type: str):
         stream = Stream.objects.filter(provider=self.provider).first()
         self.assertIsNotNone(stream)
-        event = StreamEvent.objects.filter(stream=stream).first()
-        self.assertIsNotNone(event)
+        event = StreamEvent.objects.get(stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE)
         self.assertEqual(event.status, SSFEventStatus.PENDING_FAILED)
         event_payload = event.payload["events"][
             "https://schemas.openid.net/secevent/caep/event-type/credential-change"
@@ -95,8 +96,8 @@ class TestSignals(APITestCase):
         """Test user password change"""
         user = create_test_user()
         self.client.force_login(user)
-        user.set_password(generate_id())
-        user.save()
+        StreamEvent.objects.all().delete()
+        PasswordDevice.set_password(user, generate_id())
 
         self._assert_password_credential_change(user, "update")
 
@@ -104,8 +105,8 @@ class TestSignals(APITestCase):
         """Test user password change from a pre-hashed password."""
         user = create_test_user()
         self.client.force_login(user)
-        user.set_password_from_hash(make_password(generate_id()))
-        user.save()
+        StreamEvent.objects.all().delete()
+        PasswordDevice.set_password_from_hash(user, make_password(generate_id()))
 
         self._assert_password_credential_change(user, "update")
 
@@ -113,8 +114,8 @@ class TestSignals(APITestCase):
         """Test explicit password revoke."""
         user = create_test_user()
         self.client.force_login(user)
-        user.set_password(None)
-        user.save()
+        StreamEvent.objects.all().delete()
+        PasswordDevice.set_password(user, None)
 
         self._assert_password_credential_change(user, "revoke")
 
@@ -182,8 +183,8 @@ class TestSignals(APITestCase):
         )
         user = create_test_user()
         self.client.force_login(user)
-        user.set_password(generate_id())
-        user.save()
+        StreamEvent.objects.all().delete()
+        PasswordDevice.set_password(user, generate_id())
 
         stream = Stream.objects.filter(provider=self.provider).first()
         self.assertIsNotNone(stream)
@@ -191,3 +192,38 @@ class TestSignals(APITestCase):
             stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE
         ).first()
         self.assertIsNone(event)
+
+    def test_signal_authenticator_audit_ignore(self):
+        """Test device updates during authentication (audit_ignore) don't emit events"""
+        user = create_test_user()
+        self.client.force_login(user)
+        dev = WebAuthnDevice.objects.create(
+            user=user,
+            name=generate_id(),
+            credential_id=generate_id(),
+            public_key=generate_id(),
+            aaguid=str(uuid4()),
+        )
+        stream = Stream.objects.filter(provider=self.provider).first()
+        self.assertIsNotNone(stream)
+        StreamEvent.objects.all().delete()
+
+        with audit_ignore():
+            dev.sign_count += 1
+            dev.save()
+        self.assertFalse(
+            StreamEvent.objects.filter(
+                stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE
+            ).exists()
+        )
+
+        dev.name = generate_id()
+        dev.save()
+        event = StreamEvent.objects.filter(
+            stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE
+        ).first()
+        self.assertIsNotNone(event)
+        event_payload = event.payload["events"][
+            "https://schemas.openid.net/secevent/caep/event-type/credential-change"
+        ]
+        self.assertEqual(event_payload["change_type"], "update")

@@ -5,7 +5,7 @@ from itertools import chain
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 from rest_framework.serializers import BaseSerializer
 
@@ -84,11 +84,11 @@ class GeoIPPolicy(Policy):
 
         if not asn:
             raise PolicyException(
-                GeoIPNotFoundException(_("GeoIP: client IP not found in ASN database."))
+                GeoIPNotFoundException(str(_("GeoIP: client IP not found in ASN database.")))
             )
 
         if asn not in self.asns:
-            message = _("Client IP is not part of an allowed autonomous system.")
+            message = str(_("Client IP is not part of an allowed autonomous system."))
             return PolicyResult(False, message)
 
         return PolicyResult(True)
@@ -100,11 +100,13 @@ class GeoIPPolicy(Policy):
 
         if not country:
             raise PolicyException(
-                GeoIPNotFoundException(_("GeoIP: client IP address not found in City database."))
+                GeoIPNotFoundException(
+                    str(_("GeoIP: client IP address not found in City database."))
+                )
             )
 
         if country not in self.countries:
-            message = _("Client IP is not in an allowed country.")
+            message = str(_("Client IP is not in an allowed country."))
             return PolicyResult(False, message)
 
         return PolicyResult(True)
@@ -140,7 +142,8 @@ class GeoIPPolicy(Policy):
                 self.history_max_distance_km + self.distance_tolerance_km
             ):
                 return PolicyResult(
-                    False, _("Distance from previous authentication is larger than threshold.")
+                    False,
+                    str(_("Distance from previous authentication is larger than threshold.")),
                 )
             # Check if distance between `previous_login` and now is more
             # than max distance per hour times the amount of hours since the previous login
@@ -150,7 +153,7 @@ class GeoIPPolicy(Policy):
             if self.check_impossible_travel and dist.km >= (
                 (MAX_DISTANCE_HOUR_KM * rel_time_hours) + self.distance_tolerance_km
             ):
-                return PolicyResult(False, _("Distance is further than possible."))
+                return PolicyResult(False, str(_("Distance is further than possible.")))
             result = True
         return PolicyResult(result)
 

@@ -35,6 +35,11 @@
   :root {
       --ak-global--background-image: url("{{ flow_background_url|iriencode|safe }}");
   }
+  {% if flow_background_themed_urls %}
+  :root[data-theme="dark"] {
+      --ak-global--background-image: url("{{ flow_background_themed_urls.dark|iriencode|safe }}");
+  }
+  {% endif %}
 </style>
 {% endblock %}
 
