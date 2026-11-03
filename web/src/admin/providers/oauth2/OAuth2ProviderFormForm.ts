@@ -324,6 +324,7 @@ export function renderForm({
                     : html``}
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
+<<<<<<< HEAD
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                     <ak-crypto-certificate-search
                         label=${msg("Signing Key")}
@@ -331,6 +332,9 @@ export function renderForm({
                         certificate=${ifPresent(provider.signingKey)}
                         singleton
                     ></ak-crypto-certificate-search>
+=======
+                    ${AKCertificateSearch({ name: "signingKey", label: msg("Signing Key"), placeholder: msg("Select a signing key..."), value: provider.signingKey, singleton: !provider.pk, allowedKeyTypes: JWTSigningKeyTypes })}
+>>>>>>> a80ec5ea1 (web/admin: fix OAuth2 signing key selection (#26780))
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.",
