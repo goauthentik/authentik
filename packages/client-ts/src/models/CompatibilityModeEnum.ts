@@ -21,6 +21,7 @@ export const CompatibilityModeEnum = {
     Gitlab: "gitlab",
     Webex: "webex",
     Vcenter: "vcenter",
+    Zulip: "zulip",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type CompatibilityModeEnum =

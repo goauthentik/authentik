@@ -38334,6 +38334,7 @@ components:
       - gitlab
       - webex
       - vcenter
+      - zulip
       type: string
     Config:
       type: object
