@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Invitation } from "./Invitation";
-import { InvitationFromJSON, InvitationToJSON } from "./Invitation";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Invitation } from "./Invitation.js";
+import { InvitationFromJSON, InvitationToJSON } from "./Invitation.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedInvitationList
  */
 export interface PaginatedInvitationList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<Invitation>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

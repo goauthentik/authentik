@@ -1,19 +1,16 @@
 /**
  * @file Path-router outlet for the new route table.
- *
- * Renders the route matched from `location.pathname` (with the interface
- * `prefix` stripped per the matcher's leading-slash contract), owns the
- * loading and error states, and claims in-interface anchor clicks. Ships
- * inert: nothing imports it until the interface flip in Plan 3b.
- *
- * App-context-free: imports only the router core, the reused 404/empty-state
- * elements, `AKElement`, lit, `@sentry/browser` (plus the leaf
- * `sentry/tracing` predicate), and `@lit/localize`.
+ *   Renders the route matched from `location.pathname` (with the interface
+ *   `prefix` stripped per the matcher's leading-slash contract), owns the
+ *   loading and error states, and claims in-interface anchor clicks. Ships
+ *   inert: nothing imports it until the interface flip in Plan 3b.
+ *   App-context-free: imports only the router core, the reused 404/empty-state
+ *   elements, `AKElement`, lit, `@sentry/browser` (plus the leaf
+ *   `sentry/tracing` predicate), and `@lit/localize`.
  */
 
 import "#elements/router/Router404";
 import "#elements/EmptyState";
-
 import { sentryReporting } from "#common/sentry/tracing";
 
 import { AKElement } from "#elements/Base";
@@ -25,6 +22,7 @@ import {
     navigate,
     RouterNavigateEvent,
 } from "#elements/router/core/navigation";
+import { joinPath, stripPrefix, stripTrailingSlash } from "#elements/router/core/paths";
 import { type RouteLike } from "#elements/router/core/Route";
 import { routedTabBaseContext } from "#elements/tabs/tab-context";
 import { type SlottedTemplateResult } from "#elements/types";
@@ -53,7 +51,7 @@ import { until } from "lit/directives/until.js";
 export function formatSpanName(prefix: string, routeName: string | null, pathname: string): string {
     if (routeName === null) return pathname;
 
-    return `${prefix.replace(/\/+$/, "")}/${routeName.replace(/^\/+/, "")}`;
+    return joinPath(prefix, routeName);
 }
 
 @customElement("ak-router-view")
@@ -157,22 +155,10 @@ export class RouterView extends AKElement {
     //#region Matching
 
     /**
-     * Strip the prefix, preserving the leading slash the matcher requires:
-     * `/if/user/settings` → `/settings`, `/if/user/` → `/`. Matching is
-     * segment-aware so a prefix without a trailing slash (a nested outlet's
-     * base, e.g. `…/users/22`) never captures a sibling that merely shares its
-     * text (`…/users/220`). A pathname outside the prefix is returned unchanged
-     * so it falls through to the 404 branch.
+     * Strip this outlet's prefix. Paths outside the prefix are returned unchanged.
      */
     #strip(pathname: string): string {
-        const base = this.prefix.replace(/\/+$/, "");
-
-        if (pathname === base) return "/";
-        if (pathname.startsWith(`${base}/`)) {
-            return `/${pathname.slice(base.length + 1).replace(/^\/+/, "")}`;
-        }
-
-        return pathname;
+        return stripPrefix(pathname, this.prefix);
     }
 
     /**
@@ -180,7 +166,7 @@ export class RouterView extends AKElement {
      * exactly one separator regardless of whether the prefix ends in a slash.
      */
     #join(path: string): string {
-        return `${this.prefix.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+        return joinPath(this.prefix, path);
     }
 
     /**
@@ -196,7 +182,7 @@ export class RouterView extends AKElement {
 
         const consumed = match.pathname.slice(0, match.pathname.length - tail.length);
 
-        return this.#join(consumed.replace(/\/+$/, "") || "/");
+        return this.#join(stripTrailingSlash(consumed) || "/");
     }
 
     #syncRoute = (): void => {
@@ -256,6 +242,7 @@ export class RouterView extends AKElement {
 
     protected override updated(changedProperties: PropertyValues): void {
         if (!changedProperties.has("current")) return;
+
         if (!this.#sentryClient || !sentryReporting(this.#sentryClient)) return;
 
         const name = this.#spanName();

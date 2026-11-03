@@ -25,3 +25,22 @@ or, for Kubernetes, run
 ```shell
 kubectl exec -it deployment/authentik-worker -c worker -- ak ldap_check_connection *slug of the source*
 ```
+
+## Troubleshoot SASL EXTERNAL
+
+Before configuring SASL EXTERNAL in authentik, verify the client certificate and the LDAP server's identity mapping with `ldapwhoami`:
+
+```shell
+LDAPTLS_CACERT=ca.pem \
+LDAPTLS_CERT=client.pem \
+LDAPTLS_KEY=client.key \
+ldapwhoami -H ldap://ldap.example.com -ZZ -Y EXTERNAL
+```
+
+The command should return the authorization identity that the LDAP server derives from the client certificate. If it fails or returns an unexpected identity, verify that:
+
+- The LDAP server advertises the EXTERNAL mechanism after TLS is established.
+- The server trusts the CA that issued the client certificate and requests client certificates.
+- The server maps the certificate subject to the intended LDAP identity.
+- The mapped identity can search the configured base DN and perform password writeback if enabled.
+- An Active Directory source uses `ldap://` with StartTLS rather than `ldaps://` for SASL EXTERNAL.

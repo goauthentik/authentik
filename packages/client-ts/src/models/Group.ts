@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,74 +10,36 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { RelatedGroup } from "./RelatedGroup";
-import { RelatedGroupFromJSON } from "./RelatedGroup";
-import type { Role } from "./Role";
-import { RoleFromJSON } from "./Role";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { RelatedGroup } from "./RelatedGroup.js";
+import { RelatedGroupFromJSON } from "./RelatedGroup.js";
+import type { Role } from "./Role.js";
+import { RoleFromJSON } from "./Role.js";
 
 /**
  * Group Serializer
+ *
  * @export
  * @interface Group
  */
 export interface Group {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     readonly numPk: number;
-    /**
-     *
-     */
     name: string;
     /**
      * Users added to this group will be superusers.
      */
     isSuperuser?: boolean;
-    /**
-     *
-     */
     parents?: Array<string>;
-    /**
-     *
-     */
     readonly parentsObj: Array<RelatedGroup> | null;
-    /**
-     *
-     */
     users?: Array<number>;
-    /**
-     *
-     */
     readonly usersObj: Array<PartialUser> | null;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     roles?: Array<string>;
-    /**
-     *
-     */
     readonly rolesObj: Array<Role>;
-    /**
-     *
-     */
     readonly inheritedRolesObj: Array<Role> | null;
-    /**
-     *
-     */
     readonly children: Array<string>;
-    /**
-     *
-     */
     readonly childrenObj: Array<RelatedGroup> | null;
 }
 

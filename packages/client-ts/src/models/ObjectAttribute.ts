@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,76 +10,38 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { ContentType } from "./ContentType";
-import { ContentTypeFromJSON } from "./ContentType";
-import type { ObjectAttributeTypeEnum } from "./ObjectAttributeTypeEnum";
+import { parseDateTime } from "../runtime.js";
+import type { ContentType } from "./ContentType.js";
+import { ContentTypeFromJSON } from "./ContentType.js";
+import type { ObjectAttributeTypeEnum } from "./ObjectAttributeTypeEnum.js";
 import {
     ObjectAttributeTypeEnumFromJSON,
     ObjectAttributeTypeEnumToJSON,
-} from "./ObjectAttributeTypeEnum";
+} from "./ObjectAttributeTypeEnum.js";
 
 /**
- *
  * @export
  * @interface ObjectAttribute
  */
 export interface ObjectAttribute {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     objectType: string;
-    /**
-     *
-     */
     readonly objectTypeObj: ContentType;
-    /**
-     *
-     */
     enabled?: boolean;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     key: string;
-    /**
-     *
-     */
     label: string;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     regex?: string;
-    /**
-     *
-     */
     type: ObjectAttributeTypeEnum;
-    /**
-     *
-     */
     group?: string;
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     managed?: string | null;
-    /**
-     *
-     */
     isUnique?: boolean;
-    /**
-     *
-     */
     isRequired?: boolean;
 }
 

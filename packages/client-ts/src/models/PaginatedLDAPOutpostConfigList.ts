@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { LDAPOutpostConfig } from "./LDAPOutpostConfig";
-import { LDAPOutpostConfigFromJSON, LDAPOutpostConfigToJSON } from "./LDAPOutpostConfig";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { LDAPOutpostConfig } from "./LDAPOutpostConfig.js";
+import { LDAPOutpostConfigFromJSON, LDAPOutpostConfigToJSON } from "./LDAPOutpostConfig.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedLDAPOutpostConfigList
  */
 export interface PaginatedLDAPOutpostConfigList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<LDAPOutpostConfig>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

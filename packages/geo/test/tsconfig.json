@@ -1,17 +1,6 @@
 {
-    "extends": "@goauthentik/tsconfig",
+    "extends": "@goauthentik/tsconfig/node",
     "compilerOptions": {
-        "allowImportingTsExtensions": true,
-        "noEmit": true,
-        "erasableSyntaxOnly": true,
-        "emitDeclarationOnly": false,
-        "declaration": false,
-        "declarationMap": false,
-        "sourceMap": false,
-        "composite": false,
-        "incremental": false,
-        "checkJs": false,
-        "allowJs": false,
         "lib": ["ESNext", "DOM", "DOM.Iterable"],
         // The browser test pulls in `ak-map`, a Lit element — same decorator
         // and class-field semantics the package's own tsconfig sets.

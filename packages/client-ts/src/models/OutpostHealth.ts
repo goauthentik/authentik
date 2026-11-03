@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,61 +10,28 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-
+import { parseDateTime } from "../runtime.js";
 /**
  * Outpost health status
+ *
  * @export
  * @interface OutpostHealth
  */
 export interface OutpostHealth {
-    /**
-     *
-     */
     readonly uid: string;
-    /**
-     *
-     */
     readonly lastSeen: Date;
-    /**
-     *
-     */
     readonly version: string;
-    /**
-     *
-     */
     readonly golangVersion: string;
-    /**
-     *
-     */
     readonly opensslEnabled: boolean;
-    /**
-     *
-     */
     readonly opensslVersion: string;
     /**
      * Get FIPS enabled
      */
     readonly fipsEnabled: boolean | null;
-    /**
-     *
-     */
     readonly versionShould: string;
-    /**
-     *
-     */
     readonly versionOutdated: boolean;
-    /**
-     *
-     */
     readonly buildHash: string;
-    /**
-     *
-     */
     readonly buildHashShould: string;
-    /**
-     *
-     */
     readonly hostname: string;
 }
 

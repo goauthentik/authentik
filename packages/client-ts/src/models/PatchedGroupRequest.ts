@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,33 +12,19 @@
 
 /**
  * Group Serializer
+ *
  * @export
  * @interface PatchedGroupRequest
  */
 export interface PatchedGroupRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Users added to this group will be superusers.
      */
     isSuperuser?: boolean;
-    /**
-     *
-     */
     parents?: Array<string>;
-    /**
-     *
-     */
     users?: Array<number>;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     roles?: Array<string>;
 }
 

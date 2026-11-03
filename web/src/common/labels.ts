@@ -1,5 +1,6 @@
 /**
- * @file Contains various label maps for API enums and other values that we want to display in the UI.
+ * @file Contains various label maps for API enums and other values that we want to display in the
+ *   UI.
  */
 
 import { MessageFormatter } from "#common/ui/locale/format";
@@ -25,8 +26,10 @@ const IntentLabelRecord: Record<IntentEnum, MessageFormatter<string>> = {
 };
 
 const defaultIntent = IntentLabelRecord[IntentEnum.Api];
+
 export function formatIntentLabel(intent: IntentEnum | string | null | undefined): string {
     const label = IntentLabelRecord[intent as IntentEnum];
+
     return label?.() ?? intent ?? defaultIntent();
 }
 
@@ -38,6 +41,10 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.UserOffboarded]: () => msg("User was offboarded"),
     [EventActions.SuspiciousRequest]: () => msg("Suspicious request"),
     [EventActions.PasswordSet]: () => msg("Password set"),
+    [EventActions.AuthenticatorLocked]: () =>
+        msg("Authenticator locked", { id: "events.authenticator-locked.label" }),
+    [EventActions.AuthenticatorUnlocked]: () =>
+        msg("Authenticator unlocked", { id: "events.authenticator-unlocked.label" }),
     [EventActions.SecretView]: () => msg("Secret was viewed"),
     [EventActions.SecretRotate]: () => msg("Secret was rotated"),
     [EventActions.InvitationUsed]: () => msg("Invitation used"),
@@ -70,12 +77,15 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.AccessRequestApproved]: () => msg("Access request approved"),
     [EventActions.AccessRequestDenied]: () => msg("Access request denied"),
     [EventActions.AccessRequestRevoked]: () => msg("Access request revoked"),
+    [EventActions.RequiredActionCompleted]: () =>
+        msg("Required action completed", { id: "events.action.required-action-completed.label" }),
     [EventActions.UnknownDefaultOpenApi]: () => msg("Unknown action"),
     [EventActions.Custom]: () => msg("Custom action"),
 };
 
 export function actionToLabel(action?: string): string {
     const formatter = action ? EventActionLabelRecord[action as EventActions] : null;
+
     return formatter?.() ?? action ?? "";
 }
 
@@ -90,6 +100,7 @@ const defaultSeverityLabel = SeverityEnumLabelRecord[SeverityEnum.UnknownDefault
 
 export function severityToLabel(severity: SeverityEnum | null | undefined): string {
     const formatter = severity ? SeverityEnumLabelRecord[severity] : null;
+
     return formatter?.() ?? severity ?? defaultSeverityLabel();
 }
 
@@ -100,6 +111,7 @@ export function severityToLevel(severity?: SeverityEnum | null): string {
         case SeverityEnum.Alert:
             return "pf-m-danger";
     }
+
     return "pf-m-info";
 }
 
@@ -147,5 +159,6 @@ const defaultUserTypeLabel = UserTypeLabelRecord[UserTypeEnum.UnknownDefaultOpen
 
 export function userTypeToLabel(type?: UserTypeEnum): string {
     const formatter = type ? UserTypeLabelRecord[type] : null;
+
     return formatter?.() ?? type ?? defaultUserTypeLabel();
 }

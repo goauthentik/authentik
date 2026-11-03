@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import { type DeliveryMethodEnum } from "../models/DeliveryMethodEnum";
+import { type DeliveryMethodEnum } from "../models/DeliveryMethodEnum.js";
 import {
     type PaginatedSSFStreamList,
     PaginatedSSFStreamListFromJSON,
-} from "../models/PaginatedSSFStreamList";
-import { type SSFStream, SSFStreamFromJSON } from "../models/SSFStream";
-import * as runtime from "../runtime";
+} from "../models/PaginatedSSFStreamList.js";
+import { type SSFStream, SSFStreamFromJSON } from "../models/SSFStream.js";
+import * as runtime from "../runtime.js";
 
 export interface SsfStreamsDestroyRequest {
     /**
@@ -28,13 +26,7 @@ export interface SsfStreamsDestroyRequest {
 }
 
 export interface SsfStreamsListRequest {
-    /**
-     *
-     */
     deliveryMethod?: DeliveryMethodEnum;
-    /**
-     *
-     */
     endpointUrl?: string;
     /**
      * Which field to use when ordering the results.
@@ -48,9 +40,6 @@ export interface SsfStreamsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     provider?: number;
     /**
      * A search term.
@@ -65,9 +54,6 @@ export interface SsfStreamsRetrieveRequest {
     uuid: string;
 }
 
-/**
- *
- */
 export class SsfApi extends runtime.BaseAPI {
     /**
      * Creates request options for ssfStreamsDestroy without sending the request
@@ -176,7 +162,7 @@ export class SsfApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/ssf/streams/`;
+        const urlPath = `/ssf/streams/`;
 
         return {
             path: urlPath,

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,23 @@
  * Do not edit the class manually.
  */
 
-import type { CertAttributeEnum } from "./CertAttributeEnum";
-import { CertAttributeEnumFromJSON, CertAttributeEnumToJSON } from "./CertAttributeEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { StageModeEnum } from "./StageModeEnum";
-import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
-import type { UserAttributeEnum } from "./UserAttributeEnum";
-import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttributeEnum";
+import type { CertAttributeEnum } from "./CertAttributeEnum.js";
+import { CertAttributeEnumFromJSON, CertAttributeEnumToJSON } from "./CertAttributeEnum.js";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { StageModeEnum } from "./StageModeEnum.js";
+import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum.js";
+import type { UserAttributeEnum } from "./UserAttributeEnum.js";
+import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttributeEnum.js";
 
 /**
  * MutualTLSStage Serializer
+ *
  * @export
  * @interface MutualTLSStage
  */
 export interface MutualTLSStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -51,25 +44,14 @@ export interface MutualTLSStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     mode: StageModeEnum;
     /**
-     * Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
+     * Configure certificate authorities to validate the certificate against. This option has a
+     * higher priority than the `client_certificate` option on `Brand`.
      */
     certificateAuthorities?: Array<string>;
-    /**
-     *
-     */
     certAttribute: CertAttributeEnum;
-    /**
-     *
-     */
     userAttribute: UserAttributeEnum;
 }
 

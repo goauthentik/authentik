@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,20 @@
  * Do not edit the class manually.
  */
 
-import type { MatchingModeEnum } from "./MatchingModeEnum";
-import { MatchingModeEnumFromJSON, MatchingModeEnumToJSON } from "./MatchingModeEnum";
-import type { RedirectURITypeEnum } from "./RedirectURITypeEnum";
-import { RedirectURITypeEnumFromJSON, RedirectURITypeEnumToJSON } from "./RedirectURITypeEnum";
+import type { MatchingModeEnum } from "./MatchingModeEnum.js";
+import { MatchingModeEnumFromJSON, MatchingModeEnumToJSON } from "./MatchingModeEnum.js";
+import type { RedirectURITypeEnum } from "./RedirectURITypeEnum.js";
+import { RedirectURITypeEnumFromJSON, RedirectURITypeEnumToJSON } from "./RedirectURITypeEnum.js";
 
 /**
  * A single allowed redirect URI entry
+ *
  * @export
  * @interface RedirectURI
  */
 export interface RedirectURI {
-    /**
-     *
-     */
     matchingMode: MatchingModeEnum;
-    /**
-     *
-     */
     url: string;
-    /**
-     *
-     */
     redirectUriType?: RedirectURITypeEnum;
 }
 

@@ -6,6 +6,14 @@ import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -18,15 +26,6 @@ import { ModelEnum, ProvidersApi, RadiusProvider } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-provider-radius-view")
 export class RadiusProviderViewPage extends AKElement {
@@ -49,6 +48,7 @@ export class RadiusProviderViewPage extends AKElement {
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
@@ -71,6 +71,7 @@ export class RadiusProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main>
             <ak-tabs routed>
                 <div
@@ -81,11 +82,13 @@ export class RadiusProviderViewPage extends AKElement {
                     aria-label="${msg("Overview")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
-                    ${this.provider?.outpostSet.length < 1
-                        ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                              ${msg("Warning: Provider is not used by any Outpost.")}
-                          </div>`
-                        : nothing}
+                    ${
+                        this.provider?.outpostSet.length < 1
+                            ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                                  ${msg("Warning: Provider is not used by any Outpost.")}
+                              </div>`
+                            : nothing
+                    }
                     <div class="pf-u-display-flex pf-u-justify-content-center">
                         <div class="pf-u-w-75">
                             <div class="pf-c-card">

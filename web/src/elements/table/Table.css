@@ -69,6 +69,15 @@
     .pf-c-button:not(:has(i)):not(:first-child) {
         margin-inline-start: var(--pf-global--spacer--sm);
     }
+
+    pf-tooltip {
+        user-select: none;
+        cursor: help;
+
+        button:disabled {
+            opacity: 0.5;
+        }
+    }
 }
 
 td.pf-c-table__toggle:first-child > .pf-c-button {
@@ -164,19 +173,9 @@ time {
 }
 
 .pf-c-pagination {
-    ak-timestamp {
-        font-size: 0.75rem;
-        font-style: italic;
-        color: var(--pf-global--Color--200);
-
-        &::part(label) {
-            display: inline-block;
-        }
-
-        &::part(elapsed) {
-            display: inline-block;
-        }
-    }
+    --ak-timestamp--FontSize: var(--pf-global--FontSize--xs);
+    --ak-timestamp--FontStyle: italic;
+    --ak-timestamp--Color: var(--pf-global--Color--200);
 }
 
 /* Fix alignment issues with images in tables */

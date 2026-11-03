@@ -1,5 +1,4 @@
 import "#elements/Diagram/ak-diagram";
-
 import { Diagram } from "#elements/Diagram/ak-diagram";
 
 import { afterEach, describe, expect, it, vi } from "vitest";

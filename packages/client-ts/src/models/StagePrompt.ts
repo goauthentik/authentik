@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,52 +10,26 @@
  * Do not edit the class manually.
  */
 
-import type { PromptChoice } from "./PromptChoice";
-import { PromptChoiceFromJSON, PromptChoiceToJSON } from "./PromptChoice";
-import type { PromptTypeEnum } from "./PromptTypeEnum";
-import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
+import type { PromptChoice } from "./PromptChoice.js";
+import { PromptChoiceFromJSON, PromptChoiceToJSON } from "./PromptChoice.js";
+import type { PromptTypeEnum } from "./PromptTypeEnum.js";
+import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum.js";
 
 /**
  * Serializer for a single Prompt field
+ *
  * @export
  * @interface StagePrompt
  */
 export interface StagePrompt {
-    /**
-     *
-     */
     fieldKey: string;
-    /**
-     *
-     */
     label: string;
-    /**
-     *
-     */
     type: PromptTypeEnum;
-    /**
-     *
-     */
     required: boolean;
-    /**
-     *
-     */
     placeholder: string;
-    /**
-     *
-     */
     initialValue: string;
-    /**
-     *
-     */
     order: number;
-    /**
-     *
-     */
     subText: string;
-    /**
-     *
-     */
     choices: Array<PromptChoice> | null;
 }
 

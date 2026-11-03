@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { OAuth2DynamicClientRegistration } from "./OAuth2DynamicClientRegistration";
+import type { OAuth2DynamicClientRegistration } from "./OAuth2DynamicClientRegistration.js";
 import {
     OAuth2DynamicClientRegistrationFromJSON,
     OAuth2DynamicClientRegistrationToJSON,
-} from "./OAuth2DynamicClientRegistration";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./OAuth2DynamicClientRegistration.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedOAuth2DynamicClientRegistrationList
  */
 export interface PaginatedOAuth2DynamicClientRegistrationList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<OAuth2DynamicClientRegistration>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

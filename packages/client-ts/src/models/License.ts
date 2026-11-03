@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,19 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-
+import { parseDateTime } from "../runtime.js";
 /**
  * License Serializer
+ *
  * @export
  * @interface License
  */
 export interface License {
-    /**
-     *
-     */
     readonly licenseUuid: string;
-    /**
-     *
-     */
     readonly name: string;
-    /**
-     *
-     */
     key: string;
-    /**
-     *
-     */
     readonly expiry: Date;
-    /**
-     *
-     */
     readonly internalUsers: number;
-    /**
-     *
-     */
     readonly externalUsers: number;
 }
 

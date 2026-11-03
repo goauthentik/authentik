@@ -2,9 +2,6 @@
  * @file Notification drawer utilities.
  */
 
-import "#components/notifications/APIDrawer";
-import "#components/notifications/NotificationDrawer";
-
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 
 import { type Notification, type PaginatedNotificationList } from "@goauthentik/api";
@@ -40,8 +37,8 @@ export function createPaginatedNotificationListFrom(
  * The state of the interface drawers.
  *
  * @remarks
- * These values are stored together to avoid awkward rendering states during
- * initialization or rapid toggling.
+ *   These values are stored together to avoid awkward rendering states during
+ *   initialization or rapid toggling.
  */
 export interface DrawerState {
     /** Whether the notification drawer is open. */
@@ -54,6 +51,7 @@ export interface DrawerState {
  * Renders the notification and API drawers based on the provided state.
  *
  * @param drawers The state of the drawers.
+ *
  * @returns The rendered drawer panels.
  */
 export function renderNotificationDrawerPanel({ notifications, api }: DrawerState) {

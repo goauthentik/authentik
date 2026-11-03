@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Serializer for rest_framework's error messages
+ *
  * @export
  * @interface ErrorDetail
  */
 export interface ErrorDetail {
-    /**
-     *
-     */
     string: string;
-    /**
-     *
-     */
     code: string;
 }
 

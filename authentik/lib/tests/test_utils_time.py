@@ -30,6 +30,12 @@ class TestTimeUtils(TestCase):
         with self.assertRaises(ValidationError):
             timedelta_string_validator("foo")
 
+    def test_validation_overflow(self):
+        """Reject durations outside the range supported by timedelta."""
+        for value in ("days=1000000000", "days=-1000000000", "seconds=inf"):
+            with self.subTest(value=value), self.assertRaises(ValidationError):
+                timedelta_string_validator(value)
+
     @patch("authentik.lib.utils.time.socket.gethostname", return_value="test-host")
     def test_fqdn_rand_deterministic(self, _gethostname):
         """Test schedule entropy is stable for a hostname and task"""

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,30 +10,25 @@
  * Do not edit the class manually.
  */
 
-import type { CompatibilityModeEnum } from "./CompatibilityModeEnum";
+import type { CompatibilityModeEnum } from "./CompatibilityModeEnum.js";
 import {
     CompatibilityModeEnumFromJSON,
     CompatibilityModeEnumToJSON,
-} from "./CompatibilityModeEnum";
-import type { SCIMAuthenticationModeEnum } from "./SCIMAuthenticationModeEnum";
+} from "./CompatibilityModeEnum.js";
+import type { SCIMAuthenticationModeEnum } from "./SCIMAuthenticationModeEnum.js";
 import {
     SCIMAuthenticationModeEnumFromJSON,
     SCIMAuthenticationModeEnumToJSON,
-} from "./SCIMAuthenticationModeEnum";
+} from "./SCIMAuthenticationModeEnum.js";
 
 /**
  * SCIMProvider Serializer
+ *
  * @export
  * @interface PatchedSCIMProviderRequest
  */
 export interface PatchedSCIMProviderRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
@@ -45,18 +38,20 @@ export interface PatchedSCIMProviderRequest {
      * Base URL to SCIM requests, usually ends in /v2
      */
     url?: string;
-    /**
-     *
-     */
     verifyCertificates?: boolean;
     /**
      * Authentication token
      */
     token?: string;
-    /**
-     *
-     */
     authMode?: SCIMAuthenticationModeEnum;
+    /**
+     * Username used for Basic authentication
+     */
+    authBasicUser?: string;
+    /**
+     * Password used for Basic authentication
+     */
+    authBasicPassword?: string;
     /**
      * OAuth Source used for authentication
      */
@@ -73,9 +68,6 @@ export interface PatchedSCIMProviderRequest {
      * Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
      */
     serviceProviderConfigCacheTimeout?: string;
-    /**
-     *
-     */
     excludeUsersServiceAccount?: boolean;
     /**
      * Controls the number of objects synced in a single task
@@ -132,6 +124,9 @@ export function PatchedSCIMProviderRequestFromJSONTyped(
             json["auth_mode"] == null
                 ? undefined
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
+        authBasicUser: json["auth_basic_user"] == null ? undefined : json["auth_basic_user"],
+        authBasicPassword:
+            json["auth_basic_password"] == null ? undefined : json["auth_basic_password"],
         authOauth:
             json["auth_oauth"] === undefined
                 ? undefined
@@ -179,6 +174,8 @@ export function PatchedSCIMProviderRequestToJSONTyped(
         verify_certificates: value["verifyCertificates"],
         token: value["token"],
         auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
+        auth_basic_user: value["authBasicUser"],
+        auth_basic_password: value["authBasicPassword"],
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],
         compatibility_mode: CompatibilityModeEnumToJSON(value["compatibilityMode"]),

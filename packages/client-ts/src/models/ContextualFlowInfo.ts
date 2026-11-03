@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,45 +10,28 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfoLayoutEnum } from "./ContextualFlowInfoLayoutEnum";
+import type { ContextualFlowInfoLayoutEnum } from "./ContextualFlowInfoLayoutEnum.js";
 import {
     ContextualFlowInfoLayoutEnumFromJSON,
     ContextualFlowInfoLayoutEnumToJSON,
-} from "./ContextualFlowInfoLayoutEnum";
-import type { FlowMessage } from "./FlowMessage";
-import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
+} from "./ContextualFlowInfoLayoutEnum.js";
+import type { FlowMessage } from "./FlowMessage.js";
+import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls.js";
 
 /**
  * Contextual flow information for a challenge
+ *
  * @export
  * @interface ContextualFlowInfo
  */
 export interface ContextualFlowInfo {
-    /**
-     *
-     */
     title?: string;
-    /**
-     *
-     */
     background?: string;
-    /**
-     *
-     */
     backgroundThemedUrls?: ThemedUrls | null;
-    /**
-     *
-     */
     cancelUrl: string;
-    /**
-     *
-     */
     layout: ContextualFlowInfoLayoutEnum;
-    /**
-     *
-     */
     messages?: Array<FlowMessage>;
 }
 

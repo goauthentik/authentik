@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,43 +10,32 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatedSessionUserAgentDevice } from "./AuthenticatedSessionUserAgentDevice";
+import type { AuthenticatedSessionUserAgentDevice } from "./AuthenticatedSessionUserAgentDevice.js";
 import {
     AuthenticatedSessionUserAgentDeviceFromJSON,
     AuthenticatedSessionUserAgentDeviceToJSON,
-} from "./AuthenticatedSessionUserAgentDevice";
-import type { AuthenticatedSessionUserAgentOs } from "./AuthenticatedSessionUserAgentOs";
+} from "./AuthenticatedSessionUserAgentDevice.js";
+import type { AuthenticatedSessionUserAgentOs } from "./AuthenticatedSessionUserAgentOs.js";
 import {
     AuthenticatedSessionUserAgentOsFromJSON,
     AuthenticatedSessionUserAgentOsToJSON,
-} from "./AuthenticatedSessionUserAgentOs";
-import type { AuthenticatedSessionUserAgentUserAgent } from "./AuthenticatedSessionUserAgentUserAgent";
+} from "./AuthenticatedSessionUserAgentOs.js";
+import type { AuthenticatedSessionUserAgentUserAgent } from "./AuthenticatedSessionUserAgentUserAgent.js";
 import {
     AuthenticatedSessionUserAgentUserAgentFromJSON,
     AuthenticatedSessionUserAgentUserAgentToJSON,
-} from "./AuthenticatedSessionUserAgentUserAgent";
+} from "./AuthenticatedSessionUserAgentUserAgent.js";
 
 /**
  * Get parsed user agent
+ *
  * @export
  * @interface AuthenticatedSessionUserAgent
  */
 export interface AuthenticatedSessionUserAgent {
-    /**
-     *
-     */
     device: AuthenticatedSessionUserAgentDevice;
-    /**
-     *
-     */
     os: AuthenticatedSessionUserAgentOs;
-    /**
-     *
-     */
     userAgent: AuthenticatedSessionUserAgentUserAgent;
-    /**
-     *
-     */
     string: string;
 }
 

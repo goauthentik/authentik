@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,13 +12,11 @@
 
 /**
  * Dummy challenge response
+ *
  * @export
  * @interface DummyChallengeResponseRequest
  */
 export interface DummyChallengeResponseRequest {
-    /**
-     *
-     */
     component?: string;
 }
 

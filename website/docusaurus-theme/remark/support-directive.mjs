@@ -1,8 +1,7 @@
 /**
- * @file Remark plugin to transform `ak-support` directives into support level badges.
- *
  * @import { Root } from "mdast";
  * @import {} from "mdast-util-directive";
+ * @file Remark plugin to transform `ak-support` directives into support level badges.
  */
 
 import { h } from "hastscript";
@@ -10,6 +9,7 @@ import { SKIP, visit } from "unist-util-visit";
 
 /**
  * Support levels for authentik.
+ *
  * @typedef {"authentik" | "community" | "vendor" | "deprecated"} SupportLevel
  */
 
@@ -29,7 +29,8 @@ export const SupportLevelToLabel = /** @type {const} */ ({
  * Type-predicate to determine if a string is a known support level.
  *
  * @param {string} input The string to check.
- * @return {input is SupportLevel} True if the string is a known support level.
+ *
+ * @returns {input is SupportLevel} True if the string is a known support level.
  */
 export function isSupportLevel(input) {
     return Object.hasOwn(SupportLevelToLabel, input);

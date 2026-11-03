@@ -1,13 +1,8 @@
 #!/usr/bin/env node
 /**
- * @file Lints the installed Node.js and pnpm versions against the requirements specified in package.json.
- *
- * Usage:
- *   lint-runtime [options] [directory]
- *
- * Exit codes:
- *   0  Versions are in sync
- *   1  Version mismatch detected
+ * @file Lints the installed Node.js and pnpm versions against the requirements specified in
+ *   package.json. Usage: lint-runtime [options] [directory] Exit codes: 0 Versions are in sync 1
+ *   Version mismatch detected
  */
 
 import * as assert from "node:assert/strict";
@@ -17,15 +12,14 @@ import { parseCWD, reportAndExit } from "./utils/commands.ts";
 import { resolveRepoRoot } from "./utils/git.ts";
 import type { PackageJSON } from "./utils/node.ts";
 import {
-    compareVersions,
     findNPMPackage,
     formatPackageManager,
     loadJSON,
     node,
     parsePackageManager,
-    parseRange,
     pnpm,
     resolvePackageManagerHash,
+    satisfiesRange,
 } from "./utils/node.ts";
 
 import { ConsoleLogger } from "#logger";
@@ -76,11 +70,8 @@ async function main() {
     if (requiredPnpmVersion && pnpmVersion) {
         logger.info(`package.json pnpm ${requiredPnpmVersion}`);
 
-        const { operator, version: required } = parseRange(requiredPnpmVersion);
-        const result = compareVersions(pnpmVersion, required);
-
         assert.ok(
-            operator === ">=" ? result >= 0 : result === 0,
+            satisfiesRange(pnpmVersion, requiredPnpmVersion),
             `pnpm version ${pnpmVersion} does not satisfy required version ${requiredPnpmVersion}`,
         );
     }
@@ -88,11 +79,8 @@ async function main() {
     if (requiredNodeVersion) {
         logger.info(`package.json node ${requiredNodeVersion}`);
 
-        const { operator, version: required } = parseRange(requiredNodeVersion);
-        const result = compareVersions(nodeVersion, required);
-
         assert.ok(
-            operator === ">=" ? result >= 0 : result === 0,
+            satisfiesRange(nodeVersion, requiredNodeVersion),
             `Node.js version ${nodeVersion} does not satisfy required version ${requiredNodeVersion}`,
         );
     }
@@ -110,7 +98,7 @@ async function main() {
  * reads it — so a stale hash would sit in package.json unnoticed until someone trusted it.
  *
  * @param packageManager The raw `packageManager` field.
- * @param requiredPnpmVersion  The `engines.pnpm` range, when present.
+ * @param requiredPnpmVersion The `engines.pnpm` range, when present.
  */
 async function lintPackageManager(packageManager: string, requiredPnpmVersion?: string) {
     logger.info(`package.json packageManager ${packageManager}`);
@@ -118,11 +106,8 @@ async function lintPackageManager(packageManager: string, requiredPnpmVersion?: 
     const spec = parsePackageManager(packageManager);
 
     if (requiredPnpmVersion && spec.name === "pnpm") {
-        const { operator, version: required } = parseRange(requiredPnpmVersion);
-        const result = compareVersions(spec.version, required);
-
         assert.ok(
-            operator === ">=" ? result >= 0 : result === 0,
+            satisfiesRange(spec.version, requiredPnpmVersion),
             `packageManager pins pnpm ${spec.version}, which does not satisfy engines.pnpm ${requiredPnpmVersion}`,
         );
     }

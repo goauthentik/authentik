@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +10,37 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceClassesEnum } from "./DeviceClassesEnum";
-import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum";
-import type { NotConfiguredActionEnum } from "./NotConfiguredActionEnum";
+import type { DeviceClassesEnum } from "./DeviceClassesEnum.js";
+import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum.js";
+import type { NotConfiguredActionEnum } from "./NotConfiguredActionEnum.js";
 import {
     NotConfiguredActionEnumFromJSON,
     NotConfiguredActionEnumToJSON,
-} from "./NotConfiguredActionEnum";
-import type { UserVerificationEnum } from "./UserVerificationEnum";
-import { UserVerificationEnumFromJSON, UserVerificationEnumToJSON } from "./UserVerificationEnum";
-import type { WebAuthnHintEnum } from "./WebAuthnHintEnum";
-import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum";
+} from "./NotConfiguredActionEnum.js";
+import type { UserVerificationEnum } from "./UserVerificationEnum.js";
+import {
+    UserVerificationEnumFromJSON,
+    UserVerificationEnumToJSON,
+} from "./UserVerificationEnum.js";
+import type { WebAuthnHintEnum } from "./WebAuthnHintEnum.js";
+import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum.js";
 
 /**
  * AuthenticatorValidateStage Serializer
+ *
  * @export
  * @interface PatchedAuthenticatorValidateStageRequest
  */
 export interface PatchedAuthenticatorValidateStageRequest {
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     notConfiguredAction?: NotConfiguredActionEnum;
     /**
      * Device classes which can be used to authenticate
      */
     deviceClasses?: Array<DeviceClassesEnum>;
     /**
-     * Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.
+     * Stages used to configure Authenticator when user doesn't have any compatible devices. After
+     * this configuration Stage passes, the user is not prompted again.
      */
     configurationStages?: Array<string>;
     /**
@@ -54,29 +51,11 @@ export interface PatchedAuthenticatorValidateStageRequest {
      * Enforce user verification for WebAuthn devices.
      */
     webauthnUserVerification?: UserVerificationEnum;
-    /**
-     *
-     */
     webauthnHints?: Array<WebAuthnHintEnum>;
-    /**
-     *
-     */
     webauthnAllowedDeviceTypes?: Array<string>;
-    /**
-     *
-     */
     emailOtpThrottlingFactor?: number;
-    /**
-     *
-     */
     smsOtpThrottlingFactor?: number;
-    /**
-     *
-     */
     totpOtpThrottlingFactor?: number;
-    /**
-     *
-     */
     staticOtpThrottlingFactor?: number;
 }
 

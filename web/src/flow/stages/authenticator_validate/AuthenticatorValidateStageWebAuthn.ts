@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import {
     assertWebAuthnSupported,
@@ -39,7 +38,9 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     protected transformedCredentialRequestOptions: PublicKeyCredentialRequestOptions | null = null;
 
     /**
-     * Whether a {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential | PublicKeyCredential} ceremony should start once the pending render has committed.
+     * Whether a
+     * {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential | PublicKeyCredential}
+     * ceremony should start once the pending render has committed.
      *
      * Reactive state is derived in {@linkcode willUpdate} so it lands in the same render, but the
      * ceremony itself is a side effect and belongs after the DOM has been written.
@@ -96,7 +97,16 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         this.errorMessages = null;
         this.authenticating = true;
 
-        return this.#authenticate();
+        // Another tab may have replaced the session's challenge, so fetch a fresh one.
+        // The new challenge starts the ceremony in `willUpdate`.
+        const refreshed = await this.host?.refresh?.();
+
+        if (!refreshed) {
+            this.errorMessages = [msg("Failed to authenticate")];
+            this.authenticating = false;
+        }
+
+        return refreshed;
     };
 
     // #region Lifecycle
@@ -112,6 +122,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         // byte arrays as expected by the spec.
         const credentialRequestOptions = this.deviceChallenge
             ?.challenge as PublicKeyCredentialRequestOptions;
+
         this.transformedCredentialRequestOptions =
             transformCredentialRequestOptions(credentialRequestOptions);
 
@@ -154,15 +165,17 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
 
         return html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
             <legend class="sr-only">${msg("Form actions")}</legend>
-            ${errorMessages.length
-                ? html`<button
-                      class="pf-c-button pf-m-primary pf-m-block"
-                      @click=${this.tryAuthenticating}
-                      type="button"
-                  >
-                      ${msg("Retry authentication")}
-                  </button>`
-                : null}
+            ${
+                errorMessages.length
+                    ? html`<button
+                          class="pf-c-button pf-m-primary pf-m-block"
+                          @click=${this.tryAuthenticating}
+                          type="button"
+                      >
+                          ${msg("Retry authentication")}
+                      </button>`
+                    : null
+            }
             ${this.renderReturnToDevicePicker()}
         </fieldset>`;
     }

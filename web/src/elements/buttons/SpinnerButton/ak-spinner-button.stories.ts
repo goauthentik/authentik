@@ -1,5 +1,4 @@
 import "./ak-spinner-button.js";
-
 import AKSpinnerButton from "./ak-spinner-button.js";
 
 import { Meta } from "@storybook/web-components";
@@ -42,7 +41,7 @@ export const ButtonWithSuccess = () => {
 
 export const ButtonWithReject = () => {
     const run = () =>
-        new Promise((resolve, reject) => {
+        new Promise((_resolve, reject) => {
             setTimeout(() => {
                 reject("Rejected!");
             }, 3000);

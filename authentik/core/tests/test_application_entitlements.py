@@ -151,3 +151,27 @@ class TestApplicationEntitlements(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
         self.assertTrue(PolicyBinding.objects.filter(target=ent.pbm_uuid).exists())
+
+    def test_api_filter_for_user(self):
+        """Test filtering entitlements by assigned user, across apps and without app access"""
+        other_app = Application.objects.create(name=generate_id(), slug=generate_id())
+        group = Group.objects.create(name=generate_id())
+        self.user.groups.add(group)
+        direct = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
+        PolicyBinding.objects.create(target=direct, user=self.user, order=0)
+        via_group = ApplicationEntitlement.objects.create(app=other_app, name=generate_id())
+        PolicyBinding.objects.create(target=via_group, group=group, order=0)
+        unrelated = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
+        PolicyBinding.objects.create(target=unrelated, user=self.other_user, order=0)
+
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        res = self.client.get(
+            reverse("authentik_api:applicationentitlement-list"),
+            data={"for_user": self.user.pk},
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(
+            sorted(x["name"] for x in res.json()["results"]),
+            sorted([direct.name, via_group.name]),
+        )

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,14 +10,15 @@
  * Do not edit the class manually.
  */
 
-import type { PatchedSettingsRequestFlags } from "./PatchedSettingsRequestFlags";
+import type { PatchedSettingsRequestFlags } from "./PatchedSettingsRequestFlags.js";
 import {
     PatchedSettingsRequestFlagsFromJSON,
     PatchedSettingsRequestFlagsToJSON,
-} from "./PatchedSettingsRequestFlags";
+} from "./PatchedSettingsRequestFlags.js";
 
 /**
  * Settings Serializer
+ *
  * @export
  * @interface SettingsRequest
  */
@@ -29,7 +28,8 @@ export interface SettingsRequest {
      */
     avatars?: string;
     /**
-     * Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+     * Configure the base URL under which this authentik instance is reachable, e.g.
+     * https://authentik.company
      */
     baseUrl?: string;
     /**
@@ -56,9 +56,6 @@ export interface SettingsRequest {
      * Reputation cannot increase higher than this value. Zero or positive.
      */
     reputationUpperLimit?: number;
-    /**
-     *
-     */
     footerLinks?: any | null;
     /**
      * When enabled, all the events caused by a user will be deleted upon the user's deletion.
@@ -88,9 +85,6 @@ export interface SettingsRequest {
      * Maximum page size
      */
     paginationMaxPageSize?: number;
-    /**
-     *
-     */
     flags: PatchedSettingsRequestFlags;
 }
 

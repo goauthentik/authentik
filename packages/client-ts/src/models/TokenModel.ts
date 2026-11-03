@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,49 +10,32 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Provider } from "./Provider";
-import { ProviderFromJSON, ProviderToJSON } from "./Provider";
-import type { User } from "./User";
-import { UserFromJSON, UserToJSON } from "./User";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { Provider } from "./Provider.js";
+import { ProviderFromJSON, ProviderToJSON } from "./Provider.js";
+import type { User } from "./User.js";
+import { UserFromJSON, UserToJSON } from "./User.js";
 
 /**
  * Serializer for BaseGrantModel and RefreshToken
+ *
  * @export
  * @interface TokenModel
  */
 export interface TokenModel {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     provider: Provider;
-    /**
-     *
-     */
     user: User;
     /**
      * Check if token is expired yet.
      */
     readonly isExpired: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     scope: Array<string>;
     /**
      * Get the token's id_token as JSON String
      */
     readonly idToken: string;
-    /**
-     *
-     */
     revoked?: boolean;
 }
 

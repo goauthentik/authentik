@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,20 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceClassesEnum } from "./DeviceClassesEnum";
-import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceClassesEnum } from "./DeviceClassesEnum.js";
+import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum.js";
 
 /**
  * Single device challenge
+ *
  * @export
  * @interface DeviceChallengeRequest
  */
 export interface DeviceChallengeRequest {
-    /**
-     *
-     */
     deviceClass: DeviceClassesEnum;
-    /**
-     *
-     */
     deviceUid: string;
-    /**
-     *
-     */
     challenge: { [key: string]: any };
-    /**
-     *
-     */
     lastUsed: Date | null;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,33 +10,31 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorAttachmentEnum } from "./AuthenticatorAttachmentEnum";
+import type { AuthenticatorAttachmentEnum } from "./AuthenticatorAttachmentEnum.js";
 import {
     AuthenticatorAttachmentEnumFromJSON,
     AuthenticatorAttachmentEnumToJSON,
-} from "./AuthenticatorAttachmentEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { UserVerificationEnum } from "./UserVerificationEnum";
-import { UserVerificationEnumFromJSON, UserVerificationEnumToJSON } from "./UserVerificationEnum";
-import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
-import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
-import type { WebAuthnHintEnum } from "./WebAuthnHintEnum";
-import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum";
+} from "./AuthenticatorAttachmentEnum.js";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { UserVerificationEnum } from "./UserVerificationEnum.js";
+import {
+    UserVerificationEnumFromJSON,
+    UserVerificationEnumToJSON,
+} from "./UserVerificationEnum.js";
+import type { WebAuthnDeviceType } from "./WebAuthnDeviceType.js";
+import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType.js";
+import type { WebAuthnHintEnum } from "./WebAuthnHintEnum.js";
+import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum.js";
 
 /**
  * AuthenticatorWebAuthnStage Serializer
+ *
  * @export
  * @interface AuthenticatorWebAuthnStage
  */
 export interface AuthenticatorWebAuthnStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -56,45 +52,19 @@ export interface AuthenticatorWebAuthnStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     userVerification?: UserVerificationEnum;
-    /**
-     *
-     */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
-    /**
-     *
-     */
     residentKeyRequirement?: UserVerificationEnum;
-    /**
-     *
-     */
     hints?: Array<WebAuthnHintEnum>;
-    /**
-     *
-     */
     deviceTypeRestrictions?: Array<string>;
-    /**
-     *
-     */
     readonly deviceTypeRestrictionsObj: Array<WebAuthnDeviceType>;
-    /**
-     *
-     */
     maxAttempts?: number;
 }
 

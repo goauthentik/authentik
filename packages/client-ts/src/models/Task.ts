@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,26 +10,22 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { LogEvent } from "./LogEvent";
-import { LogEventFromJSON } from "./LogEvent";
-import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { LogEvent } from "./LogEvent.js";
+import { LogEventFromJSON } from "./LogEvent.js";
+import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum.js";
 import {
     TaskAggregatedStatusEnumFromJSON,
     TaskAggregatedStatusEnumToJSON,
-} from "./TaskAggregatedStatusEnum";
-import type { TaskStatusEnum } from "./TaskStatusEnum";
-import { TaskStatusEnumFromJSON, TaskStatusEnumToJSON } from "./TaskStatusEnum";
+} from "./TaskAggregatedStatusEnum.js";
+import type { TaskStatusEnum } from "./TaskStatusEnum.js";
+import { TaskStatusEnumFromJSON, TaskStatusEnumToJSON } from "./TaskStatusEnum.js";
 
 /**
- *
  * @export
  * @interface Task
  */
 export interface Task {
-    /**
-     *
-     */
     messageId?: string;
     /**
      * Queue name
@@ -57,37 +51,13 @@ export interface Task {
      * Planned execution time
      */
     eta?: Date | null;
-    /**
-     *
-     */
     readonly relObjAppLabel: string;
-    /**
-     *
-     */
     readonly relObjModel: string;
-    /**
-     *
-     */
     relObjId?: string | null;
-    /**
-     *
-     */
     readonly uid: string;
-    /**
-     *
-     */
     readonly logs: Array<LogEvent>;
-    /**
-     *
-     */
     readonly previousLogs: Array<LogEvent>;
-    /**
-     *
-     */
     aggregatedStatus: TaskAggregatedStatusEnum;
-    /**
-     *
-     */
     readonly description: string | null;
 }
 

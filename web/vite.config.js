@@ -44,7 +44,7 @@ export default defineConfig({
                 // per-file tsconfig discovery bails with `[TSCONFIG_ERROR] Tsconfig not
                 // found` on co-located `src/**/*.unit.test.ts`. Disabling tsconfig
                 // discovery for this Node project lets oxc transform those files while
-                // leaving `lint:types` (`tsgo -p .`) and the root excludes untouched.
+                // leaving `build:types` (`tsgo -p .`) and the root excludes untouched.
                 // `tsconfig` is forwarded to oxc's transform at runtime but is omitted
                 // from vite's `OxcOptions` type, so the assertion adds it back to keep
                 // `tsgo -p .` clean.

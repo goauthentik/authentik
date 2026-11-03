@@ -8,6 +8,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
@@ -18,7 +19,6 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, 
 from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import (
     AuthNRequest,
@@ -143,7 +143,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
         """Handle REDIRECT bindings"""
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse_detached(
@@ -179,7 +179,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
             payload = self.request.session.pop(SESSION_KEY_POST)
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse(

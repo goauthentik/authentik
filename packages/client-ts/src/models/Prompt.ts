@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,68 +10,42 @@
  * Do not edit the class manually.
  */
 
-import type { PromptStage } from "./PromptStage";
-import { PromptStageFromJSON } from "./PromptStage";
-import type { PromptTypeEnum } from "./PromptTypeEnum";
-import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
+import type { PromptStage } from "./PromptStage.js";
+import { PromptStageFromJSON } from "./PromptStage.js";
+import type { PromptTypeEnum } from "./PromptTypeEnum.js";
+import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum.js";
 
 /**
  * Prompt Serializer
+ *
  * @export
  * @interface Prompt
  */
 export interface Prompt {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Name of the form field, also used to store the value
      */
     fieldKey: string;
-    /**
-     *
-     */
     label: string;
-    /**
-     *
-     */
     type: PromptTypeEnum;
-    /**
-     *
-     */
     required?: boolean;
     /**
-     * Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
+     * Optionally provide a short hint that describes the expected input value. When creating a
+     * fixed choice field, enable interpreting as expression and return a list to return multiple
+     * choices.
      */
     placeholder?: string;
     /**
-     * Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
+     * Optionally pre-fill the input with an initial value. When creating a fixed choice field,
+     * enable interpreting as expression and return a list to return multiple default choices.
      */
     initialValue?: string;
-    /**
-     *
-     */
     order?: number;
-    /**
-     *
-     */
     readonly promptStagesObj: Array<PromptStage>;
-    /**
-     *
-     */
     subText?: string;
-    /**
-     *
-     */
     placeholderExpression?: boolean;
-    /**
-     *
-     */
     initialValueExpression?: boolean;
 }
 

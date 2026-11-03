@@ -1,10 +1,9 @@
 /**
  * @file Route definition for path-based routing.
- *
- * A `Route` wraps a `URLPattern` constructed **once** at construction (never
- * per match) and renders a template for the matched path parameters. The
- * `name` is a stable identifier used for Sentry span naming and href
- * generation.
+ *   A `Route` wraps a `URLPattern` constructed **once** at construction (never
+ *   per match) and renders a template for the matched path parameters. The
+ *   `name` is a stable identifier used for Sentry span naming and href
+ *   generation.
  */
 
 import { type RouteParameterRecord } from "#elements/router/core/parameters";
@@ -36,6 +35,7 @@ export interface RouteLike {
     readonly name: string;
     render(params: RouteParameterRecord): TemplateResult;
     resolve(params: RouteParameterRecord): Promise<SlottedTemplateResult>;
+    test(pathname: string): boolean;
 }
 
 export class Route<P extends RouteParameterRecord = RouteParameterRecord> implements RouteLike {
@@ -62,6 +62,13 @@ export class Route<P extends RouteParameterRecord = RouteParameterRecord> implem
         this.pattern = new URLPattern(init);
         this.name = name ?? init.pathname ?? "";
         this.#render = render;
+    }
+
+    /**
+     * Returns true if the path passed in matches
+     */
+    test(pathname: string) {
+        return this.pattern.test({ pathname });
     }
 
     /**

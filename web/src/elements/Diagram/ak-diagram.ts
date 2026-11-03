@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-
 import { AKRefreshEvent } from "#common/events";
 
 import { AKElement } from "#elements/Base";

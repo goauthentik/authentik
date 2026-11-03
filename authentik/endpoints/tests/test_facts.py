@@ -75,3 +75,18 @@ class TestEndpointFacts(APITestCase):
                 },
             ],
         )
+
+    def test_facts_last_snapshot_survives(self):
+        """the newest snapshot never expires, the one it supersedes does"""
+        device = Device.objects.create(identifier=generate_id(), name=generate_id())
+        connection = DeviceConnection.objects.create(
+            device=device,
+            connector=Connector.objects.create(name=generate_id()),
+        )
+        first = connection.create_snapshot({"a": 1})
+        self.assertFalse(first.expiring)
+        second = connection.create_snapshot({"b": 2})
+        self.assertFalse(second.expiring)
+        first.refresh_from_db()
+        self.assertTrue(first.expiring)
+        self.assertIsNotNone(first.expires)

@@ -198,7 +198,7 @@ Example:
 
 ##### `email_sent` (boolean)
 
-Boolean set to true after the email form the email stage has been sent.
+Boolean set to true after the email from the email stage has been sent.
 
 ##### `email` (string)
 
@@ -238,7 +238,9 @@ Use the format `ak-flow://{slug}` to use the Redirect stage in Flow mode. Any ot
 
 ##### `certificate` (dictionary):ak-version[2025.6]
 
-This key is set by the Mutual TLS Stage during enrollment and contains data about the certificate supplied by the browser.
+This key is set by the Mutual TLS Stage during authentication and enrollment and contains data about the certificate supplied by the browser.
+
+Starting with authentik 2026.11, the `san` key contains the certificate's Subject Alternative Names, grouped by type (for example `DNSName`, `RFC822Name`, `IPAddress`, or `UniformResourceIdentifier`). Only types present in the certificate are included.
 
 Example:
 
@@ -249,6 +251,16 @@ Example:
     "issuer": "CN=authentik Test CA, O=authentik, OU=Self-signed",
     "fingerprint_sha256": "08:D4:A4:79:25:CA:C3:51:28:88:BB:30:C2:96:C3:44:5A:EB:18:07:84:CA:B4:75:27:74:61:19:8A:6A:AF:FC",
     "fingerprint_sha1": "5D:14:0D:5F:A2:7E:14:B0:F1:1D:6F:CD:E3:4B:81:68:71:24:1A:70",
-    "raw": "-----BEGIN CERTIFICATE-----...."
+    "san": {
+        "DNSName": ["client.example.com"],
+        "RFC822Name": ["client@example.com"]
+    }
 }
+```
+
+For example, to read the first email address from the certificate in an expression policy:
+
+```python
+emails = context["flow_plan"].context["certificate"]["san"].get("RFC822Name", [])
+return emails[0] if emails else None
 ```

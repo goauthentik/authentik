@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,53 +10,32 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { IntentEnum } from "./IntentEnum";
-import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum";
-import type { User } from "./User";
-import { UserFromJSON } from "./User";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { IntentEnum } from "./IntentEnum.js";
+import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Token Serializer
+ *
  * @export
  * @interface Token
  */
 export interface Token {
-    /**
-     *
-     */
     readonly pk: string;
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     managed?: string | null;
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     intent?: IntentEnum;
-    /**
-     *
-     */
     user?: number;
-    /**
-     *
-     */
-    readonly userObj: User;
-    /**
-     *
-     */
+    readonly userObj: PartialUser;
     description?: string;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     expiring?: boolean;
 }
 
@@ -97,7 +74,7 @@ export function TokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): Tok
         identifier: json["identifier"],
         intent: json["intent"] == null ? undefined : IntentEnumFromJSON(json["intent"]),
         user: json["user"] == null ? undefined : json["user"],
-        userObj: UserFromJSON(json["user_obj"]),
+        userObj: PartialUserFromJSON(json["user_obj"]),
         description: json["description"] == null ? undefined : json["description"],
         expires:
             json["expires"] === undefined

@@ -17,6 +17,11 @@ export interface LoginInit {
     page?: Page;
 }
 
+export interface CompletePasswordInit {
+    password?: string;
+    to?: URL | string;
+}
+
 export interface SessionFixtureInit extends PageFixtureInit {
     navigator: NavigatorFixture;
 }
@@ -150,6 +155,24 @@ export class SessionFixture extends PageFixture {
         ]);
     }
 
+    /**
+     * Complete a password stage when identification was skipped
+     * (e.g. switching to a user that already has `pending_user` in the flow plan).
+     */
+    public async completePassword({
+        password = GOOD_PASSWORD,
+        to = SessionFixture.pathname,
+    }: CompletePasswordInit = {}): Promise<void> {
+        this.logger.info("Completing password stage...");
+
+        await this.$passwordStage.waitFor({ state: "visible" });
+
+        await this.$passwordField.fill(password);
+        await this.$submitButton.click();
+
+        await this.navigator.waitForPathname(to);
+    }
+
     //#endregion
 
     //#region Navigation
@@ -167,10 +190,18 @@ export class SessionFixture extends PageFixture {
     public async signOut(page: Page = this.page): Promise<void> {
         this.logger.info("Signing out...");
 
-        await page.getByRole("button", { name: "Switch user" }).click();
+        await page.getByRole("button", { name: "Toggle user navigation menu" }).click();
 
         await page.getByRole("menuitem", { name: "Sign out current user" }).click();
 
-        await this.$identificationStage.waitFor({ state: "visible" });
+        // Whichever stage the flow settles on, not identification specifically.
+        // With remember-me stored, the executor fills the identification stage
+        // and submits it for you, so the flow is already on the password stage
+        // by the time this runs — and waiting for identification then blocks
+        // until the test's own budget runs out.
+        await page
+            .locator("ak-stage-identification, ak-stage-password")
+            .first()
+            .waitFor({ state: "visible" });
     }
 }

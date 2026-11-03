@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,43 +10,23 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { Source } from "./Source";
-import { SourceFromJSON } from "./Source";
+import { parseDateTime } from "../runtime.js";
+import type { Source } from "./Source.js";
+import { SourceFromJSON } from "./Source.js";
 
 /**
  * Group Source Connection
+ *
  * @export
  * @interface GroupOAuthSourceConnection
  */
 export interface GroupOAuthSourceConnection {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     readonly group: string;
-    /**
-     *
-     */
     source: string;
-    /**
-     *
-     */
     readonly sourceObj: Source;
-    /**
-     *
-     */
     identifier: string;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
 }
 

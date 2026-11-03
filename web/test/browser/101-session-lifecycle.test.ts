@@ -1,10 +1,15 @@
+import type { PersistenceKey } from "#common/storage/shared";
+
 import { expect, test } from "#e2e";
 import { GOOD_USERNAME } from "#e2e/fixtures/SessionFixture";
 
 import type { Page } from "@playwright/test";
 
-const REMEMBER_ME_USER_KEY = "authentik-remember-me-user";
-const REMEMBER_ME_SESSION_KEY = "authentik-remember-me-session";
+const REMEMBER_ME_USER_KEY = "ak:remember_me:user" satisfies PersistenceKey;
+
+// Keys written by earlier versions, which the controller migrates on load.
+// TODO: Remove in 2027.2 or later. See #27036
+const LEGACY_REMEMBER_ME_KEYS = ["authentik-remember-me-user", "authentik-remember-me-session"];
 
 const readStoredUserIdentifier = (page: Page) =>
     page.evaluate((k) => localStorage.getItem(k), REMEMBER_ME_USER_KEY);
@@ -14,23 +19,23 @@ test.describe("Session Lifecycle", () => {
         await session.toLoginPage();
 
         await page.evaluate(
-            ([userKey, sessionKey]) => {
-                localStorage.removeItem(userKey);
-                localStorage.removeItem(sessionKey);
+            (keys) => {
+                for (const key of keys) localStorage.removeItem(key);
             },
-            [REMEMBER_ME_USER_KEY, REMEMBER_ME_SESSION_KEY],
+            [REMEMBER_ME_USER_KEY, ...LEGACY_REMEMBER_ME_KEYS],
         );
 
         await page.reload();
         await session.$identificationStage.waitFor({ state: "visible" });
     });
 
-    test("Remember me persists username", async ({ navigator, session, page }) => {
+    test("Remember me persists username", async ({ navigator, session, switcher, page }) => {
         await test.step("Verify identification stage", async () => {
             await expect(
                 session.$rememberMeCheckbox,
                 "Remember me checkbox is visible",
             ).toBeVisible();
+
             await expect(
                 session.$rememberMeCheckbox,
                 "Remember me checkbox is not checked by default",
@@ -55,24 +60,36 @@ test.describe("Session Lifecycle", () => {
         });
 
         await test.step("Sign out and verify username is remembered", async () => {
-            await session.signOut();
+            // Signing out lives inside the header account switcher, not as a bare
+            // header link — see `ak-user-switcher`.
+            await switcher.select(switcher.$signOut);
 
             await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
 
-            const passwordEmbedded = await session.$passwordField.isVisible();
+            // Remember-me lands on one of two stages: identification with the username
+            // pre-filled, or — when the executor submits that pre-filled identification
+            // for you — the password stage for that user.
+            await expect(
+                session.$identificationStage.or(session.$passwordStage),
+                "Sign out returns to the authentication flow",
+            ).toBeVisible({ timeout: 15_000 });
 
-            if (passwordEmbedded) {
-                // Password is embedded in the identification stage, so the Not-you UI never renders.
-                // Remember-me's only observable effect is the pre-filled username field.
-                await expect(
-                    session.$usernameField,
-                    "Username pre-filled from remember-me",
-                ).toHaveValue(GOOD_USERNAME);
+            if (await session.$identificationStage.isVisible()) {
+                if (await session.$passwordField.isVisible()) {
+                    // Embedded password: the flow never leaves identification, so
+                    // the Not-you UI never renders and the pre-filled username is
+                    // remember-me's only observable effect.
+                    await expect(
+                        session.$usernameField,
+                        "Username pre-filled from remember-me",
+                    ).toHaveValue(GOOD_USERNAME);
 
-                return;
+                    return;
+                }
+
+                await session.$submitButton.click();
             }
 
-            await session.$submitButton.click();
             await session.$passwordStage.waitFor({ state: "visible" });
 
             const notYouLink = page.getByRole("link", { name: "Not you?" });

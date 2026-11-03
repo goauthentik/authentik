@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,21 @@
 
 /**
  * Partial Group Serializer, does not include child relations.
+ *
  * @export
  * @interface PartialGroup
  */
 export interface PartialGroup {
-    /**
-     *
-     */
     readonly pk: string;
     /**
      * Get a numerical, int32 ID for the group
      */
     readonly numPk: number;
-    /**
-     *
-     */
     name: string;
     /**
      * Users added to this group will be superusers.
      */
     isSuperuser?: boolean;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
 }
 

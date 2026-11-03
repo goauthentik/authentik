@@ -12,12 +12,12 @@ from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnecto
 from authentik.enterprise.stages.mtls.stage import PLAN_CONTEXT_CERTIFICATE
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 
 
-class FleetConnectorStageTests(FlowTestCase):
+class FleetConnectorStageTests(APIFlowTestCase):
     def setUp(self):
         super().setUp()
         self.connector = FleetConnector.objects.create(

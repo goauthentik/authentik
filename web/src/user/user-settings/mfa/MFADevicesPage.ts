@@ -5,9 +5,8 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
-import { AndNext } from "#common/api/config";
+import { withNext } from "#common/api/config";
 import { createPaginatedResponse } from "#common/api/responses";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/error";
@@ -36,10 +35,13 @@ export class MFADevicesPage extends Table<Device> {
     public override clearOnRefresh = true;
 
     public override label = msg("MFA Devices");
+    public override makeItemKey = (i: Device) => `${i.type}/${i.pk}`;
+
     protected override emptyStateMessage = msg("No MFA devices enrolled.");
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await aki(AuthenticatorsApi).authenticatorsAllList();
+
         return createPaginatedResponse(devices);
     }
 
@@ -84,9 +86,13 @@ export class MFADevicesPage extends Table<Device> {
                         return html`<li role="presentation">
                             <a
                                 role="menuitem"
-                                href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    toUserInterface("settings/credentials"),
-                                )}"
+                                href=${ifDefined(
+                                    stage.configureUrl &&
+                                        withNext(
+                                            stage.configureUrl,
+                                            toUserInterface("settings/credentials"),
+                                        ),
+                                )}
                                 class="pf-c-dropdown__menu-item"
                             >
                                 ${stageToAuthenticatorName(stage)}
@@ -105,6 +111,7 @@ export class MFADevicesPage extends Table<Device> {
     async deleteWrapper(device: Device) {
         const api = aki(AuthenticatorsApi);
         const id = { id: parseInt(device.pk, 10) };
+
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsDuoDestroy(id);
@@ -127,6 +134,7 @@ export class MFADevicesPage extends Table<Device> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}
@@ -144,13 +152,15 @@ export class MFADevicesPage extends Table<Device> {
         return [
             html`${item.name}`,
             html`<div>${deviceTypeName(item)}</div>
-                ${item.extraDescription
-                    ? html`
-                          <pf-tooltip position="top" content=${item.externalId || ""}>
-                              <small>${item.extraDescription}</small>
-                          </pf-tooltip>
-                      `
-                    : nothing} `,
+                ${
+                    item.extraDescription
+                        ? html`
+                              <pf-tooltip position="top" content=${item.externalId || ""}>
+                                  <small>${item.extraDescription}</small>
+                              </pf-tooltip>
+                          `
+                        : nothing
+                } `,
             Timestamp(item.created),
             Timestamp(item.lastUsed),
             html`

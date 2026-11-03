@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { TokenModel } from "./TokenModel";
-import { TokenModelFromJSON, TokenModelToJSON } from "./TokenModel";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { TokenModel } from "./TokenModel.js";
+import { TokenModelFromJSON, TokenModelToJSON } from "./TokenModel.js";
 
 /**
- *
  * @export
  * @interface PaginatedTokenModelList
  */
 export interface PaginatedTokenModelList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<TokenModel>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

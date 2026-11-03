@@ -2,7 +2,6 @@ import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 

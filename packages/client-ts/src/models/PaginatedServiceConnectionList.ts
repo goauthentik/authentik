@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { ServiceConnection } from "./ServiceConnection";
-import { ServiceConnectionFromJSON, ServiceConnectionToJSON } from "./ServiceConnection";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { ServiceConnection } from "./ServiceConnection.js";
+import { ServiceConnectionFromJSON, ServiceConnectionToJSON } from "./ServiceConnection.js";
 
 /**
- *
  * @export
  * @interface PaginatedServiceConnectionList
  */
 export interface PaginatedServiceConnectionList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<ServiceConnection>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

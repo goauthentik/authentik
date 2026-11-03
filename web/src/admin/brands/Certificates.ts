@@ -52,6 +52,7 @@ export function certificateSelector(
 
     return async () => {
         const pm = aki(CryptoApi);
+
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.cryptoCertificatekeypairsRetrieve({ kpUuid: instanceId }),

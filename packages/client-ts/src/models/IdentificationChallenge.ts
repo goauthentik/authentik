@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,97 +10,41 @@
  * Do not edit the class manually.
  */
 
-import type { CaptchaChallenge } from "./CaptchaChallenge";
-import { CaptchaChallengeFromJSON, CaptchaChallengeToJSON } from "./CaptchaChallenge";
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
-import type { FlowDesignationEnum } from "./FlowDesignationEnum";
-import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum";
-import type { LoginSource } from "./LoginSource";
-import { LoginSourceFromJSON, LoginSourceToJSON } from "./LoginSource";
+import type { CaptchaChallenge } from "./CaptchaChallenge.js";
+import { CaptchaChallengeFromJSON, CaptchaChallengeToJSON } from "./CaptchaChallenge.js";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
+import type { FlowDesignationEnum } from "./FlowDesignationEnum.js";
+import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum.js";
+import type { LoginSource } from "./LoginSource.js";
+import { LoginSourceFromJSON, LoginSourceToJSON } from "./LoginSource.js";
 
 /**
  * Identification challenges with all UI elements
+ *
  * @export
  * @interface IdentificationChallenge
  */
 export interface IdentificationChallenge {
-    /**
-     *
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     */
     component?: string;
-    /**
-     *
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     */
     userFields: Array<string> | null;
-    /**
-     *
-     */
     pendingUserIdentifier?: string | null;
-    /**
-     *
-     */
     passwordFields: boolean;
-    /**
-     *
-     */
     allowShowPassword?: boolean;
-    /**
-     *
-     */
     applicationPre?: string;
-    /**
-     *
-     */
     applicationPreLaunch?: string;
-    /**
-     *
-     */
     flowDesignation: FlowDesignationEnum;
-    /**
-     *
-     */
     captchaStage?: CaptchaChallenge | null;
-    /**
-     *
-     */
     enrollUrl?: string;
-    /**
-     *
-     */
     recoveryUrl?: string;
-    /**
-     *
-     */
     passwordlessUrl?: string;
-    /**
-     *
-     */
     primaryAction: string;
-    /**
-     *
-     */
     sources?: Array<LoginSource>;
-    /**
-     *
-     */
     showSourceLabels: boolean;
-    /**
-     *
-     */
     enableRememberMe?: boolean;
-    /**
-     *
-     */
     passkeyChallenge?: { [key: string]: any } | null;
 }
 

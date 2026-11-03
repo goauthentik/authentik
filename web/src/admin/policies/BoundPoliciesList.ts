@@ -7,14 +7,13 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
 import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { toAdminInterface } from "#elements/router/core/interfaces";
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
@@ -38,17 +37,21 @@ export function getPolicyUserGroupRowLabel(item: PolicyBinding): string {
     } else if (item.user) {
         return msg(str`User ${item.userObj?.name || item.userObj?.username}`);
     }
+
     return msg("-");
 }
 
 export function getPolicyUserGroupRow(item: PolicyBinding): SlottedTemplateResult {
     const label = getPolicyUserGroupRowLabel(item);
+
     if (item.user) {
         return html` <a href=${toAdminInterface(`identity/users/${item.user}`)}> ${label} </a> `;
     }
+
     if (item.group) {
         return html` <a href=${toAdminInterface(`identity/groups/${item.group}`)}> ${label} </a> `;
     }
+
     return html`${label}`;
 }
 
@@ -109,6 +112,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         [msg("Order"), "order"],
         [this.allowedTypesLabel],
         [msg("Enabled"), "enabled"],
+        [msg("Expiring"), "expires"],
         [msg("Timeout"), "timeout"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
@@ -131,6 +135,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-spinner-button .callAction=${this.refreshListener} class="pf-m-secondary">
                 ${msg("Refresh")}</ak-spinner-button
             ><ak-forms-delete-bulk
@@ -178,6 +183,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                 ${msg("Bind existing group/user")}
             </button>`;
         }
+
         return html`<button
             class="pf-c-button pf-m-primary"
             type="button"
@@ -196,6 +202,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`<pre>${item.order}</pre>`,
             html`${getPolicyUserGroupRow(item)}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
+            item.expiring ? Timestamp(item.expires) : "-",
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
                 ${this.getObjectEditButton(item)}
@@ -237,14 +244,18 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         const policyEngineMode = policyEngineModes.find(
             (pem) => pem.value === this.policyEngineMode,
         );
+
         if (policyEngineMode === undefined) {
             return nothing;
         }
-        return html`${this.findSlotted("description")
-                ? html`<p class="policy-desc">
-                      <slot name="description"></slot>
-                  </p>`
-                : nothing}
+
+        return html`${
+                this.findSlotted("description")
+                    ? html`<p class="policy-desc">
+                          <slot name="description"></slot>
+                      </p>`
+                    : nothing
+            }
             <p class="policy-desc">
                 ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
                 ${policyEngineMode.description}

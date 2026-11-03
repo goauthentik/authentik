@@ -27,13 +27,16 @@ export function stagesSelector(instanceStages: string[] | undefined) {
         return async (stages: DualSelectPair<Stage>[]) =>
             stages.filter(([_0, _1, _2, stage]: DualSelectPair<Stage>) => stage !== undefined);
     }
+
     return async () => {
         const stagesApi = aki(StagesApi);
+
         const stages = await Promise.allSettled(
             instanceStages.map((instanceId) =>
                 stagesApi.stagesAllRetrieve({ stageUuid: instanceId }),
             ),
         );
+
         return stages
             .filter((s) => s.status === "fulfilled")
             .map((s) => s.value)

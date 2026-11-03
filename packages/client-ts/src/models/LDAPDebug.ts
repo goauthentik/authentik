@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,22 +11,12 @@
  */
 
 /**
- *
  * @export
  * @interface LDAPDebug
  */
 export interface LDAPDebug {
-    /**
-     *
-     */
     readonly user: Array<{ [key: string]: any }>;
-    /**
-     *
-     */
     readonly group: Array<{ [key: string]: any }>;
-    /**
-     *
-     */
     readonly membership: Array<{ [key: string]: any }>;
 }
 

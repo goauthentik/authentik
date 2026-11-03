@@ -1,0 +1,13 @@
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "out",
+        "tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
+        "emitDeclarationOnly": false,
+        "allowImportingTsExtensions": false,
+        "allowJs": false,
+        "checkJs": false
+    },
+    "include": ["src/**/*"]
+}

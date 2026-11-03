@@ -1,5 +1,4 @@
 import "#components/ak-event-info";
-
 import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,20 +12,16 @@
 
 /**
  * RadiusProvider Serializer
+ *
  * @export
  * @interface RadiusProvider
  */
 export interface RadiusProvider {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     name: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
@@ -38,9 +32,6 @@ export interface RadiusProvider {
      * Flow used ending the session from a provider.
      */
     invalidationFlow: string;
-    /**
-     *
-     */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -75,24 +66,22 @@ export interface RadiusProvider {
      */
     readonly metaModelName: string;
     /**
-     * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
+     * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will
+     * match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
      */
     clientNetworks?: string;
     /**
      * Shared secret between clients and server to hash packets.
      */
     sharedSecret?: string;
-    /**
-     *
-     */
     readonly outpostSet: Array<string>;
     /**
-     * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
+     * When enabled, code-based multi-factor authentication can be used by appending a semicolon and
+     * the TOTP code to the password. This should only be enabled if all users that will bind to
+     * this provider have a TOTP device configured, as otherwise a password may incorrectly be
+     * rejected if it contains a semicolon.
      */
     mfaSupport?: boolean;
-    /**
-     *
-     */
     certificate?: string | null;
 }
 

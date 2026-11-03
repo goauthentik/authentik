@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,54 +10,32 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { RelatedTarget } from "./RelatedTarget";
-import { RelatedTargetFromJSON } from "./RelatedTarget";
-import type { RequestRule } from "./RequestRule";
-import { RequestRuleFromJSON } from "./RequestRule";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { RelatedTarget } from "./RelatedTarget.js";
+import { RelatedTargetFromJSON } from "./RelatedTarget.js";
+import type { RequestRule } from "./RequestRule.js";
+import { RequestRuleFromJSON } from "./RequestRule.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface RequestRuleBinding
  */
 export interface RequestRuleBinding {
-    /**
-     *
-     */
     uuid?: string;
-    /**
-     *
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
-    /**
-     *
-     */
     rule: string;
-    /**
-     *
-     */
     readonly ruleObj: RequestRule;
-    /**
-     *
-     */
     target: string;
-    /**
-     *
-     */
     readonly related: Array<string>;
-    /**
-     *
-     */
     readonly relatedObj: Array<RelatedTarget>;
     /**
-     * How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+     * How long a request against this binding stays pending before it automatically lapses if not
+     * approved or denied.
      */
     expiryPending?: string;
     /**

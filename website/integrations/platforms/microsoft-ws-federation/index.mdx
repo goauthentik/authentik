@@ -13,7 +13,7 @@ authentik_enterprise: true
 >
 > -- https://www.microsoft.com/microsoft-365
 
-Microsoft Entra ID supports federated domain sign-in with either WS-Federation or SAML 2.0. This guide uses WS-Federation with SAML 1.1 assertions, similar to an AD FS federation. To use SAML 2.0 instead, follow the [Microsoft 365 SAML integration guide](../microsoft-saml/).
+Microsoft Entra ID supports federated domain sign-in with either WS-Federation or SAML 2.0. This guide uses WS-Federation with SAML 1.1 assertions, similar to an AD FS federation. To use the SAML 2.0 protocol instead of WS-Federation, follow the [Microsoft 365 SAML integration guide](../microsoft-saml/).
 
 :::warning Passive authentication only
 
@@ -32,7 +32,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-This integration requires an authentik Enterprise license. You also need:
+This integration requires authentik 2026.8 or later and an authentik Enterprise license. You also need:
 
 - An administrator account in authentik.
 - A Microsoft Entra administrator account that can update users and configure domain federation.
@@ -48,7 +48,7 @@ Federating a domain changes authentication for every user in that domain. Keep a
 
 ## authentik configuration
 
-To support the integration of Microsoft 365 with authentik via WS-Federation, create the required property mappings and an application/provider pair.
+To support the integration of Microsoft 365 with authentik via WS-Federation, create the required [property mappings](/docs/add-secure-apps/providers/property-mappings/) and an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair).
 
 ### Create the immutable ID mapping
 
@@ -60,8 +60,10 @@ For cloud-only users whose authentik email address matches their Microsoft Entra
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+
     - **Select type**: select **SAML Provider Property Mapping**.
     - **Configure the SAML Provider Property Mapping**: provide a descriptive name, such as `Microsoft Entra Immutable ID`.
+
         - **SAML Attribute Name**: `ImmutableID`
         - **Expression**: use the expression that matches your user source.
 
@@ -88,8 +90,10 @@ Microsoft Entra ID uses the `IDPEmail` claim to identify the user's UPN.
 
 1. In the authentik Admin interface, navigate to **Customization** > **Property Mappings** and click **Create**.
 2. Configure the mapping:
+
     - **Select type**: select **SAML Provider Property Mapping**.
     - **Configure the SAML Provider Property Mapping**: provide a descriptive name, such as `Microsoft Entra IDPEmail`.
+
         - **SAML Attribute Name**: `IDPEmail`
         - **Expression**:
 
@@ -112,8 +116,10 @@ The mapping in this section unconditionally tells Microsoft Entra ID that authen
 
 1. In the authentik Admin interface, navigate to **Customization** > **Property Mappings** and click **Create**.
 2. Configure the mapping:
+
     - **Select type**: select **SAML Provider Property Mapping**.
     - **Configure the SAML Provider Property Mapping**: provide a descriptive name, such as `Microsoft Entra MFA authentication method`.
+
         - **SAML Attribute Name**: `AuthnContextClassRef`
         - **Expression**:
 
@@ -127,6 +133,7 @@ The mapping in this section unconditionally tells Microsoft Entra ID that authen
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
     - **Choose a Provider type**: select **WS-Federation Provider**.
     - **Configure the Provider**: provide a name, select an authorization flow, and configure the following settings:
@@ -137,7 +144,7 @@ The mapping in this section unconditionally tells Microsoft Entra ID that authen
             - **Property mappings**: remove the default selected mappings, then add the `Microsoft Entra Immutable ID` and `Microsoft Entra IDPEmail` mappings.
             - **NameID Property Mapping**: select `Microsoft Entra Immutable ID`.
             - **AuthnContextClassRef Property Mapping**: if you created the optional MFA mapping, select `Microsoft Entra MFA authentication method`.
-            - **SAML assertion version**: select **SAML 1.1**.
+            - **SAML assertion version**: select **SAML 1.1** instead of the default **SAML 2.0**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Create Application** to save the application and provider.
@@ -208,8 +215,7 @@ $domain = "domain.company"
 $passiveSignInUri = "https://authentik.company/application/wsfed/"
 $signOutUri = "https://authentik.company/application/wsfed/<application_slug>/"
 $issuerUri = "https://authentik.company/application/saml/<application_slug>/metadata/"
-$metadataExchangeUri = "https://authentik.company/application/wsfed/<application_slug>/metadata/"
-$activeSignInUri = "https://authentik.company/application/wsfed/"
+
 $signingCert = (Get-Content "C:\path\to\authentik_certificate.pem" -Raw) `
   -replace "-----BEGIN CERTIFICATE-----", "" `
   -replace "-----END CERTIFICATE-----", "" `
@@ -224,13 +230,14 @@ New-MgDomainFederationConfiguration `
   -PassiveSignInUri $passiveSignInUri `
   -SignOutUri $signOutUri `
   -IssuerUri $issuerUri `
-  -MetadataExchangeUri $metadataExchangeUri `
+
   -SigningCertificate $signingCert `
   -DisplayName $displayName `
   -FederatedIdpMfaBehavior $federatedIdpMfaBehavior `
-  -PreferredAuthenticationProtocol "wsFed" `
-  -ActiveSignInUri $activeSignInUri
+  -PreferredAuthenticationProtocol "wsFed"
 ```
+
+The command omits `ActiveSignInUri` and `MetadataExchangeUri` because authentik does not provide WS-Trust active authentication or MEX endpoints. The WS-Federation metadata download is not a MEX endpoint.
 
 ## Configuration verification
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -15,79 +13,76 @@
 import {
     type AgentGrantRequestCreated,
     AgentGrantRequestCreatedFromJSON,
-} from "../models/AgentGrantRequestCreated";
+} from "../models/AgentGrantRequestCreated.js";
 import {
     type AgentGrantRequestCreateRequest,
     AgentGrantRequestCreateRequestToJSON,
-} from "../models/AgentGrantRequestCreateRequest";
-import { type GrantRequest, GrantRequestFromJSON } from "../models/GrantRequest";
+} from "../models/AgentGrantRequestCreateRequest.js";
+import { type GrantRequest, GrantRequestFromJSON } from "../models/GrantRequest.js";
 import {
     type GrantRequestCreateRequest,
     GrantRequestCreateRequestToJSON,
-} from "../models/GrantRequestCreateRequest";
-import { type Link, LinkFromJSON } from "../models/Link";
+} from "../models/GrantRequestCreateRequest.js";
+import { type Link, LinkFromJSON } from "../models/Link.js";
 import {
     type PaginatedGrantRequestList,
     PaginatedGrantRequestListFromJSON,
-} from "../models/PaginatedGrantRequestList";
+} from "../models/PaginatedGrantRequestList.js";
 import {
     type PaginatedRequestRuleBindingList,
     PaginatedRequestRuleBindingListFromJSON,
-} from "../models/PaginatedRequestRuleBindingList";
+} from "../models/PaginatedRequestRuleBindingList.js";
 import {
     type PaginatedRequestRuleChildBindingList,
     PaginatedRequestRuleChildBindingListFromJSON,
-} from "../models/PaginatedRequestRuleChildBindingList";
+} from "../models/PaginatedRequestRuleChildBindingList.js";
 import {
     type PaginatedRequestRuleList,
     PaginatedRequestRuleListFromJSON,
-} from "../models/PaginatedRequestRuleList";
+} from "../models/PaginatedRequestRuleList.js";
 import {
     type PatchedGrantRequestFulfillRequest,
     PatchedGrantRequestFulfillRequestToJSON,
-} from "../models/PatchedGrantRequestFulfillRequest";
+} from "../models/PatchedGrantRequestFulfillRequest.js";
 import {
     type PatchedRequestRuleBindingRequest,
     PatchedRequestRuleBindingRequestToJSON,
-} from "../models/PatchedRequestRuleBindingRequest";
+} from "../models/PatchedRequestRuleBindingRequest.js";
 import {
     type PatchedRequestRuleChildBindingRequest,
     PatchedRequestRuleChildBindingRequestToJSON,
-} from "../models/PatchedRequestRuleChildBindingRequest";
+} from "../models/PatchedRequestRuleChildBindingRequest.js";
 import {
     type PatchedRequestRuleRequest,
     PatchedRequestRuleRequestToJSON,
-} from "../models/PatchedRequestRuleRequest";
-import { type RequestRule, RequestRuleFromJSON } from "../models/RequestRule";
-import { type RequestRuleBinding, RequestRuleBindingFromJSON } from "../models/RequestRuleBinding";
+} from "../models/PatchedRequestRuleRequest.js";
+import { type RequestRule, RequestRuleFromJSON } from "../models/RequestRule.js";
+import {
+    type RequestRuleBinding,
+    RequestRuleBindingFromJSON,
+} from "../models/RequestRuleBinding.js";
 import {
     type RequestRuleBindingRequest,
     RequestRuleBindingRequestToJSON,
-} from "../models/RequestRuleBindingRequest";
+} from "../models/RequestRuleBindingRequest.js";
 import {
     type RequestRuleChildBinding,
     RequestRuleChildBindingFromJSON,
-} from "../models/RequestRuleChildBinding";
+} from "../models/RequestRuleChildBinding.js";
 import {
     type RequestRuleChildBindingRequest,
     RequestRuleChildBindingRequestToJSON,
-} from "../models/RequestRuleChildBindingRequest";
-import { type RequestRuleRequest, RequestRuleRequestToJSON } from "../models/RequestRuleRequest";
-import { type RequestStatus } from "../models/RequestStatus";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/RequestRuleChildBindingRequest.js";
+import { type RequestRuleRequest, RequestRuleRequestToJSON } from "../models/RequestRuleRequest.js";
+import { type RequestStatus } from "../models/RequestStatus.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface RequestsGrantRequestsAgentCreateRequest {
-    /**
-     *
-     */
     agentGrantRequestCreateRequest: AgentGrantRequestCreateRequest;
 }
 
 export interface RequestsGrantRequestsCreateRequest {
-    /**
-     *
-     */
     grantRequestCreateRequest: GrantRequestCreateRequest;
 }
 
@@ -103,20 +98,11 @@ export interface RequestsGrantRequestsFulfillPartialUpdateRequest {
      * A UUID string identifying this Grant Request.
      */
     uuid: string;
-    /**
-     *
-     */
     patchedGrantRequestFulfillRequest?: PatchedGrantRequestFulfillRequest;
 }
 
 export interface RequestsGrantRequestsListRequest {
-    /**
-     *
-     */
     agentOwner?: number;
-    /**
-     *
-     */
     createdBy?: number;
     /**
      * Which field to use when ordering the results.
@@ -134,20 +120,11 @@ export interface RequestsGrantRequestsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     status?: RequestStatus;
 }
 
 export interface RequestsGrantRequestsPendingReviewListRequest {
-    /**
-     *
-     */
     agentOwner?: number;
-    /**
-     *
-     */
     createdBy?: number;
     /**
      * Which field to use when ordering the results.
@@ -165,9 +142,6 @@ export interface RequestsGrantRequestsPendingReviewListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     status?: RequestStatus;
 }
 
@@ -186,9 +160,6 @@ export interface RequestsGrantRequestsRevokeDestroyRequest {
 }
 
 export interface RequestsRuleBindingsCreateRequest {
-    /**
-     *
-     */
     requestRuleBindingRequest: RequestRuleBindingRequest;
 }
 
@@ -212,17 +183,11 @@ export interface RequestsRuleBindingsListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     rule?: string;
     /**
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     target?: string;
 }
 
@@ -231,9 +196,6 @@ export interface RequestsRuleBindingsPartialUpdateRequest {
      * A UUID string identifying this Request Rule Binding.
      */
     uuid: string;
-    /**
-     *
-     */
     patchedRequestRuleBindingRequest?: PatchedRequestRuleBindingRequest;
 }
 
@@ -249,9 +211,6 @@ export interface RequestsRuleBindingsUpdateRequest {
      * A UUID string identifying this Request Rule Binding.
      */
     uuid: string;
-    /**
-     *
-     */
     requestRuleBindingRequest: RequestRuleBindingRequest;
 }
 
@@ -263,9 +222,6 @@ export interface RequestsRuleBindingsUsedByListRequest {
 }
 
 export interface RequestsRuleChildBindingsCreateRequest {
-    /**
-     *
-     */
     requestRuleChildBindingRequest: RequestRuleChildBindingRequest;
 }
 
@@ -277,9 +233,6 @@ export interface RequestsRuleChildBindingsDestroyRequest {
 }
 
 export interface RequestsRuleChildBindingsListRequest {
-    /**
-     *
-     */
     binding?: string;
     /**
      * Which field to use when ordering the results.
@@ -297,9 +250,6 @@ export interface RequestsRuleChildBindingsListRequest {
      * A search term.
      */
     search?: string;
-    /**
-     *
-     */
     target?: string;
 }
 
@@ -308,9 +258,6 @@ export interface RequestsRuleChildBindingsPartialUpdateRequest {
      * A UUID string identifying this Request Rule Child Binding.
      */
     uuid: string;
-    /**
-     *
-     */
     patchedRequestRuleChildBindingRequest?: PatchedRequestRuleChildBindingRequest;
 }
 
@@ -326,9 +273,6 @@ export interface RequestsRuleChildBindingsUpdateRequest {
      * A UUID string identifying this Request Rule Child Binding.
      */
     uuid: string;
-    /**
-     *
-     */
     requestRuleChildBindingRequest: RequestRuleChildBindingRequest;
 }
 
@@ -340,9 +284,6 @@ export interface RequestsRuleChildBindingsUsedByListRequest {
 }
 
 export interface RequestsRulesCreateRequest {
-    /**
-     *
-     */
     requestRuleRequest: RequestRuleRequest;
 }
 
@@ -354,9 +295,6 @@ export interface RequestsRulesDestroyRequest {
 }
 
 export interface RequestsRulesListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -370,13 +308,7 @@ export interface RequestsRulesListRequest {
      * Number of results to return per page.
      */
     pageSize?: number;
-    /**
-     *
-     */
     pbmUuid?: string;
-    /**
-     *
-     */
     requestFlowSlug?: string;
     /**
      * A search term.
@@ -389,9 +321,6 @@ export interface RequestsRulesPartialUpdateRequest {
      * A UUID string identifying this Request Rule.
      */
     uuid: string;
-    /**
-     *
-     */
     patchedRequestRuleRequest?: PatchedRequestRuleRequest;
 }
 
@@ -407,9 +336,6 @@ export interface RequestsRulesUpdateRequest {
      * A UUID string identifying this Request Rule.
      */
     uuid: string;
-    /**
-     *
-     */
     requestRuleRequest: RequestRuleRequest;
 }
 
@@ -420,9 +346,6 @@ export interface RequestsRulesUsedByListRequest {
     uuid: string;
 }
 
-/**
- *
- */
 export class RequestsApi extends runtime.BaseAPI {
     /**
      * Creates request options for requestsGrantRequestsAgentCreate without sending the request
@@ -452,7 +375,7 @@ export class RequestsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/requests/grant-requests/agent/`;
+        const urlPath = `/requests/grant-requests/agent/`;
 
         return {
             path: urlPath,
@@ -466,7 +389,12 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Delegate access an agent\'s owner already holds to the agent, time-boxed. Unlike `create` this persists the request directly instead of returning a flow link -- an agent authenticates with an API token and has no browser to run a flow in, so no justification is ever collected. That is why the agent may only ask for what its owner already has: the owner\'s approval is then the whole decision, and no reviewer is asked to judge a request with nothing in it. The returned `fulfill_url` is what the agent hands to its owner so they can act on it.
+     * Delegate access an agent's owner already holds to the agent, time-boxed. Unlike `create` this
+     * persists the request directly instead of returning a flow link -- an agent authenticates with
+     * an API token and has no browser to run a flow in, so no justification is ever collected. That
+     * is why the agent may only ask for what its owner already has: the owner's approval is then
+     * the whole decision, and no reviewer is asked to judge a request with nothing in it. The
+     * returned `fulfill_url` is what the agent hands to its owner so they can act on it.
      */
     async requestsGrantRequestsAgentCreateRaw(
         requestParameters: RequestsGrantRequestsAgentCreateRequest,
@@ -482,7 +410,12 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Delegate access an agent\'s owner already holds to the agent, time-boxed. Unlike `create` this persists the request directly instead of returning a flow link -- an agent authenticates with an API token and has no browser to run a flow in, so no justification is ever collected. That is why the agent may only ask for what its owner already has: the owner\'s approval is then the whole decision, and no reviewer is asked to judge a request with nothing in it. The returned `fulfill_url` is what the agent hands to its owner so they can act on it.
+     * Delegate access an agent's owner already holds to the agent, time-boxed. Unlike `create` this
+     * persists the request directly instead of returning a flow link -- an agent authenticates with
+     * an API token and has no browser to run a flow in, so no justification is ever collected. That
+     * is why the agent may only ask for what its owner already has: the owner's approval is then
+     * the whole decision, and no reviewer is asked to judge a request with nothing in it. The
+     * returned `fulfill_url` is what the agent hands to its owner so they can act on it.
      */
     async requestsGrantRequestsAgentCreate(
         requestParameters: RequestsGrantRequestsAgentCreateRequest,
@@ -523,7 +456,7 @@ export class RequestsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/requests/grant-requests/`;
+        const urlPath = `/requests/grant-requests/`;
 
         return {
             path: urlPath,
@@ -534,8 +467,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async requestsGrantRequestsCreateRaw(
         requestParameters: RequestsGrantRequestsCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -546,8 +477,6 @@ export class RequestsApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse(response, (jsonValue) => LinkFromJSON(jsonValue));
     }
 
-    /**
-     */
     async requestsGrantRequestsCreate(
         requestParameters: RequestsGrantRequestsCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -596,8 +525,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async requestsGrantRequestsDestroyRaw(
         requestParameters: RequestsGrantRequestsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -609,8 +536,6 @@ export class RequestsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     */
     async requestsGrantRequestsDestroy(
         requestParameters: RequestsGrantRequestsDestroyRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -619,7 +544,8 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for requestsGrantRequestsFulfillPartialUpdate without sending the request
+     * Creates request options for requestsGrantRequestsFulfillPartialUpdate without sending the
+     * request
      */
     async requestsGrantRequestsFulfillPartialUpdateRequestOpts(
         requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest,
@@ -660,8 +586,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async requestsGrantRequestsFulfillPartialUpdateRaw(
         requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -673,8 +597,6 @@ export class RequestsApi extends runtime.BaseAPI {
         return new runtime.VoidApiResponse(response);
     }
 
-    /**
-     */
     async requestsGrantRequestsFulfillPartialUpdate(
         requestParameters: RequestsGrantRequestsFulfillPartialUpdateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -729,7 +651,7 @@ export class RequestsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/requests/grant-requests/`;
+        const urlPath = `/requests/grant-requests/`;
 
         return {
             path: urlPath,
@@ -739,8 +661,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async requestsGrantRequestsListRaw(
         requestParameters: RequestsGrantRequestsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -753,8 +673,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async requestsGrantRequestsList(
         requestParameters: RequestsGrantRequestsListRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -764,7 +682,8 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for requestsGrantRequestsPendingReviewList without sending the request
+     * Creates request options for requestsGrantRequestsPendingReviewList without sending the
+     * request
      */
     async requestsGrantRequestsPendingReviewListRequestOpts(
         requestParameters: RequestsGrantRequestsPendingReviewListRequest,
@@ -810,7 +729,7 @@ export class RequestsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/requests/grant-requests/pending_review/`;
+        const urlPath = `/requests/grant-requests/pending_review/`;
 
         return {
             path: urlPath,
@@ -887,8 +806,6 @@ export class RequestsApi extends runtime.BaseAPI {
         };
     }
 
-    /**
-     */
     async requestsGrantRequestsRetrieveRaw(
         requestParameters: RequestsGrantRequestsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -902,8 +819,6 @@ export class RequestsApi extends runtime.BaseAPI {
         );
     }
 
-    /**
-     */
     async requestsGrantRequestsRetrieve(
         requestParameters: RequestsGrantRequestsRetrieveRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -953,7 +868,8 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Immediately end an active grant. Available to the same reviewers who could approve it in the first place.
+     * Immediately end an active grant. Available to the same reviewers who could approve it in the
+     * first place.
      */
     async requestsGrantRequestsRevokeDestroyRaw(
         requestParameters: RequestsGrantRequestsRevokeDestroyRequest,
@@ -967,7 +883,8 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Immediately end an active grant. Available to the same reviewers who could approve it in the first place.
+     * Immediately end an active grant. Available to the same reviewers who could approve it in the
+     * first place.
      */
     async requestsGrantRequestsRevokeDestroy(
         requestParameters: RequestsGrantRequestsRevokeDestroyRequest,
@@ -1004,7 +921,7 @@ export class RequestsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/requests/rule-bindings/`;
+        const urlPath = `/requests/rule-bindings/`;
 
         return {
             path: urlPath,
@@ -1144,7 +1061,7 @@ export class RequestsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/requests/rule-bindings/`;
+        const urlPath = `/requests/rule-bindings/`;
 
         return {
             path: urlPath,
@@ -1485,7 +1402,7 @@ export class RequestsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/requests/rule-child-bindings/`;
+        const urlPath = `/requests/rule-child-bindings/`;
 
         return {
             path: urlPath,
@@ -1632,7 +1549,7 @@ export class RequestsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/requests/rule-child-bindings/`;
+        const urlPath = `/requests/rule-child-bindings/`;
 
         return {
             path: urlPath,
@@ -1673,7 +1590,8 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for requestsRuleChildBindingsPartialUpdate without sending the request
+     * Creates request options for requestsRuleChildBindingsPartialUpdate without sending the
+     * request
      */
     async requestsRuleChildBindingsPartialUpdateRequestOpts(
         requestParameters: RequestsRuleChildBindingsPartialUpdateRequest,
@@ -1983,7 +1901,7 @@ export class RequestsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/requests/rules/`;
+        const urlPath = `/requests/rules/`;
 
         return {
             path: urlPath,
@@ -2125,7 +2043,7 @@ export class RequestsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/requests/rules/`;
+        const urlPath = `/requests/rules/`;
 
         return {
             path: urlPath,

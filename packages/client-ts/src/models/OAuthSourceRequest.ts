@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,27 +10,31 @@
  * Do not edit the class manually.
  */
 
-import type { AuthorizationCodeAuthMethodEnum } from "./AuthorizationCodeAuthMethodEnum";
+import type { AuthorizationCodeAuthMethodEnum } from "./AuthorizationCodeAuthMethodEnum.js";
 import {
     AuthorizationCodeAuthMethodEnumFromJSON,
     AuthorizationCodeAuthMethodEnumToJSON,
-} from "./AuthorizationCodeAuthMethodEnum";
-import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum";
+} from "./AuthorizationCodeAuthMethodEnum.js";
+import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum.js";
 import {
     GroupMatchingModeEnumFromJSON,
     GroupMatchingModeEnumToJSON,
-} from "./GroupMatchingModeEnum";
-import type { PKCEMethodEnum } from "./PKCEMethodEnum";
-import { PKCEMethodEnumFromJSON, PKCEMethodEnumToJSON } from "./PKCEMethodEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { ProviderTypeEnum } from "./ProviderTypeEnum";
-import { ProviderTypeEnumFromJSON, ProviderTypeEnumToJSON } from "./ProviderTypeEnum";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+} from "./GroupMatchingModeEnum.js";
+import type { PKCEMethodEnum } from "./PKCEMethodEnum.js";
+import { PKCEMethodEnumFromJSON, PKCEMethodEnumToJSON } from "./PKCEMethodEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { ProviderTypeEnum } from "./ProviderTypeEnum.js";
+import { ProviderTypeEnumFromJSON, ProviderTypeEnumToJSON } from "./ProviderTypeEnum.js";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum.js";
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from "./UserMatchingModeEnum.js";
 
 /**
  * OAuth Source Serializer
+ *
  * @export
  * @interface OAuthSourceRequest
  */
@@ -45,12 +47,10 @@ export interface OAuthSourceRequest {
      * Internal source name, used in URLs.
      */
     slug: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
@@ -61,37 +61,19 @@ export interface OAuthSourceRequest {
      * Flow to use when enrolling new users.
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
      */
     userMatchingMode?: UserMatchingModeEnum;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     icon?: string;
     /**
      * How the source determines if an existing group should be used or a new group created.
      */
     groupMatchingMode?: GroupMatchingModeEnum;
-    /**
-     *
-     */
     providerType: ProviderTypeEnum;
     /**
      * URL used to request the initial token. This URL is only required for OAuth 1.
@@ -109,33 +91,12 @@ export interface OAuthSourceRequest {
      * URL used by authentik to get user information.
      */
     profileUrl?: string | null;
-    /**
-     *
-     */
     pkce?: PKCEMethodEnum;
-    /**
-     *
-     */
     consumerKey: string;
-    /**
-     *
-     */
-    consumerSecret: string;
-    /**
-     *
-     */
+    consumerSecret?: string;
     additionalScopes?: string;
-    /**
-     *
-     */
     oidcWellKnownUrl?: string;
-    /**
-     *
-     */
     oidcJwksUrl?: string;
-    /**
-     *
-     */
     oidcJwks?: { [key: string]: any };
     /**
      * How to perform authentication during an authorization_code token request flow
@@ -161,13 +122,6 @@ export function instanceOfOAuthSourceRequest(value: object): value is OAuthSourc
             !("consumer_key" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["consumerKey"] === undefined &&
             (value as Record<string, any>)["consumer_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("consumerSecret" in (value as Record<string, any>)) &&
-            !("consumer_secret" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["consumerSecret"] === undefined &&
-            (value as Record<string, any>)["consumer_secret"] === undefined)
     )
         return false;
     return true;
@@ -247,7 +201,7 @@ export function OAuthSourceRequestFromJSONTyped(
                   : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"],
-        consumerSecret: json["consumer_secret"],
+        consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],

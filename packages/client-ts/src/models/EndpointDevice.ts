@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,60 +10,35 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
-import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
-import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
-import type { DeviceUserBinding } from "./DeviceUserBinding";
-import { DeviceUserBindingFromJSON } from "./DeviceUserBinding";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceAccessGroup } from "./DeviceAccessGroup.js";
+import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup.js";
+import type { DeviceFactSnapshot } from "./DeviceFactSnapshot.js";
+import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot.js";
+import type { DeviceUserBinding } from "./DeviceUserBinding.js";
+import { DeviceUserBindingFromJSON } from "./DeviceUserBinding.js";
+import type { RACConnectionOverride } from "./RACConnectionOverride.js";
+import {
+    RACConnectionOverrideFromJSON,
+    RACConnectionOverrideToJSON,
+} from "./RACConnectionOverride.js";
 
 /**
- *
  * @export
  * @interface EndpointDevice
  */
 export interface EndpointDevice {
-    /**
-     *
-     */
     deviceUuid?: string;
-    /**
-     *
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     accessGroup?: string | null;
-    /**
-     *
-     */
     accessGroupObj?: DeviceAccessGroup;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     readonly facts: DeviceFactSnapshot | null;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     readonly primaryBindingObj: DeviceUserBinding | null;
+    rac: RACConnectionOverride | null;
 }
 
 /**
@@ -88,6 +61,7 @@ export function instanceOfEndpointDevice(value: object): value is EndpointDevice
             (value as Record<string, any>)["primary_binding_obj"] === undefined)
     )
         return false;
+    if (!("rac" in value) || value["rac"] === undefined) return false;
     return true;
 }
 
@@ -126,6 +100,7 @@ export function EndpointDeviceFromJSONTyped(
         facts: DeviceFactSnapshotFromJSON(json["facts"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         primaryBindingObj: DeviceUserBindingFromJSON(json["primary_binding_obj"]),
+        rac: RACConnectionOverrideFromJSON(json["rac"]),
     };
 }
 
@@ -149,5 +124,6 @@ export function EndpointDeviceToJSONTyped(
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
+        rac: RACConnectionOverrideToJSON(value["rac"]),
     };
 }

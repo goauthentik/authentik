@@ -1,11 +1,10 @@
 """User API Views"""
 
 from datetime import timedelta
-from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.models import AnonymousUser, Permission
+from django.contrib.auth.models import AnonymousUser
 from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
@@ -15,7 +14,7 @@ from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,
@@ -58,6 +57,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.admin.utils import get_system_settings
 from authentik.api.authentication import TokenAuthentication
 from authentik.api.search.fields import (
     ChoiceSearchField,
@@ -90,6 +90,7 @@ from authentik.core.models import (
     UserTypes,
     default_token_duration,
 )
+from authentik.core.signals import impersonation_changed
 from authentik.core.views.user_switch import start_user_switch_flow
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -100,14 +101,19 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.lib.validators import validate_password_hash
+from authentik.lib.validators import (
+    PasswordHashRequiresOverride,
+    PasswordHashValidator,
+)
+from authentik.rbac.api.rbac import PermissionField
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
-from authentik.rbac.models import Role, get_permission_choices
+from authentik.rbac.models import Role
 from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.password.models import PasswordDevice
 
 LOGGER = get_logger()
 
@@ -134,7 +140,13 @@ class PartialGroupSerializer(ModelSerializer):
         ]
 
 
-class UserSerializer(AttributesMixinSerializer, ModelSerializer):
+class UserSerializer(
+    ConditionalInheritance(
+        "authentik.enterprise.required_actions.api.RequiredActionsUserSerializerMixin"
+    ),
+    AttributesMixinSerializer,
+    ModelSerializer,
+):
     """User Serializer"""
 
     is_superuser = SerializerMethodField()
@@ -159,6 +171,14 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         max_length=USERNAME_MAX_LENGTH,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
+    password_change_date = DateTimeField(read_only=True)
+    password_locked = SerializerMethodField()
+    password_device = IntegerField(source="password_device.pk", read_only=True, allow_null=True)
+
+    def get_password_locked(self, user: User) -> bool:
+        """Whether the user's password currently refuses authentication."""
+        device = getattr(user, "password_device", None)
+        return device is not None and device.locked
 
     @property
     def _should_include_groups(self) -> bool:
@@ -200,10 +220,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
             self.fields["password_hash"] = CharField(required=False, allow_null=True)
-            self.fields["permissions"] = ListField(
-                required=False,
-                child=ChoiceField(choices=get_permission_choices()),
-            )
+            self.fields["permissions"] = ListField(required=False, child=PermissionField())
 
     def create(self, validated_data: dict) -> User:
         """Create a user, with blueprint-only password and permission writes."""
@@ -216,12 +233,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         instance: User = super().create(validated_data)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
-            perms_qs = Permission.objects.filter(
-                codename__in=[permission.split(".")[1] for permission in permissions]
-            ).values_list("content_type__app_label", "codename")
-            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
-            instance.assign_perms_to_managed_role(perms_list)
-        self._ensure_password_not_empty(instance)
+            instance.assign_perms_to_managed_role(permissions)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
@@ -235,28 +247,15 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         instance = super().update(instance, validated_data)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
-            perms_qs = Permission.objects.filter(
-                codename__in=[permission.split(".")[1] for permission in permissions]
-            ).values_list("content_type__app_label", "codename")
-            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
-            instance.assign_perms_to_managed_role(perms_list)
-        self._ensure_password_not_empty(instance)
+            instance.assign_perms_to_managed_role(permissions)
         return instance
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
         if password_hash is not None:
-            instance.set_password_from_hash(password_hash)
-            instance.save()
+            PasswordDevice.set_password_from_hash(instance, password_hash)
         elif password:
-            instance.set_password(password)
-            instance.save()
-
-    def _ensure_password_not_empty(self, instance: User):
-        """Store an explicit unusable password instead of an empty password field."""
-        if len(instance.password) == 0:
-            instance.set_unusable_password()
-            instance.save()
+            PasswordDevice.set_password(instance, password)
 
     def get_avatar(self, user: User) -> str:
         """User's avatar, either a http/https URL or a data URI"""
@@ -352,12 +351,13 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             "type",
             "uuid",
             "password_change_date",
+            "password_locked",
+            "password_device",
             "last_updated",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
             "date_joined": {"read_only": True},
-            "password_change_date": {"read_only": True},
         }
 
 
@@ -499,7 +499,32 @@ class UserPasswordSetSerializer(PassiveSerializer):
 class UserPasswordHashSetSerializer(PassiveSerializer):
     """Payload to set a users' password hash directly"""
 
-    password = CharField(required=True, validators=[validate_password_hash])
+    password = CharField(required=True)
+    override = BooleanField(
+        default=False,
+        help_text=_(
+            "Import a valid password hash even when its parameters do not match authentik's "
+            "current password hashing settings."
+        ),
+    )
+
+    def validate(self, attrs: dict) -> dict:
+        """Validate the password hash with the requested override."""
+        try:
+            PasswordHashValidator(strict=not attrs["override"])(attrs["password"])
+        except PasswordHashRequiresOverride as exc:
+            raise ValidationError(
+                {
+                    "password": [
+                        _('%(reason)s Set "override" to true to import it anyway.')
+                        % {"reason": reason}
+                        for reason in exc.detail
+                    ]
+                }
+            ) from exc
+        except ValidationError as exc:
+            raise ValidationError({"password": exc.detail}) from exc
+        return attrs
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -532,13 +557,6 @@ class UserRecoveryEmailSerializer(UserRecoveryLinkSerializer):
 class UsersFilter(FilterSet):
     """Filter for users"""
 
-    attributes = CharFilter(
-        field_name="attributes",
-        lookup_expr="",
-        label="Attributes",
-        method="filter_attributes",
-    )
-
     date_joined__lt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="lt")
     date_joined = IsoDateTimeFilter(field_name="date_joined")
     date_joined__gt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="gt")
@@ -558,7 +576,10 @@ class UsersFilter(FilterSet):
     path = CharFilter(field_name="path")
     path_startswith = CharFilter(field_name="path", method="filter_path_startswith")
 
-    type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
+    # `type` is a column on the user table, so filtering on it can't duplicate rows. The
+    # MultipleChoiceFilter default (distinct=True) would make the count and every page
+    # sort all matching users.
+    type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type", distinct=False)
 
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="groups__name",
@@ -594,23 +615,6 @@ class UsersFilter(FilterSet):
             return queryset
         return queryset.filter(Q(path=value) | Q(path__startswith=f"{value}/"))
 
-    def filter_attributes(self, queryset, name, value):
-        """Filter attributes by query args"""
-        try:
-            value = loads(value)
-        except ValueError:
-            raise ValidationError(_("filter: failed to parse JSON")) from None
-        if not isinstance(value, dict):
-            raise ValidationError(_("filter: value must be key:value mapping"))
-        qs = {}
-        for key, _value in value.items():
-            qs[f"attributes__{key}"] = _value
-        try:
-            __ = len(queryset.filter(**qs))
-            return queryset.filter(**qs)
-        except ValueError:
-            return queryset
-
     class Meta:
         model = User
         fields = [
@@ -622,7 +626,6 @@ class UsersFilter(FilterSet):
             "name",
             "is_active",
             "is_superuser",
-            "attributes",
             "groups_by_name",
             "groups_by_pk",
             "roles_by_name",
@@ -664,7 +667,7 @@ class UserViewSet(
         ]
 
     def get_queryset(self):
-        base_qs = User.objects.all().exclude_anonymous()
+        base_qs = User.objects.all().exclude_anonymous().select_related("password_device")
         # Always prefetch groups since group PKs are always serialized.
         # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:
@@ -679,13 +682,19 @@ class UserViewSet(
             base_qs = base_qs.prefetch_related(
                 Prefetch("roles", queryset=Role.objects.all().only("uuid"))
             )
-        # Annotate is_superuser to avoid N+1 query per user
+        # Annotate is_superuser to avoid N+1 query per user.
+        # Use two EXISTS subqueries (direct membership, membership through a descendant group)
+        # instead of one EXISTS with an OR across both join paths. PostgreSQL can't hash a
+        # subquery whose OR mixes two correlated conditions, so that form runs once per user row,
+        # including rows skipped by OFFSET, and a poor plan for the group ancestry join is paid
+        # for every row. Each separate EXISTS can run once per query as a hashed subplan.
         base_qs = base_qs.annotate(
             _annotated_is_superuser=Exists(
+                Group.objects.filter(is_superuser=True, users=OuterRef("pk"))
+            )
+            | Exists(
                 Group.objects.filter(
-                    is_superuser=True,
-                ).filter(
-                    Q(users=OuterRef("pk")) | Q(descendant_nodes__descendant__users=OuterRef("pk"))
+                    is_superuser=True, descendant_nodes__descendant__users=OuterRef("pk")
                 )
             )
         )
@@ -812,9 +821,6 @@ class UserViewSet(
                     attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: expiring},
                     path=USER_PATH_SERVICE_ACCOUNT,
                 )
-                user.set_unusable_password()
-                user.save()
-
                 response = {
                     "username": user.username,
                     "user_uid": user.uid,
@@ -899,7 +905,7 @@ class UserViewSet(
                 instance=request._request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER],
                 context={"request": request},
             ).data
-        self.request.session.modified = True
+        self.request.session.extend_expiry()
         return Response(serializer.initial_data)
 
     def _update_session_hash_after_password_change(self, request: Request, user: User):
@@ -925,8 +931,7 @@ class UserViewSet(
         """Set password for user"""
         user: User = self.get_object()
         try:
-            user.set_password(body.validated_data["password"], request=request)
-            user.save()
+            PasswordDevice.set_password(user, body.validated_data["password"], request=request)
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
@@ -959,12 +964,12 @@ class UserViewSet(
         is available from the request payload.
         """
         user: User = self.get_object()
-        try:
-            user.set_password_from_hash(body.validated_data["password"], request=request)
-            user.save()
-        except (ValidationError, IntegrityError) as exc:
-            LOGGER.debug("Failed to set password hash", exc=exc)
-            return Response(status=400)
+        PasswordDevice.set_password_from_hash(
+            user,
+            body.validated_data["password"],
+            request=request,
+            hasher_defaults_overridden=body.validated_data["override"],
+        )
         self._update_session_hash_after_password_change(request, user)
         return Response(status=204)
 
@@ -1041,7 +1046,7 @@ class UserViewSet(
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
-        if not request.tenant.impersonation:
+        if not get_system_settings().impersonation:
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
         user_to_be = self.get_object()
@@ -1058,7 +1063,7 @@ class UserViewSet(
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
-        if not reason and request.tenant.impersonation_require_reason:
+        if not reason and get_system_settings().impersonation_require_reason:
             LOGGER.debug(
                 "User attempted to impersonate without providing a reason",
                 user=request.user,
@@ -1069,6 +1074,10 @@ class UserViewSet(
         request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
 
         Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
+
+        # Persist the new identity before outposts can start reauthorization.
+        request.session.save()
+        impersonation_changed.send(sender=self.__class__, session_key=request.session.session_key)
 
         return Response(status=204)
 
@@ -1094,6 +1103,9 @@ class UserViewSet(
         del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
+
+        request.session.save()
+        impersonation_changed.send(sender=self.__class__, session_key=request.session.session_key)
 
         return Response(status=204)
 

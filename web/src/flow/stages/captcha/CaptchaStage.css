@@ -24,15 +24,26 @@ ak-stage-captcha[theme="dark"].style-scope {
 
 .ak-interactive-challenge {
     width: 100%;
-    min-height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: 0.5rem;
 
+    /* The provider sizes its own widget, so the placeholder only has to hold the row open
+       until the widget arrives and takes over. */
     &[data-ready="loading"] {
+        min-height: 65px;
         background-color: var(--captcha-background-from);
         animation: captcha-background-animation 1s infinite var(--pf-global--TimingFunction);
     }
+}
 
-    &[data-transparent-loading="true"][data-ready="loading"] {
-        background-color: transparent;
-        animation: none;
-    }
+/* Invisible challenges render an anchor the provider positions its own overlay against.
+   It must stay in the layout tree — `display: none` stops providers measuring it — but
+   must not occupy space. */
+.ak-invisible-challenge {
+    display: block;
+    width: 0;
+    height: 0;
+    overflow: hidden;
 }

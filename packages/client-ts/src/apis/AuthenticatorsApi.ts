@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,100 +10,97 @@
  * Do not edit the class manually.
  */
 
-import { type Device, DeviceFromJSON } from "../models/Device";
-import { type DuoDevice, DuoDeviceFromJSON } from "../models/DuoDevice";
-import { type DuoDeviceRequest, DuoDeviceRequestToJSON } from "../models/DuoDeviceRequest";
-import { type EmailDevice, EmailDeviceFromJSON } from "../models/EmailDevice";
-import { type EmailDeviceRequest, EmailDeviceRequestToJSON } from "../models/EmailDeviceRequest";
+import { type Device, DeviceFromJSON } from "../models/Device.js";
+import { type DuoDevice, DuoDeviceFromJSON } from "../models/DuoDevice.js";
+import { type DuoDeviceRequest, DuoDeviceRequestToJSON } from "../models/DuoDeviceRequest.js";
+import { type EmailDevice, EmailDeviceFromJSON } from "../models/EmailDevice.js";
+import { type EmailDeviceRequest, EmailDeviceRequestToJSON } from "../models/EmailDeviceRequest.js";
 import {
     type GoogleEndpointDevice,
     GoogleEndpointDeviceFromJSON,
-} from "../models/GoogleEndpointDevice";
+} from "../models/GoogleEndpointDevice.js";
 import {
     type GoogleEndpointDeviceRequest,
     GoogleEndpointDeviceRequestToJSON,
-} from "../models/GoogleEndpointDeviceRequest";
+} from "../models/GoogleEndpointDeviceRequest.js";
 import {
     type PaginatedDuoDeviceList,
     PaginatedDuoDeviceListFromJSON,
-} from "../models/PaginatedDuoDeviceList";
+} from "../models/PaginatedDuoDeviceList.js";
 import {
     type PaginatedEmailDeviceList,
     PaginatedEmailDeviceListFromJSON,
-} from "../models/PaginatedEmailDeviceList";
+} from "../models/PaginatedEmailDeviceList.js";
 import {
     type PaginatedGoogleEndpointDeviceList,
     PaginatedGoogleEndpointDeviceListFromJSON,
-} from "../models/PaginatedGoogleEndpointDeviceList";
+} from "../models/PaginatedGoogleEndpointDeviceList.js";
 import {
     type PaginatedSMSDeviceList,
     PaginatedSMSDeviceListFromJSON,
-} from "../models/PaginatedSMSDeviceList";
+} from "../models/PaginatedSMSDeviceList.js";
 import {
     type PaginatedStaticDeviceList,
     PaginatedStaticDeviceListFromJSON,
-} from "../models/PaginatedStaticDeviceList";
+} from "../models/PaginatedStaticDeviceList.js";
 import {
     type PaginatedTOTPDeviceList,
     PaginatedTOTPDeviceListFromJSON,
-} from "../models/PaginatedTOTPDeviceList";
+} from "../models/PaginatedTOTPDeviceList.js";
 import {
     type PaginatedWebAuthnDeviceList,
     PaginatedWebAuthnDeviceListFromJSON,
-} from "../models/PaginatedWebAuthnDeviceList";
+} from "../models/PaginatedWebAuthnDeviceList.js";
 import {
     type PatchedDuoDeviceRequest,
     PatchedDuoDeviceRequestToJSON,
-} from "../models/PatchedDuoDeviceRequest";
+} from "../models/PatchedDuoDeviceRequest.js";
 import {
     type PatchedEmailDeviceRequest,
     PatchedEmailDeviceRequestToJSON,
-} from "../models/PatchedEmailDeviceRequest";
+} from "../models/PatchedEmailDeviceRequest.js";
 import {
     type PatchedGoogleEndpointDeviceRequest,
     PatchedGoogleEndpointDeviceRequestToJSON,
-} from "../models/PatchedGoogleEndpointDeviceRequest";
+} from "../models/PatchedGoogleEndpointDeviceRequest.js";
 import {
     type PatchedSMSDeviceRequest,
     PatchedSMSDeviceRequestToJSON,
-} from "../models/PatchedSMSDeviceRequest";
+} from "../models/PatchedSMSDeviceRequest.js";
 import {
     type PatchedStaticDeviceRequest,
     PatchedStaticDeviceRequestToJSON,
-} from "../models/PatchedStaticDeviceRequest";
+} from "../models/PatchedStaticDeviceRequest.js";
 import {
     type PatchedTOTPDeviceRequest,
     PatchedTOTPDeviceRequestToJSON,
-} from "../models/PatchedTOTPDeviceRequest";
+} from "../models/PatchedTOTPDeviceRequest.js";
 import {
     type PatchedWebAuthnDeviceRequest,
     PatchedWebAuthnDeviceRequestToJSON,
-} from "../models/PatchedWebAuthnDeviceRequest";
-import { type SMSDevice, SMSDeviceFromJSON } from "../models/SMSDevice";
-import { type SMSDeviceRequest, SMSDeviceRequestToJSON } from "../models/SMSDeviceRequest";
-import { type StaticDevice, StaticDeviceFromJSON } from "../models/StaticDevice";
-import { type StaticDeviceRequest, StaticDeviceRequestToJSON } from "../models/StaticDeviceRequest";
-import { type TOTPDevice, TOTPDeviceFromJSON } from "../models/TOTPDevice";
-import { type TOTPDeviceRequest, TOTPDeviceRequestToJSON } from "../models/TOTPDeviceRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import { type WebAuthnDevice, WebAuthnDeviceFromJSON } from "../models/WebAuthnDevice";
+} from "../models/PatchedWebAuthnDeviceRequest.js";
+import { type SMSDevice, SMSDeviceFromJSON } from "../models/SMSDevice.js";
+import { type SMSDeviceRequest, SMSDeviceRequestToJSON } from "../models/SMSDeviceRequest.js";
+import { type StaticDevice, StaticDeviceFromJSON } from "../models/StaticDevice.js";
+import {
+    type StaticDeviceRequest,
+    StaticDeviceRequestToJSON,
+} from "../models/StaticDeviceRequest.js";
+import { type TOTPDevice, TOTPDeviceFromJSON } from "../models/TOTPDevice.js";
+import { type TOTPDeviceRequest, TOTPDeviceRequestToJSON } from "../models/TOTPDeviceRequest.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import { type WebAuthnDevice, WebAuthnDeviceFromJSON } from "../models/WebAuthnDevice.js";
 import {
     type WebAuthnDeviceRequest,
     WebAuthnDeviceRequestToJSON,
-} from "../models/WebAuthnDeviceRequest";
-import * as runtime from "../runtime";
+} from "../models/WebAuthnDeviceRequest.js";
+import * as runtime from "../runtime.js";
 
 export interface AuthenticatorsAdminAllListRequest {
-    /**
-     *
-     */
     user?: number;
 }
 
 export interface AuthenticatorsAdminDuoCreateRequest {
-    /**
-     *
-     */
     duoDeviceRequest: DuoDeviceRequest;
 }
 
@@ -117,9 +112,6 @@ export interface AuthenticatorsAdminDuoDestroyRequest {
 }
 
 export interface AuthenticatorsAdminDuoListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -144,9 +136,6 @@ export interface AuthenticatorsAdminDuoPartialUpdateRequest {
      * A unique integer value identifying this Duo Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedDuoDeviceRequest?: PatchedDuoDeviceRequest;
 }
 
@@ -162,16 +151,10 @@ export interface AuthenticatorsAdminDuoUpdateRequest {
      * A unique integer value identifying this Duo Device.
      */
     id: number;
-    /**
-     *
-     */
     duoDeviceRequest: DuoDeviceRequest;
 }
 
 export interface AuthenticatorsAdminEmailCreateRequest {
-    /**
-     *
-     */
     emailDeviceRequest: EmailDeviceRequest;
 }
 
@@ -183,9 +166,6 @@ export interface AuthenticatorsAdminEmailDestroyRequest {
 }
 
 export interface AuthenticatorsAdminEmailListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -210,9 +190,6 @@ export interface AuthenticatorsAdminEmailPartialUpdateRequest {
      * A unique integer value identifying this Email Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedEmailDeviceRequest?: PatchedEmailDeviceRequest;
 }
 
@@ -228,16 +205,10 @@ export interface AuthenticatorsAdminEmailUpdateRequest {
      * A unique integer value identifying this Email Device.
      */
     id: number;
-    /**
-     *
-     */
     emailDeviceRequest: EmailDeviceRequest;
 }
 
 export interface AuthenticatorsAdminEndpointCreateRequest {
-    /**
-     *
-     */
     googleEndpointDeviceRequest: GoogleEndpointDeviceRequest;
 }
 
@@ -249,9 +220,6 @@ export interface AuthenticatorsAdminEndpointDestroyRequest {
 }
 
 export interface AuthenticatorsAdminEndpointListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -276,9 +244,6 @@ export interface AuthenticatorsAdminEndpointPartialUpdateRequest {
      * A UUID string identifying this Endpoint Device.
      */
     uuid: string;
-    /**
-     *
-     */
     patchedGoogleEndpointDeviceRequest?: PatchedGoogleEndpointDeviceRequest;
 }
 
@@ -294,16 +259,10 @@ export interface AuthenticatorsAdminEndpointUpdateRequest {
      * A UUID string identifying this Endpoint Device.
      */
     uuid: string;
-    /**
-     *
-     */
     googleEndpointDeviceRequest: GoogleEndpointDeviceRequest;
 }
 
 export interface AuthenticatorsAdminSmsCreateRequest {
-    /**
-     *
-     */
     sMSDeviceRequest: SMSDeviceRequest;
 }
 
@@ -315,9 +274,6 @@ export interface AuthenticatorsAdminSmsDestroyRequest {
 }
 
 export interface AuthenticatorsAdminSmsListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -342,9 +298,6 @@ export interface AuthenticatorsAdminSmsPartialUpdateRequest {
      * A unique integer value identifying this SMS Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedSMSDeviceRequest?: PatchedSMSDeviceRequest;
 }
 
@@ -360,16 +313,10 @@ export interface AuthenticatorsAdminSmsUpdateRequest {
      * A unique integer value identifying this SMS Device.
      */
     id: number;
-    /**
-     *
-     */
     sMSDeviceRequest: SMSDeviceRequest;
 }
 
 export interface AuthenticatorsAdminStaticCreateRequest {
-    /**
-     *
-     */
     staticDeviceRequest: StaticDeviceRequest;
 }
 
@@ -381,9 +328,6 @@ export interface AuthenticatorsAdminStaticDestroyRequest {
 }
 
 export interface AuthenticatorsAdminStaticListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -408,9 +352,6 @@ export interface AuthenticatorsAdminStaticPartialUpdateRequest {
      * A unique integer value identifying this Static Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedStaticDeviceRequest?: PatchedStaticDeviceRequest;
 }
 
@@ -426,16 +367,10 @@ export interface AuthenticatorsAdminStaticUpdateRequest {
      * A unique integer value identifying this Static Device.
      */
     id: number;
-    /**
-     *
-     */
     staticDeviceRequest: StaticDeviceRequest;
 }
 
 export interface AuthenticatorsAdminTotpCreateRequest {
-    /**
-     *
-     */
     tOTPDeviceRequest: TOTPDeviceRequest;
 }
 
@@ -447,9 +382,6 @@ export interface AuthenticatorsAdminTotpDestroyRequest {
 }
 
 export interface AuthenticatorsAdminTotpListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -474,9 +406,6 @@ export interface AuthenticatorsAdminTotpPartialUpdateRequest {
      * A unique integer value identifying this TOTP Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedTOTPDeviceRequest?: PatchedTOTPDeviceRequest;
 }
 
@@ -492,16 +421,10 @@ export interface AuthenticatorsAdminTotpUpdateRequest {
      * A unique integer value identifying this TOTP Device.
      */
     id: number;
-    /**
-     *
-     */
     tOTPDeviceRequest: TOTPDeviceRequest;
 }
 
 export interface AuthenticatorsAdminWebauthnCreateRequest {
-    /**
-     *
-     */
     webAuthnDeviceRequest: WebAuthnDeviceRequest;
 }
 
@@ -513,9 +436,6 @@ export interface AuthenticatorsAdminWebauthnDestroyRequest {
 }
 
 export interface AuthenticatorsAdminWebauthnListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -540,9 +460,6 @@ export interface AuthenticatorsAdminWebauthnPartialUpdateRequest {
      * A unique integer value identifying this WebAuthn Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedWebAuthnDeviceRequest?: PatchedWebAuthnDeviceRequest;
 }
 
@@ -558,9 +475,6 @@ export interface AuthenticatorsAdminWebauthnUpdateRequest {
      * A unique integer value identifying this WebAuthn Device.
      */
     id: number;
-    /**
-     *
-     */
     webAuthnDeviceRequest: WebAuthnDeviceRequest;
 }
 
@@ -572,9 +486,6 @@ export interface AuthenticatorsDuoDestroyRequest {
 }
 
 export interface AuthenticatorsDuoListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -599,9 +510,6 @@ export interface AuthenticatorsDuoPartialUpdateRequest {
      * A unique integer value identifying this Duo Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedDuoDeviceRequest?: PatchedDuoDeviceRequest;
 }
 
@@ -617,9 +525,6 @@ export interface AuthenticatorsDuoUpdateRequest {
      * A unique integer value identifying this Duo Device.
      */
     id: number;
-    /**
-     *
-     */
     duoDeviceRequest: DuoDeviceRequest;
 }
 
@@ -638,9 +543,6 @@ export interface AuthenticatorsEmailDestroyRequest {
 }
 
 export interface AuthenticatorsEmailListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -665,9 +567,6 @@ export interface AuthenticatorsEmailPartialUpdateRequest {
      * A unique integer value identifying this Email Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedEmailDeviceRequest?: PatchedEmailDeviceRequest;
 }
 
@@ -683,9 +582,6 @@ export interface AuthenticatorsEmailUpdateRequest {
      * A unique integer value identifying this Email Device.
      */
     id: number;
-    /**
-     *
-     */
     emailDeviceRequest: EmailDeviceRequest;
 }
 
@@ -697,9 +593,6 @@ export interface AuthenticatorsEmailUsedByListRequest {
 }
 
 export interface AuthenticatorsEndpointListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -733,6 +626,20 @@ export interface AuthenticatorsEndpointUsedByListRequest {
     uuid: string;
 }
 
+export interface AuthenticatorsPasswordLockCreateRequest {
+    /**
+     * A unique integer value identifying this Password Device.
+     */
+    id: number;
+}
+
+export interface AuthenticatorsPasswordUnlockCreateRequest {
+    /**
+     * A unique integer value identifying this Password Device.
+     */
+    id: number;
+}
+
 export interface AuthenticatorsSmsDestroyRequest {
     /**
      * A unique integer value identifying this SMS Device.
@@ -741,9 +648,6 @@ export interface AuthenticatorsSmsDestroyRequest {
 }
 
 export interface AuthenticatorsSmsListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -768,9 +672,6 @@ export interface AuthenticatorsSmsPartialUpdateRequest {
      * A unique integer value identifying this SMS Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedSMSDeviceRequest?: PatchedSMSDeviceRequest;
 }
 
@@ -786,9 +687,6 @@ export interface AuthenticatorsSmsUpdateRequest {
      * A unique integer value identifying this SMS Device.
      */
     id: number;
-    /**
-     *
-     */
     sMSDeviceRequest: SMSDeviceRequest;
 }
 
@@ -807,9 +705,6 @@ export interface AuthenticatorsStaticDestroyRequest {
 }
 
 export interface AuthenticatorsStaticListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -834,9 +729,6 @@ export interface AuthenticatorsStaticPartialUpdateRequest {
      * A unique integer value identifying this Static Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedStaticDeviceRequest?: PatchedStaticDeviceRequest;
 }
 
@@ -852,9 +744,6 @@ export interface AuthenticatorsStaticUpdateRequest {
      * A unique integer value identifying this Static Device.
      */
     id: number;
-    /**
-     *
-     */
     staticDeviceRequest: StaticDeviceRequest;
 }
 
@@ -873,9 +762,6 @@ export interface AuthenticatorsTotpDestroyRequest {
 }
 
 export interface AuthenticatorsTotpListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -900,9 +786,6 @@ export interface AuthenticatorsTotpPartialUpdateRequest {
      * A unique integer value identifying this TOTP Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedTOTPDeviceRequest?: PatchedTOTPDeviceRequest;
 }
 
@@ -918,9 +801,6 @@ export interface AuthenticatorsTotpUpdateRequest {
      * A unique integer value identifying this TOTP Device.
      */
     id: number;
-    /**
-     *
-     */
     tOTPDeviceRequest: TOTPDeviceRequest;
 }
 
@@ -939,9 +819,6 @@ export interface AuthenticatorsWebauthnDestroyRequest {
 }
 
 export interface AuthenticatorsWebauthnListRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -966,9 +843,6 @@ export interface AuthenticatorsWebauthnPartialUpdateRequest {
      * A unique integer value identifying this WebAuthn Device.
      */
     id: number;
-    /**
-     *
-     */
     patchedWebAuthnDeviceRequest?: PatchedWebAuthnDeviceRequest;
 }
 
@@ -984,9 +858,6 @@ export interface AuthenticatorsWebauthnUpdateRequest {
      * A unique integer value identifying this WebAuthn Device.
      */
     id: number;
-    /**
-     *
-     */
     webAuthnDeviceRequest: WebAuthnDeviceRequest;
 }
 
@@ -997,9 +868,6 @@ export interface AuthenticatorsWebauthnUsedByListRequest {
     id: number;
 }
 
-/**
- *
- */
 export class AuthenticatorsApi extends runtime.BaseAPI {
     /**
      * Creates request options for authenticatorsAdminAllList without sending the request
@@ -1024,7 +892,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/all/`;
+        const urlPath = `/authenticators/admin/all/`;
 
         return {
             path: urlPath,
@@ -1086,7 +954,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/duo/`;
+        const urlPath = `/authenticators/admin/duo/`;
 
         return {
             path: urlPath,
@@ -1225,7 +1093,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/duo/`;
+        const urlPath = `/authenticators/admin/duo/`;
 
         return {
             path: urlPath,
@@ -1497,7 +1365,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/email/`;
+        const urlPath = `/authenticators/admin/email/`;
 
         return {
             path: urlPath,
@@ -1636,7 +1504,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/email/`;
+        const urlPath = `/authenticators/admin/email/`;
 
         return {
             path: urlPath,
@@ -1912,7 +1780,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/endpoint/`;
+        const urlPath = `/authenticators/admin/endpoint/`;
 
         return {
             path: urlPath,
@@ -2055,7 +1923,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/endpoint/`;
+        const urlPath = `/authenticators/admin/endpoint/`;
 
         return {
             path: urlPath,
@@ -2096,7 +1964,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for authenticatorsAdminEndpointPartialUpdate without sending the request
+     * Creates request options for authenticatorsAdminEndpointPartialUpdate without sending the
+     * request
      */
     async authenticatorsAdminEndpointPartialUpdateRequestOpts(
         requestParameters: AuthenticatorsAdminEndpointPartialUpdateRequest,
@@ -2341,7 +2210,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/sms/`;
+        const urlPath = `/authenticators/admin/sms/`;
 
         return {
             path: urlPath,
@@ -2480,7 +2349,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/sms/`;
+        const urlPath = `/authenticators/admin/sms/`;
 
         return {
             path: urlPath,
@@ -2752,7 +2621,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/static/`;
+        const urlPath = `/authenticators/admin/static/`;
 
         return {
             path: urlPath,
@@ -2893,7 +2762,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/static/`;
+        const urlPath = `/authenticators/admin/static/`;
 
         return {
             path: urlPath,
@@ -2934,7 +2803,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for authenticatorsAdminStaticPartialUpdate without sending the request
+     * Creates request options for authenticatorsAdminStaticPartialUpdate without sending the
+     * request
      */
     async authenticatorsAdminStaticPartialUpdateRequestOpts(
         requestParameters: AuthenticatorsAdminStaticPartialUpdateRequest,
@@ -3175,7 +3045,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/totp/`;
+        const urlPath = `/authenticators/admin/totp/`;
 
         return {
             path: urlPath,
@@ -3314,7 +3184,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/totp/`;
+        const urlPath = `/authenticators/admin/totp/`;
 
         return {
             path: urlPath,
@@ -3589,7 +3459,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/webauthn/`;
+        const urlPath = `/authenticators/admin/webauthn/`;
 
         return {
             path: urlPath,
@@ -3730,7 +3600,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/admin/webauthn/`;
+        const urlPath = `/authenticators/admin/webauthn/`;
 
         return {
             path: urlPath,
@@ -3771,7 +3641,8 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for authenticatorsAdminWebauthnPartialUpdate without sending the request
+     * Creates request options for authenticatorsAdminWebauthnPartialUpdate without sending the
+     * request
      */
     async authenticatorsAdminWebauthnPartialUpdateRequestOpts(
         requestParameters: AuthenticatorsAdminWebauthnPartialUpdateRequest,
@@ -4003,7 +3874,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/all/`;
+        const urlPath = `/authenticators/all/`;
 
         return {
             path: urlPath,
@@ -4134,7 +4005,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/duo/`;
+        const urlPath = `/authenticators/duo/`;
 
         return {
             path: urlPath,
@@ -4533,7 +4404,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/email/`;
+        const urlPath = `/authenticators/email/`;
 
         return {
             path: urlPath,
@@ -4876,7 +4747,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/endpoint/`;
+        const urlPath = `/authenticators/endpoint/`;
 
         return {
             path: urlPath,
@@ -5045,6 +4916,128 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for authenticatorsPasswordLockCreate without sending the request
+     */
+    async authenticatorsPasswordLockCreateRequestOpts(
+        requestParameters: AuthenticatorsPasswordLockCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling authenticatorsPasswordLockCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/authenticators/password/{id}/lock/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Prevent a password authenticator from authenticating.
+     */
+    async authenticatorsPasswordLockCreateRaw(
+        requestParameters: AuthenticatorsPasswordLockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.authenticatorsPasswordLockCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Prevent a password authenticator from authenticating.
+     */
+    async authenticatorsPasswordLockCreate(
+        requestParameters: AuthenticatorsPasswordLockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.authenticatorsPasswordLockCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for authenticatorsPasswordUnlockCreate without sending the request
+     */
+    async authenticatorsPasswordUnlockCreateRequestOpts(
+        requestParameters: AuthenticatorsPasswordUnlockCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling authenticatorsPasswordUnlockCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/authenticators/password/{id}/unlock/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Allow a locked password authenticator to authenticate again.
+     */
+    async authenticatorsPasswordUnlockCreateRaw(
+        requestParameters: AuthenticatorsPasswordUnlockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.authenticatorsPasswordUnlockCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Allow a locked password authenticator to authenticate again.
+     */
+    async authenticatorsPasswordUnlockCreate(
+        requestParameters: AuthenticatorsPasswordUnlockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.authenticatorsPasswordUnlockCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
      * Creates request options for authenticatorsSmsDestroy without sending the request
      */
     async authenticatorsSmsDestroyRequestOpts(
@@ -5143,7 +5136,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/sms/`;
+        const urlPath = `/authenticators/sms/`;
 
         return {
             path: urlPath,
@@ -5542,7 +5535,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/static/`;
+        const urlPath = `/authenticators/static/`;
 
         return {
             path: urlPath,
@@ -5952,7 +5945,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/totp/`;
+        const urlPath = `/authenticators/totp/`;
 
         return {
             path: urlPath,
@@ -6353,7 +6346,7 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/authenticators/webauthn/`;
+        const urlPath = `/authenticators/webauthn/`;
 
         return {
             path: urlPath,

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,26 +11,13 @@
  */
 
 /**
- *
  * @export
  * @interface NetworkInterfaceRequest
  */
 export interface NetworkInterfaceRequest {
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     hardwareAddress: string;
-    /**
-     *
-     */
     ipAddresses?: Array<string>;
-    /**
-     *
-     */
     dnsServers?: Array<string>;
 }
 

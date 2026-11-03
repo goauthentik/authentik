@@ -20,7 +20,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/table/ak-table-filter-select";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
@@ -73,6 +72,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Property Mapping(s)")}
             .objects=${this.selectedElements}
@@ -145,6 +145,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                         this.hideManaged = ev.detail.value;
                         this.page = 1;
                         this.fetch();
+
                         updateSearchParams({
                             hideManaged: this.hideManaged,
                         });

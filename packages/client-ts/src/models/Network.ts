@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,30 +10,17 @@
  * Do not edit the class manually.
  */
 
-import type { NetworkInterface } from "./NetworkInterface";
-import { NetworkInterfaceFromJSON, NetworkInterfaceToJSON } from "./NetworkInterface";
+import type { NetworkInterface } from "./NetworkInterface.js";
+import { NetworkInterfaceFromJSON, NetworkInterfaceToJSON } from "./NetworkInterface.js";
 
 /**
- *
  * @export
  * @interface Network
  */
 export interface Network {
-    /**
-     *
-     */
     hostname: string;
-    /**
-     *
-     */
     firewallEnabled?: boolean;
-    /**
-     *
-     */
     interfaces: Array<NetworkInterface>;
-    /**
-     *
-     */
     gateway?: string;
 }
 

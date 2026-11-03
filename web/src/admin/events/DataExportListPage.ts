@@ -6,6 +6,7 @@ import "#elements/forms/ModalForm";
 import "#components/tasks/TaskList";
 import "#components/ak-status-label";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 
@@ -22,8 +23,6 @@ import { DataExport, ReportsApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-data-export-list")
 export class DataExportListPage extends TablePage<DataExport> {
@@ -55,6 +54,7 @@ export class DataExportListPage extends TablePage<DataExport> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Data export(s)")}
             .objects=${this.selectedElements}
@@ -84,9 +84,11 @@ export class DataExportListPage extends TablePage<DataExport> {
                 >${item.requestedBy.username}</a
             >`,
             Timestamp(item.requestedOn),
-            html`${item.completed
-                ? html`<ak-label color=${PFColor.Green}>${msg("Finished")}</ak-label>`
-                : html`<ak-label color=${PFColor.Gray}>${msg("Queued")}</ak-label>`}`,
+            html`${
+                item.completed
+                    ? html`<ak-label color=${PFColor.Green}>${msg("Finished")}</ak-label>`
+                    : html`<ak-label color=${PFColor.Gray}>${msg("Queued")}</ak-label>`
+            }`,
             item.completed && item.fileUrl
                 ? html`<div>
                       <a href="${item.fileUrl}">

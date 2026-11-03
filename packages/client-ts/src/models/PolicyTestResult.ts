@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,26 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { LogEvent } from "./LogEvent";
-import { LogEventFromJSON } from "./LogEvent";
+import type { LogEvent } from "./LogEvent.js";
+import { LogEventFromJSON } from "./LogEvent.js";
 
 /**
  * result of a policy test
+ *
  * @export
  * @interface PolicyTestResult
  */
 export interface PolicyTestResult {
-    /**
-     *
-     */
     passing: boolean;
-    /**
-     *
-     */
     readonly messages: Array<string>;
-    /**
-     *
-     */
     readonly logMessages: Array<LogEvent>;
 }
 

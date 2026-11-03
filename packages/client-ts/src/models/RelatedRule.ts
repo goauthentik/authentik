@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,23 @@
  * Do not edit the class manually.
  */
 
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import type { PartialGroup } from "./PartialGroup.js";
+import { PartialGroupFromJSON } from "./PartialGroup.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface RelatedRule
  */
 export interface RelatedRule {
-    /**
-     *
-     */
     id?: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     readonly reviewerGroups: Array<PartialGroup>;
-    /**
-     *
-     */
     readonly minReviewers: number;
-    /**
-     *
-     */
     readonly reviewers: Array<PartialUser>;
 }
 

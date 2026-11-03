@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,68 +10,33 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { RequestableTarget } from "./RequestableTarget";
-import { RequestableTargetFromJSON } from "./RequestableTarget";
-import type { RequestStatus } from "./RequestStatus";
-import { RequestStatusFromJSON } from "./RequestStatus";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { RequestableTarget } from "./RequestableTarget.js";
+import { RequestableTargetFromJSON } from "./RequestableTarget.js";
+import type { RequestStatus } from "./RequestStatus.js";
+import { RequestStatusFromJSON } from "./RequestStatus.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface GrantRequest
  */
 export interface GrantRequest {
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     readonly createdBy: PartialUser;
-    /**
-     *
-     */
     requesterData?: { [key: string]: any };
-    /**
-     *
-     */
     fulfillerData?: { [key: string]: any };
-    /**
-     *
-     */
     readonly revokedBy: PartialUser | null;
-    /**
-     *
-     */
     readonly agentOwner: PartialUser | null;
-    /**
-     *
-     */
     readonly isActive: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     readonly status: RequestStatus;
-    /**
-     *
-     */
     readonly targets: Array<string>;
-    /**
-     *
-     */
     readonly targetObjs: Array<RequestableTarget>;
-    /**
-     *
-     */
     uuid?: string;
 }
 
