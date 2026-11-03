@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from json import loads
 
 from django.contrib.auth.hashers import make_password
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
