@@ -107,7 +107,7 @@ export class SourceLoginStagesWizardPage extends WizardPage {
 
         return html`<p>
                 ${msg(
-                    "Sources only appear on the login page once an identification stage shows them. Select the stages that should show this source, or continue without selecting any.",
+                    "Add this source to an Identification stage if you want it displayed on the login page. Otherwise, you can skip this step.",
                     { id: "source.wizard.login-stages.description" },
                 )}
             </p>
