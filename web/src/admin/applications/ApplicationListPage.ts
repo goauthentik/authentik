@@ -29,10 +29,8 @@ import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 import MDApplication from "~docs/add-secure-apps/applications/index.mdx";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-export const applicationListStyle = css``;
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {

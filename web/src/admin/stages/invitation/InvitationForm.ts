@@ -61,8 +61,6 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         });
 
         return renderModal(enrollmentFlowForm, {
-            invokerElement:
-                invocationEvent?.target instanceof HTMLElement ? invocationEvent.target : this,
             size: PFSize.Medium,
             onDispose: (disposeEvent) => {
                 const { target } = disposeEvent || {};
