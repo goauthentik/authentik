@@ -8,7 +8,7 @@ from django.test.utils import CaptureQueriesContext
 from django.utils.timezone import now
 from freezegun import freeze_time
 
-from authentik.core.models import Group, User
+from authentik.core.models import USER_ACTIVITY_INTERVAL, Group, User, UserActivity
 from authentik.enterprise.lifecycle.expiration.api import UserExpirationRuleSerializer
 from authentik.enterprise.lifecycle.expiration.models import ActivityBasis, UserExpirationRule
 from authentik.enterprise.lifecycle.expiration.tests.test_expiration import (
@@ -21,7 +21,6 @@ from authentik.enterprise.lifecycle.offboarding.models import (
     UserOffboarding,
 )
 from authentik.enterprise.lifecycle.offboarding.tasks import execute_offboarding
-from authentik.events.activity import REFRESH_ACTIVITY_INTERVAL, load_activity, with_activity
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
@@ -30,11 +29,13 @@ from authentik.policies.models import PolicyBinding
 
 class TestActivity(ExpirationTestCase):
     def _event(self, user, action, *, created=None):
-        event = Event.new(action).set_user(user)
-        event.save()
-        if created is not None:
-            Event.objects.filter(pk=event.pk).update(created=created)
-        return event
+        with freeze_time(created or now()):
+            if action == "refresh":
+                UserActivity.objects.record(user.pk)
+                return UserActivity.objects.get(user=user)
+            event = Event.new(action).set_user(user)
+            event.save()
+            return event
 
     def test_defaults_and_serializer(self):
         rule = UserExpirationRule.objects.create(name=generate_id())
@@ -48,7 +49,7 @@ class TestActivity(ExpirationTestCase):
         for action in (
             EventAction.LOGIN,
             EventAction.AUTHORIZE_APPLICATION,
-            EventAction.TOKEN_REFRESH,
+            "refresh",
         ):
             with self.subTest(action=action):
                 user = _dormant_user()
@@ -74,12 +75,12 @@ class TestActivity(ExpirationTestCase):
         Event.new(EventAction.AUTHORIZE_APPLICATION).save()
         self.assertTrue(self._rule().candidates().filter(pk=user.pk).exists())
 
-    def test_exact_events_have_no_refresh_allowance(self):
+    def test_all_recorded_activity_has_allowance(self):
         user = _dormant_user()
         at = now() - timedelta(hours=2)
         self._event(user, EventAction.AUTHORIZE_APPLICATION, created=at)
         rule = self._rule(inactivity_duration="hours=1")
-        self.assertEqual(rule.due_at(user), at + timedelta(hours=1))
+        self.assertEqual(rule.due_at(user), at + USER_ACTIVITY_INTERVAL + timedelta(hours=1))
         self.assertTrue(rule.candidates().filter(pk=user.pk).exists())
 
     def test_latest_evidence_wins_including_missing_login(self):
@@ -87,9 +88,11 @@ class TestActivity(ExpirationTestCase):
         User.objects.filter(pk=user.pk).update(last_login=None)
         user.refresh_from_db()
         at = now() - timedelta(hours=2)
-        self._event(user, EventAction.TOKEN_REFRESH, created=at - timedelta(days=2))
+        self._event(user, "refresh", created=at - timedelta(days=2))
         self._event(user, EventAction.LOGIN, created=at)
-        self.assertEqual(self._rule().due_at(user), at + timedelta(days=90))
+        self.assertEqual(
+            self._rule().due_at(user), at + USER_ACTIVITY_INTERVAL + timedelta(days=90)
+        )
 
     def test_refresh_boundary_preview_sweep_and_execution(self):
         for offset in (-1, 0, 1):
@@ -99,8 +102,8 @@ class TestActivity(ExpirationTestCase):
                 user = _dormant_user()
                 user.groups.add(group)
                 at = now()
-                self._event(user, EventAction.TOKEN_REFRESH)
-                due = at + REFRESH_ACTIVITY_INTERVAL + timedelta(minutes=30)
+                self._event(user, "refresh")
+                due = at + USER_ACTIVITY_INTERVAL + timedelta(minutes=30)
                 clock.move_to(due + timedelta(microseconds=offset))
                 self.assertEqual(rule.due_at(user), due)
                 self.assertEqual(rule.candidates().filter(pk=user.pk).exists(), offset >= 0)
@@ -115,9 +118,9 @@ class TestActivity(ExpirationTestCase):
             group = Group.objects.create(name=generate_id())
             user = _dormant_user()
             user.groups.add(group)
-            self._event(user, EventAction.TOKEN_REFRESH)
+            self._event(user, "refresh")
             rule = self._rule(group=group, inactivity_duration="hours=1", warn_before="minutes=30")
-            due = now() + REFRESH_ACTIVITY_INTERVAL + timedelta(hours=1)
+            due = now() + USER_ACTIVITY_INTERVAL + timedelta(hours=1)
             clock.move_to(due - timedelta(minutes=30))
             self.assertEqual(rule.apply(), 1)
             row = _pending(user)
@@ -172,7 +175,7 @@ class TestActivity(ExpirationTestCase):
                 else:
                     rule.apply()
                     row = _pending(user)
-                self._event(user, EventAction.TOKEN_REFRESH)
+                self._event(user, "refresh")
                 rule._revisit_owned_rows()
                 self.assertEqual(_pending(user).pk, row.pk)
 
@@ -183,7 +186,7 @@ class TestActivity(ExpirationTestCase):
             rule.apply()
             row = _pending(user)
             clock.tick(timedelta(seconds=1))
-            self._event(user, EventAction.TOKEN_REFRESH)
+            self._event(user, "refresh")
             rule.activity_basis = ActivityBasis.SUCCESSFUL_EVENTS
             rule.save()
             execute_offboarding(str(row.pk))
@@ -194,7 +197,11 @@ class TestActivity(ExpirationTestCase):
     @freeze_time()
     def test_mixed_bases_rank_by_actual_due_date(self):
         user = _dormant_user()
-        self._event(user, EventAction.AUTHORIZE_APPLICATION, created=now() - timedelta(days=80))
+        self._event(
+            user,
+            EventAction.AUTHORIZE_APPLICATION,
+            created=now() - timedelta(days=80) - USER_ACTIVITY_INTERVAL,
+        )
         event_rule = self._rule(inactivity_duration="days=70", action=OffboardingAction.DELETE)
         login_rule = self._rule(
             inactivity_duration="days=90", activity_basis=ActivityBasis.LAST_LOGIN
@@ -253,59 +260,19 @@ class TestActivity(ExpirationTestCase):
         self.assertEqual(len(users), 11)
         self.assertEqual(len(one), len(many))
 
-    def test_pending_row_inserted_after_activity_load_is_skipped(self):
-        first = _dormant_user()
-        second = _dormant_user()
-        owner = self._rule(
-            inactivity_duration="days=120",
-            warn_before="days=30",
-            activity_basis=ActivityBasis.LAST_LOGIN,
-        )
-        rule = self._rule(activity_basis=ActivityBasis.LAST_LOGIN)
-        UserOffboarding.objects.create(user=first, rule=owner, scheduled_at=owner.due_at(first))
-
-        def load_then_insert(queryset):
-            users = list(with_activity(queryset))
-            # Another sweep commits this row between the activity batch and the
-            # takeover query. It was not part of the users already evaluated.
-            UserOffboarding.objects.create(
-                user=second, rule=owner, scheduled_at=owner.due_at(second)
-            )
-            return users
-
-        with patch(
-            "authentik.enterprise.lifecycle.expiration.models.with_activity",
-            side_effect=load_then_insert,
-        ):
-            rule._tighten_foreign_rows()
-        self.assertEqual(_pending(first).rule, rule)
-        self.assertEqual(_pending(second).rule, owner)
-
     def test_preloaded_activity_reused_for_competing_rules(self):
         user = _dormant_user()
         rules = [self._rule(), self._rule(activity_basis=ActivityBasis.LAST_LOGIN)]
-        load_activity(user)
+        user = User.objects.select_related("activity").get(pk=user.pk)
         with self.assertNumQueries(0):
             for rule in rules:
                 rule.rank(user)
 
-    def test_refresh_evidence_survives_until_due_with_required_retention(self):
-        with freeze_time() as clock:
-            user = _dormant_user()
-            rule = self._rule(inactivity_duration="hours=1")
-            event = self._event(user, EventAction.TOKEN_REFRESH)
-            due = now() + REFRESH_ACTIVITY_INTERVAL + timedelta(hours=1)
-            Event.objects.filter(pk=event.pk).update(expires=due)
-            clock.move_to(due - timedelta(microseconds=1))
-            Event.objects.filter(expires__lt=now()).delete()
-            self.assertTrue(Event.objects.filter(pk=event.pk).exists())
-            self.assertFalse(rule.candidates().filter(pk=user.pk).exists())
-            clock.move_to(due)
-            self.assertTrue(rule.candidates().filter(pk=user.pk).exists())
-            clock.tick(timedelta(microseconds=1))
-            Event.objects.filter(expires__lt=now()).delete()
-            self.assertFalse(Event.objects.filter(pk=event.pk).exists())
-            self.assertTrue(rule.candidates().filter(pk=user.pk).exists())
+    def test_activity_survives_event_pruning(self):
+        user = _dormant_user()
+        event = self._event(user, EventAction.LOGIN)
+        event.delete()
+        self.assertFalse(self._rule().candidates().filter(pk=user.pk).exists())
 
     @freeze_time()
     def test_longer_login_duration_can_win_over_shorter_event_duration(self):
@@ -321,3 +288,44 @@ class TestActivity(ExpirationTestCase):
         user.refresh_from_db()
         self.assertFalse(user.is_active)
         self.assertEqual(user.offboardings.get().rule, login_rule)
+
+    def test_pending_reconciliation_batches_scope_and_activity(self):
+        group = Group.objects.create(name=generate_id())
+        rule = self._rule(group=group)
+        users = [
+            User(
+                username=generate_id(),
+                last_login=now() - timedelta(days=100),
+                date_joined=now() - timedelta(days=101),
+            )
+            for _ in range(180)
+        ]
+        User.objects.bulk_create(users)
+        group.users.add(*users)
+        UserOffboarding.objects.bulk_create(
+            [
+                UserOffboarding(user=user, rule=rule, scheduled_at=rule.due_at(user))
+                for user in User.objects.filter(pk__in=[user.pk for user in users]).select_related(
+                    "activity"
+                )
+            ]
+        )
+        with CaptureQueriesContext(connection) as queries:
+            rule._revisit_owned_rows()
+        self.assertLess(len(queries), 180 * 4)
+        self.assertFalse(any("authentik_events_event" in query["sql"] for query in queries))
+
+    def test_withdrawn_user_can_be_scheduled_again(self):
+        user = _dormant_user()
+        rule = self._rule(warn_before="days=7")
+        policy = DummyPolicy.objects.create(name=generate_id(), result=True)
+        PolicyBinding.objects.create(target=rule, policy=policy, order=0)
+        row = UserOffboarding.objects.create(user=user, rule=rule, scheduled_at=now())
+        UserOffboarding.objects.filter(pk=row.pk).update(created_at=now() - timedelta(days=110))
+        with patch.object(DummyPolicy, "passes", autospec=True, wraps=None) as passes:
+            from authentik.policies.types import PolicyResult
+
+            passes.return_value = PolicyResult(True)
+            rule.apply()
+            self.assertIsNotNone(_pending(user))
+            self.assertNotEqual(_pending(user).pk, row.pk)

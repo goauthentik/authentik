@@ -2,6 +2,7 @@
 
 from collections.abc import Collection, Iterator
 from datetime import datetime, timedelta
+from itertools import batched
 from uuid import UUID, uuid4
 
 from django.contrib.postgres.fields import ArrayField
@@ -13,17 +14,11 @@ from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Group, User, UserTypes
+from authentik.core.models import USER_ACTIVITY_INTERVAL, Group, User, UserTypes
 from authentik.enterprise.lifecycle.offboarding.models import (
     OffboardingAction,
     OffboardingStatus,
     UserOffboarding,
-)
-from authentik.events.activity import (
-    EXACT_ACTIVITY_ACTIONS,
-    REFRESH_ACTIVITY_INTERVAL,
-    load_activity,
-    with_activity,
 )
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel, SimpleThroughModel
@@ -135,20 +130,11 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
     def due_at(self, user: User) -> datetime:
         last_activity = max(filter(None, (user.last_login, user.date_joined)))
         if self.activity_basis == ActivityBasis.SUCCESSFUL_EVENTS:
-            if not hasattr(user, "expiration_event_at"):
-                load_activity(user)
-            event_at = getattr(user, "expiration_event_at", None)
-            refresh_at = getattr(user, "expiration_refresh_at", None)
-            last_activity = max(
-                filter(
-                    None,
-                    (
-                        last_activity,
-                        event_at,
-                        refresh_at + REFRESH_ACTIVITY_INTERVAL if refresh_at else None,
-                    ),
+            activity = getattr(user, "activity", None)
+            if activity is not None:
+                last_activity = max(
+                    last_activity, activity.last_activity_at + USER_ACTIVITY_INTERVAL
                 )
-            )
         return last_activity + self.inactivity_timedelta
 
     def rank(self, user: User) -> Rank:
@@ -197,7 +183,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         evaluate over the whole population. With `threshold`, only users inactive since
         then under this rule's activity basis. With `user`, narrowed to that user."""
         types = [t for t in self.user_types if t != UserTypes.INTERNAL_SERVICE_ACCOUNT]
-        qs = User.objects.filter(is_active=True, type__in=types)
+        qs = User.objects.select_related("activity").filter(is_active=True, type__in=types)
         if user is not None:
             qs = qs.filter(pk=user.pk)
         if self.group_id:
@@ -213,19 +199,10 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 date_joined__lte=threshold,
             )
             if self.activity_basis == ActivityBasis.SUCCESSFUL_EVENTS:
-                recent = Event.objects.filter(
-                    user__pk=models.Func(
-                        OuterRef("pk"), function="to_jsonb", output_field=models.JSONField()
-                    )
-                ).filter(
-                    Q(action__in=EXACT_ACTIVITY_ACTIONS, created__gt=threshold)
-                    | Q(
-                        action=EventAction.TOKEN_REFRESH,
-                        created__gt=threshold - REFRESH_ACTIVITY_INTERVAL,
-                    )
+                qs = qs.filter(
+                    Q(activity__isnull=True)
+                    | Q(activity__last_activity_at__lte=threshold - USER_ACTIVITY_INTERVAL)
                 )
-                # Reject recent activity before policies and exact timestamp loads.
-                qs = with_activity(qs.exclude(models.Exists(recent)))
         return qs
 
     def _apply_policies(self, qs: QuerySet[User]) -> QuerySet[User]:
@@ -236,6 +213,11 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         from authentik.policies.engine import FilterPolicyEngine
 
         return FilterPolicyEngine(self, qs).build().result
+
+    def _eligible_user_ids(self, user_ids: Collection[int]) -> set[int]:
+        return set(
+            self._apply_policies(self.scope().filter(pk__in=user_ids)).values_list("pk", flat=True)
+        )
 
     def _in_scope(self, user: User) -> bool:
         return self._apply_policies(self.scope(user=user)).exists()
@@ -308,28 +290,29 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 rel_obj=transport,
             )
 
-    def _pending_due_at(self, row: UserOffboarding) -> datetime | None:
+    def _pending_due_at(
+        self, row: UserOffboarding, *, in_scope: bool | None = None
+    ) -> datetime | None:
         """Re-evaluate an owned row without changing it, assuming the rule is enabled."""
-        event_after_creation = False
-        if self.activity_basis == ActivityBasis.SUCCESSFUL_EVENTS:
-            if not hasattr(row.user, "expiration_event_at"):
-                load_activity(row.user)
-            event_after_creation = any(
-                activity is not None and activity >= row.created_at
-                for activity in (
-                    getattr(row.user, "expiration_event_at", None),
-                    getattr(row.user, "expiration_refresh_at", None),
-                )
-            )
+        if in_scope is None:
+            in_scope = self._in_scope(row.user)
+        activity = getattr(row.user, "activity", None)
+        event_after_creation = (
+            self.activity_basis == ActivityBasis.SUCCESSFUL_EVENTS
+            and activity is not None
+            and activity.last_activity_at >= row.created_at
+        )
         if (
-            not self._in_scope(row.user)
+            not in_scope
             or (row.user.last_login is not None and row.user.last_login >= row.created_at)
             or event_after_creation
         ):
             return None
         return self.due_at(row.user)
 
-    def reconcile_offboarding(self, row: UserOffboarding) -> tuple[bool, bool]:
+    def reconcile_offboarding(
+        self, row: UserOffboarding, *, in_scope: bool | None = None
+    ) -> tuple[bool, bool]:
         """Refresh a locked pending row owned by this rule.
 
         Both the sweep and execution use this, so execution need not wait for a sweep
@@ -339,7 +322,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
 
         Returns whether the row was kept and whether another warning is needed.
         """
-        due_at = self._pending_due_at(row) if self.enabled else None
+        due_at = self._pending_due_at(row, in_scope=in_scope) if self.enabled else None
         if due_at is None:
             row.delete()
             return False, False
@@ -357,20 +340,26 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         """Reconcile only rows this rule still owns after acquiring the row lock."""
         rows = UserOffboarding.objects.filter(
             rule=self, status=OffboardingStatus.PENDING
-        ).values_list("pk", flat=True)
-        for row_pk in rows.iterator(chunk_size=CHUNK_SIZE):
-            with transaction.atomic():
-                row = (
-                    UserOffboarding.objects.select_for_update()
-                    .filter(pk=row_pk, rule=self, status=OffboardingStatus.PENDING)
-                    .select_related("user")
-                    .first()
-                )
-                if row is None:
-                    continue
-                _, rewarn = self.reconcile_offboarding(row)
-            if rewarn:
-                self._warn(row.user, row)
+        ).values_list("pk", "user_id")
+        for batch in batched(rows.iterator(chunk_size=CHUNK_SIZE), CHUNK_SIZE, strict=False):
+            eligible = (
+                self._eligible_user_ids([user_id for _, user_id in batch])
+                if self.enabled
+                else set()
+            )
+            for row_pk, _user_id in batch:
+                with transaction.atomic():
+                    row = (
+                        UserOffboarding.objects.select_for_update(of=("self",))
+                        .filter(pk=row_pk, rule=self, status=OffboardingStatus.PENDING)
+                        .select_related("user", "user__activity")
+                        .first()
+                    )
+                    if row is None:
+                        continue
+                    _, rewarn = self.reconcile_offboarding(row, in_scope=row.user_id in eligible)
+                if rewarn:
+                    self._warn(row.user, row)
 
     def _foreign_rows(self) -> QuerySet[UserOffboarding]:
         """Generated pending rows eligible for this rule's tightening pass."""
@@ -386,54 +375,56 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         Manual rows and terminal exemptions are never taken over. Like the sweep,
         foreign rows are compared to their stored rank, not their owner's current settings.
         """
-        activity = Prefetch("user", queryset=with_activity(User.objects.all()))
+        activity = Prefetch("user", queryset=User.objects.select_related("activity"))
         owned = UserOffboarding.objects.filter(rule=self, status=OffboardingStatus.PENDING)
-        for row in (
-            owned.order_by("user__username")
-            .prefetch_related(activity)
-            .iterator(chunk_size=CHUNK_SIZE)
-        ):
-            due_at = self._pending_due_at(row)
-            if due_at is None:
-                yield "removed", row, None
-            elif (row.scheduled_at, row.action, row.revoke_sessions, row.revoke_tokens) != (
-                due_at,
-                self.action,
-                self.revoke_sessions,
-                self.revoke_tokens,
-            ):
-                yield "updated", row, due_at
-        for row in (
+        owned_rows = owned.order_by("user__username").prefetch_related(activity)
+        for batch in batched(owned_rows.iterator(chunk_size=CHUNK_SIZE), CHUNK_SIZE, strict=False):
+            eligible = self._eligible_user_ids([row.user_id for row in batch])
+            for row in batch:
+                due_at = self._pending_due_at(row, in_scope=row.user_id in eligible)
+                if due_at is None:
+                    yield "removed", row, None
+                elif (row.scheduled_at, row.action, row.revoke_sessions, row.revoke_tokens) != (
+                    due_at,
+                    self.action,
+                    self.revoke_sessions,
+                    self.revoke_tokens,
+                ):
+                    yield "updated", row, due_at
+        for batch in batched(
             self._foreign_rows()
             .order_by("user__username")
             .prefetch_related(activity)
-            .iterator(chunk_size=CHUNK_SIZE)
+            .iterator(chunk_size=CHUNK_SIZE),
+            CHUNK_SIZE,
+            strict=False,
         ):
-            rank = self.rank(row.user)
-            if rank < self.row_rank(row) and self._in_scope(row.user):
-                yield "taken_over", row, rank[0]
+            eligible = self._eligible_user_ids([row.user_id for row in batch])
+            for row in batch:
+                rank = self.rank(row.user)
+                if rank < self.row_rank(row) and row.user_id in eligible:
+                    yield "taken_over", row, rank[0]
 
     def _tighten_foreign_rows(self):
         """Take over other rules' pending rows that this rule outranks (see `rank`), and
         warn the user again."""
-        rows = self._foreign_rows().select_related("user")
-        # Policies run only on the users behind these few rows, not the whole scope.
-        passing = self._apply_policies(User.objects.filter(pk__in=rows.values("user")))
-        # Fetch activity in a batch rather than querying events for each pending row.
-        users = {user.pk: user for user in with_activity(passing)}
-        for row in rows.filter(user_id__in=users):
-            row.user = users[row.user_id]
-            rank = self.rank(row.user)
-            with transaction.atomic():
-                locked = (
-                    UserOffboarding.objects.select_for_update()
-                    .filter(pk=row.pk, status=OffboardingStatus.PENDING, rule__isnull=False)
-                    .first()
-                )
-                if locked is None or rank >= self.row_rank(locked):
+        rows = self._foreign_rows().select_related("user", "user__activity")
+        for batch in batched(rows.iterator(chunk_size=CHUNK_SIZE), CHUNK_SIZE, strict=False):
+            eligible = self._eligible_user_ids([row.user_id for row in batch])
+            for row in batch:
+                if row.user_id not in eligible:
                     continue
-                self._update_offboarding(locked, rank[0])
-            self._warn(row.user, locked)
+                rank = self.rank(row.user)
+                with transaction.atomic():
+                    locked = (
+                        UserOffboarding.objects.select_for_update(of=("self",))
+                        .filter(pk=row.pk, status=OffboardingStatus.PENDING, rule__isnull=False)
+                        .first()
+                    )
+                    if locked is None or rank >= self.row_rank(locked):
+                        continue
+                    self._update_offboarding(locked, rank[0])
+                self._warn(row.user, locked)
 
     def apply(self) -> int:
         """Run one sweep. Returns the number of offboardings created."""

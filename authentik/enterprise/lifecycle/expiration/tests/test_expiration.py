@@ -490,7 +490,7 @@ class TestOverlapAndChange(ExpirationTestCase):
                     queryset, *args, change=change, row=row, tight=tight, **kwargs
                 ):
                     rows = original_iterator(queryset, *args, **kwargs)
-                    if queryset.model is not UserOffboarding:
+                    if queryset.model is not UserOffboarding or not queryset._fields:
                         return rows
                     # Simulate a change after discovery, before the row lock is taken.
                     pks = list(rows)

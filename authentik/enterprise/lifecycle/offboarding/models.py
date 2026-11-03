@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 
+from authentik.core.models import User
 from authentik.lib.models import SerializerModel
 
 
@@ -131,7 +132,6 @@ class UserOffboarding(SerializerModel):
         """
         from authentik.enterprise.lifecycle.expiration.models import UserExpirationRule
         from authentik.enterprise.lifecycle.offboarding.actions import offboard_user
-        from authentik.events.activity import load_activity
 
         context = {}
         if self.rule_id is not None:
@@ -141,7 +141,7 @@ class UserOffboarding(SerializerModel):
                 return
             # Load activity once for the owner and any competing rule. The row lock
             # doesn't stop new activity from committing after this read.
-            load_activity(self.user)
+            self.user = User.objects.select_related("activity").get(pk=self.user_id)
             kept, rewarn = self.rule.reconcile_offboarding(self)
             if not kept:
                 return
