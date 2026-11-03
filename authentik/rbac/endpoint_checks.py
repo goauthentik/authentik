@@ -63,9 +63,10 @@ class EndpointChecks:
 
     @cached_property
     def bound_check(self) -> PermissionCheck | None:
-        if not self.endpoint or PermissionCheck.skipped_for(self.request.user):
+        # The flag first, as the superuser check can cost a query
+        if not self.endpoint or not EnableCustomPermissions.get():
             return None
-        if not EnableCustomPermissions.get():
+        if PermissionCheck.skipped_for(self.request.user):
             return None
         return PermissionCheck.objects.filter(endpoints__contains=[self.endpoint]).first()
 

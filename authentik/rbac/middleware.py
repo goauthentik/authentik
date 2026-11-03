@@ -12,6 +12,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.lib.middleware import SignalMiddleware
+from authentik.rbac.apps import EnableCustomPermissions
 from authentik.rbac.endpoint_checks import EndpointChecks, PermissionCheckFailed
 from authentik.rbac.endpoints import RBAC_FUNC_ALTER_RESPONSE
 from authentik.rbac.permissions import assign_initial_permissions
@@ -48,6 +49,8 @@ class AlterResponseMiddleware:
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         response = self.get_response(request)
+        if not EnableCustomPermissions.get():
+            return response
         # alter_response only changes API data; fail closed rather than skip it silently
         if (
             not isinstance(response, Response)
@@ -63,6 +66,8 @@ class AlterResponseMiddleware:
     def process_template_response(
         self, request: HttpRequest, response: HttpResponse
     ) -> HttpResponse:
+        if not EnableCustomPermissions.get():
+            return response
         api_request = (getattr(response, "renderer_context", None) or {}).get("request")
         if api_request is None or not is_success(response.status_code) or response.data is None:
             return response
