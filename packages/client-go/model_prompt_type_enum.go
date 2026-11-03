@@ -28,7 +28,7 @@ const (
 	PROMPTTYPEENUM_USERNAME            PromptTypeEnum = "username"
 	PROMPTTYPEENUM_EMAIL               PromptTypeEnum = "email"
 	PROMPTTYPEENUM_PASSWORD            PromptTypeEnum = "password"
-	PROMPTTYPEENUM_SHOWABLE_PASSWORD   PromptTypeEnum = "showable_password"
+	PROMPTTYPEENUM_PASSWORD_SHOWABLE   PromptTypeEnum = "password_showable"
 	PROMPTTYPEENUM_NUMBER              PromptTypeEnum = "number"
 	PROMPTTYPEENUM_CHECKBOX            PromptTypeEnum = "checkbox"
 	PROMPTTYPEENUM_RADIO_BUTTON_GROUP  PromptTypeEnum = "radio-button-group"
@@ -54,7 +54,7 @@ var AllowedPromptTypeEnumEnumValues = []PromptTypeEnum{
 	"username",
 	"email",
 	"password",
-	"showable_password",
+	"password_showable",
 	"number",
 	"checkbox",
 	"radio-button-group",

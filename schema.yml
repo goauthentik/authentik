@@ -55612,7 +55612,7 @@ components:
       - username
       - email
       - password
-      - showable_password
+      - password_showable
       - number
       - checkbox
       - radio-button-group

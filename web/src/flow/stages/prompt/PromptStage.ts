@@ -168,7 +168,7 @@ ${prompt.initialValue}</textarea>`;
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                 />`;
-            case PromptTypeEnum.ShowablePassword:
+            case PromptTypeEnum.PasswordShowable:
                 return html`<ak-prompt-showable-password
                     fieldid=${fieldId}
                     fieldkey="${prompt.fieldKey}"
