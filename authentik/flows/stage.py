@@ -301,7 +301,7 @@ class RedirectStage(ChallengeStageView):
         )
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        return HttpChallengeResponse(self.get_challenge())
+        return self.get(self.request)
 
 
 class SessionEndStage(ChallengeStageView):
