@@ -23,7 +23,7 @@ from authentik.enterprise.providers.ssf.models import (
     SSFProvider,
 )
 from authentik.enterprise.providers.ssf.tasks import send_ssf_events
-from authentik.events.middleware import audit_ignore
+from authentik.events.middleware import audit_ignore, is_audit_ignored
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import DuoDevice
 from authentik.stages.authenticator_static.models import StaticDevice
@@ -133,6 +133,12 @@ device_type_map = {
 def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, **_):
     # Password changes are emitted by ssf_password_changed_cred_change.
     if not isinstance(instance, Device) or isinstance(instance, PasswordDevice):
+        return
+    # authentication using an authenticator device might modify the device (for example
+    # with TOTP last_t is updated, and with WebAuthn the sign_count)
+    # We don't want to send an event for that since most SSF clients expect this event to
+    # be an actual user-initiated modification to a credential
+    if is_audit_ignored():
         return
     if not instance.confirmed:
         return
