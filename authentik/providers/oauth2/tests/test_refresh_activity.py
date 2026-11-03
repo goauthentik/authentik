@@ -18,14 +18,20 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
 )
-from authentik.core.models import Application, AuthenticatedSession, Session, User
+from authentik.core.models import (
+    USER_ACTIVITY_INTERVAL,
+    Application,
+    AuthenticatedSession,
+    Session,
+    User,
+    UserActivity,
+)
 from authentik.core.sessions import SessionStore
 from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
 from authentik.enterprise.lifecycle.expiration.models import ActivityBasis, UserExpirationRule
 from authentik.enterprise.lifecycle.offboarding.models import UserOffboarding
 from authentik.enterprise.lifecycle.offboarding.tasks import execute_offboarding
 from authentik.enterprise.tests import enterprise_test
-from authentik.events.activity import REFRESH_ACTIVITY_INTERVAL
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT, get_login_event
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -87,16 +93,15 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
     def test_rotation_and_no_rotation_record_activity(self):
         for rotate in (False, True):
             with self.subTest(rotate=rotate):
-                Event.objects.filter(action=EventAction.TOKEN_REFRESH).delete()
+                UserActivity.objects.all().delete()
                 self.provider.refresh_token_threshold = "seconds=0" if rotate else "seconds=1"
                 self.provider.save()
                 last_login = self.user.last_login
                 response = self._refresh()
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual("refresh_token" in response.json(), rotate)
-                event = Event.objects.get(action=EventAction.TOKEN_REFRESH, user__pk=self.user.pk)
-                self.assertEqual(event.context["grant_type"], GRANT_TYPE_REFRESH_TOKEN)
-                self.assertEqual(event.context["provider"]["pk"], self.provider.pk)
+                event = UserActivity.objects.get(user=self.user)
+                self.assertEqual(event.user_id, self.user.pk)
                 self.assertFalse(
                     Event.objects.filter(action=EventAction.LOGIN, user__pk=self.user.pk).exists()
                 )
@@ -112,19 +117,19 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
         with freeze_time() as clock:
             self.assertEqual(self._refresh().status_code, 200)
             recorded_at = now()
-            for offset, count in ((-1, 1), (0, 2), (1, 2)):
-                clock.move_to(
-                    recorded_at + REFRESH_ACTIVITY_INTERVAL + timedelta(microseconds=offset)
-                )
+            for offset in (-1, 0, 1):
+                clock.move_to(recorded_at + USER_ACTIVITY_INTERVAL + timedelta(microseconds=offset))
                 self.assertEqual(self._refresh().status_code, 200)
+                activity = UserActivity.objects.get(user=self.user)
                 self.assertEqual(
-                    Event.objects.filter(action=EventAction.TOKEN_REFRESH).count(), count
+                    activity.last_activity_at,
+                    recorded_at if offset < 0 else recorded_at + USER_ACTIVITY_INTERVAL,
                 )
 
-    def test_exact_login_does_not_suppress_first_refresh(self):
+    def test_login_and_refresh_share_the_throttle(self):
         Event.new(EventAction.LOGIN).set_user(self.user).save()
         self.assertEqual(self._refresh().status_code, 200)
-        self.assertEqual(Event.objects.filter(action=EventAction.TOKEN_REFRESH).count(), 1)
+        self.assertEqual(UserActivity.objects.all().count(), 1)
 
     @enterprise_test()
     def test_throttled_refresh_after_basis_change_postpones_pending(self):
@@ -151,12 +156,12 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
             original_due = row.scheduled_at
             clock.tick(timedelta(seconds=1))
             self.assertEqual(self._refresh().status_code, 200)
-            self.assertEqual(Event.objects.filter(action=EventAction.TOKEN_REFRESH).count(), 1)
+            self.assertEqual(UserActivity.objects.all().count(), 1)
             rule.activity_basis = ActivityBasis.SUCCESSFUL_EVENTS
             rule.save()
             execute_offboarding(str(row.pk))
             row.refresh_from_db()
-            due = recorded_at + REFRESH_ACTIVITY_INTERVAL + timedelta(days=90)
+            due = recorded_at + USER_ACTIVITY_INTERVAL + timedelta(days=90)
             self.assertGreater(row.scheduled_at, original_due)
             self.assertEqual(row.scheduled_at, due)
             clock.move_to(due - timedelta(microseconds=1))
@@ -193,7 +198,7 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
             original_created = row.created_at
             clock.tick(timedelta(seconds=1))
             self.assertEqual(self._refresh().status_code, 200)
-            self.assertEqual(Event.objects.filter(action=EventAction.TOKEN_REFRESH).count(), 1)
+            self.assertEqual(UserActivity.objects.all().count(), 1)
             # A queued execution observes a less strict owner and resolves the
             # earlier event-based winner, retaining the row's original creation time.
             owner.inactivity_duration = "days=130"
@@ -203,13 +208,13 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
             )
             execute_offboarding(str(row.pk))
             row.refresh_from_db()
-            due = recorded_at + REFRESH_ACTIVITY_INTERVAL + timedelta(minutes=30)
+            due = recorded_at + USER_ACTIVITY_INTERVAL + timedelta(minutes=30)
             self.assertEqual(row.rule, winner)
             self.assertEqual(row.created_at, original_created)
             self.assertEqual(row.scheduled_at, due)
             clock.tick(timedelta(seconds=1))
             self.assertEqual(self._refresh().status_code, 200)
-            self.assertEqual(Event.objects.filter(action=EventAction.TOKEN_REFRESH).count(), 1)
+            self.assertEqual(UserActivity.objects.all().count(), 1)
             execute_offboarding(str(row.pk))
             row.refresh_from_db()
             self.assertEqual(row.scheduled_at, due)
@@ -226,7 +231,7 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
         self.token.revoked = True
         self.token.save()
         self.assertEqual(self._refresh().status_code, 400)
-        self.assertFalse(Event.objects.filter(action=EventAction.TOKEN_REFRESH).exists())
+        self.assertFalse(UserActivity.objects.all().exists())
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.SUSPICIOUS_REQUEST, user__pk=self.user.pk
@@ -239,7 +244,7 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
         session[SESSION_KEY_IMPERSONATE_USER] = create_test_user()
         session.save()
         self.assertEqual(self._refresh().status_code, 200)
-        self.assertFalse(Event.objects.filter(action=EventAction.TOKEN_REFRESH).exists())
+        self.assertFalse(UserActivity.objects.all().exists())
 
     def test_pending_flow_for_another_user_does_not_record_activity(self):
         self.provider.refresh_token_threshold = "seconds=1"
@@ -252,7 +257,7 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
                 session[SESSION_KEY_PLAN] = plan
                 session.save()
                 self.assertEqual(self._refresh().status_code, 200)
-                self.assertFalse(Event.objects.filter(action=EventAction.TOKEN_REFRESH).exists())
+                self.assertFalse(UserActivity.objects.all().exists())
 
     def test_pending_flow_for_token_user_preserves_recording_and_throttle(self):
         self.provider.refresh_token_threshold = "seconds=1"
@@ -264,14 +269,14 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
         session.save()
         self.assertEqual(self._refresh().status_code, 200)
         self.assertEqual(self._refresh().status_code, 200)
-        event = Event.objects.get(action=EventAction.TOKEN_REFRESH)
-        self.assertEqual(event.user["pk"], self.user.pk)
+        event = UserActivity.objects.get()
+        self.assertEqual(event.user_id, self.user.pk)
 
     def test_invalid_scope_does_not_record_success(self):
         self.token.scope = ["openid"]
         self.token.save()
         self.assertEqual(self._refresh().status_code, 400)
-        self.assertFalse(Event.objects.filter(action=EventAction.TOKEN_REFRESH).exists())
+        self.assertFalse(UserActivity.objects.all().exists())
 
     def test_refresh_preserves_session_login_event_and_amr(self):
         login = Event.new(EventAction.LOGIN, auth_method="password").set_user(self.user)
@@ -300,25 +305,17 @@ class TestConcurrentRefreshActivity(RefreshActivityMixin, TransactionTestCase):
         self.keypair = create_test_cert()
         super().setUp()
 
-    def test_concurrent_successes_can_record_duplicates(self):
+    def test_concurrent_successes_share_one_activity_row(self):
         self.provider.refresh_token_threshold = "seconds=1"
         self.provider.save()
         barrier = Barrier(2)
-        queryset_type = type(Event.objects.all())
-        original_first = queryset_type.first
-
-        def racing_first(queryset):
-            result = original_first(queryset)
-            if queryset.model is Event and "token_refresh" in str(queryset.query):
-                # Both successful grants see the same missing refresh event.
-                barrier.wait(timeout=10)
-            return result
 
         def refresh():
             close_old_connections()
             try:
                 with connection.cursor() as cursor:
                     cursor.execute("SET statement_timeout = '20s'")
+                barrier.wait(timeout=10)
                 response = Client().post(
                     reverse("authentik_providers_oauth2:token"),
                     data={
@@ -331,12 +328,12 @@ class TestConcurrentRefreshActivity(RefreshActivityMixin, TransactionTestCase):
             finally:
                 connection.close()
 
-        with patch.object(queryset_type, "first", racing_first):
-            with ThreadPoolExecutor(max_workers=2) as pool:
-                futures = [pool.submit(refresh) for _ in range(2)]
-                try:
-                    self.assertEqual([future.result(timeout=30) for future in futures], [200, 200])
-                finally:
-                    barrier.abort()
-        self.assertEqual(Event.objects.filter(action=EventAction.TOKEN_REFRESH).count(), 2)
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            futures = [pool.submit(refresh) for _ in range(2)]
+            try:
+                self.assertEqual([future.result(timeout=30) for future in futures], [200, 200])
+            finally:
+                barrier.abort()
+
+        self.assertEqual(UserActivity.objects.all().count(), 1)
         self.assertFalse(Event.objects.filter(action=EventAction.LOGIN).exists())

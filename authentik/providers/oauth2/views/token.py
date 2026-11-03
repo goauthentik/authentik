@@ -24,8 +24,7 @@ from authentik.common.oauth.constants import (
     TOKEN_TYPE_URI_SAML2,
 )
 from authentik.core.middleware import CTX_AUTH_VIA, SESSION_KEY_IMPERSONATE_USER
-from authentik.events.activity import REFRESH_ACTIVITY_INTERVAL
-from authentik.events.models import Event, EventAction
+from authentik.core.models import UserActivity
 from authentik.events.signals import get_login_event
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
@@ -251,9 +250,6 @@ class TokenView(View):
             self.params.refresh_token.save()
             response["refresh_token"] = refresh_token.token
 
-        # Record refreshes as their own action, not `login`, so GeoIP travel checks
-        # ignore them. Recorded at most once per user per interval; expiration adds
-        # the interval as an allowance.
         from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
         from authentik.flows.views.executor import SESSION_KEY_PLAN
 
@@ -266,18 +262,7 @@ class TokenView(View):
         pending_user = plan.context.get(PLAN_CONTEXT_PENDING_USER) if plan else None
         if pending_user is not None and pending_user.pk != user.pk:
             return response
-        latest = (
-            Event.objects.filter(action=EventAction.TOKEN_REFRESH, user__pk=user.pk)
-            .order_by("-created")
-            .values_list("created", flat=True)
-            .first()
-        )
-        if latest is None or latest <= now - REFRESH_ACTIVITY_INTERVAL:
-            Event.new(
-                EventAction.TOKEN_REFRESH,
-                provider=self.provider,
-                grant_type=GRANT_TYPE_REFRESH_TOKEN,
-            ).from_http(self.request, user=user)
+        UserActivity.objects.record(user.pk, now)
 
         return response
 
