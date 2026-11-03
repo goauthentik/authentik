@@ -1,19 +1,32 @@
 """SAMLProvider API Views"""
 
 from copy import copy
+from re import compile
+from re import error as RegexError
 from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml.ElementTree import fromstring
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django_filters.filters import CharFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, FileField, SerializerMethodField
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    FileField,
+    IntegerField,
+    SerializerMethodField,
+)
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import BaseRenderer, JSONRenderer
@@ -35,7 +48,12 @@ from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSe
 from authentik.core.models import Provider
 from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
+from authentik.lib.models import DomainlessURLValidator
+from authentik.providers.saml.models import (
+    SAMLACSURLMatchingMode,
+    SAMLLogoutMethods,
+    SAMLProvider,
+)
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.processors.metadata import MetadataProcessor
@@ -55,8 +73,75 @@ class RawXMLDataRenderer(BaseRenderer):
         return data
 
 
+class SAMLACSURLSerializer(PassiveSerializer):
+    """A single Assertion Consumer Service URL"""
+
+    url = CharField()
+    matching_mode = ChoiceField(
+        choices=SAMLACSURLMatchingMode.choices, default=SAMLACSURLMatchingMode.STRICT
+    )
+    index = IntegerField(min_value=0, allow_null=True, default=None)
+    is_default = BooleanField(default=False)
+
+
+def validate_acs_urls(entries: list[dict]) -> list[dict]:
+    """Validate a list of ACS URLs, and normalize them for storage"""
+    if len(entries) < 1:
+        raise ValidationError(_("At least one ACS URL is required."))
+    url_validator = DomainlessURLValidator(schemes=("http", "https"))
+    indexes = set()
+    cleaned = []
+    for entry in entries:
+        url = entry["url"]
+        if entry["matching_mode"] == SAMLACSURLMatchingMode.REGEX:
+            try:
+                compile(url)
+            except RegexError:
+                raise ValidationError(_("Invalid Regex Pattern: {url}").format(url=url)) from None
+            if entry["is_default"]:
+                raise ValidationError(_("A regular expression ACS URL can't be the default."))
+            if entry["index"] is not None:
+                raise ValidationError(_("A regular expression ACS URL can't have an index."))
+        else:
+            try:
+                url_validator(url)
+            except DjangoValidationError:
+                raise ValidationError(_("Invalid URL: {url}").format(url=url)) from None
+        if entry["index"] is not None:
+            if entry["index"] in indexes:
+                raise ValidationError(
+                    _("Duplicate ACS URL index: {index}").format(index=entry["index"])
+                )
+            indexes.add(entry["index"])
+        cleaned.append(
+            {
+                "url": url,
+                "matching_mode": str(entry["matching_mode"]),
+                "index": entry["index"],
+                "is_default": entry["is_default"],
+            }
+        )
+    if not any(entry["matching_mode"] == SAMLACSURLMatchingMode.STRICT for entry in cleaned):
+        raise ValidationError(
+            _("At least one ACS URL must use strict matching, to be used as the default.")
+        )
+    if len([entry for entry in cleaned if entry["is_default"]]) > 1:
+        raise ValidationError(_("Only one ACS URL can be the default."))
+    return cleaned
+
+
 class SAMLProviderSerializer(ProviderSerializer):
     """SAMLProvider Serializer"""
+
+    acs_urls = SAMLACSURLSerializer(many=True, source="_acs_urls", required=False)
+    acs_url = CharField(
+        required=False,
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        help_text=_(
+            "Deprecated, use acs_urls instead. URL of the default ACS URL. When set without "
+            "acs_urls, only the default ACS URL is changed."
+        ),
+    )
 
     url_download_metadata = SerializerMethodField()
     url_issuer = SerializerMethodField()
@@ -217,7 +302,15 @@ class SAMLProviderSerializer(ProviderSerializer):
         except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
+    def validate_acs_urls(self, entries: list[dict]) -> list[dict]:
+        return validate_acs_urls(entries)
+
     def validate(self, attrs: dict):
+        if "_acs_urls" in attrs:
+            # `acs_urls` is authoritative, `acs_url` is only kept for backwards compatibility
+            attrs.pop("acs_url", None)
+        elif not self.instance and "acs_url" not in attrs:
+            raise ValidationError({"acs_urls": _("At least one ACS URL is required.")})
         signing_kp = attrs.get("signing_kp")
         if signing_kp:
             if not attrs.get("sign_assertion") and not attrs.get("sign_response"):
@@ -241,6 +334,7 @@ class SAMLProviderSerializer(ProviderSerializer):
     class Meta:
         model = SAMLProvider
         fields = ProviderSerializer.Meta.fields + [
+            "acs_urls",
             "acs_url",
             "sls_url",
             "audience",
@@ -305,12 +399,27 @@ class SAMLProviderImportSerializer(PassiveSerializer):
     file = FileField()
 
 
+class SAMLProviderFilter(FilterSet):
+    """SAMLProvider filters"""
+
+    acs_url = CharFilter(method="filter_acs_url", label="ACS URL")
+
+    def filter_acs_url(self, queryset: QuerySet, name: str, value: str) -> QuerySet:
+        """Filter providers that have `value` configured as one of their ACS URLs"""
+        return queryset.filter(_acs_urls__contains=[{"url": value}])
+
+    class Meta:
+        model = SAMLProvider
+        fields = "__all__"
+        exclude = ["_acs_urls"]
+
+
 class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     """SAMLProvider Viewset"""
 
     queryset = SAMLProvider.objects.all()
     serializer_class = SAMLProviderSerializer
-    filterset_fields = "__all__"
+    filterset_class = SAMLProviderFilter
     ordering = ["name"]
     search_fields = ["name"]
 

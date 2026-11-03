@@ -32,7 +32,7 @@ from authentik.events.signals import get_login_event
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
-from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequest, get_acs_url
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.time import get_time_string
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
@@ -318,7 +318,9 @@ class AssertionProcessor:
         if self.auth_n_request.id:
             subject_confirmation_data.attrib["InResponseTo"] = self.auth_n_request.id
         subject_confirmation_data.attrib["NotOnOrAfter"] = self._valid_not_on_or_after
-        subject_confirmation_data.attrib["Recipient"] = self.provider.acs_url
+        subject_confirmation_data.attrib["Recipient"] = get_acs_url(
+            self.provider, self.auth_n_request
+        )
         return subject
 
     def get_assertion(self) -> Element:
@@ -353,7 +355,7 @@ class AssertionProcessor:
         response = Element(f"{{{NS_SAML_PROTOCOL}}}Response", nsmap=NS_MAP)
         response.attrib["Version"] = "2.0"
         response.attrib["IssueInstant"] = self._issue_instant
-        response.attrib["Destination"] = self.provider.acs_url
+        response.attrib["Destination"] = get_acs_url(self.provider, self.auth_n_request)
         response.attrib["ID"] = self._response_id
         if self.auth_n_request.id:
             response.attrib["InResponseTo"] = self.auth_n_request.id
