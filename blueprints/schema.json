@@ -18073,6 +18073,7 @@
                         "username",
                         "email",
                         "password",
+                        "showable_password",
                         "number",
                         "checkbox",
                         "radio-button-group",

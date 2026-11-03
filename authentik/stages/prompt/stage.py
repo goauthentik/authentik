@@ -7,6 +7,7 @@ from typing import Any
 
 from django.contrib.messages import INFO, add_message
 from django.db.models.query import QuerySet
+from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
@@ -101,7 +102,7 @@ class PromptChallengeResponse(ChallengeResponse):
                 )
             # Check if we have a password field, add a handler that sends a signal
             # to validate it
-            if field.type == FieldTypes.PASSWORD:
+            if field.type == FieldTypes.PASSWORD or field.type == FieldTypes.SHOWABLE_PASSWORD:
                 setattr(
                     self,
                     f"validate_{field.field_key}",
@@ -141,7 +142,7 @@ class PromptChallengeResponse(ChallengeResponse):
 
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
-            type=FieldTypes.PASSWORD
+            Q(type=FieldTypes.PASSWORD) | Q(type=FieldTypes.SHOWABLE_PASSWORD)
         )
         if password_fields.exists() and password_fields.count() == 2:  # noqa: PLR2004
             self._validate_password_fields(*[field.field_key for field in password_fields])

@@ -21,6 +21,7 @@ export const PromptTypeEnum = {
     Username: "username",
     Email: "email",
     Password: "password",
+    ShowablePassword: "showable_password",
     Number: "number",
     Checkbox: "checkbox",
     RadioButtonGroup: "radio-button-group",
