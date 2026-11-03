@@ -44954,6 +44954,10 @@ components:
         icon_url:
           type: string
           nullable: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
         promoted:
           type: boolean
           default: false
@@ -60364,6 +60368,10 @@ components:
           type: string
         icon_url:
           type: string
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
         requires_enterprise:
           type: boolean
           default: false
@@ -61544,6 +61552,10 @@ components:
           type: string
         icon_url:
           type: string
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
       required:
       - component
       - object_uid
