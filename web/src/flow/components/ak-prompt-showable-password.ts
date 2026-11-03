@@ -14,18 +14,19 @@ interface VisibilityProps {
 }
 
 /**
- * Enum-like object for the visibility states of the password input.
+ * Enum (sortof) for the visibility states of the password input. Labels are functions resolved at
+ * run-time to make sure locale changes are picked up.
  */
 const Visibility = {
     Reveal: {
         kind: "password",
         icon: "fa-eye",
-        label: () => msg("Show password"),
+        label: () => msg("Show password", { id: "showable-password.show-password" }),
     },
     Mask: {
         kind: "text",
         icon: "fa-eye-slash",
-        label: () => msg("Hide password"),
+        label: () => msg("Hide password", { id: "showable-password.hide-password" }),
     },
 } as const satisfies Record<string, VisibilityProps>;
 
