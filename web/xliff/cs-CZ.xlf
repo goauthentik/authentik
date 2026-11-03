@@ -5894,10 +5894,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
   <target>Když je tato možnost povolena, budou použita globální nastavení připojení e-mailu a níže uvedená nastavení připojení budou ignorována.</target>
 </trans-unit>
-<trans-unit id="s7e2bcca51126ec9c">
-  <source>Subject of the verification email.</source>
-  <target>Předmět ověřovacího e-mailu.</target>
-</trans-unit>
 <trans-unit id="sc12c90b1da0f3a47">
   <source>Token expiration</source>
   <target>Platnost tokenu</target>
@@ -12399,6 +12395,12 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="array-input.remove.aria-label">
   <source>Remove entry</source>
+</trans-unit>
+<trans-unit id="stages.authenticator-email.subject.default">
+  <source>Your verification code is <x id="0" equiv-text="${&quot;{{ token }}&quot;}"/></source>
+</trans-unit>
+<trans-unit id="stages.authenticator-email.subject.help">
+  <source>Subject of the verification email. Use <x id="0" equiv-text="${&quot;{{ token }}&quot;}"/> to include the code.</source>
 </trans-unit>
 </body>
 </file>

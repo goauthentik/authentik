@@ -3,18 +3,15 @@
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from django.template.exceptions import TemplateSyntaxError
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField
 
-from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     WithUserInfoChallenge,
 )
-from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.email import mask_email
 from authentik.lib.utils.time import timedelta_from_string
@@ -22,8 +19,6 @@ from authentik.stages.authenticator_email.models import (
     AuthenticatorEmailStage,
     EmailDevice,
 )
-from authentik.stages.email.tasks import send_mails
-from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONTEXT_EMAIL_DEVICE = "goauthentik.io/stages/authenticator_email/email_device"
@@ -78,36 +73,13 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
     def validate_and_send(self, email: str):
         """Validate email and send message"""
-        pending_user = self.get_pending_user()
-
         stage: AuthenticatorEmailStage = self.executor.current_stage
         if EmailDevice.objects.filter(Q(email=email), stage=stage.pk).exists():
             raise ValidationError(_("Invalid email"))
 
         device: EmailDevice = self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE]
 
-        try:
-            message = TemplateEmailMessage(
-                subject=_(stage.subject),
-                to=[(pending_user.name, email)],
-                language=pending_user.locale(self.request),
-                template_name=stage.template,
-                template_context={
-                    "user": pending_user,
-                    "expires": device.valid_until,
-                    "token": device.token,
-                },
-                sensitive_values=[device.token],
-            )
-
-            send_mails(stage, message)
-        except TemplateSyntaxError as exc:
-            Event.new(
-                EventAction.CONFIGURATION_ERROR,
-                message=_("Exception occurred while rendering E-mail template"),
-                template=stage.template,
-            ).with_exception(exc).from_http(self.request)
-            raise StageInvalidException from exc
+        stage.send(device, self.request)
 
     def _has_email(self) -> str | None:
         context = self.executor.plan.context

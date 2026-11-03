@@ -18,7 +18,7 @@ import {
     TypeCreate,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -181,12 +181,20 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                     <ak-form-element-horizontal label=${msg("Subject")} required name="subject">
                         <input
                             type="text"
-                            value="${this.instance?.subject ?? "authentik Sign-in code"}"
+                            value="${
+                                this.instance?.subject ??
+                                msg(str`Your verification code is ${"{{ token }}"}`, {
+                                    id: "stages.authenticator-email.subject.default",
+                                })
+                            }"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg("Subject of the verification email.")}
+                            ${msg(
+                                str`Subject of the verification email. Use ${"{{ token }}"} to include the code.`,
+                                { id: "stages.authenticator-email.subject.help" },
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal

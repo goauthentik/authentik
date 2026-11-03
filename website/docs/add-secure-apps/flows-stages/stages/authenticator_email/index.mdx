@@ -24,12 +24,26 @@ The enrolled email address can later be used with the [Authenticator Validation 
 - **Timeout**: SMTP connection timeout in seconds.
 - **From address**: sender address used for enrollment emails.
 - **Token expiry**: how long the one-time code stays valid.
-- **Subject**: subject line for the enrollment email.
+- **Subject**: subject line for the one-time code email. The subject is a template that accepts the `{{ token }}` and `{{ username }}` variables. Defaults to `Your verification code is {{ token }}`.
 - **Template**: email template used for the one-time code email. See [Custom templates](#custom-templates) below.
 - **Authenticator type name**: optional friendly name shown to the user in self-service settings.
 - **Configuration flow**: optional authenticated flow that lets users enroll this authenticator from user settings.
 
 For SMTP requirements and global email delivery settings, see [Email configuration](../../../../install-config/email.mdx).
+
+## Machine-readable codes:ak-version[2026.11]
+
+Each one-time code email includes the code in an `OTP-Token` header, as described in the [OTP-Token header field draft](https://datatracker.ietf.org/doc/html/draft-goto-otp-token-01). The header binds the code to the origin the user is signing in on, for example:
+
+```
+OTP-Token: "123456"; origin="https://authentik.company"
+```
+
+Mail clients and operating systems can use the header, or the code in the default subject line, to offer the code for autofill. authentik only adds the header when the request uses `https` and its host matches the [brand's](../../../../customize/branding/index.mdx) **Domain**, so a forged `Host` header can't bind the code to another site.
+
+:::info Codes in mail server logs
+The code appears in the email's subject and headers, so mail servers that log headers record it. To keep the code out of the subject line, remove `{{ token }}` from the **Subject**. The code is valid only for the configured **Token expiry**.
+:::
 
 ## Custom templates
 
