@@ -55,7 +55,7 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.jwt_mldsa import algorithm_for_key, is_mldsa_key
+from authentik.lib.jwt_mldsa import MLDSAAlgorithm, MLDSAKey
 from authentik.lib.models import (
     DomainlessURLValidator,
     ExpiringModel,
@@ -176,8 +176,8 @@ class JWTAlgorithms(models.TextChoices):
 
     @classmethod
     def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
-        if is_mldsa_key(private_key):
-            return cls(algorithm_for_key(private_key))
+        if isinstance(private_key, MLDSAKey):
+            return cls(MLDSAAlgorithm.algorithm_for_key(private_key))
         if isinstance(private_key, RSAPrivateKey):
             return cls.RS256
         if isinstance(private_key, EllipticCurvePrivateKey):
