@@ -4,11 +4,14 @@ from copy import copy
 from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml.ElementTree import fromstring
+from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.http.response import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django_filters.filters import CharFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -35,6 +38,7 @@ from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSe
 from authentik.core.models import Provider
 from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.flows.models import Flow, FlowDesignation
+from authentik.lib.models import DomainlessURLValidator
 from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
@@ -57,6 +61,13 @@ class RawXMLDataRenderer(BaseRenderer):
 
 class SAMLProviderSerializer(ProviderSerializer):
     """SAMLProvider Serializer"""
+
+    # `acs_url` is a property of the model mapping to the default ACS URL, so it has to be
+    # declared explicitly
+    acs_url = CharField(
+        label=_("ACS URL"),
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+    )
 
     url_download_metadata = SerializerMethodField()
     url_issuer = SerializerMethodField()
@@ -305,12 +316,27 @@ class SAMLProviderImportSerializer(PassiveSerializer):
     file = FileField()
 
 
+class SAMLProviderFilter(FilterSet):
+    """SAMLProvider filters"""
+
+    acs_url = CharFilter(method="filter_acs_url")
+
+    def filter_acs_url(self, queryset: QuerySet, name: str, value: str) -> QuerySet:
+        """Filter providers that have `value` configured as one of their ACS URLs"""
+        return queryset.filter(_acs_urls__contains=[{"url": value}])
+
+    class Meta:
+        model = SAMLProvider
+        fields = "__all__"
+        exclude = ["_acs_urls"]
+
+
 class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     """SAMLProvider Viewset"""
 
     queryset = SAMLProvider.objects.all()
     serializer_class = SAMLProviderSerializer
-    filterset_fields = "__all__"
+    filterset_class = SAMLProviderFilter
     ordering = ["name"]
     search_fields = ["name"]
 

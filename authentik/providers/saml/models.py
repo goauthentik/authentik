@@ -1,7 +1,10 @@
 """authentik SAML Provider Models"""
 
+from dataclasses import asdict, dataclass
 from uuid import uuid4
 
+from dacite import Config
+from dacite.core import from_dict
 from django.db import models
 from django.templatetags.static import static
 from django.urls import reverse
@@ -67,6 +70,26 @@ class SAMLBindings(models.TextChoices):
         }.get(binding)
 
 
+class SAMLACSURLMatchingMode(models.TextChoices):
+    """How an ACS URL requested by the Service Provider is compared to a configured entry"""
+
+    STRICT = "strict", _("Strict URL comparison")
+    REGEX = "regex", _("Regular Expression URL matching")
+
+
+@dataclass
+class SAMLACSURL:
+    """A single Assertion Consumer Service URL a provider may send responses to"""
+
+    url: str
+    matching_mode: SAMLACSURLMatchingMode = SAMLACSURLMatchingMode.STRICT
+    # Corresponds to the `index` attribute of an `AssertionConsumerService` endpoint in
+    # SP metadata, and is matched against `AssertionConsumerServiceIndex` in requests.
+    index: int | None = None
+    # Corresponds to the `isDefault` attribute of an `AssertionConsumerService` endpoint.
+    is_default: bool = False
+
+
 class SAMLLogoutMethods(models.TextChoices):
     """SAML Logout methods supported by authentik"""
 
@@ -78,8 +101,13 @@ class SAMLLogoutMethods(models.TextChoices):
 class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
-    acs_url = models.TextField(
-        validators=[DomainlessURLValidator(schemes=("http", "https"))], verbose_name=_("ACS URL")
+    _acs_urls = models.JSONField(
+        default=list,
+        verbose_name=_("ACS URLs"),
+        help_text=_(
+            "Assertion Consumer Service URLs the provider may send responses to. The default "
+            "entry is used for IdP-initiated logins and requests without an ACS URL."
+        ),
     )
     sp_binding = models.TextField(
         choices=SAMLBindings.choices,
@@ -277,6 +305,53 @@ class SAMLProvider(Provider):
             "of this provider via token exchange."
         ),
     )
+
+    @property
+    def acs_urls(self) -> list[SAMLACSURL]:
+        """All configured ACS URLs, in order"""
+        return [
+            from_dict(
+                SAMLACSURL,
+                entry,
+                config=Config(type_hooks={SAMLACSURLMatchingMode: SAMLACSURLMatchingMode}),
+            )
+            for entry in self._acs_urls
+        ]
+
+    @acs_urls.setter
+    def acs_urls(self, value: list[SAMLACSURL]):
+        self._acs_urls = [asdict(entry) for entry in value]
+
+    @property
+    def default_acs_url(self) -> SAMLACSURL | None:
+        """The default ACS URL, selected following SAML Metadata 2.0 section 2.2.3: the first
+        entry marked as default, otherwise the first entry. Only strict entries can be the
+        default, as a regular expression isn't a URL a response can be sent to."""
+        strict = [
+            entry for entry in self.acs_urls if entry.matching_mode == SAMLACSURLMatchingMode.STRICT
+        ]
+        for entry in strict:
+            if entry.is_default:
+                return entry
+        return strict[0] if strict else None
+
+    @property
+    def acs_url(self) -> str:
+        """URL of the default ACS URL, used when a request doesn't specify one"""
+        default = self.default_acs_url
+        return default.url if default else ""
+
+    @acs_url.setter
+    def acs_url(self, value: str):
+        """Set the URL of the default ACS URL, keeping all other entries. Exists for backwards
+        compatibility with the single `acs_url` field."""
+        entries = self.acs_urls
+        default = self.default_acs_url
+        if default:
+            entries[entries.index(default)].url = value
+        else:
+            entries.insert(0, SAMLACSURL(url=value, is_default=True))
+        self.acs_urls = entries
 
     @property
     def launch_url(self) -> str | None:
