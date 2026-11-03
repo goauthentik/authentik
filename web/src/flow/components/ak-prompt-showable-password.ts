@@ -21,7 +21,7 @@ const Visibility = {
     Reveal: {
         kind: "password",
         icon: "fa-eye",
-        label: () => msg("Show password", { id: "showable-password.show-password" }),
+        label: () => msg("View password", { id: "showable-password.show-password" }),
     },
     Mask: {
         kind: "text",

@@ -66,8 +66,8 @@ class FieldTypes(models.TextChoices):
             "need to be identical."
         ),
     )
-    PASSWORD_SHOWABLE = (
-        "password_showable",
+    PASSWORD_VIEWABLE = (
+        "password_viewable",
         _(
             "Password w/show button: Masked input w/show button, multiple inputs of this type on "
             "the same prompt need to be identical."

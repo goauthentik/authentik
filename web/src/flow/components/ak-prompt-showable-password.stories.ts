@@ -21,9 +21,9 @@ export const Default = flowFactory("ak-stage-prompt", {
             choices: [],
         },
         {
-            fieldKey: "password_showable",
-            type: PromptTypeEnum.PasswordShowable,
-            label: "Password (showable)",
+            fieldKey: "password_viewable",
+            type: PromptTypeEnum.PasswordViewable,
+            label: "Password (viewable)",
             order: 1,
             required: true,
             placeholder: "Password",

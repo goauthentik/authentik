@@ -15582,7 +15582,7 @@
                         "username",
                         "email",
                         "password",
-                        "password_showable",
+                        "password_viewable",
                         "number",
                         "checkbox",
                         "radio-button-group",
