@@ -143,6 +143,7 @@ INSTALLED_APPS = [
 
 GUARDIAN_GROUP_MODEL = "authentik_core.Group"
 GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
+GUARDIAN_GET_INIT_ANONYMOUS_USER = "authentik.core.models.get_init_anonymous_user"
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
@@ -303,6 +304,7 @@ MIDDLEWARE = [
     "authentik.core.middleware.ImpersonateMiddleware",
     "authentik.core.middleware.LocaleOverrideMiddleware",
     "authentik.rbac.middleware.InitialPermissionsMiddleware",
+    "authentik.rbac.middleware.AlterResponseMiddleware",
 ]
 MIDDLEWARE_LAST = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",

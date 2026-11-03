@@ -106,11 +106,11 @@ class _PolicyEngineBase:
     def _select_policies[B: Iterable[PolicyBinding]](bindings: B) -> B:
         """Load all bound policies in their concrete type with a single query, instead of
         `binding.policy` lazily querying each one with all subclass joins"""
-        policies = (
-            Policy.objects.filter(pk__in={b.policy_id for b in bindings if b.policy_id})
-            .select_subclasses()
-            .in_bulk()
-        )
+        policy_pks = {b.policy_id for b in bindings if b.policy_id}
+        # An empty pk__in still compiles the whole subclass join before Django skips the query
+        if not policy_pks:
+            return bindings
+        policies = Policy.objects.filter(pk__in=policy_pks).select_subclasses().in_bulk()
         for binding in bindings:
             if binding.policy_id:
                 binding.policy = policies[binding.policy_id]
@@ -186,7 +186,7 @@ class _PolicyEngineBase:
                 continue
             self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=request)
             our_end, task_end = Pipe(False)
-            task = PolicyProcess(binding, request, task_end)
+            task = PolicyProcess(binding, request, task_end, use_cache=self.use_cache)
             task.daemon = False
             self.logger.debug("P_ENG: Starting Process", binding=binding, request=request)
             if not CURRENT_PROCESS._config.get("daemon"):
