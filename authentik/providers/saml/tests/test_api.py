@@ -110,6 +110,31 @@ class TestSAMLProviderAPI(APITestCase):
             },
         )
 
+    def test_create_validate_unsupported_key_type_verification_encryption(self):
+        """Test validation rejects unsupported key types on the verification and encryption
+        keypairs"""
+        ed25519_cert = create_test_cert(PrivateKeyAlg.ED25519)
+
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "acs_url": "http://localhost",
+                "verification_kp": ed25519_cert.pk,
+                "encryption_kp": ed25519_cert.pk,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        message = (
+            "Key type Ed25519 is not supported. Supported key types are: RSA, Elliptic Curve, DSA."
+        )
+        self.assertJSONEqual(
+            response.content,
+            {"verification_kp": [message], "encryption_kp": [message]},
+        )
+
     def test_metadata(self):
         """Test metadata export (normal)"""
         self.client.logout()
