@@ -270,7 +270,7 @@ def validate_challenge_webauthn(
             require_user_verification=stage.webauthn_user_verification == UserVerification.REQUIRED,
         )
     except (WebAuthnException, ValueError, InternalError, UnsupportedAlgorithm) as exc:
-        error = __("Assertion failed")
+        error = _("Assertion failed")
         event_context = {}
         if isinstance(
             exc,
@@ -300,7 +300,7 @@ def validate_challenge_webauthn(
             )
             # The user gets a generic error; the details are for administrators in the log and
             # event. Event context keys containing "key" are masked, hence "algorithm".
-            error = __("Invalid security key. Please re-register or contact an administrator.")
+            error = _("Invalid security key. Please re-register or contact an administrator.")
             event_context = {"message": detail, "algorithm": key_type, "fips_enabled": fips_enabled}
         else:
             LOGGER.warning("Assertion failed", exc=exc)
