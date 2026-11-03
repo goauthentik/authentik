@@ -36209,11 +36209,21 @@ components:
         app:
           type: string
           format: uuid
+        app_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        app_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
         attributes:
           type: object
           additionalProperties: {}
       required:
       - app
+      - app_name
+      - app_slug
       - name
       - pbm_uuid
     ApplicationEntitlementRequest:
