@@ -1,4 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
@@ -19,6 +21,8 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-secret-list")
 export class SecretListPage extends TablePage<Secret> {
+    static styles = [...super.styles, PFBanner];
+
     public override checkbox = true;
     public override clearOnRefresh = true;
     public override searchPlaceholder = msg("Search for a secret name...", {
@@ -51,6 +55,13 @@ export class SecretListPage extends TablePage<Secret> {
             msg("Row Actions", { id: "secret.list.row-actions.label" }),
         ],
     ];
+
+    protected override renderSectionBefore(): SlottedTemplateResult {
+        return html`<div class="pf-c-banner pf-m-info">
+            ${msg("Secrets are in preview.", { id: "secret.list.preview" })}
+            <a href="mailto:hello+feature/secrets@goauthentik.io">${msg("Send us feedback!")}</a>
+        </div>`;
+    }
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
