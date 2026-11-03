@@ -171,6 +171,7 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "ActivityBasisEnum": "authentik.enterprise.lifecycle.expiration.models.ActivityBasis",
         "AppEnum": "authentik.lib.api.Apps",
         "AuthenticationEnum": "authentik.flows.models.FlowAuthenticationRequirement",
         "ClientTypeEnum": "authentik.providers.oauth2.models.ClientType",

@@ -39,6 +39,10 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.Logout]: () => msg("Logout"),
     [EventActions.UserWrite]: () => msg("User was written to"),
     [EventActions.UserOffboarded]: () => msg("User was offboarded"),
+    [EventActions.UserExpirationWarning]: () =>
+        msg("User will be offboarded due to inactivity", {
+            id: "user-expiration.event.warning",
+        }),
     [EventActions.SuspiciousRequest]: () => msg("Suspicious request"),
     [EventActions.PasswordSet]: () => msg("Password set"),
     [EventActions.AuthenticatorLocked]: () =>
@@ -49,6 +53,8 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.SecretRotate]: () => msg("Secret was rotated"),
     [EventActions.InvitationUsed]: () => msg("Invitation used"),
     [EventActions.AuthorizeApplication]: () => msg("Application authorized"),
+    [EventActions.TokenRefresh]: () =>
+        msg("Token refresh", { id: "events.action.token-refresh.label" }),
     [EventActions.SourceLinked]: () => msg("Source linked"),
     [EventActions.ImpersonationStarted]: () => msg("Impersonation started"),
     [EventActions.ImpersonationEnded]: () => msg("Impersonation ended"),
