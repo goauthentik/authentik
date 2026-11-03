@@ -10,6 +10,7 @@ import { parseAPIResponseError } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { WizardNavigationEvent } from "#components/ak-wizard/events";
@@ -69,6 +70,14 @@ function isNotEmpty<T>(arr: T[] | undefined): arr is NonEmptyArray<T> {
     return Array.isArray(arr) && arr.length > 0;
 }
 
+// Providers that only work once they are assigned to an outpost.
+const outpostProviderModels: ReadonlySet<string> = new Set([
+    "proxyprovider",
+    "ldapprovider",
+    "radiusprovider",
+    "racprovider",
+]);
+
 const cleanApplication = (app: Partial<ApplicationRequest>): ApplicationRequest => ({
     name: "",
     slug: "",
@@ -108,6 +117,9 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
     @state()
     protected state: SubmitStates = "reviewing";
 
+    @state()
+    protected createdProviderPk?: number;
+
     async sendSAMLMetadataImport() {
         const providerData = this.wizard.provider as ProvidersSamlImportMetadataCreateRequest;
         const providersApi = aki(ProvidersApi);
@@ -144,6 +156,7 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
             }
 
             this.dispatchEvent(new AKRefreshEvent());
+            this.createdProviderPk = createdProvider.pk;
             this.state = "submitted";
         } catch (error) {
             const parsedError = await parseAPIResponseError(error);
@@ -211,8 +224,16 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
             .coreTransactionalApplicationsUpdate({
                 transactionApplicationRequest: request,
             })
-            .then((_response: TransactionApplicationResponse) => {
+            .then(async (_response: TransactionApplicationResponse) => {
                 this.dispatchEvent(new AKRefreshEvent());
+
+                // The transactional response doesn't include the provider, so look it up.
+                // Failing here only hides the link; the application is already saved.
+                const createdApp = await aki(CoreApi)
+                    .coreApplicationsRetrieve({ slug: request.app.slug })
+                    .catch(() => null);
+
+                this.createdProviderPk = createdApp?.provider ?? undefined;
                 this.state = "submitted";
             })
 
@@ -308,6 +329,45 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
                 </div>
             </div>
         </div>`;
+    }
+
+    renderNextSteps() {
+        const needsOutpost = outpostProviderModels.has(this.wizard.providerModel);
+
+        return html`${
+                needsOutpost
+                    ? html`<div class="pf-c-empty-state__body">
+                          ${msg(
+                              "This provider must be assigned to an outpost before users can access the application.",
+                              { id: "application.wizard.next-steps.outpost.description" },
+                          )}
+                      </div>`
+                    : nothing
+            }
+            <div class="pf-c-empty-state__primary">
+                ${
+                    this.createdProviderPk !== undefined
+                        ? html`<a
+                              class="pf-c-button pf-m-primary"
+                              href=${toAdminInterface(`core/providers/${this.createdProviderPk}`)}
+                              >${msg("View provider", {
+                                  id: "application.wizard.next-steps.view-provider.label",
+                              })}</a
+                          >`
+                        : nothing
+                }
+                ${
+                    needsOutpost
+                        ? html`<a
+                              class="pf-c-button pf-m-secondary"
+                              href=${toAdminInterface("outpost/outposts")}
+                              >${msg("Go to outposts", {
+                                  id: "application.wizard.next-steps.outposts.label",
+                              })}</a
+                          >`
+                        : nothing
+                }
+            </div>`;
     }
 
     renderError() {
@@ -445,10 +505,12 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
 
         return match([this.state, keys])
             .with(["submitted", P._], () =>
-                this.renderInfo("success", msg("Your application has been saved"), [
-                    "fa-check-circle",
-                    "pf-m-success",
-                ]),
+                this.renderInfo(
+                    "success",
+                    msg("Your application has been saved"),
+                    ["fa-check-circle", "pf-m-success"],
+                    this.renderNextSteps(),
+                ),
             )
             .with(["running", P._], () =>
                 this.renderInfo("running", msg("Saving application..."), ["fa-cogs", "pf-m-info"]),
