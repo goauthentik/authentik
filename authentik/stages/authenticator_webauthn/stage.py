@@ -7,7 +7,6 @@ from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_der_x509_certificate
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
@@ -128,10 +127,8 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
         allowed_aaguids = stage.device_type_restrictions.values_list("aaguid", flat=True)
         if allowed_aaguids.exists():
             invalid_error = ValidationError(
-                _(
-                    "Invalid device type. Contact your {brand} administrator for help.".format(
-                        brand=self.stage.request.brand.branding_title
-                    )
+                _("Invalid device type. Contact your {brand} administrator for help.").format(
+                    brand=self.stage.request.brand.branding_title
                 )
             )
             # If there are any restrictions set and we didn't get an aaguid, invalid
@@ -235,11 +232,8 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             and self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_ATTEMPT] >= stage.max_attempts
         ):
             return self.executor.stage_invalid(
-                __(
-                    "Exceeded maximum attempts. "
-                    "Contact your {brand} administrator for help.".format(
-                        brand=self.request.brand.branding_title
-                    )
+                _("Exceeded maximum attempts. Contact your {brand} administrator for help.").format(
+                    brand=self.request.brand.branding_title
                 )
             )
         return super().challenge_invalid(response)
