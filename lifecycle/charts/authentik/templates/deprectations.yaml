@@ -1,0 +1,87 @@
+{{ if .Values.image }}
+{{ required "`image` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.global.image.pullSecrets }}
+{{ required "`global.image.pullSecrets` does not exist. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.annotations }}
+{{ required "`annotations` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.podAnnotations }}
+{{ required "`podAnnotations` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.nodeSelector }}
+{{ required "`nodeSelector` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.tolerations }}
+{{ required "`tolerations` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.affinity }}
+{{ required "`affinity` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if or .Values.env .Values.envValueFrom .Values.envFrom }}
+{{ required "`env`, `envValueFrom` and `envFrom` are deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if or .Values.additionalContainers .Values.initContainers }}
+{{ required "`additionalContainers` and `initContainers` are deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if or .Values.volumes .Values.volumeMounts }}
+{{ required "`volumes` and `volumeMounts` are deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.replicas }}
+{{ required "`replicas` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.strategy }}
+{{ required "`strategy` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.priorityClassName }}
+{{ required "`priorityClassName` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.containerSecurityContext }}
+{{ required "`containerSecurityContext` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if or .Values.livenessProbe .Values.readinessProbe .Values.startupProbe }}
+{{ required "`livenessProbe`, `readinessProbe` and `startupProbe` are deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.autoscaling }}
+{{ required "`autoscaling` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.pdb }}
+{{ required "`pdb` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.resources }}
+{{ required "`resources` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.service }}
+{{ required "`service` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.prometheus.serviceMonitor }}
+{{ required "`prometheus.serviceMonitor` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.prometheus.rules.create }}
+{{ required "`prometheus.rules.create` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
+
+{{ if .Values.ingress }}
+{{ required "`ingress` is deprecated. See the release notes for a list of changes." .Values.undefined }}
+{{ end }}
