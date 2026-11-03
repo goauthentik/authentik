@@ -275,13 +275,13 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                         value: ActivityBasisEnum.SuccessfulEvents,
                         default: true,
                         description: html`${msg(
-                            "Also count successful authentication, application authorization, and OAuth refreshes. Failed requests and API-token requests do not count. Refresh activity includes a 24-hour allowance before expiration.",
+                            "Also count successful authentication, application authorization, and OAuth refreshes. Failed requests and API-token requests do not count. Recorded activity includes a five-minute allowance before expiration.",
                             { id: "user-expiration.activity-basis.successful-events.description" },
                         )}`,
                     },
                 ]}
                 help=${msg(
-                    "Event retention defaults to 365 days. For Last activity, retain events for at least the inactivity duration plus 24 hours. Increasing retention cannot recover deleted events. Preview the effect before changing this setting.",
+                    "Activity is stored independently of event retention. Preview the effect before changing this setting.",
                     { id: "user-expiration.field.activity-basis.description" },
                 )}
             ></ak-radio-input>
