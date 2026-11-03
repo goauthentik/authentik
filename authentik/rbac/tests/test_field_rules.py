@@ -164,7 +164,7 @@ def hidden_fields(request, obj):
     if obj is None:
         return {"users_obj.attributes.salary"}
     return {
-        f"users_obj[{member.pk}].attributes.salary"
+        f"users_obj[pk={member.pk}].attributes.salary"
         for member in obj.users.all()
         if not request.user.has_perm("authentik_core.custom_read_salary", member)
     }
@@ -251,13 +251,13 @@ class TestNestedFieldRules(APITestCase):
             FieldRules.remove_path(data, ["user_obj", "attributes", "salary"])["user_obj"],
             {"pk": 1, "attributes": {}},
         )
-        self.assertEqual(FieldRules.remove_path(data, ["user_obj[2]"]), data)
+        self.assertEqual(FieldRules.remove_path(data, ["user_obj[pk=2]"]), data)
         self.assertEqual(
-            FieldRules.remove_path(data, ["users_obj[2]", "a"])["users_obj"],
+            FieldRules.remove_path(data, ["users_obj[pk=2]", "a"])["users_obj"],
             [{"pk": 1, "a": 1}, {"pk": 2}],
         )
         self.assertEqual(
-            FieldRules.remove_path(data, ["users_obj[2]"])["users_obj"], [{"pk": 1, "a": 1}]
+            FieldRules.remove_path(data, ["users_obj[pk=2]"])["users_obj"], [{"pk": 1, "a": 1}]
         )
         self.assertEqual(
             FieldRules.remove_path(data, ["users_obj", "a"])["users_obj"], [{"pk": 1}, {"pk": 2}]

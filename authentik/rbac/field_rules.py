@@ -235,15 +235,15 @@ class FieldRules:
 
     @staticmethod
     def parse_segment(segment: str) -> tuple[str, str | None]:
-        """`name`, or `name[pk]` selecting by primary key"""
-        name, bracket, selector = segment.partition("[")
+        """`name`, or `name[pk=<pk>]` selecting by primary key"""
+        name, bracket, selector = segment.partition("[pk=")
         if not bracket or not selector.endswith("]"):
             return segment, None
         return name, selector[:-1]
 
     @staticmethod
     def remove_path(value: Any, segments: list[str]) -> Any:
-        """A copy of `value` without what the path names. `name` is a key, `name[pk]` only the
+        """A copy of `value` without what the path names. `name` is a key, `name[pk=<pk>]` only the
         objects under it with that primary key, and lists on the way apply the rest to each item"""
         if isinstance(value, list):
             return [FieldRules.remove_path(item, segments) for item in value]

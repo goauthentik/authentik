@@ -78,9 +78,9 @@ Besides the functions available to [expressions](../../customize/policies/types/
 
 #### Field rules
 
-Paths start with a response field, such as `email`, and can continue into JSON fields and nested objects, such as `attributes.salary` or `users_obj.attributes.salary`. A path applies to every item in a list; `users_obj[42]` selects only the item whose `pk` is `42`. If a path starts with a field that the endpoint does not have, authentik logs it and shows it on the check's form after the check runs.
+Paths start with a response field, such as `email`, and can continue into JSON fields and nested objects, such as `attributes.salary` or `users_obj.attributes.salary`. A path applies to every item in a list; `users_obj[pk=42]` selects only the item whose `pk` is `42`. If a path starts with a field that the endpoint does not have, authentik logs it and shows it on the check's form after the check runs.
 
-Field rules apply only to the endpoints that the check is bound to, so bind the check to every endpoint that returns the protected fields. When `obj` is `None`, `hidden_fields` must return every path that it hides on any individual object, without selectors; otherwise the request fails. For example, if `hidden_fields` returns `users_obj[42].attributes.salary` for an object, it must return `users_obj.attributes.salary` when `obj` is `None`.
+Field rules apply only to the endpoints that the check is bound to, so bind the check to every endpoint that returns the protected fields. When `obj` is `None`, `hidden_fields` must return every path that it hides on any individual object, without selectors; otherwise the request fails. For example, if `hidden_fields` returns `users_obj[pk=42].attributes.salary` for an object, it must return `users_obj.attributes.salary` when `obj` is `None`.
 
 | Operation | Hidden key, such as `attributes.salary` | Hidden field, such as `email`   | Read-only path   |
 | --------- | --------------------------------------- | ------------------------------- | ---------------- |
@@ -158,7 +158,7 @@ def hidden_fields(request, obj):
         if obj is None:
             return {"users_obj.attributes.salary"}
         return {
-            f"users_obj[{member.pk}].attributes.salary"
+            f"users_obj[pk={member.pk}].attributes.salary"
             for member in obj.users.all()
             if not request.user.has_perm("authentik_core.custom_read_salary", member)
         }
