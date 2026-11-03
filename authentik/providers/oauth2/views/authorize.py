@@ -706,8 +706,8 @@ class OAuthFulfillmentStage(StageView):
             if self.params.response_mode == ResponseMode.QUERY:
                 query_params = parse_qs(uri.query)
                 query_params["code"] = code.code
-                if self.params.state != None:
-                    query_params["state"] = str(self.params.state)
+                if self.params.state:
+                    query_params["state"] = self.params.state
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
@@ -716,8 +716,8 @@ class OAuthFulfillmentStage(StageView):
                 query_fragment = {}
                 if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     query_fragment["code"] = code.code
-                    if self.params.state != None:
-                        query_fragment["state"] = str(self.params.state)
+                    if self.params.state:
+                        query_fragment["state"] = self.params.state
                 else:
                     query_fragment = self.create_implicit_response(code)
 
@@ -731,7 +731,8 @@ class OAuthFulfillmentStage(StageView):
                 post_params = {}
                 if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     post_params["code"] = code.code
-                    post_params["state"] = [str(self.params.state) if self.params.state else ""]
+                    if self.params.state:
+                        post_params["state"] = self.params.state
                 else:
                     post_params = self.create_implicit_response(code)
 
@@ -807,5 +808,6 @@ class OAuthFulfillmentStage(StageView):
         query_fragment["expires_in"] = int(
             timedelta_from_string(self.provider.access_token_validity).total_seconds()
         )
-        query_fragment["state"] = self.params.state if self.params.state else ""
+        if self.params.state:
+            query_fragment["state"] = self.params.state
         return query_fragment
