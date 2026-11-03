@@ -2,7 +2,7 @@
 
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.providers import ProviderSerializer, ProviderUniqueSaveMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
@@ -46,7 +46,9 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
         extra_kwargs = {}
 
 
-class GoogleWorkspaceProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):
+class GoogleWorkspaceProviderViewSet(
+    ProviderUniqueSaveMixin, OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet
+):
     """GoogleWorkspaceProvider Viewset"""
 
     queryset = GoogleWorkspaceProvider.objects.all()

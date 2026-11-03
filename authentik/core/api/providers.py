@@ -1,5 +1,6 @@
 """Provider API Views"""
 
+from django.db import IntegrityError, transaction
 from django.db.models import QuerySet
 from django.db.models.query import Q
 from django.utils.translation import gettext_lazy as _
@@ -7,12 +8,39 @@ from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from rest_framework import mixins
 from rest_framework.fields import ReadOnlyField, SerializerMethodField
+from rest_framework.serializers import BaseSerializer
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.models import Provider
+
+
+class ProviderUniqueSaveMixin:
+    """Report a unique value lost to a concurrent request as a validation error"""
+
+    def _save_unique(self, serializer: BaseSerializer) -> None:
+        # Two concurrent requests can both pass the serializer's unique checks and
+        # race to insert; the unique constraint rejects the loser. The winner is saved
+        # by now, so validating again returns the same 400 instead of a 500.
+        try:
+            with transaction.atomic():
+                serializer.save()
+        except IntegrityError:
+            serializer.__class__(
+                serializer.instance,
+                data=serializer.initial_data,
+                partial=serializer.partial,
+                context=serializer.context,
+            ).is_valid(raise_exception=True)
+            raise
+
+    def perform_create(self, serializer: BaseSerializer) -> None:
+        self._save_unique(serializer)
+
+    def perform_update(self, serializer: BaseSerializer) -> None:
+        self._save_unique(serializer)
 
 
 class ProviderSerializer(ModelSerializer, MetaNameSerializer):

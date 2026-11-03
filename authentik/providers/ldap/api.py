@@ -14,7 +14,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.providers import ProviderSerializer, ProviderUniqueSaveMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
@@ -77,7 +77,7 @@ class LDAPProviderFilter(FilterSet):
         }
 
 
-class LDAPProviderViewSet(UsedByMixin, ModelViewSet):
+class LDAPProviderViewSet(ProviderUniqueSaveMixin, UsedByMixin, ModelViewSet):
     """LDAPProvider Viewset"""
 
     queryset = LDAPProvider.objects.all()
