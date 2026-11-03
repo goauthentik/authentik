@@ -135,23 +135,19 @@ class UserOffboarding(SerializerModel):
 
         context = {}
         if self.rule_id is not None:
-            # Rule-generated rows stay pending without a license. Re-check the rule
-            # before acting, since it or the user may have changed.
+            # Generated rows stay pending without a license.
             if not apps.get_app_config("authentik_enterprise").enabled():
                 return
-            # Load activity once for the owner and any competing rule. The row lock
-            # doesn't stop new activity from committing after this read.
+            # The rule or the user may have changed since the last sweep.
             self.user = User.objects.select_related("activity").get(pk=self.user_id)
             kept, rewarn = self.rule.reconcile_offboarding(self)
             if not kept:
                 return
             if UserExpirationRule.resolve_winner(self):
                 rewarn = True
-            # The deadline may have moved later since this task was queued.
             if self.scheduled_at > timezone.now():
                 if rewarn:
-                    # Execution holds this row lock. Queue the warning only after
-                    # the transaction commits and the lock has been released.
+                    # Warn after the row lock is released.
                     transaction.on_commit(
                         lambda rule=self.rule, user=self.user, row=self: rule._warn(user, row)
                     )

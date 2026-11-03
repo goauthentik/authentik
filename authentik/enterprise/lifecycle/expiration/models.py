@@ -27,10 +27,7 @@ from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 LOGGER = get_logger()
 
-# Users and pending offboardings are read in chunks to avoid loading every row into memory.
 CHUNK_SIZE = 500
-
-# Same-date tie order, lower wins (see `rank()`).
 ACTION_SEVERITY = {OffboardingAction.DEACTIVATE: 0, OffboardingAction.DELETE: 1}
 
 type Rank = tuple[datetime, int, UUID]
@@ -51,8 +48,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
 
     id = models.UUIDField(primary_key=True, default=uuid4)
     name = models.TextField(unique=True)
-    # New rules start disabled so they can be previewed and have policies bound
-    # before the first sweep schedules anyone.
+    # Disabled by default so rules can be previewed before the first sweep.
     enabled = models.BooleanField(default=False)
     activity_basis = models.TextField(
         choices=ActivityBasis.choices,
@@ -138,17 +134,25 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         return last_activity + self.inactivity_timedelta
 
     def rank(self, user: User) -> Rank:
-        """Lower ranks win `user`: the earliest expiration, then the least destructive
-        action, then the lowest rule ID so that full ties resolve the same way every time."""
+        """Lowest wins: earliest due date, then least destructive action, then rule ID."""
         return (self.due_at(user), ACTION_SEVERITY[self.action], self.pk)
 
     @staticmethod
     def row_rank(row: UserOffboarding) -> Rank:
-        """Rank of the rule that owns `row`, as stored on the row."""
         return (row.scheduled_at, ACTION_SEVERITY[row.action], row.rule_id)
 
+    @staticmethod
+    def withdraw_pending(user: User, logged_in_at: datetime | None = None):
+        """Delete the user's pending generated offboardings, optionally only those
+        created before `logged_in_at`."""
+        rows = UserOffboarding.objects.filter(
+            user=user, rule__isnull=False, status=OffboardingStatus.PENDING
+        )
+        if logged_in_at is not None:
+            rows = rows.filter(created_at__lte=logged_in_at)
+        rows.delete()
+
     def _update_offboarding(self, row: UserOffboarding, due_at: datetime):
-        """Write this rule's settings onto a locked pending row and make it the owner."""
         row.rule = self
         row.scheduled_at = due_at
         row.action = self.action
@@ -160,14 +164,11 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
 
     @classmethod
     def resolve_winner(cls, row: UserOffboarding) -> bool:
-        """Hand a locked, reconciled pending row to the enabled rule that outranks its
-        owner, if any. Execution calls this so a lost insert race, or a rule enabled or
-        edited since the last sweep, cannot run the wrong action. Returns whether the
-        owner changed."""
+        """Hand a locked pending row to the enabled rule that outranks its owner, if any.
+        Returns whether the owner changed."""
         best: UserExpirationRule | None = None
         best_rank = cls.row_rank(row)
         for rule in cls.objects.filter(enabled=True).exclude(pk=row.rule_id):
-            # Execution preloads activity once, so ranking needs no event queries.
             rank = rule.rank(row.user)
             if rank < best_rank and rule._in_scope(row.user):
                 best, best_rank = rule, rank
@@ -179,9 +180,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
     def scope(
         self, *, threshold: datetime | None = None, user: User | None = None
     ) -> QuerySet[User]:
-        """Users this rule applies to, before policies. Pure SQL, so it is cheap to
-        evaluate over the whole population. With `threshold`, only users inactive since
-        then under this rule's activity basis. With `user`, narrowed to that user."""
+        """Users this rule applies to, before policies. With `threshold`, only users
+        inactive since then."""
         types = [t for t in self.user_types if t != UserTypes.INTERNAL_SERVICE_ACCOUNT]
         qs = User.objects.select_related("activity").filter(is_active=True, type__in=types)
         if user is not None:
@@ -193,7 +193,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             superuser_groups = Group.objects.filter(is_superuser=True).with_descendants()
             qs = qs.exclude(pk__in=User.objects.filter(groups__in=superuser_groups).values("pk"))
         if threshold is not None:
-            # Written as two range tests (not GREATEST()) so the last_login index is used.
+            # Two range tests instead of GREATEST() so the last_login index is used.
             qs = qs.filter(
                 Q(last_login__isnull=True) | Q(last_login__lte=threshold),
                 date_joined__lte=threshold,
@@ -206,8 +206,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         return qs
 
     def _apply_policies(self, qs: QuerySet[User]) -> QuerySet[User]:
-        """Filter `qs` by the rule's policy bindings. Dynamic policies run per user in
-        Python, so this is always the last step, on an already narrowed set."""
+        """Policies run per user, so only apply them to an already narrowed set."""
         if not PolicyBinding.objects.filter(target=self, enabled=True).exists():
             return qs
         from authentik.policies.engine import FilterPolicyEngine
@@ -231,16 +230,13 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         qs = self.scope(threshold=self._threshold()).annotate(
             login_activity=Greatest("last_login", "date_joined")
         )
-        # Any pending row (manual or generated) excludes the user; one per user is a
-        # DB constraint.
         qs = qs.exclude(
             pk__in=UserOffboarding.objects.filter(status=OffboardingStatus.PENDING)
             .exclude(pk__in=withdrawn)
             .values("user")
         )
-        # A terminal generated row newer than the user's last login exempts them
-        # until they log in again: cancel is an exemption, a reactivated user is not
-        # re-expired the next hour, and a failed row is not retried in a loop.
+        # Canceled, completed or failed generated rows exempt the user until they
+        # log in again.
         terminal = UserOffboarding.objects.filter(
             user=OuterRef("pk"),
             rule__isnull=False,
@@ -279,7 +275,6 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         event.save()
         transports = list(self.notification_transports.all())
         if not transports:
-            # The task uses a transient local transport for in-app-only delivery.
             send_notification.send_with_options(
                 args=(None, event.pk, user.pk, NotificationSeverity.NOTICE),
                 rel_obj=self,
@@ -293,7 +288,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
     def _pending_due_at(
         self, row: UserOffboarding, *, in_scope: bool | None = None
     ) -> datetime | None:
-        """Re-evaluate an owned row without changing it, assuming the rule is enabled."""
+        """Due date for an owned row, or None if it should be withdrawn, assuming the rule
+        is enabled."""
         if in_scope is None:
             in_scope = self._in_scope(row.user)
         activity = getattr(row.user, "activity", None)
@@ -313,15 +309,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
     def reconcile_offboarding(
         self, row: UserOffboarding, *, in_scope: bool | None = None
     ) -> tuple[bool, bool]:
-        """Refresh a locked pending row owned by this rule.
-
-        Both the sweep and execution use this, so execution need not wait for a sweep
-        to pick up changed settings. Moving a deadline later is silent; moving it
-        earlier or changing the action requests another warning. The caller sends it
-        after releasing the row lock.
-
-        Returns whether the row was kept and whether another warning is needed.
-        """
+        """Refresh a locked pending row owned by this rule. Returns whether the row was
+        kept and whether the user needs another warning."""
         due_at = self._pending_due_at(row, in_scope=in_scope) if self.enabled else None
         if due_at is None:
             row.delete()
@@ -337,7 +326,6 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         return True, rewarn
 
     def _revisit_owned_rows(self):
-        """Reconcile only rows this rule still owns after acquiring the row lock."""
         rows = UserOffboarding.objects.filter(
             rule=self, status=OffboardingStatus.PENDING
         ).values_list("pk", "user_id")
@@ -362,7 +350,6 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                     self._warn(row.user, row)
 
     def _foreign_rows(self) -> QuerySet[UserOffboarding]:
-        """Generated pending rows eligible for this rule's tightening pass."""
         return (
             UserOffboarding.objects.filter(status=OffboardingStatus.PENDING, rule__isnull=False)
             .exclude(rule=self)
@@ -370,11 +357,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         )
 
     def preview_pending(self) -> Iterator[tuple[str, UserOffboarding, datetime | None]]:
-        """Preview changes to existing rows if enabled, without writing or warning.
-
-        Manual rows and terminal exemptions are never taken over. Like the sweep,
-        foreign rows are compared to their stored rank, not their owner's current settings.
-        """
+        """Changes to pending rows if this rule were enabled, without writing anything."""
         activity = Prefetch("user", queryset=User.objects.select_related("activity"))
         owned = UserOffboarding.objects.filter(rule=self, status=OffboardingStatus.PENDING)
         owned_rows = owned.order_by("user__username").prefetch_related(activity)
@@ -406,8 +389,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                     yield "taken_over", row, rank[0]
 
     def _tighten_foreign_rows(self):
-        """Take over other rules' pending rows that this rule outranks (see `rank`), and
-        warn the user again."""
+        """Take over other rules' pending rows that this rule outranks."""
         rows = self._foreign_rows().select_related("user", "user__activity")
         for batch in batched(rows.iterator(chunk_size=CHUNK_SIZE), CHUNK_SIZE, strict=False):
             eligible = self._eligible_user_ids([row.user_id for row in batch])
@@ -445,7 +427,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                         revoke_tokens=self.revoke_tokens,
                     )
             except IntegrityError:
-                # A manual offboarding was scheduled between selection and insert.
+                # Another offboarding was scheduled since selection.
                 continue
             self._warn(user, offboarding)
             created += 1

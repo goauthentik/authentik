@@ -143,9 +143,7 @@ class TestPreview(ExpirationTestCase):
 
     @freeze_time()
     def test_withdrawn_rows_are_excluded_before_counting_new_candidates(self):
-        # A missed withdrawal can remove and then recreate a row in the same sweep
-        # when activity still falls inside the edited rule's warning window. Use
-        # more rows than the sample limit to cover withdrawals outside the sample.
+        # More rows than PREVIEW_LIMIT, to cover withdrawals outside the sample.
         rows = []
         for _ in range(21):
             user = self._user()
