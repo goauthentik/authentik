@@ -17,12 +17,8 @@ from webauthn.authentication.generate_authentication_options import generate_aut
 from webauthn.authentication.verify_authentication_response import verify_authentication_response
 from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.exceptions import (
-    InvalidJSONStructure,
-    UnsupportedPublicKey,
-    WebAuthnException,
-)
 from webauthn.helpers.exceptions import UnsupportedAlgorithm as WebAuthnUnsupportedAlgorithm
+from webauthn.helpers.exceptions import UnsupportedPublicKey, WebAuthnException
 from webauthn.helpers.options_to_json_dict import options_to_json_dict
 from webauthn.helpers.structs import PublicKeyCredentialType, UserVerificationRequirement
 
@@ -233,7 +229,9 @@ def validate_challenge_webauthn(
         data.setdefault("type", PublicKeyCredentialType.PUBLIC_KEY)
     try:
         credential = parse_authentication_credential_json(data)
-    except InvalidJSONStructure as exc:
+    # py_webauthn wraps most decoding errors in InvalidAuthenticationResponse, but not those of
+    # userHandle, which raise ValueError
+    except (WebAuthnException, ValueError) as exc:
         LOGGER.warning("Invalid WebAuthn challenge response", exc=exc)
         raise ValidationError("Invalid device", "invalid") from None
 
