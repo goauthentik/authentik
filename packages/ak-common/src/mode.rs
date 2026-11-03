@@ -31,7 +31,7 @@ pub enum Mode {
     #[cfg(feature = "core")]
     Worker = 2,
     /// Running the proxy outpost.
-    #[cfg(feature = "proxy")]
+    #[cfg(feature = "outpost")]
     Proxy = 128,
 }
 
@@ -44,7 +44,7 @@ impl std::fmt::Display for Mode {
             Self::Server => write!(f, "server"),
             #[cfg(feature = "core")]
             Self::Worker => write!(f, "worker"),
-            #[cfg(feature = "proxy")]
+            #[cfg(feature = "outpost")]
             Self::Proxy => write!(f, "proxy"),
         }
     }
@@ -68,7 +68,7 @@ impl FromStr for Mode {
             "server" => Ok(Self::Server),
             #[cfg(feature = "core")]
             "worker" => Ok(Self::Worker),
-            #[cfg(feature = "proxy")]
+            #[cfg(feature = "outpost")]
             "proxy" => Ok(Self::Proxy),
             _ => Err(eyre!("Unknown mode")),
         }
@@ -85,7 +85,7 @@ impl Mode {
             1 => Self::Server,
             #[cfg(feature = "core")]
             2 => Self::Worker,
-            #[cfg(feature = "proxy")]
+            #[cfg(feature = "outpost")]
             128 => Self::Proxy,
             _ => unreachable!(),
         }
@@ -108,7 +108,7 @@ impl Mode {
             "server" => Self::Server,
             #[cfg(feature = "core")]
             "worker" => Self::Worker,
-            #[cfg(feature = "proxy")]
+            #[cfg(feature = "outpost")]
             "proxy" => Self::Proxy,
             _ => return Err(eyre!("Mode {mode} not supported")),
         };

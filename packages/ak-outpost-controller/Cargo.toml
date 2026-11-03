@@ -11,7 +11,7 @@ publish.workspace = true
 
 [dependencies]
 ak-client.workspace = true
-ak-common.workspace = true
+ak-common = { workspace = true, features = ["outpost"] }
 arc-swap.workspace = true
 axum.workspace = true
 eyre.workspace = true

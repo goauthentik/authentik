@@ -297,7 +297,7 @@ publish.workspace = true
 default = ["core", "proxy"]
 core = ["proxy", "ak-common/core", "dep:pyo3", "dep:sqlx"]
 proxy = [
-  "ak-common/proxy",
+  "ak-common/outpost",
   "dep:ak-client",
   "dep:jsonwebtoken",
   "dep:axum-extra",
