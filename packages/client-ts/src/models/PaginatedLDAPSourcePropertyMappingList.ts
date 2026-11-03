@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { LDAPSourcePropertyMapping } from "./LDAPSourcePropertyMapping";
+import type { LDAPSourcePropertyMapping } from "./LDAPSourcePropertyMapping.js";
 import {
     LDAPSourcePropertyMappingFromJSON,
     LDAPSourcePropertyMappingToJSON,
-} from "./LDAPSourcePropertyMapping";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./LDAPSourcePropertyMapping.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

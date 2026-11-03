@@ -23,9 +23,16 @@ class ObjectPermissions(DjangoObjectPermissions):
 
     @active_tracer().instrument()
     def has_permission(self, request: Request, view) -> bool:
-        """Always grant permission for object-specific requests
-        as view permission checking is done by `ObjectFilter`,
-        and write permission checking is done by `has_object_permission`"""
+        """Deny unauthenticated users, like `DjangoModelPermissions`. For authenticated users,
+        always grant permission for object-specific requests, as view permission checking
+        is done by `ObjectFilter`, and write permission checking is done by
+        `has_object_permission`"""
+        # Check this before the shortcuts below: `ObjectFilter` can't filter by `owner_field`
+        # for an anonymous user, and fails with a server error.
+        if not request.user or (
+            not request.user.is_authenticated and self.authenticated_users_only
+        ):
+            return False
         lookup = getattr(view, "lookup_url_kwarg", None) or getattr(view, "lookup_field", None)
         if lookup and lookup in view.kwargs:
             return True
@@ -69,7 +76,10 @@ def HasPermission(*perm: str) -> type[BasePermission]:
 
 
 def assign_initial_permissions(user: User, instance: Model):
-    # Performance here should not be an issue, but if needed, there are many optimization routes
+    # Cheap check first, as this runs for every object created in a request
+    content_type = ContentType.objects.get_for_model(instance)
+    if not InitialPermissions.objects.filter(permissions__content_type=content_type).exists():
+        return
     initial_permissions_list = InitialPermissions.objects.filter(role__in=user.all_roles())
     for initial_permissions in initial_permissions_list:
         for permission in initial_permissions.permissions.all():

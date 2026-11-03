@@ -52,8 +52,11 @@ class Agent(Actor):
         # An agent is a machine identity, not a login user: mark it as a service account
         # and disable password auth. It authenticates through its issued API token. By default
         # it MIRRORs its parent, so it can never exceed the access of the user it acts for.
+        name_prefix = "authentik:system"
+        if user:
+            name_prefix = user.username
         agent = cls.objects.create(
-            username=f"{user.username}-agent-{generate_id()}"[:USERNAME_MAX_LENGTH],
+            username=f"{name_prefix}-agent-{generate_id()}"[:USERNAME_MAX_LENGTH],
             name=name,
             parent=user,
             policy_behavior=policy_behavior,
@@ -62,8 +65,6 @@ class Agent(Actor):
             expiring=expiring,
             expires=expires,
         )
-        agent.set_unusable_password()
-        agent.save()
         if policy_behavior == ActorPolicyInheritance.COPY:
             agent.copy_parent_policy_bindings()
         return agent

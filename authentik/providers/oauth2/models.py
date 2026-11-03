@@ -62,6 +62,7 @@ from authentik.lib.models import (
     SerializerModel,
     SimpleThroughModel,
 )
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.policies.models import PolicyBindingModel
 from authentik.sources.oauth.models import OAuthSource
@@ -188,6 +189,8 @@ class JWTAlgorithms(models.TextChoices):
 
 class ScopeMapping(PropertyMapping):
     """Map an OAuth Scope to users properties"""
+
+    expression_allowed_types = [dict]
 
     scope_name = models.TextField(help_text=_("Scope used by the client"))
     description = models.TextField(
@@ -447,6 +450,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
+    @active_tracer().instrument()
     def encode(self, payload: dict[str, Any], jwt_type: str | None = None) -> str:
         """Represent the ID Token as a JSON Web Token (JWT).
 

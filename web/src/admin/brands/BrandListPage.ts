@@ -5,7 +5,10 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 import { aki } from "#common/api/client";
+import { globalAK } from "#common/global";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -16,12 +19,13 @@ import { BrandForm } from "#admin/brands/BrandForm";
 
 import { Brand, CoreApi, ModelEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
+import { msg, str } from "@lit/localize";
+import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
+    public static styles: CSSResult[] = [...super.styles, PFBanner];
     protected override searchEnabled = true;
     public override searchPlaceholder = msg("Search by domain or brand name...");
     public pageTitle = msg("Brands");
@@ -73,6 +77,21 @@ export class BrandListPage extends TablePage<Brand> {
                 ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
+    }
+
+    renderSectionBefore() {
+        // Double the delta to account for variance in multiple server instances
+        const delta = globalAK().config.cacheTimeoutBrands * 2;
+
+        const formatted = new Intl.DurationFormat("default", {
+            style: "long",
+        }).format({
+            seconds: delta,
+        });
+
+        return html`<div class="pf-c-banner pf-m-info">
+            ${msg(str`Changes to brands will take up to ${formatted} to become effective.`)}
+        </div>`;
     }
 
     protected override row(item: Brand): SlottedTemplateResult[] {

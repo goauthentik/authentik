@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON } from "./DeviceAccessGroup";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceAccessGroup } from "./DeviceAccessGroup.js";
+import { DeviceAccessGroupFromJSON } from "./DeviceAccessGroup.js";
 
 /**
  * @export

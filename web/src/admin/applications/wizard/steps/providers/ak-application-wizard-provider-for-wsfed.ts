@@ -19,12 +19,19 @@ export class ApplicationWizardProviderWSFedForm extends ApplicationWizardProvide
     protected hasSigningKp = false;
 
     @state()
+    protected hasEncryptionKp = false;
+
+    @state()
     protected signingKeyType: KeyTypeEnum | null = null;
 
     renderForm() {
         const setHasSigningKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
             this.hasSigningKp = !!detail.value;
             this.signingKeyType = detail.value?.keyType ?? KeyTypeEnum.Rsa;
+        };
+
+        const setHasEncryptionKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasEncryptionKp = !!detail.value;
         };
 
         return html`<h3 class="pf-c-wizard__main-title">${this.label}</h3>
@@ -35,6 +42,8 @@ export class ApplicationWizardProviderWSFedForm extends ApplicationWizardProvide
                     setHasSigningKp,
                     hasSigningKp: this.hasSigningKp,
                     signingKeyType: this.signingKeyType,
+                    setHasEncryptionKp,
+                    hasEncryptionKp: this.hasEncryptionKp,
                 })}
             </form>`;
     }

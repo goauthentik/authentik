@@ -76,7 +76,7 @@ a.pf-c-button {
             var(--ak-dark-background-lighter)
             var(--pf-c-button--m-control--after--BorderBottomColor)
             var(--ak-dark-background-lighter);
-        background-color: var(--ak-dark-background-light);
+        background-color: var(--pf-global--BackgroundColor--100);
         color: var(--ak-dark-foreground);
     }
 

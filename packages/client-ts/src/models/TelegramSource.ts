@@ -10,12 +10,15 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON } from "./ThemedUrls.js";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum.js";
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from "./UserMatchingModeEnum.js";
 
 /**
  * Source Serializer

@@ -5,6 +5,7 @@ from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import ModuleType
+from unittest import skipUnless
 from unittest.mock import patch
 
 from django.test import SimpleTestCase
@@ -19,6 +20,7 @@ def registry() -> list[dict]:
     return safe_load((REPO_ROOT / "locales.yaml").read_text())["locales"]
 
 
+@skipUnless((REPO_ROOT / "locales.yaml").exists(), "Requires the repository checkout")
 class TestLocales(SimpleTestCase):
     """Every catalog in locales.yaml must be where Django looks for it"""
 
@@ -88,6 +90,7 @@ msgstr "{target}"
 """
 
 
+@skipUnless((REPO_ROOT / "scripts" / "locales.py").exists(), "Requires the repository checkout")
 class TestLocalesScript(SimpleTestCase):
     """scripts/locales.py normalization, against a scratch tree"""
 

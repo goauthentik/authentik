@@ -8,6 +8,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 
 import { aki } from "#common/api/client";
 import { writeToClipboard } from "#common/clipboard";
+import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 
@@ -47,7 +48,7 @@ export class InvitationListLink extends AKElement {
             this.selectedFlow = this.invitation.flowObj?.slug;
         }
 
-        return `${window.location.protocol}//${window.location.host}/if/flow/${this.selectedFlow}/?itoken=${this.invitation?.pk}`;
+        return `${globalAK().api.base}if/flow/${this.selectedFlow}/?itoken=${this.invitation?.pk}`;
     }
 
     renderFlowSelector(): TemplateResult {

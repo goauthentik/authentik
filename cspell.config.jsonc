@@ -5,6 +5,7 @@
     "version": "0.2",
     "readonly": true,
     "language": "en-US",
+    "noSummary": false,
     // Only report words that are known misspellings (with a suggested fix) or
     // explicitly forbidden via `flagWords`. Unknown-but-plausible words — project
     // jargon, identifiers, integration names — pass silently, so new terms do not

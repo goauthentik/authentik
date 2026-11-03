@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { OutpostTypeEnum } from "./OutpostTypeEnum";
-import { OutpostTypeEnumFromJSON, OutpostTypeEnumToJSON } from "./OutpostTypeEnum";
+import type { OutpostTypeEnum } from "./OutpostTypeEnum.js";
+import { OutpostTypeEnumFromJSON, OutpostTypeEnumToJSON } from "./OutpostTypeEnum.js";
 
 /**
  * Outpost Serializer

@@ -12,6 +12,7 @@ import {
     availableHashes,
     DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
+    encryptionAlgorithmOptions,
     logoutMethodOptions,
     retrieveSignatureAlgorithm,
 } from "./SAMLProviderOptions.js";
@@ -30,6 +31,10 @@ import {
     AKAuthnContextClassRefMappingField,
     AKNameIDMappingField,
 } from "#admin/providers/components/saml-property-mapping-fields";
+import {
+    oauth2ProvidersProvider,
+    oauth2ProvidersSelector,
+} from "#admin/providers/oauth2/OAuth2ProvidersProvider";
 
 import {
     KeyTypeEnum,
@@ -122,6 +127,8 @@ export interface SAMLProviderFormProps {
     setHasSigningKp: (event: SearchSelectChangeEvent<CertificateKeyPair>) => void;
     hasSigningKp: boolean;
     signingKeyType: KeyTypeEnum | null;
+    setHasEncryptionKp: (event: SearchSelectChangeEvent<CertificateKeyPair>) => void;
+    hasEncryptionKp: boolean;
     setHasSlsUrl: (ev: Event) => void;
     hasSlsUrl: boolean;
     setSlsBinding: (ev: Event) => void;
@@ -136,6 +143,8 @@ export function renderForm({
     setHasSigningKp,
     hasSigningKp,
     signingKeyType,
+    setHasEncryptionKp,
+    hasEncryptionKp,
     setHasSlsUrl,
     hasSlsUrl,
     setSlsBinding,
@@ -243,11 +252,39 @@ export function renderForm({
                     label=${msg("Encryption Certificate")}
                     name="encryptionKp"
                 >
-                    ${AKCertificateSearch({ name: "encryptionKp", value: provider.encryptionKp, noKey: true, allowedKeyTypes: XMLSigningKeyTypes })}
+                    ${AKCertificateSearch({ name: "encryptionKp", value: provider.encryptionKp, noKey: true, allowedKeyTypes: XMLSigningKeyTypes, onChange: setHasEncryptionKp })}
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
                     </p>
                 </ak-form-element-horizontal>
+                ${
+                    hasEncryptionKp
+                        ? html`<ak-form-element-horizontal
+                              label=${msg("Encryption algorithm")}
+                              required
+                              name="encryptionAlgorithm"
+                          >
+                              <select class="pf-c-form-control">
+                                  ${encryptionAlgorithmOptions.map(
+                                      (opt) => html`
+                                          <option
+                                              value=${opt.value}
+                                              ?selected=${
+                                                  provider?.encryptionAlgorithm === opt.value ||
+                                                  (!provider?.encryptionAlgorithm && opt.default)
+                                              }
+                                          >
+                                              ${opt.label}
+                                          </option>
+                                      `,
+                                  )}
+                              </select>
+                              <p class="pf-c-form__helper-text">
+                                  ${msg("Block cipher used to encrypt the assertion.")}
+                              </p>
+                          </ak-form-element-horizontal>`
+                        : nothing
+                }
                 <ak-form-element-horizontal
                     label=${msg("Property mappings")}
                     name="propertyMappings"
@@ -430,6 +467,27 @@ export function renderForm({
                             `;
                         })}
                     </select>
+                </ak-form-element-horizontal>
+            </div>
+        </ak-form-group>
+
+        <ak-form-group label="${msg("Machine-to-Machine authentication settings")}">
+            <div class="pf-c-form">
+                <ak-form-element-horizontal
+                    label=${msg("Federated OAuth2/OpenID Providers")}
+                    name="jwtFederationProviders"
+                >
+                    <ak-dual-select-dynamic-selected
+                        .provider=${oauth2ProvidersProvider}
+                        .selector=${oauth2ProvidersSelector(provider.jwtFederationProviders)}
+                        available-label=${msg("Available Providers")}
+                        selected-label=${msg("Selected Providers")}
+                    ></ak-dual-select-dynamic-selected>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Selected providers can exchange their JWTs for a SAML Response of this provider via token exchange.",
+                        )}
+                    </p>
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>`;
