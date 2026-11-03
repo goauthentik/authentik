@@ -131,6 +131,25 @@ You can assign the permission in one of two ways:
 - **Object permission** _(recommended)_: Open the LDAP provider's **Permissions** tab, click **Assign Role Object Permission**, select the role, enable **Search full LDAP directory**, and click **Assign Role Object Permission**. This permission applies only to that LDAP provider.
 - **Global permission**: Open the role's **Permissions** tab and assign **Search full LDAP directory** under **Assigned global permissions**. This permission applies to every LDAP provider, but the user still needs access to each provider's application. For detailed instructions, see [Manage permissions](../../../users-sources/access-control/manage_permissions.mdx#assign-or-remove-permissions-for-a-specific-role).
 
+### Limit search to users with application access
+
+By default, the application's bindings only control who can bind. A user with the **Search full LDAP directory** permission can retrieve every user and group in authentik, regardless of the application's bindings.
+
+To expose only the users who have access to the application, enable **Limit search to users with application access** on the LDAP provider. Searches then return:
+
+- Users who pass the application's bindings. If the LDAP provider is a backchannel provider, the bindings of the application it is a backchannel provider for are used.
+- Groups that at least one of those users is a member of, including their parent groups.
+
+Group members, parent groups, and child groups that aren't visible are removed from the results.
+
+Keep the following in mind when you enable this setting:
+
+- Applications that synchronize users from LDAP may disable or delete their local accounts for users who are no longer returned. Review the application's bindings before you enable the setting.
+- User and group bindings are evaluated in the database and are fast. Policy bindings are evaluated for every user, which can be slow for large directories, especially with [direct search](#direct-search).
+- Policy bindings are evaluated without the user's login context. Policies that depend on the client's IP address, location, or the time of the request may give different results than when the user logs in.
+- The setting only applies to users with the **Search full LDAP directory** permission. Users without it can already only see themselves.
+- The outpost must run a version that supports this setting. Older outposts ignore it.
+
 ### Search modes
 
 The LDAP provider supports two different search modes:

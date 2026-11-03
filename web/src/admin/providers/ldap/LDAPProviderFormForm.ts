@@ -14,6 +14,7 @@ import {
     bindModeOptions,
     cryptoCertificateHelp,
     gidStartNumberHelp,
+    limitSearchToApplicationAccessHelp,
     mfaSupportHelp,
     searchModeOptions,
     tlsServerNameHelp,
@@ -81,6 +82,14 @@ export function renderForm({ provider, errors = {}, brand }: LDAPProviderFormPro
             label=${msg("Code-based MFA Support")}
             ?checked=${provider.mfaSupport ?? true}
             help=${mfaSupportHelp}
+        >
+        </ak-switch-input>
+
+        <ak-switch-input
+            name="limitSearchToApplicationAccess"
+            label=${msg("Limit search to users with application access")}
+            ?checked=${provider.limitSearchToApplicationAccess ?? false}
+            help=${limitSearchToApplicationAccessHelp}
         >
         </ak-switch-input>
 

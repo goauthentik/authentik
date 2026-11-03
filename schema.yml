@@ -11293,6 +11293,38 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/ldap/{id}/search_visibility/:
+    get:
+      operationId: outposts_ldap_search_visibility
+      description: |-
+        Users and groups visible through this provider when
+        `limit_search_to_application_access` is enabled.
+
+        Users are those that pass the application's policy bindings. Groups are those
+        that any visible user is a member of, including their ancestors, so that no
+        group entry references a parent that isn't visible.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this LDAP Provider.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPSearchVisibility'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /outposts/proxy/:
     get:
       operationId: outposts_proxy_list
@@ -44295,6 +44327,11 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+        limit_search_to_application_access:
+          type: boolean
+          description: When enabled, searches only return users who have access to
+            the application according to its policy bindings, and the groups those
+            users are members of.
       required:
       - application_slug
       - bind_flow_slug
@@ -44406,6 +44443,11 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+        limit_search_to_application_access:
+          type: boolean
+          description: When enabled, searches only return users who have access to
+            the application according to its policy bindings, and the groups those
+            users are members of.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -44482,10 +44524,32 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+        limit_search_to_application_access:
+          type: boolean
+          description: When enabled, searches only return users who have access to
+            the application according to its policy bindings, and the groups those
+            users are members of.
       required:
       - authorization_flow
       - invalidation_flow
       - name
+    LDAPSearchVisibility:
+      type: object
+      description: Primary keys of the users and groups an LDAP provider exposes to
+        searches
+      properties:
+        users:
+          type: array
+          items:
+            type: integer
+        groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - groups
+      - users
     LDAPSource:
       type: object
       description: LDAP Source Serializer
@@ -52199,6 +52263,11 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+        limit_search_to_application_access:
+          type: boolean
+          description: When enabled, searches only return users who have access to
+            the application according to its policy bindings, and the groups those
+            users are members of.
     PatchedLDAPSourcePropertyMappingRequest:
       type: object
       description: LDAP PropertyMapping Serializer

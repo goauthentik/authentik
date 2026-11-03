@@ -8,7 +8,15 @@ from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, ListField, SerializerMethodField
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    IntegerField,
+    ListField,
+    SerializerMethodField,
+    UUIDField,
+)
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -18,10 +26,10 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.apps import AppAccessWithoutBindings
-from authentik.core.models import Application
+from authentik.core.models import Application, Group, User
 from authentik.crypto.validators import TLS_KEY_TYPES, KeyTypeValidator
 from authentik.policies.api.exec import PolicyTestResultSerializer
-from authentik.policies.engine import PolicyEngine
+from authentik.policies.engine import FilterPolicyEngine, PolicyEngine
 from authentik.policies.types import PolicyResult
 from authentik.providers.ldap.models import LDAPProvider
 
@@ -43,6 +51,7 @@ class LDAPProviderSerializer(ProviderSerializer):
             "search_mode",
             "bind_mode",
             "mfa_support",
+            "limit_search_to_application_access",
         ]
         extra_kwargs = {
             **ProviderSerializer.Meta.extra_write_kwargs,
@@ -126,6 +135,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "search_mode",
             "bind_mode",
             "mfa_support",
+            "limit_search_to_application_access",
         ]
 
 
@@ -170,6 +180,47 @@ class LDAPOutpostConfigViewSet(ListModelMixin, GenericViewSet):
                     or request.user.has_perm("authentik_providers_ldap.search_full_directory")
                 ),
                 "access": access_response,
+            }
+        )
+        return Response(response.data)
+
+    class LDAPSearchVisibilitySerializer(PassiveSerializer):
+        """Primary keys of the users and groups an LDAP provider exposes to searches"""
+
+        users = ListField(child=IntegerField())
+        groups = ListField(child=UUIDField())
+
+    @extend_schema(
+        request=None,
+        responses={
+            200: LDAPSearchVisibilitySerializer(),
+        },
+        operation_id="outposts_ldap_search_visibility",
+    )
+    @action(detail=True)
+    def search_visibility(self, request: Request, pk) -> Response:
+        """Users and groups visible through this provider when
+        `limit_search_to_application_access` is enabled.
+
+        Users are those that pass the application's policy bindings. Groups are those
+        that any visible user is a member of, including their ancestors, so that no
+        group entry references a parent that isn't visible."""
+        provider: LDAPProvider = self.get_object()
+        if not request.user.has_perms(("authentik_core.view_user", "authentik_core.view_group")):
+            raise PermissionDenied()
+        application = provider.access_application
+        users = User.objects.all().exclude_anonymous()
+        if application:
+            engine = FilterPolicyEngine(application, users)
+            engine.empty_result = AppAccessWithoutBindings.get()
+            users = engine.build().result
+        else:
+            users = users.none()
+        groups = Group.objects.filter(users__in=users).with_ancestors()
+        response = self.LDAPSearchVisibilitySerializer(
+            instance={
+                "users": sorted(users.values_list("pk", flat=True)),
+                "groups": sorted(groups.values_list("pk", flat=True)),
             }
         )
         return Response(response.data)

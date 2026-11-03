@@ -38,6 +38,16 @@ type memDirectory struct {
 	groups     []api.Group
 	failUsers  bool
 	failGroups bool
+
+	// visibility is served by the search_visibility endpoint; nil answers
+	// with a server error.
+	visibility *api.LDAPSearchVisibility
+}
+
+func (d *memDirectory) setVisibility(v *api.LDAPSearchVisibility) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.visibility = v
 }
 
 func (d *memDirectory) set(users []api.User, groups []api.Group) {
@@ -182,6 +192,19 @@ func memNewAPIClient(t *testing.T, dir *memDirectory) (*api.APIClient, func()) {
 			Autocomplete: map[string]interface{}{},
 		}); err != nil {
 			t.Errorf("failed to encode groups: %v", err)
+		}
+	})
+	mux.HandleFunc("/api/v3/outposts/ldap/", func(w http.ResponseWriter, r *http.Request) {
+		dir.mu.Lock()
+		visibility := dir.visibility
+		dir.mu.Unlock()
+		if visibility == nil {
+			http.Error(w, "unavailable", http.StatusServiceUnavailable)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(visibility); err != nil {
+			t.Errorf("failed to encode visibility: %v", err)
 		}
 	})
 	srv := httptest.NewServer(mux)
@@ -402,4 +425,113 @@ func TestMemorySearcherFirstFetchError(t *testing.T) {
 		Name:   "memberOf",
 		Values: []string{pi.GetGroupDN("x")},
 	})
+}
+
+func memSubtreeSearch(t *testing.T, searcher *memory.MemorySearcher, bindDN string) map[string]*ldap.Entry {
+	t.Helper()
+	client, server := net.Pipe()
+	defer func() {
+		_ = client.Close()
+		_ = server.Close()
+	}()
+	req, span := search.NewRequest(bindDN, ldap.SearchRequest{
+		BaseDN: memTestBaseDN,
+		Scope:  ldap.ScopeWholeSubtree,
+		Filter: "(objectClass=*)",
+	}, client)
+	defer span.Finish()
+	res, err := searcher.Search(req)
+	if err != nil {
+		t.Fatalf("search failed: %v", err)
+	}
+	entries := map[string]*ldap.Entry{}
+	for _, e := range res.Entries {
+		entries[e.DN] = e
+	}
+	return entries
+}
+
+// memLimitedDirectory has alice in group x and bob in group y, with only
+// alice and group x visible.
+func memLimitedDirectory() *memDirectory {
+	groupX := memPartialGroup(memTestGroupXPk, 10, "x")
+	groupY := memPartialGroup(memTestGroupYPk, 11, "y")
+	bob := memAliceUser([]api.PartialGroup{groupX, groupY})
+	bob.Pk = 2
+	bob.Username = "bob"
+	bobPartial := memAlicePartial()
+	bobPartial.Pk = 2
+	bobPartial.Username = "bob"
+
+	dir := &memDirectory{}
+	dir.set(
+		[]api.User{memAliceUser([]api.PartialGroup{groupX}), bob},
+		[]api.Group{
+			memGroup(memTestGroupXPk, 10, "x", []api.PartialUser{memAlicePartial(), bobPartial}),
+			memGroup(memTestGroupYPk, 11, "y", []api.PartialUser{bobPartial}),
+		},
+	)
+	dir.setVisibility(&api.LDAPSearchVisibility{
+		Users:  []int32{1},
+		Groups: []string{memTestGroupXPk},
+	})
+	return dir
+}
+
+// TestMemorySearcherLimitSearchToApplicationAccess pins that a provider
+// limiting search to application access hides users and groups that aren't
+// visible, including from the member lists of visible groups.
+func TestMemorySearcherLimitSearchToApplicationAccess(t *testing.T) {
+	dir := memLimitedDirectory()
+	client, closeServer := memNewAPIClient(t, dir)
+	defer closeServer()
+
+	pi := memProviderInstance(client)
+	pi.limitSearchToApplicationAccess = true
+	pi.SetFlags(memTestAliceDN, &flags.UserFlags{UserPk: 1, CanSearch: true})
+
+	entries := memSubtreeSearch(t, memory.NewMemorySearcher(pi, nil), memTestAliceDN)
+	assert.Contains(t, entries, memTestAliceDN)
+	assert.NotContains(t, entries, pi.GetUserDN("bob"))
+	assert.NotContains(t, entries, pi.GetGroupDN("y"))
+	assert.NotContains(t, entries, pi.GetVirtualGroupDN("bob"))
+	if assert.Contains(t, entries, pi.GetGroupDN("x")) {
+		memAssertAttribute(t, entries[pi.GetGroupDN("x")].Attributes, &ldap.EntryAttribute{
+			Name:   "member",
+			Values: []string{memTestAliceDN},
+		})
+	}
+}
+
+// TestMemorySearcherLimitSearchDisabled pins that the visibility list is
+// ignored unless the provider enables the setting.
+func TestMemorySearcherLimitSearchDisabled(t *testing.T) {
+	dir := memLimitedDirectory()
+	client, closeServer := memNewAPIClient(t, dir)
+	defer closeServer()
+
+	pi := memProviderInstance(client)
+	pi.SetFlags(memTestAliceDN, &flags.UserFlags{UserPk: 1, CanSearch: true})
+
+	entries := memSubtreeSearch(t, memory.NewMemorySearcher(pi, nil), memTestAliceDN)
+	assert.Contains(t, entries, pi.GetUserDN("bob"))
+	assert.Contains(t, entries, pi.GetGroupDN("y"))
+}
+
+// TestMemorySearcherLimitSearchFailsClosed pins that if the visible set can't
+// be fetched, nothing is served instead of the unfiltered directory.
+func TestMemorySearcherLimitSearchFailsClosed(t *testing.T) {
+	dir := memLimitedDirectory()
+	dir.setVisibility(nil)
+	client, closeServer := memNewAPIClient(t, dir)
+	defer closeServer()
+
+	pi := memProviderInstance(client)
+	pi.limitSearchToApplicationAccess = true
+	pi.SetFlags(memTestAliceDN, &flags.UserFlags{UserPk: 1, CanSearch: true})
+
+	entries := memSubtreeSearch(t, memory.NewMemorySearcher(pi, nil), memTestAliceDN)
+	assert.NotContains(t, entries, memTestAliceDN)
+	assert.NotContains(t, entries, pi.GetUserDN("bob"))
+	assert.NotContains(t, entries, pi.GetGroupDN("x"))
 }

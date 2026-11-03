@@ -7,7 +7,7 @@ from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import BackchannelProvider
+from authentik.core.models import Application, BackchannelProvider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import OutpostModel
 
@@ -70,6 +70,22 @@ class LDAPProvider(OutpostModel, BackchannelProvider):
             "a password may incorrectly be rejected if it contains a semicolon."
         ),
     )
+
+    limit_search_to_application_access = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, searches only return users who have access to the application "
+            "according to its policy bindings, and the groups those users are members of."
+        ),
+    )
+
+    @property
+    def access_application(self) -> Application | None:
+        """Application whose policy bindings decide access to this provider.
+        Prioritize the backchannel application, matching the outpost's bind access check."""
+        if self.backchannel_application:
+            return self.backchannel_application
+        return getattr(self, "application", None)
 
     @property
     def launch_url(self) -> str | None:
