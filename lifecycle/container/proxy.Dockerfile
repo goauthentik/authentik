@@ -21,7 +21,7 @@ COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.5-trixie@sha256:4ee9ffa999b4583ce281939cdff828763083610292f252279a0cee77473bd9a7 AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.10-trixie@sha256:a050dcceee6eb9bf110151662dfac7662f3bec40927c7dee48731e3d92083d42 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
