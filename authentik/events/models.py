@@ -107,6 +107,8 @@ class EventAction(models.TextChoices):
     USER_OFFBOARDED = "user_offboarded"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
+    AUTHENTICATOR_LOCKED = "authenticator_locked"  # noqa # nosec
+    AUTHENTICATOR_UNLOCKED = "authenticator_unlocked"  # noqa # nosec
 
     REQUIRED_ACTION_COMPLETED = "required_action_completed"
 

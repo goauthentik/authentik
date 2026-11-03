@@ -22,7 +22,7 @@
         "lint:catalogs": "node ./scripts/node/lint-catalogs.ts",
         "lint:check": "oxlint --max-warnings=0 scripts/node *.config.ts *.json *.jsonc",
         "lint:runtime": "node ./scripts/node/lint-runtime.ts",
-        "lint:spellcheck": "cspell . --config cspell.config.jsonc"
+        "lint:spellcheck": "cspell . --config cspell.config.jsonc --no-progress"
     },
     "dependencies": {
         "@goauthentik/docusaurus-config": "workspace:*",
