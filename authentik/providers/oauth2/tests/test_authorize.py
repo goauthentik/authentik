@@ -10,6 +10,8 @@ from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
+    PROMPT_CONSENT,
+    PROMPT_LOGIN,
     SCOPE_BOUND_KEY,
     SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
@@ -949,6 +951,35 @@ class TestAuthorize(OAuthTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn(auth_flow.slug, response.url)
         self.assertNotIn(global_auth.slug, response.url)
+
+    def test_max_age_zero_forces_login(self):
+        """max_age=0 is equivalent to prompt=login (OIDC Core 3.1.2.1)"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        for query, prompt in (
+            ({"max_age": "0"}, {PROMPT_LOGIN}),
+            ({"max_age": "0", "prompt": "consent"}, {PROMPT_LOGIN, PROMPT_CONSENT}),
+            ({"max_age": "60"}, set()),
+            ({}, set()),
+        ):
+            with self.subTest(query=query):
+                request = self.factory.get(
+                    "/",
+                    data={
+                        "response_type": "code",
+                        "client_id": "test",
+                        "redirect_uri": "http://local.invalid/Foo",
+                        **query,
+                    },
+                )
+                params = OAuthAuthorizationParams.from_request(request)
+                self.assertEqual(params.prompt, prompt)
 
     @apply_blueprint("default/flow-default-authentication-flow.yaml")
     def test_login_hint(self):

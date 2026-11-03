@@ -131,6 +131,10 @@ class OAuthAuthorizationParams:
         response_mode = query_dict.get("response_mode", False)
 
         max_age = query_dict.get("max_age")
+        prompt = ALLOWED_PROMPT_PARAMS.intersection(set(query_dict.get("prompt", "").split()))
+        if max_age is not None and max_age.isdigit() and int(max_age) == 0:
+            # OIDC Core 3.1.2.1: max_age=0 is equivalent to prompt=login
+            prompt.add(PROMPT_LOGIN)
         dpop_jkt = query_dict.get("dpop_jkt")
         return OAuthAuthorizationParams(
             client_id=query_dict.get("client_id", ""),
@@ -141,7 +145,7 @@ class OAuthAuthorizationParams:
             scope=set(query_dict.get("scope", "").split()),
             state=state,
             nonce=query_dict.get("nonce"),
-            prompt=ALLOWED_PROMPT_PARAMS.intersection(set(query_dict.get("prompt", "").split())),
+            prompt=prompt,
             request=query_dict.get("request", None),
             max_age=int(max_age) if max_age else None,
             code_challenge=query_dict.get("code_challenge"),
