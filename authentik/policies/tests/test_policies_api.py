@@ -93,6 +93,22 @@ class TestPoliciesAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(loads(response.content.decode())["passing"])
 
+    def test_test_call_base_global_perms(self):
+        """Test Policy's test endpoint with global permissions on the base model"""
+        policy = ExpressionPolicy.objects.create(name=generate_id(), expression="return True")
+        user = create_test_user()
+        user.assign_perms_to_managed_role("authentik_core.view_user", user)
+        user.assign_perms_to_managed_role(
+            ["authentik_policies.view_policy", "authentik_policies.add_policy"]
+        )
+        self.client.force_login(user)
+        response = self.client.post(
+            reverse("authentik_api:policy-test", kwargs={"pk": policy.pk}),
+            data={"user": user.pk},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(loads(response.content.decode())["passing"])
+
     def test_test_call_subclass_denied(self):
         """Test Policy's test endpoint without permissions"""
         policy = ExpressionPolicy.objects.create(name=generate_id(), expression="return True")
