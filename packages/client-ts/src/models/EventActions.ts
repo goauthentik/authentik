@@ -29,7 +29,6 @@ export const EventActions = {
     SecretRotate: "secret_rotate",
     InvitationUsed: "invitation_used",
     AuthorizeApplication: "authorize_application",
-    TokenRefresh: "token_refresh",
     SourceLinked: "source_linked",
     ImpersonationStarted: "impersonation_started",
     ImpersonationEnded: "impersonation_ended",

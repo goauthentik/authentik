@@ -41546,7 +41546,6 @@ components:
       - secret_rotate
       - invitation_used
       - authorize_application
-      - token_refresh
       - source_linked
       - impersonation_started
       - impersonation_ended
