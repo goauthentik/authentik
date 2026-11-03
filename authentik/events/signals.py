@@ -11,7 +11,7 @@ from django.http import HttpRequest
 from rest_framework.request import Request
 
 from authentik.admin.utils import get_system_settings
-from authentik.core.models import AuthenticatedSession, User
+from authentik.core.models import AuthenticatedSession, User, UserActivity
 from authentik.core.signals import login_failed, password_changed, password_hash_changed
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
@@ -149,3 +149,16 @@ def event_user_pre_delete_cleanup(sender, instance: User, **_):
 
     if get_system_settings().gdpr_compliance:
         gdpr_cleanup.send(instance.pk)
+
+
+@receiver(post_save, sender=Event)
+def event_post_save_activity(sender, instance: Event, created: bool, raw: bool = False, **_):
+    """Credit the finalized event identity, never nested impersonation identities."""
+    if (
+        raw
+        or not created
+        or instance.action not in (EventAction.LOGIN, EventAction.AUTHORIZE_APPLICATION)
+    ):
+        return
+    if isinstance(instance.user, dict):
+        UserActivity.objects.record(instance.user.get("pk"), instance.created)
