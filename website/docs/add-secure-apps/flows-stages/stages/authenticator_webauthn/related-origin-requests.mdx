@@ -1,0 +1,49 @@
+---
+title: Share passkeys across brands (Related Origin Requests)
+authentik_version: "2026.11"
+---
+
+By default, authentik derives the WebAuthn Relying Party ID (RP ID) and the expected origin from the host of the incoming request. Every [brand](../../../../customize/branding/index.mdx) served on its own domain is therefore its own credential silo: a passkey registered on `auth.example.com` cannot be used on `auth.example.net`, even when both brands run on the same authentik instance.
+
+A **WebAuthn RP config** removes this limitation using [Related Origin Requests](https://www.w3.org/TR/webauthn-3/#sctn-related-origins) (WebAuthn Level 3): all brands that share one RP config send the same fixed RP ID, and browsers authorize the participating origins through a document served at `https://<RP ID>/.well-known/webauthn`.
+
+## How it works
+
+1. A user starts a WebAuthn ceremony (registration or authentication) on a brand with an assigned RP config. authentik sends the config's RP ID instead of the request host.
+2. If the page's origin does not match the RP ID, the browser fetches `https://<RP ID>/.well-known/webauthn` and only continues when the page's origin is listed there. authentik serves this document automatically when the RP ID's host is routed to authentik; the origins listed are the config's `https://` origins.
+3. authentik verifies the response against the config's RP ID and its explicit list of allowed origins.
+
+Brands without an RP config keep the default behavior; the feature is fully opt-in.
+
+## Configuration
+
+1. Create a WebAuthn RP config under **System** > **WebAuthn RP Configs**:
+    - **RP ID**: the domain credentials are bound to, typically the domain of your primary brand (for example `auth.example.com`). The RP ID cannot be changed after creation, because all registered credentials would be invalidated.
+    - **Allowed origins**: the exact origins allowed to perform WebAuthn ceremonies for this RP ID, one per line, for example `https://auth.example.com` and `https://auth.example.net`. Android app origins in the form `android:apk-key-hash:<hash>` are also supported. Wildcards are not supported.
+2. Assign the config to each participating brand under **System** > **Brands** > **Other global settings** > **WebAuthn RP Config**.
+
+If the RP ID's host is not served by authentik, host the well-known document yourself on that host at `/.well-known/webauthn`, with this structure:
+
+```json
+{
+    "origins": ["https://auth.example.com", "https://auth.example.net"]
+}
+```
+
+## Assigning a config to a brand with existing credentials
+
+WebAuthn credentials are bound to the RP ID that was used when they were registered. Assigning an RP config to a brand whose users already registered credentials under the brand's own domain makes those credentials unusable on that brand; affected users must re-register their devices.
+
+authentik blocks assigning, switching, or re-scoping an RP config (including changing the domain or default flag of a brand that has one) while users exist whose only authenticator is a WebAuthn device registered under an RP ID the brand previously served, because they would be locked out without a self-service recovery path. The check is intentionally conservative: it may also count users whose devices belong to a more specific sibling brand. Before adopting a shared RP ID on an existing brand, make sure affected users have a fallback authenticator (for example TOTP) or have re-registered their devices, and keep a fallback device class allowed in your [Authenticator Validation stage](../authenticator_validate/index.mdx).
+
+## Requirements and limitations
+
+- Browsers must support Related Origin Requests: Chrome/Edge 128+, Safari 18+, and Firefox 152+. On older browsers, WebAuthn ceremonies on origins other than the RP ID fail with a `SecurityError`.
+- Some passkey providers do not support Related Origin Requests and will not offer stored passkeys on related origins.
+- Browsers are only required to support origins spanning 5 distinct registrable-domain labels (for example, `example.com` and `example.co.uk` count as one label each: `example`).
+- Passkey prompts display the RP ID's domain, not the domain of the brand the user is signing in on.
+- When authentik is deployed under a sub-path (`web.path`), the document is served under that prefix. Browsers only fetch `/.well-known/webauthn` from the domain root, so configure your reverse proxy to expose it there.
+
+## Security considerations
+
+Every origin in the allowed origins list can run full WebAuthn ceremonies for the shared RP ID. A forgotten or expired domain that remains in the list (or an origin taken over by a third party) compromises passkey authentication for all brands sharing the config. Keep the list minimal and review it when domains are decommissioned.

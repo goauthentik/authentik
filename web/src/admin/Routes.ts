@@ -187,6 +187,15 @@ export const ROUTES: RouteLike[] = [
         },
         "brands",
     ),
+    new Route(
+        "/core/webauthn-rp-configs",
+        async () => {
+            await import("#admin/stages/authenticator_webauthn/WebAuthnRPConfigListPage");
+
+            return html`<ak-stage-authenticator-webauthn-rp-config-list></ak-stage-authenticator-webauthn-rp-config-list>`;
+        },
+        "webauthn-rp-configs",
+    ),
 
     new Route(
         "/policy/policies",

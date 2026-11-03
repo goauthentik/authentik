@@ -453,6 +453,7 @@ export interface CoreBrandsListRequest {
      */
     search?: string;
     webCertificate?: string;
+    webauthnRpConfig?: string;
 }
 
 export interface CoreBrandsPartialUpdateRequest {
@@ -2912,6 +2913,10 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["webCertificate"] != null) {
             queryParameters["web_certificate"] = requestParameters["webCertificate"];
+        }
+
+        if (requestParameters["webauthnRpConfig"] != null) {
+            queryParameters["webauthn_rp_config"] = requestParameters["webauthnRpConfig"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

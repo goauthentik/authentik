@@ -55,6 +55,11 @@ export interface PatchedBrandRequest {
      * Certificates used for client authentication.
      */
     clientCertificates?: Array<string>;
+    /**
+     * WebAuthn RP config used for all WebAuthn ceremonies on this brand. When unset, the RP ID and
+     * origin are derived from the request.
+     */
+    webauthnRpConfig?: string | null;
     attributes?: { [key: string]: any };
 }
 
@@ -158,6 +163,12 @@ export function PatchedBrandRequestFromJSONTyped(
                   : json["web_certificate"],
         clientCertificates:
             json["client_certificates"] == null ? undefined : json["client_certificates"],
+        webauthnRpConfig:
+            json["webauthn_rp_config"] === undefined
+                ? undefined
+                : json["webauthn_rp_config"] === null
+                  ? null
+                  : json["webauthn_rp_config"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
@@ -195,6 +206,7 @@ export function PatchedBrandRequestToJSONTyped(
         default_application: value["defaultApplication"],
         web_certificate: value["webCertificate"],
         client_certificates: value["clientCertificates"],
+        webauthn_rp_config: value["webauthnRpConfig"],
         attributes: value["attributes"],
     };
 }
