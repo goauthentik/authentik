@@ -91,6 +91,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
                 subject=_(stage.subject),
                 to=[(pending_user.name, email)],
                 language=pending_user.locale(self.request),
+                brand_title=self.request.brand.branding_title,
                 template_name=stage.template,
                 template_context={
                     "user": pending_user,

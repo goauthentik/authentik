@@ -624,6 +624,9 @@ class NotificationTransport(TasksModel, SerializerModel):
             subject=self.email_subject_prefix + context["title"],
             to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
+            brand_title=(notification.event.brand if notification.event else {}).get(
+                "branding_title"
+            ),
             template_name=self.email_template,
             template_context=context,
         )

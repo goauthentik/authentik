@@ -59,6 +59,51 @@ class TestEmailStage(APIFlowTestCase):
         "authentik.stages.email.models.EmailStage.backend_class",
         PropertyMock(return_value=EmailBackend),
     )
+    def test_brand_title_in_recovery_mail(self):
+        """Test the mail names the brand instead of authentik"""
+        Brand.objects.create(domain="testserver", branding_title="Example Corp")
+        self.stage.template = "email/password_reset.html"
+        self.stage.save()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(mail.outbox), 1)
+        html = mail.outbox[0].alternatives[0][0]
+        self.assertIn("for your Example Corp account", html)
+        self.assertIn('alt="Example Corp logo"', html)
+        self.assertNotIn("your authentik account", html)
+        self.assertIn("for your Example Corp account", mail.outbox[0].body)
+
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_brand_title_default(self):
+        """Test the mail keeps saying authentik with the default brand"""
+        self.stage.template = "email/password_reset.html"
+        self.stage.save()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        self.client.get(url)
+
+        self.assertIn("for your authentik account", mail.outbox[0].alternatives[0][0])
+
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_rendering_locale(self):
         """Test with pending user"""
         self.user.attributes = {"settings": {"locale": "de"}}
