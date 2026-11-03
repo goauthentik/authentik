@@ -50,13 +50,13 @@
         "out/**/*"
     ],
     "engines": {
-        "node": ">=24",
+        "node": "^24.22.1 || >=26.12.1",
         "npm": ">=11.10.1"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
-            "version": ">=24",
+            "version": "^24.22.1 || >=26.12.1",
             "onFail": "ignore"
         },
         "packageManager": {
