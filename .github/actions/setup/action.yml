@@ -101,6 +101,9 @@ runs:
         cache-dependency-path: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
       if: ${{ contains(inputs.dependencies, 'runtime') }}
+      # The post step `docker save`s every new image, but digest-pinned images (e2e,
+      # kind) list without a tag and fail. Jobs share the key, so another job saves it.
+      continue-on-error: true
       uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
       with:
         key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
