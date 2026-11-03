@@ -114,11 +114,7 @@ class OAuthCallback(OAuthClientMixin, View):
         LOGGER.warning("Authentication Failure", reason=reason)
         messages.error(
             self.request,
-            _("Authentication failed: {reason}").format_map(
-                {
-                    "reason": reason,
-                }
-            ),
+            _("Authentication failed: {reason}").format(reason=reason),
         )
         return redirect(self.get_error_redirect(self.source, reason))
 

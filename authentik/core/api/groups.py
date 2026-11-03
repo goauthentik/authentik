@@ -255,7 +255,7 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
                     _(
                         "User does not have permission to set "
                         "superuser status to {superuser_status}."
-                    ).format_map({"superuser_status": superuser})
+                    ).format(superuser_status=superuser)
                 )
         return superuser
 

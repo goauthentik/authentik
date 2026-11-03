@@ -156,7 +156,7 @@ class WSFedFlowFinalView(ChallengeStageView):
                 "component": "ak-stage-autosubmit",
                 "title": self.executor.plan.context.get(
                     PLAN_CONTEXT_TITLE,
-                    _("Redirecting to {app}...").format_map({"app": application.name}),
+                    _("Redirecting to {app}...").format(app=application.name),
                 ),
                 "url": sign_in_req.wreply,
                 "attrs": response,
