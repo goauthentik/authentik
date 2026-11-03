@@ -3,16 +3,16 @@
 from collections.abc import Generator
 from typing import Any
 
-from django.db import transaction
 from django.db.models import Q
 from ldap3 import SUBTREE
 from ldap3.utils.conv import escape_filter_chars
 
-from authentik.core.models import Group, User, UserGroup
+from authentik.core.models import Group
 from authentik.sources.ldap.models import (
     LDAP_DISTINGUISHED_NAME,
     GroupLDAPSourceConnection,
     LDAPSource,
+    UserLDAPSourceConnection,
 )
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.tasks.models import Task
@@ -121,21 +121,18 @@ class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
                 continue
 
             member_values = members + [[member] for member in members]
-            users = User.objects.filter(
-                Q(**{f"attributes__{self._source.user_membership_attribute}__in": member_values})
+            membership_attribute = f"user__attributes__{self._source.user_membership_attribute}"
+            connections = UserLDAPSourceConnection.objects.filter(source=self._source).filter(
+                Q(**{f"{membership_attribute}__in": member_values})
                 | Q(
                     **{
-                        f"attributes__{self._source.user_membership_attribute}__isnull": True,
-                        "pk__in": UserGroup.objects.filter(group=group).values("user_id"),
+                        f"{membership_attribute}__isnull": True,
+                        "user__groups": group,
                     }
                 )
-            ).distinct()
-            user_ids = set(users.values_list("pk", flat=True))
-            with transaction.atomic():
-                memberships = UserGroup.objects.filter(group=group)
-                current_user_ids = set(memberships.values_list("user_id", flat=True))
-                group.users.remove(*(current_user_ids - user_ids))
-                group.users.add(*(user_ids - current_user_ids))
+            )
+            user_ids = list(connections.values_list("user_id", flat=True).distinct())
+            group.users.set(user_ids)
             membership_count += 1 + len(user_ids)
             group.save()
         self._logger.debug("Successfully updated group membership")
