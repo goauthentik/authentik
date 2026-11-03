@@ -323,7 +323,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                         ?checked=${settings?.flags.rbacCustomPermissions ?? false}
                         label=${msg("Custom permissions")}
                         help=${msg(
-                            "Let custom permission checks override access control deicisions made by authentik.",
+                            "Let custom permission checks override access control decisions made by authentik.",
                         )}
                     >
                     </ak-switch-input>
