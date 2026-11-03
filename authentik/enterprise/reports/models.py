@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -16,7 +16,6 @@ from authentik.enterprise.reports.utils import MockRequest
 from authentik.events.models import Event, EventAction, Notification, NotificationSeverity
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.db import chunked_queryset
-from authentik.tenants.utils import get_current_tenant
 
 
 class DataExport(SerializerModel):
@@ -65,7 +64,9 @@ class DataExport(SerializerModel):
         self.completed = True
         self.save()
 
-        message = _(f"{model_verbose_name} export generated successfully")
+        message = _("{model_verbose_name} export generated successfully").format(
+            model_verbose_name=str(model_verbose_name)
+        )
         e = Event.new(
             EventAction.EXPORT_READY,
             message=message,
@@ -77,7 +78,7 @@ class DataExport(SerializerModel):
             severity=NotificationSeverity.NOTICE,
             body=message,
             hyperlink=self.file_url,
-            hyperlink_label=_("Download"),
+            hyperlink_label=str(_("Download")),
             user=self.requested_by,
         )
 
@@ -86,9 +87,7 @@ class DataExport(SerializerModel):
         return get_file_manager(FileUsage.REPORTS).file_url(self.file)
 
     def _get_request(self) -> MockRequest:
-        return MockRequest(
-            user=self.requested_by, query_params=self.query_params, tenant=get_current_tenant()
-        )
+        return MockRequest(user=self.requested_by, query_params=self.query_params)
 
     def get_queryset(self) -> models.QuerySet:
         request = self._get_request()

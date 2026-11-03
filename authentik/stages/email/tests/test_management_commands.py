@@ -1,6 +1,6 @@
 """Test email management commands"""
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
@@ -49,18 +49,34 @@ class TestEmailManagementCommands(TestCase):
 
         self.assertEqual(len(mail.outbox), 0)
 
-    def test_test_email_command_with_custom_from(self):
-        """Test test_email command respects custom from address"""
+    def test_test_email_command_uses_stage_settings(self):
+        """Test test_email command uses the stage's settings, not the global ones"""
         EmailStage.objects.create(
             name="test-stage",
+            use_global_settings=False,
             from_address="custom@authentik.local",
-            host="localhost",
-            port=25,
+            host="stage.authentik.local",
+            port=587,
+            username="stage-user",
+            password="stage-password",  # nosec
+            use_tls=True,
         )
 
-        with patch("authentik.stages.email.models.EmailStage.backend_class", EmailBackend):
+        backend_class = MagicMock(wraps=EmailBackend)
+        with patch("authentik.stages.email.models.EmailStage.backend_class", backend_class):
             call_command("test_email", "test@example.com", stage="test-stage")
 
-            self.assertEqual(len(mail.outbox), 1)
-            self.assertEqual(mail.outbox[0].from_email, "custom@authentik.local")
-            self.assertEqual(mail.outbox[0].to, ["test@example.com"])
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, "custom@authentik.local")
+        self.assertEqual(
+            backend_class.call_args.kwargs,
+            {
+                "host": "stage.authentik.local",
+                "port": 587,
+                "username": "stage-user",
+                "password": "stage-password",
+                "use_tls": True,
+                "use_ssl": False,
+                "timeout": 10,
+            },
+        )

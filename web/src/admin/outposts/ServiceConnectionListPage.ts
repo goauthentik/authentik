@@ -10,9 +10,7 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#components/tasks/ScheduleList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName } from "#elements/dialogs";
@@ -22,6 +20,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { scheduleCard } from "#components/tasks/scheduleCard";
 import { taskCard } from "#components/tasks/taskCard";
 
 import { AKServiceConnectionWizard } from "#admin/outposts/ak-service-connection-wizard";
@@ -59,6 +58,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         const connections = await aki(OutpostsApi).outpostsServiceConnectionsAllList(
             await this.defaultEndpointConfig(),
         );
+
         await Promise.all(
             connections.results.map((connection) => {
                 return aki(OutpostsApi)
@@ -70,6 +70,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     });
             }),
         );
+
         return connections;
     }
 
@@ -89,13 +90,18 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     row(item: ServiceConnection): SlottedTemplateResult[] {
         const itemState = this.state[item.pk];
+
         return [
             item.name,
             item.verboseName,
             html`<ak-status-label type="info" ?good=${item.local}></ak-status-label>`,
-            html`${itemState?.healthy
-                ? html`<ak-label color=${PFColor.Green}>${ifDefined(itemState.version)}</ak-label>`
-                : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,
+            html`${
+                itemState?.healthy
+                    ? html`<ak-label color=${PFColor.Green}
+                          >${ifDefined(itemState.version)}</ak-label
+                      >`
+                    : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`
+            }`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.component, item.pk, item.verboseName)}
                 ${IconPermissionButton(item.name, {
@@ -107,28 +113,15 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 
     renderExpanded(item: ServiceConnection): TemplateResult {
-        const [appLabel, modelName] = item.metaModelName.split(".");
-        return html`<dl class="pf-c-description-list pf-m-horizontal">
-                <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${msg("Schedules")}</span>
-                    </dt>
-                    <dd class="pf-c-description-list__description">
-                        <div class="pf-c-description-list__text">
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${item.pk}"
-                            ></ak-schedule-list>
-                        </div>
-                    </dd>
-                </div>
-            </dl>
-            ${taskCard(item.metaModelName as ModelEnum, item.pk)} `;
+        return html`
+            ${scheduleCard(item.metaModelName as ModelEnum, item.pk)}
+            ${taskCard(item.metaModelName as ModelEnum, item.pk)}
+        `;
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Outpost integration(s)")}
             .objects=${this.selectedElements}

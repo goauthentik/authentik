@@ -1,6 +1,6 @@
 """Test SCIM Group"""
 
-from json import dumps
+from json import dumps, loads
 from uuid import uuid4
 
 from django.urls import reverse
@@ -59,6 +59,96 @@ class TestSCIMGroups(APITestCase):
         )
         self.assertEqual(response.status_code, second=200)
         SCIMGroupSchema.model_validate_json(response.content, strict=True)
+
+    def test_group_list_filter_members(self):
+        """Test group list filtered by ID and member"""
+        user = create_test_user()
+        group = Group.objects.create(name=generate_id())
+        group.users.add(user)
+        other_group = Group.objects.create(name=generate_id())
+        other_group.users.add(user)
+        for _group in [group, other_group]:
+            SCIMSourceGroup.objects.create(
+                source=self.source, group=_group, external_id=str(uuid4())
+            )
+        response = self.client.get(
+            reverse(
+                "authentik_sources_scim:v2-groups",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={"filter": f'id eq "{group.pk}" and members eq "{user.uuid}"'},
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content)
+        self.assertEqual(body["totalResults"], 1)
+        self.assertEqual(body["Resources"][0]["id"], str(group.pk))
+
+    def test_group_list_filter_members_no_match(self):
+        """Test group list filtered by a member that isn't part of the group"""
+        group = Group.objects.create(name=generate_id())
+        group.users.add(create_test_user())
+        SCIMSourceGroup.objects.create(source=self.source, group=group, external_id=str(uuid4()))
+        response = self.client.get(
+            reverse(
+                "authentik_sources_scim:v2-groups",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={"filter": f'id eq "{group.pk}" and members eq "{uuid4()}"'},
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(loads(response.content)["totalResults"], 0)
+
+    def test_group_list_filter_unknown_attribute(self):
+        """Test group list filtered by an attribute that can't be mapped"""
+        response = self.client.get(
+            reverse(
+                "authentik_sources_scim:v2-groups",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={"filter": f'urn:foo:bar eq "{generate_id()}"'},
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "detail": "Unsupported filter attribute.",
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+                "scimType": "invalidFilter",
+                "status": 400,
+            },
+        )
+
+    def test_group_list_filter_invalid(self):
+        """Test group list filtered by an unparsable filter"""
+        response = self.client.get(
+            reverse(
+                "authentik_sources_scim:v2-groups",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={"filter": "displayName eq"},
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "detail": "Invalid filter.",
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+                "scimType": "invalidFilter",
+                "status": 400,
+            },
+        )
 
     def test_group_create(self):
         """Test group create"""

@@ -1,0 +1,63 @@
+```haproxy
+global
+    # Load haproxy-lua-http and haproxy-auth-request. Adjust these paths to
+    # match your installation.
+    lua-prepend-path /usr/share/haproxy/?/http.lua
+    lua-load /usr/share/haproxy/auth-request.lua
+
+defaults
+    mode http
+    timeout connect 5s
+    timeout client 30s
+    timeout server 30s
+    timeout tunnel 1h
+
+frontend https
+    bind :443 ssl crt /etc/haproxy/certs/app.company.pem
+
+    # This frontend serves only this application.
+    acl application_host hdr(host) -i app.company app.company:443
+    http-request deny unless application_host
+    # Match the provider's hostname, including when the client sends :443.
+    http-request set-header Host app.company
+
+    # Do not authenticate authentik outpost endpoints.
+    acl authentik_outpost path_beg /outpost.goauthentik.io/
+
+    # Pass the original request information to authentik.
+    http-request set-header X-Real-IP %[src]
+    http-request set-header X-Forwarded-For %[src]
+    http-request set-header X-Forwarded-Method %[method]
+    http-request set-header X-Forwarded-Proto https
+    http-request set-header X-Forwarded-Host %[req.hdr(Host)]
+    # authentik requires an absolute URL for the nginx-compatible endpoint.
+    http-request set-header X-Original-URL https://%[req.hdr(Host)]%[pathq]
+
+    # Remove client-supplied identity headers, including underscore aliases.
+    http-request del-header X-authentik- -m beg
+    http-request del-header _ -m sub
+    http-request del-header Authorization
+
+    # Verify protected requests with the authentik outpost. Keep the request
+    # header allowlist narrow because forwarding WebSocket Upgrade headers
+    # prevents the authorization request from completing.
+    http-request lua.auth-intercept authentik_outpost /outpost.goauthentik.io/auth/nginx HEAD x-original-url,x-real-ip,x-forwarded-for,x-forwarded-host,x-forwarded-proto,user-agent,cookie,accept,x-forwarded-method x-authentik-* - if !authentik_outpost
+
+    # Preserve session cookies returned by successful authorization checks.
+    http-request set-var(txn.auth_response_set_cookie) var(req.auth_response_header.set_cookie) if { var(req.auth_response_header.set_cookie) -m found }
+
+    # Start login on 401. Deny every other unsuccessful auth check, including
+    # errors or an unreachable outpost.
+    http-request redirect code 302 location /outpost.goauthentik.io/start?rd=%[hdr(X-Original-URL),url_enc] if !authentik_outpost !{ var(txn.auth_response_successful) -m bool } { var(txn.auth_response_code) -m int 401 }
+    http-request deny if !authentik_outpost !{ var(txn.auth_response_successful) -m bool }
+
+    use_backend authentik_outpost if authentik_outpost
+    default_backend application
+
+backend authentik_outpost
+    server outpost outpost.company:9000 check
+
+backend application
+    http-response add-header Set-Cookie %[var(txn.auth_response_set_cookie)] if { var(txn.auth_response_set_cookie) -m found }
+    server application app.company:8080 check
+```

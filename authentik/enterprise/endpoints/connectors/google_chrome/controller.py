@@ -2,7 +2,6 @@ from json import dumps, loads
 
 from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
-from googleapiclient.discovery import build
 
 from authentik.endpoints.controller import BaseController, Capabilities
 from authentik.endpoints.facts import DeviceFacts, OSFamily
@@ -28,6 +27,8 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
 
     def __init__(self, connector):
         super().__init__(connector)
+        from googleapiclient.discovery import build
+
         self.google_client = build(
             "verifiedaccess",
             "v2",
@@ -59,12 +60,7 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
         # Remove deprecated string representation of deviceSignals
         response.pop("deviceSignal", None)
         signals = DeviceSignals(response["deviceSignals"])
-        device, _ = Device.objects.update_or_create(
-            identifier=signals["serialNumber"],
-            defaults={
-                "name": signals["hostname"],
-            },
-        )
+        device = Device.get_or_create(identifier=signals["serialNumber"], name=signals["hostname"])
         conn, _ = DeviceConnection.objects.update_or_create(
             device=device,
             connector=self.connector,

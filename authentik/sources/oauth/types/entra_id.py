@@ -1,25 +1,49 @@
 """EntraID OAuth2 Views"""
 
-from typing import Any
+from asyncio import run
+from dataclasses import asdict
+from typing import TYPE_CHECKING, Any
+from urllib.parse import urlsplit
 
-from requests import RequestException
 from structlog.stdlib import get_logger
 
+from authentik.events.utils import sanitize_item
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
-from authentik.sources.oauth.models import AuthorizationCodeAuthMethod
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
+if TYPE_CHECKING:
+    from msgraph.generated.models.entity import Entity
+
 LOGGER = get_logger()
+
+
+def entity_as_dict(entity: Entity) -> dict:
+    """Create a dictionary of a model instance, making sure to remove (known) things
+    we can't JSON serialize"""
+    return sanitize_item(
+        asdict(
+            entity,
+            # Nested entities carry their own backing store, so filter at every level
+            dict_factory=lambda items: {k: v for k, v in items if k != "backing_store"},
+        )
+    )
+
+
+def get_graph_url(source: OAuthSource, path: str) -> str:
+    """Use the configured profile's origin for Graph scopes and API requests."""
+    profile_url = source.profile_url or EntraIDType.profile_url
+    return urlsplit(profile_url)._replace(path=path, query="", fragment="").geturl()
 
 
 class EntraIDOAuthRedirect(OAuthRedirect):
     """Entra ID OAuth2 Redirect"""
 
-    def get_additional_parameters(self, source):  # pragma: no cover
+    def get_additional_parameters(self, source):
         return {
-            "scope": ["openid", "https://graph.microsoft.com/User.Read"],
+            "scope": ["openid", get_graph_url(source, "/User.Read")],
         }
 
 
@@ -27,25 +51,54 @@ class EntraIDClient(UserprofileHeaderAuthClient):
     """Fetch EntraID group information"""
 
     def get_profile_info(self, token):
+        # The Graph SDK is heavy, only import it when an Entra ID source is used
+        from httpx import HTTPError
+        from kiota_abstractions.api_error import APIError
+
         profile_data = super().get_profile_info(token)
-        if "https://graph.microsoft.com/GroupMember.Read.All" not in self.source.additional_scopes:
+        group_scope = get_graph_url(self.source, "/GroupMember.Read.All")
+        scopes = self.source.additional_scopes.removeprefix("*").split()
+        if profile_data is None or group_scope not in scopes:
             return profile_data
-        group_response = self.session.request(
-            "get",
-            "https://graph.microsoft.com/v1.0/me/memberOf",
-            headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
-        )
         try:
-            group_response.raise_for_status()
-        except RequestException as exc:
-            LOGGER.warning(
-                "Unable to fetch user profile",
-                exc=exc,
-                response=exc.response.text if exc.response is not None else str(exc),
-            )
+            profile_data["raw_groups"] = run(self.get_groups(token))
+        except (APIError, HTTPError) as exc:
+            LOGGER.warning("Unable to fetch user groups", exc=exc)
             return None
-        profile_data["raw_groups"] = group_response.json()
         return profile_data
+
+    async def get_groups(self, token):
+        """Fetch all memberships and convert Graph entities for property mappings."""
+        from kiota_abstractions.authentication.anonymous_authentication_provider import (
+            AnonymousAuthenticationProvider,
+        )
+        from kiota_abstractions.base_request_configuration import RequestConfiguration
+        from kiota_abstractions.headers_collection import HeadersCollection
+        from kiota_http.kiota_client_factory import KiotaClientFactory
+        from msgraph.graph_request_adapter import GraphRequestAdapter, options
+        from msgraph.graph_service_client import GraphServiceClient
+        from msgraph_core import GraphClientFactory
+
+        # RequestConfiguration shares its default headers between instances
+        config = RequestConfiguration(headers=HeadersCollection())
+        config.headers.add("Authorization", f"{token['token_type']} {token['access_token']}")
+        async with GraphClientFactory.create_with_default_middleware(
+            options=options, client=KiotaClientFactory.get_default_client()
+        ) as http_client:
+            adapter = GraphRequestAdapter(AnonymousAuthenticationProvider(), http_client)
+            adapter.base_url = get_graph_url(self.source, "/v1.0")
+            client = GraphServiceClient(request_adapter=adapter)
+            groups = []
+            request = client.me.member_of
+            while request:
+                page = await request.get(config)
+                groups.extend(page.value or [])
+                request = (
+                    client.me.member_of.with_url(page.odata_next_link)
+                    if page.odata_next_link
+                    else None
+                )
+        return {"value": [entity_as_dict(group) for group in groups]}
 
 
 class EntraIDOAuthCallback(OpenIDConnectOAuth2Callback):
@@ -83,7 +136,7 @@ class EntraIDType(SourceType):
         groups = []
         group_id_dict = {}
         for group in info.get("raw_groups", {}).get("value", []):
-            if group["@odata.type"] != "#microsoft.graph.group":
+            if group["odata_type"] != "#microsoft.graph.group":
                 continue
             groups.append(group["id"])
             group_id_dict[group["id"]] = group
@@ -98,7 +151,7 @@ class EntraIDType(SourceType):
     def get_base_group_properties(self, source, group_id, **kwargs):
         raw_groups = kwargs["info"]["raw_groups"]
         if group_id in raw_groups:
-            name = raw_groups[group_id]["displayName"]
+            name = raw_groups[group_id]["display_name"]
         else:
             name = group_id
         return {

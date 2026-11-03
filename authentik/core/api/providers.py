@@ -18,13 +18,17 @@ from authentik.core.models import Provider
 class ProviderSerializer(ModelSerializer, MetaNameSerializer):
     """Provider Serializer"""
 
-    assigned_application_slug = ReadOnlyField(source="application.slug", allow_null=True)
-    assigned_application_name = ReadOnlyField(source="application.name", allow_null=True)
+    assigned_application_slug = ReadOnlyField(
+        source="application.slug", allow_null=True, required=False
+    )
+    assigned_application_name = ReadOnlyField(
+        source="application.name", allow_null=True, required=False
+    )
     assigned_backchannel_application_slug = ReadOnlyField(
-        source="backchannel_application.slug", allow_null=True
+        source="backchannel_application.slug", allow_null=True, required=False
     )
     assigned_backchannel_application_name = ReadOnlyField(
-        source="backchannel_application.name", allow_null=True
+        source="backchannel_application.name", allow_null=True, required=False
     )
 
     component = SerializerMethodField()
@@ -53,7 +57,12 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "verbose_name_plural",
             "meta_model_name",
         ]
-        extra_kwargs = {
+        # This serializer is only a general read serializer for listing/reading
+        # providers without their specific type,
+        # setting whether authorization_flow/invalidation_flow are required
+        # is up to the child serializer
+        extra_kwargs = {}
+        extra_write_kwargs = {
             "authorization_flow": {"required": True, "allow_null": False},
             "invalidation_flow": {"required": True, "allow_null": False},
         }

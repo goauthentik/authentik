@@ -1,8 +1,0 @@
-# IdP-specific terms
-authentik
-Yubi
-Yubikey
-Yubikeys
-mycorp
-mocksaml
-VSCHAR

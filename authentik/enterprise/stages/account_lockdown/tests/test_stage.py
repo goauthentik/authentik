@@ -22,6 +22,7 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
+from authentik.enterprise.core import revocation
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.enterprise.stages.account_lockdown.stage import (
     LOCKDOWN_EVENT_ACTION_ID,
@@ -33,7 +34,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.reflection import class_to_path
 from authentik.providers.oauth2.id_token import IDToken
@@ -47,6 +48,7 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
 )
 from authentik.providers.saml.models import SAMLProvider, SAMLSession
+from authentik.stages.password.models import PasswordDevice
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 patch_enterprise_enabled = patch(
@@ -115,7 +117,7 @@ class AccountLockdownStageTestMixin:
         ).first()
 
 
-class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
+class TestAccountLockdownStage(AccountLockdownStageTestMixin, APIFlowTestCase):
     """Account lockdown stage tests"""
 
     def test_lockdown_no_target(self):
@@ -409,8 +411,8 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.stage.save()
 
         self.target_user.is_active = True
-        self.target_user.set_password("testpassword")
         self.target_user.save()
+        PasswordDevice.set_password(self.target_user, "testpassword")
 
         Token.objects.create(
             user=self.target_user,
@@ -432,6 +434,32 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         # Token should still exist
         self.assertEqual(Token.objects.filter(user=self.target_user).count(), 1)
 
+    def test_lockdown_password_on_inactive_user_keeps_sessions(self):
+        """Test removing the password of an inactive user doesn't trigger deactivation cleanup"""
+        self.stage.deactivate_user = True
+        self.stage.set_unusable_password = True
+        self.stage.delete_sessions = False
+        self.stage.revoke_tokens = False
+        self.stage.save()
+
+        self.target_user.is_active = False
+        self.target_user.save()
+        PasswordDevice.set_password(self.target_user, "testpassword")
+        session = Session.objects.create(
+            session_key=generate_id(),
+            expires=timezone.now() + timezone.timedelta(hours=1),
+            last_ip="127.0.0.1",
+        )
+        AuthenticatedSession.objects.create(session=session, user=self.target_user)
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        view = self.make_stage_view(plan)
+        view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
+
+        self.target_user.refresh_from_db()
+        self.assertFalse(self.target_user.has_usable_password())
+        self.assertTrue(Session.objects.filter(pk=session.pk).exists())
+
     def test_lockdown_no_actions(self):
         """Test lockdown stage with all actions disabled"""
         self.stage.deactivate_user = False
@@ -441,8 +469,8 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.stage.save()
 
         self.target_user.is_active = True
-        self.target_user.set_password("testpassword")
         self.target_user.save()
+        PasswordDevice.set_password(self.target_user, "testpassword")
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         view = self.make_stage_view(plan)
@@ -570,7 +598,7 @@ class TestAccountLockdownStageConcurrency(AccountLockdownStageTestMixin, Transac
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         view = self.make_stage_view(plan)
-        original_has_artifacts = view._has_lockdown_artifacts
+        original_has_artifacts = revocation.has_revocable_artifacts
         target_user = self.target_user
         thread_ready = ThreadEvent()
         start_create = ThreadEvent()
@@ -599,7 +627,7 @@ class TestAccountLockdownStageConcurrency(AccountLockdownStageTestMixin, Transac
                     thread_done.set()
                     connection.close()
 
-        def has_artifacts_after_concurrent_create(stage, user):
+        def has_artifacts_after_concurrent_create(user, **kwargs):
             if not start_create.is_set():
                 start_create.set()
                 self.assertTrue(
@@ -609,11 +637,12 @@ class TestAccountLockdownStageConcurrency(AccountLockdownStageTestMixin, Transac
                         f"before retry check: {thread_errors}"
                     ),
                 )
-            return original_has_artifacts(stage, user)
+            return original_has_artifacts(user, **kwargs)
 
         creator = TokenCreatorThread()
-        with patch.object(
-            view, "_has_lockdown_artifacts", side_effect=has_artifacts_after_concurrent_create
+        with patch(
+            "authentik.enterprise.core.revocation.has_revocable_artifacts",
+            side_effect=has_artifacts_after_concurrent_create,
         ):
             creator.start()
             self.assertTrue(

@@ -32,9 +32,14 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 playwright-report
+.visual/
 playwright-traces
 test-results
 *.lcov
+
+# Vitest browser mode writes these on a failing test
+.vitest-attachments/
+**/__screenshots__/
 
 # nyc test coverage
 .nyc_output

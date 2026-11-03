@@ -19,12 +19,13 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
+import "#elements/table/ak-table-filter-select";
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -54,7 +55,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     public override order = "name";
 
     @state()
-    protected hideManaged = getURLParam<boolean>("hideManaged", true);
+    protected hideManaged = getSearchParam<boolean>("hideManaged", true);
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return aki(PropertymappingsApi).propertymappingsAllList({
@@ -71,6 +72,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Property Mapping(s)")}
             .objects=${this.selectedElements}
@@ -132,29 +134,23 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     protected override renderToolbarAfter(): SlottedTemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.hideManaged}
-                            @change=${() => {
-                                this.hideManaged = !this.hideManaged;
-                                this.page = 1;
-                                this.fetch();
-                                updateURLParams({
-                                    hideManaged: this.hideManaged,
-                                });
-                            }}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Hide managed mappings")}</span>
-                    </label>
-                </div>
+                <ak-table-filter-select
+                    .options=${[
+                        { label: msg("Hide managed"), value: true },
+                        { label: msg("All"), value: false },
+                    ]}
+                    group=${msg("Managed")}
+                    .value=${this.hideManaged}
+                    @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
+                        this.hideManaged = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+
+                        updateSearchParams({
+                            hideManaged: this.hideManaged,
+                        });
+                    }}
+                ></ak-table-filter-select>
             </div>
         </div>`;
     }

@@ -28,6 +28,7 @@ class GoogleChromeConnectorSerializer(EnterpriseRequiredMixin, ConnectorSerializ
     class Meta:
         model = GoogleChromeConnector
         fields = ConnectorSerializer.Meta.fields + ["credentials", "chrome_url"]
+        secret_fields = ["credentials"]
 
 
 class GoogleChromeConnectorViewSet(UsedByMixin, ModelViewSet):

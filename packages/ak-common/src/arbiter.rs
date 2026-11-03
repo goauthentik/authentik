@@ -295,6 +295,9 @@ pub enum Event {
     Signal(SignalKind),
     /// The configuration has been reloaded from sources.
     ConfigChanged,
+    #[cfg(feature = "core")]
+    /// The Gunicorn server has been marked as ready.
+    GunicornIsReady,
 }
 
 impl From<SignalKind> for Event {

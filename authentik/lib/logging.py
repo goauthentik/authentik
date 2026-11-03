@@ -1,11 +1,13 @@
 """logging helpers"""
 
 import logging
+from contextvars import ContextVar
 from logging import Logger
 from os import getpid
+from typing import Any
 
 import structlog
-from django.db import connection
+from structlog.types import EventDict
 
 from authentik.lib.config import CONFIG
 
@@ -17,6 +19,19 @@ LOG_PRE_CHAIN = [
     structlog.processors.TimeStamper(fmt="iso", utc=False),
     structlog.processors.StackInfoRenderer(),
 ]
+
+
+# Entries of the innermost active `capture_logs()` in the current context, if any
+CAPTURED_LOGS: ContextVar[list[EventDict] | None] = ContextVar("captured_logs", default=None)
+
+
+def capture_processor(_: Any, __: str, event_dict: EventDict) -> EventDict:
+    """Divert log entries into the active `capture_logs()` of the current context"""
+    entries = CAPTURED_LOGS.get()
+    if entries is None:
+        return event_dict
+    entries.append(event_dict)
+    raise structlog.DropEvent
 
 
 def get_log_level():
@@ -39,13 +54,13 @@ def structlog_configure():
             structlog.stdlib.add_logger_name,
             structlog.contextvars.merge_contextvars,
             add_process_id,
-            add_tenant_information,
             structlog.stdlib.PositionalArgumentsFormatter(),
             structlog.processors.TimeStamper(fmt="iso", utc=False),
             structlog.processors.StackInfoRenderer(),
             structlog.processors.ExceptionRenderer(
                 structlog.tracebacks.ExceptionDictTransformer(show_locals=CONFIG.get_bool("debug"))
             ),
+            capture_processor,
             structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
         logger_factory=structlog.stdlib.LoggerFactory(),
@@ -125,16 +140,4 @@ def get_logger_config():
 def add_process_id(logger: Logger, method_name: str, event_dict):
     """Add the current process ID"""
     event_dict["pid"] = getpid()
-    return event_dict
-
-
-def add_tenant_information(logger: Logger, method_name: str, event_dict):
-    """Add the current tenant"""
-    tenant = getattr(connection, "tenant", None)
-    schema_name = getattr(connection, "schema_name", None)
-    if tenant is not None:
-        event_dict["schema_name"] = tenant.schema_name
-        event_dict["domain_url"] = getattr(tenant, "domain_url", None)
-    elif schema_name is not None:
-        event_dict["schema_name"] = schema_name
     return event_dict

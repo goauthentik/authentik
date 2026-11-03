@@ -1,27 +1,39 @@
-import { StorageAccessor } from "#common/storage";
-import { getCookie } from "#common/utils";
+import { StorageAccessor } from "#common/storage/accessor";
+import type { PersistenceKey } from "#common/storage/shared";
 
 import { ReactiveElementHost } from "#elements/types";
+import { findEmptyFocusCandidate } from "#elements/utils/focus";
 
 import type { IdentificationStage } from "#flow/stages/identification/IdentificationStage";
 
 import { ConsoleLogger } from "#logger/browser";
 
-import { msg } from "@lit/localize";
-import { css, html, ReactiveController } from "lit";
 import { createRef, Ref } from "lit-html/directives/ref.js";
 
+import { msg } from "@lit/localize";
+import { css, html, ReactiveController } from "lit";
+
+// TODO: Remove in 2027.2 or later. See #27036
+const LEGACY_USER_KEY = "authentik-remember-me-user" as PersistenceKey;
+const LEGACY_SESSION_KEY = "authentik-remember-me-session" as PersistenceKey;
+
 export class RememberMeStorage {
-    static readonly user = StorageAccessor.local("authentik-remember-me-user");
-    static readonly session = StorageAccessor.local("authentik-remember-me-session");
+    static readonly user = StorageAccessor.local("ak:remember_me:user");
     static reset = () => {
         this.user.delete();
-        this.session.delete();
     };
-}
 
-function readSessionID() {
-    return (getCookie("authentik_csrf") ?? "").substring(0, 8);
+    /**
+     * Carry over state written by earlier versions. The username moves to its current key, and
+     * the CSRF-derived session ID that was used to invalidate it is discarded: Django rotates the
+     * CSRF token on every successful login, so that value can never match on a subsequent visit.
+     *
+     * TODO: Remove in 2027.2 or later. See #27036
+     */
+    static migrate = () => {
+        this.user.migrateFrom(LEGACY_USER_KEY);
+        StorageAccessor.local(LEGACY_SESSION_KEY).delete();
+    };
 }
 
 export interface RememberMeControllerInit {
@@ -36,17 +48,13 @@ export interface RememberMeControllerInit {
  *
  * @remarks
  *
- * If enabled by the site configuration, provides a feature to "remember this user on this device."
- * When active, it will attempt to find the user's claimed identity in the device & domain
- * localstorage.
- *
- * If claimed identity is present: automatically forward the user to the "prove your identity"
- * phase. If not present: record the username as it is typed in, and store it when the user proceeds
- * to the next phase.
- *
- * Uses a "we've been here before during the current session" heuristic to determine if the user
- * came back to this view after reaching the identity proof phase, indicating they pressed the "not
- * you?" link, at which point it begins again to record the username as it is typed in.
+ *   If enabled by the site configuration, provides a feature to "remember this user on this
+ *   device." When active, it will attempt to find the user's claimed identity in the device &
+ *   domain localstorage. If claimed identity is present: automatically forward the user to the
+ *   "prove your identity" phase. If not present: record the username as it is typed in, and store
+ *   it when the user proceeds to the next phase. The stored username is only cleared by an explicit
+ *   user action: switching the toggle off, or following the "Not you?" link, which calls
+ *   {@linkcode RememberMeStorage.reset}.
  */
 export class RememberMeController implements ReactiveController {
     static readonly styles = [
@@ -69,7 +77,12 @@ export class RememberMeController implements ReactiveController {
 
     protected logger = ConsoleLogger.prefix("controller/remember-me");
     protected autoSubmitAttempts = 0;
-    protected currentSessionID = readSessionID();
+
+    /**
+     * Whether the feature is currently on, seeded from {@linkcode defaultChecked} so that a
+     * returning user records keystrokes without having to re-toggle the switch.
+     */
+    protected rememberMeEnabled: boolean;
 
     constructor(
         protected host: ReactiveElementHost<IdentificationStage>,
@@ -83,12 +96,7 @@ export class RememberMeController implements ReactiveController {
         this.passwordFieldRef = passwordFieldRef || null;
         this.identificationFieldID = identificationFieldID;
 
-        const persistedSessionID = RememberMeStorage.session.read();
-
-        if (persistedSessionID && persistedSessionID !== this.currentSessionID) {
-            this.logger.debug("Session ID mismatch, clearing remembered username");
-            RememberMeStorage.user.delete();
-        }
+        RememberMeStorage.migrate();
 
         const persistedUserIdentifier = RememberMeStorage.user.read();
 
@@ -96,14 +104,28 @@ export class RememberMeController implements ReactiveController {
             persistedUserIdentifier || this.host.challenge?.pendingUserIdentifier || null;
 
         this.defaultChecked = !!persistedUserIdentifier;
+        this.rememberMeEnabled = this.defaultChecked;
     }
 
-    // After the page is updated, if everything is ready to go, do the autosubmit.
+    // The host adds this controller after it has already rendered, so the field ref is populated
+    // and no further update is guaranteed. Bind now rather than waiting for `hostUpdated`.
+    public hostConnected() {
+        this.#reconcileUsernameInputListener();
+    }
+
+    // After the page is updated, reconcile the keystroke listener against the current state, then,
+    // if everything is ready to go, do the autosubmit.
     public hostUpdated() {
+        this.#reconcileUsernameInputListener();
+
         if (this.canAutoSubmit() && this.autoSubmitAttempts === 0) {
             this.autoSubmitAttempts++;
             this.host.submitForm?.();
         }
+    }
+
+    public hostDisconnected() {
+        this.#detachUsernameInputListener();
     }
 
     //#region Event Listeners
@@ -119,6 +141,47 @@ export class RememberMeController implements ReactiveController {
         });
     };
 
+    /**
+     * The username field the keystroke listener is currently bound to, if any.
+     *
+     * Tracked so that reconciliation is idempotent across re-renders, and so the listener follows
+     * the field if Lit swaps in a new element.
+     */
+    #attachedUsernameField: HTMLInputElement | null = null;
+
+    /**
+     * Bind or unbind the keystroke listener so it matches {@linkcode rememberMeEnabled}.
+     */
+    #reconcileUsernameInputListener() {
+        const { usernameField } = this;
+
+        if (!this.rememberMeEnabled || !usernameField) {
+            this.#detachUsernameInputListener();
+
+            return;
+        }
+
+        this.#attachUsernameInputListener(usernameField);
+    }
+
+    #attachUsernameInputListener(usernameField: HTMLInputElement) {
+        if (this.#attachedUsernameField === usernameField) return;
+
+        this.#detachUsernameInputListener();
+
+        usernameField.addEventListener("input", this.inputListener, {
+            passive: true,
+        });
+
+        this.#attachedUsernameField = usernameField;
+    }
+
+    #detachUsernameInputListener() {
+        cancelAnimationFrame(this.#writeFrameID);
+        this.#attachedUsernameField?.removeEventListener("input", this.inputListener);
+        this.#attachedUsernameField = null;
+    }
+
     //#endregion
 
     //#region Public API
@@ -130,20 +193,23 @@ export class RememberMeController implements ReactiveController {
      * submitted on future visits. Additionally, every keystroke in the username field will update
      * the stored username.
      *
-     * When toggled off, any stored username is cleared from localStorage, and the keystroke listener
-     * is removed to stop updating the stored username.
+     * When toggled off, any stored username is cleared from localStorage, and the keystroke
+     * listener is removed to stop updating the stored username.
      */
     public toggleChangeListener = (event: Event) => {
         const checkbox = event.target as HTMLInputElement;
         const { usernameField, passwordField } = this;
 
+        this.rememberMeEnabled = checkbox.checked;
+
         if (!checkbox.checked) {
             this.logger.debug("Disabling remember me");
+
+            this.#reconcileUsernameInputListener();
 
             RememberMeStorage.reset();
 
             if (usernameField) {
-                usernameField.removeEventListener("input", this.inputListener);
                 usernameField.focus();
                 usernameField.select();
             }
@@ -153,10 +219,11 @@ export class RememberMeController implements ReactiveController {
 
         if (!usernameField) {
             this.logger.warn("Cannot enable remember me: no username field found");
+
             return;
         }
 
-        const focusTarget = passwordField && usernameField?.value ? passwordField : usernameField;
+        const focusTarget = findEmptyFocusCandidate(usernameField, passwordField);
 
         if (focusTarget) {
             focusTarget.focus();
@@ -166,18 +233,15 @@ export class RememberMeController implements ReactiveController {
         this.logger.debug("Enabling remember me for user");
 
         RememberMeStorage.user.write(usernameField.value);
-        RememberMeStorage.session.write(this.currentSessionID);
 
-        usernameField.addEventListener("input", this.inputListener, {
-            passive: true,
-        });
+        this.#reconcileUsernameInputListener();
     };
 
     /**
      * Determines if the "remember me" feature can be automatically submitted, which requires:
      *
      * - An active challenge.
-     * - A stored username from a previous session.
+     * - A stored username from a previous session, with the feature not since switched off.
      * - The identifier input field to be present in the DOM.
      * - No password fields or passwordless URL, indicating we can skip directly to the next step.
      */
@@ -185,12 +249,15 @@ export class RememberMeController implements ReactiveController {
         const { challenge } = this.host;
 
         if (!challenge) return false;
+
         if (!challenge.enableRememberMe) return false;
 
         if (challenge.passwordFields) return false;
+
         if (challenge.passwordlessUrl) return false;
 
-        if (!this.defaultChecked) return false;
+        if (!this.defaultChecked || !this.rememberMeEnabled) return false;
+
         return !!this.usernameField?.value;
     }
 

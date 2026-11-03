@@ -1,6 +1,7 @@
 """Identification stage logic"""
 
 from dataclasses import asdict
+from functools import cache
 from typing import Any
 
 from django.contrib.auth.hashers import make_password
@@ -12,9 +13,8 @@ from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
 from rest_framework.serializers import ValidationError
-from sentry_sdk import start_span
 
-from authentik.core.api.utils import JSONDictField, PassiveSerializer
+from authentik.core.api.utils import JSONDictField, PassiveSerializer, ThemedUrlsSerializer
 from authentik.core.models import Application, Source, User
 from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_DEVICE_AUTH_TOKEN
 from authentik.endpoints.models import Device
@@ -34,6 +34,7 @@ from authentik.flows.planner import (
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.lib.avatars import DEFAULT_AVATAR
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
@@ -44,11 +45,13 @@ from authentik.stages.authenticator_validate.challenge import (
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.stage import (
     PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
+    PLAN_CONTEXT_CAPTCHA_SITE_KEY,
     CaptchaChallenge,
     verify_captcha_token,
 )
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
+from authentik.stages.password.lockout import PasswordLockout, PasswordLockoutResult
 from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD,
     PLAN_CONTEXT_METHOD_ARGS,
@@ -69,6 +72,22 @@ def get_login_serializers():
     return mapping
 
 
+@cache
+def login_capable_source_subclasses() -> list[type[Source]]:
+    """Concrete Source subclasses that can render a UI login button.
+
+    ``Source.ui_login_button`` returns None, so a source only reaches the
+    challenge below if its subclass overrides it. Abstract subclasses are skipped
+    because they have no table to join against.
+    """
+    return [
+        source_type
+        for source_type in all_subclasses(Source)
+        if not source_type._meta.abstract
+        and source_type.ui_login_button is not Source.ui_login_button
+    ]
+
+
 @extend_schema_field(
     PolymorphicProxySerializer(
         component_name="LoginChallengeTypes",
@@ -85,6 +104,7 @@ class LoginSourceSerializer(PassiveSerializer):
 
     name = CharField()
     icon_url = CharField(required=False, allow_null=True)
+    icon_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     promoted = BooleanField(default=False)
 
     challenge = ChallengeDictWrapper()
@@ -127,6 +147,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     pre_user: User | None = None
     passkey_device: WebAuthnDevice | None = None
+    lockout: PasswordLockoutResult | None = None
 
     def _validate_passkey_response(self, passkey: dict) -> WebAuthnDevice:
         """Validate passkey/WebAuthn response for passwordless authentication"""
@@ -160,7 +181,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
         pre_user = self.stage.get_user(uid_field)
         if not pre_user:
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.stages.identification.validate_invalid_wait",
                 name="Sleep random time on invalid user identifier",
             ):
@@ -211,15 +232,16 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 raise ValidationError(_("Failed to authenticate.")) from None
 
         # Password check
-        if not current_stage.password_stage:
-            # No password stage select, don't validate the password
-            return attrs
+        if current_stage.password_stage:
+            self._validate_password(current_stage, attrs.get("password", None))
+        return attrs
 
-        password = attrs.get("password", None)
+    def _validate_password(self, current_stage: IdentificationStage, password: str | None):
+        """Authenticate the pre-identified user's password against the embedded stage"""
         if not password:
             self.stage.logger.warning("Password not set for ident+auth attempt")
         try:
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.stages.identification.authenticate",
                 name="User authenticate call (combo stage)",
             ):
@@ -230,18 +252,33 @@ class IdentificationChallengeResponse(ChallengeResponse):
                     username=self.pre_user.username,
                     password=password,
                 )
-            if not user:
-                raise ValidationError(_("Failed to authenticate."))
-            self.pre_user = user
+            result = PasswordLockout(current_stage.password_stage, self.stage.request).apply(
+                self.pre_user, user, self.stage.executor.plan.context
+            )
+            self.lockout = result
+            if not result.user:
+                error = _("Failed to authenticate.")
+                if result.last_attempt:
+                    error = current_stage.password_stage.last_attempt_warning_message or error
+                raise ValidationError(error)
+            self.pre_user = result.user
         except PermissionDenied as exc:
             raise ValidationError(str(exc)) from exc
-        return attrs
 
 
 class IdentificationStageView(ChallengeStageView):
     """Form to identify the user"""
 
     response_class = IdentificationChallengeResponse
+
+    def challenge_invalid(self, response: IdentificationChallengeResponse) -> HttpResponse:
+        """Stop the flow once its embedded password stage reaches its lockout."""
+        current_stage: IdentificationStage = self.executor.current_stage
+        if current_stage.password_stage and response.lockout and response.lockout.lockout_reached:
+            return self.executor.stage_invalid(
+                current_stage.password_stage.lockout_message or _("Failed to authenticate.")
+            )
+        return super().challenge_invalid(response)
 
     def get_user(self, uid_value: str) -> User | None:
         """Find user instance. Returns None if no user was found."""
@@ -330,7 +367,10 @@ class IdentificationStageView(ChallengeStageView):
                 "captcha_stage": (
                     {
                         "js_url": current_stage.captcha_stage.js_url,
-                        "site_key": current_stage.captcha_stage.public_key,
+                        "site_key": self.executor.plan.context.get(
+                            PLAN_CONTEXT_CAPTCHA_SITE_KEY,
+                            current_stage.captcha_stage.public_key,
+                        ),
                         "interactive": current_stage.captcha_stage.interactive,
                         "pending_user": "",
                         "pending_user_avatar": DEFAULT_AVATAR,
@@ -386,7 +426,9 @@ class IdentificationStageView(ChallengeStageView):
         # Check all enabled source, add them if they have a UI Login button.
         ui_sources = []
         sources: list[Source] = (
-            current_stage.sources.filter(enabled=True).order_by("name").select_subclasses()
+            current_stage.sources.filter(enabled=True)
+            .order_by("name")
+            .select_subclasses(*login_capable_source_subclasses())
         )
         for source in sources:
             ui_login_button = source.ui_login_button(self.request)

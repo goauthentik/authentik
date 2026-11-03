@@ -62,6 +62,7 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantType,
     OAuth2Provider,
+    OAuth2SessionLogin,
     RedirectURIMatchingMode,
     ResponseMode,
     ResponseTypes,
@@ -333,6 +334,7 @@ class OAuthAuthorizationParams:
                 error="invalid_request",
                 grant_type=self.grant_type,
                 state=self.state,
+                response_mode=self.response_mode,
                 description="dpop_jkt is required when bound_key scope is requested",
             )
         # dpop_jkt should only be set if requesting the key binding scope
@@ -342,6 +344,7 @@ class OAuthAuthorizationParams:
                 error="invalid_request",
                 grant_type=self.grant_type,
                 state=self.state,
+                response_mode=self.response_mode,
                 description="dpop_jkt is set when bound_key scope is not requested",
             )
 
@@ -353,6 +356,7 @@ class OAuthAuthorizationParams:
                 error="invalid_request",
                 grant_type=self.grant_type,
                 state=self.state,
+                response_mode=self.response_mode,
                 description="dpop_jkt must be a base64url-encoded SHA-256 JWK thumbprint",
             )
 
@@ -631,7 +635,7 @@ class OAuthFulfillmentStage(StageView):
                     "component": "ak-stage-autosubmit",
                     "title": self.executor.plan.context.get(
                         PLAN_CONTEXT_TITLE,
-                        _("Redirecting to {app}...".format_map({"app": self.application.name})),
+                        _("Redirecting to {app}...").format(app=self.application.name),
                     ),
                     "url": self.params.redirect_uri,
                     "attrs": query_params,
@@ -793,6 +797,7 @@ class OAuthFulfillmentStage(StageView):
             token._id_token = dumps(id_token.to_dict())
 
         token.save()
+        OAuth2SessionLogin.record(token, id_token)
 
         # Code parameter must be present if it's Hybrid Flow.
         if self.params.grant_type == GrantType.HYBRID:

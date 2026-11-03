@@ -1,8 +1,6 @@
 """Account lockdown stage logic"""
 
-from django.apps import apps
-from django.core.exceptions import FieldDoesNotExist
-from django.db.models import Model, QuerySet
+from django.db.models import QuerySet
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
@@ -12,21 +10,17 @@ from dramatiq.actor import Actor
 from dramatiq.composition import group
 from dramatiq.results.errors import ResultTimeout
 
-from authentik.core.models import (
-    AuthenticatedSession,
-    Session,
-    Token,
-    User,
-    UserTypes,
-)
+from authentik.core.models import User, UserTypes
+from authentik.core.signals import deactivation_inhibit_cleanup
+from authentik.enterprise.core.revocation import revoke_user_access
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
-from authentik.lib.models import ExpiringModel
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.stages.password.models import PasswordDevice
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
@@ -43,60 +37,6 @@ SELF_SERVICE_COMPLETION_FLOW_REQUIRED_MESSAGE = _(
 def get_lockdown_target_users() -> QuerySet[User]:
     """Return users that can be targeted by account lockdown."""
     return User.objects.exclude_anonymous().exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
-
-
-def _get_model_field(model: type[Model], field_name: str):
-    """Get a model field by name, if present."""
-    try:
-        return model._meta.get_field(field_name)
-    except FieldDoesNotExist:
-        return None
-
-
-def _has_user_field(model: type[Model]) -> bool:
-    """Check if a model has a direct user foreign key."""
-    field = _get_model_field(model, "user")
-    return bool(field and getattr(field, "remote_field", None) and field.remote_field.model is User)
-
-
-def _has_authenticated_session_field(model: type[Model]) -> bool:
-    """Check if a model is linked to an authenticated session."""
-    field = _get_model_field(model, "session")
-    return bool(
-        field
-        and getattr(field, "remote_field", None)
-        and field.remote_field.model is AuthenticatedSession
-    )
-
-
-def _has_provider_field(model: type[Model]) -> bool:
-    """Check if a model is linked to a provider."""
-    return _get_model_field(model, "provider") is not None
-
-
-def get_lockdown_token_models() -> tuple[type[Model], ...]:
-    """Return token, grant, and provider session models removed by account lockdown."""
-    token_models: list[type[Model]] = []
-    for model in apps.get_models():
-        if model._meta.abstract or not issubclass(model, ExpiringModel):
-            continue
-        if model is Token:
-            token_models.append(model)
-        elif _has_user_field(model) and (
-            _has_provider_field(model) or _has_authenticated_session_field(model)
-        ):
-            token_models.append(model)
-        elif _has_authenticated_session_field(model):
-            token_models.append(model)
-    return tuple(token_models)
-
-
-def get_lockdown_token_queryset(model: type[Model], user: User) -> QuerySet:
-    """Return account lockdown artifacts for a model and user."""
-    manager = model.objects.including_expired()
-    if _has_user_field(model):
-        return manager.filter(user=user)
-    return manager.filter(session__user=user)
 
 
 def can_lock_user(actor, user: User) -> bool:
@@ -146,15 +86,21 @@ class AccountLockdownStageView(StageView):
 
     def _apply_lockdown_actions(self, stage: AccountLockdownStage, user: User) -> None:
         """Apply the configured account changes to the target user."""
-        if stage.deactivate_user:
-            user.is_active = False
-        if stage.set_unusable_password:
-            user.set_unusable_password()
-        if stage.deactivate_user:
-            with sync_outgoing_inhibit_dispatch():
-                user.save()
+        if not stage.deactivate_user:
+            if stage.set_unusable_password:
+                PasswordDevice.set_unusable_password(user)
             return
-        user.save()
+        # Removing the password saves the user too, so it also needs the inhibitors.
+        with (
+            sync_outgoing_inhibit_dispatch(),
+            deactivation_inhibit_cleanup(
+                sessions=not stage.delete_sessions, tokens=not stage.revoke_tokens
+            ),
+        ):
+            if stage.set_unusable_password:
+                PasswordDevice.set_unusable_password(user)
+            user.is_active = False
+            user.save()
 
     def _sync_deactivated_user_to_outgoing_providers(self, user: User) -> None:
         """Synchronize a deactivated user to outgoing sync providers."""
@@ -189,30 +135,6 @@ class AccountLockdownStageView(StageView):
                 timeout=wait_timeout,
             )
 
-    def _get_lockdown_artifact_querysets(
-        self, stage: AccountLockdownStage, user: User
-    ) -> tuple[QuerySet, ...]:
-        """Return the configured sessions and tokens targeted by lockdown."""
-        querysets: list[QuerySet] = []
-        if stage.delete_sessions:
-            querysets.append(Session.objects.filter(authenticatedsession__user=user))
-        if stage.revoke_tokens:
-            querysets.extend(
-                get_lockdown_token_queryset(model, user) for model in get_lockdown_token_models()
-            )
-        return tuple(querysets)
-
-    def _delete_lockdown_artifacts(self, stage: AccountLockdownStage, user: User) -> None:
-        """Delete sessions and tokens selected by the lockdown configuration."""
-        for queryset in self._get_lockdown_artifact_querysets(stage, user):
-            queryset.delete()
-
-    def _has_lockdown_artifacts(self, stage: AccountLockdownStage, user: User) -> bool:
-        """Check whether there are still sessions or tokens to remove."""
-        return any(
-            queryset.exists() for queryset in self._get_lockdown_artifact_querysets(stage, user)
-        )
-
     def _emit_lockdown_event(self, request: HttpRequest, user: User, reason: str) -> None:
         """Emit the audit event for a completed lockdown."""
         # Emit the audit event after the transaction commits. If event creation
@@ -244,13 +166,11 @@ class AccountLockdownStageView(StageView):
         with atomic():
             user = User.objects.get(pk=user.pk)
             self._apply_lockdown_actions(stage, user)
-            self._delete_lockdown_artifacts(stage, user)
 
-        # These additional checks/deletes are done to prevent a timing attack that creates tokens
-        # with a compromised token that is simultaneously being deleted.
-        while self._has_lockdown_artifacts(stage, user):
-            with atomic():
-                self._delete_lockdown_artifacts(stage, user)
+        # Deactivation is committed above before revoking, so the retry loop
+        # inside revoke_user_access closes the timing-attack window where a
+        # credential is minted with a token being deleted.
+        revoke_user_access(user, sessions=stage.delete_sessions, tokens=stage.revoke_tokens)
 
         if stage.deactivate_user:
             try:

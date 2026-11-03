@@ -1,5 +1,4 @@
 import "#components/ak-status-label";
-
 import { SlottedTemplateResult } from "#elements/types";
 
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
@@ -84,12 +83,16 @@ function formatRedirectUris(uris: RedirectURI[] = []) {
                   (uri) =>
                       html`<li>
                           ${uri.url}
-                          (${uri.matchingMode === MatchingModeEnum.Strict
-                              ? msg("strict")
-                              : msg("regexp")},
-                          ${uri.redirectUriType === RedirectURITypeEnum.Logout
-                              ? msg("post logout")
-                              : msg("authorization")})
+                          (${
+                              uri.matchingMode === MatchingModeEnum.Strict
+                                  ? msg("strict")
+                                  : msg("regexp")
+                          },
+                          ${
+                              uri.redirectUriType === RedirectURITypeEnum.Logout
+                                  ? msg("post logout")
+                                  : msg("authorization")
+                          })
                       </li>`,
               )}
           </ul>`
@@ -165,6 +168,7 @@ const renderLDAPOverview: ProviderOverview<LDAPProvider> = (provider) => {
 
 function renderWSFedOverview(rawProvider: OneOfProvider) {
     const provider = rawProvider as WSFederationProvider;
+
     return renderSummary("WS-Federation", provider.name, [
         [msg("Reply URL"), provider.replyUrl],
         [msg("Realm"), provider.wtrealm || "-"],

@@ -26,6 +26,7 @@ export const dateProperty: PropertyDeclaration<Date | null> = {
         if (value instanceof Date && previousValue instanceof Date) {
             return value.getTime() !== previousValue.getTime();
         }
+
         return value !== previousValue;
     },
 };
