@@ -17,8 +17,10 @@ use eyre::{Result, WrapErr as _, eyre};
 #[cfg(target_os = "linux")]
 use nix::unistd::setgroups;
 use nix::{
+    errno::Errno,
     fcntl::{AT_FDCWD, AtFlags},
-    unistd::{Gid, Group, Uid, User, getuid, setgid, setuid},
+    sys::signal::kill,
+    unistd::{Gid, Group, Pid, Uid, User, getuid, setgid, setuid},
 };
 use tracing::{info, warn};
 
@@ -28,6 +30,8 @@ const AK_USER: &str = "authentik";
 const DOCKER_SOCKET: &str = "/var/run/docker.sock";
 /// Where Python's prometheus client keeps the metrics of each process.
 const PROMETHEUS_MULTIPROC_DIR: &str = "PROMETHEUS_MULTIPROC_DIR";
+/// Metric files below this suffix belong to gunicorn worker IDs, not PIDs.
+const METRIC_WORKER_ID_CUTOFF: i32 = 100;
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// Run a Django management command.
@@ -93,6 +97,38 @@ fn prometheus_dir() -> Result<PathBuf> {
         );
     fs::create_dir_all(&dir)?;
     Ok(dir)
+}
+
+/// The process that wrote a metric file such as `counter_1234.db`, when it can be told.
+fn metric_file_writer(path: &Path) -> Option<i32> {
+    if path.extension()? != "db" {
+        return None;
+    }
+    let (_, writer) = path.file_stem()?.to_str()?.rsplit_once('_')?;
+    let writer = writer.parse().ok()?;
+    (writer >= METRIC_WORKER_ID_CUTOFF).then_some(writer)
+}
+
+/// Remove the metric files of dead processes.
+///
+/// `prometheus_client` never deletes them, and commands such as `ak manage` write theirs under
+/// their PID, so a long-lived directory keeps growing. Files named after a gunicorn worker ID
+/// are reused and left alone.
+fn dispose_orphaned_metric_files(dir: &Path) -> Result<()> {
+    for entry in fs::read_dir(dir)? {
+        let path = entry?.path();
+        let Some(writer) = metric_file_writer(&path) else {
+            continue;
+        };
+        // EPERM means the process exists but belongs to someone else
+        if kill(Pid::from_raw(writer), None) != Err(Errno::ESRCH) {
+            continue;
+        }
+        if let Err(err) = fs::remove_file(&path) {
+            warn!(?err, path = %path.display(), "failed to remove orphaned metric file");
+        }
+    }
+    Ok(())
 }
 
 /// Replace this process with `cmd`. Only returns when that fails.
@@ -273,6 +309,7 @@ pub(crate) fn bootstrap() -> Result<()> {
         cmd.args(std::env::args_os().skip(1)).envs(env);
         return exec(cmd);
     }
+    dispose_orphaned_metric_files(&prometheus_dir)?;
     wait_for_db()?;
     run_migrations()
 }
@@ -351,5 +388,41 @@ mod tests {
     fn shell_flags_are_kept() {
         let bash = Bash::from_args(&["bash"], &["--", "-c", "echo hi"]).expect("failed to parse");
         assert_eq!(bash.args, ["-c", "echo hi"]);
+    }
+
+    #[test]
+    fn metric_file_writers() {
+        assert_eq!(
+            metric_file_writer(Path::new("counter_1234.db")),
+            Some(1234_i32)
+        );
+        assert_eq!(
+            metric_file_writer(Path::new("gauge_livesum_4321.db")),
+            Some(4321_i32)
+        );
+        assert_eq!(metric_file_writer(Path::new("counter_1.db")), None);
+        assert_eq!(metric_file_writer(Path::new("counter_abc.db")), None);
+        assert_eq!(metric_file_writer(Path::new("counter_1234.txt")), None);
+    }
+
+    #[test]
+    fn only_dead_writers_are_reaped() {
+        let dir = tempfile::tempdir().expect("failed to create directory");
+        let mut child = Command::new("true").spawn().expect("failed to spawn");
+        let dead = child.id();
+        child.wait().expect("failed to wait");
+        let names = [
+            format!("counter_{}.db", std::process::id()),
+            format!("counter_{dead}.db"),
+            "counter_1.db".to_owned(),
+            "notes.txt".to_owned(),
+        ];
+        for name in &names {
+            fs::write(dir.path().join(name), "").expect("failed to write");
+        }
+        dispose_orphaned_metric_files(dir.path()).expect("failed to reap");
+        for name in &names {
+            assert_eq!(dir.path().join(name).exists(), *name != names[1], "{name}");
+        }
     }
 }
