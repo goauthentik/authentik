@@ -2,6 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 
+from django.db import transaction
 from django.db.models.signals import m2m_changed
 from django.test import TestCase
 
@@ -11,6 +12,7 @@ from authentik.sources.ldap.models import (
     GroupLDAPSourceConnection,
     LDAPSource,
     LDAPSourcePropertyMapping,
+    UserLDAPSourceConnection,
 )
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
@@ -43,6 +45,13 @@ class LDAPMembershipSyncTests(TestCase):
             )
         )
 
+    def create_connected_user(self, **kwargs):
+        user = User.objects.create(**kwargs)
+        UserLDAPSourceConnection.objects.create(
+            source=self.source, user=user, identifier=generate_id()
+        )
+        return user
+
     def test_repeated_sync_with_list_property_mapping(self):
         """A mapping returning a list must not remove an existing LDAP membership."""
         mapping = LDAPSourcePropertyMapping.objects.create(
@@ -73,12 +82,16 @@ class LDAPMembershipSyncTests(TestCase):
         """Match scalar and singleton-list identifiers without retaining departed members."""
         self.source.user_membership_attribute = "uid"
         self.source.group_membership_field = "memberUid"
-        scalar_member = User.objects.create(username=generate_id(), attributes={"uid": "scalar"})
-        list_member = User.objects.create(username=generate_id(), attributes={"uid": ["list"]})
-        departed_member = User.objects.create(
+        scalar_member = self.create_connected_user(
+            username=generate_id(), attributes={"uid": "scalar"}
+        )
+        list_member = self.create_connected_user(
+            username=generate_id(), attributes={"uid": ["list"]}
+        )
+        departed_member = self.create_connected_user(
             username=generate_id(), attributes={"uid": ["departed"]}
         )
-        empty_member = User.objects.create(username=generate_id(), attributes={"uid": []})
+        empty_member = self.create_connected_user(username=generate_id(), attributes={"uid": []})
         self.group.users.set([scalar_member, list_member, departed_member, empty_member])
         self.group_data["attributes"]["memberUid"] = ["scalar", "list"]
 
@@ -95,7 +108,7 @@ class LDAPMembershipSyncTests(TestCase):
 
     def test_missing_membership_attribute(self):
         """Preserve the existing fallback for members without a matching attribute."""
-        member = User.objects.create(username=generate_id())
+        member = self.create_connected_user(username=generate_id())
         self.group.users.add(member)
 
         MembershipLDAPSynchronizer(self.source, Task()).sync([self.group_data])
@@ -106,10 +119,10 @@ class LDAPMembershipSyncTests(TestCase):
         """Reconciling one group's page must not alter another group's membership."""
         first_dn = "cn=first,dc=example,dc=com"
         second_dn = "cn=second,dc=example,dc=com"
-        first_member = User.objects.create(
+        first_member = self.create_connected_user(
             username=generate_id(), attributes={"distinguishedName": [first_dn]}
         )
-        second_member = User.objects.create(
+        second_member = self.create_connected_user(
             username=generate_id(), attributes={"distinguishedName": second_dn}
         )
         second_group = Group.objects.create(name=generate_id())
@@ -132,7 +145,7 @@ class LDAPMembershipSyncTests(TestCase):
     def test_reverse_lookup_with_list_attribute(self):
         """Reverse LDAP searches also match a list-valued distinguished name."""
         user_dn = "cn=user,dc=example,dc=com"
-        member = User.objects.create(
+        member = self.create_connected_user(
             username=generate_id(), attributes={"distinguishedName": [user_dn]}
         )
         self.source.lookup_groups_from_user = True
@@ -145,13 +158,13 @@ class LDAPMembershipSyncTests(TestCase):
 
     def test_membership_changes_preserve_signals_and_existing_rows(self):
         """Only changed memberships notify audit and outgoing sync signal receivers."""
-        retained = User.objects.create(
+        retained = self.create_connected_user(
             username=generate_id(), attributes={"distinguishedName": "retained"}
         )
-        departed = User.objects.create(
+        departed = self.create_connected_user(
             username=generate_id(), attributes={"distinguishedName": "departed"}
         )
-        added = User.objects.create(
+        added = self.create_connected_user(
             username=generate_id(), attributes={"distinguishedName": ["added"]}
         )
         retained_membership = UserGroup.objects.create(user=retained, group=self.group)
@@ -190,10 +203,10 @@ class LDAPMembershipSyncTests(TestCase):
 
     def test_membership_changes_are_atomic(self):
         """A failed addition rolls back removals from the same reconciliation."""
-        departed = User.objects.create(
+        departed = self.create_connected_user(
             username=generate_id(), attributes={"distinguishedName": "departed"}
         )
-        added = User.objects.create(
+        added = self.create_connected_user(
             username=generate_id(), attributes={"distinguishedName": "added"}
         )
         membership = UserGroup.objects.create(user=departed, group=self.group)
@@ -201,7 +214,64 @@ class LDAPMembershipSyncTests(TestCase):
 
         with patch.object(type(self.group.users), "add", side_effect=RuntimeError("add failed")):
             with self.assertRaisesMessage(RuntimeError, "add failed"):
-                MembershipLDAPSynchronizer(self.source, Task()).sync([self.group_data])
+                with transaction.atomic():
+                    MembershipLDAPSynchronizer(self.source, Task()).sync([self.group_data])
 
         membership.refresh_from_db()
         self.assertFalse(UserGroup.objects.filter(user=added, group=self.group).exists())
+
+    def test_only_current_source_connections_are_matched(self):
+        """Matching attributes alone do not associate users with the current LDAP source."""
+        member = self.create_connected_user(
+            username=generate_id(), attributes={"distinguishedName": ["member"]}
+        )
+        unconnected = User.objects.create(
+            username=generate_id(), attributes={"distinguishedName": "member"}
+        )
+        other_source_member = User.objects.create(
+            username=generate_id(), attributes={"distinguishedName": ["member"]}
+        )
+        other_source = LDAPSource.objects.create(name=generate_id(), slug=generate_id())
+        UserLDAPSourceConnection.objects.create(
+            source=other_source, user=other_source_member, identifier=generate_id()
+        )
+        self.group_data["attributes"]["member"] = ["member"]
+
+        synchronizer = MembershipLDAPSynchronizer(self.source, Task())
+        for existing_members in ([], [unconnected, other_source_member]):
+            with self.subTest(existing_members=existing_members):
+                self.group.users.set(existing_members)
+                self.assertEqual(synchronizer.sync([self.group_data]), 2)
+                self.assertQuerySetEqual(self.group.users.all(), [member], ordered=False)
+
+    def test_missing_attribute_fallback_is_source_scoped(self):
+        """Only connected existing members qualify for the missing-attribute fallback."""
+        retained = self.create_connected_user(username=generate_id())
+        unconnected = User.objects.create(username=generate_id())
+        other_source_member = User.objects.create(username=generate_id())
+        other_source = LDAPSource.objects.create(name=generate_id(), slug=generate_id())
+        UserLDAPSourceConnection.objects.create(
+            source=other_source, user=other_source_member, identifier=generate_id()
+        )
+        not_a_member = self.create_connected_user(username=generate_id())
+        self.group.users.set([retained, unconnected, other_source_member])
+
+        self.assertEqual(MembershipLDAPSynchronizer(self.source, Task()).sync([self.group_data]), 2)
+
+        self.assertQuerySetEqual(self.group.users.all(), [retained], ordered=False)
+        self.assertFalse(self.group.users.filter(pk=not_a_member.pk).exists())
+
+    def test_user_connected_to_multiple_sources(self):
+        """A user connected to this source and another source is still matched once."""
+        member = self.create_connected_user(
+            username=generate_id(), attributes={"distinguishedName": "member"}
+        )
+        other_source = LDAPSource.objects.create(name=generate_id(), slug=generate_id())
+        UserLDAPSourceConnection.objects.create(
+            source=other_source, user=member, identifier=generate_id()
+        )
+        self.group_data["attributes"]["member"] = ["member"]
+
+        self.assertEqual(MembershipLDAPSynchronizer(self.source, Task()).sync([self.group_data]), 2)
+
+        self.assertQuerySetEqual(self.group.users.all(), [member], ordered=False)
