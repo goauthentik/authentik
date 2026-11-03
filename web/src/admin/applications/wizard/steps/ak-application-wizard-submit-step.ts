@@ -43,7 +43,7 @@ import {
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -118,7 +118,7 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
     protected state: SubmitStates = "reviewing";
 
     @state()
-    protected createdProviderPk?: number;
+    protected createdProviderPk: number | null = null;
 
     async sendSAMLMetadataImport() {
         const providerData = this.wizard.provider as ProvidersSamlImportMetadataCreateRequest;
@@ -233,7 +233,7 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
                     .coreApplicationsRetrieve({ slug: request.app.slug })
                     .catch(() => null);
 
-                this.createdProviderPk = createdApp?.provider ?? undefined;
+                this.createdProviderPk = createdApp?.provider ?? null;
                 this.state = "submitted";
             })
 
@@ -314,7 +314,7 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
         state: string,
         label: string,
         icons: string[],
-        extraInfo: SlottedTemplateResult = nothing,
+        extraInfo: SlottedTemplateResult = null,
     ) {
         const icon = classMap(icons.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}));
 
@@ -342,30 +342,30 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
                               { id: "application.wizard.next-steps.outpost.description" },
                           )}
                       </div>`
-                    : nothing
+                    : null
             }
             <div class="pf-c-empty-state__primary">
                 ${
-                    this.createdProviderPk !== undefined
+                    typeof this.createdProviderPk === "number"
                         ? html`<a
                               class="pf-c-button pf-m-primary"
                               href=${toAdminInterface(`core/providers/${this.createdProviderPk}`)}
-                              >${msg("View provider", {
+                              >${msg("View Provider", {
                                   id: "application.wizard.next-steps.view-provider.label",
                               })}</a
                           >`
-                        : nothing
+                        : null
                 }
                 ${
                     needsOutpost
                         ? html`<a
                               class="pf-c-button pf-m-secondary"
                               href=${toAdminInterface("outpost/outposts")}
-                              >${msg("Go to outposts", {
+                              >${msg("Go to Outposts", {
                                   id: "application.wizard.next-steps.outposts.label",
                               })}</a
                           >`
-                        : nothing
+                        : null
                 }
             </div>`;
     }
@@ -373,7 +373,7 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
     renderError() {
         const { errors } = this.wizard;
 
-        if (Object.keys(errors).length === 0) return nothing;
+        if (Object.keys(errors).length === 0) return null;
 
         return html` <ak-divider></ak-divider>
             ${match(errors)
@@ -475,7 +475,7 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
                                           ${metaLaunchUrl}
                                       </dt>
                                   </div>`
-                                : nothing
+                                : null
                         }
                     </dl>
                 </fieldset>
