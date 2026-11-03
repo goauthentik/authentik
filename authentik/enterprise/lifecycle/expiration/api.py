@@ -158,12 +158,9 @@ class UserExpirationRuleViewSet(UsedByMixin, ModelViewSet):
         if request.method == "POST":
             serializer = self.get_serializer(rule, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
-            # Transports affect warning delivery, not qualification or row settings.
             for field, value in serializer.validated_data.items():
                 if field not in ("pk", "id", "pbm_uuid", "notification_transports"):
                     setattr(rule, field, value)
-        # Preview as if enabled. Keep the rule's identity so its policy bindings
-        # still apply.
         rule.enabled = True
         counts = dict.fromkeys(("updated", "taken_over", "removed"), 0)
         offboardings: dict[str, list[dict]] = {change: [] for change in counts}
@@ -188,8 +185,7 @@ class UserExpirationRuleViewSet(UsedByMixin, ModelViewSet):
                     "revoke_tokens": rule.revoke_tokens if due_at is not None else None,
                 }
             )
-        # The sweep withdraws stale owned rows before selecting new candidates. A
-        # user may still fall within the warning window and be scheduled again.
+        # Like the sweep, withdrawn users can be scheduled again.
         candidates = rule.candidates(withdrawn=withdrawn).order_by("username")
         data: dict[str, object] = {
             "count": candidates.count(),

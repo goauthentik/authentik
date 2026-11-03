@@ -254,8 +254,7 @@ class TokenView(View):
         from authentik.flows.views.executor import SESSION_KEY_PLAN
 
         user = self.params.refresh_token.user
-        # Skip when `from_http` would credit someone else (impersonation, or a flow
-        # for another user).
+        # Don't credit the user during impersonation or another user's flow.
         if SESSION_KEY_IMPERSONATE_USER in self.request.session:
             return response
         plan = self.request.session.get(SESSION_KEY_PLAN)

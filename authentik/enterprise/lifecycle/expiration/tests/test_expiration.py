@@ -58,10 +58,6 @@ def _pending(user: User) -> UserOffboarding | None:
 
 
 class ExpirationTestCase(APITestCase):
-    # No schedule reconciliation here: it would run every startup task synchronously
-    # through the test broker (blueprint discovery included) inside the test
-    # transaction. Saving a rule tolerates a missing schedule row, and the dispatch
-    # itself is patched below.
     def setUp(self):
         # Rule saves dispatch an apply task; keep sweeps explicit in tests.
         patcher = patch(APPLY_RULE)
@@ -604,8 +600,7 @@ class TestOverlapAndChange(ExpirationTestCase):
 
 
 def _sweep_concurrently(test: TransactionTestCase, rules: tuple, user: User):
-    """Run `apply()` for every rule at once, each seeing `user` as a candidate regardless
-    of what the others inserted, so the insert race and the IntegrityError path run."""
+    """Run `apply()` for every rule at once to exercise the insert race."""
     barrier = Barrier(len(rules), timeout=10)
     errors: list = []
 
@@ -1022,8 +1017,7 @@ class TestAPI(ExpirationTestCase):
         self.assertEqual(rule.user_types, [UserTypes.INTERNAL, UserTypes.EXTERNAL])
 
     def test_create_defaults_to_disabled(self):
-        """A new rule schedules nobody until it is enabled, so it can be previewed and have
-        policies bound first."""
+        """A new rule schedules nobody until it is enabled."""
         dormant = _dormant_user()
         response = self.client.post(
             reverse("authentik_api:userexpirationrule-list"), {"name": generate_id()}

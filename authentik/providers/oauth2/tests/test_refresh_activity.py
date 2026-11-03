@@ -199,8 +199,7 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
             clock.tick(timedelta(seconds=1))
             self.assertEqual(self._refresh().status_code, 200)
             self.assertEqual(UserActivity.objects.all().count(), 1)
-            # A queued execution observes a less strict owner and resolves the
-            # earlier event-based winner, retaining the row's original creation time.
+            # Execution hands the row to the stricter rule and keeps its creation time.
             owner.inactivity_duration = "days=130"
             owner.save()
             winner = UserExpirationRule.objects.create(
