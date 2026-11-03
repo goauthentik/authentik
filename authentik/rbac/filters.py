@@ -83,6 +83,7 @@ class ObjectFilter(ObjectPermissionsFilter):
             return checks.filter_list(self.visible_objects(request, queryset, view), queryset)
         return self.visible_objects(request, queryset, view, refuse_if_none=True)
 
+    @active_tracer().instrument()
     def visible_objects(
         self, request: Request, queryset: QuerySet, view: APIView, refuse_if_none: bool = False
     ) -> QuerySet:
