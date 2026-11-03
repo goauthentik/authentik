@@ -304,7 +304,7 @@ mod tests {
             name: "app".to_owned(),
             external_host: "https://app.example.com".to_owned(),
             client_id: Some(CLIENT_ID.to_owned()),
-            cookie_secret: Some(COOKIE_SECRET.to_owned()),
+            cookie_secret: COOKIE_SECRET.to_owned(),
             mode: Some(ProxyMode::ForwardSingle),
             oidc_configuration: OpenIdConnectConfiguration {
                 authorization_endpoint: "https://authentik.example.com/application/o/authorize/"
