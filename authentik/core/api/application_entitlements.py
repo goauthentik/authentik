@@ -4,6 +4,7 @@ from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet, ModelChoiceFilter
+from drf_spectacular.utils import extend_schema_field
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ReadOnlyField
@@ -57,12 +58,17 @@ class ApplicationEntitlementFilter(FilterSet):
     for_user = ModelChoiceFilter(
         queryset=User.objects.all(),
         method="filter_for_user",
-        label=_(
-            "Entitlements assigned to this user, directly or through a group, "
-            "regardless of the user's access to the application."
-        ),
     )
 
+    @extend_schema_field(
+        {
+            "type": "integer",
+            "description": _(
+                "Entitlements assigned to this user, directly or through a group, "
+                "regardless of the user's access to the application."
+            ),
+        }
+    )
     def filter_for_user(
         self, queryset: QuerySet[ApplicationEntitlement], name, value: User
     ) -> QuerySet[ApplicationEntitlement]:

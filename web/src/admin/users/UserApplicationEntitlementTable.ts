@@ -1,6 +1,6 @@
 import { aki } from "#common/api/client";
 
-import { paramURL } from "#elements/router/RouterOutlet";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -33,11 +33,7 @@ export class UserApplicationEntitlementTable extends Table<ApplicationEntitlemen
 
     row(item: ApplicationEntitlement): SlottedTemplateResult[] {
         return [
-            html`<a
-                href=${paramURL(`/core/applications/${item.appSlug}`, {
-                    page: "page-app-entitlements",
-                })}
-            >
+            html`<a href=${toAdminInterface(`core/applications/${item.appSlug}/app-entitlements`)}>
                 ${item.appName}
             </a>`,
             html`${item.name}`,

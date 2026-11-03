@@ -2768,7 +2768,7 @@ paths:
       - in: query
         name: for_user
         schema:
-          type: string
+          type: integer
         description: Entitlements assigned to this user, directly or through a group,
           regardless of the user's access to the application.
       - $ref: '#/components/parameters/QueryName'
@@ -2975,7 +2975,7 @@ paths:
       - in: query
         name: for_user
         schema:
-          type: string
+          type: integer
         description: Entitlements assigned to this user, directly or through a group,
           regardless of the user's access to the application.
       - $ref: '#/components/parameters/QueryName'

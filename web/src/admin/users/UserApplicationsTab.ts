@@ -1,6 +1,8 @@
 import "#admin/users/UserApplicationEntitlementTable";
 import "#admin/users/UserApplicationTable";
 import "#elements/Tabs";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKElement } from "#elements/Base";
 import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
@@ -10,9 +12,6 @@ import { User } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-applications-tab")
 export class UserApplicationsTab extends WithLazyTabs(AKElement) {
