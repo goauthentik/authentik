@@ -63,7 +63,9 @@ export class CustomPermissionForm extends ModelForm<CustomPermission, string> {
                 ></ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "The model the permission applies to. Use authentik_rbac.systempermission for permissions about authentik as a whole. It cannot be changed later.",
+                        html`The model the permission applies to. Use
+                            <code>authentik_rbac.systempermission</code> for permissions about
+                            authentik as a whole. It cannot be changed later.`,
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -72,9 +74,12 @@ export class CustomPermissionForm extends ModelForm<CustomPermission, string> {
                 required
                 name="codename"
                 value=${this.instance?.codename ?? "custom_"}
-                help=${msg(
-                    "Starts with custom_, followed by lowercase letters, digits and underscores. It cannot be changed later.",
-                )}
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                    ${msg(
+                        html`Starts with <code>custom_</code>, followed by lowercase letters, digits
+                            and underscores. It cannot be changed later.`,
+                    )}
+                </p>`}
             >
             </ak-text-input>
             <ak-text-input
