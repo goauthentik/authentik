@@ -253,11 +253,9 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
             if not has_perm:
                 raise ValidationError(
                     _(
-                        (
-                            "User does not have permission to set "
-                            "superuser status to {superuser_status}."
-                        ).format_map({"superuser_status": superuser})
-                    )
+                        "User does not have permission to set "
+                        "superuser status to {superuser_status}."
+                    ).format(superuser_status=superuser)
                 )
         return superuser
 

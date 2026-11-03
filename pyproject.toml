@@ -182,10 +182,22 @@ select = [
   "DJ",  # django
   "PL",  # pylint
   "BLE", # flake8-blind-except
+  "INT", # flake8-gettext
 ]
 ignore = [
   "DJ001",   # Avoid using `null=True` on string-based fields,
   "PLC0415", # `import` should be at the top-level of a file
+]
+
+[tool.ruff.lint.flake8-gettext]
+extend-function-names = [
+  "gettext_lazy",
+  "gettext_noop",
+  "ngettext_lazy",
+  "pgettext",
+  "pgettext_lazy",
+  "npgettext",
+  "npgettext_lazy",
 ]
 
 [tool.ruff.lint.pylint]

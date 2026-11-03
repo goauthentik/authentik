@@ -10,6 +10,7 @@ from django.core.mail.message import sanitize_address
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils import translation
+from django.utils.functional import Promise
 
 
 @lru_cache
@@ -54,6 +55,9 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         sanitized_cc = _sanitize_recipients(cc) if cc else None
         sanitized_bcc = _sanitize_recipients(bcc) if bcc else None
         super().__init__(to=sanitized_to, cc=sanitized_cc, bcc=sanitized_bcc, **kwargs)
+        if isinstance(self.subject, Promise):
+            with translation.override(language):
+                self.subject = str(self.subject)
         if not template_name:
             return
         with translation.override(language):
