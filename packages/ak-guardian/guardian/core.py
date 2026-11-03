@@ -107,7 +107,7 @@ class ObjectPermissionChecker:
             if self.user and self.user.is_superuser:
                 perms = Permission.objects.all()
                 if obj:
-                    perms = perms.filter(get_content_type(type(obj)))
+                    perms = perms.filter(content_type=get_content_type(obj))
             else:
                 filter = Q(**self.model_filter())
                 if obj:

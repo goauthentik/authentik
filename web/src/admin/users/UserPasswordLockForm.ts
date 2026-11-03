@@ -1,0 +1,126 @@
+import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
+import { APIMessage, MessageLevel } from "#common/messages";
+import { formatDisambiguatedUserDisplayName } from "#common/users";
+
+import { modalInvoker } from "#elements/dialogs";
+import { DestructiveModelForm } from "#elements/forms/DestructiveModelForm";
+import { WithLocale } from "#elements/mixins/locale";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { AuthenticatorsApi, User, UserTypeEnum } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, nothing } from "lit";
+import { customElement } from "lit/decorators.js";
+
+@customElement("ak-user-password-lock-form")
+export class UserPasswordLockForm extends WithLocale(DestructiveModelForm<User>) {
+    public override size = PFSize.Small;
+
+    protected authenticatorsAPI = aki(AuthenticatorsApi);
+
+    protected get locked(): boolean {
+        return !!this.instance?.passwordLocked;
+    }
+
+    protected override send(): Promise<unknown> {
+        if (!this.instance?.passwordDevice) {
+            return Promise.reject(new Error("No password device provided"));
+        }
+
+        return this.locked
+            ? this.authenticatorsAPI.authenticatorsPasswordUnlockCreate({
+                  id: this.instance.passwordDevice,
+              })
+            : this.authenticatorsAPI.authenticatorsPasswordLockCreate({
+                  id: this.instance.passwordDevice,
+              });
+    }
+
+    public override formatSubmitLabel(): string {
+        return this.locked
+            ? msg("Unlock password login", { id: "user.action.password-unlock.label" })
+            : msg("Lock password login", { id: "user.action.password-lock.label" });
+    }
+
+    protected override formatSubmittingLabel(): string {
+        return this.locked
+            ? msg("Unlocking password login...", { id: "user.action.password-unlock.pending" })
+            : msg("Locking password login...", { id: "user.action.password-lock.pending" });
+    }
+
+    protected override formatSubmittedLabel(): string {
+        return this.locked
+            ? msg("Password login unlocked", { id: "user.action.password-unlock.success" })
+            : msg("Password login locked", { id: "user.action.password-lock.success" });
+    }
+
+    protected override formatAPISuccessMessage(): APIMessage {
+        return { level: MessageLevel.success, message: this.formatSubmittedLabel() };
+    }
+
+    protected override formatHeadline(): string {
+        return this.locked
+            ? msg("Review password unlock", { id: "user.action.password-unlock-review.label" })
+            : msg("Review password lock", { id: "user.action.password-lock-review.label" });
+    }
+
+    protected override renderForm(): SlottedTemplateResult {
+        const displayName = this.instance
+            ? formatDisambiguatedUserDisplayName(this.instance, this.activeLanguageTag)
+            : msg("Unknown user", { id: "user.display.unknown.label" });
+
+        return html`<p class="pf-c-form__helper-text">
+            ${
+                this.locked
+                    ? msg(str`Allow ${displayName} to authenticate with a password again?`, {
+                          id: "user.action.password-unlock-confirm.description",
+                      })
+                    : msg(
+                          str`Prevent ${displayName} from authenticating through password stages, including with app passwords? Existing sessions and passwordless authentication are not affected.`,
+                          { id: "user.action.password-lock-confirm.description" },
+                      )
+            }
+        </p>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-password-lock-form": UserPasswordLockForm;
+    }
+}
+
+export interface ToggleUserPasswordLockButtonProps {
+    className?: string;
+    hasEnterpriseLicense?: boolean;
+}
+
+export function ToggleUserPasswordLockButton(
+    user: User,
+    { className = "", hasEnterpriseLicense = false }: ToggleUserPasswordLockButtonProps = {},
+): SlottedTemplateResult {
+    const locked = !!user.passwordLocked;
+
+    const serviceAccount =
+        user.type === UserTypeEnum.ServiceAccount ||
+        user.type === UserTypeEnum.InternalServiceAccount;
+
+    // Unlock remains available without a license.
+    if (!user.passwordDevice || (!locked && (!hasEnterpriseLicense || serviceAccount))) {
+        return nothing;
+    }
+
+    const label = locked
+        ? msg("Unlock password login", { id: "user.action.password-unlock.label" })
+        : msg("Lock password login", { id: "user.action.password-lock.label" });
+
+    return html`<button
+        class="pf-c-button pf-m-warning ${className}"
+        type="button"
+        ${modalInvoker(UserPasswordLockForm, { instance: user })}
+    >
+        ${label}
+    </button>`;
+}
