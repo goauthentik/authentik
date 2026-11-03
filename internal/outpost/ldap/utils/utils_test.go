@@ -1,8 +1,11 @@
 package utils
 
 import (
+	"slices"
+	"strings"
 	"testing"
 
+	"beryju.io/ldap"
 	"github.com/stretchr/testify/assert"
 	api "goauthentik.io/packages/client-go"
 )
@@ -102,4 +105,69 @@ func TestAKAttrsToLDAP_Mixed(t *testing.T) {
 	assert.Equal(t, 1, len(mapped))
 	assert.Equal(t, "foo", mapped[0].Name)
 	assert.Equal(t, []string{"foo", "6"}, mapped[0].Values)
+}
+
+func TestAKNestedAttrsToLDAP_onelevel(t *testing.T) {
+	d := map[string]any{
+		"bar": map[string]any{
+			"baz": "quux",
+		},
+	}
+	mapped := AttributesToLDAP(d, func(key string) string {
+		return AttributeKeySanitize(key)
+	}, func(value []string) []string {
+		return value
+	})
+	assert.Equal(t, 1, len(mapped))
+	assert.Equal(t, "bar--baz", mapped[0].Name)
+	assert.Equal(t, []string{"quux"}, mapped[0].Values)
+}
+
+func TestAKNestedAttrsToLDAP_multiple_levels(t *testing.T) {
+	d := map[string]any{
+		"foo": map[string]any{
+			"bar": map[string]any{
+				"baz": "quux",
+			},
+		},
+	}
+	mapped := AttributesToLDAP(d, func(key string) string {
+		return AttributeKeySanitize(key)
+	}, func(value []string) []string {
+		return value
+	})
+	assert.Equal(t, 1, len(mapped))
+	assert.Equal(t, "foo--bar--baz", mapped[0].Name)
+	assert.Equal(t, []string{"quux"}, mapped[0].Values)
+}
+
+func TestAKNestedAttrsToLDAP_more_than_one_attr(t *testing.T) {
+	d := map[string]any{
+		"root": "value",
+		"lorem": map[string]any{
+			"ipsum": "dolor",
+		},
+		"foo": map[string]any{
+			"bar": map[string]any{
+				"baz": "quux",
+			},
+		},
+	}
+	mapped := AttributesToLDAP(d, func(key string) string {
+		return AttributeKeySanitize(key)
+	}, func(value []string) []string {
+		return value
+	})
+	assert.Equal(t, 3, len(mapped))
+
+	slices.SortFunc(mapped, func(a, b *ldap.EntryAttribute) int {
+		return strings.Compare(strings.ToLower(a.Name), strings.ToLower(b.Name))
+	})
+
+	assert.Equal(t, "foo--bar--baz", mapped[0].Name)
+	assert.Equal(t, []string{"quux"}, mapped[0].Values)
+	assert.Equal(t, "lorem--ipsum", mapped[1].Name)
+	assert.Equal(t, []string{"dolor"}, mapped[1].Values)
+	assert.Equal(t, "root", mapped[2].Name)
+	assert.Equal(t, []string{"value"}, mapped[2].Values)
 }
