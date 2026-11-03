@@ -205,7 +205,9 @@ export class AuthenticatorValidateStage
             }
         }
 
-        if (this.initialized || !this.challenge) {
+        // A challenge without devices has nothing to select. Keep the stage uninitialized, so
+        // the device is selected automatically once the stage is loaded again.
+        if (this.initialized || !this.challenge?.deviceChallenges.length) {
             return;
         }
 
@@ -342,7 +344,40 @@ export class AuthenticatorValidateStage
         });
     }
 
+    /**
+     * The challenge offers neither a device nor a configuration stage, e.g. when another tab of
+     * the same browser replaced the flow this page was answering. Without this, the stage would
+     * be an empty card the user can't leave.
+     */
+    protected renderUnavailable(): TemplateResult {
+        return html`<p class="pf-c-form__helper-text pf-m-error" role="alert">
+                ${msg(
+                    "This step could not be loaded. It may have been continued in another tab or window.",
+                )}
+            </p>
+            <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+                <button
+                    class="pf-c-button pf-m-primary pf-m-block"
+                    type="button"
+                    @click=${() => this.refresh()}
+                >
+                    ${msg("Try again")}
+                </button>
+            </fieldset>`;
+    }
+
     protected renderAuthenticatorSelection(): TemplateResult {
+        if (
+            this.challenge &&
+            !this.challenge.deviceChallenges.length &&
+            !this.challenge.configurationStages.length
+        ) {
+            return html`<form class="pf-c-form">
+                ${this.renderUserInfo()}${this.renderUnavailable()}
+            </form>`;
+        }
+
         return html`<form class="pf-c-form">
             ${this.renderUserInfo()}${this.renderStagePicker()}${this.renderDevicePicker()}
         </form>`;
