@@ -2,8 +2,10 @@
 
 import base64
 import json
+from unittest import skipIf
 
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.backends.openssl.backend import backend
 from cryptography.x509 import load_der_x509_certificate
 from django.urls.base import reverse
 from jwt import PyJWKSet, decode
@@ -93,6 +95,7 @@ class TestJWKS(OAuthTestCase):
         self.assertEqual(len(body["keys"]), 1)
         PyJWKSet.from_dict(body)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no EdDSA")
     def test_eddsa(self):
         """Test JWKS request with EdDSA, for both Edwards curves"""
         for alg, crv in [(PrivateKeyAlg.ED25519, "Ed25519"), (PrivateKeyAlg.ED448, "Ed448")]:
@@ -123,6 +126,7 @@ class TestJWKS(OAuthTestCase):
                 # key is actually usable by a relying party rather than merely well-shaped.
                 PyJWKSet.from_dict(body)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
     def test_eddsa_sign_verify(self):
         """Test a token signed with EdDSA verifies against the published JWKS"""
         provider = OAuth2Provider.objects.create(
