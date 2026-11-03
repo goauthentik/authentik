@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { Token } from "./Token";
-import { TokenFromJSON } from "./Token";
+import type { Token } from "./Token.js";
+import { TokenFromJSON } from "./Token.js";
 
 /**
  * SCIMSource Serializer

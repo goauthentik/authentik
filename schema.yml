@@ -2067,6 +2067,50 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /authenticators/password/{id}/lock/:
+    post:
+      operationId: authenticators_password_lock_create
+      description: Prevent a password authenticator from authenticating.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Password Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully locked authenticator
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /authenticators/password/{id}/unlock/:
+    post:
+      operationId: authenticators_password_unlock_create
+      description: Allow a locked password authenticator to authenticate again.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Password Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully unlocked authenticator
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /authenticators/sms/:
     get:
       operationId: authenticators_sms_list
@@ -6499,6 +6543,23 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/psso/register/device/:
+    get:
+      operationId: endpoints_agents_psso_register_device_retrieve
+      tags:
+      - endpoints
+      security:
+      - authentik_device_auth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentPSSODeviceState'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: endpoints_agents_psso_register_device_create
       tags:
@@ -6518,6 +6579,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/AgentPSSODeviceRegistrationResponse'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_agents_psso_register_device_destroy
+      description: |-
+        Clear this device's Platform SSO registration, used when the configuration
+        profile is removed from the device. The device stays enrolled otherwise.
+      tags:
+      - endpoints
+      security:
+      - authentik_device_auth: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -11086,6 +11163,29 @@ paths:
                 items:
                   $ref: '#/components/schemas/OutpostHealth'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/instances/{uuid}/rebuild_permissions/:
+    post:
+      operationId: outposts_instances_rebuild_permissions_create
+      description: Delete and recreate all permissions of the outpost's service account
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Permissions rebuilt
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -19960,6 +20060,14 @@ paths:
         schema:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
       - in: query
+        name: encryption_algorithm
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: |+
+            Block cipher used to encrypt the assertion.
+
+      - in: query
         name: encryption_kp
         schema:
           type: string
@@ -19977,6 +20085,14 @@ paths:
         name: issuer_override
         schema:
           type: string
+      - in: query
+        name: jwt_federation_providers
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - in: query
         name: logout_method
         schema:
@@ -21119,6 +21235,14 @@ paths:
         schema:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
       - in: query
+        name: encryption_algorithm
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: |+
+            Block cipher used to encrypt the assertion.
+
+      - in: query
         name: encryption_kp
         schema:
           type: string
@@ -21136,6 +21260,14 @@ paths:
         name: issuer_override
         schema:
           type: string
+      - in: query
+        name: jwt_federation_providers
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - in: query
         name: logout_method
         schema:
@@ -32994,6 +33126,10 @@ paths:
         name: failed_attempts_before_cancel
         schema:
           type: integer
+      - in: query
+        name: failed_attempts_before_lockout
+        schema:
+          type: integer
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -35691,6 +35827,38 @@ components:
       - jwks_endpoint
       - nonce_endpoint
       - token_endpoint
+    AgentPSSODeviceState:
+      type: object
+      description: |-
+        What authentik currently has stored for this device's Platform SSO
+        registration, so the client can detect drift and repair it
+      properties:
+        device_registered:
+          type: boolean
+        sign_key_id:
+          type: string
+        enc_key_id:
+          type: string
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentPSSODeviceStateUser'
+      required:
+      - device_registered
+      - enc_key_id
+      - sign_key_id
+      - users
+    AgentPSSODeviceStateUser:
+      type: object
+      description: A user currently registered for Platform SSO on this device
+      properties:
+        username:
+          type: string
+        enclave_key_id:
+          type: string
+      required:
+      - enclave_key_id
+      - username
     AgentPSSOUserRegistrationRequest:
       type: object
       description: Register Apple device user via Platform SSO
@@ -38183,10 +38351,16 @@ components:
           type: integer
         cache_timeout_policies:
           type: integer
+        cache_timeout_brands:
+          type: integer
+        cache_timeout_system_settings:
+          type: integer
       required:
       - cache_timeout
+      - cache_timeout_brands
       - cache_timeout_flows
       - cache_timeout_policies
+      - cache_timeout_system_settings
       - capabilities
       - error_reporting
     ConnectionToken:
@@ -40027,6 +40201,13 @@ components:
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+    EncryptionAlgorithmEnum:
+      enum:
+      - http://www.w3.org/2001/04/xmlenc#aes128-cbc
+      - http://www.w3.org/2001/04/xmlenc#aes256-cbc
+      - http://www.w3.org/2009/xmlenc11#aes128-gcm
+      - http://www.w3.org/2009/xmlenc11#aes256-gcm
+      type: string
     EndpointAgentChallenge:
       type: object
       description: Signed challenge for authentik agent to respond to
@@ -40421,6 +40602,9 @@ components:
       - user_offboarded
       - suspicious_request
       - password_set
+      - authenticator_locked
+      - authenticator_unlocked
+      - required_action_completed
       - secret_view
       - secret_rotate
       - invitation_used
@@ -49785,8 +49969,22 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        last_attempt_warning_message:
+          type: string
+          description: Warning shown when the user has one password attempt remaining.
+            Leave blank to show no warning.
+        lockout_message:
+          type: string
+          description: Message shown when the user's password has been locked. Leave
+            blank to show a generic authentication error.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -49822,8 +50020,22 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        last_attempt_warning_message:
+          type: string
+          description: Warning shown when the user has one password attempt remaining.
+            Leave blank to show no warning.
+        lockout_message:
+          type: string
+          description: Message shown when the user's password has been locked. Leave
+            blank to show a generic authentication error.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -52332,8 +52544,22 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        last_attempt_warning_message:
+          type: string
+          description: Warning shown when the user has one password attempt remaining.
+            Leave blank to show no warning.
+        lockout_message:
+          type: string
+          description: Message shown when the user's password has been locked. Leave
+            blank to show a generic authentication error.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -53002,6 +53228,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -53034,6 +53264,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
     PatchedSAMLSourcePropertyMappingRequest:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -53978,6 +54214,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
@@ -56926,6 +57166,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -56958,6 +57202,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
         url_download_metadata:
           type: string
           description: Get metadata download URL
@@ -57137,6 +57387,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -57169,6 +57423,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
       required:
       - acs_url
       - authorization_flow
@@ -59373,6 +59633,33 @@ components:
           type: string
           description: Configured external base URL. Can be empty
           readOnly: true
+        postgresql:
+          type: object
+          description: PostgreSQL information for this request's database connection
+          properties:
+            version:
+              type: string
+            jit:
+              type: string
+            jit_source:
+              type: string
+            ssl:
+              type: boolean
+            ssl_version:
+              type: string
+              nullable: true
+            ssl_cipher:
+              type: string
+              nullable: true
+          required:
+          - jit
+          - jit_source
+          - ssl
+          - ssl_cipher
+          - ssl_version
+          - version
+          readOnly: true
+          nullable: true
       required:
       - base_url
       - brand
@@ -59381,6 +59668,7 @@ components:
       - http_headers
       - http_host
       - http_is_secure
+      - postgresql
       - runtime
       - server_time
     TOTPDevice:
@@ -60325,6 +60613,14 @@ components:
           type: string
           format: date-time
           readOnly: true
+        password_locked:
+          type: boolean
+          description: Whether the user's password currently refuses authentication.
+          readOnly: true
+        password_device:
+          type: integer
+          readOnly: true
+          nullable: true
         last_updated:
           type: string
           format: date-time
@@ -60337,6 +60633,8 @@ components:
       - last_updated
       - name
       - password_change_date
+      - password_device
+      - password_locked
       - pk
       - roles_obj
       - uid
@@ -60846,6 +61144,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/OffboardingStatusEnum'
           readOnly: true
+          default: pending
         created_by_obj:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
@@ -60898,6 +61197,11 @@ components:
         password:
           type: string
           minLength: 1
+        override:
+          type: boolean
+          default: false
+          description: Import a valid password hash even when its parameters do not
+            match authentik's current password hashing settings.
       required:
       - password
     UserPasswordSetRequest:
@@ -61650,6 +61954,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
@@ -61774,6 +62082,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:

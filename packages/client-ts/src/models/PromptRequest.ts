@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { PromptTypeEnum } from "./PromptTypeEnum";
-import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
+import type { PromptTypeEnum } from "./PromptTypeEnum.js";
+import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum.js";
 
 /**
  * Prompt Serializer

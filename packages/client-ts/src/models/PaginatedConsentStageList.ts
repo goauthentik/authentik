@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { ConsentStage } from "./ConsentStage";
-import { ConsentStageFromJSON, ConsentStageToJSON } from "./ConsentStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { ConsentStage } from "./ConsentStage.js";
+import { ConsentStageFromJSON, ConsentStageToJSON } from "./ConsentStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

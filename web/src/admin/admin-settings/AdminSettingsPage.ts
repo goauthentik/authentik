@@ -17,6 +17,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
+import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 import { setPageDetails } from "#elements/router/meta";
@@ -25,7 +26,7 @@ import { AdminSettingsForm } from "#admin/admin-settings/AdminSettingsForm";
 
 import { AdminApi, Settings } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
@@ -62,10 +63,26 @@ export class AdminSettingsPage extends AKElement {
             });
     };
 
+    renderBanner() {
+        // Double the delta to account for variance in multiple server instances
+        const delta = globalAK().config.cacheTimeoutSystemSettings * 2;
+
+        const formatted = new Intl.DurationFormat("default", {
+            style: "long",
+        }).format({
+            seconds: delta,
+        });
+
+        return html`<div class="pf-c-banner pf-m-info">
+            ${msg(str`Changes to system settings will take up to ${formatted} to become effective.`)}
+        </div>`;
+    }
+
     render() {
         if (!this.settings) return nothing;
 
         return html`
+            ${this.renderBanner()}
             <main class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">

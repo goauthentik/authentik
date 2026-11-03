@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { GoogleChromeConnector } from "./GoogleChromeConnector";
+import type { GoogleChromeConnector } from "./GoogleChromeConnector.js";
 import {
     GoogleChromeConnectorFromJSON,
     GoogleChromeConnectorToJSON,
-} from "./GoogleChromeConnector";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./GoogleChromeConnector.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

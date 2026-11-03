@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { ExpiringBaseGrantModel } from "./ExpiringBaseGrantModel";
+import type { ExpiringBaseGrantModel } from "./ExpiringBaseGrantModel.js";
 import {
     ExpiringBaseGrantModelFromJSON,
     ExpiringBaseGrantModelToJSON,
-} from "./ExpiringBaseGrantModel";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./ExpiringBaseGrantModel.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

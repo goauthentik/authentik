@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { ScopeMapping } from "./ScopeMapping";
-import { ScopeMappingFromJSON, ScopeMappingToJSON } from "./ScopeMapping";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { ScopeMapping } from "./ScopeMapping.js";
+import { ScopeMappingFromJSON, ScopeMappingToJSON } from "./ScopeMapping.js";
 
 /**
  * @export

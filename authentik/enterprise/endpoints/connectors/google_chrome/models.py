@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from google.auth.exceptions import GoogleAuthError
-from google.oauth2.service_account import Credentials
 from rest_framework.serializers import BaseSerializer
 
 from authentik.endpoints.controller import ConnectorSyncException
@@ -25,6 +23,9 @@ class GoogleChromeConnector(Connector):
     credentials = models.JSONField()
 
     def google_credentials(self):
+        from google.auth.exceptions import GoogleAuthError
+        from google.oauth2.service_account import Credentials
+
         try:
             return {
                 "credentials": Credentials.from_service_account_info(

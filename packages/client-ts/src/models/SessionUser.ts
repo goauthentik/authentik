@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { UserSelf } from "./UserSelf";
-import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf";
+import type { UserSelf } from "./UserSelf.js";
+import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf.js";
 
 /**
  * Response for the /user/me endpoint, returns the currently active user (as `user` property)

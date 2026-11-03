@@ -10,16 +10,16 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { LogEvent } from "./LogEvent";
-import { LogEventFromJSON } from "./LogEvent";
-import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { LogEvent } from "./LogEvent.js";
+import { LogEventFromJSON } from "./LogEvent.js";
+import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum.js";
 import {
     TaskAggregatedStatusEnumFromJSON,
     TaskAggregatedStatusEnumToJSON,
-} from "./TaskAggregatedStatusEnum";
-import type { TaskStatusEnum } from "./TaskStatusEnum";
-import { TaskStatusEnumFromJSON, TaskStatusEnumToJSON } from "./TaskStatusEnum";
+} from "./TaskAggregatedStatusEnum.js";
+import type { TaskStatusEnum } from "./TaskStatusEnum.js";
+import { TaskStatusEnumFromJSON, TaskStatusEnumToJSON } from "./TaskStatusEnum.js";
 
 /**
  * @export
