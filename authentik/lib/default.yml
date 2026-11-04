@@ -59,6 +59,16 @@ listen:
 
 http_timeout: 30
 
+# Fetches of untrusted URLs, such as OAuth client metadata documents and their JWKS
+untrusted_fetch:
+  # Total deadline per fetch, in seconds (clamped to 0.5-30)
+  timeout: 5
+  # Maximum concurrent fetches per process
+  max_concurrency: 10
+  # Non-public CIDRs or exact hostnames that may be fetched. Loopback, link-local
+  # and cloud metadata addresses are always blocked, even when listed here.
+  allowed_private_destinations: []
+
 cache:
   # url: ""
   timeout: 300
