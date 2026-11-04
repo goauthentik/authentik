@@ -11,46 +11,46 @@ html[data-theme="dark"] {
     font-weight: 500;
 }
 
-.theme-doc-markdown :not(pre) > code {
-    padding: 0.1em 0.3em;
-    border-radius: 0.25rem;
-    overflow-wrap: anywhere;
-}
+/* Same scope as the article styles in markdown.css: API reference pages keep their own code styles. */
+.theme-doc-markdown:not(:has(.theme-api-markdown)) {
+    & :not(pre) > code {
+        padding: 0.1em 0.3em;
+        border-radius: 0.25rem;
+        overflow-wrap: anywhere;
+    }
 
-.theme-doc-markdown .theme-code-block {
-    --ifm-code-font-size: 0.9375rem;
-    --ifm-pre-line-height: 1.55;
-    border: 1px solid var(--ifm-color-emphasis-200);
-}
+    & .theme-code-block {
+        --ifm-code-font-size: 0.9375rem;
+        --ifm-pre-line-height: 1.55;
+        border: 1px solid var(--ifm-color-emphasis-200);
+    }
 
-/*
- * Show the copy and word-wrap buttons without hover, which touch screens lack.
- * Docusaurus dims them to 0.4 with `.theme-code-block:hover .buttonGroup button`,
- * which ties with the first selector and loads after it, hence the :hover one.
- */
-.theme-doc-markdown .theme-code-block button.clean-btn,
-.theme-doc-markdown .theme-code-block:hover button.clean-btn {
-    opacity: 1;
-}
+    /*
+     * Show the copy and word-wrap buttons without hover, which touch screens lack.
+     * The scope's :not() adds the class that outranks Docusaurus's 0.4 dimming rule,
+     * `.theme-code-block:hover .buttonGroup button`, which loads later.
+     */
+    & .theme-code-block button.clean-btn {
+        opacity: 1;
+        justify-content: center;
+        min-width: 2.25rem;
+        min-height: 2.25rem;
+    }
 
-.theme-doc-markdown .theme-code-block button.clean-btn {
-    justify-content: center;
-    min-width: 2.25rem;
-    min-height: 2.25rem;
-}
+    /*
+     * The buttons cover 5.2rem of the top right corner: two 2.25rem buttons, a 0.2rem
+     * gap, and a 0.5rem inset. Pad the first line so it can scroll or wrap clear of
+     * them; 5.5rem also clears them on a highlighted line, whose margin is negative.
+     * Numbered lines are table rows, which take no padding, so their inline content
+     * span does; it pads only the span's last row when word wrap breaks the line.
+     */
+    & .theme-code-block .token-line:first-child,
+    & .theme-code-block .token-line:first-child > [class^="codeLineContent"] {
+        padding-right: 5.5rem;
+    }
 
-/*
- * The buttons cover 5.2rem of the top right corner: two 2.25rem buttons, a 0.2rem
- * gap, and a 0.5rem inset. Pad the first line so it can scroll or wrap clear of
- * them; 5.5rem also clears them on a highlighted line, whose margin is negative.
- * Numbered lines are table rows, which take no padding, so their content cell does.
- */
-.theme-doc-markdown .theme-code-block .token-line:first-child,
-.theme-doc-markdown .theme-code-block .token-line:first-child > [class^="codeLineContent"] {
-    padding-right: 5.5rem;
-}
-
-.theme-doc-markdown .theme-code-block button.clean-btn:focus-visible {
-    outline: 2px solid var(--prism-color);
-    outline-offset: 2px;
+    & .theme-code-block button.clean-btn:focus-visible {
+        outline: 2px solid var(--prism-color);
+        outline-offset: 2px;
+    }
 }
