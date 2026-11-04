@@ -21,9 +21,9 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.common.saml.utils import x509_certificate_b64
 from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.utils.encoding import strip_pem_header
 
 
 class MetadataProcessor:
@@ -62,9 +62,7 @@ class MetadataProcessor:
         key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
         x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
         x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
-        x509_certificate.text = strip_pem_header(
-            self.provider.signing_kp.certificate_data.replace("\r", "")
-        )
+        x509_certificate.text = x509_certificate_b64(self.provider.signing_kp.certificate)
         return key_descriptor
 
     def get_name_id_formats(self) -> Iterator[Element]:

@@ -1,3 +1,5 @@
+import { CaptchaVendor, findVendorByURL } from "#flow/stages/captcha/shared";
+
 import { CaptchaStage, CaptchaStageRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -37,6 +39,11 @@ export const CaptchaProviderKeys = [
 export type CaptchaProviderKey = (typeof CaptchaProviderKeys)[number];
 
 export interface CaptchaProviderPreset {
+    /**
+     * The runtime vendor this preset configures, or `null` where the administrator supplies
+     * their own URLs and the vendor is only known once `jsUrl` is filled in.
+     */
+    vendor: CaptchaVendor | null;
     formatDisplayName: () => string;
     formatDescription?: () => string;
     jsUrl: string;
@@ -56,6 +63,7 @@ export interface CaptchaProviderPreset {
  */
 export const CAPTCHA_PROVIDERS = {
     recaptcha_v2: {
+        vendor: CaptchaVendor.reCAPTCHA,
         formatDisplayName: () =>
             msg("Google reCAPTCHA v2", {
                 id: "captcha.providers.recaptcha-v2",
@@ -72,6 +80,7 @@ export const CAPTCHA_PROVIDERS = {
         keyURL: "https://www.google.com/recaptcha/admin",
     },
     recaptcha_v3: {
+        vendor: CaptchaVendor.reCAPTCHA,
         formatDisplayName: () =>
             msg("Google reCAPTCHA v3", {
                 id: "captcha.providers.recaptcha-v3",
@@ -89,6 +98,7 @@ export const CAPTCHA_PROVIDERS = {
         keyURL: "https://www.google.com/recaptcha/admin",
     },
     recaptcha_enterprise: {
+        vendor: CaptchaVendor.reCAPTCHA,
         formatDisplayName: () =>
             msg("Google reCAPTCHA Enterprise", {
                 id: "captcha.providers.recaptcha-enterprise",
@@ -106,6 +116,7 @@ export const CAPTCHA_PROVIDERS = {
         keyURL: "https://cloud.google.com/recaptcha-enterprise",
     },
     hcaptcha: {
+        vendor: CaptchaVendor.hCaptcha,
         formatDisplayName: () =>
             msg("hCaptcha", {
                 id: "captcha.providers.hcaptcha",
@@ -123,6 +134,7 @@ export const CAPTCHA_PROVIDERS = {
         keyURL: "https://dashboard.hcaptcha.com",
     },
     turnstile: {
+        vendor: CaptchaVendor.turnstile,
         formatDisplayName: () =>
             msg("Cloudflare Turnstile", {
                 id: "captcha.providers.turnstile",
@@ -139,6 +151,7 @@ export const CAPTCHA_PROVIDERS = {
         keyURL: "https://dash.cloudflare.com",
     },
     cap: {
+        vendor: CaptchaVendor.cap,
         formatDisplayName: () =>
             msg("Cap", {
                 id: "captcha.providers.cap",
@@ -159,6 +172,7 @@ export const CAPTCHA_PROVIDERS = {
         keyURL: "https://trycap.dev/guide/",
     },
     custom: {
+        vendor: null,
         formatDisplayName: () =>
             msg("Custom", {
                 id: "captcha.providers.custom",
@@ -193,16 +207,6 @@ export function deriveCapSiteVerifyURL(endpoint: string): string | null {
  * This allows the form to show the correct provider in the dropdown when editing
  * an existing CAPTCHA stage. Falls back to "custom" if no match is found.
  */
-function isCapWidgetURL(jsUrl?: string | null): boolean {
-    if (!jsUrl || !URL.canParse(jsUrl)) {
-        return false;
-    }
-
-    const { pathname } = new URL(jsUrl);
-
-    return pathname.includes("cap-widget") || pathname.endsWith("/assets/widget.js");
-}
-
 export function detectProviderFromInstance(stage?: CaptchaStage | null): CaptchaProviderKey {
     if (!stage) return "custom";
 
@@ -211,7 +215,7 @@ export function detectProviderFromInstance(stage?: CaptchaStage | null): Captcha
 
         if (
             key === "cap" &&
-            isCapWidgetURL(stage.jsUrl) &&
+            findVendorByURL(stage.jsUrl) === CaptchaVendor.cap &&
             stage.requestContentType === preset.requestContentType
         ) {
             return key;

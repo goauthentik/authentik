@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatorWebAuthnStage } from "./AuthenticatorWebAuthnStage";
+import type { AuthenticatorWebAuthnStage } from "./AuthenticatorWebAuthnStage.js";
 import {
     AuthenticatorWebAuthnStageFromJSON,
     AuthenticatorWebAuthnStageToJSON,
-} from "./AuthenticatorWebAuthnStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./AuthenticatorWebAuthnStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

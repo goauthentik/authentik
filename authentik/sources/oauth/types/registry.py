@@ -32,6 +32,7 @@ class SourceType:
     verbose_name: str = "Default source type"
 
     urls_customizable = False
+    requires_client_secret = True
 
     request_token_url: str | None = None
     authorization_url: str | None = None
@@ -47,7 +48,7 @@ class SourceType:
 
     def icon_url(self) -> str:
         """Get Icon URL for login"""
-        return static(f"authentik/sources/{self.name}.svg")
+        return static(f"authentik/sources/{self.name}/light.svg")
 
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
         """Allow types to return custom challenges"""

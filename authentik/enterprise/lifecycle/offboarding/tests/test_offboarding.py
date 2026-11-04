@@ -412,7 +412,10 @@ class TestOffboardingAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn("user", response.data)
+        self.assertJSONEqual(
+            response.content,
+            {"non_field_errors": ["The fields user must make a unique set."]},
+        )
 
     def test_duplicate_pending_race_returns_400(self):
         """If two requests race past validation, the DB constraint yields a 400, not a 500."""
@@ -433,8 +436,10 @@ class TestOffboardingAPI(APITestCase):
                 },
             )
         self.assertEqual(response.status_code, 400)
-        self.assertIn("user", response.data)
-        # The losing insert did not create a second pending row.
+        self.assertJSONEqual(
+            response.content,
+            {"non_field_errors": ["The fields user must make a unique set."]},
+        )  # The losing insert did not create a second pending row.
         self.assertEqual(
             UserOffboarding.objects.filter(
                 user=self.user, status=OffboardingStatus.PENDING

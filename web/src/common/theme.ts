@@ -171,11 +171,13 @@ export function createUIThemeEffect(
 
     const mediaQueryList = createColorSchemeTarget(colorSchemeTarget);
 
+    let lastUITheme = document.documentElement.dataset.theme;
+
     // First, wrap the effect to ensure we can abort it.
     const mediaChangeListener = (event: MediaQueryListEvent) => {
         if (listenerOptions?.signal?.aborted) return;
 
-        const { themeChoice, theme: previousTheme } = document.documentElement.dataset;
+        const { themeChoice } = document.documentElement.dataset;
 
         if (themeChoice && themeChoice !== "auto") {
             console.debug(
@@ -187,7 +189,9 @@ export function createUIThemeEffect(
 
         const currentUITheme = event.matches ? colorSchemeTarget : inversionTarget;
 
-        if (previousTheme === currentUITheme) return;
+        if (lastUITheme === currentUITheme) return;
+
+        lastUITheme = currentUITheme;
 
         effect(currentUITheme);
     };
@@ -205,6 +209,8 @@ export function createUIThemeEffect(
 
         documentElement.dataset.theme = theme;
         documentElement.classList.toggle("pf-theme-dark", theme === "dark");
+
+        lastUITheme = theme;
 
         effect(theme);
     };

@@ -4,6 +4,7 @@
         "rootDir": "src",
         "outDir": "out",
         "tsBuildInfoFile": "out/tsconfig.tsbuildinfo",
+        "types": ["node"],
         "emitDeclarationOnly": false,
         "allowImportingTsExtensions": false,
         "allowJs": false,

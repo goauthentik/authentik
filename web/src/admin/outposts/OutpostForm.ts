@@ -2,7 +2,6 @@ import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
@@ -10,15 +9,16 @@ import { groupBy } from "#common/utils";
 
 import { DataProvider, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 import { PaginatedResponse } from "#elements/table/Table";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import {
     Outpost,
     OutpostDefaultConfig,
     OutpostsApi,
-    OutpostsServiceConnectionsAllListRequest,
     OutpostTypeEnum,
     ProvidersApi,
     ServiceConnection,
@@ -108,6 +108,18 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     protected providers: DataProvider = providerProvider(this.type);
 
     protected defaultConfig?: OutpostDefaultConfig;
+
+    protected serviceConnectionSource: SearchSelectSource<ServiceConnection> = {
+        fetchObjects: (query) =>
+            aki(OutpostsApi)
+                .outpostsServiceConnectionsAllList(withQuery(query, { ordering: "name" }))
+                .then(({ results }) => results),
+        keyOf: (connection) => connection.pk,
+        labelOf: (connection) => connection.name,
+        groupBy: (connections) => groupBy(connections, (connection) => connection.verboseName),
+        preselect: (connections) =>
+            !this.instance && connections.length === 1 ? connections[0] : undefined,
+    };
 
     public override reset(): void {
         super.reset();
@@ -199,44 +211,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     },
                     msg("Integration"),
                 )}
-
-                <ak-search-select
-                    id="serviceConnection"
-                    name="serviceConnection"
-                    aria-describedby="service-connection-help"
-                    .fetchObjects=${async (query?: string): Promise<ServiceConnection[]> => {
-                        const args: OutpostsServiceConnectionsAllListRequest = {
-                            ordering: "name",
-                        };
-
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-
-                        const items =
-                            await aki(OutpostsApi).outpostsServiceConnectionsAllList(args);
-
-                        return items.results;
-                    }}
-                    .renderElement=${(item: ServiceConnection): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: ServiceConnection | null) => item?.pk}
-                    .groupBy=${(items: ServiceConnection[]) => {
-                        return groupBy(items, (item) => item.verboseName);
-                    }}
-                    .selected=${(item: ServiceConnection, items: ServiceConnection[]): boolean => {
-                        let selected = this.instance?.serviceConnection === item.pk;
-
-                        if (items.length === 1 && !this.instance) {
-                            selected = true;
-                        }
-
-                        return selected;
-                    }}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    id: "serviceConnection",
+                    name: "serviceConnection",
+                    source: this.serviceConnectionSource,
+                    value: this.instance?.serviceConnection,
+                    blankable: true,
+                })}
                 <div id="service-connection-help">
                     <p class="pf-c-form__helper-text">
                         ${msg(

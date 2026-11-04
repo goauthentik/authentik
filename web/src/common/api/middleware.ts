@@ -1,8 +1,8 @@
+import { CSRFHeaderName, readCSRFToken } from "#common/api/csrf";
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
 import { AKEnterpriseRefreshEvent, AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
 import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
-import { getCookie } from "#common/utils";
 
 import { showMessage } from "#elements/messages/MessageContainer";
 
@@ -19,7 +19,6 @@ import {
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import { html } from "lit";
 
-export const CSRFHeaderName = "X-authentik-CSRF";
 export const AcceptLanguage = "Accept-Language";
 
 export class LoggingMiddleware implements Middleware {
@@ -52,7 +51,7 @@ export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
         context.init.headers = {
             ...context.init.headers,
-            [CSRFHeaderName]: getCookie("authentik_csrf"),
+            [CSRFHeaderName]: readCSRFToken(),
         };
 
         return Promise.resolve(context);

@@ -1,10 +1,8 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import type { NamedEntityElementConstructor } from "#common/api/entities";
+
 import { modalInvoker, ModelFormLikeConstructor } from "#elements/dialogs/directives";
-import type {
-    IconEditButtonOptions,
-    NamedEntityElementConstructor,
-    SplitIconName,
-} from "#elements/dialogs/shared";
+import type { IconEditButtonOptions, SplitIconName } from "#elements/dialogs/shared";
 import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";

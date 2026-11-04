@@ -80,8 +80,8 @@ mod tests {
         .expect("failed to deserialize minimal claims");
 
         assert_eq!(claims.sub, "user-uuid");
-        assert!(claims.groups.is_empty());
-        assert!(claims.entitlements.is_empty());
+        assert_eq!(claims.groups, Vec::<String>::new());
+        assert_eq!(claims.entitlements, Vec::<String>::new());
         assert!(claims.ak_proxy.is_none());
         assert_eq!(claims.exp, 0_i64);
     }

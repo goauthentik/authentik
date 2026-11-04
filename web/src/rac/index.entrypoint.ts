@@ -4,6 +4,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { writeToClipboard } from "#common/clipboard";
+import { websocketURL } from "#common/urls";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -61,7 +62,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
     container?: HTMLElement;
 
     @state()
-    clientState?: GuacClientState;
+    clientState: GuacClientState = GuacClientState.WAITING;
 
     @state()
     clientStatus?: Guacamole.Status;
@@ -72,8 +73,8 @@ export class RacInterface extends WithBrandConfig(Interface) {
     @property()
     token?: string;
 
-    @property()
-    endpointName?: string;
+    @property({ attribute: "device-name" })
+    deviceName?: string;
 
     @state()
     clipboardWatcherTimer = 0;
@@ -132,9 +133,9 @@ export class RacInterface extends WithBrandConfig(Interface) {
     }
 
     async firstUpdated(): Promise<void> {
-        this.updateTitle();
-        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${window.location.host}/ws/rac/${this.token}/`;
-        this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
+        this.synchronizeTitle();
+
+        this.tunnel = new Guacamole.WebSocketTunnel(websocketURL(`ws/rac/${this.token}/`));
         this.tunnel.receiveTimeout = 10 * 1000;
 
         // 10 seconds
@@ -216,7 +217,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
     }
 
     reconnect(): void {
-        this.clientState = undefined;
+        this.clientState = GuacClientState.WAITING;
         this.connectionAttempt += 1;
 
         if (!this.hasConnected) {
@@ -249,14 +250,8 @@ export class RacInterface extends WithBrandConfig(Interface) {
         }, delay);
     }
 
-    updateTitle(): void {
-        let title = this.brandingTitle;
-
-        if (this.endpointName) {
-            title = `${this.endpointName} - ${title}`;
-        }
-
-        document.title = `${title}`;
+    protected synchronizeTitle(): void {
+        this.setTitle(this.deviceName);
     }
 
     onConnected(): void {

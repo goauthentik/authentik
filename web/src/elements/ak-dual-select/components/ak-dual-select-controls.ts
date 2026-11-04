@@ -1,8 +1,8 @@
+import { type DualSelectCommandEventType, DualSelectEvent } from "../events.js";
 import { DualSelectEventType } from "../types.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { AKElement } from "#elements/Base";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -16,7 +16,7 @@ import { customElement, property } from "lit/decorators.js";
  * orchestrator which will then reconcile the "available" and "selected" panes at need.
  */
 @customElement("ak-dual-select-controls")
-export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventType>(AKElement) {
+export class AkDualSelectControls extends AKElement {
     static styles = [
         PFButton,
         css`
@@ -97,7 +97,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
 
     renderButton(
         label: string,
-        eventType: DualSelectEventType,
+        eventType: DualSelectCommandEventType,
         active: boolean,
         direction: string,
     ) {
@@ -109,7 +109,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
                     aria-label=${label}
                     class="pf-c-button pf-m-plain"
                     type="button"
-                    @click=${() => this.dispatchCustomEvent(eventType)}
+                    @click=${() => this.dispatchEvent(new DualSelectEvent(eventType))}
                     data-ouia-component-type="AK/Button"
                 >
                     <i class="fa ${direction}" aria-hidden="true"></i>

@@ -90,10 +90,11 @@ describe("decideInterception", () => {
         ).toBeNull();
     });
 
-    it("lets the browser own a link to the exact current URL", () => {
+    it("claims a link to the exact current URL, so the page does not reload", () => {
         expect(
-            decideInterception(ctx({ href: "https://id.example.com/if/admin/overview" }), scope),
-        ).toBeNull();
+            decideInterception(ctx({ href: "https://id.example.com/if/admin/overview" }), scope)
+                ?.pathname,
+        ).toBe("/if/admin/overview");
     });
 
     it("claims a link to the current pathname with a different search", () => {

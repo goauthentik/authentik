@@ -6,12 +6,12 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 import { aki } from "#common/api/client";
-import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError } from "#common/errors/network";
+import { AKRefreshEvent } from "#common/events";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { WizardNavigationEvent } from "#components/ak-wizard/events";
 import { type WizardButton } from "#components/ak-wizard/shared";
@@ -43,7 +43,7 @@ import {
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -70,6 +70,14 @@ function isNotEmpty<T>(arr: T[] | undefined): arr is NonEmptyArray<T> {
     return Array.isArray(arr) && arr.length > 0;
 }
 
+// Providers that only work once they are assigned to an outpost.
+const outpostProviderModels: ReadonlySet<string> = new Set([
+    "proxyprovider",
+    "ldapprovider",
+    "radiusprovider",
+    "racprovider",
+]);
+
 const cleanApplication = (app: Partial<ApplicationRequest>): ApplicationRequest => ({
     name: "",
     slug: "",
@@ -88,7 +96,7 @@ const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest =
 });
 
 @customElement("ak-application-wizard-submit-step")
-export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
+export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
     static styles = [
         ...ApplicationWizardStep.styles,
         PFBullseye,
@@ -108,6 +116,9 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
     @state()
     protected state: SubmitStates = "reviewing";
+
+    @state()
+    protected createdProviderPk: number | null = null;
 
     async sendSAMLMetadataImport() {
         const providerData = this.wizard.provider as ProvidersSamlImportMetadataCreateRequest;
@@ -144,7 +155,8 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 });
             }
 
-            this.dispatchCustomEvent(EVENT_REFRESH);
+            this.dispatchEvent(new AKRefreshEvent());
+            this.createdProviderPk = createdProvider.pk;
             this.state = "submitted";
         } catch (error) {
             const parsedError = await parseAPIResponseError(error);
@@ -212,8 +224,16 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             .coreTransactionalApplicationsUpdate({
                 transactionApplicationRequest: request,
             })
-            .then((_response: TransactionApplicationResponse) => {
-                this.dispatchCustomEvent(EVENT_REFRESH);
+            .then(async (_response: TransactionApplicationResponse) => {
+                this.dispatchEvent(new AKRefreshEvent());
+
+                // The transactional response doesn't include the provider, so look it up.
+                // Failing here only hides the link; the application is already saved.
+                const createdApp = await aki(CoreApi)
+                    .coreApplicationsRetrieve({ slug: request.app.slug })
+                    .catch(() => null);
+
+                this.createdProviderPk = createdApp?.provider ?? null;
                 this.state = "submitted";
             })
 
@@ -294,7 +314,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         state: string,
         label: string,
         icons: string[],
-        extraInfo: SlottedTemplateResult = nothing,
+        extraInfo: SlottedTemplateResult = null,
     ) {
         const icon = classMap(icons.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}));
 
@@ -311,10 +331,49 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         </div>`;
     }
 
+    renderNextSteps() {
+        const needsOutpost = outpostProviderModels.has(this.wizard.providerModel);
+
+        return html`${
+                needsOutpost
+                    ? html`<div class="pf-c-empty-state__body">
+                          ${msg(
+                              "This provider must be assigned to an outpost before users can access the application.",
+                              { id: "application.wizard.next-steps.outpost.description" },
+                          )}
+                      </div>`
+                    : null
+            }
+            <div class="pf-c-empty-state__primary">
+                ${
+                    typeof this.createdProviderPk === "number"
+                        ? html`<a
+                              class="pf-c-button pf-m-primary"
+                              href=${toAdminInterface(`core/providers/${this.createdProviderPk}`)}
+                              >${msg("View Provider", {
+                                  id: "application.wizard.next-steps.view-provider.label",
+                              })}</a
+                          >`
+                        : null
+                }
+                ${
+                    needsOutpost
+                        ? html`<a
+                              class="pf-c-button pf-m-secondary"
+                              href=${toAdminInterface("outpost/outposts")}
+                              >${msg("Go to Outposts", {
+                                  id: "application.wizard.next-steps.outposts.label",
+                              })}</a
+                          >`
+                        : null
+                }
+            </div>`;
+    }
+
     renderError() {
         const { errors } = this.wizard;
 
-        if (Object.keys(errors).length === 0) return nothing;
+        if (Object.keys(errors).length === 0) return null;
 
         return html` <ak-divider></ak-divider>
             ${match(errors)
@@ -416,7 +475,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                                           ${metaLaunchUrl}
                                       </dt>
                                   </div>`
-                                : nothing
+                                : null
                         }
                     </dl>
                 </fieldset>
@@ -446,10 +505,12 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         return match([this.state, keys])
             .with(["submitted", P._], () =>
-                this.renderInfo("success", msg("Your application has been saved"), [
-                    "fa-check-circle",
-                    "pf-m-success",
-                ]),
+                this.renderInfo(
+                    "success",
+                    msg("Your application has been saved"),
+                    ["fa-check-circle", "pf-m-success"],
+                    this.renderNextSteps(),
+                ),
             )
             .with(["running", P._], () =>
                 this.renderInfo("running", msg("Saving application..."), ["fa-cogs", "pf-m-info"]),

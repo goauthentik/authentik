@@ -31,6 +31,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
+    ResponseMode,
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
@@ -66,6 +67,158 @@ class TestAuthorize(OAuthTestCase):
             )
             OAuthAuthorizationParams.from_request(request)
         self.assertEqual(cm.exception.error, "invalid_request")
+
+    def test_error_custom_scheme(self):
+        """Test error is returned to a redirect URI with a private-use scheme"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            grant_types=[],
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "app.invalid:/callback")],
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "redirect_uri": "app.invalid:/callback",
+            },
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            OAuthAuthorizationParams.from_request(request)
+        response = cm.exception.get_response(request)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("app.invalid:/callback?error=invalid_request&"))
+
+    def test_error_response_routing_and_encoding(self):
+        """Errors honor response modes and preserve callback parameters and opaque state."""
+        redirect_uri = (
+            "https://app.example/cb?tenant=one&tag=a&tag=b&empty=&flag&x=a%20b&sig=AbC%2f%3d"
+        )
+        state = "value &=# +%&iss=https://other.example/"
+        description = "Rejected: A & B = C # + % /"
+        callback_params = {
+            "tenant": ["one"],
+            "tag": ["a", "b"],
+            "empty": [""],
+            "flag": [""],
+            "x": ["a b"],
+            "sig": ["AbC/="],
+        }
+        error_params = {
+            "error": ["invalid_request"],
+            "error_description": [description],
+            "state": [state],
+        }
+        for grant_type, response_mode, expected_mode in [
+            (GrantType.AUTHORIZATION_CODE, None, ResponseMode.QUERY),
+            (GrantType.AUTHORIZATION_CODE, ResponseMode.QUERY, ResponseMode.QUERY),
+            (GrantType.AUTHORIZATION_CODE, ResponseMode.FRAGMENT, ResponseMode.FRAGMENT),
+            (GrantType.IMPLICIT, None, ResponseMode.FRAGMENT),
+            (GrantType.HYBRID, None, ResponseMode.FRAGMENT),
+        ]:
+            with self.subTest(grant_type=grant_type, response_mode=response_mode):
+                error = AuthorizeError(
+                    redirect_uri,
+                    "invalid_request",
+                    grant_type,
+                    state,
+                    response_mode=response_mode,
+                    description=description,
+                )
+                response = error.get_response(self.factory.get("/"))
+                self.assertEqual(response.status_code, 302)
+                uri = urlparse(response.url)
+                self.assertEqual(
+                    (uri.scheme, uri.netloc, uri.path), ("https", "app.example", "/cb")
+                )
+                if expected_mode == ResponseMode.FRAGMENT:
+                    self.assertEqual(uri.query, urlparse(redirect_uri).query)
+                    self.assertEqual(parse_qs(uri.fragment), error_params)
+                else:
+                    self.assertEqual(uri.fragment, "")
+                    self.assertTrue(uri.query.startswith(f"{urlparse(redirect_uri).query}&"))
+                    self.assertEqual(
+                        parse_qs(uri.query, keep_blank_values=True),
+                        callback_params | error_params,
+                    )
+                response_params = (
+                    uri.fragment if expected_mode == ResponseMode.FRAGMENT else uri.query
+                )
+                self.assertIn("error_description=Rejected%3A%20A%20%26%20B", response_params)
+                self.assertIn("state=value%20%26%3D%23%20%2B%25%26iss%3D", response_params)
+
+    def test_error_without_state(self):
+        """An absent state is omitted from query and fragment errors."""
+        for response_mode in [ResponseMode.QUERY, ResponseMode.FRAGMENT]:
+            with self.subTest(response_mode=response_mode):
+                error = AuthorizeError(
+                    "https://app.example/cb",
+                    "invalid_request",
+                    GrantType.AUTHORIZATION_CODE,
+                    "",
+                    response_mode=response_mode,
+                )
+                uri = urlparse(error.get_response(self.factory.get("/")).url)
+                params = parse_qs(
+                    uri.query if response_mode == ResponseMode.QUERY else uri.fragment
+                )
+                self.assertEqual(params["error"], ["invalid_request"])
+                self.assertNotIn("state", params)
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_key_binding_errors_form_post(self):
+        """All key-binding validation errors use the requested form_post response mode."""
+        redirect_uri = "https://app.example/cb?tenant=one"
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, redirect_uri)],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(scope_name__in=[SCOPE_OPENID, SCOPE_BOUND_KEY])
+        )
+        state = "value &=# +%&iss=https://other.example/"
+        for scope, dpop_jkt, description in [
+            (
+                f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}",
+                "",
+                "dpop_jkt is required when bound_key scope is requested",
+            ),
+            (
+                SCOPE_OPENID,
+                "n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg",
+                "dpop_jkt is set when bound_key scope is not requested",
+            ),
+            (
+                f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}",
+                "too-short",
+                "dpop_jkt must be a base64url-encoded SHA-256 JWK thumbprint",
+            ),
+        ]:
+            with self.subTest(scope=scope, dpop_jkt=dpop_jkt):
+                response = self.client.get(
+                    reverse("authentik_providers_oauth2:authorize"),
+                    data={
+                        "client_id": provider.client_id,
+                        "redirect_uri": redirect_uri,
+                        "response_type": "code",
+                        "response_mode": ResponseMode.FORM_POST,
+                        "state": state,
+                        "scope": scope,
+                        "dpop_jkt": dpop_jkt,
+                    },
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertTemplateUsed(response, "if/oauth_form_post.html")
+                self.assertEqual(response.context_data["redirect_uri"], redirect_uri)
+                self.assertEqual(
+                    response.context_data["attrs"],
+                    {"error": "invalid_request", "error_description": description, "state": state},
+                )
 
     def test_invalid_grant_type(self):
         """Test with invalid grant type"""

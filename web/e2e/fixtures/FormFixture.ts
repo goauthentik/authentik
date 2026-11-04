@@ -163,48 +163,75 @@ export class FormFixture extends PageFixture {
     };
 
     /**
-     * Set the value of a search select input.
+     * Find a search select's combobox by its label.
      *
-     * @param fieldLabel The name of the search select element.
-     * @param pattern The text to match against the search select entry.
+     * @param fieldLabel The accessible name of the search select.
+     */
+    public findSearchSelect = async (
+        fieldLabel: string | RegExp,
+        parent: LocatorContext = this.page,
+    ): Promise<{ host: Locator; combobox: Locator }> => {
+        const byName = (exact: boolean) =>
+            parent.getByRole("combobox", { name: fieldLabel, exact });
+
+        const exact = typeof fieldLabel === "string" && (await byName(true).count()) > 0;
+        const combobox = byName(exact);
+
+        await expect(
+            combobox,
+            `Search select control (${fieldLabel}) should be visible`,
+        ).toBeVisible();
+
+        const host = parent.locator("ak-search-select").filter({
+            has: this.page.getByRole("combobox", { name: fieldLabel, exact }),
+        });
+
+        return { host, combobox };
+    };
+
+    /**
+     * Choose an option in a search select.
+     *
+     * @param fieldLabel The accessible name of the search select.
+     * @param pattern The option to choose. A string is also typed in to search for it.
      */
     public selectSearchValue = async (
         fieldLabel: string | RegExp,
         pattern: string | RegExp,
         parent: LocatorContext = this.page,
     ): Promise<void> => {
-        const control = parent.getByRole("textbox", { name: fieldLabel });
+        const { host, combobox } = await this.findSearchSelect(fieldLabel, parent);
+
+        await combobox.click();
+
+        // Search selects only load their first page of options, so filter whenever the pattern
+        // is plain text. Otherwise accumulated test data can push the option out of the list.
+        const filter = typeof pattern === "string" ? pattern : literalPattern(pattern);
+
+        if (filter) {
+            await combobox.fill(filter);
+        }
+
+        const option = host.getByRole("option", { name: pattern }).first();
+
+        if (filter && typeof pattern !== "string") {
+            // Options the server doesn't search, such as the blank choice, only show unfiltered.
+            const filtered = await option
+                .waitFor({ timeout: 5_000 })
+                .then(() => true)
+                .catch(() => false);
+
+            if (!filtered) await combobox.fill("");
+        }
+
+        await expect(option, `Search select option (${pattern}) should be visible`).toBeVisible();
+
+        await option.click();
 
         await expect(
-            control,
-            `Search select control (${fieldLabel}) should be visible`,
-        ).toBeVisible();
-
-        const fieldName = await control.getAttribute("name");
-
-        if (!fieldName) {
-            throw new Error(`Unable to find name attribute on search select (${fieldLabel})`);
-        }
-
-        // Find the search select input control and activate it.
-        await control.click();
-
-        if (typeof pattern === "string") {
-            await this.fill(control, pattern, parent);
-        }
-
-        const button = this.page
-            .locator("ak-search-select-view")
-            .filter({ has: this.page.locator(`input[name="${fieldName}"]`) })
-            .locator("ak-list-select [part='ak-list-select-button']", {
-                hasText: pattern,
-            });
-
-        await expect(button, `Search select entry (${pattern}) should be visible`).toBeVisible();
-
-        await button.click();
-        await this.page.keyboard.press("Tab");
-        await control.blur();
+            host.getByRole("listbox"),
+            `Search select (${fieldLabel}) closes after choosing`,
+        ).toBeHidden();
     };
 
     public setFormGroup = async (
@@ -246,4 +273,13 @@ export class FormFixture extends PageFixture {
     }
 
     //#endregion
+}
+
+/**
+ * The text a regular expression matches, if it is plain text with no special characters.
+ */
+function literalPattern(pattern: RegExp): string | null {
+    const unescaped = pattern.source.replace(/\\([-/ ])/g, "$1");
+
+    return /[\\^$.|?*+()[\]{}]/.test(unescaped) ? null : unescaped;
 }

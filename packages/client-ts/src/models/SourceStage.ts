@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum.js";
 import {
     ResumeOnMatchFailuresEnumFromJSON,
     ResumeOnMatchFailuresEnumToJSON,
-} from "./ResumeOnMatchFailuresEnum";
+} from "./ResumeOnMatchFailuresEnum.js";
 
 /**
  * SourceStage Serializer

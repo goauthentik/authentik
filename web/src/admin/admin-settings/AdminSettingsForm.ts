@@ -78,6 +78,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Base URL", { id: "settings.base-url.label" })}
                 value="${ifDefined(settings.baseUrl)}"
                 input-hint="code"
+                required
                 help=${msg(
                     "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).",
                     { id: "settings.base-url.description" },
@@ -314,6 +315,15 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                         label=${msg("Continuous Login")}
                         help=${msg(
                             "Upon successful authentication, re-start authentication in other open tabs.",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.rbacCustomPermissions"
+                        ?checked=${settings?.flags.rbacCustomPermissions ?? false}
+                        label=${msg("Custom permissions")}
+                        help=${msg(
+                            "Let custom permission checks override access control decisions made by authentik.",
                         )}
                     >
                     </ak-switch-input>

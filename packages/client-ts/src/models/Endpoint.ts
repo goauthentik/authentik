@@ -10,67 +10,23 @@
  * Do not edit the class manually.
  */
 
-import type { EndpointAuthModeEnum } from "./EndpointAuthModeEnum";
-import { EndpointAuthModeEnumFromJSON, EndpointAuthModeEnumToJSON } from "./EndpointAuthModeEnum";
-import type { ProtocolEnum } from "./ProtocolEnum";
-import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum";
-import type { RACProvider } from "./RACProvider";
-import { RACProviderFromJSON } from "./RACProvider";
-
 /**
- * Endpoint Serializer
+ * Base serializer class which doesn't implement create/update methods
  *
  * @export
  * @interface Endpoint
  */
 export interface Endpoint {
-    readonly pk: string;
-    name: string;
-    provider: number;
-    readonly providerObj: RACProvider;
-    protocol: ProtocolEnum;
-    host: string;
-    settings?: { [key: string]: any };
-    propertyMappings?: Array<string>;
-    authMode: EndpointAuthModeEnum;
-    /**
-     * Build actual launch URL (the provider itself does not have one, just
-     * individual endpoints)
-     */
-    readonly launchUrl: string | null;
-    maximumConnections?: number;
+    id: string;
+    functions: Array<string>;
 }
 
 /**
  * Check if a given object implements the Endpoint interface.
  */
 export function instanceOfEndpoint(value: object): value is Endpoint {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (
-        (!("providerObj" in (value as Record<string, any>)) &&
-            !("provider_obj" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["providerObj"] === undefined &&
-            (value as Record<string, any>)["provider_obj"] === undefined)
-    )
-        return false;
-    if (!("protocol" in value) || value["protocol"] === undefined) return false;
-    if (!("host" in value) || value["host"] === undefined) return false;
-    if (
-        (!("authMode" in (value as Record<string, any>)) &&
-            !("auth_mode" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authMode"] === undefined &&
-            (value as Record<string, any>)["auth_mode"] === undefined)
-    )
-        return false;
-    if (
-        (!("launchUrl" in (value as Record<string, any>)) &&
-            !("launch_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["launchUrl"] === undefined &&
-            (value as Record<string, any>)["launch_url"] === undefined)
-    )
-        return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("functions" in value) || value["functions"] === undefined) return false;
     return true;
 }
 
@@ -83,18 +39,8 @@ export function EndpointFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         return json;
     }
     return {
-        pk: json["pk"],
-        name: json["name"],
-        provider: json["provider"],
-        providerObj: RACProviderFromJSON(json["provider_obj"]),
-        protocol: ProtocolEnumFromJSON(json["protocol"]),
-        host: json["host"],
-        settings: json["settings"] == null ? undefined : json["settings"],
-        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        authMode: EndpointAuthModeEnumFromJSON(json["auth_mode"]),
-        launchUrl: json["launch_url"],
-        maximumConnections:
-            json["maximum_connections"] == null ? undefined : json["maximum_connections"],
+        id: json["id"],
+        functions: json["functions"],
     };
 }
 
@@ -103,7 +49,7 @@ export function EndpointToJSON(json: any): Endpoint {
 }
 
 export function EndpointToJSONTyped(
-    value?: Omit<Endpoint, "pk" | "providerObj" | "launchUrl"> | null,
+    value?: Endpoint | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -111,13 +57,7 @@ export function EndpointToJSONTyped(
     }
 
     return {
-        name: value["name"],
-        provider: value["provider"],
-        protocol: ProtocolEnumToJSON(value["protocol"]),
-        host: value["host"],
-        settings: value["settings"],
-        property_mappings: value["propertyMappings"],
-        auth_mode: EndpointAuthModeEnumToJSON(value["authMode"]),
-        maximum_connections: value["maximumConnections"],
+        id: value["id"],
+        functions: value["functions"],
     };
 }

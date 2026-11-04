@@ -16,7 +16,8 @@ export interface ListenDecoratorOptions extends AddEventListenerOptions {
     /**
      * The target to attach the event listener to.
      *
-     * @default window
+     * @default The decorated element itself, which also receives events that bubble up from
+     *   its descendants.
      */
     target?: EventTarget;
 }
@@ -71,20 +72,29 @@ function isEventListenerLike(input: unknown): input is EventListenerOrEventListe
  * @see {@linkcode listen} for usage.
  */
 function registerEventCallbacks<T extends ListenerMixin>(target: T): ListenDecoratorStore {
+    const parentStore = target[listenerDecoratorSymbol];
+
+    const store: ListenDecoratorStore = {
+        propToEventName: new Map(parentStore?.propToEventName),
+        propToOptions: new Map(parentStore?.propToOptions),
+    };
+
+    target[listenerDecoratorSymbol] = store;
+
+    if (parentStore) return store;
+
     const { connectedCallback, disconnectedCallback } = target;
-
-    // Inherit parent's listeners, if they exist.
-    const parentData = target[listenerDecoratorSymbol];
-
-    const propToEventName = new Map(parentData?.propToEventName || []);
-    const propToOptions = new Map(parentData?.propToOptions || []);
 
     // Wrap connectedCallback to register event listeners, with AbortController for easy removal.
     target.connectedCallback = function connectedCallbackWrapped(this: T) {
         connectedCallback.call(this);
 
+        this[abortControllerSymbol]?.abort();
+
         const abortController = new AbortController();
         this[abortControllerSymbol] = abortController;
+
+        const { propToEventName, propToOptions } = this[listenerDecoratorSymbol] ?? store;
 
         // Register all listeners
         for (const [propKey, eventType] of propToEventName) {
@@ -103,7 +113,9 @@ function registerEventCallbacks<T extends ListenerMixin>(target: T): ListenDecor
                 );
             }
 
-            eventTarget.addEventListener(eventType, listener, {
+            const boundListener = typeof listener === "function" ? listener.bind(this) : listener;
+
+            eventTarget.addEventListener(eventType, boundListener, {
                 passive: true,
                 ...options,
                 signal: abortController.signal,
@@ -119,12 +131,7 @@ function registerEventCallbacks<T extends ListenerMixin>(target: T): ListenDecor
         this[abortControllerSymbol] = null;
     };
 
-    target[listenerDecoratorSymbol] = {
-        propToEventName,
-        propToOptions,
-    };
-
-    return target[listenerDecoratorSymbol];
+    return store;
 }
 
 //#endregion
@@ -139,11 +146,12 @@ function registerEventCallbacks<T extends ListenerMixin>(target: T): ListenDecor
 export type ListenDecorator = <T extends LitElement>(target: T, propertyKey: string) => void;
 
 /**
- * Adds an event listener to the `window` object that is automatically
- * removed when the element is disconnected.
+ * Adds an event listener to the element, or to `options.target` when given, that is added
+ * when the element connects and removed when it disconnects.
+ *
+ * One listener per decorated member: decorating the same member twice keeps only the last.
  *
  * @param EventConstructor The event constructor to listen for.
- * @param listener The event listener callback.
  * @param options Additional options for `addEventListener`.
  */
 export function listen<K extends keyof WindowEventMap>(
@@ -152,11 +160,12 @@ export function listen<K extends keyof WindowEventMap>(
 ): ListenDecorator;
 
 /**
- * Adds an event listener to the `window` object that is automatically
- * removed when the element is disconnected.
+ * Adds an event listener to the element, or to `options.target` when given, that is added
+ * when the element connects and removed when it disconnects.
+ *
+ * One listener per decorated member: decorating the same member twice keeps only the last.
  *
  * @param type The event type to listen for.
- * @param listener The event listener callback.
  * @param options Additional options for `addEventListener`.
  */
 export function listen<K extends keyof WindowEventMap>(
@@ -165,11 +174,12 @@ export function listen<K extends keyof WindowEventMap>(
 ): ListenDecorator;
 
 /**
- * Adds an event listener to the `window` object that is automatically
- * removed when the element is disconnected.
+ * Adds an event listener to the element, or to `options.target` when given, that is added
+ * when the element connects and removed when it disconnects.
+ *
+ * One listener per decorated member: decorating the same member twice keeps only the last.
  *
  * @param type The event type or constructor to listen for.
- * @param listener The event listener callback.
  * @param options Additional options for `addEventListener`.
  */
 export function listen<K extends keyof WindowEventMap>(

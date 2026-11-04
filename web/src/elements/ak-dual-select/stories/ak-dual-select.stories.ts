@@ -26,9 +26,13 @@ const metadata: Meta<AkDualSelect> = {
             type: "string",
             description: "An array of [key] of what has already been selected",
         },
-        pages: {
-            type: "string",
-            description: "An authentik pagination object.",
+        itemCount: {
+            type: "number",
+            description: "The number of items in the total collection",
+        },
+        page: {
+            type: "number",
+            description: "The current page you're on",
         },
     },
 };

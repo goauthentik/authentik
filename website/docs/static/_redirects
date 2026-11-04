@@ -35,6 +35,8 @@
 
 #region Core
 /core/geoip                                                 /install-config/geoip/ 301!
+/core/glossary/*                                            / 301!
+/core/glossary                                              / 301!
 /installation/*                                             /install-config/:splat 301!
 #endregion
 
@@ -118,4 +120,9 @@
 
 #region Docs prefix
 /docs/*                                                     /:splat 301!
+#endregion
+
+#region Brand assets
+/img/icon_left_brand_colour.svg                             /img/icon_left_brand_color.svg 301!
+/img/icon_top_brand_colour.svg                              /img/icon_top_brand_color.svg 301!
 #endregion

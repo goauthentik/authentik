@@ -10,17 +10,17 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { CompatibilityModeEnum } from "./CompatibilityModeEnum";
+import { parseDateTime } from "../runtime.js";
+import type { CompatibilityModeEnum } from "./CompatibilityModeEnum.js";
 import {
     CompatibilityModeEnumFromJSON,
     CompatibilityModeEnumToJSON,
-} from "./CompatibilityModeEnum";
-import type { SCIMAuthenticationModeEnum } from "./SCIMAuthenticationModeEnum";
+} from "./CompatibilityModeEnum.js";
+import type { SCIMAuthenticationModeEnum } from "./SCIMAuthenticationModeEnum.js";
 import {
     SCIMAuthenticationModeEnumFromJSON,
     SCIMAuthenticationModeEnumToJSON,
-} from "./SCIMAuthenticationModeEnum";
+} from "./SCIMAuthenticationModeEnum.js";
 
 /**
  * SCIMProvider Serializer
@@ -66,6 +66,10 @@ export interface SCIMProvider {
     url: string;
     verifyCertificates?: boolean;
     authMode?: SCIMAuthenticationModeEnum;
+    /**
+     * Username used for Basic authentication
+     */
+    authBasicUser?: string;
     /**
      * OAuth Source used for authentication
      */
@@ -210,6 +214,7 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
             json["auth_mode"] == null
                 ? undefined
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
+        authBasicUser: json["auth_basic_user"] == null ? undefined : json["auth_basic_user"],
         authOauth:
             json["auth_oauth"] === undefined
                 ? undefined
@@ -279,6 +284,7 @@ export function SCIMProviderToJSONTyped(
         url: value["url"],
         verify_certificates: value["verifyCertificates"],
         auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
+        auth_basic_user: value["authBasicUser"],
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],
         compatibility_mode: CompatibilityModeEnumToJSON(value["compatibilityMode"]),

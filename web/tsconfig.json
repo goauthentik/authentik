@@ -1,26 +1,12 @@
 // @file TSConfig used by the web package during development.
 {
-    "extends": "@goauthentik/tsconfig",
+    "extends": "@goauthentik/tsconfig/web",
     "compilerOptions": {
         "ignoreDeprecations": "6.0",
-        "composite": true,
-        "types": ["node"],
-        "checkJs": true,
-        "allowJs": true,
-        // Build scripts and bundler plugins run straight from source under
-        // Node's type stripping, which does not rewrite `.js` specifiers back
-        // to `.ts`. Their relative imports name the real file on disk.
-        "allowImportingTsExtensions": true,
-        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
-        "emitDeclarationOnly": true,
         "experimentalDecorators": true,
         // See https://lit.dev/docs/components/properties/
         "useDefineForClassFields": false,
-        "target": "esnext",
-        "module": "preserve",
-        "moduleResolution": "bundler",
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
 
         // TODO: We should enable this when when we're ready to enforce it.
         "noUncheckedIndexedAccess": false,

@@ -19,7 +19,7 @@
 export interface PatchedConnectionTokenRequest {
     pk?: string;
     provider?: number;
-    endpoint?: string;
+    device?: string;
 }
 
 /**
@@ -45,7 +45,7 @@ export function PatchedConnectionTokenRequestFromJSONTyped(
     return {
         pk: json["pk"] == null ? undefined : json["pk"],
         provider: json["provider"] == null ? undefined : json["provider"],
-        endpoint: json["endpoint"] == null ? undefined : json["endpoint"],
+        device: json["device"] == null ? undefined : json["device"],
     };
 }
 
@@ -64,6 +64,6 @@ export function PatchedConnectionTokenRequestToJSONTyped(
     return {
         pk: value["pk"],
         provider: value["provider"],
-        endpoint: value["endpoint"],
+        device: value["device"],
     };
 }

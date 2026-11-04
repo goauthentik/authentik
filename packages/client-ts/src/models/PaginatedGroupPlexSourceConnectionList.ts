@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { GroupPlexSourceConnection } from "./GroupPlexSourceConnection";
+import type { GroupPlexSourceConnection } from "./GroupPlexSourceConnection.js";
 import {
     GroupPlexSourceConnectionFromJSON,
     GroupPlexSourceConnectionToJSON,
-} from "./GroupPlexSourceConnection";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./GroupPlexSourceConnection.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

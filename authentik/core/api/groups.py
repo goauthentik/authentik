@@ -1,11 +1,9 @@
 """Groups API Viewset"""
 
-from json import loads
-
 from django.db.models import Prefetch
 from django.http import Http404
 from django.utils.translation import gettext as _
-from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
+from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from djangoql.schema import BoolField, StrField
 from drf_spectacular.utils import (
@@ -14,7 +12,6 @@ from drf_spectacular.utils import (
     extend_schema,
     extend_schema_field,
 )
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -38,6 +35,7 @@ from authentik.core.models import Group, User
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.filters import ObjectFilter
 from authentik.rbac.models import Role
 
 
@@ -211,6 +209,8 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
     def get_users_obj(self, instance: Group) -> list[PartialUserSerializer] | None:
         if not self._should_include_users:
             return None
+        if (precomputed := getattr(instance, "_users_obj", None)) is not None:
+            return precomputed
         return PartialUserSerializer(instance.users, many=True).data
 
     @extend_schema_field(RelatedGroupSerializer(many=True))
@@ -253,11 +253,9 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
             if not has_perm:
                 raise ValidationError(
                     _(
-                        (
-                            "User does not have permission to set "
-                            "superuser status to {superuser_status}."
-                        ).format_map({"superuser_status": superuser})
-                    )
+                        "User does not have permission to set "
+                        "superuser status to {superuser_status}."
+                    ).format(superuser_status=superuser)
                 )
         return superuser
 
@@ -350,13 +348,6 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
 class GroupFilter(FilterSet):
     """Filter for groups"""
 
-    attributes = CharFilter(
-        field_name="attributes",
-        lookup_expr="",
-        label="Attributes",
-        method="filter_attributes",
-    )
-
     members_by_username = ModelMultipleChoiceFilter(
         field_name="users__username",
         to_field_name="username",
@@ -368,26 +359,9 @@ class GroupFilter(FilterSet):
         distinct=False,
     )
 
-    def filter_attributes(self, queryset, name, value):
-        """Filter attributes by query args"""
-        try:
-            value = loads(value)
-        except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON") from None
-        if not isinstance(value, dict):
-            raise ValidationError(detail="filter: value must be key:value mapping")
-        qs = {}
-        for key, _value in value.items():
-            qs[f"attributes__{key}"] = _value
-        try:
-            _ = len(queryset.filter(**qs))
-            return queryset.filter(**qs)
-        except ValueError:
-            return queryset
-
     class Meta:
         model = Group
-        fields = ["name", "is_superuser", "members_by_pk", "attributes", "members_by_username"]
+        fields = ["name", "is_superuser", "members_by_pk", "members_by_username"]
 
 
 class GroupViewSet(UsedByMixin, ModelViewSet):
@@ -416,13 +390,19 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             JSONSearchField(Group, "attributes"),
         ]
 
+    @property
+    def _should_include_users(self) -> bool:
+        return self.serializer_class(context={"request": self.request})._should_include_users
+
     def get_queryset(self):
         # Always prefetch parents and children since their PKs are always serialized
         base_qs = Group.objects.all().prefetch_related("roles", "parents", "children")
 
-        if self.serializer_class(context={"request": self.request})._should_include_users:
-            # Only fetch fields needed by PartialUserSerializer to reduce DB load and instantiation
-            # time
+        # `list` builds both `users` and `users_obj`. Prefetching `users` would include duplicates
+        if getattr(self, "action", None) == "list":
+            return base_qs
+
+        if self._should_include_users:
             base_qs = base_qs.prefetch_related(
                 Prefetch(
                     "users",
@@ -431,22 +411,53 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             )
         return base_qs
 
-    def _attach_user_pk_lists(self, groups: list[Group]) -> None:
-        """Batch-load user PKs without materializing User objects."""
+    def _load_memberships(self, groups: list[Group]) -> dict:
+        """Load {group_pk: [user_pk]} in a single query, without instantiating User objects."""
         group_pks = {group.pk for group in groups}
+        memberships = {group_pk: [] for group_pk in group_pks}
         if not group_pks:
+            return memberships
+
+        for group_pk, user_pk in User.groups.through.objects.filter(
+            group_id__in=group_pks
+        ).values_list("group_id", "user_id"):
+            memberships[group_pk].append(user_pk)
+
+        # We sort by PK so repeated requests are stable.
+        for user_pks in memberships.values():
+            user_pks.sort()
+        return memberships
+
+    def _attach_user_pk_lists(self, groups: list[Group], memberships: dict | None = None) -> None:
+        """Batch-load user PKs without materializing User objects."""
+        if memberships is None:
+            memberships = self._load_memberships(groups)
+        for group in groups:
+            group._users_pk_list = memberships[group.pk]
+
+    def _attach_users_obj(self, groups: list[Group], memberships: dict) -> None:
+        """Load and serialize user objects exactly once"""
+        if not any(memberships.values()):
+            for group in groups:
+                group._users_obj = []
             return
 
-        users_by_group = {group_pk: [] for group_pk in group_pks}
+        # This is specifically done with a subquery to get around the Postgres parameter limit
+        members = User.objects.filter(
+            pk__in=User.groups.through.objects.filter(group_id__in=memberships.keys()).values(
+                "user_id"
+            )
+        ).only(*PARTIAL_USER_SERIALIZER_MODEL_FIELDS)
 
-        through = User.groups.through
-        for group_pk, user_pk in through.objects.filter(group_id__in=group_pks).values_list(
-            "group_id", "user_id"
-        ):
-            users_by_group[group_pk].append(user_pk)
+        serializer = PartialUserSerializer(context=self.get_serializer_context())
+        representations = {member.pk: serializer.to_representation(member) for member in members}
 
         for group in groups:
-            group._users_pk_list = users_by_group[group.pk]
+            group._users_obj = [
+                representations[user_pk]
+                for user_pk in memberships[group.pk]
+                if user_pk in representations
+            ]
 
     @extend_schema(
         parameters=[
@@ -457,20 +468,18 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         ]
     )
     def list(self, request, *args, **kwargs):
-        if self.serializer_class(context={"request": self.request})._should_include_users:
-            return super().list(request, *args, **kwargs)
-
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
-        if page is not None:
-            groups = list(page)
-            self._attach_user_pk_lists(groups)
-            serializer = self.get_serializer(groups, many=True)
-            return self.get_paginated_response(serializer.data)
+        groups = list(page) if page is not None else list(queryset)
 
-        groups = list(queryset)
-        self._attach_user_pk_lists(groups)
+        memberships = self._load_memberships(groups)
+        self._attach_user_pk_lists(groups, memberships)
+        if self._should_include_users:
+            self._attach_users_obj(groups, memberships)
+
         serializer = self.get_serializer(groups, many=True)
+        if page is not None:
+            return self.get_paginated_response(serializer.data)
         return Response(serializer.data)
 
     @extend_schema(
@@ -503,13 +512,9 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     def add_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Add user to group"""
         group: Group = self.get_object()
-        user: User = (
-            get_objects_for_user(request.user, "authentik_core.view_user")
-            .filter(
-                pk=body.validated_data.get("pk"),
-            )
-            .first()
-        )
+        user = ObjectFilter.visible_in_list(
+            request, User.objects.filter(pk=body.validated_data.get("pk")), "core/users:list"
+        ).first()
         if not user:
             raise Http404
         if not group.users.filter(pk=user.pk).exists():
@@ -542,13 +547,9 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     def remove_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Remove user from group"""
         group: Group = self.get_object()
-        user: User = (
-            get_objects_for_user(request.user, "authentik_core.view_user")
-            .filter(
-                pk=body.validated_data.get("pk"),
-            )
-            .first()
-        )
+        user = ObjectFilter.visible_in_list(
+            request, User.objects.filter(pk=body.validated_data.get("pk")), "core/users:list"
+        ).first()
         if not user:
             raise Http404
         group.users.remove(user)

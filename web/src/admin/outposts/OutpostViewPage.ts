@@ -20,13 +20,12 @@ import PFProgress from "@patternfly/patternfly/components/Progress/progress.css"
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
-import { docLink } from "#common/global";
+import { docLink, globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
-import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
+import { setPageDetails } from "#elements/router/meta";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
 import { scheduleCard } from "#components/tasks/scheduleCard";
 import { taskCard } from "#components/tasks/taskCard";
@@ -214,13 +213,15 @@ export class OutpostViewPage extends AKElement {
                         .items=${this.outpost?.providersObj}
                     ></ak-outposts-provider-list>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                ${this.renderOutpostDeploymentInfo()}
+                <div
+                    class="pf-c-card pf-l-grid__item ${this.outpost?.managed === embeddedOutpostManaged ? "pf-m-12-col" : "pf-m-9-col"}"
+                >
                     <div class="pf-c-card__title">
                         ${msg("Detailed health (data is cached so may be out of date)")}
                     </div>
                     <ak-outpost-health-list .items=${this.health}></ak-outpost-health-list>
                 </div>
-                ${this.renderOutpostDeploymentInfo()}
             </div>
         `;
     }
@@ -230,7 +231,7 @@ export class OutpostViewPage extends AKElement {
             return null;
         }
 
-        return html`<div class="pf-c-card pf-l-grid__item pf-m-12-col">
+        return html`<div class="pf-c-card pf-l-grid__item pf-m-3-col">
             <div class="pf-c-card__title">${msg("Outpost Deployment Info")}</div>
             <div class="pf-c-card__body">
                 <p>
@@ -250,14 +251,21 @@ export class OutpostViewPage extends AKElement {
                             class="pf-c-form-control"
                             readonly
                             type="text"
-                            value="${document.location.origin}"
+                            value="${globalAK().api.base}"
                         />
                     </div>
                     <div class="pf-c-form__group">
                         <label class="pf-c-form__label">
                             <span class="pf-c-form__label-text">AUTHENTIK_TOKEN</span>
                         </label>
-                        <div>${IconTokenCopyButton(this.outpost?.tokenIdentifier)}</div>
+                        <div>
+                            <ak-token-copy-button
+                                class="pf-m-secondary"
+                                .identifier="${this.outpost?.tokenIdentifier}"
+                            >
+                                ${msg("Copy token")}
+                            </ak-token-copy-button>
+                        </div>
                     </div>
                     <h3>
                         ${msg(
