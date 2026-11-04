@@ -109,7 +109,7 @@ export class DataExportListPage extends TablePage<DataExport> {
             .map(([key, value]) => [key, html`<pre>${value}</pre>`]);
 
         return html`<ak-section-card label=${msg("Query parameters")}>
-            <div class="pf-u-m-lg">
+            <div class="pf-u-mb-lg pf-u-mx-lg">
                 ${renderDescriptionList(queryParameterPairs, { horizontal: true, compact: true })}
             </div>
         </ak-section-card>`;
