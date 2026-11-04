@@ -39,6 +39,17 @@ html[data-theme="dark"] {
     min-height: 2.25rem;
 }
 
+/*
+ * The buttons cover 5.2rem of the top right corner: two 2.25rem buttons, a 0.2rem
+ * gap, and a 0.5rem inset. Pad the first line so it can scroll or wrap clear of
+ * them; 5.5rem also clears them on a highlighted line, whose margin is negative.
+ * Numbered lines are table rows, which take no padding, so their content cell does.
+ */
+.theme-doc-markdown .theme-code-block .token-line:first-child,
+.theme-doc-markdown .theme-code-block .token-line:first-child > [class^="codeLineContent"] {
+    padding-right: 5.5rem;
+}
+
 .theme-doc-markdown .theme-code-block button.clean-btn:focus-visible {
     outline: 2px solid var(--prism-color);
     outline-offset: 2px;
