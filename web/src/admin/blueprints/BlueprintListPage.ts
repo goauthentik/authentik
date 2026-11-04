@@ -126,6 +126,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     protected override row(item: BlueprintInstance): SlottedTemplateResult[] {
         const description = formatBlueprintDescription(item);
         const { pk, name, path, enabled, lastApplied } = item;
+        const urlLabel = path && path.startsWith("oci://") ? msg("OCI manifest") : msg("Path");
 
         return [
             html`<div>${name}</div>
@@ -134,7 +135,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                         ? html`<small><ak-mdx .content=${description}></ak-mdx></small>`
                         : nothing
                 }
-                ${path ? html`<div><small>${msg("Path:")}&nbsp;${path}</small></div>` : nothing}`,
+                ${path ? html`<div><small>${urlLabel}:&nbsp;${path}</small></div>` : nothing}`,
 
             BlueprintStatus(item),
             Timestamp(lastApplied),
