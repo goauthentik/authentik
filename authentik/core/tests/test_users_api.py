@@ -117,6 +117,30 @@ class TestUsersAPI(APITestCase):
                 )
                 self.assertEqual(body["pagination"]["count"], len(expected))
 
+    def test_password_dates_do_not_add_queries_per_user(self):
+        """Listing more password dates does not query each user's device separately."""
+        self.client.force_login(self.admin)
+        path = generate_id()
+        url = reverse("authentik_api:user-list")
+        counts = []
+        for size in (1, 5):
+            for _ in range(size):
+                create_test_user(path=path)
+            self.client.get(url, data={"path": path})
+            with CaptureQueriesContext(connection) as queries:
+                response = self.client.get(url, data={"path": path})
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(
+                all(user["password_change_date"] for user in response.json()["results"])
+            )
+            counts.append(
+                sum(
+                    'FROM "authentik_stages_password_passworddevice"' in query["sql"]
+                    for query in queries
+                )
+            )
+        self.assertEqual(*counts)
+
     def test_filter_type_no_distinct(self):
         """Test that filtering by type doesn't make the list and count queries DISTINCT"""
         self.client.force_login(self.admin)
@@ -478,7 +502,7 @@ class TestUsersAPI(APITestCase):
         Brand.objects.create(
             domain="testserver",
             flow_recovery=create_test_flow(FlowDesignation.RECOVERY),
-            branding_logo="/static/authentik/sources/ldap.png",
+            branding_logo="/static/authentik/sources/kerberos/light.png",
         )
         stage = EmailStage.objects.create(name=generate_id())
 
@@ -494,7 +518,7 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].attachments[0].get_payload(decode=True),
-            Path("web/authentik/sources/ldap.png").read_bytes(),
+            Path("web/authentik/sources/kerberos/light.png").read_bytes(),
         )
 
     def test_service_account(self):

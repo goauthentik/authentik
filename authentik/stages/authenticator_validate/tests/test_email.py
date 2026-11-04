@@ -121,7 +121,7 @@ class AuthenticatorValidateStageEmailTests(APIFlowTestCase):
     def test_brand_logo(self):
         """Test the logo of the request's brand is embedded"""
         Brand.objects.create(
-            domain="testserver", branding_logo="/static/authentik/sources/ldap.png"
+            domain="testserver", branding_logo="/static/authentik/sources/kerberos/light.png"
         )
         device = EmailDevice.objects.create(
             user=self.user,
@@ -135,7 +135,7 @@ class AuthenticatorValidateStageEmailTests(APIFlowTestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].attachments[0].get_payload(decode=True),
-            Path("web/authentik/sources/ldap.png").read_bytes(),
+            Path("web/authentik/sources/kerberos/light.png").read_bytes(),
         )
 
     def test_no_device(self):

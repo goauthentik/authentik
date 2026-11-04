@@ -5,7 +5,7 @@ from django.http.request import HttpRequest
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.backends.base import ManageableBackend
+from authentik.admin.files.backends.base import ManageableBackend, substitute_theme
 from authentik.admin.files.backends.file import FileBackend
 from authentik.admin.files.backends.passthrough import PassthroughBackend
 from authentik.admin.files.backends.s3 import S3Backend
@@ -78,6 +78,9 @@ class FileManager:
         Set ``use_cache=False`` when the caller needs a fresh signed URL instead
         of a cached one, for example when serializing flow/login payloads that
         may be refreshed after the previous JWT has expired.
+
+        A name with ``%(theme)s`` resolves to its light variant, so the URL always
+        points at a real file. Callers that know the theme use ``themed_urls()``.
         """
         if not name:
             return ""
@@ -85,6 +88,7 @@ class FileManager:
         if isinstance(request, Request):
             request = request._request
 
+        name = substitute_theme(name, "light")
         for backend in self.backends:
             if backend.supports_file(name):
                 return backend.file_url(name, request, use_cache=use_cache)
@@ -111,12 +115,13 @@ class FileManager:
         use_cache: bool = True,
     ) -> dict[str, str] | None:
         """
-        Get URLs for each theme variant when filename contains %(theme)s.
+        Get URLs for each theme variant when filename contains %(theme)s, or when it is
+        one variant of a built-in source icon.
 
         ``use_cache`` has the same semantics as ``file_url()`` and allows
         callers to force regeneration of expiring signed URLs.
 
-        Returns dict mapping theme to URL if %(theme)s present, None otherwise.
+        Returns dict mapping theme to URL if there are theme variants, None otherwise.
         """
         if not name:
             return None

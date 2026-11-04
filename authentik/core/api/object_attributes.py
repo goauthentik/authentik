@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, SerializerMethodField
@@ -12,7 +13,6 @@ from authentik.lib.utils.dict import get_path_from_dict
 
 
 class AttributesMixinSerializer(ModelSerializer):
-
     def validate(self, data: dict[str, Any]) -> dict[str, Any]:
         model = self.Meta.model
         attrs = data.get("attributes", {})
@@ -20,7 +20,12 @@ class AttributesMixinSerializer(ModelSerializer):
             object_type=ContentType.objects.get_for_model(model),
             enabled=True,
         )
+        instance = self.instance if isinstance(self.instance, Model) else None
+        hidden = self.field_rules(instance).hidden
         for attr in attributes:
+            path = f"attributes.{attr.key}"
+            if any(path == key or path.startswith(f"{key}.") for key in hidden):
+                continue
             value = get_path_from_dict(attrs, attr.key)
             attr.run_validation(value)
         return data
@@ -44,7 +49,6 @@ class ContentTypeSerializer(ModelSerializer):
 
 
 class ObjectAttributeSerializer(ModelSerializer):
-
     object_type = CharField()
     object_type_obj = ContentTypeSerializer(read_only=True, source="object_type")
 

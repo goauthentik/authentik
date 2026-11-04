@@ -182,7 +182,7 @@ class TestEmailStageSending(APIFlowTestCase):
     def test_brand_logo(self):
         """Test the logo of the request's brand is embedded"""
         Brand.objects.create(
-            domain="testserver", branding_logo="/static/authentik/sources/ldap.png"
+            domain="testserver", branding_logo="/static/authentik/sources/kerberos/light.png"
         )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
@@ -200,5 +200,5 @@ class TestEmailStageSending(APIFlowTestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].attachments[0].get_payload(decode=True),
-            Path("web/authentik/sources/ldap.png").read_bytes(),
+            Path("web/authentik/sources/kerberos/light.png").read_bytes(),
         )

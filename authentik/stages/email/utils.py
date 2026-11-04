@@ -10,6 +10,7 @@ from django.core.mail.message import sanitize_address
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils import translation
+from django.utils.functional import Promise
 from structlog.stdlib import get_logger
 
 from authentik.admin.files.backends.base import get_content_type, has_theme_variable
@@ -50,7 +51,7 @@ def logo_data(brand: Brand) -> MIMEImage:
         default_logo = DEFAULT_LOGO
         # When running tests, assets might not exist, so fallback to a different icon
         if settings.TEST:
-            default_logo = "/static/authentik/sources/saml.png"
+            default_logo = "/static/authentik/sources/saml/light.png"
         logo = StaticBackend(FileUsage.MEDIA).read_file(default_logo), "image/png"
     content, content_type = logo
     image = MIMEImage(content, _subtype=content_type.removeprefix("image/"))
@@ -89,6 +90,9 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         sanitized_cc = _sanitize_recipients(cc) if cc else None
         sanitized_bcc = _sanitize_recipients(bcc) if bcc else None
         super().__init__(to=sanitized_to, cc=sanitized_cc, bcc=sanitized_bcc, **kwargs)
+        if isinstance(self.subject, Promise):
+            with translation.override(language):
+                self.subject = str(self.subject)
         if not template_name:
             return
         with translation.override(language):

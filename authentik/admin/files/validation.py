@@ -76,10 +76,16 @@ def validate_upload_file_name(
     # Check path length limits
     normalized = str(path)
     if len(normalized) > MAX_FILE_NAME_LENGTH:
-        raise ValidationError(_(f"File name too long (max {MAX_FILE_NAME_LENGTH} characters)"))
+        raise ValidationError(
+            _("File name too long (max {MAX_FILE_NAME_LENGTH} characters)").format(
+                MAX_FILE_NAME_LENGTH=MAX_FILE_NAME_LENGTH
+            )
+        )
 
     for part in path.parts:
         if len(part) > MAX_PATH_COMPONENT_LENGTH:
             raise ValidationError(
-                _(f"Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)")
+                _("Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)").format(
+                    MAX_PATH_COMPONENT_LENGTH=MAX_PATH_COMPONENT_LENGTH
+                )
             )

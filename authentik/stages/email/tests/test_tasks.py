@@ -21,7 +21,7 @@ from authentik.stages.email.tasks import get_email_body, send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 # Logo used in tests when the brand's logo can't be embedded, see logo_data
-DEFAULT_LOGO = Path("web/authentik/sources/saml.png").read_bytes()
+DEFAULT_LOGO = Path("web/authentik/sources/saml/light.png").read_bytes()
 
 
 class TestEmailTasks(TestCase):
@@ -122,11 +122,12 @@ class TestEmailLogo(FileTestFileBackendMixin, TestCase):
         """Test a built-in PNG logo is embedded"""
         logo = self.send(
             Brand.objects.create(
-                domain=generate_id(), branding_logo="/static/authentik/sources/ldap.png"
+                domain=generate_id(), branding_logo="/static/authentik/sources/kerberos/light.png"
             )
         )
         self.assertEqual(
-            logo.get_payload(decode=True), Path("web/authentik/sources/ldap.png").read_bytes()
+            logo.get_payload(decode=True),
+            Path("web/authentik/sources/kerberos/light.png").read_bytes(),
         )
 
     def test_fallback(self):

@@ -19,6 +19,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.events.models import Event, EventAction
+from authentik.events.utils import model_to_dict
 from authentik.lib.api import model_choices
 from authentik.lib.validators import RequiredTogetherValidator
 from authentik.rbac.decorators import permission_required
@@ -171,6 +173,15 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     filterset_class = RoleAssignedPermissionFilter
     search_fields = ["name"]
 
+    def log_permission_change(self, request: Request, role: Role, data: dict, change: str):
+        instance = data["model_instance"]
+        Event.new(
+            EventAction.MODEL_UPDATED,
+            model=model_to_dict(role),
+            object=model_to_dict(instance) if instance else None,
+            **{change: data["permissions"]},
+        ).from_http(request)
+
     @permission_required("authentik_rbac.assign_role_permissions")
     @extend_schema(
         request=PermissionAssignSerializer(),
@@ -195,6 +206,7 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
             for perm in data.validated_data["permissions"]:
                 assigned_perm = assign_perm(perm, role, data.validated_data["model_instance"])
                 ids.append(PermissionAssignResultSerializer(instance={"id": assigned_perm.pk}).data)
+        self.log_permission_change(request, role, data.validated_data, "permissions_assigned")
         return Response(ids, status=200)
 
     @permission_required("authentik_rbac.unassign_role_permissions")
@@ -227,4 +239,5 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
                     ).delete()
                 else:
                     remove_perm(perm, role, data.validated_data["model_instance"])
+        self.log_permission_change(request, role, data.validated_data, "permissions_unassigned")
         return Response(status=204)

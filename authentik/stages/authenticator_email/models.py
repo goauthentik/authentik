@@ -4,6 +4,7 @@ from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
 from django.template import TemplateSyntaxError
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_noop
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
@@ -45,7 +46,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         validators=[timedelta_string_validator],
         help_text=_("Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."),
     )
-    subject = models.TextField(default="authentik Sign-in code")
+    subject = models.TextField(default=gettext_noop("authentik Sign-in code"))
     template = models.TextField(default=EmailTemplates.EMAIL_OTP)
 
     @property
