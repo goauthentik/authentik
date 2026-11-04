@@ -12,7 +12,6 @@ html[data-theme="dark"] {
 }
 
 .theme-doc-markdown :not(pre) > code {
-    font-size: 0.9em;
     padding: 0.1em 0.3em;
     border-radius: 0.25rem;
     overflow-wrap: anywhere;
@@ -24,7 +23,7 @@ html[data-theme="dark"] {
     border: 1px solid var(--ifm-color-emphasis-200);
 }
 
-/* Keep both existing code controls discoverable on touch and keyboard input. */
+/* Show the copy and word-wrap buttons without hover, which touch screens lack. */
 .theme-doc-markdown .theme-code-block button.clean-btn {
     opacity: 1;
     justify-content: center;

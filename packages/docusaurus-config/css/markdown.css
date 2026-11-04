@@ -18,8 +18,7 @@
 .theme-doc-markdown {
     font-size: 1.0625rem;
 
-    /* Retain Infima's 1.65 body line height, 20px leading, and 40px H2 spacing. */
-    --ifm-h1-vertical-rhythm-bottom: 0.8;
+    /* Infima's 1.65 body line height, 20px leading, and 40px H2 spacing stay unchanged. */
     --ifm-heading-vertical-rhythm-bottom: 0.6;
     --ifm-h3-vertical-rhythm-top: 1.6;
 }
@@ -34,7 +33,7 @@
     margin-bottom: 0;
 }
 
-.theme-doc-markdown > :is(header, h1) + :is(h2, h3, h4, h5, h6)[id] {
+.theme-doc-markdown > header + :is(h2, h3, h4, h5, h6)[id] {
     margin-top: 0;
 }
 
@@ -132,7 +131,7 @@
     margin-bottom: var(--ifm-leading);
 }
 
-/* The optional title precedes the content; title-less callouts have one child. */
+/* Replaces Docusaurus's 0.3rem gap under the callout heading; a heading-only callout has one child. */
 .theme-doc-markdown .theme-admonition > :first-child:not(:last-child) {
     margin-bottom: 0.5rem;
 }
