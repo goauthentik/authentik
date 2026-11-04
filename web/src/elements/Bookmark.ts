@@ -1,5 +1,6 @@
 import { AKElement } from "#elements/Base";
 
+import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators/property.js";
@@ -9,6 +10,7 @@ export const bookmarkStates = ["hidden", "marked", "unmarked"] as const;
 export type BookmarkState = (typeof bookmarkStates)[number];
 
 const hollowBookmark = html`<!-- © fontawesome. CC-BY-4.0 licensed --><svg
+        aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         data-icon-name="bookmark"
         height="512"
@@ -21,6 +23,7 @@ const hollowBookmark = html`<!-- © fontawesome. CC-BY-4.0 licensed --><svg
     </svg>`;
 
 const solidBookmark = html`<!-- © fontawesome. CC-BY-4.0 licensed --><svg
+        aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         data-icon-name="bookmark"
         height="512"
@@ -36,6 +39,13 @@ const Styles = css`
     }
 
     [part="bookmark"] {
+        appearance: none;
+        background: none;
+        border: 0;
+        margin: 0;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
         transform: translateY(-20%);
         display: inline-block;
         padding-left: 0.25em;
@@ -77,9 +87,15 @@ export class Bookmark extends AKElement {
     public override render() {
         return this.state === "hidden"
             ? nothing
-            : html`<div part="bookmark" data-state=${this.state}>
+            : html`<button
+                  type="button"
+                  part="bookmark"
+                  data-state=${this.state}
+                  aria-label=${msg("Bookmark this page")}
+                  aria-pressed=${this.state === "marked" ? "true" : "false"}
+              >
                   ${this.state === "marked" ? solidBookmark : hollowBookmark}
-              </div>`;
+              </button>`;
     }
 }
 

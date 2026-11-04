@@ -182,23 +182,24 @@ export class AKPageNavbar
                                   >`
                                 : nothing
                         }
-                        <span id="page-navbar-heading"
-                            >${this.header}<slot name="bookmark"></slot
-                        ></span>
+                        <span id="page-navbar-heading">${this.header}</span
+                        ><slot name="bookmark"></slot>
                     </h1>
                 </div>
-                <div
-                    role="heading"
-                    aria-level="2"
-                    aria-label="${this.description ?? msg("breadcrumbs", { id: "page:navbar:breadcrumbs " })}"
-                    class="items page-description pf-c-content"
-                >
-                    ${
-                        this.description /* && false */
-                            ? html`<p>${this.description}</p>`
-                            : html`<p><slot name="breadcrumbs"></slot></p>`
-                    }
-                </div>
+                ${
+                    this.description
+                        ? html`<div
+                              role="heading"
+                              aria-level="2"
+                              aria-label="${this.description}"
+                              class="items page-description pf-c-content"
+                          >
+                              <p>${this.description}</p>
+                          </div>`
+                        : html`<div class="items page-description pf-c-content">
+                              <slot name="breadcrumbs"></slot>
+                          </div>`
+                }
 
                 <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">
