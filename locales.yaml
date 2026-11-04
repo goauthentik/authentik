@@ -37,7 +37,7 @@ locales:
   - { tag: ka-GE, django: ka_GE, transifex: ka_GE, ship: false }
   - { tag: ko-KR, django: ko_KR, transifex: ko_KR, ship: true }
   - { tag: lt-LT, django: lt_LT, transifex: lt_LT, ship: false }
-  - { tag: lv-LV, django: lv_LV, transifex: lv_LV, ship: false }
+  - { tag: lv-LV, django: lv_LV, transifex: lv_LV, ship: true }
   - { tag: ms-MY, django: ms_MY, transifex: ms_MY, ship: false }
   - { tag: nb-NO, django: nb_NO, transifex: no_NO, ship: true }
   - { tag: nl-NL, django: nl_NL, transifex: nl_NL, ship: true }
