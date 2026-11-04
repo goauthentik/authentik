@@ -32,13 +32,7 @@ export function renderBoundPoliciesExpansion(props: PolicyBindingProps) {
             .allowedTypes=${allowed ?? defaultAllowedTypes}
             .typeNotices=${notices ?? []}
         >
-            ${
-                description
-                    ? html`<span slot="description"
-                          >${msg("These bindings control which users/groups can approve requests.")}</span
-                      >`
-                    : nothing
-            }
+            ${description ? html`<span slot="description">${description}</span>` : nothing}
         </ak-bound-policies-list>
     </ak-section-card>`;
 }
