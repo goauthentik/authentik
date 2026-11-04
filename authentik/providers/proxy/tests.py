@@ -1,12 +1,19 @@
 """proxy provider tests"""
 
 from json import loads
+from unittest.mock import patch
 
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_cert,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.oauth2.models import ClientType
@@ -19,6 +26,51 @@ class ProxyProviderTests(APITestCase):
     def setUp(self) -> None:
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
+
+    def test_secret_rotation_triggers_outpost_update(self):
+        """Both Proxy credentials notify their outposts when rotated."""
+        outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
+        provider = ProxyProvider.objects.create(name=generate_id())
+        outpost.providers.add(provider)
+
+        for secret in [provider.client_secret_ref, provider.cookie_secret_ref]:
+            with self.subTest(secret=secret.name):
+                with patch(
+                    "authentik.outposts.signals.outpost_send_update.send_with_options"
+                ) as sender:
+                    with self.captureOnCommitCallbacks(execute=True):
+                        secret.rotate()
+
+                self.assertTrue(
+                    any(call.kwargs.get("args") == (outpost.pk,) for call in sender.call_args_list),
+                    sender.call_args_list,
+                )
+
+    def test_generated_secret_access(self):
+        """Roles with access to every proxy provider can see the secrets generated for new
+        ones, as the upgrade gave them on existing secrets, but not read their values."""
+        viewer = create_test_user()
+        viewer.assign_perms_to_managed_role("authentik_providers_proxy.view_proxyprovider")
+        editor = create_test_user()
+        editor.assign_perms_to_managed_role("authentik_providers_proxy.change_proxyprovider")
+        provider = ProxyProvider.objects.create(name=generate_id())
+
+        for user in [viewer, editor]:
+            for secret in [provider.client_secret_ref, provider.cookie_secret_ref]:
+                with self.subTest(user=user.username, secret=secret.name):
+                    self.assertTrue(user.has_perm("authentik_crypto_secrets.view_secret", secret))
+                    self.assertFalse(
+                        user.has_perm("authentik_crypto_secrets.view_secret_value", secret)
+                    )
+
+    def test_cookie_secret_length(self):
+        """Outposts can't sign sessions with cookie secrets shorter than 32 bytes."""
+        provider = ProxyProvider.objects.create(name=generate_id())
+        secret = provider.cookie_secret_ref
+        self.assertEqual(len(secret.secret_value), 32)
+        with self.assertRaises(ValidationError):
+            secret.validate_value("too-short")
+        secret.validate_value("x" * 32)
 
     def test_basic_auth(self):
         """Test basic_auth_enabled"""

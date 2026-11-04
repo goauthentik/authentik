@@ -106,6 +106,7 @@ export function renderDialog(
     shadowRoot.appendChild(dialog);
 
     const dispose = (event?: Event) => {
+        eventAbortController.abort();
         const { returnValue } = dialog;
 
         if (returnValue === "submitted") {
@@ -133,7 +134,6 @@ export function renderDialog(
         setDialogCountAttribute(-1, ownerDocument);
 
         onDispose?.(event);
-        eventAbortController.abort();
     };
 
     window.addEventListener(RouterNavigateEvent.eventName, dispose, {
@@ -151,11 +151,13 @@ export function renderDialog(
     dialog.addEventListener("close", dispose, {
         passive: true,
         once: true,
+        signal: eventAbortController.signal,
     });
 
     signal?.addEventListener("abort", dispose, {
         passive: true,
         once: true,
+        signal: eventAbortController.signal,
     });
 
     render(renderable, dialog);
@@ -175,7 +177,9 @@ export function renderDialog(
  */
 export function renderModal(renderable: unknown, init?: DialogInit): Promise<void> {
     return renderDialog(
-        html`<ak-modal size=${ifPresent(init?.size)}>${renderable}</ak-modal>`,
+        html`<ak-modal size=${ifPresent(init?.size)} headline=${ifPresent(init?.headline)}
+            >${renderable}</ak-modal
+        >`,
         init,
     );
 }

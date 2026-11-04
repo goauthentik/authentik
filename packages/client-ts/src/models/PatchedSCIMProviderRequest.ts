@@ -42,7 +42,7 @@ export interface PatchedSCIMProviderRequest {
     /**
      * Authentication token
      */
-    token?: string;
+    tokenRef?: string | null;
     authMode?: SCIMAuthenticationModeEnum;
     /**
      * Username used for Basic authentication
@@ -51,7 +51,7 @@ export interface PatchedSCIMProviderRequest {
     /**
      * Password used for Basic authentication
      */
-    authBasicPassword?: string;
+    authBasicPasswordRef?: string | null;
     /**
      * OAuth Source used for authentication
      */
@@ -119,14 +119,23 @@ export function PatchedSCIMProviderRequestFromJSONTyped(
         url: json["url"] == null ? undefined : json["url"],
         verifyCertificates:
             json["verify_certificates"] == null ? undefined : json["verify_certificates"],
-        token: json["token"] == null ? undefined : json["token"],
+        tokenRef:
+            json["token_ref"] === undefined
+                ? undefined
+                : json["token_ref"] === null
+                  ? null
+                  : json["token_ref"],
         authMode:
             json["auth_mode"] == null
                 ? undefined
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
         authBasicUser: json["auth_basic_user"] == null ? undefined : json["auth_basic_user"],
-        authBasicPassword:
-            json["auth_basic_password"] == null ? undefined : json["auth_basic_password"],
+        authBasicPasswordRef:
+            json["auth_basic_password_ref"] === undefined
+                ? undefined
+                : json["auth_basic_password_ref"] === null
+                  ? null
+                  : json["auth_basic_password_ref"],
         authOauth:
             json["auth_oauth"] === undefined
                 ? undefined
@@ -172,10 +181,10 @@ export function PatchedSCIMProviderRequestToJSONTyped(
         property_mappings_group: value["propertyMappingsGroup"],
         url: value["url"],
         verify_certificates: value["verifyCertificates"],
-        token: value["token"],
+        token_ref: value["tokenRef"],
         auth_mode: SCIMAuthenticationModeEnumToJSON(value["authMode"]),
         auth_basic_user: value["authBasicUser"],
-        auth_basic_password: value["authBasicPassword"],
+        auth_basic_password_ref: value["authBasicPasswordRef"],
         auth_oauth: value["authOauth"],
         auth_oauth_params: value["authOauthParams"],
         compatibility_mode: CompatibilityModeEnumToJSON(value["compatibilityMode"]),

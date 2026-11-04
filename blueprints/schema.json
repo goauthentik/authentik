@@ -504,6 +504,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_crypto_secrets.secret"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_crypto_secrets.secret_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_crypto_secrets.secret"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_crypto_secrets.secret"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints_connectors_agent.agentconnector"
                         },
                         "id": {
@@ -6263,6 +6303,65 @@
                 }
             }
         },
+        "model_authentik_crypto_secrets.secret": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "text",
+                        "json",
+                        "file"
+                    ],
+                    "title": "Type"
+                },
+                "value": {
+                    "type": "string",
+                    "title": "Value"
+                },
+                "length": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1024,
+                    "title": "Length",
+                    "description": "Length of the generated value when creating a text secret without a value. Defaults to the default token length."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_crypto_secrets.secret_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_secret",
+                            "change_secret",
+                            "delete_secret",
+                            "rotate_secret",
+                            "view_secret",
+                            "view_secret_value"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_endpoints_connectors_agent.agentconnector": {
             "type": "object",
             "properties": {
@@ -9337,6 +9436,7 @@
                         "authentik.api",
                         "authentik.core",
                         "authentik.crypto",
+                        "authentik.crypto.secrets",
                         "authentik.endpoints",
                         "authentik.endpoints.connectors.agent",
                         "authentik.enterprise",
@@ -9432,6 +9532,7 @@
                         "authentik_core.objectattribute",
                         "authentik_core.actor",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_crypto_secrets.secret",
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.deviceaccessgroup",
                         "authentik_endpoints.endpointstage",
@@ -10573,9 +10674,9 @@
                     "minLength": 1,
                     "title": "Client ID"
                 },
-                "client_secret": {
+                "client_secret_ref": {
                     "type": "string",
-                    "maxLength": 255,
+                    "format": "uuid",
                     "title": "Client Secret"
                 },
                 "access_code_validity": {
@@ -11131,10 +11232,10 @@
                     "title": "Client networks",
                     "description": "List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped."
                 },
-                "shared_secret": {
+                "shared_secret_ref": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Shared secret",
+                    "format": "uuid",
+                    "title": "Shared Secret",
                     "description": "Shared secret between clients and server to hash packets."
                 },
                 "mfa_support": {
@@ -11614,8 +11715,9 @@
                     "type": "boolean",
                     "title": "Verify certificates"
                 },
-                "token": {
+                "token_ref": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Token",
                     "description": "Authentication token"
                 },
@@ -11634,9 +11736,10 @@
                     "title": "Auth basic user",
                     "description": "Username used for Basic authentication"
                 },
-                "auth_basic_password": {
+                "auth_basic_password_ref": {
                     "type": "string",
-                    "title": "Auth basic password",
+                    "format": "uuid",
+                    "title": "Password",
                     "description": "Password used for Basic authentication"
                 },
                 "auth_oauth": {

@@ -55,7 +55,7 @@ export interface PatchedOAuth2ProviderRequest {
     clientType?: ClientTypeEnum;
     grantTypes?: Array<GrantTypeEnum>;
     clientId?: string;
-    clientSecret?: string;
+    clientSecretRef?: string | null;
     /**
      * Access codes not valid on or after current time + this value (Format:
      * hours=1;minutes=2;seconds=3).
@@ -146,7 +146,12 @@ export function PatchedOAuth2ProviderRequestFromJSONTyped(
                 ? undefined
                 : (json["grant_types"] as Array<any>).map(GrantTypeEnumFromJSON),
         clientId: json["client_id"] == null ? undefined : json["client_id"],
-        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
+        clientSecretRef:
+            json["client_secret_ref"] === undefined
+                ? undefined
+                : json["client_secret_ref"] === null
+                  ? null
+                  : json["client_secret_ref"],
         accessCodeValidity:
             json["access_code_validity"] == null ? undefined : json["access_code_validity"],
         accessTokenValidity:
@@ -214,7 +219,7 @@ export function PatchedOAuth2ProviderRequestToJSONTyped(
                 ? undefined
                 : (value["grantTypes"] as Array<any>).map(GrantTypeEnumToJSON),
         client_id: value["clientId"],
-        client_secret: value["clientSecret"],
+        client_secret_ref: value["clientSecretRef"],
         access_code_validity: value["accessCodeValidity"],
         access_token_validity: value["accessTokenValidity"],
         refresh_token_validity: value["refreshTokenValidity"],

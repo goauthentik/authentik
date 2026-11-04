@@ -6,6 +6,7 @@ import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { ref } from "lit/directives/ref.js";
 
 @customElement("ak-secret-textarea-input")
 export class AkSecretTextAreaInput extends AkSecretTextInput {
@@ -21,9 +22,12 @@ export class AkSecretTextAreaInput extends AkSecretTextInput {
             "pf-m-monospace": code,
         };
 
-        // Prevent the leading spaces added by Prettier's whitespace algo
-        // prettier-ignore
         return html`<textarea
+            ${ref(this.inputRef)}
+            id=${this.fieldID}
+            aria-describedby=${this.helpID}
+            rows="4"
+            .value=${this.value}
             @input=${setValue}
             class="${classMap(classes)}"
             ?required=${this.required}
@@ -31,8 +35,7 @@ export class AkSecretTextAreaInput extends AkSecretTextInput {
             placeholder=${ifPresent(this.placeholder)}
             autocomplete=${ifDefined(code ? "off" : undefined)}
             spellcheck=${ifDefined(code ? "false" : undefined)}
-        >${this.value !== undefined ? this.value : ""}</textarea
-        > `;
+        ></textarea>`;
     }
 }
 
