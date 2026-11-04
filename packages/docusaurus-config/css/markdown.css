@@ -33,7 +33,9 @@
     margin-bottom: 0;
 }
 
-.theme-doc-markdown > header + :is(h2, h3, h4, h5, h6)[id] {
+/* Headings right under the title, or first in a tab panel or list item, use their container's spacing. */
+.theme-doc-markdown > header + :is(h2, h3, h4, h5, h6)[id],
+.theme-doc-markdown :is(h2, h3, h4, h5, h6)[id]:first-child {
     margin-top: 0;
 }
 
