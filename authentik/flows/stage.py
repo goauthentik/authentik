@@ -29,8 +29,8 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import StageInvalidException
-from authentik.flows.models import InvalidResponseAction
-from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
+from authentik.flows.models import Flow, InvalidResponseAction
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import class_to_path
@@ -44,6 +44,43 @@ HIST_FLOWS_STAGE_TIME = Histogram(
     "Duration taken by different parts of stages",
     ["stage_type", "method"],
 )
+LOGGER = get_logger()
+
+
+def _get_pending_user(plan: FlowPlan | None, request: HttpRequest, for_display=False) -> User:
+    """Either show the matched User object or show what the user entered,
+    based on what the earlier stage (mostly IdentificationStage) set.
+    _USER_IDENTIFIER overrides the first User, as PENDING_USER is used for
+    other things besides the form display.
+
+    If no user is pending, returns request.user"""
+    if not plan:
+        return request.user
+    if PLAN_CONTEXT_PENDING_USER_IDENTIFIER in plan.context and for_display:
+        return User(
+            username=plan.context.get(PLAN_CONTEXT_PENDING_USER_IDENTIFIER),
+            email="",
+        )
+    if PLAN_CONTEXT_PENDING_USER in plan.context:
+        return plan.context[PLAN_CONTEXT_PENDING_USER]
+    return request.user
+
+
+def format_flow_title(plan: FlowPlan | None, flow: Flow, request: HttpRequest) -> str:
+    """Allow usage of placeholder in flow title."""
+    data = {
+        "app": "",
+        "user": "",
+    }
+    if plan:
+        data["app"] = plan.context.get(PLAN_CONTEXT_APPLICATION, "")
+        data["user"] = _get_pending_user(plan, request, for_display=True)
+    try:
+        return flow.title % data
+
+    except Exception as exc:  # noqa
+        LOGGER.warning("failed to template title", exc=exc)
+        return flow.title
 
 
 class StageView(View):
@@ -65,22 +102,7 @@ class StageView(View):
         super().__init__(**kwargs)
 
     def get_pending_user(self, for_display=False) -> User:
-        """Either show the matched User object or show what the user entered,
-        based on what the earlier stage (mostly IdentificationStage) set.
-        _USER_IDENTIFIER overrides the first User, as PENDING_USER is used for
-        other things besides the form display.
-
-        If no user is pending, returns request.user"""
-        if not self.executor.plan:
-            return self.request.user
-        if PLAN_CONTEXT_PENDING_USER_IDENTIFIER in self.executor.plan.context and for_display:
-            return User(
-                username=self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER_IDENTIFIER),
-                email="",
-            )
-        if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
-            return self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-        return self.request.user
+        return _get_pending_user(self.executor.plan, self.request, for_display=for_display)
 
     def cleanup(self):
         """Cleanup session"""
@@ -154,20 +176,6 @@ class ChallengeStageView(StageView):
         ):
             return self.challenge_valid(challenge)
 
-    def format_title(self) -> str:
-        """Allow usage of placeholder in flow title."""
-        if not self.executor.plan:
-            return self.executor.flow.title
-        try:
-            return self.executor.flow.title % {
-                "app": self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, ""),
-                "user": self.get_pending_user(for_display=True),
-            }
-
-        except Exception as exc:  # noqa
-            self.logger.warning("failed to template title", exc=exc)
-            return self.executor.flow.title
-
     @property
     def cancel_url(self) -> str:
         from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
@@ -203,7 +211,9 @@ class ChallengeStageView(StageView):
                 # refreshes must mint fresh URLs instead of reusing cached ones.
                 flow_info = ContextualFlowInfo(
                     data={
-                        "title": self.format_title(),
+                        "title": format_flow_title(
+                            self.executor.plan, self.executor.flow, self.request
+                        ),
                         "background": self.executor.flow.background_url(use_cache=False),
                         "background_themed_urls": self.executor.flow.background_themed_urls(
                             use_cache=False,

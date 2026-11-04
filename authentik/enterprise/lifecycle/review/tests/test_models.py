@@ -102,16 +102,25 @@ class TestLifecycleModels(TestCase):
         )
         request = self._get_request()
 
-        Review.objects.create(iteration=iteration, reviewer=reviewer_one)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=reviewer_one)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.PENDING)
 
-        Review.objects.create(iteration=iteration, reviewer=reviewer_two)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=reviewer_two)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.REVIEWED)
         self.assertTrue(Event.objects.filter(action=EventAction.REVIEW_COMPLETED).exists())
+        self.assertEqual(
+            set(
+                Event.objects.filter(
+                    action=EventAction.REVIEW_ATTESTED,
+                    context__lifecycle_iteration=iteration.pk.hex,
+                ).values_list("user__pk", flat=True)
+            ),
+            {reviewer_one.pk, reviewer_two.pk},
+        )
 
     def test_review_min_reviewers_from_groups(self):
         """Group-based reviews complete once the minimum number of reviewers review."""
@@ -131,13 +140,13 @@ class TestLifecycleModels(TestCase):
         )
         request = self._get_request()
 
-        Review.objects.create(iteration=iteration, reviewer=reviewer_one)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=reviewer_one)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.PENDING)
 
-        Review.objects.create(iteration=iteration, reviewer=reviewer_two)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=reviewer_two)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.REVIEWED)
 
@@ -162,14 +171,14 @@ class TestLifecycleModels(TestCase):
         request = self._get_request()
 
         # Only group member reviews - not satisfied (explicit reviewer missing)
-        Review.objects.create(iteration=iteration, reviewer=group_member)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=group_member)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.PENDING)
 
         # Explicit reviewer reviews - now satisfied
-        Review.objects.create(iteration=iteration, reviewer=explicit_reviewer)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=explicit_reviewer)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.REVIEWED)
 
@@ -193,14 +202,14 @@ class TestLifecycleModels(TestCase):
         request = self._get_request()
 
         # Only member from group_one reviews - not satisfied (need member from each group)
-        Review.objects.create(iteration=iteration, reviewer=member_group_one)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=member_group_one)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.PENDING)
 
         # Member from group_two reviews - now satisfied
-        Review.objects.create(iteration=iteration, reviewer=member_group_two)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=member_group_two)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.REVIEWED)
 
@@ -227,8 +236,8 @@ class TestLifecycleModels(TestCase):
         # Child group member should be able to review
         self.assertTrue(iteration.user_can_review(child_member))
 
-        Review.objects.create(iteration=iteration, reviewer=child_member)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=child_member)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.REVIEWED)
 
@@ -260,13 +269,13 @@ class TestLifecycleModels(TestCase):
         self.assertTrue(iteration.user_can_review(parent_member))
         self.assertTrue(iteration.user_can_review(child_member))
 
-        Review.objects.create(iteration=iteration, reviewer=parent_member)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=parent_member)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.PENDING)
 
-        Review.objects.create(iteration=iteration, reviewer=child_member)
-        iteration.on_review(request)
+        review = Review.objects.create(iteration=iteration, reviewer=child_member)
+        iteration.on_review(review, request)
         iteration.refresh_from_db()
         self.assertEqual(iteration.state, ReviewState.REVIEWED)
 
@@ -694,8 +703,8 @@ class TestLifecycleModels(TestCase):
         request = self._get_request()
 
         # Review only rule_one's iteration
-        Review.objects.create(iteration=iter_one, reviewer=reviewer)
-        iter_one.on_review(request)
+        review = Review.objects.create(iteration=iter_one, reviewer=reviewer)
+        iter_one.on_review(review, request)
 
         iter_one.refresh_from_db()
         iter_two.refresh_from_db()

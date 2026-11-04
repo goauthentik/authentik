@@ -29,6 +29,28 @@ const $PFBase = createStyleSheetUnsafe(PFBase);
  */
 const $AKBase = createStyleSheetUnsafe(AKBase);
 
+/**
+ * The brand's custom CSS and the style sheet built from it.
+ *
+ * @remarks
+ *
+ *   Every element adopts the same sheet. Building one per element would parse the whole
+ *   brand CSS again for each of them, which adds up quickly when it inlines fonts or images.
+ *   Lit's own sheet cache cannot help here: it is keyed on the template strings array, and
+ *   {@linkcode createCSSResult} wraps each string in a new one.
+ *   Keyed on the CSS text because the server context can be re-read, such as by a test
+ *   injecting another brand.
+ */
+let brandStyleSheetCache: [cssText: string, styleSheet: CSSStyleSheet] | null = null;
+
+function brandStyleSheet(cssText: string): CSSStyleSheet {
+    if (brandStyleSheetCache?.[0] !== cssText) {
+        brandStyleSheetCache = [cssText, createStyleSheetUnsafe(cssText)];
+    }
+
+    return brandStyleSheetCache[1];
+}
+
 export interface AKElementProps {
     activeTheme: ResolvedUITheme;
 }
@@ -114,7 +136,7 @@ export class AKElement extends LitElement implements AKElementProps {
         const { brand } = globalAK();
 
         this.#customCSSStyleSheet = brand?.brandingCustomCss
-            ? createStyleSheetUnsafe(brand.brandingCustomCss)
+            ? brandStyleSheet(brand.brandingCustomCss)
             : null;
 
         if (process.env.NODE_ENV === "development") {
