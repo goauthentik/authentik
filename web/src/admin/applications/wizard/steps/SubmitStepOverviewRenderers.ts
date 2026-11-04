@@ -1,4 +1,6 @@
 import "#components/ak-status-label";
+import { MessageFormatter } from "#common/ui/locale/format";
+
 import { SlottedTemplateResult } from "#elements/types";
 
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
@@ -104,7 +106,7 @@ const proxyModeToLabel = {
     [ProxyMode.ForwardSingle]: () => msg("Forward auth (single application)"),
     [ProxyMode.ForwardDomain]: () => msg("Forward auth (domain-level)"),
     [ProxyMode.UnknownDefaultOpenApi]: () => msg("Unknown proxy mode"),
-} as const satisfies Record<ProxyMode, () => string>;
+} as const satisfies Record<ProxyMode, MessageFormatter<string>>;
 
 const renderProxyOverview: ProviderOverview<ProxyProvider> = (provider) => {
     const proxyHostMappings: DescriptionPair[] = match<ProxyMode | undefined, DescriptionPair[]>(
