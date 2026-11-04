@@ -30,6 +30,8 @@ class SCIMProviderSerializer(
             "property_mappings",
             "property_mappings_group",
             "component",
+            "assigned_application_slug",
+            "assigned_application_name",
             "assigned_backchannel_application_slug",
             "assigned_backchannel_application_name",
             "verbose_name",
