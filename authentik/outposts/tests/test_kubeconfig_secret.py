@@ -123,7 +123,7 @@ class TestKubeconfigSecret(APITestCase):
         with TemporaryDirectory() as directory:
             path = Path(directory) / "config"
             path.write_text(KUBECONFIG)
-            with patch("authentik.outposts.tasks.KUBE_CONFIG_DEFAULT_LOCATION", str(path)):
+            with patch("kubernetes.config.kube_config.KUBE_CONFIG_DEFAULT_LOCATION", str(path)):
                 outpost_connection_discovery.send()
         secret = KubernetesServiceConnection.objects.get(name__startswith="k8s-").kubeconfig_ref
         self.assertTrue(editor.has_perm("authentik_crypto_secrets.view_secret_value", secret))
