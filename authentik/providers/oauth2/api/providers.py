@@ -73,7 +73,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
                     compile(url)
                 except RegexError:
                     raise ValidationError(
-                        _("Invalid Regex Pattern: {url}".format(url=url))
+                        _("Invalid Regex Pattern: {url}").format(url=url)
                     ) from None
         return data
 

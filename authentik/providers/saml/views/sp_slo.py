@@ -5,6 +5,7 @@ from base64 import b64decode
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
@@ -287,7 +288,7 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
         # Logout responses are now handled in dispatch()
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("check_saml_request: SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             logout_request = LogoutRequestParser().parse_detached(
@@ -367,7 +368,7 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
         # Logout responses are now handled in dispatch()
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("check_saml_request: SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             logout_request = LogoutRequestParser().parse(

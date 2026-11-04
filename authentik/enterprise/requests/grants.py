@@ -131,6 +131,7 @@ def create_grant_request(
             EventAction.ACCESS_REQUEST_CREATED,
             model=req,
             targets=pbms,
+            requester_data=requester_data,
             hyperlink=fulfill_url(request, req),
             hyperlink_label="Fulfill",
         ).from_http(request, created_by)

@@ -9582,12 +9582,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>API keys can be obtained from the
                                             <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${formatAPISource()}&lt;/a&#10;                                                &gt;.`}"/></source>
   <target>API-nycklar kan hämtas ifrån 
-<x id="0" equiv-text="${html `&lt;a
-                                                    target=&quot;_blank&quot;
-                                                    rel=&quot;noopener noreferrer&quot;
-                                                    href=${keyURL}
-                                                    &gt;${formatAPISource()}&lt;/a
-                                                &gt;.`}"/></target>
+<x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${formatAPISource()}&lt;/a&#10;                                                &gt;.`}"/></target>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s3934affe32f6a454">
@@ -12043,12 +12038,7 @@ Bindings to groups/users are checked against the user of the event.</source>
                                             <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;`}"/>
                                             to self-host Cap and configure the endpoint.</source>
   <target>Använd
-<x id="0" equiv-text="${html `&lt;a
-                                                target=&quot;_blank&quot;
-                                                rel=&quot;noopener noreferrer&quot;
-                                                href=${keyURL}
-                                                &gt;${formatAPISource()}&lt;/a
-                                            &gt;`}"/>
+<x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;`}"/>
 för att själv hosta Cap och konfigurera ändpunkten.</target>
   <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
 </trans-unit>

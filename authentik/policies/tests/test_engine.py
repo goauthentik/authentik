@@ -59,6 +59,23 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(result.passing, True)
         self.assertEqual(result.messages, ("dummy",))
 
+    def test_engine_policies_single_query(self):
+        """Ensure bound policies are loaded with one query, not one per binding"""
+        pbm = PolicyBindingModel.objects.create()
+        for order in range(3):
+            policy = DummyPolicy.objects.create(
+                name=generate_id(), result=True, wait_min=0, wait_max=1
+            )
+            PolicyBinding.objects.create(target=pbm, policy=policy, order=order)
+        with CaptureQueriesContext(connections["default"]) as ctx:
+            self.assertTrue(PolicyEngine(pbm, self.user).build().passing)
+        policy_queries = [
+            query
+            for query in ctx.captured_queries
+            if query["sql"].startswith('SELECT "authentik_policies_policy".')
+        ]
+        self.assertLessEqual(len(policy_queries), 1)
+
     def test_engine_mode_all_dyn(self):
         """Ensure all policies passes with AND mode (false and true -> false)"""
         pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
@@ -228,6 +245,15 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
         self.assertEqual(engine.build().passing, False)
         self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
+
+    def test_engine_cache_disabled(self):
+        """Ensure an engine that bypasses the cache doesn't write to it either"""
+        pbm = PolicyBindingModel.objects.create()
+        binding = PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0)
+        engine = PolicyEngine(pbm, self.user)
+        engine.use_cache = False
+        self.assertEqual(engine.build().passing, False)
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 0)
 
     def test_engine_cache_expired(self):
         """Ensure a cached passing result is not used once its binding has expired"""
