@@ -1,4 +1,6 @@
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from typing import Any
 
 from django.contrib.auth import get_user_model
@@ -8,7 +10,8 @@ from django.http import HttpRequest
 
 from guardian.conf import settings as guardian_settings
 from guardian.core import ObjectPermissionChecker
-from guardian.exceptions import WrongAppError
+from guardian.exceptions import GuardianError, WrongAppError
+from guardian.shortcuts import get_objects_for_user
 from guardian.utils import get_content_type
 
 
@@ -54,6 +57,20 @@ def check_support(user_obj: Any, obj: Model) -> Any:
     obj_support = obj is None or check_object_support(obj)
     user_support, user_obj = check_user_support(user_obj)
     return obj_support and user_support, user_obj
+
+
+OBJECT_GRANTS: ContextVar[dict | None] = ContextVar("guardian_object_grants", default=None)
+
+
+@contextmanager
+def object_grants_cache(cache: dict) -> Iterator[None]:
+    """Within this context, the first object check of a permission loads all of the user's
+    grants of it, and later checks reuse them. Grants given meanwhile are not seen."""
+    token = OBJECT_GRANTS.set(cache)
+    try:
+        yield
+    finally:
+        OBJECT_GRANTS.reset(token)
 
 
 class ObjectPermissionBackend:
@@ -105,8 +122,30 @@ class ObjectPermissionBackend:
                         f"content_type has app label '{ctype.app_label}'"
                     )
 
+        grants = OBJECT_GRANTS.get()
+        if grants is not None and obj is not None:
+            return self.has_cached_grant(grants, user_obj, perm, obj)
         check = ObjectPermissionChecker(user_obj)
         return check.has_perm(perm, obj)
+
+    @staticmethod
+    def has_cached_grant(grants: dict, user_obj: Any, perm: str, obj: Model) -> bool:
+        """Answer from the user's grants of `perm`, loaded once for all objects of the model"""
+        if "." not in perm:
+            perm = f"{get_content_type(obj).app_label}.{perm}"
+        key = (user_obj.pk, perm, type(obj))
+        if key not in grants:
+            # A global grant covers every object, so there is nothing to load
+            if user_obj.has_perm(perm):
+                grants[key] = None
+            else:
+                try:
+                    objects = get_objects_for_user(user_obj, perm, type(obj)._default_manager.all())
+                except GuardianError:
+                    # Not a permission of this model: answer as without the cache
+                    return ObjectPermissionChecker(user_obj).has_perm(perm, obj)
+                grants[key] = {str(pk) for pk in objects.values_list("pk", flat=True)}
+        return grants[key] is None or str(obj.pk) in grants[key]
 
     def get_all_permissions(self, user_obj: Any, obj: Model | None = None) -> Iterable[str]:
         """Returns all permissions for a given object.

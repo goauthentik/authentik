@@ -83,7 +83,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         with transaction.atomic():
             try:
                 response = self._request(self.client.users.post(microsoft_user))
-            except ObjectExistsSyncException:
+            except ObjectExistsSyncException as exc:
                 # user already exists in microsoft entra, so we can connect them manually
                 request_configuration = (
                     UsersRequestBuilder.UsersRequestBuilderGetRequestConfiguration(
@@ -94,11 +94,8 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                     )
                 )
                 user_data = self._request(self.client.users.get(request_configuration))
-                if user_data.odata_count < 1 or len(user_data.value) < 1:
-                    self.logger.warning(
-                        "User which could not be created also does not exist", user=user
-                    )
-                    return
+                if not user_data.value:
+                    raise exc
                 ms_user = user_data.value[0]
                 return MicrosoftEntraProviderUser.objects.create(
                     provider=self.provider,
