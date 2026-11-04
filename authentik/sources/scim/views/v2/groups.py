@@ -187,6 +187,12 @@ class GroupsView(SCIMObjectView):
                         query |= Q(uuid=member["value"])
                     if query:
                         connection.group.users.remove(*User.objects.filter(query))
+            elif attr_path.first_path.attr_name == "members" and operation.op == PatchOp.remove:
+                # Filtered removal, such as `members[value eq "<uuid>"]`
+                members = self._convert_members(connection.group)
+                remaining = SCIMPatchProcessor().apply_patches({"members": members}, [_op])
+                kept = [member.get("value") for member in remaining.get("members", [])]
+                connection.group.users.remove(*connection.group.users.exclude(uuid__in=kept))
         patcher = SCIMPatchProcessor()
         patched_data = patcher.apply_patches(
             connection.attributes, request.data.get("Operations", [])
