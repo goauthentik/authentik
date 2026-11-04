@@ -136,7 +136,8 @@ export interface SAMLSource {
      */
     forceAuthn?: boolean;
     /**
-     * NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+     * Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the
+     * format of the NameID it returns.
      */
     nameIdPolicy?: SAMLNameIDPolicyEnum;
     bindingType?: BindingTypeEnum;
