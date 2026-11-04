@@ -59,14 +59,6 @@ class ModelSerializer(BaseModelSerializer):
 
     def to_representation(self, instance: Model):
         data = super().to_representation(instance)
-        # `secret_fields` are visible for users which are allowed to change the object
-        secret_fields = getattr(self.Meta, "secret_fields", [])
-        request = self.context.get("request")
-        if secret_fields and request:
-            permission = f"{instance._meta.app_label}.change_{instance._meta.model_name}"
-            if not request.user.has_perm(permission, instance):
-                for field_name in secret_fields:
-                    data.pop(field_name, None)
         if rules := self.field_rules(instance):
             data = rules.hide(data, self.fields)
         return data

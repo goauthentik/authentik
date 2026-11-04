@@ -3,6 +3,7 @@ from json import loads
 from requests_mock import Mocker
 from rest_framework.test import APITestCase
 
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.endpoints.facts import OSFamily
 from authentik.endpoints.models import Device
 from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnector
@@ -23,7 +24,7 @@ class TestFleetConnector(APITestCase):
         self.connector = FleetConnector.objects.create(
             name=generate_id(),
             url="http://localhost",
-            token=generate_id(),
+            token_ref=create_test_secret(generate_id()),
             map_teams_access_group=True,
         )
 
