@@ -20,6 +20,7 @@
 </script>
 {% endif %}
 {% include "base/header_js.html" %}
+<<<<<<< HEAD
 <script data-id="flow-config">
     "use strict";
 
@@ -29,6 +30,11 @@
         "title": "{{ flow.title }}",
     };
 </script>
+=======
+<meta name="ak-flow-layout" content="{{ flow.layout }}">
+<meta name="ak-flow-background" content="{{ flow.background }}">
+<meta name="ak-flow-title" content="{{ flow_title }}">
+>>>>>>> f1341f57c (flows: format titles correct on first render if possible (#27589))
 {% endblock %}
 
 {% block interface_stylesheet %}
