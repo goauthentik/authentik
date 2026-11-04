@@ -1,6 +1,4 @@
 import "#components/ak-status-label";
-import { MessageFormatter } from "#common/ui/locale/format";
-
 import { SlottedTemplateResult } from "#elements/types";
 
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
@@ -102,11 +100,11 @@ function formatRedirectUris(uris: RedirectURI[] = []) {
 }
 
 const proxyModeToLabel = {
-    [ProxyMode.Proxy]: () => msg("Proxy"),
-    [ProxyMode.ForwardSingle]: () => msg("Forward auth (single application)"),
-    [ProxyMode.ForwardDomain]: () => msg("Forward auth (domain-level)"),
-    [ProxyMode.UnknownDefaultOpenApi]: () => msg("Unknown proxy mode"),
-} as const satisfies Record<ProxyMode, MessageFormatter<string>>;
+    [ProxyMode.Proxy]: msg("Proxy"),
+    [ProxyMode.ForwardSingle]: msg("Forward auth (single application)"),
+    [ProxyMode.ForwardDomain]: msg("Forward auth (domain-level)"),
+    [ProxyMode.UnknownDefaultOpenApi]: msg("Unknown proxy mode"),
+} as const satisfies Record<ProxyMode, string>;
 
 const renderProxyOverview: ProviderOverview<ProxyProvider> = (provider) => {
     const proxyHostMappings: DescriptionPair[] = match<ProxyMode | undefined, DescriptionPair[]>(
@@ -136,7 +134,7 @@ const renderProxyOverview: ProviderOverview<ProxyProvider> = (provider) => {
     const label = proxyModeToLabel[provider.mode ?? ProxyMode.Proxy];
 
     return renderSummary("Proxy", provider.name, [
-        [msg("Mode"), label()],
+        [msg("Mode"), label],
         ...proxyHostMappings,
         [
             msg("Basic-Auth"),
@@ -148,14 +146,14 @@ const renderProxyOverview: ProviderOverview<ProxyProvider> = (provider) => {
     ]);
 };
 
-const ClientTypeToLabel: Record<ClientTypeEnum, MessageFormatter<string>> = {
-    [ClientTypeEnum.Confidential]: () => msg("Confidential"),
-    [ClientTypeEnum.Public]: () => msg("Public"),
-    [ClientTypeEnum.UnknownDefaultOpenApi]: () => msg("Unknown type"),
+const ClientTypeToLabel: Record<ClientTypeEnum, string> = {
+    [ClientTypeEnum.Confidential]: msg("Confidential"),
+    [ClientTypeEnum.Public]: msg("Public"),
+    [ClientTypeEnum.UnknownDefaultOpenApi]: msg("Unknown type"),
 };
 
 const renderOAuth2Overview: ProviderOverview<OAuth2Provider> = (provider) => {
-    const label = provider.clientType ? ClientTypeToLabel[provider.clientType]() : "";
+    const label = provider.clientType ? ClientTypeToLabel[provider.clientType] : "";
 
     return renderSummary("OAuth2", provider.name, [
         [msg("Client Type"), label],
