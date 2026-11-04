@@ -1,4 +1,4 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/buttons/ActionButton/index";
 import "#elements/Expand";
 import { aki } from "#common/api/client";
@@ -80,11 +80,11 @@ export class ConfigModal extends ModalButton {
                     text-closed=${msg("Show MDM configuration")}
                     text-open=${msg("Hide MDM configuration")}
                 >
-                    <ak-codemirror
+                    <ak-code-editor
                         mode="xml"
                         readonly
                         value="${ifDefined(this.config?.config)}"
-                    ></ak-codemirror>
+                    ></ak-code-editor>
                 </ak-expand>
             </div>
             <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
