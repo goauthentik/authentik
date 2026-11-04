@@ -404,6 +404,7 @@ class TokenView(View):
         }
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class PrototypeScopedTokenView(TokenView):
     """PROTOTYPE (01b): /application/o/<slug>/token/ for a CIMD-enabled provider"""
 

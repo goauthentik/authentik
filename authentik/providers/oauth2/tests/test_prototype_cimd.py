@@ -2,7 +2,7 @@
 
 from tempfile import NamedTemporaryFile
 
-from django.test import RequestFactory
+from django.test import Client, RequestFactory
 from django.urls import reverse
 from django.utils import timezone
 from requests_mock import Mocker
@@ -121,7 +121,8 @@ class TestPrototypeCIMD(OAuthTestCase):
             code_challenge=pkce_s256_challenge(verifier),
             code_challenge_method=PKCE_METHOD_S256,
         )
-        response = self.client.post(
+        # Real clients send no CSRF token
+        response = Client(enforce_csrf_checks=True).post(
             reverse(
                 "authentik_providers_oauth2:prototype-scoped-token",
                 kwargs={"application_slug": self.slug},

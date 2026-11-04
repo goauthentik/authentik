@@ -127,7 +127,12 @@ def main():
     server = MCPServer(
         name="authentik CIMD prototype",
         token_verifier=JWTVerifier(args.issuer, args.audience, resource),
-        auth=AuthSettings(issuer_url=args.issuer, resource_server_url=resource),
+        # Tokens are not resource-bound until step 09; the verifier records the audience
+        auth=AuthSettings(
+            issuer_url=args.issuer,
+            resource_server_url=resource,
+            validate_token_resource=False,
+        ),
     )
 
     @server.tool()
