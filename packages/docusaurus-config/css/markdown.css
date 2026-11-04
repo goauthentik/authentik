@@ -116,6 +116,11 @@
     background-color: var(--ifm-color-emphasis-100);
 }
 
+/* The primary color is 3.1:1 on the light active tab; the darkest shade is 5:1. */
+html[data-theme="light"] .theme-doc-markdown .tabs__item--active {
+    color: var(--ifm-color-primary-darkest);
+}
+
 .theme-doc-markdown table {
     --ifm-table-cell-padding: 0.625rem 0.875rem;
     --ifm-table-border-color: var(--ifm-color-emphasis-200);
