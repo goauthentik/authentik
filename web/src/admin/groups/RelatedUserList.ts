@@ -69,7 +69,7 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
         return msg("Successfully added user(s).");
     }
 
-    async send(data: { users: number[] }): Promise<{ users: number[] }> {
+    protected override async send(data: { users: number[] }): Promise<{ users: number[] }> {
         await Promise.all(
             data.users.map((userPk) => {
                 if (this.targetGroup) {
@@ -96,6 +96,16 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
         return data;
     }
 
+    #groupMemberSubmitListener = (event: AKFormSubmitEvent<User[]>) => {
+        const pending = new Map(this.usersToAdd.map((user) => [user.pk, user]));
+
+        for (const user of event.target.toJSON()) {
+            pending.set(user.pk, user);
+        }
+
+        this.usersToAdd = Array.from(pending.values());
+    };
+
     protected openUserSelectionModal = (event?: Event) => {
         if (event?.defaultPrevented) {
             return;
@@ -105,9 +115,7 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
             <ak-form
                 headline=${msg("Select users")}
                 submit-label=${msg("Confirm")}
-                @submit=${(event: AKFormSubmitEvent<User[]>) => {
-                    this.usersToAdd = event.target.toJSON();
-                }}
+                @submit=${this.#groupMemberSubmitListener}
                 ><ak-group-member-table></ak-group-member-table>
             </ak-form>
         `);
