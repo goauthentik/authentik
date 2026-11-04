@@ -23,7 +23,7 @@ import { Group, PoliciesApi, PolicyBinding, User } from "@goauthentik/api";
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
@@ -60,12 +60,20 @@ export function cleanBindingForSend(
     return data;
 }
 
+const Styles = css`
+    .ak-c-form--centered-control {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+`;
+
 @customElement("ak-policy-binding-form")
 export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends ModelForm<
     T,
     string
 > {
-    public static styles: CSSResult[] = [...super.styles, PFContent];
+    public static styles: CSSResult[] = [...super.styles, PFContent, Styles];
     public static verboseName = msg("Policy Binding");
     public static verboseNamePlural = msg("Policy Bindings");
 
@@ -158,22 +166,24 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     renderModeSelector(): TemplateResult {
-        return html` <ak-toggle-group
-            value=${this.policyGroupUser}
-            @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
-                this.policyGroupUser = ev.value;
-            }}
-        >
-            ${Object.values(PolicyBindingCheckTarget).map((ct) => {
-                if (this.allowedTypes.includes(ct)) {
-                    return html`<option value=${ct}>
-                        ${PolicyBindingCheckTargetToLabel(ct)}
-                    </option>`;
-                }
+        return html`<div class="ak-c-form--centered-control">
+            <ak-toggle-group
+                value=${this.policyGroupUser}
+                @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
+                    this.policyGroupUser = ev.value;
+                }}
+            >
+                ${Object.values(PolicyBindingCheckTarget).map((ct) => {
+                    if (this.allowedTypes.includes(ct)) {
+                        return html`<option value=${ct}>
+                            ${PolicyBindingCheckTargetToLabel(ct)}
+                        </option>`;
+                    }
 
-                return nothing;
-            })}
-        </ak-toggle-group>`;
+                    return nothing;
+                })}
+            </ak-toggle-group>
+        </div>`;
     }
 
     protected renderTarget() {

@@ -4,7 +4,7 @@ from datetime import timedelta
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.models import AnonymousUser, Permission
+from django.contrib.auth.models import AnonymousUser
 from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
@@ -14,7 +14,7 @@ from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,
@@ -105,13 +105,15 @@ from authentik.lib.validators import (
     PasswordHashRequiresOverride,
     PasswordHashValidator,
 )
+from authentik.rbac.api.rbac import PermissionField
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
-from authentik.rbac.models import Role, get_permission_choices
+from authentik.rbac.models import Role
 from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.password.models import PasswordDevice
 
 LOGGER = get_logger()
 
@@ -169,6 +171,14 @@ class UserSerializer(
         max_length=USERNAME_MAX_LENGTH,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
+    password_change_date = DateTimeField(read_only=True)
+    password_locked = SerializerMethodField()
+    password_device = IntegerField(source="password_device.pk", read_only=True, allow_null=True)
+
+    def get_password_locked(self, user: User) -> bool:
+        """Whether the user's password currently refuses authentication."""
+        device = getattr(user, "password_device", None)
+        return device is not None and device.locked
 
     @property
     def _should_include_groups(self) -> bool:
@@ -210,10 +220,7 @@ class UserSerializer(
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
             self.fields["password_hash"] = CharField(required=False, allow_null=True)
-            self.fields["permissions"] = ListField(
-                required=False,
-                child=ChoiceField(choices=get_permission_choices()),
-            )
+            self.fields["permissions"] = ListField(required=False, child=PermissionField())
 
     def create(self, validated_data: dict) -> User:
         """Create a user, with blueprint-only password and permission writes."""
@@ -226,12 +233,7 @@ class UserSerializer(
         instance: User = super().create(validated_data)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
-            perms_qs = Permission.objects.filter(
-                codename__in=[permission.split(".")[1] for permission in permissions]
-            ).values_list("content_type__app_label", "codename")
-            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
-            instance.assign_perms_to_managed_role(perms_list)
-        self._ensure_password_not_empty(instance)
+            instance.assign_perms_to_managed_role(permissions)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
@@ -245,28 +247,15 @@ class UserSerializer(
         instance = super().update(instance, validated_data)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
-            perms_qs = Permission.objects.filter(
-                codename__in=[permission.split(".")[1] for permission in permissions]
-            ).values_list("content_type__app_label", "codename")
-            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
-            instance.assign_perms_to_managed_role(perms_list)
-        self._ensure_password_not_empty(instance)
+            instance.assign_perms_to_managed_role(permissions)
         return instance
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
         if password_hash is not None:
-            instance.set_password_from_hash(password_hash)
-            instance.save()
+            PasswordDevice.set_password_from_hash(instance, password_hash)
         elif password:
-            instance.set_password(password)
-            instance.save()
-
-    def _ensure_password_not_empty(self, instance: User):
-        """Store an explicit unusable password instead of an empty password field."""
-        if len(instance.password) == 0:
-            instance.set_unusable_password()
-            instance.save()
+            PasswordDevice.set_password(instance, password)
 
     def get_avatar(self, user: User) -> str:
         """User's avatar, either a http/https URL or a data URI"""
@@ -362,12 +351,13 @@ class UserSerializer(
             "type",
             "uuid",
             "password_change_date",
+            "password_locked",
+            "password_device",
             "last_updated",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
             "date_joined": {"read_only": True},
-            "password_change_date": {"read_only": True},
         }
 
 
@@ -677,7 +667,7 @@ class UserViewSet(
         ]
 
     def get_queryset(self):
-        base_qs = User.objects.all().exclude_anonymous()
+        base_qs = User.objects.all().exclude_anonymous().select_related("password_device")
         # Always prefetch groups since group PKs are always serialized.
         # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:
@@ -831,9 +821,6 @@ class UserViewSet(
                     attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: expiring},
                     path=USER_PATH_SERVICE_ACCOUNT,
                 )
-                user.set_unusable_password()
-                user.save()
-
                 response = {
                     "username": user.username,
                     "user_uid": user.uid,
@@ -944,8 +931,7 @@ class UserViewSet(
         """Set password for user"""
         user: User = self.get_object()
         try:
-            user.set_password(body.validated_data["password"], request=request)
-            user.save()
+            PasswordDevice.set_password(user, body.validated_data["password"], request=request)
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
@@ -978,12 +964,12 @@ class UserViewSet(
         is available from the request payload.
         """
         user: User = self.get_object()
-        user.set_password_from_hash(
+        PasswordDevice.set_password_from_hash(
+            user,
             body.validated_data["password"],
             request=request,
             hasher_defaults_overridden=body.validated_data["override"],
         )
-        user.save()
         self._update_session_hash_after_password_change(request, user)
         return Response(status=204)
 
