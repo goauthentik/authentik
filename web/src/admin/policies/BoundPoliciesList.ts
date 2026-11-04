@@ -55,6 +55,12 @@ export function getPolicyUserGroupRow(item: PolicyBinding): SlottedTemplateResul
     return html`${label}`;
 }
 
+export const defaultAllowedTypes = [
+    PolicyBindingCheckTarget.Policy,
+    PolicyBindingCheckTarget.Group,
+    PolicyBindingCheckTarget.User,
+];
+
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends Table<T> {
     public static styles: CSSResult[] = [
@@ -74,11 +80,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     public policyEngineMode: string = "";
 
     @property({ type: Array })
-    public allowedTypes: PolicyBindingCheckTarget[] = [
-        PolicyBindingCheckTarget.Policy,
-        PolicyBindingCheckTarget.Group,
-        PolicyBindingCheckTarget.User,
-    ];
+    public allowedTypes: PolicyBindingCheckTarget[] = defaultAllowedTypes;
 
     @property({ type: Array })
     public typeNotices: PolicyBindingNotice[] = [];

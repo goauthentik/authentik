@@ -1,5 +1,4 @@
 import "#admin/applications/entitlements/ApplicationEntitlementForm";
-import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#elements/Tabs";
@@ -11,6 +10,8 @@ import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 
 import { ApplicationEntitlement, CoreApi, ModelEnum } from "@goauthentik/api";
 
@@ -95,14 +96,11 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     }
 
     renderExpanded(item: ApplicationEntitlement): TemplateResult {
-        return html`<div class="pf-c-content">
-            <p>${msg("These bindings control which users have access to this entitlement.")}</p>
-            <ak-bound-policies-list
-                .target=${item.pbmUuid}
-                .allowedTypes=${[PolicyBindingCheckTarget.Group, PolicyBindingCheckTarget.User]}
-            >
-            </ak-bound-policies-list>
-        </div>`;
+        return renderBoundPoliciesExpansion({
+            target: item.pbmUuid,
+            allowed: [PolicyBindingCheckTarget.Group, PolicyBindingCheckTarget.User],
+            description: msg("These bindings control which users have access to this entitlement."),
+        });
     }
 
     protected override renderEmpty(): SlottedTemplateResult {

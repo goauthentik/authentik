@@ -2,14 +2,15 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#admin/requests/RequestRuleForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#admin/policies/BoundPoliciesList";
 import { aki } from "#common/api/client";
+import "#elements/cards/SectionCard";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 import { RequestRuleForm } from "#admin/requests/RequestRuleForm";
 
 import { ModelEnum, RequestRule, RequestsApi } from "@goauthentik/api";
@@ -84,16 +85,11 @@ export class RequestRuleListPage extends TablePage<RequestRule> {
     }
 
     protected override renderExpanded(item: RequestRule): SlottedTemplateResult {
-        return html`<div class="pf-c-content">
-            <ak-bound-policies-list
-                .target=${item.pbmUuid}
-                .policyEngineMode=${item.policyEngineMode}
-            >
-                <span slot="description"
-                    >${msg("These bindings control which users/groups can approve requests.")}</span
-                >
-            </ak-bound-policies-list>
-        </div>`;
+        return renderBoundPoliciesExpansion({
+            target: item.pbmUuid,
+            mode: item.policyEngineMode,
+            description: msg("These bindings control which users/groups can approve requests."),
+        });
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
