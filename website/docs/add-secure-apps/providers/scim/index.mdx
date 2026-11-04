@@ -126,9 +126,9 @@ Users that are synchronized via a SCIM provider are controlled through applicati
 
 If no users are bound to the SCIM application, the SCIM provider synchronizes all users.
 
-Binding and membership changes automatically queue synchronization; you do not need to wait for a scheduled full sync or start a manual sync. Newly eligible users are provisioned, and previously managed users who lose access are deleted from the target SCIM endpoint. Users who still have access through another valid binding remain synchronized. Group filters do not prevent reevaluation of user access through a filtered group.
+When bindings or group membership change, authentik automatically queues a sync for the affected users. You don't need to wait for the scheduled full sync or start one manually. Users who enter the sync scope are provisioned to the target SCIM endpoint. Users this provider previously synchronized who leave the sync scope are deleted from it. A user who stays in scope through another binding remains synchronized. This also applies when a user is in scope through a group that the provider's group filters exclude.
 
-Changes to policy results that do not involve binding, membership, or application policy engine mode changes, such as time-dependent conditions, are still reevaluated during scheduled or manual full syncs.
+Other changes that affect policy results, such as time-based conditions in a policy, only change the sync scope at the next scheduled or manual full sync.
 
 Use **Exclude service accounts** in the SCIM provider settings when you do not want service accounts to be synchronized.
 
