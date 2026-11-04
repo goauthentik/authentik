@@ -1,4 +1,4 @@
-# ruff: noqa: PLR0915, PLR2004, E501
+# ruff: noqa: PLR0912, PLR0915, PLR2004, E501
 """PROTOTYPE (01b), never merge: turn probe logs into the 01b findings checklist.
 
     python3 scripts/cimd-prototype/summarize.py /tmp/cimd-prototype[/runs/<name>]
