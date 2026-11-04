@@ -1,4 +1,3 @@
-from hmac import compare_digest
 from re import error as RegexError
 from re import fullmatch
 from urllib.parse import urlparse
@@ -26,7 +25,6 @@ from authentik.providers.oauth2.client import OAuthClientContext
 from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
-    ClientType,
     OAuth2Provider,
     RedirectURIMatchingMode,
     ScopeMapping,
@@ -46,8 +44,8 @@ class TokenRequest:
     dpop_proof: str | None = None
     dpop_jwk: dict | None = None
 
-    client: OAuthClientContext
     provider: OAuth2Provider
+    client: OAuthClientContext
     audience_provider: OAuth2Provider | None = None
     logger: BoundLogger
 
@@ -74,7 +72,7 @@ class TokenRequest:
         # Token exchange parameter.
         self.requested_token_type = request.POST.get("requested_token_type")
 
-        if self.grant_type not in self.provider.grant_types:
+        if self.grant_type not in self.client.grant_types:
             self.logger.warning("Invalid grant_type for provider", grant_type=self.grant_type)
             raise TokenError("invalid_grant").with_cause("grant_type_not_configured")
 
@@ -88,13 +86,13 @@ class TokenRequest:
             GRANT_TYPE_DEVICE_CODE,
             GRANT_TYPE_TOKEN_EXCHANGE,
         ]:
-            if self.provider.client_type == ClientType.CONFIDENTIAL and (
+            if self.client.is_confidential and (
                 not is_all_vschar(self.client_secret)
-                or not compare_digest(self.provider.client_secret, self.client_secret)
+                or not self.client.check_client_secret(self.client_secret)
             ):
                 self.logger.warning(
                     "Invalid client secret",
-                    client_id=self.provider.client_id,
+                    client_id=self.client.client_id,
                 )
                 raise TokenError("invalid_client").with_cause("invalid_secret")
         # Resolved before scopes, so they're clamped to the target provider's mappings
@@ -180,7 +178,7 @@ class TokenRequest:
             raise TokenError("invalid_request") from exc
 
     def check_redirect_uri(self, request: HttpRequest):
-        allowed_redirect_urls = self.provider.authorization_redirect_uris
+        allowed_redirect_urls = list(self.client.redirect_uris)
         # At this point, no provider should have a blank redirect_uri, in case they do
         # this will check an empty array and raise an error
 
