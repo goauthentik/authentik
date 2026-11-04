@@ -59,7 +59,7 @@ SCIM data is synchronized in response to changes and through scheduled full sync
 
 The synchronization process runs in the authentik worker. To improve scalability, authentik starts a task for each batch of 100 users or groups, so the workload can be distributed across multiple workers.
 
-Access changes are processed asynchronously in batches of up to 100 users. Membership changes reevaluate only the affected users. Application binding changes can affect access for all users, so authentik processes them in pages without running discovery or rewriting users that are already synchronized and remain in scope.
+Sync scope changes are processed asynchronously in batches of up to 100 users. A group membership change reevaluates only the affected users. A binding change can affect the sync scope for every user, so authentik reevaluates all users in batches. Users who are already synchronized and remain in scope are not sent to the target again.
 
 ### Attribute mapping
 
