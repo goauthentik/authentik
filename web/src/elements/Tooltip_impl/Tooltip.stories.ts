@@ -66,8 +66,10 @@ export default metadata;
 type Story = StoryObj<Tooltip>;
 
 const Template: Story = {
-    render: (args) => html`
-        <div style="padding: 6rem; display: flex; flex-direction: column; justify-content: center;">
+    render: (args) =>
+        html`<div
+            style="padding: 6rem; display: flex; flex-direction: column; justify-content: center;"
+        >
             <button
                 id=${ifDefined(args.htmlFor)}
                 style="padding: 0.5rem 1rem; font-size: 1rem; cursor: pointer; width: fit-content;"
@@ -83,8 +85,7 @@ const Template: Story = {
                 ?hide-arrow=${!!args.hideArrow}
                 >${args.content}
             </ak-tooltip>
-        </div>
-    `,
+        </div>`,
 };
 
 export const Default: Story = {
@@ -106,8 +107,8 @@ export const WithSlottedContent: Story = {
         htmlFor: "slotted-button",
         placement: "bottom",
     },
-    render: (args) => html`
-        <div style="padding: 100px; display: flex; justify-content: center;">
+    render: (args) =>
+        html`<div style="padding: 100px; display: flex; justify-content: center;">
             <button
                 id="slotted-button"
                 style="padding: 10px 20px; font-size: 16px; cursor: pointer;"
@@ -120,8 +121,7 @@ export const WithSlottedContent: Story = {
                     This <em>color</em> is <span style="color: lightsalmon">fishy</span>.
                 </p>
             </ak-tooltip>
-        </div>
-    `,
+        </div>`,
 };
 
 export const WithAnimatedContent: Story = {
@@ -130,43 +130,42 @@ export const WithAnimatedContent: Story = {
         placement: "right",
         trigger: "focus",
     },
-    render: (args) => html`
-        <style>
-            .pulse {
-                display: inline-block;
-                font-size: 2rem;
-                animation: pulse-animation 1s infinite;
-            }
+    render: (args) =>
+        html`<style>
+                .pulse {
+                    display: inline-block;
+                    font-size: 2rem;
+                    animation: pulse-animation 1s infinite;
+                }
 
-            @keyframes pulse-animation {
-                0% {
-                    transform: scale(1);
+                @keyframes pulse-animation {
+                    0% {
+                        transform: scale(1);
+                    }
+                    50% {
+                        transform: scale(1.3);
+                    }
+                    100% {
+                        transform: scale(1);
+                    }
                 }
-                50% {
-                    transform: scale(1.3);
-                }
-                100% {
-                    transform: scale(1);
-                }
-            }
-        </style>
-        <div style="padding: 100px; display: flex; justify-content: center;">
-            <button
-                id="slotted-button"
-                style="padding: 10px 20px; font-size: 16px; cursor: pointer;"
-            >
-                Hover for rich content
-            </button>
-            <ak-tooltip for=${args.htmlFor} placement=${args.placement}>
-                <strong class="pulse">❤️</strong>
-            </ak-tooltip>
-        </div>
-    `,
+            </style>
+            <div style="padding: 100px; display: flex; justify-content: center;">
+                <button
+                    id="slotted-button"
+                    style="padding: 10px 20px; font-size: 16px; cursor: pointer;"
+                >
+                    Hover for rich content
+                </button>
+                <ak-tooltip for=${args.htmlFor} placement=${args.placement}>
+                    <strong class="pulse">❤️</strong>
+                </ak-tooltip>
+            </div>`,
 };
 
 export const AllPlacements: Story = {
-    render: () => html`
-        <div
+    render: () =>
+        html`<div
             style="padding: 150px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; justify-items: center; align-items: center;"
         >
             <button id="top-left-btn" style="padding: 8px 16px;">Top Left</button>
@@ -231,13 +230,12 @@ export const AllPlacements: Story = {
                 tabindex="0"
                 placement="bottom-end"
             ></ak-tooltip>
-        </div>
-    `,
+        </div>`,
 };
 
 export const OverflowContainer: Story = {
-    render: () => html`
-        <div style="padding: 100px;">
+    render: () =>
+        html`<div style="padding: 100px;">
             <p style="margin-bottom: 20px;">
                 <strong>Overflow test:</strong> The tooltip escapes the overflow:hidden container
                 thanks to the dialog element's top layer. This also demonstrates how to override the
@@ -259,8 +257,7 @@ export const OverflowContainer: Story = {
                     containment!
                 </div></ak-tooltip
             >
-        </div>
-    `,
+        </div>`,
 };
 
 export const OverflowContainerViaBuilder: Story = {
@@ -274,38 +271,33 @@ export const OverflowContainerViaBuilder: Story = {
             class: "creature",
         };
 
-        return html`
-            <div style="padding: 100px;">
-                <p style="margin-bottom: 20px;">
-                    <strong>Overflow test:</strong> The tooltip escapes the overflow:hidden
-                    container thanks to the dialog element's top layer. This also demonstrates how
-                    to override the tooltip's styling with a <code>class</code> attribute on the
-                    component.
-                </p>
-                <div
-                    style="overflow: hidden; border: 2px solid #ddd; padding: 20px; max-width: 300px;"
-                >
-                    <p>This container has <code>overflow: hidden</code></p>
-                    <button id="overflow-button-2" style="padding: 10px 20px; margin-top: 10px;">
-                        Hover me
-                    </button>
-                </div>
-
-                <style>
-                    .creature {
-                        --ak-c-tooltip__content--BackgroundColor: linear-gradient(
-                            132deg,
-                            #000000,
-                            #00ff00,
-                            #0000ff,
-                            #e60073,
-                            #ff0000,
-                            #ffffff
-                        );
-                    }
-                </style>
-                ${akTooltip(tooltipContent)}
+        return html`<div style="padding: 100px;">
+            <p style="margin-bottom: 20px;">
+                <strong>Overflow test:</strong> The tooltip escapes the overflow:hidden container
+                thanks to the dialog element's top layer. This also demonstrates how to override the
+                tooltip's styling with a <code>class</code> attribute on the component.
+            </p>
+            <div style="overflow: hidden; border: 2px solid #ddd; padding: 20px; max-width: 300px;">
+                <p>This container has <code>overflow: hidden</code></p>
+                <button id="overflow-button-2" style="padding: 10px 20px; margin-top: 10px;">
+                    Hover me
+                </button>
             </div>
-        `;
+
+            <style>
+                .creature {
+                    --ak-c-tooltip__content--BackgroundColor: linear-gradient(
+                        132deg,
+                        #000000,
+                        #00ff00,
+                        #0000ff,
+                        #e60073,
+                        #ff0000,
+                        #ffffff
+                    );
+                }
+            </style>
+            ${akTooltip(tooltipContent)}
+        </div>`;
     },
 };

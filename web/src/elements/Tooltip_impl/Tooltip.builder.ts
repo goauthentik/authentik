@@ -27,14 +27,12 @@ export type TooltipProps = ElementRest &
 export function akTooltip(options: TooltipProps) {
     const { content, htmlFor, trigger, placement, hideArrow, ...rest } = options;
 
-    return html`
-        <ak-tooltip
-            ${spread(rest)}
-            for=${ifDefined(htmlFor)}
-            trigger=${ifDefined(trigger)}
-            placement=${ifDefined(placement)}
-            ?hide-arrow=${!!hideArrow}
-            >${content}</ak-tooltip
-        >
-    `;
+    return html`<ak-tooltip
+        ${spread(rest)}
+        for=${ifDefined(htmlFor)}
+        trigger=${ifDefined(trigger)}
+        placement=${ifDefined(placement)}
+        ?hide-arrow=${!!hideArrow}
+        >${content}</ak-tooltip
+    >`;
 }
