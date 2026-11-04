@@ -106,6 +106,42 @@ The issued JWT contains the RFC 8693 `act` claim, which identifies the Actor:
 
 The provider used to issue the token determines the identifiers for `sub` and `act.sub` according to its **Subject mode**. When `audience` selects another provider, the target provider's subject mode is used.
 
+## Exchange a token for a SAML response:ak-version[2026.11]
+
+A provider can exchange a token for a SAML response issued by a [SAML provider](../saml/index.mdx). This lets a service call an API that accepts SAML responses, such as AWS `AssumeRoleWithSAML`, as the user identified by the subject token, without a browser-based SAML login.
+
+Set `requested_token_type` to `urn:ietf:params:oauth:token-type:saml2`, and set `audience` to the slug or the UUID of the application to which the SAML provider is bound:
+
+```http
+POST /application/o/token/ HTTP/1.1
+Host: authentik.company
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=urn:ietf:params:oauth:grant-type:token-exchange&
+client_id=application_client_id&
+client_secret=application_client_secret&
+subject_token=token_identifying_the_user&
+subject_token_type=urn:ietf:params:oauth:token-type:access_token&
+requested_token_type=urn:ietf:params:oauth:token-type:saml2&
+audience=saml_application_slug
+```
+
+The response contains the following fields:
+
+- `access_token`: The SAML response, base64-encoded in the same way as the `SAMLResponse` parameter of the HTTP-POST binding, so that it can be passed on unchanged
+- `issued_token_type`: `urn:ietf:params:oauth:token-type:saml2`
+- `token_type`: `N_A`, because the issued token is not an OAuth access token
+- `expires_in`: The number of seconds until the assertion expires, based on the SAML provider's **Assertion valid not on or after** setting
+
+The SAML provider builds the response as it would for an IdP-initiated login, using its own ACS URL, audience, signing and encryption settings, and property mappings.
+
+The following requirements apply; otherwise, authentik rejects the request with `invalid_target`:
+
+- `audience` must contain exactly one value, which must identify an application with a SAML provider.
+- The SAML provider must list the provider performing the exchange under **Federated OAuth2/OpenID Providers** in its **Machine-to-Machine authentication settings**.
+
+The user identified by the subject token must also pass the policy bindings of the SAML provider's application; otherwise, authentik rejects the request with `invalid_grant`. As when `audience` targets another OAuth2 provider, authentik also accepts a subject token issued by the provider performing the exchange.
+
 ## Supported token types
 
 ### Subject and requested token types
@@ -116,6 +152,8 @@ The provider used to issue the token determines the identifiers for `sub` and `a
 - `urn:ietf:params:oauth:token-type:jwt`
 
 Because authentik access tokens are JWTs, authentik treats both token-type values equivalently. `requested_token_type` is optional and defaults to `urn:ietf:params:oauth:token-type:access_token`.
+
+`requested_token_type` also accepts `urn:ietf:params:oauth:token-type:saml2` to [request a SAML response](#exchange-a-token-for-a-saml-response).
 
 For any other subject or requested token type, authentik rejects the request with `invalid_request`.
 
@@ -179,5 +217,5 @@ If `scope` is omitted, the issued token has no scopes.
     - Alternatively, add external OIDC sources that issue subject tokens to **Federated OIDC Sources**.
 6. To use an OAuth access token or JWT as `actor_token`, add the provider that issued the token to **Federated OAuth2/OpenID Providers**. When `audience` targets a different provider, an actor token issued by the provider performing the exchange is also accepted.
 7. Click **Update**.
-8. To target another provider using `audience`, edit the target provider and add the provider performing the exchange to the target provider's **Federated OAuth2/OpenID Providers**.
+8. To target another provider using `audience`, edit the target provider and add the provider performing the exchange to the target provider's **Federated OAuth2/OpenID Providers**. For a SAML provider, this setting is under **Machine-to-Machine authentication settings**.
 9. To perform an OBO exchange, obtain a token issued to the Actor that will act on the user's behalf. Supply the token using `actor_token` and set the corresponding `actor_token_type`.
