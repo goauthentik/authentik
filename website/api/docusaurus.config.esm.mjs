@@ -95,6 +95,8 @@ const config = createDocusaurusConfig({
                     showLastUpdateTime: false,
                     showLastUpdateAuthor: false,
                     numberPrefixParser: false,
+                    // Keep in sync with src/theme/ApiItem/Layout, which gives the
+                    // same guide pages the shared docs layout.
                     editUrl: ({ docPath }) =>
                         docPath.startsWith("reference/")
                             ? undefined
