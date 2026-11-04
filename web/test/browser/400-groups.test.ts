@@ -171,8 +171,22 @@ test.describe("Groups", () => {
 
         const dialog = page.getByRole("dialog", { name: "New Group" });
 
-        await test.step("Create a user to assign", () =>
-            createInternalUser({ navigator, form, pointer, page }, username, userDisplayName));
+        // A second user, picked in a separate visit to the selection dialog, so the test
+        // covers the assign form accumulating selections rather than replacing them.
+        // User search matches substrings, so neither username may contain the other.
+        const secondSeed = IDGenerator.randomID(6);
+        const secondUsername = snakeCase(`${randomName(secondSeed)} ${secondSeed}`);
+        const secondDisplayName = `Member ${randomName(secondSeed)} (${secondSeed})`;
+
+        await test.step("Create users to assign", async () => {
+            await createInternalUser({ navigator, form, pointer, page }, username, userDisplayName);
+
+            await createInternalUser(
+                { navigator, form, pointer, page },
+                secondUsername,
+                secondDisplayName,
+            );
+        });
 
         await test.step("Return to groups", () => navigator.navigate("/if/admin/identity/groups"));
 
@@ -204,28 +218,41 @@ test.describe("Groups", () => {
             await groupRow.getByRole("link", { name: "view details" }).click();
         });
 
-        await test.step("Assigning a user to the group", async () => {
+        await test.step("Assigning users to the group", async () => {
             const assignUsersModal = page.getByRole("dialog", { name: "Assign Additional Users" });
             const selectUsersModal = page.getByRole("dialog", { name: "Select users" });
+            const usersPanel = page.getByRole("tabpanel", { name: "Users" });
 
             await series(
                 // ---
                 [click, "users", "tab"],
                 [click, "Add existing user", "button"],
-                [click, "Open user selection dialog", "button"],
             );
 
-            const userRow = await test.step("Find the user via search", () =>
-                search(username, selectUsersModal));
+            const pickUser = (name: string) =>
+                test.step(`Pick ${name} in the selection dialog`, async () => {
+                    await click("Open user selection dialog", "button", assignUsersModal);
 
-            await expect(userRow, "User is visible").toBeVisible();
+                    await expect(selectUsersModal, "Selection dialog opens").toBeVisible();
 
-            await userRow.getByRole("checkbox").check();
+                    const userRow = await search(name, selectUsersModal);
 
-            const confirmButton = selectUsersModal.getByRole("button", { name: "Confirm" });
+                    await expect(userRow, "User is visible").toBeVisible();
 
-            await expect(confirmButton, "Confirm button is visible").toBeVisible();
-            await confirmButton.click();
+                    await userRow.getByRole("checkbox").check();
+
+                    await selectUsersModal.getByRole("button", { name: "Confirm" }).click();
+
+                    await expect(selectUsersModal, "Selection dialog closes").toBeHidden();
+                });
+
+            await pickUser(username);
+            await pickUser(secondUsername);
+
+            await expect(
+                assignUsersModal.getByText(username, { exact: false }),
+                "First pick is still listed after the second pick",
+            ).toBeVisible();
 
             const assignButton = assignUsersModal.getByRole("button", { name: "Assign" });
 
@@ -235,14 +262,17 @@ test.describe("Groups", () => {
             await expect(assignUsersModal, "Assign users modal closes").toBeHidden();
 
             await test.step("Verify user assignment", async () => {
-                // eslint-disable-next-line max-nested-callbacks
-                const memberRow = await test.step("Find member via search", () => {
-                    const context = page.getByRole("tabpanel", { name: "Users" });
+                await expect(
+                    usersPanel.getByRole("row", { name: new RegExp(username) }).first(),
+                    "Member list refreshes after assignment",
+                ).toBeVisible();
 
-                    return search(username, context);
-                });
+                for (const name of [username, secondUsername]) {
+                    const memberRow = await test.step(`Find ${name} via search`, () =>
+                        search(name, usersPanel));
 
-                await expect(memberRow, "User is a member of the group").toBeVisible();
+                    await expect(memberRow, `${name} is a member of the group`).toBeVisible();
+                }
             });
         });
     });
