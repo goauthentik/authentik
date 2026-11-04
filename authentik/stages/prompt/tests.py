@@ -25,8 +25,6 @@ from authentik.stages.prompt.stage import (
 class TestPromptStage(APIFlowTestCase):
     """Prompt tests"""
 
-    password_type = FieldTypes.PASSWORD
-
     def setUp(self):
         super().setUp()
         self.user = create_test_admin_user()
@@ -72,7 +70,7 @@ class TestPromptStage(APIFlowTestCase):
             name=generate_id(),
             field_key="password_prompt",
             label="PASSWORD_LABEL",
-            type=self.password_type,
+            type=FieldTypes.PASSWORD,
             required=True,
             placeholder="PASSWORD_PLACEHOLDER",
             initial_value="supersecurepassword",
@@ -80,8 +78,8 @@ class TestPromptStage(APIFlowTestCase):
         password2_prompt = Prompt.objects.create(
             name=generate_id(),
             field_key="password2_prompt",
-            label="PASSWORD_LABEL",
-            type=self.password_type,
+            label="PASSWORD_VIEWABLE",
+            type=FieldTypes.PASSWORD_VIEWABLE,
             required=True,
             placeholder="PASSWORD_PLACEHOLDER",
             initial_value="supersecurepassword",
@@ -745,12 +743,6 @@ class TestPromptStage(APIFlowTestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn("non_field_errors", response.content.decode())
-
-
-class TestPromptStagePasswordViewable(TestPromptStage):
-    """Re-run every prompt stage test with the viewable password field"""
-
-    password_type = FieldTypes.PASSWORD_VIEWABLE
 
 
 def field_type_tester_factory(field_type: FieldTypes, required: bool):
