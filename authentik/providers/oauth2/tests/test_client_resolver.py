@@ -1,7 +1,7 @@
 """Test OAuth client resolution: provider selectors, client adapters and resolvers"""
 
 from base64 import b64encode
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, dataclass, replace
 from pickle import dumps, loads  # nosec
 from unittest.mock import patch
 
@@ -38,6 +38,13 @@ from authentik.providers.oauth2.utils import authenticate_client, client_from_re
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
 
 HTTPS_CLIENT_ID = "https://client.example.com/oauth/client-metadata.json"
+
+
+@dataclass(frozen=True, slots=True)
+class ExtendedClientContext(OAuthClientContext):
+    """Context for a registration kind defined outside core"""
+
+    client_name: str = ""
 
 
 class FixedSelector(ProviderSelector):
@@ -83,7 +90,6 @@ class TestClientContext(OAuthTestCase):
         self.assertEqual(client.registration_kind, ClientRegistrationKind.LEGACY)
         self.assertTrue(client.is_legacy)
         self.assertTrue(client.is_confidential)
-        self.assertEqual(client.client_name, self.provider.name)
         self.assertEqual(
             client.grant_types,
             frozenset([GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN]),
@@ -93,24 +99,13 @@ class TestClientContext(OAuthTestCase):
             client.redirect_uris,
             (RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/callback"),),
         )
-        self.assertEqual(
-            client.token_endpoint_auth_methods,
-            frozenset(["client_secret_basic", "client_secret_post"]),
-        )
-        self.assertIsNone(client.response_types)
-        self.assertIsNone(client.allowed_scopes)
-        self.assertEqual(client.resources, ())
-        self.assertIsNone(client.jwks)
-        self.assertIsNone(client.admission_id)
-        self.assertIsNone(client.agent_binding)
 
     def test_legacy_context_public(self):
-        """Public legacy clients authenticate with `none`"""
+        """Public legacy clients are not confidential"""
         self.provider.client_type = ClientType.PUBLIC
         self.provider.save()
         client = OAuthClientContext.for_provider(self.provider)
         self.assertFalse(client.is_confidential)
-        self.assertEqual(client.token_endpoint_auth_methods, frozenset(["none"]))
 
     def test_context_without_application(self):
         """Application is None when the provider is not assigned"""
@@ -176,15 +171,14 @@ class TestClientContext(OAuthTestCase):
         class AlwaysAdapter(ClientAdapter):
             def resolve(self, request, provider, client_id):
                 calls.append("always")
-                return OAuthClientContext(
+                return ExtendedClientContext(
                     provider=provider,
                     client_id=client_id,
-                    registration_kind=ClientRegistrationKind.ADMITTED_METADATA,
-                    client_name="test",
+                    registration_kind="extended",
                     client_type=ClientType.PUBLIC,
                     redirect_uris=(),
-                    token_endpoint_auth_methods=frozenset(["none"]),
                     grant_types=frozenset([GrantType.AUTHORIZATION_CODE]),
+                    client_name="test",
                 )
 
         resolver = OAuthClientResolver(
@@ -202,9 +196,16 @@ class TestClientContext(OAuthTestCase):
             [LegacyClientAdapter(), NeverAdapter(), AlwaysAdapter()],
         )
         client = resolver.resolve(None, HTTPS_CLIENT_ID)
-        self.assertEqual(client.registration_kind, ClientRegistrationKind.ADMITTED_METADATA)
+        self.assertIsInstance(client, ExtendedClientContext)
+        self.assertEqual(client.registration_kind, "extended")
+        self.assertFalse(client.is_legacy)
+        # Clients of other kinds never authenticate with the provider's shared secret
+        self.assertFalse(client.check_client_secret(self.provider.client_secret))
         self.assertEqual(client.provider, self.provider)
         self.assertEqual(calls, ["never", "always"])
+        # Extended contexts are stored in flow plans too
+        client = replace(client, provider=OAuth2Provider.objects.get(pk=self.provider.pk))
+        self.assertEqual(loads(dumps(client)), client)  # nosec
 
     def test_resolver_selector(self):
         """A selector decides the provider; adapters resolve the client within it"""
