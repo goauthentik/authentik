@@ -9,11 +9,11 @@ import { defaultAllowedTypes } from "#admin/policies/BoundPoliciesList";
 import { type PolicyEngineMode } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 
 interface PolicyBindingProps {
     label?: string;
-    description?: string;
+    description?: string | TemplateResult;
     allowed?: PolicyBindingCheckTarget[];
     target?: string;
     mode?: PolicyEngineMode;
