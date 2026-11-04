@@ -332,7 +332,11 @@ requires-dist = [
     { name = "dacite", specifier = "==1.9.2" },
     { name = "deepmerge", specifier = "==2.0" },
     { name = "defusedxml", specifier = "==0.7.1" },
+<<<<<<< HEAD
     { name = "django", specifier = "==5.2.17" },
+=======
+    { name = "django", specifier = "==5.2.19" },
+>>>>>>> b8e322738 (core: bump django from 5.2.18 to 5.2.19 (#27574))
     { name = "django-channels-postgres", editable = "packages/django-channels-postgres" },
     { name = "django-countries", specifier = "==8.2.0" },
     { name = "django-dramatiq-postgres", editable = "packages/django-dramatiq-postgres" },
@@ -1085,16 +1089,26 @@ wheels = [
 
 [[package]]
 name = "django"
+<<<<<<< HEAD
 version = "5.2.17"
+=======
+version = "5.2.19"
+>>>>>>> b8e322738 (core: bump django from 5.2.18 to 5.2.19 (#27574))
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "sqlparse" },
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
+<<<<<<< HEAD
 sdist = { url = "https://files.pythonhosted.org/packages/d5/d8/43e9d000519adceb189620b6869ff88031e046df91c2e9da72f8f6918399/django-5.2.17.tar.gz", hash = "sha256:9d4d93be539a18ab80d058eb515900e10951e04c537c5a6b394fc49528d3251f", size = 10889740, upload-time = "2026-08-04T15:04:03.173Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/df/f8/ce120525ca78f12b07daf65786679c5d0b54a75285a8958d3ae55e39da35/django-5.2.17-py3-none-any.whl", hash = "sha256:f04fb3b36ee119e1af4fa1d397d5fd6cf12700f49321e84d4f4c642c5b1973db", size = 8315563, upload-time = "2026-08-04T15:03:59.1Z" },
+=======
+sdist = { url = "https://files.pythonhosted.org/packages/02/29/a487a108caa76430c8b616aa90a6d09cf431306112c14093e6f0a7454e17/django-5.2.19.tar.gz", hash = "sha256:ad03d8abc51dbff95ebf34b27123cf0c26a3b62db7ba0cd520783686362533d1", size = 10969285, upload-time = "2026-11-03T15:22:09.468Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3c/fb/65b4e897d1268288a46457493d9aec6541be8be08e0093a93cc101c03ab2/django-5.2.19-py3-none-any.whl", hash = "sha256:5965d974a5218a2b68a11dd1276434707f23886525c23f0598eccedaf4f4ca00", size = 8319631, upload-time = "2026-11-03T15:22:03.67Z" },
+>>>>>>> b8e322738 (core: bump django from 5.2.18 to 5.2.19 (#27574))
 ]
 
 [[package]]
