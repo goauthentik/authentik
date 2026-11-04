@@ -10,6 +10,12 @@
     margin-top: 0;
 }
 
+/* The wrapper around the mobile TOC takes the rule above when it leads the
+ * article, so pass it on to the collapsible's own margin. */
+.docItemContainer article > *:first-child > :global(.theme-doc-toc-mobile) {
+    margin-top: 0;
+}
+
 .articleContributions {
     margin-top: 2rem;
 }
