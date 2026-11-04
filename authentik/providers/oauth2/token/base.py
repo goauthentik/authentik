@@ -22,6 +22,7 @@ from authentik.core.models import (
 from authentik.events.models import Event, EventAction
 from authentik.lib.tracing import active_tracer
 from authentik.policies.engine import PolicyEngine
+from authentik.providers.oauth2.client import OAuthClientContext
 from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
@@ -45,14 +46,16 @@ class TokenRequest:
     dpop_proof: str | None = None
     dpop_jwk: dict | None = None
 
+    client: OAuthClientContext
     provider: OAuth2Provider
     audience_provider: OAuth2Provider | None = None
     logger: BoundLogger
 
-    def __init__(self, provider: OAuth2Provider, client_id: str, client_secret: str):
-        self.provider = provider
-        self.logger = get_logger().bind(provider=provider.name)
-        self.client_id = client_id
+    def __init__(self, client: OAuthClientContext, client_secret: str):
+        self.client = client
+        self.provider = client.provider
+        self.logger = get_logger().bind(provider=self.provider.name)
+        self.client_id = client.client_id
         self.client_secret = client_secret
 
     @property

@@ -18,6 +18,7 @@ from structlog.stdlib import get_logger
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.oauth2.client import LegacyClientSelector
 from authentik.providers.oauth2.errors import BearerTokenError
 from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import (
@@ -235,8 +236,8 @@ def provider_from_request(request: HttpRequest) -> tuple[OAuth2Provider | None, 
     client_id, client_secret = extract_client_auth(request)
     if client_id == client_secret == "":
         return None, "", ""
-    provider: OAuth2Provider | None = OAuth2Provider.objects.filter(client_id=client_id).first()
-    return provider, client_id, client_secret
+    client = LegacyClientSelector().resolve(client_id)
+    return client.provider if client else None, client_id, client_secret
 
 
 def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
