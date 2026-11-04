@@ -38,13 +38,15 @@ export class SectionCard extends AKElement {
                 <h3 class="pf-c-card__title" id="card-title" part="card-title">${this.label}</h3>
             </div>
             <div
-                class="4f-c-card__body"
+                class="pf-c-card__body"
                 part="card-description"
                 ?hidden=${!this.slots.hasSlotted("description")}
             >
                 <slot name="description"></slot>
             </div>
-            <slot></slot>
+            <div class="pf-c-card__body" part="card-body">
+                <slot></slot>
+            </div>
         </section>`;
     }
 }
