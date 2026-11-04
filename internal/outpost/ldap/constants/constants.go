@@ -81,5 +81,6 @@ func GetVirtualGroupOCs() map[string]bool {
 		OCGroupOfUniqueNames: true,
 		OCGroupOfNames:       true,
 		OCAKVirtualGroup:     true,
+		OCPosixGroup:         true,
 	}
 }
