@@ -9,11 +9,16 @@ from urllib.parse import urlparse
 
 from channels.layers import get_channel_layer
 from django.core.cache import cache
+from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
-from yaml import safe_load
 
+from authentik.crypto.secrets.models import (
+    SecretType,
+    create_named_secret,
+    grant_secret_like_upgrade,
+)
 from authentik.lib.config import CONFIG
 from authentik.outposts.consumer import build_outpost_group
 from authentik.outposts.controllers.base import BaseController, ControllerException
@@ -174,9 +179,7 @@ def outpost_connection_discovery():
         self.info("Detected in-cluster Kubernetes Config")
         if not KubernetesServiceConnection.objects.filter(local=True).exists():
             self.info("Created Service Connection for in-cluster")
-            KubernetesServiceConnection.objects.create(
-                name="Local Kubernetes Cluster", local=True, kubeconfig={}
-            )
+            KubernetesServiceConnection.objects.create(name="Local Kubernetes Cluster", local=True)
     # For development, check for the existence of a kubeconfig file
     kubeconfig_path = Path(KUBE_CONFIG_DEFAULT_LOCATION).expanduser()
     if kubeconfig_path.exists():
@@ -184,10 +187,16 @@ def outpost_connection_discovery():
         kubeconfig_local_name = f"k8s-{gethostname()}"
         if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
             self.info("Creating kubeconfig Service Connection")
-            with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig:
+            with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig, transaction.atomic():
+                kubeconfig = create_named_secret(
+                    f"{kubeconfig_local_name} kubeconfig",
+                    type=SecretType.JSON,
+                    secret_value=_kubeconfig.read(),
+                )
+                # Matches the value permission of the outposts managed secrets migration.
+                grant_secret_like_upgrade(KubernetesServiceConnection, kubeconfig, "change")
                 KubernetesServiceConnection.objects.create(
-                    name=kubeconfig_local_name,
-                    kubeconfig=safe_load(_kubeconfig),
+                    name=kubeconfig_local_name, kubeconfig_ref=kubeconfig
                 )
     unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
     socket = Path(unix_socket_path)

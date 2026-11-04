@@ -36,10 +36,7 @@ export interface KubernetesServiceConnection {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     * Paste your kubeconfig here. authentik will automatically use the currently selected context.
-     */
-    kubeconfig?: { [key: string]: any };
+    kubeconfigRef?: string | null;
     /**
      * Verify SSL Certificates of the Kubernetes API endpoint
      */
@@ -98,7 +95,12 @@ export function KubernetesServiceConnectionFromJSONTyped(
         verboseName: json["verbose_name"],
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
-        kubeconfig: json["kubeconfig"] == null ? undefined : json["kubeconfig"],
+        kubeconfigRef:
+            json["kubeconfig_ref"] === undefined
+                ? undefined
+                : json["kubeconfig_ref"] === null
+                  ? null
+                  : json["kubeconfig_ref"],
         verifySsl: json["verify_ssl"] == null ? undefined : json["verify_ssl"],
     };
 }
@@ -121,7 +123,7 @@ export function KubernetesServiceConnectionToJSONTyped(
     return {
         name: value["name"],
         local: value["local"],
-        kubeconfig: value["kubeconfig"],
+        kubeconfig_ref: value["kubeconfigRef"],
         verify_ssl: value["verifySsl"],
     };
 }
