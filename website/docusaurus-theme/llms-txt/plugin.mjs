@@ -12,6 +12,7 @@
  * @file Docusaurus llms.txt plugin (postBuild).
  */
 
+import { statSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -71,6 +72,57 @@ export function resolveSiteUrl(options, siteConfig) {
 }
 
 /**
+ * Create the resolver that points links in a page's Markdown payload at
+ * published URLs.
+ *
+ * Docusaurus turns links to source files (`../core/architecture.mdx`) into
+ * routes only in the HTML it renders, so the payload needs its own pass.
+ * Source file links resolve the way Docusaurus resolves them and point at the
+ * target's payload. Relative URLs (`../releases/`) resolve against the page's
+ * trailing-slash route, as a browser does on the HTML page, because the
+ * payload sits at `<route>.md`, one directory higher.
+ *
+ * @param {Map<string, string>} docUrlsByFile Absolute source path to page URL.
+ * @param {string[]} contentDirs Absolute section directories.
+ * @param {string} siteDir
+ *
+ * @returns {(url: string, sourceFile: string, pageUrl: string) => string | undefined}
+ */
+function createLinkResolver(docUrlsByFile, contentDirs, siteDir) {
+    return (url, sourceFile, pageUrl) => {
+        // Absolute URLs, protocol-relative URLs and in-page anchors already work.
+        if (/^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(url)) return undefined;
+
+        const [, pathname = "", suffix = ""] = /^([^?#]*)(.*)$/s.exec(url) ?? [];
+        if (!/\.mdx?$/i.test(pathname)) {
+            // A site-absolute URL resolves the same from the payload.
+            if (pathname.startsWith("/")) return undefined;
+            // Docusaurus serves a linked file next to the source, such as an
+            // example JSON file, from a hashed asset URL that is not known here.
+            const asset = path.join(path.dirname(sourceFile), decodeURIComponent(pathname));
+            if (statSync(asset, { throwIfNoEntry: false })?.isFile()) return undefined;
+            return new URL(url, pageUrl).toString();
+        }
+
+        // Same lookup order as Docusaurus' resolveMarkdownLinkPathname.
+        let dirs;
+        if (pathname.startsWith("/")) {
+            dirs = [...contentDirs, siteDir];
+        } else if (pathname.startsWith("./") || pathname.startsWith("../")) {
+            dirs = [path.dirname(sourceFile)];
+        } else {
+            dirs = [path.dirname(sourceFile), ...contentDirs, siteDir];
+        }
+        for (const dir of dirs) {
+            const target = docUrlsByFile.get(path.join(dir, decodeURIComponent(pathname)));
+            if (target) return `${applyMdExtension(target)}${suffix}`;
+        }
+        // Not an indexed page, such as a draft. Keep the link as written.
+        return undefined;
+    };
+}
+
+/**
  * Build every output file's contents, keyed by build-relative path.
  *
  * @param {{
@@ -88,14 +140,15 @@ export function resolveSiteUrl(options, siteConfig) {
 export async function buildLLMSOutputs(ctx) {
     const options = normalizeOptions(ctx.options);
 
-    /** @type {LLMSDocInfo[]} */
-    const docs = [];
+    /** @type {{ file: string; doc: LLMSDocInfo }[]} */
+    const pages = [];
     let skippedNoRoute = 0;
     let mdxFallbacks = 0;
     const countMdxFallback = () => {
         mdxFallbacks += 1;
     };
 
+    // Every page's URL must be known before any page's links can be resolved.
     for (const section of options.sections) {
         const absDir = path.resolve(ctx.siteDir, section.path);
         for (const file of collectDocFiles(absDir, options.ignoreFiles)) {
@@ -115,10 +168,22 @@ export async function buildLLMSOutputs(ctx) {
             parsed.url = new URL(route, ctx.siteUrl).toString();
             parsed.group = assignGroup(parsed);
             parsed.groupLabel = groupLabel(parsed.group, options);
-            parsed.content = await cleanMdxToMarkdown(parsed.content, file, countMdxFallback);
-            docs.push(parsed);
+            pages.push({ file, doc: parsed });
         }
     }
+
+    const resolveLink = createLinkResolver(
+        new Map(pages.map(({ file, doc }) => [file, doc.url])),
+        options.sections.map((section) => path.resolve(ctx.siteDir, section.path)),
+        ctx.siteDir,
+    );
+    for (const { file, doc } of pages) {
+        doc.content = await cleanMdxToMarkdown(doc.content, file, {
+            onFallback: countMdxFallback,
+            resolveLink: (url, sourceFile) => resolveLink(url, sourceFile, doc.url),
+        });
+    }
+    const docs = pages.map(({ doc }) => doc);
 
     if (skippedNoRoute || mdxFallbacks) {
         console.log(

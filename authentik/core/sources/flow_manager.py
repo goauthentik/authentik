@@ -244,10 +244,8 @@ class SourceFlowManager:
         error = Exception(
             _(
                 "Request to authenticate with {source} has been denied. Please authenticate "
-                "with the source you've previously signed up with.".format_map(
-                    {"source": self.source.name}
-                )
-            ),
+                "with the source you've previously signed up with."
+            ).format(source=self.source.name),
         )
         return self.error_handler(error)
 
@@ -385,10 +383,8 @@ class SourceFlowManager:
             stages=[
                 in_memory_stage(
                     MessageStage,
-                    message=_(
-                        "Successfully authenticated with {source}!".format_map(
-                            {"source": self.source.name}
-                        )
+                    message=_("Successfully authenticated with {source}!").format(
+                        source=self.source.name
                     ),
                 )
             ],
@@ -422,7 +418,7 @@ class SourceFlowManager:
         ).from_http(self.request)
         messages.success(
             self.request,
-            _("Successfully linked {source}!".format_map({"source": self.source.name})),
+            _("Successfully linked {source}!").format(source=self.source.name),
         )
         return redirect(
             reverse(
@@ -449,10 +445,8 @@ class SourceFlowManager:
             stages=[
                 in_memory_stage(
                     MessageStage,
-                    message=_(
-                        "Successfully authenticated with {source}!".format_map(
-                            {"source": self.source.name}
-                        )
+                    message=_("Successfully authenticated with {source}!").format(
+                        source=self.source.name
                     ),
                 )
             ],
