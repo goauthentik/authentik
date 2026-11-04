@@ -8,6 +8,7 @@ import "#components/ak-status-label";
 import "#elements/cards/SectionCard";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { aki } from "#common/api/client";
 
@@ -39,7 +40,7 @@ export class DataExportListPage extends TablePage<DataExport> {
     @property({ type: String })
     public order = "-requested_on";
 
-    static styles = [...TablePage.styles, PFDescriptionList];
+    static styles = [...TablePage.styles, PFDescriptionList, PFSpacing];
 
     async apiEndpoint(): Promise<PaginatedResponse<DataExport>> {
         return aki(ReportsApi).reportsExportsList(await this.defaultEndpointConfig());
@@ -108,7 +109,9 @@ export class DataExportListPage extends TablePage<DataExport> {
             .map(([key, value]) => [key, html`<pre>${value}</pre>`]);
 
         return html`<ak-section-card label=${msg("Query parameters")}>
-            ${renderDescriptionList(queryParameterPairs, { horizontal: true, compact: true })}
+            <div class="pf-u-m-lg">
+                ${renderDescriptionList(queryParameterPairs, { horizontal: true, compact: true })}
+            </div>
         </ak-section-card>`;
     }
 

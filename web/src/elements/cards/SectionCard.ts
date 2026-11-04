@@ -44,7 +44,7 @@ export class SectionCard extends AKElement {
             >
                 <slot name="description"></slot>
             </div>
-            <div class="pf-c-card__body" part="card-body">
+            <div part="card-body">
                 <slot></slot>
             </div>
         </section>`;
