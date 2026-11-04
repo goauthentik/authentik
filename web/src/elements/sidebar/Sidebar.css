@@ -1,199 +1,153 @@
 :host {
     z-index: 100;
-    --pf-c-page__sidebar--Transition: 0 !important;
-    --pf-global--BackgroundColor--light-400: #d2d2d2;
-    --pf-global--BackgroundColor--dark-300: #b8bbbe;
 }
 
-.pf-c-nav {
+[part="nav"],
+.ak-c-sidebar__nav {
     --ak-m-scroll-shadows--BorderStyle: none;
-    --ak-c-nav__item--BorderColor: var(--pf-global--BorderColor--100);
-    --pf-c-nav__subnav__link--hover--after--BorderColor: var(--ak-accent);
-
-    --pf-c-nav__link--xl--PaddingLeft: var(--pf-global--spacer--md);
-    --pf-c-nav__link--hover--before--BorderBottomWidth: 1px;
-    --pf-c-nav__link--before--BorderColor: transparent;
-
-    --pf-c-nav__link--PaddingTop: var(--pf-global--spacer--sm);
-    --pf-c-nav__link--PaddingRight: var(--pf-global--spacer--sm);
-    --pf-c-nav__link--PaddingBottom: var(--pf-global--spacer--sm);
-
-    --pf-c-nav__subnav__link--PaddingLeft: var(--pf-global--spacer--md);
-    --pf-c-nav__subnav--PaddingBottom: var(--pf-global--spacer--sm);
-    --pf-c-nav__item--before--BorderColor: transparent;
-    --pf-c-nav__link--after--BorderColor: var(--pf-global--BorderColor--300);
-    --pf-c-nav__link--m-current--Color: var(--ak-accent);
-
     display: flex;
     flex-direction: column;
     height: 100%;
     overflow-y: hidden;
 }
 
-.pf-c-nav__section + .pf-c-nav__section {
-    --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
-}
-
-.pf-c-nav > .pf-c-nav__list {
-    flex-grow: 1;
+[part="nav-list"] {
+    position: relative;
+    flex: 1 1 auto;
     overflow-y: auto;
-    padding-block-start: var(--pf-global--spacer--sm);
+    padding-block-start: var(--pf-global--spacer-sm);
 }
 
-button.pf-c-nav__link {
-    margin-block-end: var(--pf-global--spacer--xs);
+[part~="list-item"] {
+    margin-top: var(--ak-c-sidebar__item--MarginTop);
 }
 
-.pf-c-nav__link.pf-m-current::after,
-.pf-c-nav__link.pf-m-current:hover::after,
-.pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
-    --pf-c-nav__link--m-current--after--BorderColor: var(--ak-accent);
-    --pf-c-nav__link--m-current--after--BorderLeftWidth: var(--pf-global--BorderWidth--md);
+[part~="list-item"][aria-expanded="true"] {
+    --ak-c-sidebar__row__toggle-icon--Rotate: var(
+        --ak-c-sidebar__row--m-expanded__toggle-icon--Rotate
+    );
 }
 
-.pf-c-nav__item {
-    user-select: none;
-    --pf-c-nav__item--MarginTop: 0;
-    --pf-c-nav__link--m-current--after--BorderLeftWidth: 1px;
-    margin-inline-start: 0.2rem;
+[part~="row"] {
+    width: 100%;
+    font-size: var(--ak-c-sidebar--depth0--FontSize);
+    display: grid;
+    gap: 0;
+    grid-template-columns:
+        [icon] var(--ak-c-sidebar--icon-size)
+        [label] 1fr [toggle] auto;
+    padding-inline-start: var(--ak-c-sidebar--gutter);
+    white-space: nowrap;
+    text-align: left;
+    align-items: baseline;
+    color: var(--ak-c-sidebar__link--Color);
+    background-color: var(--ak-c-sidebar__link--BackgroundColor);
+    outline-offset: var(--ak-c-sidebar__link--OutlineOffset);
+    text-decoration: none;
+    border: none;
 }
 
-.pf-c-nav__link::after {
+[part~="row"]:is(:hover, :focus, :active) {
+    width: 100%;
+    text-decoration: none;
+    border-style: none;
+}
+
+[part~="row"]:is(:hover, :focus) {
+    color: var(--ak-c-sidebar__link--hover--Color);
+    --ak-c-sidebar__link--BackgroundColor: var(--ak-c-sidebar__link--hover--BackgroundColor);
+    --ak-c-sidebar__rail--BackgroundColor: var(--ak-c-sidebar__rail--BackgroundColor--hover);
+    --ak-c-sidebar__rail--Width: var(--ak-c-sidebar__rail--Width--hover);
+}
+
+[part="label"] {
+    display: inline-block;
+    padding: var(--ak-c-sidebar__link--PaddingTop) var(--ak-c-sidebar__link--PaddingRight)
+        var(--ak-c-sidebar__link--PaddingBottom) var(--ak-c-sidebar__label--PaddingLeft);
+}
+
+[part~="row"][data-depth="1"] {
+    font-size: var(--ak-c-sidebar--depth1--FontSize);
+}
+
+[part~="row"][data-depth="1"] [part="label"] {
+    font-size: var(--ak-c-sidebar--depth1--FontSize);
+    padding-inline-start: calc(2 * var(--ak-c-sidebar--gutter));
+}
+
+[part~="row"][data-depth="2"] {
+    font-size: var(--ak-c-sidebar--depth2--FontSize);
+}
+
+[part~="row"][data-depth="2"]::before {
+    inset-inline-start: calc(var(--ak-c-sidebar__rail) - var(--ak-c-sidebar--indicator-width) / 2);
+}
+
+[part~="row"][part~="current"] {
+    --ak-c-sidebar__link--BackgroundColor: var(--ak-c-sidebar__link--active--BackgroundColor);
+    --ak-c-sidebar__rail--BackgroundColor: var(--ak-c-sidebar__rail--BackgroundColor--active);
+    --ak-c-sidebar__rail--Width: var(--ak-c-sidebar__rail--Width--active);
+    color: var(--ak-c-sidebar__link--m-current--Color);
+}
+
+[part~="icon"] {
+    justify-self: center;
+}
+
+[part~="rail"] {
+    height: 100%;
+    position: relative;
+    align-self: stretch;
+}
+
+[part~="rail"]:after {
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    border-color: currentcolor;
+    position: absolute;
+    content: "";
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    height: 100%;
+    border-style: solid;
+    border-width: 0;
+    border-left-width: var(--ak-c-sidebar__rail--Width);
+    border-color: var(--ak-c-sidebar__rail--BackgroundColor);
+    border-radius: 1px;
+
     transition-property: border-color;
     transition-timing-function: cubic-bezier(0.08, 0.52, 0.52, 1);
     transition-duration: 0.2s;
+    background-color: transparent;
 }
 
-.pf-c-nav__item:not(.pf-m-expandable) {
-    --pf-c-nav__link--after--BorderLeftWidth: 1px !important;
-}
-
-.pf-c-nav__notice {
+[part="notice"] {
     color: var(--pf-global--Color--dark-200);
     background-color: var(--pf-global--Color--light-300);
     font-size: var(--pf-global--FontSize--xs);
-    margin-inline-start: 0.25rem;
+    margin-inline-start: 0.5rem;
     padding: 0.1rem 0.5rem;
     border-radius: var(--pf-global--BorderRadius--sm);
 }
 
-.pf-c-nav__item.pf-m-expandable:is(:hover, :active) .pf-c-nav__item {
-    --pf-c-nav__link--after--BorderColor: var(--pf-global--BorderColor--200);
-}
-.pf-c-nav__item.pf-m-expandable:active .pf-c-nav__item {
-    --pf-c-nav__link--active--after--BorderColor: var(--ak-accent);
-}
-
-/* #region Light Theme */
-
-:host(:not([theme="dark"])) {
-    border-right-color: transparent !important;
+[part="toggle"] {
+    line-height: 1;
+    font-size: var(--ak-c-sidebar__toggle--FontSize);
+    padding-inline-end: var(--ak-c-sidebar__link--PaddingRight);
 }
 
-/**
- * We must invert the nav colors for light theme, as PatternFly assumes
- * a dark sidebar on light themes. Only minor changes are needed for the dark mode.
- * @see PatternFly's nav.css for reference:
- */
-:host(:not([theme="dark"])) .pf-c-nav {
-    --pf-c-nav__item--m-current--not--m-expanded__link--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-400
-    );
-    --pf-c-nav__link--hover--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__link--focus--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__link--active--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__link--m-current--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__link--before--BorderColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav--m-tertiary__link--Color: var(--pf-global--Color--light-100);
-    --pf-c-nav--m-tertiary__scroll-button--Color: var(--pf-global--Color--light-100);
-    --pf-c-nav--m-horizontal-subnav__link--hover--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--m-horizontal-subnav__link--focus--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--m-horizontal-subnav__link--active--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--m-horizontal-subnav__link--m-current--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-400
-    );
-    --pf-c-nav__section-title--BorderBottomColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__scroll-button--before--BorderColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav--c-divider--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__item--m-flyout--hover__link--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav__item--m-flyout--focus__link--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav__item--m-flyout--active__link--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav__item--m-flyout--c-menu--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--c-menu--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav--c-menu__list-item--hover--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--c-menu__list-item--focus-within--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--c-menu__item--before--BorderBottomColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--c-menu__item--m-current--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-400
-    );
-    --pf-c-nav__link--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__link--hover--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__link--focus--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__link--active--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--m-horizontal__link--Color: var(--pf-global--Color--dark-300);
-    --pf-c-nav--m-horizontal-subnav__link--Color: var(--pf-global--Color--dark-200);
-    --pf-c-nav--m-horizontal-subnav__link--hover--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--m-horizontal-subnav__link--focus--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--m-horizontal-subnav__link--active--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--m-horizontal-subnav__link--m-current--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__section-title--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__scroll-button--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__item--m-flyout--c-menu__item-description--Color: var(--pf-global--Color--dark-200);
-    --pf-c-nav--c-menu__list-item--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--c-menu__list-item--hover--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--c-menu__list-item--active--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--c-menu__list-item--focus-within--Color: var(--pf-global--Color--dark-100);
+[part="toggle-icon"] {
+    display: inline-block;
+    transition: var(--ak-c-sidebar__toggle-icon--Transition);
+    transform: rotate(var(--ak-c-sidebar__row__toggle-icon--Rotate));
 }
 
-/* #endregion */
-
-/* #region Dark Theme */
-
-/**
- * @see PatternFly's nav.css for reference:
- */
-:host([theme="dark"]) .pf-c-nav {
-    --pf-c-nav__link--hover--BackgroundColor: var(--pf-global--BackgroundColor--150);
-
-    /**
-     * We override this to maintain a color that fits our original
-     * "partially themed" appearance where the current item is more prominently
-     * highlighted.
-     */
-    --pf-c-nav__link--m-current--BackgroundColor: var(--pf-global--BackgroundColor--400);
-
-    --pf-c-nav__item--item__link--after--Top: -1px;
-    --pf-c-nav__link--focus--BackgroundColor: var(--pf-global--BackgroundColor--300);
-    --pf-c-nav__link--active--BackgroundColor: var(--pf-global--BackgroundColor--300);
-
-    --pf-c-nav--m-tertiary__scroll-button--before--BorderColor: var(--pf-global--BorderColor--100);
-
-    --pf-c-nav__section-title--Color: var(--pf-global--Color--200);
-    --pf-c-nav__section-title--BorderBottomColor: var(--pf-global--BorderColor--100);
-
-    --pf-c-nav__scroll-button--before--BorderColor: var(--pf-global--BorderColor--100);
-
-    --pf-c-nav--c-divider--BackgroundColor: var(--pf-global--BorderColor--100);
+[part="footer"] {
+    flex: none;
 }
-
-/* #endregion */
