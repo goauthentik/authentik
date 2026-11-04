@@ -1,5 +1,8 @@
 """WS-Federation Provider API tests"""
 
+from unittest import skipIf
+
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -15,6 +18,7 @@ class TestWSFederationProviderAPI(APITestCase):
         super().setUp()
         self.client.force_login(create_test_admin_user())
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
     def test_create_validate_unsupported_key_type(self):
         """Test validation rejects key types without an XML-DSIG transform (Ed25519)"""
         ed25519_cert = create_test_cert(PrivateKeyAlg.ED25519)

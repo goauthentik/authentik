@@ -110,6 +110,7 @@ class TestSAMLProviderAPI(APITestCase):
             },
         )
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
     def test_create_validate_unsupported_key_type_verification_encryption(self):
         """Test validation rejects unsupported key types on the verification and encryption
         keypairs"""
