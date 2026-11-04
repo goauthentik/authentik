@@ -142,17 +142,6 @@
     font-size: 0.85em;
 }
 
-.mobile,
-.inlineContributions {
-    margin-bottom: 1rem;
-}
-
-@media (min-width: 997px) {
-    .mobile {
-        display: none;
-    }
-}
-
 @media (max-width: 996px) {
     .desktop {
         display: none;
@@ -160,9 +149,7 @@
 }
 
 @media print {
-    .desktop,
-    .mobile,
-    .inlineContributions {
+    .desktop {
         display: none;
     }
 }

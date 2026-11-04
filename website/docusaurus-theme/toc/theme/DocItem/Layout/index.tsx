@@ -5,7 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * @file Ejected from `@docusaurus/theme-classic` 3.10.2 `DocItem/Layout`,
+ *   since a wrapper cannot render the TOC column for a page without headings.
+ *   Diff against upstream when bumping Docusaurus. The differences:
+ *
+ *   - The TOC column renders whenever `hide_table_of_contents` is unset, not only when the page has
+ *     headings, so the contribution links in it show on every page.
+ *   - The row is a CSS grid whose TOC column matches the sidebar width, in place of `col--3`, and the
+ *     content column drops `docItemCol`.
+ *   - The contribution links also render after the article, where narrow viewports and pages that
+ *     hide the TOC show them.
+ *   - The mobile TOC is wrapped so `DocTOC.module.css` can style its links.
+ */
+
 import styles from "./styles.module.css";
+
+import tocStyles from "#components/DocTOC.module.css";
+import DocTOCContributions from "#components/DocTOCContributions.tsx";
 
 import { useDoc } from "@docusaurus/plugin-content-docs/client";
 import { useWindowSize } from "@docusaurus/theme-common";
@@ -23,10 +40,9 @@ import clsx from "clsx";
 import React, { type ReactNode } from "react";
 
 export default function DocItemLayout({ children }: Props): ReactNode {
-    const { metadata, frontMatter } = useDoc();
+    const { metadata, frontMatter, toc } = useDoc();
     const windowSize = useWindowSize();
     const hidden = frontMatter.hide_table_of_contents;
-    // Unlike the upstream layout, retain contribution links even without headings.
     const desktop = !hidden && (windowSize === "desktop" || windowSize === "ssr");
 
     return (
@@ -38,10 +54,17 @@ export default function DocItemLayout({ children }: Props): ReactNode {
                     <article>
                         <DocBreadcrumbs />
                         <DocVersionBadge />
-                        <DocItemTOCMobile />
+                        {!hidden && toc.length > 0 ? (
+                            <div className={tocStyles.mobile}>
+                                <DocItemTOCMobile />
+                            </div>
+                        ) : null}
                         <DocItemContent>{children}</DocItemContent>
                         <DocItemFooter />
                     </article>
+                    <div className={styles.articleContributions}>
+                        <DocTOCContributions />
+                    </div>
                     <DocItemPaginator />
                 </div>
             </div>

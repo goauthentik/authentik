@@ -10,6 +10,10 @@
     margin-top: 0;
 }
 
+.articleContributions {
+    margin-top: 2rem;
+}
+
 @media (min-width: 997px) {
     :global(.container):has(> .docItemRow) {
         --doc-article-gutter: clamp(3rem, 5vw, 6rem);
@@ -34,5 +38,16 @@
         min-width: 0;
         max-width: none;
         padding-inline: 0;
+    }
+
+    /* The TOC column already shows the contribution links. */
+    .withTOC .articleContributions {
+        display: none;
+    }
+}
+
+@media print {
+    .articleContributions {
+        display: none;
     }
 }
