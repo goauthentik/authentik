@@ -120,48 +120,39 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     }
 
     protected override renderExpanded(item: BlueprintInstance): SlottedTemplateResult {
-        return html`<dl class="pf-c-description-list pf-m-horizontal">
-                <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${msg("Path")}</span>
-                    </dt>
-                    <dd class="pf-c-description-list__description">
-                        <div class="pf-c-description-list__text">
-                            <pre>${item.path}</pre>
-                        </div>
-                    </dd>
-                </div>
-            </dl>
-            ${taskCard(BLUEPRINT_MODEL, item.pk)} `;
+        return taskCard(BLUEPRINT_MODEL, item.pk);
     }
 
     protected override row(item: BlueprintInstance): SlottedTemplateResult[] {
         const description = formatBlueprintDescription(item);
+        const { pk, name, path, enabled, lastApplied } = item;
 
         return [
-            html`<div>${item.name}</div>
+            html`<div>${name}</div>
                 ${
                     description
                         ? html`<small><ak-mdx .content=${description}></ak-mdx></small>`
                         : nothing
-                }`,
+                }
+                ${path ? html`<div><small>${msg("Path:")}&nbsp;${path}</small></div>` : nothing}`,
+
             BlueprintStatus(item),
-            Timestamp(item.lastApplied),
-            html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
+            Timestamp(lastApplied),
+            html`<ak-status-label ?good=${enabled}></ak-status-label>`,
             html`<div class="ak-c-table__actions">
-                ${IconEditButton(BlueprintForm, item.pk, item.name)}
-                ${IconPermissionButton(item.name, {
+                ${IconEditButton(BlueprintForm, pk, name)}
+                ${IconPermissionButton(name, {
                     model: ModelEnum.AuthentikBlueprintsBlueprintinstance,
-                    objectPk: item.pk,
+                    objectPk: pk,
                 })}
 
                 <ak-action-button
                     class="pf-m-plain"
-                    label=${msg(str`Apply "${item.name}" blueprint`)}
+                    label=${msg(str`Apply "${name}" blueprint`)}
                     .apiRequest=${() => {
                         return aki(ManagedApi)
                             .managedBlueprintsApplyCreate({
-                                instanceUuid: item.pk,
+                                instanceUuid: pk,
                             })
                             .then(() => {
                                 this.dispatchEvent(
