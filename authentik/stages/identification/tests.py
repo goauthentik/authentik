@@ -7,6 +7,7 @@ from requests_mock import Mocker
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.enterprise.tests import enterprise_test
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
@@ -355,7 +356,7 @@ class TestIdentificationStage(APIFlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            private_key=RECAPTCHA_PRIVATE_KEY,
+            private_key_ref=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
         self.stage.captcha_stage = captcha_stage
         self.stage.save()
@@ -380,7 +381,7 @@ class TestIdentificationStage(APIFlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=configured_site_key,
-            private_key=generate_id(),
+            private_key_ref=create_test_secret(generate_id()),
         )
         self.stage.captcha_stage = captcha_stage
         self.stage.save()
@@ -427,7 +428,7 @@ class TestIdentificationStage(APIFlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            private_key=RECAPTCHA_PRIVATE_KEY,
+            private_key_ref=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
 
         self.stage.captcha_stage = captcha_stage
@@ -483,7 +484,7 @@ class TestIdentificationStage(APIFlowTestCase):
         captcha_stage = CaptchaStage.objects.create(
             name="captcha",
             public_key=RECAPTCHA_PUBLIC_KEY,
-            private_key=RECAPTCHA_PRIVATE_KEY,
+            private_key_ref=create_test_secret(RECAPTCHA_PRIVATE_KEY),
         )
 
         self.stage.captcha_stage = captcha_stage
