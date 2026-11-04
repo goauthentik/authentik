@@ -106,8 +106,8 @@ def update_latest_version():
                 return
             Event.new(
                 EventAction.UPDATE_AVAILABLE,
-                message=_(
-                    "New version {version} available!".format(version=upstream_version.version)
+                message=_("New version {version} available!").format(
+                    version=upstream_version.version
                 ),
                 new_version=upstream_version.version,
                 changelog=upstream_version.changelog_url,

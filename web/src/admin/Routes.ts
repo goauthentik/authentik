@@ -300,6 +300,24 @@ export const ROUTES: RouteLike[] = [
         },
         "initial-permissions",
     ),
+    new Route(
+        "/identity/custom-permissions",
+        async () => {
+            await import("#admin/rbac/ak-custom-permission-list");
+
+            return html`<ak-custom-permission-list></ak-custom-permission-list>`;
+        },
+        "custom-permissions",
+    ),
+    new Route(
+        "/identity/permission-checks",
+        async () => {
+            await import("#admin/rbac/ak-permission-check-list");
+
+            return html`<ak-permission-check-list></ak-permission-check-list>`;
+        },
+        "permission-checks",
+    ),
     new Route<{ id: string }>(
         "/identity/roles/:id{/*}?",
         async (args) => {
@@ -460,6 +478,15 @@ export const ROUTES: RouteLike[] = [
         "integrations",
     ),
 
+    new Route(
+        "/secrets",
+        async () => {
+            await import("#admin/secrets/SecretListPage");
+
+            return html`<ak-secret-list></ak-secret-list>`;
+        },
+        "secrets",
+    ),
     new Route(
         "/crypto/certificates",
         async () => {

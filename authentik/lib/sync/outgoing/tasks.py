@@ -12,6 +12,7 @@ from authentik.events.utils import sanitize_item
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
+    BaseSyncException,
     DryRunRejected,
     NotFoundSyncException,
     ObjectLockTimeout,
@@ -112,7 +113,7 @@ class SyncTasks:
                 self.logger.warning("transient sync exception", exc=exc)
                 task.warning("Sync encountered a transient exception. Retrying", exc=exc)
                 raise Retry() from exc
-            except StopSync as exc:
+            except BaseSyncException as exc:
                 task.error(exc)
                 return
 
@@ -214,7 +215,6 @@ class SyncTasks:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
                 task.warning(
                     f"Failed to sync {str(obj)} due to error: {str(exc)}",
-                    arguments=exc.args[1:],
                     obj=sanitize_item(obj),
                     exception=exception_to_dict(exc),
                 )
@@ -234,6 +234,13 @@ class SyncTasks:
                     obj=sanitize_item(obj),
                 )
                 break
+            except BaseSyncException as exc:
+                self.logger.warning("failed to sync object", exc=exc, obj=obj)
+                task.warning(
+                    f"Failed to sync {str(obj)}: {exc.detail()}",
+                    obj=sanitize_item(obj),
+                    exception=exception_to_dict(exc),
+                )
 
     def sync_signal_direct_dispatch(
         self,
@@ -290,8 +297,13 @@ class SyncTasks:
             return
         except DryRunRejected as exc:
             self.logger.info("Rejected dry-run event", exc=exc)
-        except StopSync as exc:
-            self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+        except BaseSyncException as exc:
+            self.logger.warning("failed to sync object", exc=exc, obj=instance)
+            task.warning(
+                f"Failed to sync {str(instance)}: {exc.detail()}",
+                obj=sanitize_item(instance),
+                exception=exception_to_dict(exc),
+            )
 
     def sync_signal_delete_dispatch(
         self,
@@ -346,6 +358,12 @@ class SyncTasks:
             raise Retry() from exc
         except DryRunRejected as exc:
             self.logger.info("Rejected dry-run event", exc=exc)
+        except BaseSyncException as exc:
+            self.logger.warning("failed to delete object", exc=exc, identifier=identifier)
+            task.warning(
+                f"Failed to delete {model_class._meta.verbose_name} {identifier}: {exc.detail()}",
+                exception=exception_to_dict(exc),
+            )
 
     def sync_signal_m2m_dispatch(
         self,
@@ -421,5 +439,10 @@ class SyncTasks:
             return
         except DryRunRejected as exc:
             self.logger.info("Rejected dry-run event", exc=exc)
-        except StopSync as exc:
-            self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+        except BaseSyncException as exc:
+            self.logger.warning("failed to sync object", exc=exc, obj=group)
+            task.warning(
+                f"Failed to sync {str(group)}: {exc.detail()}",
+                obj=sanitize_item(group),
+                exception=exception_to_dict(exc),
+            )
