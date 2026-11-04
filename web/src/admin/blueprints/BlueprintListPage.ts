@@ -12,8 +12,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/ak-mdx/ak-mdx";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { docLink } from "#common/global";
@@ -39,7 +37,7 @@ import { guard } from "lit-html/directives/guard.js";
 import { match, P } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 const Status = BlueprintInstanceStatusEnum;
@@ -66,8 +64,6 @@ export function formatBlueprintDescription(item: BlueprintInstance): string | nu
 
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
-
     protected override searchEnabled = true;
 
     public pageTitle = msg("Blueprints");
