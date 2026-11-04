@@ -113,7 +113,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "peer_certificate",
             "client_certificate",
             "bind_cn",
-            "bind_password",
+            "bind_password_ref",
             "service_bind_method",
             "start_tls",
             "sni",
@@ -136,7 +136,6 @@ class LDAPSourceSerializer(SourceSerializer):
             "sync_outgoing_trigger_mode",
             "sync_group_hierarchy",
         ]
-        extra_kwargs = {"bind_password": {"write_only": True}}
 
 
 class LDAPSourceViewSet(UsedByMixin, ModelViewSet):

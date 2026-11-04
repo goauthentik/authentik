@@ -1,4 +1,4 @@
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-slug-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
@@ -10,6 +10,7 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSource
 import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { AKSearchSelect } from "#components/ak-search-select-field";
 
@@ -229,11 +230,15 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             class="pf-c-form-control"
                         />
                     </ak-form-element-horizontal>
-                    <ak-secret-text-input
+                    <ak-secret-search-input
+                        name="bindPasswordRef"
                         label=${msg("Bind Password")}
-                        name="bindPassword"
-                        ?revealed=${!this.instance}
-                    ></ak-secret-text-input>
+                        value=${ifPresent(this.instance?.bindPasswordRef)}
+                        blankable
+                        help=${msg("Password used to bind to the LDAP server.", {
+                            id: "source.ldap.form.secret.description",
+                        })}
+                    ></ak-secret-search-input>
                     <ak-form-element-horizontal label=${msg("Base DN")} required name="baseDn">
                         <input
                             type="text"

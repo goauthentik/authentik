@@ -3,6 +3,7 @@
 from django.test import TestCase
 from kadmin import exceptions as kadmin_exceptions
 
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.lib.generators import generate_id
 from authentik.sources.kerberos.models import KAdminType, KerberosSource, Krb5ConfContext
 
@@ -28,7 +29,7 @@ class TestKAdm5Libraries(TestCase):
             kadmin_type=KAdminType.HEIMDAL,
             sync_users=True,
             sync_principal=f"sync@{realm}",
-            sync_password=generate_id(),
+            sync_password_ref=create_test_secret(generate_id()),
         )
         with (
             Krb5ConfContext(source),
