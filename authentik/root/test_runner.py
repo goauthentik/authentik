@@ -92,7 +92,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         self.task_broker = use_test_broker()
 
-        freezegun.configure(extend_ignore_list=["cryptography"])
+        # kubernetes>=37 lazily imports pydantic models via module __getattr__, which fails
+        # when freezegun scans module attributes while datetime is patched
+        freezegun.configure(extend_ignore_list=["cryptography", "kubernetes"])
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")

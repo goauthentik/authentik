@@ -190,9 +190,8 @@ class GeneratedSecretsMixin:
 
     `generated_secrets` maps each reference field to the suffix of the secret's name and
     the function that generates its value. `secret_value_permission` is the permission
-    on the model that declares a field, "view" or "change", that let roles read the
-    credential through the API before it moved to a secret. It matches `value_permission`
-    in that model's migration.
+    on this model, "view" or "change", that let roles read its credentials through the API
+    before they moved to secrets. It matches `value_permission` in this model's migration.
     """
 
     generated_secrets: dict[str, tuple[str, Callable[[], str]]] = {}
@@ -206,10 +205,14 @@ class GeneratedSecretsMixin:
             for field in missing:
                 label, generate = self.generated_secrets[field]
                 secret = create_named_secret(f"{self.name} {label}", secret_value=generate())
-                # The migrations go by the declaring model, so a proxy provider's client
-                # secret follows OAuth2 provider permissions.
-                owner = self._meta.get_field(field).model
-                grant_secret_like_upgrade(owner, secret, owner.secret_value_permission)
+                # Each model's migration grants access to every secret its rows reference,
+                # inherited fields included. A proxy provider is also an OAuth2 provider, so
+                # its client secret gets the grants of both.
+                for model in (type(self), *self._meta.get_parent_list()):
+                    if issubclass(model, GeneratedSecretsMixin) and any(
+                        model_field.name == field for model_field in model._meta.fields
+                    ):
+                        grant_secret_like_upgrade(model, secret, model.secret_value_permission)
                 setattr(self, field, secret)
             if missing and (update_fields := kwargs.get("update_fields")) is not None:
                 kwargs["update_fields"] = {*update_fields, *missing}

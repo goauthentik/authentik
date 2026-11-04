@@ -41,6 +41,10 @@ An object permission grants permission (via a role) on a single, specific object
 
 For example, a role with the object permission to change only the Default Authentication flow will not be able to change any other flow.
 
+## Custom permissions
+
+When built-in permissions do not cover your requirements, define [custom permissions and permission checks](./custom_permissions.mdx). Assign custom permissions to roles globally or on individual objects, then use Python checks to define how they affect API access.
+
 ## View permissions
 
 Many objects in authentik's Admin interface have a **Permissions** tab, where you can check which roles have rights on that particular object. Those permissions describe what those roles can do _to_ the object detailed on the page.
@@ -52,3 +56,7 @@ For example, the screenshot below shows the **Permissions** tab for the user nam
 You can see in the **Permissions on this object** table that the Admin role and one other role (Read-only) have permissions on Peter (that is, on the user object named Peter). The Admin role has all object permissions on this object, while the Read-only role has only the view permission.
 
 Hover over a checkmark to see whether that permission is granted by a global permission or an object permission.
+
+## Secret permissions
+
+[Secrets](../../sys-mgmt/secrets/index.mdx) have permissions separate from the objects that use them. A role can see a secret's name without being able to view its value, and rotating a value requires its own permission. See [Secret permissions](../../sys-mgmt/secrets/permissions.mdx).
