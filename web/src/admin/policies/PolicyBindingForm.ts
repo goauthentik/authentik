@@ -9,7 +9,6 @@ import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
     PolicyBindingCheckTargetToLabel,
-    renderDryRunHelp,
 } from "#common/policies/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -18,6 +17,7 @@ import { ToggleGroupEvent } from "#elements/ToggleGroup";
 import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import { groupSource, policySource, userSource } from "#admin/common/search-sources";
+import { renderDryRunHelp } from "#admin/policies/renderDryRunHelp";
 
 import { Group, PoliciesApi, PolicyBinding, User } from "@goauthentik/api";
 

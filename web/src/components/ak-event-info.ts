@@ -533,12 +533,16 @@ ${JSON.stringify(value.new_value, null, 4)}</pre>`;
                                     })}
                                 </ul>
                             </li>
-                            <li>
-                                ${msg("Raw result", {
-                                    id: "events.policy-execution.raw-result.label",
-                                })}:
-                                <code>${JSON.stringify(result.raw_result, null, 4)}</code>
-                            </li>
+                            ${
+                                result.raw_result !== null && result.raw_result !== undefined
+                                    ? html`<li>
+                                          ${msg("Raw result", {
+                                              id: "events.policy-execution.raw-result.label",
+                                          })}:
+                                          <pre>${JSON.stringify(result.raw_result, null, 4)}</pre>
+                                      </li>`
+                                    : nothing
+                            }
                             ${
                                 dryRun
                                     ? html`<li>

@@ -11,7 +11,6 @@ import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
     PolicyObjectKeys,
-    renderDryRunHelp,
 } from "#common/policies/utils";
 
 import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
@@ -22,6 +21,7 @@ import { type NavigableButton, type WizardButton } from "#components/ak-wizard/s
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import { groupSource, policySource, userSource } from "#admin/common/search-sources";
+import { renderDryRunHelp } from "#admin/policies/renderDryRunHelp";
 
 import { Group, Policy, PolicyBinding, User } from "@goauthentik/api";
 

@@ -143,11 +143,9 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
 
         const bindingUuid = item.pk.replaceAll("-", "");
 
-        const query = [
-            `action = "${EventActions.PolicyExecution}"`,
-            "context.dry_run = True",
-            `context.binding.pk = "${bindingUuid}"`,
-        ].join(" and ");
+        // prettier-ignore
+        const akqlQuery =
+            `action = "${EventActions.PolicyExecution}" and context.dry_run = True and context.binding.pk = "${bindingUuid}"`;
 
         const label = msg("View dry-run results", {
             id: "policies.bindings.dry-run.view-results.label",
@@ -156,7 +154,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         return html`<a
             class="pf-c-button pf-m-plain"
             aria-label=${label}
-            href=${toAdminInterface("events/log", { q: query })}
+            href=${toAdminInterface("events/log", { q: akqlQuery })}
         >
             <pf-tooltip position="top" content=${label}>
                 <i class="fas fa-vial" aria-hidden="true"></i>
