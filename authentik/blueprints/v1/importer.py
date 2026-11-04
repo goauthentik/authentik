@@ -443,7 +443,9 @@ class Importer:
                 self._apply_permissions(instance, entry)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Model | None = serializer.instance
-                if instance and instance.pk:
+                # when the identifiers of an absent entry match no object, only an
+                # unsaved instance is attached, which cannot (and should not) be deleted
+                if instance and instance.pk and not instance._state.adding:
                     instance.delete()
                     self.logger.debug("Deleted model", mode=instance)
                     continue
