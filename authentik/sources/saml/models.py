@@ -126,7 +126,8 @@ class SAMLSource(Source):
         choices=SAMLNameIDPolicy.choices,
         default=SAMLNameIDPolicy.PERSISTENT,
         help_text=_(
-            "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
+            "Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP "
+            "choose the format of the NameID it returns."
         ),
     )
     binding_type = models.CharField(
