@@ -23,9 +23,17 @@ html[data-theme="dark"] {
     border: 1px solid var(--ifm-color-emphasis-200);
 }
 
-/* Show the copy and word-wrap buttons without hover, which touch screens lack. */
-.theme-doc-markdown .theme-code-block button.clean-btn {
+/*
+ * Show the copy and word-wrap buttons without hover, which touch screens lack.
+ * Docusaurus dims them to 0.4 with `.theme-code-block:hover .buttonGroup button`,
+ * which ties with the first selector and loads after it, hence the :hover one.
+ */
+.theme-doc-markdown .theme-code-block button.clean-btn,
+.theme-doc-markdown .theme-code-block:hover button.clean-btn {
     opacity: 1;
+}
+
+.theme-doc-markdown .theme-code-block button.clean-btn {
     justify-content: center;
     min-width: 2.25rem;
     min-height: 2.25rem;
