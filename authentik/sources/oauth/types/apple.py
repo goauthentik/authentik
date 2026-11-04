@@ -69,7 +69,12 @@ class AppleOAuthClient(OpenIDConnectClient):
             "aud": "https://appleid.apple.com",
             "sub": parts[0].strip(),
         }
-        jwt = encode(payload, self.source.consumer_secret, "ES256", {"kid": parts[2].strip()})
+        jwt = encode(
+            payload,
+            self.source.consumer_secret_ref.secret_value,
+            "ES256",
+            {"kid": parts[2].strip()},
+        )
         self.logger.debug("signing payload as secret key", payload=payload, jwt=jwt)
         return jwt
 

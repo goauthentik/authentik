@@ -63,7 +63,17 @@ class OAuthSource(NonCreatableType, Source):
         default="", blank=True, verbose_name=_("Additional Scopes")
     )
     consumer_key = models.TextField()
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     consumer_secret = models.TextField(blank=True, default="")
+    consumer_secret_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Consumer secret"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="oauth_sources",
+    )
 
     oidc_well_known_url = models.TextField(default="", blank=True)
     oidc_jwks_url = models.TextField(default="", blank=True)

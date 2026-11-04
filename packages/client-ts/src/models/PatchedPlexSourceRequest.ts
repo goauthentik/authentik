@@ -81,7 +81,7 @@ export interface PatchedPlexSourceRequest {
     /**
      * Plex token used to check friends
      */
-    plexToken?: string;
+    plexTokenRef?: string;
 }
 
 /**
@@ -143,7 +143,7 @@ export function PatchedPlexSourceRequestFromJSONTyped(
         clientId: json["client_id"] == null ? undefined : json["client_id"],
         allowedServers: json["allowed_servers"] == null ? undefined : json["allowed_servers"],
         allowFriends: json["allow_friends"] == null ? undefined : json["allow_friends"],
-        plexToken: json["plex_token"] == null ? undefined : json["plex_token"],
+        plexTokenRef: json["plex_token_ref"] == null ? undefined : json["plex_token_ref"],
     };
 }
 
@@ -176,6 +176,6 @@ export function PatchedPlexSourceRequestToJSONTyped(
         client_id: value["clientId"],
         allowed_servers: value["allowedServers"],
         allow_friends: value["allowFriends"],
-        plex_token: value["plexToken"],
+        plex_token_ref: value["plexTokenRef"],
     };
 }
