@@ -2,7 +2,7 @@ import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/saml/SAMLSourceForm";
 import "#admin/events/ObjectChangelog";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
@@ -181,11 +181,11 @@ export class SAMLSourceViewPage extends AKElement {
                     <div class="pf-l-grid pf-m-gutter">
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__body">
-                                <ak-codemirror
+                                <ak-code-editor
                                     mode="xml"
                                     readonly
                                     value="${ifDefined(this.metadata?.metadata)}"
-                                ></ak-codemirror>
+                                ></ak-code-editor>
                             </div>
                             <div class="pf-c-card__footer">
                                 <a

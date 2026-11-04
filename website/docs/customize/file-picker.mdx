@@ -57,6 +57,12 @@ The `%(theme)s` placeholder is supported in all current Admin interface fields t
 - Application **Icon**
 - Source **Icon**
 
+### Source icons in light and dark themes
+
+authentik shows source icons with their original colors in both themes. Each built-in source icon has a light and a dark version, for example `/static/authentik/sources/github/light.svg` and `/static/authentik/sources/github/dark.svg`. The file picker lists them as one value with `%(theme)s`, such as `/static/authentik/sources/github/%(theme)s.svg`, and the default icons of sources and providers switch versions the same way.
+
+Earlier versions of authentik inverted the colors of every source icon in dark mode. If you use a custom icon that only works on light backgrounds, such as a black logo, upload a version for each theme and use `%(theme)s` in the **Icon** field, for example `sources/company-icon-%(theme)s.svg` with the files `sources/company-icon-light.svg` and `sources/company-icon-dark.svg`.
+
 ## Upload and path rules
 
 When uploading a file in **Customization** > **Files**, or when typing a relative media path manually, use these rules:

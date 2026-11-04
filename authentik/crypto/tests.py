@@ -4,9 +4,11 @@ from json import loads
 from os import makedirs
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest import skipIf
 from unittest.mock import patch
 
 from cryptography.exceptions import InternalError
+from cryptography.hazmat.backends.openssl.backend import backend
 from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key as cryptography_load_pem_private_key,
 )
@@ -195,6 +197,7 @@ class TestCrypto(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_builder_mldsa(self):
         """Test Builder with the ML-DSA (FIPS 204) parameter sets"""
         for alg, key_type in (
@@ -218,6 +221,7 @@ class TestCrypto(APITestCase):
                     instance.certificate.public_key().public_bytes_raw(),
                 )
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_builder_api_mldsa(self):
         """Test Builder (via API) with ML-DSA"""
         self.client.force_login(create_test_admin_user())
@@ -264,6 +268,7 @@ class TestCrypto(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("key_data", loads(response.content))
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_mldsa_key_type_validation(self):
         """ML-DSA keypairs are accepted for TLS, and rejected where nothing can sign with them"""
         builder = CertificateBuilder(generate_id())

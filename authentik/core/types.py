@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from rest_framework.fields import CharField
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer, ThemedUrlsSerializer
 from authentik.flows.challenge import Challenge
 
 
@@ -21,6 +21,9 @@ class UILoginButton:
     # Icon URL, used as-is
     icon_url: str | None = None
 
+    # Icon URLs per theme, preferred over icon_url when set
+    icon_themed_urls: dict[str, str] | None = None
+
     # Whether this source should be displayed as a prominent button
     promoted: bool = False
 
@@ -33,3 +36,4 @@ class UserSettingSerializer(PassiveSerializer):
     title = CharField(required=True)
     configure_url = CharField(required=False)
     icon_url = CharField(required=False)
+    icon_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
