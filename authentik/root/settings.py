@@ -382,6 +382,9 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
     "django.contrib.auth.hashers.ScryptPasswordHasher",
+    # Plain bcrypt as written by e.g. Ruby on Rails (Devise, has_secure_password).
+    # Verify-only: importing requires `override=true`, and hashes are upgraded on login.
+    "authentik.lib.hashers.BCryptPasswordHasher",
 ]
 # Keep in sync with `authentik.lib.validators.PasswordHashValidator.current_parameters`
 PASSWORD_HASHERS_IMPORT_ALLOWED = [

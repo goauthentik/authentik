@@ -6,7 +6,7 @@ from threading import Barrier
 from unittest.mock import MagicMock, patch
 
 from asgiref.sync import async_to_sync
-from django.contrib.auth.hashers import PBKDF2PasswordHasher, make_password
+from django.contrib.auth.hashers import PBKDF2PasswordHasher, identify_hasher, make_password
 from django.core.exceptions import PermissionDenied
 from django.core.management import call_command
 from django.db import IntegrityError, connection, transaction
@@ -34,6 +34,7 @@ from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.lib.hashers import BCryptPasswordHasher
 from authentik.sources.kerberos.models import KerberosSource, UserKerberosSourceConnection
 from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPSource
 from authentik.stages.authenticator import device_classes, devices_for_user
@@ -333,6 +334,26 @@ class TestPasswordDevice(TestCase):
         PasswordDevice.objects.filter(user=user).update(password=reset_hash)
         self.assertTrue(device.check_password("initial"))
         self.assertEqual(PasswordDevice.objects.get(user=user).password, reset_hash)
+
+    def test_plain_bcrypt_hash_upgrade(self):
+        """Test an imported plain bcrypt hash verifies and is upgraded to the default hasher"""
+        user = create_test_user()
+        # Longer than bcrypt's 72 bytes, the upgraded hash must cover the full password
+        password = generate_id(100)
+        hasher = BCryptPasswordHasher()
+        hasher.rounds = 4
+        bcrypt_hash = hasher.encode(password, hasher.salt())
+        PasswordDevice.objects.filter(user=user).update(password=bcrypt_hash)
+        device = PasswordDevice.objects.get(user=user)
+
+        self.assertFalse(device.check_password("wrong"))
+        self.assertEqual(PasswordDevice.objects.get(user=user).password, bcrypt_hash)
+
+        self.assertTrue(device.check_password(password))
+        upgraded = PasswordDevice.objects.get(user=user).password
+        self.assertEqual(identify_hasher(upgraded).algorithm, PBKDF2PasswordHasher.algorithm)
+        self.assertTrue(device.check_password(password))
+        self.assertFalse(device.check_password(password[:72]))
 
     def test_async_authenticate(self):
         """Test async authentication runs the backend's own check"""
