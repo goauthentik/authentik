@@ -12,7 +12,6 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.client import ClientRegistrationKind
 from authentik.providers.oauth2.errors import RedirectUriError
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -21,7 +20,7 @@ from authentik.providers.oauth2.models import (
     GrantType,
     OAuth2Provider,
 )
-from authentik.providers.oauth2.prototype_cimd import PrototypeScopedClientSelector, _cache
+from authentik.providers.oauth2.prototype_cimd import METADATA_KIND, _cache, scoped_resolver
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.utils import pkce_s256_challenge
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
@@ -91,9 +90,9 @@ class TestPrototypeCIMD(OAuthTestCase):
             },
         )
         params = OAuthAuthorizationParams.from_request(
-            request, selector=PrototypeScopedClientSelector(self.provider)
+            request, resolver=scoped_resolver(self.provider)
         )
-        self.assertEqual(params.client.registration_kind, ClientRegistrationKind.METADATA)
+        self.assertEqual(params.client.registration_kind, METADATA_KIND)
         self.assertEqual(params.provider, self.provider)
         # Wrong path is rejected
         request = RequestFactory().get(
@@ -105,9 +104,7 @@ class TestPrototypeCIMD(OAuthTestCase):
             },
         )
         with self.assertRaises(RedirectUriError):
-            OAuthAuthorizationParams.from_request(
-                request, selector=PrototypeScopedClientSelector(self.provider)
-            )
+            OAuthAuthorizationParams.from_request(request, resolver=scoped_resolver(self.provider))
 
     @Mocker()
     def test_token(self, mock: Mocker):

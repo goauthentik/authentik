@@ -11,6 +11,7 @@ Enabled per application slug:
     AUTHENTIK_CIMD_PROTOTYPE__ALLOW_HTTP_LOCALHOST=true   # for local test metadata
 """
 
+from dataclasses import dataclass, field
 from hashlib import sha256
 from json import JSONDecodeError, dumps, loads
 from pathlib import Path
@@ -27,13 +28,22 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Application
 from authentik.lib.config import CONFIG
 from authentik.providers.oauth2.client import (
-    ClientRegistrationKind,
-    ClientSelector,
+    ClientAdapter,
+    LegacyClientAdapter,
     OAuthClientContext,
+    OAuthClientResolver,
+    ProviderSelector,
 )
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import (
+    ClientType,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+)
 
 LOGGER = get_logger()
+# Registration kind of clients identified by a Client ID Metadata Document URL
+METADATA_KIND = "metadata"
 LOOPBACK_HOSTS = {"127.0.0.1", "[::1]", "::1", "localhost"}
 CACHE_SECONDS = 300
 _cache: dict[str, tuple[float, dict[str, Any]]] = {}
@@ -154,39 +164,77 @@ def fetch_metadata(client_id: str) -> dict[str, Any] | None:
     return document
 
 
-class PrototypeScopedClientSelector(ClientSelector):
-    """Resolve clients within one provider: its own registered client, else a CIMD URL"""
+@dataclass(frozen=True, slots=True)
+class PrototypeMetadataClientContext(OAuthClientContext):
+    """A client described by a fetched metadata document"""
+
+    # Raw redirect URIs from the document, matched by `match_redirect_uri`
+    metadata_redirect_uris: tuple[str, ...] = ()
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+class PrototypeScopedProviderSelector(ProviderSelector):
+    """Always select the provider of the scoped endpoint"""
 
     def __init__(self, provider: OAuth2Provider):
         self.provider = provider
 
-    def resolve(self, client_id: str) -> OAuthClientContext | None:
-        if client_id == self.provider.client_id:
-            return OAuthClientContext.for_provider(self.provider)
+    def select(self, request: HttpRequest | None, client_id: str) -> OAuth2Provider | None:
+        return self.provider
+
+
+class PrototypeMetadataClientAdapter(ClientAdapter):
+    """Resolve a CIMD URL within the selected provider"""
+
+    def resolve(
+        self, request: HttpRequest | None, provider: OAuth2Provider, client_id: str
+    ) -> OAuthClientContext | None:
         if not is_metadata_url(client_id):
             record("client_unresolved", client_id=client_id, reason="not a metadata URL")
             return None
         document = fetch_metadata(client_id)
         if document is None:
             return None
-        redirect_uris = document.get("redirect_uris") or []
-        return OAuthClientContext(
-            provider=self.provider,
+        redirect_uris = tuple(
+            uri for uri in (document.get("redirect_uris") or []) if isinstance(uri, str)
+        )
+        return PrototypeMetadataClientContext(
+            provider=provider,
             client_id=client_id,
-            registration_kind=ClientRegistrationKind.METADATA,
-            redirect_uris=tuple(uri for uri in redirect_uris if isinstance(uri, str)),
+            registration_kind=METADATA_KIND,
+            client_type=ClientType.PUBLIC,
+            redirect_uris=tuple(
+                RedirectURI(RedirectURIMatchingMode.STRICT, uri) for uri in redirect_uris
+            ),
+            # Grant types are still governed by the provider in the prototype
+            grant_types=frozenset(provider.grant_types),
+            metadata_redirect_uris=redirect_uris,
             metadata=document,
         )
+
+
+def scoped_resolver(provider: OAuth2Provider) -> OAuthClientResolver:
+    """Resolve the provider's own client, else a CIMD URL, within one provider"""
+    return OAuthClientResolver(
+        PrototypeScopedProviderSelector(provider),
+        [LegacyClientAdapter(), PrototypeMetadataClientAdapter()],
+    )
+
+
+def is_metadata_client(client: OAuthClientContext | None) -> bool:
+    return isinstance(client, PrototypeMetadataClientContext)
 
 
 def match_redirect_uri(client: OAuthClientContext, redirect_uri: str) -> str | None:
     """Match against the document's redirect URIs. Returns how it matched, or None.
 
     Exact match, or RFC 8252 section 7.3: loopback redirects may differ only in port."""
-    if redirect_uri in client.redirect_uris:
+    if not isinstance(client, PrototypeMetadataClientContext):
+        return None
+    if redirect_uri in client.metadata_redirect_uris:
         return "exact"
     requested = urlparse(redirect_uri)
-    for allowed_uri in client.redirect_uris:
+    for allowed_uri in client.metadata_redirect_uris:
         allowed = urlparse(allowed_uri)
         if (
             requested.scheme == allowed.scheme == "http"

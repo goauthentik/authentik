@@ -27,11 +27,7 @@ from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.events.signals import get_login_event
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.providers.oauth2.client import (
-    ClientSelector,
-    LegacyClientSelector,
-    OAuthClientContext,
-)
+from authentik.providers.oauth2.client import OAuthClientContext, OAuthClientResolver
 from authentik.providers.oauth2.errors import (
     DeviceCodeError,
     TokenError,
@@ -61,18 +57,19 @@ LOGGER = get_logger()
 class TokenView(View):
     """Generate tokens for clients"""
 
-    client: OAuthClientContext | None = None
     provider: OAuth2Provider | None = None
+    client: OAuthClientContext | None = None
     params: TokenRequest | None = None
-    client_selector: ClientSelector = LegacyClientSelector()
+    provider_class = OAuth2Provider
+
+    def get_client_resolver(self) -> OAuthClientResolver:
+        """Resolver used to find the client (and its provider) for this request"""
+        return OAuthClientResolver.legacy(self.provider_class)
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
         cors_allow(self.request, response, self.provider.redirect_uris if self.provider else [])
         return response
-
-    def get_client_selector(self) -> ClientSelector:
-        return self.client_selector
 
     def options(self, request: HttpRequest) -> HttpResponse:
         return TokenResponse({})
@@ -84,7 +81,7 @@ class TokenView(View):
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
-                self.client = self.get_client_selector().resolve(client_id)
+                self.client = self.get_client_resolver().resolve(request, client_id)
                 if not self.client:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
@@ -417,13 +414,10 @@ class PrototypeScopedTokenView(TokenView):
         return super().options(request)
 
     def post(self, request: HttpRequest, **kwargs: Any) -> HttpResponse:
-        # The slug stays available to get_client_selector via self.kwargs
+        # The slug stays available to get_client_resolver via self.kwargs
         return super().post(request)
 
-    def get_client_selector(self) -> ClientSelector:
-        from authentik.providers.oauth2.prototype_cimd import (
-            PrototypeScopedClientSelector,
-            scoped_provider,
-        )
+    def get_client_resolver(self) -> OAuthClientResolver:
+        from authentik.providers.oauth2.prototype_cimd import scoped_provider, scoped_resolver
 
-        return PrototypeScopedClientSelector(scoped_provider(self.kwargs["application_slug"]))
+        return scoped_resolver(scoped_provider(self.kwargs["application_slug"]))

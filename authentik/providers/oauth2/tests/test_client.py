@@ -13,8 +13,8 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.client import (
     ClientRegistrationKind,
-    LegacyClientSelector,
     OAuthClientContext,
+    OAuthClientResolver,
 )
 from authentik.providers.oauth2.errors import ClientIdError
 from authentik.providers.oauth2.models import (
@@ -56,7 +56,7 @@ class TestClientContext(OAuthTestCase):
     def test_legacy_resolve(self):
         """Registered clients resolve to their provider"""
         provider = self.create_provider(generate_id())
-        client = LegacyClientSelector().resolve(provider.client_id)
+        client = OAuthClientResolver.legacy().resolve(None, provider.client_id)
         self.assertEqual(client, OAuthClientContext.for_provider(provider))
         self.assertEqual(client.provider, provider)
         self.assertEqual(client.client_id, provider.client_id)
@@ -67,10 +67,10 @@ class TestClientContext(OAuthTestCase):
     def test_legacy_resolve_unknown(self):
         """Unknown and inexact client IDs do not resolve"""
         provider = self.create_provider(generate_id())
-        selector = LegacyClientSelector()
-        self.assertIsNone(selector.resolve(generate_id()))
-        self.assertIsNone(selector.resolve(""))
-        self.assertIsNone(selector.resolve(provider.client_id.upper()))
+        resolver = OAuthClientResolver.legacy()
+        self.assertIsNone(resolver.resolve(None, generate_id()))
+        self.assertIsNone(resolver.resolve(None, ""))
+        self.assertIsNone(resolver.resolve(None, provider.client_id.upper()))
 
     @Mocker()
     def test_url_client_id_authorize(self, mock: Mocker):

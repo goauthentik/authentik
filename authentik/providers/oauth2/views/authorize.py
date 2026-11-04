@@ -49,12 +49,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
-from authentik.providers.oauth2.client import (
-    ClientRegistrationKind,
-    ClientSelector,
-    LegacyClientSelector,
-    OAuthClientContext,
-)
+from authentik.providers.oauth2.client import OAuthClientContext, OAuthClientResolver
 from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
@@ -114,16 +109,17 @@ class OAuthAuthorizationParams:
     code_challenge_method: str | None = None
     dpop_jkt: str | None = None
 
-    # Kept as the last field: params are pickled into flow plans, and plans saved before
-    # this field existed must still restore the fields above in order.
+    # Resolved client making the request. Declared last so that params pickled into a
+    # flow plan before this field existed still restore the remaining fields correctly.
     client: OAuthClientContext | None = None
 
     github_compat: InitVar[bool] = False
-    selector: InitVar[ClientSelector | None] = None
 
     @staticmethod
     def from_request(
-        request: HttpRequest, github_compat=False, selector: ClientSelector | None = None
+        request: HttpRequest,
+        github_compat=False,
+        resolver: OAuthClientResolver | None = None,
     ) -> OAuthAuthorizationParams:
         """
         Get all the params used by the Authorization Code Flow
@@ -145,8 +141,11 @@ class OAuthAuthorizationParams:
 
         max_age = query_dict.get("max_age")
         dpop_jkt = query_dict.get("dpop_jkt")
+        client_id = query_dict.get("client_id", "")
+        resolver = resolver or OAuthClientResolver.legacy()
         return OAuthAuthorizationParams(
-            client_id=query_dict.get("client_id", ""),
+            client_id=client_id,
+            client=resolver.resolve(request, client_id),
             redirect_uri=redirect_uri,
             response_type=response_type,
             response_mode=response_mode,
@@ -161,15 +160,13 @@ class OAuthAuthorizationParams:
             code_challenge_method=query_dict.get("code_challenge_method", "plain"),
             dpop_jkt=dpop_jkt,
             github_compat=github_compat,
-            selector=selector,
         )
 
-    def __post_init__(self, github_compat=False, selector: ClientSelector | None = None):
-        self.client = (selector or LegacyClientSelector()).resolve(self.client_id)
+    def __post_init__(self, github_compat=False):
         if not self.client:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
-        self.provider = self.client.provider
+        self.provider: OAuth2Provider = self.client.provider
         self.check_redirect_uri()
         if self.request:
             # We don't support request objects, but the error must still be returned to the
@@ -244,7 +241,7 @@ class OAuthAuthorizationParams:
                 response_mode=self.response_mode,
             )
 
-        if self.grant_type not in self.provider.grant_types:
+        if self.grant_type not in self.client.grant_types:
             LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
             raise AuthorizeError(
                 redirect_uri=self.redirect_uri,
@@ -258,11 +255,13 @@ class OAuthAuthorizationParams:
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
-        allowed_redirect_urls = self.provider.authorization_redirect_uris
+        allowed_redirect_urls = list(self.client.redirect_uris)
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls).with_cause("redirect_uri_missing")
-        if self.client.registration_kind == ClientRegistrationKind.METADATA:
+        from authentik.providers.oauth2.prototype_cimd import is_metadata_client
+
+        if is_metadata_client(self.client):
             # PROTOTYPE (01b)
             from authentik.providers.oauth2.prototype_cimd import match_redirect_uri, record
 
@@ -271,7 +270,7 @@ class OAuthAuthorizationParams:
                 "redirect_uri",
                 client_id=self.client_id,
                 redirect_uri=self.redirect_uri,
-                registered=self.client.redirect_uris,
+                registered=self.client.metadata_redirect_uris,
                 matched=matched,
             )
             if not matched:
@@ -460,6 +459,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
     params: OAuthAuthorizationParams
+    client: OAuthClientContext
     # Enable GitHub compatibility (only allow for scopes which are handled
     # differently for github compat)
     github_compat = False
@@ -472,7 +472,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
             raise Http404
         try:
             self.params = OAuthAuthorizationParams.from_request(
-                self.request, github_compat=self.github_compat, selector=self.get_client_selector()
+                self.request,
+                github_compat=self.github_compat,
+                resolver=self.get_client_resolver(),
             )
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri, cause=error.cause)
@@ -495,12 +497,16 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
             raise RequestValidationError(error.get_response(self.request))
 
-    def get_client_selector(self) -> ClientSelector:
-        return LegacyClientSelector()
+    def get_client_resolver(self) -> OAuthClientResolver:
+        """Resolver used to find the client (and its provider) for this request"""
+        return OAuthClientResolver.legacy()
 
     def resolve_provider_application(self):
-        # pre_permission_check already resolved the client from the same request
-        self.provider = self.params.client.provider
+        # The client was resolved while parsing the request in `pre_permission_check`
+        if not self.params.client:
+            raise Http404
+        self.client = self.params.client
+        self.provider = self.client.provider
         self.application = self.provider.application
 
     def modify_flow_context(self, flow: Flow, context: dict[str, Any]) -> dict[str, Any]:
@@ -844,10 +850,7 @@ class OAuthFulfillmentStage(StageView):
 class PrototypeScopedAuthorizationFlowInitView(AuthorizationFlowInitView):
     """PROTOTYPE (01b): /application/o/<slug>/authorize/ for a CIMD-enabled provider"""
 
-    def get_client_selector(self) -> ClientSelector:
-        from authentik.providers.oauth2.prototype_cimd import (
-            PrototypeScopedClientSelector,
-            scoped_provider,
-        )
+    def get_client_resolver(self) -> OAuthClientResolver:
+        from authentik.providers.oauth2.prototype_cimd import scoped_provider, scoped_resolver
 
-        return PrototypeScopedClientSelector(scoped_provider(self.kwargs["application_slug"]))
+        return scoped_resolver(scoped_provider(self.kwargs["application_slug"]))
