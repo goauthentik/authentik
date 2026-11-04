@@ -12027,6 +12027,16 @@
                     },
                     "title": "Group property mappings"
                 },
+                "enrollment_only_user_properties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Enrollment only user properties"
+                    },
+                    "title": "Enrollment only user properties",
+                    "description": "User properties, such as username or email, that this source only sets when it creates a user. Logins and syncs through this source don't overwrite them on existing users."
+                },
                 "policy_engine_mode": {
                     "type": "string",
                     "enum": [
@@ -12361,6 +12371,16 @@
                         "format": "uuid"
                     },
                     "title": "Group property mappings"
+                },
+                "enrollment_only_user_properties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Enrollment only user properties"
+                    },
+                    "title": "Enrollment only user properties",
+                    "description": "User properties, such as username or email, that this source only sets when it creates a user. Logins and syncs through this source don't overwrite them on existing users."
                 },
                 "policy_engine_mode": {
                     "type": "string",
@@ -12742,6 +12762,16 @@
                     },
                     "title": "Group property mappings"
                 },
+                "enrollment_only_user_properties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Enrollment only user properties"
+                    },
+                    "title": "Enrollment only user properties",
+                    "description": "User properties, such as username or email, that this source only sets when it creates a user. Logins and syncs through this source don't overwrite them on existing users."
+                },
                 "policy_engine_mode": {
                     "type": "string",
                     "enum": [
@@ -13107,6 +13137,16 @@
                     },
                     "title": "Group property mappings"
                 },
+                "enrollment_only_user_properties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Enrollment only user properties"
+                    },
+                    "title": "Enrollment only user properties",
+                    "description": "User properties, such as username or email, that this source only sets when it creates a user. Logins and syncs through this source don't overwrite them on existing users."
+                },
                 "policy_engine_mode": {
                     "type": "string",
                     "enum": [
@@ -13393,6 +13433,16 @@
                         "format": "uuid"
                     },
                     "title": "Group property mappings"
+                },
+                "enrollment_only_user_properties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Enrollment only user properties"
+                    },
+                    "title": "Enrollment only user properties",
+                    "description": "User properties, such as username or email, that this source only sets when it creates a user. Logins and syncs through this source don't overwrite them on existing users."
                 },
                 "policy_engine_mode": {
                     "type": "string",
@@ -13882,6 +13932,16 @@
                         "format": "uuid"
                     },
                     "title": "Group property mappings"
+                },
+                "enrollment_only_user_properties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Enrollment only user properties"
+                    },
+                    "title": "Enrollment only user properties",
+                    "description": "User properties, such as username or email, that this source only sets when it creates a user. Logins and syncs through this source don't overwrite them on existing users."
                 },
                 "policy_engine_mode": {
                     "type": "string",

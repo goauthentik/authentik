@@ -73,6 +73,21 @@ class TestKerberosSync(KerberosTestCase):
             UserKerberosSourceConnection.objects.filter(source=self.source, user=existing).exists()
         )
 
+    def test_sync_enrollment_only_user_properties(self):
+        """Test that syncing an existing user leaves its enrollment-only properties unchanged"""
+        self.source.enrollment_only_user_properties = ["path"]
+        self.source.save()
+        KerberosSync(self.source, Task()).sync()
+
+        user = User.objects.get(username=self.realm.user_princ.rsplit("@", 1)[0])
+        self.assertEqual(user.path, self.source.get_user_path())
+        user.path = "changed"
+        user.save()
+        KerberosSync(self.source, Task()).sync()
+
+        user.refresh_from_db()
+        self.assertEqual(user.path, "changed")
+
     def test_sync_mapping(self):
         """Test property mappings"""
         noop = KerberosSourcePropertyMapping.objects.create(
