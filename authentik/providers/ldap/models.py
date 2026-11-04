@@ -82,7 +82,7 @@ class LDAPProvider(OutpostModel, BackchannelProvider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/ldap.png")
+        return static("authentik/sources/ldap/light.svg")
 
     @property
     def serializer(self) -> type[Serializer]:

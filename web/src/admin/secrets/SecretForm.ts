@@ -41,11 +41,11 @@ export function secretTypeLabel(type: SecretTypeEnum): string {
 function secretTypeDescription(type: SecretTypeEnum): string {
     switch (type) {
         case SecretTypeEnum.Json:
-            return msg("A JSON or YAML object, such as a service account key or kubeconfig.", {
+            return msg("A JSON or YAML object.", {
                 id: "secret.type.json.description",
             });
         case SecretTypeEnum.File:
-            return msg("An uploaded file, such as a Kerberos keytab.", {
+            return msg("An uploaded file.", {
                 id: "secret.type.file.description",
             });
         default:

@@ -197,8 +197,8 @@ class TestProviderSecret(APITestCase):
         self.assertTrue(viewer.has_perm("authentik_crypto_secrets.view_secret", secret))
         self.assertFalse(viewer.has_perm("authentik_crypto_secrets.view_secret_value", secret))
 
-        # Proxy providers are OAuth2 providers, so their client secrets follow the same
-        # permissions, and their cookie secrets follow proxy provider permissions.
+        # Proxy providers are OAuth2 providers, so their client secrets follow OAuth2 provider
+        # permissions too. Only proxy provider permissions reach their cookie secrets.
         proxy = ProxyProvider.objects.create(name=generate_id())
         self.assertTrue(
             user.has_perm("authentik_crypto_secrets.view_secret_value", proxy.client_secret_ref)

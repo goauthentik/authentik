@@ -7,11 +7,5 @@ import { createOxlintConfig, DefaultIgnorePatterns } from "@goauthentik/oxlint-c
 export default createOxlintConfig({
     // The docusaurus theme is React, not Lit.
     react: true,
-    ignorePatterns: [
-        ...DefaultIgnorePatterns,
-        "**/reference",
-        "help/**",
-        "static/**",
-        "scripts/docsmg/target/**",
-    ],
+    ignorePatterns: [...DefaultIgnorePatterns, "**/reference", "help/**", "static/**"],
 });

@@ -69,7 +69,7 @@ class RadiusProvider(GeneratedSecretsMixin, OutpostModel, Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/radius.svg")
+        return static("authentik/sources/radius/light.svg")
 
     @property
     def serializer(self) -> type[Serializer]:
