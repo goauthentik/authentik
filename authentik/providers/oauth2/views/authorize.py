@@ -49,6 +49,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.providers.oauth2.client import LegacyClientSelector, OAuthClientContext
 from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
@@ -108,6 +109,10 @@ class OAuthAuthorizationParams:
     code_challenge_method: str | None = None
     dpop_jkt: str | None = None
 
+    # Kept as the last field: params are pickled into flow plans, and plans saved before
+    # this field existed must still restore the fields above in order.
+    client: OAuthClientContext | None = None
+
     github_compat: InitVar[bool] = False
 
     @staticmethod
@@ -150,12 +155,11 @@ class OAuthAuthorizationParams:
         )
 
     def __post_init__(self, github_compat=False):
-        self.provider: OAuth2Provider = OAuth2Provider.objects.filter(
-            client_id=self.client_id
-        ).first()
-        if not self.provider:
+        self.client = LegacyClientSelector().resolve(self.client_id)
+        if not self.client:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
+        self.provider = self.client.provider
         self.check_redirect_uri()
         if self.request:
             # We don't support request objects, but the error must still be returned to the
@@ -467,8 +471,8 @@ class AuthorizationFlowInitView(PolicyAccessView):
             raise RequestValidationError(error.get_response(self.request))
 
     def resolve_provider_application(self):
-        client_id = self.request.GET.get("client_id")
-        self.provider = get_object_or_404(OAuth2Provider, client_id=client_id)
+        # pre_permission_check already resolved the client from the same request
+        self.provider = self.params.client.provider
         self.application = self.provider.application
 
     def modify_flow_context(self, flow: Flow, context: dict[str, Any]) -> dict[str, Any]:

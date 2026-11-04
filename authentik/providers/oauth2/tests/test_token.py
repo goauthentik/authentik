@@ -21,6 +21,7 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.client import OAuthClientContext
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -69,7 +70,9 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         with self.assertRaises(TokenError) as cm:
-            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+            parse_token_request(
+                request, OAuthClientContext.for_provider(provider), provider.client_secret
+            )
         self.assertEqual(cm.exception.cause, "grant_type_not_configured")
 
     def test_request_auth_code(self):
@@ -95,10 +98,12 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        params = parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        params = parse_token_request(
+            request, OAuthClientContext.for_provider(provider), provider.client_secret
+        )
         self.assertEqual(params.provider, provider)
         with self.assertRaises(TokenError):
-            parse_token_request(request, provider, provider.client_id, generate_id())
+            parse_token_request(request, OAuthClientContext.for_provider(provider), generate_id())
 
     def test_request_auth_code_invalid(self):
         """test request param"""
@@ -120,7 +125,9 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         with self.assertRaises(TokenError):
-            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+            parse_token_request(
+                request, OAuthClientContext.for_provider(provider), provider.client_secret
+            )
 
     def test_redirect_uri_regex(self):
         """test valid redirect URI (regex)"""
@@ -145,7 +152,9 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        params = parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        params = parse_token_request(
+            request, OAuthClientContext.for_provider(provider), provider.client_secret
+        )
         self.assertEqual(params.provider, provider)
 
     def test_invalid_redirect_uri_regex(self):
@@ -168,7 +177,9 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         with self.assertRaises(TokenError) as cm:
-            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+            parse_token_request(
+                request, OAuthClientContext.for_provider(provider), provider.client_secret
+            )
         self.assertEqual(cm.exception.error, "invalid_client")
         events = Event.objects.filter(action=EventAction.CONFIGURATION_ERROR)
         self.assertTrue(events.exists())
@@ -196,7 +207,9 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         with self.assertRaises(TokenError) as cm:
-            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+            parse_token_request(
+                request, OAuthClientContext.for_provider(provider), provider.client_secret
+            )
         self.assertEqual(cm.exception.error, "invalid_client")
         # The unparsable pattern is reported on its own, and the request then falls through
         # to the regular no-match handling, so both events are emitted
@@ -228,7 +241,9 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         with self.assertRaises(TokenError) as cm:
-            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+            parse_token_request(
+                request, OAuthClientContext.for_provider(provider), provider.client_secret
+            )
         self.assertEqual(cm.exception.error, "invalid_client")
         self.assertEqual(cm.exception.cause, "invalid_secret")
 
@@ -258,7 +273,9 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        params = parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        params = parse_token_request(
+            request, OAuthClientContext.for_provider(provider), provider.client_secret
+        )
         self.assertEqual(params.provider, provider)
 
     def test_extract_client_auth_basic_auth_percent_decodes(self):

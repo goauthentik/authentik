@@ -11,8 +11,8 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_REFRESH_TOKEN,
     GRANT_TYPE_TOKEN_EXCHANGE,
 )
+from authentik.providers.oauth2.client import OAuthClientContext
 from authentik.providers.oauth2.errors import TokenError
-from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.oauth2.token.authorization_code import AuthorizationCodeTokenRequest
 from authentik.providers.oauth2.token.base import TokenRequest
 from authentik.providers.oauth2.token.client_credentials import ClientCredentialsTokenRequest
@@ -40,11 +40,11 @@ def route_token_request(grant_type: str) -> type[TokenRequest]:
 
 
 def parse_token_request(
-    request: HttpRequest, provider: OAuth2Provider, client_id: str, client_secret: str
+    request: HttpRequest, client: OAuthClientContext, client_secret: str
 ) -> TokenRequest:
     grant_type = request.POST.get("grant_type", "")
     req_type = route_token_request(grant_type)
     LOGGER.debug("routing to token request", token_request_type=req_type)
-    req = req_type(provider, client_id, client_secret)
+    req = req_type(client, client_secret)
     req.parse(request)
     return req
