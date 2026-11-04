@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.templatetags.static import static
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 

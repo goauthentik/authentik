@@ -8,7 +8,7 @@ dependencies = [
   "ak-guardian==3.2.0",
   "argon2-cffi==25.1.0",
   "bcrypt==5.0.0",
-  "cachetools==7.2.7",
+  "cachetools==7.2.8",
   "certifi==2026.10.23",
   "channels==4.3.2",
   "cryptography==50.0.2",
@@ -26,7 +26,7 @@ dependencies = [
   "django-postgres-extra==3.0.1",
   "django-prometheus==2.5.0",
   "django-storages[s3]==1.14.6",
-  "django==5.2.18",
+  "django==5.2.19",
   "djangoql==0.19.1",
   "djangorestframework==3.18.3",
   "docker==7.2.0",
@@ -61,7 +61,7 @@ dependencies = [
   "paramiko==5.0.1",
   "psycopg[c,pool]==3.3.6",
   "pydantic-scim==0.0.8",
-  "pydantic==2.14.1",
+  "pydantic==2.14.2",
   "pyjwt==2.15.1",
   "pyrad==2.6.0",
   "pyroscope-io==1.4.0",
@@ -112,7 +112,7 @@ dev = [
   "pytest-github-actions-annotate-failures==0.4.2",
   "pytest-randomly==5.0.0",
   "pytest-timeout==2.4.0",
-  "pytest==9.1.1",
+  "pytest==9.2.0",
   "requests-mock==1.12.1",
   "ruff==0.17.3",
   "selenium==4.51.0",
@@ -182,10 +182,22 @@ select = [
   "DJ",  # django
   "PL",  # pylint
   "BLE", # flake8-blind-except
+  "INT", # flake8-gettext
 ]
 ignore = [
   "DJ001",   # Avoid using `null=True` on string-based fields,
   "PLC0415", # `import` should be at the top-level of a file
+]
+
+[tool.ruff.lint.flake8-gettext]
+extend-function-names = [
+  "gettext_lazy",
+  "gettext_noop",
+  "ngettext_lazy",
+  "pgettext",
+  "pgettext_lazy",
+  "npgettext",
+  "npgettext_lazy",
 ]
 
 [tool.ruff.lint.pylint]

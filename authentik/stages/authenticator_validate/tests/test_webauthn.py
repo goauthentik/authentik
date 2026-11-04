@@ -1,8 +1,10 @@
 """Test validator stage"""
 
 from time import sleep
+from unittest import skipIf
 from unittest.mock import patch
 
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.urls.base import reverse
 from rest_framework.serializers import ValidationError
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
@@ -712,6 +714,7 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
         self.assertEqual(device.sign_count, 0)
         return event.context["message"]
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
     def test_validate_challenge_unavailable_algorithm_eddsa(self):
         """cryptography raises its misleading key-length ValueError directly for Ed25519;
         with FIPS enabled the event names the key type and FIPS"""
@@ -722,6 +725,7 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
             detail, "Cannot log in with EdDSA (Ed25519) security key while FIPS mode is enabled"
         )
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_validate_challenge_unavailable_algorithm_mldsa(self):
         """py_webauthn wraps the ML-DSA failure in its own UnsupportedPublicKey; without FIPS
         the event still names the key type"""
@@ -734,6 +738,7 @@ class AuthenticatorValidateStageWebAuthnTests(APIFlowTestCase):
             "current OpenSSL configuration",
         )
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_validate_challenge_mldsa(self):
         """Test webauthn authentication with an ML-DSA-44 (FIPS 204) credential"""
         credential = SoftwareCredential(rp_id="localhost", origin="http://localhost:9000")
