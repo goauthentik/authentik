@@ -20,21 +20,15 @@
 </script>
 {% endif %}
 {% include "base/header_js.html" %}
-<<<<<<< HEAD
 <script data-id="flow-config">
     "use strict";
 
     window.authentik.flow = {
         "layout": "{{ flow.layout }}",
         "background": "{{ flow.background }}",
-        "title": "{{ flow.title }}",
+        "title": "{{ flow_title }}",
     };
 </script>
-=======
-<meta name="ak-flow-layout" content="{{ flow.layout }}">
-<meta name="ak-flow-background" content="{{ flow.background }}">
-<meta name="ak-flow-title" content="{{ flow_title }}">
->>>>>>> f1341f57c (flows: format titles correct on first render if possible (#27589))
 {% endblock %}
 
 {% block interface_stylesheet %}
@@ -60,10 +54,10 @@
         loading
     >
         {% include "base/placeholder.html" %}
-        
+
         <ak-brand-links name="flow-links" slot="footer"></ak-brand-links>
     </ak-flow-executor>
-    
+
     <ak-flow-inspector
         slot="panel"
         id="flow-inspector"
