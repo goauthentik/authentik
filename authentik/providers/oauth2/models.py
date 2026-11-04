@@ -435,7 +435,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/openidconnect.svg")
+        return static("authentik/sources/openidconnect/light.svg")
 
     @property
     def component(self) -> str:
