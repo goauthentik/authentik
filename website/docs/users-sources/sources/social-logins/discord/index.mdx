@@ -1,12 +1,13 @@
 ---
-title: Log in with Discord
+title: Log in to authentik with Discord
 sidebar_label: Discord
+description: "Let users log in to authentik with their Discord account."
 tags:
     - source
     - discord
 ---
 
-This source lets users authenticate with their Discord credentials by configuring Discord as a federated identity provider with OAuth 2.0.
+This source lets users log in to authentik with their Discord account by configuring Discord as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -30,6 +31,7 @@ To integrate Discord with authentik, create an OAuth application in the Discord 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
+
     - **Select type**: select **Discord OAuth Source** as the source type.
     - **Create Discord OAuth Source**: provide a name, a slug that must match the slug used in the Discord `Redirect URI` (e.g. `discord`), and the following required configurations:
         - Under **Protocol Settings**:

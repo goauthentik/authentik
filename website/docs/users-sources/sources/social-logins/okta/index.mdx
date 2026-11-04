@@ -1,14 +1,14 @@
 ---
-title: Log in with Okta
+title: Log in to authentik with Okta
 sidebar_label: Okta
-description: "Integrate Okta as a source in authentik with OAuth 2.0 or SAML"
+description: "Let users log in to authentik with their Okta account."
 tags: [source, okta, oidc, saml]
 ---
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-This source lets users authenticate with their Okta credentials by configuring Okta as a federated identity provider with OAuth 2.0 or SAML.
+This source lets users log in to authentik with their Okta account by configuring Okta as a federated identity provider with OAuth 2.0 or SAML.
 
 ## Preparation
 
@@ -48,6 +48,7 @@ To support the integration of Okta with authentik, you need to create an Okta OA
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
+
     - **Select type**: select **Okta OAuth Source** as the source type.
     - **Create Okta OAuth Source**: provide a name, a slug that must match the slug used in the Okta Sign-in redirect URI field (e.g. `okta`), and the following required settings:
         - Under **Protocol settings**:

@@ -1,6 +1,7 @@
 ---
-title: Log in with Entra ID
+title: Log in to authentik with Entra ID
 sidebar_label: Entra ID
+description: "Let users log in to authentik with their Entra ID account, and provision users and groups from Entra ID into authentik."
 tags:
     - source
     - entra
@@ -9,13 +10,13 @@ tags:
     - oauth
 ---
 
-There are several ways that Entra ID can be integrated with authentik to allow for user and group provisioning and authentication with Entra ID user credentials. If you are instead looking to authenticate to Entra ID with authentik credentials, refer to our [Microsoft 365 SAML](/integrations/platforms/microsoft-saml/) or [Microsoft 365 WS-Federation](/integrations/platforms/microsoft-ws-federation/) integrations guides.
+There are several ways that Entra ID can be integrated with authentik to allow for provisioning users and groups into authentik and for logging in to authentik with an Entra ID account. If you are instead looking to authenticate to Entra ID with authentik credentials, refer to our [Microsoft 365 SAML](/integrations/platforms/microsoft-saml/) or [Microsoft 365 WS-Federation](/integrations/platforms/microsoft-ws-federation/) integrations guides. To provision users and groups from authentik into Entra ID, see the [Entra ID provider](../../../../add-secure-apps/providers/entra/index.mdx).
 
 ## OAuth
 
 The [Entra ID OAuth](./oauth/index.mdx) guide explains how to set up Entra ID as a federated OAuth identity provider for authentik.
 
-This enables users to sign in to authentik using their Entra ID credentials. User accounts are created in authentik upon first login and updated on each subsequent login.
+This enables users to sign in to authentik using their Entra ID account. User accounts are created in authentik upon first login and updated on each subsequent login.
 
 Alternatively, Entra ID authentication can be embedded into a flow via a [Source stage](../../../../add-secure-apps/flows-stages/stages/source).
 
@@ -23,4 +24,4 @@ Alternatively, Entra ID authentication can be embedded into a flow via a [Source
 
 The [Entra ID SCIM](./scim/index.mdx) guide explains how you can provision users and groups from Entra ID into authentik via the SCIM protocol.
 
-Optionally, both the OAuth and SCIM integrations can be used in conjunction so that users and groups are provisioned before a user signs in using their Entra ID credentials. This is the recommended setup for organizations with large numbers of users and groups.
+Optionally, both the OAuth and SCIM integrations can be used in conjunction so that users and groups are provisioned before a user signs in using their Entra ID account. This is the recommended setup for organizations with large numbers of users and groups.

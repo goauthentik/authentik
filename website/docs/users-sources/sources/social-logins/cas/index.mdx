@@ -1,11 +1,11 @@
 ---
-title: Log in with Apereo CAS
+title: Log in to authentik with Apereo CAS
 sidebar_label: Apereo CAS
-description: "Integrate Apereo CAS as a source in authentik"
+description: "Let users log in to authentik with their Apereo CAS account."
 tags: [source, cas, Apereo CAS, Apereo]
 ---
 
-This source lets users authenticate with their Apereo CAS credentials by configuring CAS as a federated identity provider with OpenID Connect.
+This source lets users log in to authentik with their Apereo CAS account by configuring CAS as a federated identity provider with OpenID Connect.
 
 :::info
 authentik does not support the native CAS protocol as a source. This guide uses the OpenID Connect provider that CAS ships in its `cas-server-support-oidc` module, so your CAS deployment must include that module.
@@ -40,7 +40,10 @@ cas.authn.oauth.core.user-profile-view-type=FLAT
 `cas.authn.oauth.core.user-profile-view-type` defaults to `NESTED`, which wraps every claim in an `attributes` object:
 
 ```json
-{ "sub": "casuser", "attributes": { "email": "casuser@company", "name": "CAS User" } }
+{
+    "sub": "casuser",
+    "attributes": { "email": "casuser@company", "name": "CAS User" }
+}
 ```
 
 authentik reads claims from the top level of the user info response, so with the default it finds only `sub`, and users are enrolled with an empty email and name. Setting the value to `FLAT` emits the claims where authentik expects them.
@@ -80,8 +83,12 @@ Create a JSON service definition in your CAS service registry directory, typical
         "policies": [
             "java.util.ArrayList",
             [
-                { "@class": "org.apereo.cas.oidc.claims.OidcProfileScopeAttributeReleasePolicy" },
-                { "@class": "org.apereo.cas.oidc.claims.OidcEmailScopeAttributeReleasePolicy" }
+                {
+                    "@class": "org.apereo.cas.oidc.claims.OidcProfileScopeAttributeReleasePolicy"
+                },
+                {
+                    "@class": "org.apereo.cas.oidc.claims.OidcEmailScopeAttributeReleasePolicy"
+                }
             ]
         ]
     }
@@ -98,6 +105,7 @@ To support the integration of CAS with authentik, you need to create an OpenID C
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
+
     - **Select type**: select **OpenID Connect OAuth Source** as the source type.
     - **Create OpenID Connect OAuth Source**: provide a name, a slug that must match the slug used in the `serviceId` expression (for example, `cas`), and the following required settings:
         - Under **Protocol settings**:

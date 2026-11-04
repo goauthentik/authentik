@@ -1,14 +1,16 @@
 ---
-title: Log in with Auth0
+title: Log in to authentik with Auth0
 sidebar_label: Auth0
-description: "Integrate Auth0 as a source in authentik"
+description: "Let users log in to authentik with their Auth0 account."
 tags: [source, auth0, saml, oidc]
 ---
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-This source lets users authenticate with their Auth0 credentials by configuring Auth0 as a federated identity provider using SAML or OpenID Connect (OIDC).
+This source lets users log in to authentik with their Auth0 account by configuring Auth0 as a federated identity provider using SAML or OpenID Connect (OIDC).
+
+To let users log in to Auth0 with their authentik credentials instead, see the [Auth0 integration guide](/integrations/platforms/auth0/).
 
 ## Preparation
 
@@ -58,6 +60,7 @@ openssl x509 -in authentik\ Self-signed\ Certificate_certificate.pem -pubkey -no
 4. On the **Settings** tab, take note of the **Client ID**. This value will be required when configuring encryption.
 5. Navigate to the **Addons** tab and enable **SAML2 Web App**.
 6. On the addon's **Settings** tab, configure the following settings:
+
     - **Application Callback URL**: `https://authentik.company/source/saml/<auth0-slug>/acs/`
     - **Settings**: paste the following JSON. Replace the `signingCert` value with the contents of the authentik certificate that you exported earlier. Format the certificate as a single line by replacing each line break with `\n`. Auth0 uses this certificate to verify signatures on requests from authentik.
 
@@ -154,6 +157,7 @@ Create an Auth0 OpenID Connect source in authentik.
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
 3. Select **OpenID Connect OAuth Source** and configure the following settings:
+
     - Set **Name** to `Auth0`.
     - Set **Slug** to `<auth0-slug>`. Typically this is `auth0`.
     - Under **Protocol settings**:

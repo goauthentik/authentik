@@ -2,7 +2,11 @@
 title: SAML source
 ---
 
-This source allows authentik to act as a SAML service provider. Like the [SAML provider](../../../../add-secure-apps/providers/saml/index.mdx), it supports signed requests. Vendor-specific documentation is available in the integrations section.
+The SAML source lets users log in to authentik with an external SAML identity provider (IdP). In this setup, authentik acts as the SAML service provider (SP). Like the [SAML provider](../../../../add-secure-apps/providers/saml/index.mdx), it supports signed requests. Service-specific guides are available in the [external identity providers](../../social-logins/index.mdx) section.
+
+:::info SAML source or SAML provider?
+This page covers the **SAML source**, where an external IdP logs users in to authentik. To let an application log users in with authentik as the SAML IdP, use the [SAML provider](../../../../add-secure-apps/providers/saml/index.mdx) instead.
+:::
 
 ## Terminology
 
@@ -17,7 +21,7 @@ This source allows authentik to act as a SAML service provider. Like the [SAML p
 
 ## Example configuration
 
-If you have the provider metadata, you can extract the values that you need from it. The following table provides example values for a basic IdP metadata file.
+If you have the IdP metadata, you can extract the values that you need from it. The following table provides example values for a basic IdP metadata file.
 
 | Name                       | Example                                                         | Description                                                                                                                                                                                                                                                                       |
 | -------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -26,12 +30,65 @@ If you have the provider metadata, you can extract the values that you need from
 | Icon                       | `branding/company-icon.svg`                                     | Optional icon or image shown for the source. See [File picker values](../../../../customize/file-picker.mdx).                                                                                                                                                                     |
 | SSO URL                    | https://saml.company/login/saml                                 | The SingleSignOnService URL for the IdP. This value can be found in the metadata or IdP documentation. There can be different URLs for different binding types, such as HTTP-Redirect and HTTP-POST. Use the URL for the binding type that you choose below.                      |
 | SLO URL                    | https://saml.company/logout/saml                                | The URL that is called when a user logs out of authentik. This can be used to automatically log the user out of the SAML IdP after logging out of authentik. Not all IdPs support or require this behavior.                                                                       |
-| Binding Type               | HTTP-POST                                                       | How authentik communicates with the SSO URL (302 redirect or POST request). This will depend on what the provider supports.                                                                                                                                                       |
+| Binding Type               | HTTP-POST                                                       | How authentik communicates with the SSO URL (302 redirect or POST request). This will depend on what the IdP supports.                                                                                                                                                            |
 | Allow IdP-initiated logins | False                                                           | Whether to allow the IdP to log users into authentik without any interaction. Activating this can be a security risk because this request is not verified, and could be used by an attacker to authenticate a user without interaction.                                           |
 | Force authentication       | False                                                           | When enabled, authentik requests the IdP to force re-authentication of the user, even if they already have an active session with the IdP.                                                                                                                                        |
 | Issuer override            | `https://authentik.company/source/saml/<source-slug>/metadata/` | The identifier (Entity ID) for the authentik instance in the SAML federation. This is optional and defaults to the metadata URL of the source, as shown in the example. To override it, set any value that the IdP recognizes. This must match what you register on the IdP side. |
 | NameID Policy              | Persistent                                                      | Depending on what the IdP sends as persistent ID, some IdPs use the username or email address while others use a random string or hashed value. If the user in authentik receives a random string as a username, try using **Email address** or **Windows**.                      |
 | Flow settings              | Default                                                         | If there are custom flows in your instance for external authentication, select them here.                                                                                                                                                                                         |
+
+## SP-initiated and IdP-initiated login
+
+A SAML login can start at either the service provider or the identity provider. With a SAML source, authentik is the SP and the external system is the IdP.
+
+### SP-initiated login
+
+The user starts at authentik, for example by selecting the source on the authentik login page. authentik sends an authentication request to the IdP, the IdP authenticates the user, and the IdP returns a SAML response that answers the request. This is the default behavior.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User as User's browser
+    participant SP as authentik (SAML source)
+    participant IdP as External SAML IdP
+
+    User->>SP: Select the SAML source on the login page
+    SP->>User: Send an authentication request for the IdP
+    User->>IdP: Deliver the authentication request
+    IdP->>User: Authenticate the user, if needed
+    IdP->>User: Return a signed SAML response
+    User->>SP: Post the SAML response to the ACS URL
+    SP->>SP: Validate the response, including that it answers the request
+    SP->>User: Log the user in to authentik
+```
+
+### IdP-initiated login
+
+The user starts at the IdP, for example by selecting an authentik tile in the IdP's app portal. The IdP sends a SAML response to authentik without a prior authentication request from authentik.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User as User's browser
+    participant IdP as External SAML IdP
+    participant SP as authentik (SAML source)
+
+    User->>IdP: Log in and select the authentik app
+    IdP->>User: Return a signed SAML response
+    User->>SP: Post the SAML response to the ACS URL
+    SP->>SP: Validate the response
+    SP->>User: Log the user in to authentik
+```
+
+IdP-initiated logins are disabled by default. To accept them, enable **Allow IdP-initiated logins** on the source.
+
+:::warning
+Because there is no authentication request to match, authentik does not validate the request ID of an IdP-initiated response. This can be a security risk: a response that authentik did not ask for could be used to log a user in without their interaction. Enable this setting only if your IdP requires it.
+:::
+
+:::info authentik as the IdP
+When authentik is the IdP for an application through a [SAML provider](../../../../add-secure-apps/providers/saml/index.mdx), the roles are reversed: IdP-initiated login starts in authentik, and authentik sends the SAML response to the application. For the endpoint, see [SAML bindings and endpoints](../../../../add-secure-apps/providers/saml/index.mdx#saml-bindings-and-endpoints).
+:::
 
 ## Transient users and account lifetime
 

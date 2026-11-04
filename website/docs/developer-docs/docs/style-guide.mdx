@@ -70,6 +70,14 @@ Try to write procedural (How To) docs generically enough that it does not endors
 - Avoid abbreviations unless they are well-known and widely recognized (e.g., SSO, MFA, RBAC).
 - If an acronym is used less frequently, spell out its full meaning when first mentioned on the page, followed by the acronym in parentheses. In some cases the acronym can come first, followed by the full term in parentheses.
 
+### Sources and providers
+
+Readers often confuse [sources](../../users-sources/sources/index.mdx) and [providers](../../add-secure-apps/providers/index.mdx), especially when the same technology (such as LDAP, SAML, or SCIM) is available as both. For background, see [Key concepts](../../core/concepts.mdx#sources-and-providers).
+
+- A **source** brings users into authentik from an external identity system. A **provider** lets an application log users in with authentik. Make the direction explicit, for example "log in to authentik with GitHub" or "log in to Grafana with authentik".
+- Do not use a bare "provider" for an external service that is connected to authentik as a source. Use "external identity provider", "identity provider (IdP)", or the name of the service instead.
+- When a technology is available as both a source and a provider, name which one you mean, for example "LDAP source" or "LDAP provider".
+
 ### Trademarks and legal terms
 
 - Respect third-party trademarks. Use the correct symbols (™, ®) where applicable (e.g., "GitHub®", "Okta™") in the _first_ instance of the name.
@@ -170,11 +178,13 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
 - When referring to authentik functionality and features, such as flows, stages, sources, or policies, do not capitalize and do not use bold or italic text. When possible link to the corresponding documentation.
 
 - Use **bold** to highlight:
+
     - UI elements such as field names, labels, buttons, or options (e.g., **Save** button, **Username** field).
         - Reproduce the label exactly as it appears on screen, including its capitalization. Write **Bind Flow** if the form says "Bind Flow", even though sentence case applies to headings. The reader is scanning the interface for that string, so a doc that silently re-cases it sends them looking for something that isn't there.
     - Key actions in instructions (e.g., **Click Next**).
 
 - Use _italic_ for:
+
     - Emphasis, but sparingly, to avoid overuse. For example, you can use italics for important terms or concepts on first mention in a section. Do not use italics to indicate a variable or placeholder; instead use angle brackets as described under [Variables](#variables).
 
 - Use `code formatting` for:
@@ -257,6 +267,7 @@ Examples:
 ### Titles and headers
 
 - Titles and headers (H1, H2, H3) should follow **sentence case capitalization**, meaning only the first word is capitalized, except for proper nouns or product names.
+
     - **DO:** "Configure the Google Workspace provider"
     - **DON'T:** "CONFIGURE THE GOOGLE WORKSPACE PROVIDER"
     - **DON'T:** "Configure The Google Workspace Provider"
@@ -377,6 +388,7 @@ When documenting errors, follow this structure:
     ```
 
 - **Possible causes**:
+
     - Incorrect username or password.
     - Account locked due to multiple failed attempts.
 
@@ -438,6 +450,7 @@ When documenting errors, follow this structure:
     Note: Badges should be defined in the front matter, not in the markdown content. The system will automatically display the appropriate badges based on the front matter metadata.
 
 - **Directives**: You can also use directives in your markdown content to add badges inline:
+
     - `:ak-version[2025.4]` - Shows when a feature was introduced (requires semantic version)
     - `:ak-preview` - Indicates preview features
     - `:ak-enterprise` - Indicates features in our Enterprise offering

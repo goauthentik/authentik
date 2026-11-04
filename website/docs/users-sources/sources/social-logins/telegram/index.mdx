@@ -1,9 +1,10 @@
 ---
-title: Log in with Telegram
+title: Log in to authentik with Telegram
 sidebar_label: Telegram
+description: "Let users log in to authentik with their Telegram account."
 ---
 
-This source lets users authenticate with their Telegram account credentials.
+This source lets users log in to authentik with their Telegram account.
 
 ## Preparation
 
@@ -28,6 +29,7 @@ After the bot is configured, create a source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
+
     - **Select type**: select **Telegram** as the source type.
     - **Create Telegram Source**: provide a name, a slug, and the following required configurations:
         - **Bot username**: The username of your Telegram bot (e.g., `authentik_bot`).

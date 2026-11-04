@@ -6,6 +6,10 @@ sidebar_label: "SAML Provider"
 
 The SAML provider allows you to integrate with Service Providers using the SAML2 protocol. It supports [importing and exporting SAML metadata](#saml-metadata), [signed requests](#certificates) and uses [property mappings](../property-mappings/index.mdx#saml-property-mappings) to align, or "map", Service Provider and authentik attributes.
 
+:::info SAML provider or SAML source?
+This page covers the **SAML provider**, where authentik is the SAML identity provider (IdP) for an application. To let users log in to authentik with an external SAML IdP, use the [SAML source](../../../users-sources/sources/protocols/saml/index.mdx) instead.
+:::
+
 Refer to our documentation to learn how to [create a SAML provider](./create-saml-provider.mdx).
 
 ## SAML bindings and endpoints

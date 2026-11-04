@@ -40,6 +40,8 @@ After creating the policy, you can bind it to either a:
 
 For background about policy bindings, stage bindings, and why policies on stages are bound to flow-stage bindings, see [Bindings in authentik](../../add-secure-apps/bindings-overview/index.mdx).
 
+For background on policy ordering, engine mode, and binding options, see [Policy bindings and evaluation](./bindings.mdx).
+
 ### Bind a policy to a flow
 
 These bindings control which users can access a flow.
@@ -79,12 +81,10 @@ These bindings control which users or groups can access an application.
 
 ### Bind a policy to a source
 
-These bindings control which users or groups can access a source.
+These bindings control which users or groups can connect the source to their authentik account. If a user doesn't pass the source's policies, the source doesn't appear under [**Connected services**](../../users-sources/user/user-interface.mdx#connected-services) in their user settings. These bindings don't control whether users can log in or enroll through the source.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**.
 3. In the list of sources, click the name of the source to which you want to bind a policy.
 4. Click the **Policy Bindings** tab at the top of the page.
 5. Either create and bind a new policy, or bind an existing policy, group, or user.
-
-For background on policy ordering, engine mode, and binding options, see [Policy bindings and evaluation](./bindings.mdx).

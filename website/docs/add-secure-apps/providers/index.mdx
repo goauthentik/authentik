@@ -6,18 +6,57 @@ sidebar_position: 2
 
 import DocCardList from "@theme/DocCardList";
 
-A provider is an authentication method, a service that is used by authentik to authenticate the user for the associated application. Common providers are OpenID Connect (OIDC)/OAuth2, LDAP, SAML, a generic proxy provider, and others.
+A provider connects authentik to an application. Most providers let the application log in its users with authentik: authentik acts as the identity provider (IdP), and the application trusts authentik to tell it who the user is. Other providers, such as SCIM, Google Workspace, and Entra ID, provision users and groups from authentik into the application or directory.
 
-Providers are the "other half" of [applications](../applications/index.mdx). They typically exist in a 1-to-1 relationship; each application needs a provider and every provider can be used with one application.
+To let users log in _to authentik_ with an existing account from another system, such as Google or Entra ID, use a [source](../../users-sources/sources/index.mdx) instead. For more about how sources and providers differ, see [Sources and providers](../../core/concepts.mdx#sources-and-providers).
 
-You can create a new provider in the Admin interface, or you can use the [**New Application** option](../applications/manage_apps.mdx#create-an-application-and-provider-pair) to create a new application and its provider at the same time.
+## How providers work
 
-Applications can use additional providers to augment the functionality of the main provider. For more information, see [Backchannel providers](../applications/manage_apps.mdx#backchannel-providers).
+Providers connect authentik to applications in four main ways:
 
-When you create certain types of providers, you need to select specific [flows](../flows-stages/flow/index.mdx) to apply to users who access authentik via the provider. To learn more, refer to our [default flow documentation](../flows-stages/flow/default-flows.mdx).
+```mermaid
+graph LR
+    authentik("authentik")
+    sso("Web and SaaS applications<br/>(OAuth2/OIDC, SAML,<br/>WS-Federation)")
+    directory("Applications that use<br/>LDAP or RADIUS")
+    access("Applications without SSO<br/>and remote machines<br/>(Proxy, RAC)")
+    provisioning("Applications and directories<br/>(SCIM, Google Workspace,<br/>Entra ID)")
 
-You can also create a SAML provider by uploading an SP metadata XML file that contains the service provider's configuration data. SAML metadata is used to share configuration information between the Identity Provider (IdP) and the Service Provider (SP). An SP metadata XML file typically contains the SP certificate, the entity ID, the Assertion Consumer Service URL (ACS URL), and a logout URL (SingleLogoutService).
+    authentik ==>|"#160;logs users in to#160;"| sso
+    authentik ==>|"#160;authenticates users for#160;"| directory
+    authentik ==>|"#160;controls access to#160;"| access
+    authentik ==>|"#160;provisions users#160;<br/>#160;and groups into#160;"| provisioning
 
-To learn more about each provider type, refer to the documentation for each provider:
+    classDef ak fill:#fd4b2d,stroke:#c2381f,stroke-width:3px,color:#151515,font-weight:bold
+    classDef application fill:#336791,stroke:#24496a,stroke-width:2px,color:#ffffff
+
+    class authentik ak
+    class sso,directory,access,provisioning application
+```
+
+- **Single sign-on**: with an [OAuth2/OIDC](./oauth2/index.mdx), [SAML](./saml/index.mdx), or [WS-Federation](./wsfed/index.mdx) provider, the application sends users to authentik to log in, and authentik sends them back with their identity. OAuth2/OIDC and SAML providers also support [Single Logout](./single-logout/index.mdx).
+- **LDAP and RADIUS**: applications that use [LDAP](./ldap/index.mdx) or [RADIUS](./radius/index.mdx) connect to an [outpost](../outposts/index.mdx), which lets them look up and authenticate authentik users.
+- **Proxy and remote access**: an outpost controls access to applications that don't support SSO, through a [Proxy provider](./proxy/index.mdx), or to remote machines over RDP, SSH, or VNC, through a [RAC provider](./rac/index.mdx).
+- **Provisioning**: [SCIM](./scim/index.mdx), [Google Workspace](./gws/index.mdx), and [Entra ID](./entra/index.mdx) providers create and update users and groups from authentik in the application or directory.
+
+## Providers and applications
+
+Providers are the "other half" of [applications](../applications/index.mdx). Each application has at most one main provider, and each provider can be the main provider for only one application.
+
+In the Admin interface, you can use the [**New Application** option](../applications/manage_apps.mdx#create-an-application-and-provider-pair) to create a new application and its provider at the same time.
+
+When you create certain types of providers, you need to select specific [flows](../flows-stages/flow/index.mdx), such as an authorization flow, to apply to users who access authentik through the provider. For flows that you don't select, authentik uses the defaults described in [Default flows](../flows-stages/flow/default-flows.mdx).
+
+### Backchannel providers
+
+Applications can use additional providers to augment the functionality of the main provider. For example, an application that uses an OAuth 2.0 provider for login can also use a SCIM provider to provision users. Backchannel providers can be [SCIM](./scim/index.mdx), [LDAP](./ldap/index.mdx), [Google Workspace](./gws/index.mdx), [Entra ID](./entra/index.mdx), or [Shared Signals Framework (SSF)](./ssf/index.mdx) providers. For more information, see [Backchannel providers](../applications/manage_apps.mdx#backchannel-providers).
+
+## Map data to an application
+
+Provider property mappings control which user, group, and other data authentik sends to an application. For example, a SAML property mapping can send a user's groups to an application as a SAML attribute. For more information, see [Provider property mappings](./property-mappings/index.mdx).
+
+## Provider types
+
+For details, see the page for each provider type:
 
 <DocCardList />

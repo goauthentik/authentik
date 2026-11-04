@@ -1,12 +1,15 @@
 ---
-title: Log in with GitHub
+title: Log in to authentik with GitHub
 sidebar_label: GitHub
+description: "Let users log in to authentik with their GitHub account."
 tags:
     - source
     - github
 ---
 
-This source lets users authenticate with their GitHub credentials by configuring GitHub as a federated identity provider with OAuth 2.0.
+This source lets users log in to authentik with their GitHub account by configuring GitHub as a federated identity provider with OAuth 2.0.
+
+To let users log in to GitHub Enterprise with their authentik credentials instead, see the [GitHub Enterprise Cloud](/integrations/development/ghec/), [GitHub Enterprise Managed Users](/integrations/development/ghec-emu/), or [GitHub Enterprise Server](/integrations/development/ghes/) integration guides.
 
 ## Preparation
 
@@ -21,6 +24,7 @@ To integrate GitHub with authentik, you need to create an OAuth application in G
 
 1. Log in to GitHub and open the [Developer Settings](https://github.com/settings/developers) menu.
 2. Create an OAuth app by clicking on the **Register a new application** button and set the following values:
+
     - **Application Name**: `authentik`
     - **Homepage URL**: `www.my.company`
     - **Authorization callback URL**: `https://authentik.company/source/oauth/callback/github`
