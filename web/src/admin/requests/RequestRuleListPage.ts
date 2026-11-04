@@ -4,6 +4,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/policies/BoundPoliciesList";
 import { aki } from "#common/api/client";
+import { plural } from "#common/ui/locale/plurals";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -20,6 +21,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-request-rule-list")
 export class RequestRuleListPage extends TablePage<RequestRule> {
+    public static override verboseName = msg("Request rule", {
+        id: "request-rules.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Request rules", {
+        id: "request-rules.verbose-name-plural.label",
+    });
+
     public override checkbox = true;
     public override clearOnRefresh = true;
     public override searchPlaceholder = msg("Search for a request rule by name...");
@@ -48,7 +56,6 @@ export class RequestRuleListPage extends TablePage<RequestRule> {
         const disabled = this.selectedElements.length < 1;
 
         return html` <ak-forms-delete-bulk
-            object-label=${msg("Request rule(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: RequestRule) => {
                 return aki(RequestsApi).requestsRulesUsedByList({
@@ -70,7 +77,16 @@ export class RequestRuleListPage extends TablePage<RequestRule> {
     protected override row(item: RequestRule): SlottedTemplateResult[] {
         return [
             item.name,
-            msg(str`${item.targets.length} object(s)`),
+            plural(item.targets.length, {
+                one: () =>
+                    msg(str`${item.targets.length} object`, {
+                        id: "request-rules.target-count.label.one",
+                    }),
+                other: () =>
+                    msg(str`${item.targets.length} objects`, {
+                        id: "request-rules.target-count.label.other",
+                    }),
+            }),
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(RequestRuleForm, item.uuid, item.name)}
 

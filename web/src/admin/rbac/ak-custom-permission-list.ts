@@ -19,6 +19,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-custom-permission-list")
 export class CustomPermissionListPage extends TablePage<CustomPermission> {
+    public static override verboseName = msg("Custom Permission", {
+        id: "custom-permissions.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Custom Permissions", {
+        id: "custom-permissions.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override checkbox = true;
@@ -49,7 +56,6 @@ export class CustomPermissionListPage extends TablePage<CustomPermission> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Custom Permissions")}
             .objects=${this.selectedElements}
             .delete=${(item: CustomPermission) => {
                 return aki(RbacApi).rbacCustomPermissionsDestroy({ id: item.pk });

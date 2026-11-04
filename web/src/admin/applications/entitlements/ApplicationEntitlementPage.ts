@@ -21,6 +21,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-application-entitlements-list")
 export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
+    public static override verboseName = msg("Application entitlement", {
+        id: "application-entitlements.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Application entitlements", {
+        id: "application-entitlements.verbose-name-plural.label",
+    });
+
     @property()
     app?: string;
 
@@ -49,7 +56,6 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Application entitlement(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ApplicationEntitlement) => {
                 return aki(CoreApi).coreApplicationEntitlementsUsedByList({
