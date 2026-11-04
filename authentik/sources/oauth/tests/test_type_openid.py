@@ -1,9 +1,11 @@
 """OpenID Type tests"""
 
 import time
+from unittest import skipIf
 from unittest.mock import patch
 
 from cryptography.exceptions import UnsupportedAlgorithm
+from cryptography.hazmat.backends.openssl.backend import backend
 from cryptography.hazmat.primitives.asymmetric.mldsa import MLDSA44PrivateKey
 from django.test import RequestFactory, TestCase
 from jwt import encode
@@ -119,6 +121,7 @@ class TestTypeOpenID(TestCase):
         self.assertEqual(profile["aud"], client_id)
         self.assertEqual(profile["iss"], "https://example.com")
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     @Mocker()
     def test_userinfo_jwt_mldsa(self, mock: Mocker):
         """Test id_token fallback with an ML-DSA (RFC 9964) signed id_token"""
@@ -158,6 +161,7 @@ class TestTypeOpenID(TestCase):
         self.assertEqual(profile["email"], OPENID_USER["email"])
         self.assertEqual(profile["aud"], client_id)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     @Mocker()
     def test_userinfo_jwt_mldsa_key_unavailable(self, mock: Mocker):
         """An ML-DSA id_token whose key OpenSSL cannot load (ML-DSA under a FIPS provider that

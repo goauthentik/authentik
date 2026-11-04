@@ -2,9 +2,11 @@
 
 from datetime import datetime, timedelta
 from json import loads
+from unittest import skipIf
 from unittest.mock import patch
 
 from cryptography.exceptions import UnsupportedAlgorithm
+from cryptography.hazmat.backends.openssl.backend import backend
 from cryptography.hazmat.primitives.asymmetric.mldsa import MLDSA44PrivateKey
 from django.test import RequestFactory
 from django.urls import reverse
@@ -352,6 +354,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
         self.assertEqual(jwt["given_name"], "Mapped Test User")
         self.assertEqual(jwt["preferred_username"], test_username)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_successful_mldsa_source(self):
         """test successful with a client assertion signed by an ML-DSA key (RFC 9964 AKP JWK)"""
         mldsa_cert = create_test_cert(PrivateKeyAlg.MLDSA44)
@@ -382,6 +385,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(User.objects.filter(username=f"{self.provider.name}-foo").first())
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_successful_mldsa_key_unavailable(self):
         """An AKP key in the source's JWKS that OpenSSL cannot load (ML-DSA under a FIPS provider
         that predates it) is skipped, and the remaining keys are still tried"""
