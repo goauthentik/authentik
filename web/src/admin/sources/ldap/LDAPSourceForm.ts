@@ -70,12 +70,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
     };
 
     protected override renderForm(): TemplateResult {
-        // Lit's literal attributes aren't type-checked. Keep submitted names tied to the
-        // request type: the generated client silently drops unrecognized properties.
+        // Field names go through `this.field()` so they're checked against
+        // LDAPSourceRequest; the generated client silently drops unrecognized properties.
         return html` <ak-form-element-horizontal
                 label=${msg("Name")}
                 required
-                name=${"name" satisfies keyof LDAPSourceRequest}
+                name=${this.field("name")}
             >
                 <input
                     type="text"
@@ -86,7 +86,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
             </ak-form-element-horizontal>
 
             <ak-slug-input
-                name=${"slug" satisfies keyof LDAPSourceRequest}
+                name=${this.field("slug")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
@@ -94,12 +94,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
             ></ak-slug-input>
 
             <ak-switch-input
-                name=${"enabled" satisfies keyof LDAPSourceRequest}
+                name=${this.field("enabled")}
                 label=${msg("Enabled")}
                 ?checked=${this.instance?.enabled ?? true}
             ></ak-switch-input>
             <ak-switch-input
-                name=${"passwordLoginUpdateInternalPassword" satisfies keyof LDAPSourceRequest}
+                name=${this.field("passwordLoginUpdateInternalPassword")}
                 label=${msg("Update internal password on login")}
                 ?checked=${this.instance?.passwordLoginUpdateInternalPassword ?? false}
                 help=${msg(
@@ -107,12 +107,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                 )}
             ></ak-switch-input>
             <ak-switch-input
-                name=${"syncUsers" satisfies keyof LDAPSourceRequest}
+                name=${this.field("syncUsers")}
                 label=${msg("Sync users")}
                 ?checked=${this.instance?.syncUsers ?? true}
             ></ak-switch-input>
             <ak-switch-input
-                name=${"syncUsersPassword" satisfies keyof LDAPSourceRequest}
+                name=${this.field("syncUsersPassword")}
                 label=${msg("User password writeback")}
                 ?checked=${this.instance?.syncUsersPassword ?? true}
                 help=${msg(
@@ -120,18 +120,18 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                 )}
             ></ak-switch-input>
             <ak-switch-input
-                name=${"syncGroups" satisfies keyof LDAPSourceRequest}
+                name=${this.field("syncGroups")}
                 label=${msg("Sync groups")}
                 ?checked=${this.instance?.syncGroups ?? true}
             ></ak-switch-input>
             <ak-switch-input
-                name=${"syncGroupHierarchy" satisfies keyof LDAPSourceRequest}
+                name=${this.field("syncGroupHierarchy")}
                 label=${msg("Sync Group Hierarchy")}
                 ?checked=${this.instance?.syncGroupHierarchy ?? true}
                 help=${msg("Sync group hierarchy from LDAP directories.")}
             ></ak-switch-input>
             <ak-switch-input
-                name=${"deleteNotFoundObjects" satisfies keyof LDAPSourceRequest}
+                name=${this.field("deleteNotFoundObjects")}
                 label=${msg("Delete Not Found Objects")}
                 ?checked=${this.instance?.deleteNotFoundObjects ?? false}
                 help=${msg(
@@ -143,7 +143,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     <ak-form-element-horizontal
                         label=${msg("Server URI")}
                         required
-                        name=${"serverUri" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("serverUri")}
                     >
                         <input
                             type="text"
@@ -157,13 +157,13 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                         </p>
                     </ak-form-element-horizontal>
                     <ak-switch-input
-                        name=${"startTls" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("startTls")}
                         label=${msg("Enable StartTLS")}
                         ?checked=${this.instance?.startTls ?? true}
                         help=${msg("To use SSL instead, use 'ldaps://' and disable this option.")}
                     ></ak-switch-input>
                     <ak-switch-input
-                        name=${"sni" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("sni")}
                         label=${msg("Use Server URI for SNI verification")}
                         ?checked=${this.instance?.sni ?? false}
                         help=${msg("Required for servers using TLS 1.3+")}
@@ -173,7 +173,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                             id: "ldap-source.service-bind-method.label",
                         })}
                         required
-                        name=${"serviceBindMethod" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("serviceBindMethod")}
                     >
                         <select class="pf-c-form-control">
                             <option
@@ -208,7 +208,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("TLS Verification Certificate")}
-                        name=${"peerCertificate" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("peerCertificate")}
                     >
                         ${AKCertificateSearch({ name: "peerCertificate", value: this.instance?.peerCertificate, noKey: true })}
                         <p class="pf-c-form__helper-text">
@@ -219,7 +219,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("TLS Client authentication certificate")}
-                        name=${"clientCertificate" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("clientCertificate")}
                     >
                         ${AKCertificateSearch({ name: "clientCertificate", value: this.instance?.clientCertificate })}
                         <p class="pf-c-form__helper-text">
@@ -231,7 +231,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Bind CN")}
-                        name=${"bindCn" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("bindCn")}
                     >
                         <input
                             type="text"
@@ -241,13 +241,13 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     </ak-form-element-horizontal>
                     <ak-secret-text-input
                         label=${msg("Bind Password")}
-                        name=${"bindPassword" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("bindPassword")}
                         ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                     <ak-form-element-horizontal
                         label=${msg("Base DN")}
                         required
-                        name=${"baseDn" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("baseDn")}
                     >
                         <input
                             type="text"
@@ -262,7 +262,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
-                        name=${"userPropertyMappings" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("userPropertyMappings")}
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
@@ -278,7 +278,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
-                        name=${"groupPropertyMappings" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("groupPropertyMappings")}
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
@@ -298,10 +298,10 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Additional Parent Group")}
-                        name=${"syncParentGroup" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("syncParentGroup")}
                     >
                         ${AKSearchSelect({
-                            name: "syncParentGroup" satisfies keyof LDAPSourceRequest,
+                            name: this.field("syncParentGroup"),
                             source: groupSource,
                             value: this.instance?.syncParentGroup,
                             blankable: true,
@@ -312,7 +312,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("User path")}
-                        name=${"userPathTemplate" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("userPathTemplate")}
                     >
                         <input
                             type="text"
@@ -325,7 +325,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Additional User DN")}
-                        name=${"additionalUserDn" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("additionalUserDn")}
                     >
                         <input
                             type="text"
@@ -338,7 +338,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Additional Group DN")}
-                        name=${"additionalGroupDn" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("additionalGroupDn")}
                     >
                         <input
                             type="text"
@@ -352,7 +352,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     <ak-form-element-horizontal
                         label=${msg("User object filter")}
                         required
-                        name=${"userObjectFilter" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("userObjectFilter")}
                     >
                         <input
                             type="text"
@@ -367,7 +367,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     <ak-form-element-horizontal
                         label=${msg("Group object filter")}
                         required
-                        name=${"groupObjectFilter" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("groupObjectFilter")}
                     >
                         <input
                             type="text"
@@ -382,7 +382,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     <ak-form-element-horizontal
                         label=${msg("Group membership field")}
                         required
-                        name=${"groupMembershipField" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("groupMembershipField")}
                     >
                         <input
                             type="text"
@@ -399,7 +399,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     <ak-form-element-horizontal
                         label=${msg("User membership attribute")}
                         required
-                        name=${"userMembershipAttribute" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("userMembershipAttribute")}
                     >
                         <input
                             type="text"
@@ -412,7 +412,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                         </p>
                     </ak-form-element-horizontal>
                     <ak-switch-input
-                        name=${"lookupGroupsFromUser" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("lookupGroupsFromUser")}
                         label=${msg("Lookup using user attribute")}
                         ?checked=${this.instance?.lookupGroupsFromUser ?? false}
                         help=${msg(
@@ -422,7 +422,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     <ak-form-element-horizontal
                         label=${msg("Object uniqueness field")}
                         required
-                        name=${"objectUniquenessField" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("objectUniquenessField")}
                     >
                         <input
                             type="text"
@@ -437,7 +437,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource, LDAPSourceRequest
                     <ak-radio-input
                         label=${msg("Outgoing sync trigger mode")}
                         required
-                        name=${"syncOutgoingTriggerMode" satisfies keyof LDAPSourceRequest}
+                        name=${this.field("syncOutgoingTriggerMode")}
                         .value=${this.instance?.syncOutgoingTriggerMode}
                         .options=${createSyncOutgoingTriggerModeOptions}
                     >
