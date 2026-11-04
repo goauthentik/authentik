@@ -20,7 +20,7 @@ import PFProgress from "@patternfly/patternfly/components/Progress/progress.css"
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
-import { docLink } from "#common/global";
+import { docLink, globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 import { setPageDetails } from "#elements/router/meta";
@@ -251,7 +251,7 @@ export class OutpostViewPage extends AKElement {
                             class="pf-c-form-control"
                             readonly
                             type="text"
-                            value="${document.location.origin}"
+                            value="${globalAK().api.base}"
                         />
                     </div>
                     <div class="pf-c-form__group">

@@ -21,16 +21,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["go", "javascript", "python"]
+        language:
+          - lang: "go"
+            deps: "system,go,runtime"
+          - lang: "javascript"
+            deps: "system,node,runtime"
+          - lang: "python"
+            deps: "system,python,rust,runtime"
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          dependencies: ${{ matrix.language.deps }}
       - name: Initialize CodeQL
         uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
-          languages: ${{ matrix.language }}
+          languages: ${{ matrix.language.lang }}
       - name: Autobuild
         uses: github/codeql-action/autobuild@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
       - name: Perform CodeQL Analysis
