@@ -112,7 +112,7 @@ dev = [
   "pytest-github-actions-annotate-failures==0.4.2",
   "pytest-randomly==5.0.0",
   "pytest-timeout==2.4.0",
-  "pytest==9.1.1",
+  "pytest==9.2.0",
   "requests-mock==1.12.1",
   "ruff==0.17.3",
   "selenium==4.51.0",
