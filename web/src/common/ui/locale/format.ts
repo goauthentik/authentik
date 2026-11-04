@@ -141,7 +141,7 @@ export interface FormatLocaleOptionsInit {
  * Pre-defined display names for locales that need special handling.
  * These use minimized IDs or explicit fallbacks.
  */
-const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<TargetLanguageTag, () => string> = new Map([
+const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<TargetLanguageTag, MessageFormatter<string>> = new Map([
     [SourceLanguageTag, () => msg("English", { id: "en" })],
     [CJKLanguageTag.HanSimplified, () => msg("Chinese (Simplified)", { id: "zh-Hans" })],
     [CJKLanguageTag.HanTraditional, () => msg("Chinese (Traditional)", { id: "zh-Hant" })],

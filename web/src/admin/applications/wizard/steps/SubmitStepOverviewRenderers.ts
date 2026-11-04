@@ -148,14 +148,14 @@ const renderProxyOverview: ProviderOverview<ProxyProvider> = (provider) => {
     ]);
 };
 
-const clientTypeToLabel = {
+const ClientTypeToLabel: Record<ClientTypeEnum, MessageFormatter<string>> = {
     [ClientTypeEnum.Confidential]: () => msg("Confidential"),
     [ClientTypeEnum.Public]: () => msg("Public"),
     [ClientTypeEnum.UnknownDefaultOpenApi]: () => msg("Unknown type"),
-} as const satisfies Record<ClientTypeEnum, () => string>;
+};
 
 const renderOAuth2Overview: ProviderOverview<OAuth2Provider> = (provider) => {
-    const label = provider.clientType ? clientTypeToLabel[provider.clientType]() : "";
+    const label = provider.clientType ? ClientTypeToLabel[provider.clientType]() : "";
 
     return renderSummary("OAuth2", provider.name, [
         [msg("Client Type"), label],

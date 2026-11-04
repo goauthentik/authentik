@@ -1,3 +1,5 @@
+import { MessageFormatter } from "#common/ui/locale/format";
+
 import { CaptchaVendor, findVendorByURL } from "#flow/stages/captcha/shared";
 
 import { CaptchaStage, CaptchaStageRequest } from "@goauthentik/api";
@@ -23,7 +25,7 @@ export const CAPTCHA_REQUEST_CONTENT_TYPES = [
     },
 ] as const satisfies {
     value: CaptchaRequestContentType;
-    formatDisplayName: () => string;
+    formatDisplayName: MessageFormatter<string>;
 }[];
 
 export const CaptchaProviderKeys = [
@@ -44,15 +46,15 @@ export interface CaptchaProviderPreset {
      * their own URLs and the vendor is only known once `jsUrl` is filled in.
      */
     vendor: CaptchaVendor | null;
-    formatDisplayName: () => string;
-    formatDescription?: () => string;
+    formatDisplayName: MessageFormatter<string>;
+    formatDescription?: MessageFormatter<string>;
     jsUrl: string;
     apiUrl: string;
     requestContentType: CaptchaRequestContentType;
     interactive: boolean;
     supportsScore: boolean;
     score?: { min: number; max: number };
-    formatAPISource?: () => string;
+    formatAPISource?: MessageFormatter<string>;
     keyURL?: string;
 }
 
