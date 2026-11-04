@@ -21,16 +21,12 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
             "provider",
             "from_number",
             "account_sid",
-            "auth",
-            "auth_password",
+            "auth_ref",
+            "auth_password_ref",
             "auth_type",
             "verify_only",
             "mapping",
         ]
-        extra_kwargs = {
-            "auth": {"write_only": True},
-            "auth_password": {"write_only": True},
-        }
 
 
 class AuthenticatorSMSStageViewSet(UsedByMixin, ModelViewSet):
@@ -38,7 +34,18 @@ class AuthenticatorSMSStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AuthenticatorSMSStage.objects.all()
     serializer_class = AuthenticatorSMSStageSerializer
-    filterset_fields = "__all__"
+    filterset_fields = [
+        "stage_uuid",
+        "name",
+        "configure_flow",
+        "friendly_name",
+        "provider",
+        "from_number",
+        "account_sid",
+        "auth_type",
+        "verify_only",
+        "mapping",
+    ]
     ordering = ["name"]
     search_fields = ["name"]
 
