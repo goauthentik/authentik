@@ -180,7 +180,7 @@ export interface CoreApplicationEntitlementsListRequest {
      * Entitlements assigned to this user, directly or through a group, regardless of the user's
      * access to the application.
      */
-    forUser?: string;
+    forUser?: number;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -215,7 +215,7 @@ export interface CoreApplicationEntitlementsRequestableListRequest {
      * Entitlements assigned to this user, directly or through a group, regardless of the user's
      * access to the application.
      */
-    forUser?: string;
+    forUser?: number;
     name?: string;
     /**
      * Which field to use when ordering the results.

@@ -97,9 +97,10 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	apiConfig.Host = akURL.Host
 	apiConfig.Scheme = akURL.Scheme
 	apiConfig.HTTPClient = &client
+	apiPath, _ := url.JoinPath(akURL.Path, "api/v3")
 	apiConfig.Servers = api.ServerConfigurations{
 		{
-			URL: fmt.Sprintf("%sapi/v3", akURL.Path),
+			URL: apiPath,
 		},
 	}
 	apiConfig.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
@@ -208,10 +209,6 @@ func (a *APIController) configureRefreshSignal() {
 
 func (a *APIController) AddRefreshHandler(handler func()) {
 	a.refreshHandlers = append(a.refreshHandlers, handler)
-}
-
-func (a *APIController) Token() string {
-	return a.token
 }
 
 func (a *APIController) OnRefresh() error {

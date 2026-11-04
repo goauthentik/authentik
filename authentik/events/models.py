@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from requests import RequestException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -107,6 +107,10 @@ class EventAction(models.TextChoices):
     USER_OFFBOARDED = "user_offboarded"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
+    AUTHENTICATOR_LOCKED = "authenticator_locked"  # noqa # nosec
+    AUTHENTICATOR_UNLOCKED = "authenticator_unlocked"  # noqa # nosec
+
+    REQUIRED_ACTION_COMPLETED = "required_action_completed"
 
     SECRET_VIEW = "secret_view"  # noqa # nosec
     SECRET_ROTATE = "secret_rotate"  # noqa # nosec
@@ -514,12 +518,12 @@ class NotificationTransport(TasksModel, SerializerModel):
         """Send notification to slack or slack-compatible endpoints"""
         fields = [
             {
-                "title": _("Severity"),
+                "title": str(_("Severity")),
                 "value": notification.severity,
                 "short": True,
             },
             {
-                "title": _("Dispatched for user"),
+                "title": str(_("Dispatched for user")),
                 "value": str(notification.user),
                 "short": True,
             },
@@ -528,7 +532,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             if notification.event.user:
                 fields.append(
                     {
-                        "title": _("Event user"),
+                        "title": str(_("Event user")),
                         "value": str(notification.event.user.get("username")),
                         "short": True,
                     },
