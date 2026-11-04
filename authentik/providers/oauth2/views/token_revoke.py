@@ -2,7 +2,6 @@
 
 from dataclasses import dataclass
 
-from django.db.models import Q
 from django.http import Http404, HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -10,11 +9,12 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenRevocationError
-from authentik.providers.oauth2.models import AccessToken, ClientType, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import (
     TokenResponse,
-    authenticate_provider,
-    provider_from_request,
+    authenticate_client,
+    client_from_request,
+    find_client_token,
 )
 
 LOGGER = get_logger()
@@ -30,32 +30,18 @@ class TokenRevocationParams:
     @staticmethod
     def from_request(request: HttpRequest) -> TokenRevocationParams:
         """Extract required Parameters from HTTP Request"""
-        raw_token = request.POST.get("token")
+        raw_token = request.POST.get("token", "")
 
-        provider, _, _ = provider_from_request(request)
-        if provider and provider.client_type == ClientType.CONFIDENTIAL:
-            provider = authenticate_provider(request)
-        if not provider:
+        client, _, _ = client_from_request(request)
+        if client and client.is_confidential:
+            client = authenticate_client(request)
+        if not client:
             raise TokenRevocationError("invalid_client")
-        # By default clients can only revoke their own tokens
-        query = Q(provider=provider, token=raw_token)
-        if provider.client_type == ClientType.CONFIDENTIAL:
-            provider = authenticate_provider(request)
-            if not provider:
-                raise TokenRevocationError("invalid_client")
-            # If the request is authenticated by a confidential provider, it can also
-            # revoke federated tokens
-            query = Q(
-                Q(provider=provider) | Q(provider__jwt_federation_providers__in=[provider]),
-                token=raw_token,
-            )
-
-        access_token = AccessToken.objects.filter(query).first()
-        if access_token:
-            return TokenRevocationParams(access_token, provider)
-        refresh_token = RefreshToken.objects.filter(query).first()
-        if refresh_token:
-            return TokenRevocationParams(refresh_token, provider)
+        # By default clients can only revoke their own tokens. If the request is
+        # authenticated by a confidential client, it can also revoke federated tokens
+        token = find_client_token(raw_token, client, include_federated=client.is_confidential)
+        if token:
+            return TokenRevocationParams(token, client.provider)
         LOGGER.debug("Token does not exist", token=raw_token)
         raise Http404
 

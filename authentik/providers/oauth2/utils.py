@@ -9,6 +9,7 @@ from hmac import compare_digest
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlencode, urlparse, urlunparse
 
+from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.http.response import HttpResponseRedirect
 from django.utils.cache import patch_vary_headers
@@ -23,9 +24,11 @@ from authentik.providers.oauth2.errors import BearerTokenError
 from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import (
     AccessToken,
+    ClientBoundModel,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
+    RefreshToken,
 )
 
 LOGGER = get_logger()
@@ -259,16 +262,34 @@ def authenticate_client(
     return client
 
 
-def provider_from_request(request: HttpRequest) -> tuple[OAuth2Provider | None, str, str]:
-    """Get provider from Basic auth of client_id:client_secret. Does not perform authentication"""
-    client, client_id, client_secret = client_from_request(request)
-    return (client.provider if client else None), client_id, client_secret
+def client_may_access_grant(grant: ClientBoundModel, client: OAuthClientContext) -> bool:
+    """Check whether `client` may introspect or revoke `grant`.
+
+    Grants of the client's own provider must be bound to the client itself. Grants of
+    other providers are only reachable through JWT federation, which is a relationship
+    between providers, so it only covers grants of those providers' registered clients."""
+    if grant.provider_id == client.provider.pk:
+        return grant.is_bound_to(client)
+    return grant.is_bound_to_registered_client()
 
 
-def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
-    """Attempt to authenticate via Basic auth of client_id:client_secret"""
-    client = authenticate_client(request)
-    return client.provider if client else None
+def find_client_token(
+    raw_token: str, client: OAuthClientContext, include_federated: bool = False
+) -> AccessToken | RefreshToken | None:
+    """Find an access or refresh token which `client` may introspect or revoke. With
+    `include_federated`, tokens of providers federating with the client's provider are
+    included."""
+    query = ClientBoundModel.bound_to_q(client)
+    if include_federated:
+        query |= (
+            Q(provider__jwt_federation_providers__in=[client.provider])
+            & ClientBoundModel.registered_client_q()
+        )
+    for model in (AccessToken, RefreshToken):
+        token = model.objects.filter(query, token=raw_token).first()
+        if token and client_may_access_grant(token, client):
+            return token
+    return None
 
 
 class HttpResponseRedirectScheme(HttpResponseRedirect):

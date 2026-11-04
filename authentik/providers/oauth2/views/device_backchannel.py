@@ -12,9 +12,9 @@ from rest_framework.throttling import AnonRateThrottle
 from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import SCOPE_BOUND_KEY
-from authentik.core.models import Application
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.oauth2.client import OAuthClientContext, OAuthClientResolver
 from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import DeviceCodeError
 from authentik.providers.oauth2.models import DeviceToken, GrantType, OAuth2Provider, ScopeMapping
@@ -29,25 +29,27 @@ class DeviceView(View):
     """Device flow, devices can request tokens which users can verify"""
 
     client_id: str
+    client: OAuthClientContext
     provider: OAuth2Provider
     scopes: set[str] = []
     dpop_jkt: str | None = None
+
+    def get_client_resolver(self) -> OAuthClientResolver:
+        """Resolver used to find the client (and its provider) for this request"""
+        return OAuthClientResolver.legacy()
 
     def parse_request(self):
         """Parse incoming request"""
         client_id, _ = extract_client_auth(self.request)
         if not client_id:
             raise DeviceCodeError("invalid_client")
-        provider = OAuth2Provider.objects.filter(client_id=client_id).first()
-        if not provider:
+        client = self.get_client_resolver().resolve(self.request, client_id)
+        if not client or not client.application:
             raise DeviceCodeError("invalid_client")
-        try:
-            _ = provider.application
-        except Application.DoesNotExist:
-            raise DeviceCodeError("invalid_client") from None
-        if GrantType.DEVICE_CODE not in provider.grant_types:
+        if GrantType.DEVICE_CODE not in client.grant_types:
             raise DeviceCodeError("invalid_client")
-        self.provider = provider
+        self.client = client
+        self.provider = client.provider
         self.client_id = client_id
 
         scopes_to_check = set(self.request.POST.get("scope", "").split())
@@ -91,12 +93,14 @@ class DeviceView(View):
         except DeviceCodeError as exc:
             return TokenResponse(exc.create_dict(request), status=400)
         until = timedelta_from_string(self.provider.access_code_validity)
-        token: DeviceToken = DeviceToken.objects.create(
+        token = DeviceToken(
             expires=now() + until,
             provider=self.provider,
             _scope=" ".join(self.scopes),
             dpop_jkt=self.dpop_jkt,
         )
+        token.bind_client(self.client)
+        token.save()
         device_url = self.request.build_absolute_uri(
             reverse("authentik_providers_oauth2_root:device-login")
         )

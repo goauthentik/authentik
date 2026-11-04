@@ -32,8 +32,15 @@ class AuthorizationCodeTokenRequest(TokenRequest):
             )
             raise TokenError("invalid_grant")
 
-        if self.authorization_code.provider != self.provider or self.authorization_code.is_expired:
-            self.logger.warning("Invalid code: invalid client or code has expired")
+        if not self.authorization_code.is_bound_to(self.client):
+            self.logger.warning("Invalid code: issued to a different client")
+            raise TokenError("invalid_grant")
+
+        # Clients other than registered ones must redeem the code with the exact redirect
+        # URI it was authorized for. Registered clients keep being checked against their
+        # configured redirect URIs only.
+        if not self.client.is_legacy and self.authorization_code.redirect_uri != self.redirect_uri:
+            self.logger.warning("Invalid code: redirect URI does not match authorization")
             raise TokenError("invalid_grant")
 
         # Validate PKCE parameters.
