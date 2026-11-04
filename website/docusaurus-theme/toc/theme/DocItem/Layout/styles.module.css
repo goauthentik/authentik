@@ -28,6 +28,11 @@
         margin-inline: 0;
     }
 
+    /* Without a TOC column, mirror the article gutter on the other side. */
+    .docItemRow:not(.withTOC) {
+        padding-inline-end: calc(var(--doc-article-gutter) - var(--ifm-spacing-horizontal));
+    }
+
     .docItemRow.withTOC {
         grid-template-columns: minmax(0, 1fr) var(--doc-sidebar-width);
         /* Include the TOC's inner padding when matching the outer article gutter. */

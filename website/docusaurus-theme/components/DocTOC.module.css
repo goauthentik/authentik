@@ -106,6 +106,13 @@
     font-size: 0.9375rem;
 }
 
+/* Without headings there is no TOC above the links to separate them from. */
+.desktop > .contributions:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
 .contributionLinks {
     margin: 0;
     padding: 0;
