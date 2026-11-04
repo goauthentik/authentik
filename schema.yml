@@ -26865,7 +26865,7 @@ paths:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: |+
-            NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+            Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.
 
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -54198,8 +54198,8 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
-          description: NameID Policy sent to the IdP. Can be unset, in which case
-            no Policy is sent.
+          description: Format of the NameID Policy sent to the IdP. Select Unspecified
+            to let the IdP choose the format of the NameID it returns.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         verification_kp:
@@ -58472,8 +58472,8 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
-          description: NameID Policy sent to the IdP. Can be unset, in which case
-            no Policy is sent.
+          description: Format of the NameID Policy sent to the IdP. Select Unspecified
+            to let the IdP choose the format of the NameID it returns.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         verification_kp:
@@ -58677,8 +58677,8 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
-          description: NameID Policy sent to the IdP. Can be unset, in which case
-            no Policy is sent.
+          description: Format of the NameID Policy sent to the IdP. Select Unspecified
+            to let the IdP choose the format of the NameID it returns.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         verification_kp:
