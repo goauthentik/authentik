@@ -87,15 +87,25 @@ The returned claims are available from the `UserInfo` endpoint. authentik includ
 
 ### Claims returned by several scope mappings
 
-authentik evaluates the scope mappings for the requested scopes sorted by scope name and combines their results. When more than one mapping returns the same claim:
+authentik evaluates the scope mappings for the requested scopes sorted by scope name, then by mapping name, and combines their results. When more than one mapping returns the same claim:
 
-- Lists are combined. An item that an earlier mapping already returned is not added again.
+- Lists are combined according to the [**List merging**](#list-merging) setting of the mapping evaluated later.
 - Dictionaries are combined key by key, following these same rules.
 - Any other value, or a value whose type differs between the mappings, is replaced by the value from the mapping evaluated last.
 
-For example, the default `profile` scope mapping returns the user's group names in the `groups` claim. If you also add a custom `groups` scope mapping that returns the same claim, the client receives each group name once.
+For example, the default `profile` scope mapping returns the user's group names in the `groups` claim. If you also add a custom `groups` scope mapping that returns the same claim, authentik evaluates the `profile` mapping last, because `profile` sorts after `groups`. With the default **List merging** setting, the client receives each group name twice. Set **List merging** on the `profile` mapping to **Append unique items** to send each group name once.
 
-Combining lists only adds items, so a custom mapping cannot remove values that another mapping returns. To send a filtered list of groups, remove the default `profile` scope mapping from the provider and add a custom `profile` scope mapping that returns the profile claims without `groups`.
+To send a filtered list of groups, remove the default `profile` scope mapping from the provider and add a custom `profile` scope mapping that returns the profile claims without `groups`.
+
+#### List merging :ak-version[2026.11] {#list-merging}
+
+Scope mappings and synchronization mappings have a **List merging** setting. It decides how a list that the mapping returns is combined with a list under the same key that mappings evaluated before it returned:
+
+- **Append** adds every item, so an item that an earlier mapping already returned appears again. This is the default.
+- **Append unique items** adds only the items that earlier mappings did not already return.
+- **Replace** discards the earlier list and uses the list from this mapping.
+
+The setting applies to lists at any depth of the mapping's result, such as a list inside a dictionary.
 
 See [Scope mappings](../oauth2/index.mdx#scope-mappings) for scope authorization, default scopes, and special scopes.
 
@@ -103,7 +113,7 @@ See [Scope mappings](../oauth2/index.mdx#scope-mappings) for scope authorization
 
 Synchronization providers use property mappings to build the user and group data that they send to integrated services. The mapping must return data in the format that the integrated service expects.
 
-When several mappings return the same key, authentik combines their results with the same rules as [scope mappings](#claims-returned-by-several-scope-mappings). For example, two SCIM mappings that each return `urn:ietf:params:scim:schemas:core:2.0:User` in `schemas` send it once.
+When several mappings return the same key, authentik combines their results with the same rules as [scope mappings](#claims-returned-by-several-scope-mappings), including the [**List merging**](#list-merging) setting. For example, two SCIM mappings that each return `urn:ietf:params:scim:schemas:core:2.0:User` in `schemas` send it twice, unless the mapping evaluated later uses **Append unique items**.
 
 :::warning Property mapping errors
 Synchronization providers evaluate property mappings in name order. If a property mapping fails to evaluate, authentik stops the synchronization and does not evaluate the remaining mappings. Other provider types generally record the error and continue with the next property mapping.

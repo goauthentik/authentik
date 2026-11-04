@@ -16,7 +16,7 @@ class GoogleWorkspaceProviderMappingSerializer(PropertyMappingSerializer):
 
     class Meta:
         model = GoogleWorkspaceProviderMapping
-        fields = PropertyMappingSerializer.Meta.fields
+        fields = PropertyMappingSerializer.Meta.fields + ["list_merge_mode"]
 
 
 class GoogleWorkspaceProviderMappingFilter(FilterSet):

@@ -24,6 +24,7 @@ class ScopeMappingSerializer(PropertyMappingSerializer):
     class Meta:
         model = ScopeMapping
         fields = PropertyMappingSerializer.Meta.fields + [
+            "list_merge_mode",
             "scope_name",
             "description",
         ]

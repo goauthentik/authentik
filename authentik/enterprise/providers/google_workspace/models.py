@@ -14,6 +14,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import (
     BackchannelProvider,
     Group,
+    MergedPropertyMapping,
     PropertyMapping,
     User,
     UserTypes,
@@ -220,7 +221,7 @@ class GoogleWorkspaceProviderPropertyMappingsGroup(SimpleThroughModel):
         )
 
 
-class GoogleWorkspaceProviderMapping(PropertyMapping):
+class GoogleWorkspaceProviderMapping(MergedPropertyMapping, PropertyMapping):
     """Map authentik data to outgoing Google requests"""
 
     expression_allowed_types = [dict]

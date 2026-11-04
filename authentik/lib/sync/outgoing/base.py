@@ -7,7 +7,6 @@ from enum import StrEnum
 from typing import TYPE_CHECKING
 
 import pglock
-from deepmerge import always_merger
 from django.db import DatabaseError, connection
 from structlog.stdlib import get_logger
 
@@ -141,8 +140,8 @@ class BaseOutgoingSyncClient[
                 obj._meta.model_name: obj,
             }
             eval_kwargs.setdefault("user", None)
-            for value in self.mapper.iter_eval(**eval_kwargs):
-                always_merger.merge(raw_final_object, value)
+            for value, mapping in self.mapper.iter_eval(return_mapping=True, **eval_kwargs):
+                mapping.merge_into(raw_final_object, value)
         except ControlFlowException as exc:
             raise exc from exc
         except PropertyMappingExpressionException as exc:

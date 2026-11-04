@@ -18,6 +18,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import (
     Group,
     GroupSourceConnection,
+    MergedSourcePropertyMapping,
     PropertyMapping,
     UserSourceConnection,
 )
@@ -436,7 +437,7 @@ class LDAPSource(IncomingSyncSource):
         verbose_name_plural = _("LDAP Sources")
 
 
-class LDAPSourcePropertyMapping(PropertyMapping):
+class LDAPSourcePropertyMapping(MergedSourcePropertyMapping, PropertyMapping):
     """Map LDAP Property to User or Group object attribute"""
 
     expression_allowed_types = [dict]

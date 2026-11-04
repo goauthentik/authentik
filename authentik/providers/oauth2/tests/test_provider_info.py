@@ -98,3 +98,19 @@ class TestProviderInfo(OAuthTestCase):
         )
         body = self.get_info()
         self.assertIn("email", body["claims_supported"])
+
+    def test_claims_unique(self):
+        """Test claims returned by several scope mappings are listed once"""
+        self.provider.property_mappings.add(
+            ScopeMapping.objects.create(
+                name=generate_id(),
+                scope_name="groups",
+                expression="""return {
+                    "sub": request.user.uid,
+                    "groups": [group.name for group in request.user.groups.all()],
+                }""",
+            )
+        )
+        claims = self.get_info()["claims_supported"]
+        self.assertEqual(claims.count("sub"), 1)
+        self.assertEqual(claims.count("groups"), 1)

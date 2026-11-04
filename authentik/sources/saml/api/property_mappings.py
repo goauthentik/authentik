@@ -12,6 +12,7 @@ class SAMLSourcePropertyMappingSerializer(PropertyMappingSerializer):
 
     class Meta(PropertyMappingSerializer.Meta):
         model = SAMLSourcePropertyMapping
+        fields = PropertyMappingSerializer.Meta.fields + ["list_merge_mode"]
 
 
 class SAMLSourcePropertyMappingFilter(PropertyMappingFilterSet):

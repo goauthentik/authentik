@@ -7380,6 +7380,15 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
                 }
             },
             "required": []
@@ -7551,6 +7560,15 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
                 }
             },
             "required": []
@@ -10754,6 +10772,15 @@
                     "minLength": 1,
                     "title": "Expression"
                 },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
+                },
                 "scope_name": {
                     "type": "string",
                     "minLength": 1,
@@ -11548,6 +11575,15 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
                 }
             },
             "required": []
@@ -12196,6 +12232,15 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
                 }
             },
             "required": []
@@ -12576,6 +12621,15 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
                 }
             },
             "required": []
@@ -12929,6 +12983,15 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
                 }
             },
             "required": []
@@ -13223,6 +13286,15 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
                 }
             },
             "required": []
@@ -13597,6 +13669,15 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
                 }
             },
             "required": []
@@ -13759,6 +13840,15 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
                 }
             },
             "required": []
@@ -13985,6 +14075,15 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "list_merge_mode": {
+                    "type": "string",
+                    "enum": [
+                        "append",
+                        "append_unique",
+                        "replace"
+                    ],
+                    "title": "List merge mode"
                 }
             },
             "required": []

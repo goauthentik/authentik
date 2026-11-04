@@ -13,6 +13,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import (
     BackchannelProvider,
     Group,
+    MergedPropertyMapping,
     PropertyMapping,
     User,
     UserTypes,
@@ -210,7 +211,7 @@ class MicrosoftEntraProviderPropertyMappingsGroup(SimpleThroughModel):
         )
 
 
-class MicrosoftEntraProviderMapping(PropertyMapping):
+class MicrosoftEntraProviderMapping(MergedPropertyMapping, PropertyMapping):
     """Map authentik data to outgoing Microsoft requests"""
 
     expression_allowed_types = [dict]

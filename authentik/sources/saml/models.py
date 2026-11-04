@@ -38,6 +38,7 @@ from authentik.common.saml.constants import (
 from authentik.common.saml.utils import get_element_text
 from authentik.core.models import (
     GroupSourceConnection,
+    MergedSourcePropertyMapping,
     PropertyMapping,
     Source,
     UserSourceConnection,
@@ -308,7 +309,7 @@ class SAMLSource(Source):
         verbose_name_plural = _("SAML Sources")
 
 
-class SAMLSourcePropertyMapping(PropertyMapping):
+class SAMLSourcePropertyMapping(MergedSourcePropertyMapping, PropertyMapping):
     """Map SAML properties to User or Group object attributes"""
 
     expression_allowed_types = [dict]

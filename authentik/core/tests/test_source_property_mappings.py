@@ -2,16 +2,17 @@
 
 from django.test import TestCase
 
-from authentik.core.models import Group, PropertyMapping, Source, User
+from authentik.core.models import Group, ListMergeMode, Source, User
 from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.generators import generate_id
 from authentik.lib.models import InternallyManagedMixin
+from authentik.sources.oauth.models import OAuthSourcePropertyMapping
 
 
 class ProxySource(InternallyManagedMixin, Source):
     @property
     def property_mapping_type(self):
-        return PropertyMapping
+        return OAuthSourcePropertyMapping
 
     def get_base_user_properties(self, **kwargs):
         return {
@@ -51,7 +52,7 @@ class TestSourcePropertyMappings(TestCase):
         mapper = SourceMapper(source)
 
         source.user_property_mappings.add(
-            PropertyMapping.objects.create(
+            OAuthSourcePropertyMapping.objects.create(
                 name=generate_id(),
                 expression="""
                     return {"username": data.get("username", None), "email": None}
@@ -71,3 +72,32 @@ class TestSourcePropertyMappings(TestCase):
                 "attributes": {},
             },
         )
+
+    def test_build_properties_list_merge_mode(self):
+        """Test that a mapping's list merge mode decides how its lists merge into
+        the results of the mappings evaluated before it"""
+        source = ProxySource.objects.create(name=generate_id(), slug=generate_id(), enabled=True)
+        mapper = SourceMapper(source)
+        first = OAuthSourcePropertyMapping.objects.create(
+            name=f"a-{generate_id()}",
+            expression="""return {"attributes": {"tags": ["a", "b"]}}""",
+        )
+        second = OAuthSourcePropertyMapping.objects.create(
+            name=f"b-{generate_id()}",
+            expression="""return {"attributes": {"tags": ["b", "c"]}}""",
+        )
+        self.assertEqual(second.list_merge_mode, ListMergeMode.APPEND_UNIQUE)
+        source.user_property_mappings.add(first, second)
+
+        for mode, tags in [
+            (ListMergeMode.APPEND_UNIQUE, ["a", "b", "c"]),
+            (ListMergeMode.APPEND, ["a", "b", "b", "c"]),
+            (ListMergeMode.REPLACE, ["b", "c"]),
+        ]:
+            with self.subTest(mode=mode):
+                second.list_merge_mode = mode
+                second.save()
+                properties = mapper.build_object_properties(
+                    object_type=User, user=None, request=None, username="test1"
+                )
+                self.assertEqual(properties["attributes"]["tags"], tags)

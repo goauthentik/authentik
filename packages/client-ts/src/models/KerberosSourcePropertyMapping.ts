@@ -10,6 +10,9 @@
  * Do not edit the class manually.
  */
 
+import type { ListMergeModeEnum } from "./ListMergeModeEnum.js";
+import { ListMergeModeEnumFromJSON, ListMergeModeEnumToJSON } from "./ListMergeModeEnum.js";
+
 /**
  * Kerberos PropertyMapping Serializer
  *
@@ -42,6 +45,7 @@ export interface KerberosSourcePropertyMapping {
      * Return internal model name
      */
     readonly metaModelName: string;
+    listMergeMode?: ListMergeModeEnum;
 }
 
 /**
@@ -103,6 +107,10 @@ export function KerberosSourcePropertyMappingFromJSONTyped(
         verboseName: json["verbose_name"],
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
+        listMergeMode:
+            json["list_merge_mode"] == null
+                ? undefined
+                : ListMergeModeEnumFromJSON(json["list_merge_mode"]),
     };
 }
 
@@ -125,5 +133,6 @@ export function KerberosSourcePropertyMappingToJSONTyped(
         managed: value["managed"],
         name: value["name"],
         expression: value["expression"],
+        list_merge_mode: ListMergeModeEnumToJSON(value["listMergeMode"]),
     };
 }

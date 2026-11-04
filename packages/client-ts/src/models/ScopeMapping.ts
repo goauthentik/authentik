@@ -10,6 +10,9 @@
  * Do not edit the class manually.
  */
 
+import type { ListMergeModeEnum } from "./ListMergeModeEnum.js";
+import { ListMergeModeEnumFromJSON, ListMergeModeEnumToJSON } from "./ListMergeModeEnum.js";
+
 /**
  * ScopeMapping Serializer
  *
@@ -42,6 +45,7 @@ export interface ScopeMapping {
      * Return internal model name
      */
     readonly metaModelName: string;
+    listMergeMode?: ListMergeModeEnum;
     /**
      * Scope name requested by the client
      */
@@ -113,6 +117,10 @@ export function ScopeMappingFromJSONTyped(json: any, ignoreDiscriminator: boolea
         verboseName: json["verbose_name"],
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
+        listMergeMode:
+            json["list_merge_mode"] == null
+                ? undefined
+                : ListMergeModeEnumFromJSON(json["list_merge_mode"]),
         scopeName: json["scope_name"],
         description: json["description"] == null ? undefined : json["description"],
     };
@@ -137,6 +145,7 @@ export function ScopeMappingToJSONTyped(
         managed: value["managed"],
         name: value["name"],
         expression: value["expression"],
+        list_merge_mode: ListMergeModeEnumToJSON(value["listMergeMode"]),
         scope_name: value["scopeName"],
         description: value["description"],
     };
