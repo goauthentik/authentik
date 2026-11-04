@@ -16,6 +16,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
+from authentik.stages.password.models import PasswordDevice
 
 
 class TestEvents(TestCase):
@@ -220,8 +221,7 @@ class TestEvents(TestCase):
         user = create_test_user()
         old_count = Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk).count()
 
-        user.set_password_from_hash(make_password(generate_id()))
-        user.save()
+        PasswordDevice.set_password_from_hash(user, make_password(generate_id()))
 
         new_count = Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk).count()
         self.assertEqual(new_count, old_count + 1)
