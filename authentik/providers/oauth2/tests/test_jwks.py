@@ -193,6 +193,7 @@ class TestJWKS(OAuthTestCase):
         self.assertEqual(len(body["keys"]), 1)
         PyJWKSet.from_dict(body)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_mldsa(self):
         """Test JWKS request with ML-DSA (RFC 9964 AKP keys), for all parameter sets"""
         for alg, jose_alg in [
@@ -232,6 +233,7 @@ class TestJWKS(OAuthTestCase):
                     provider.signing_key.private_key.public_key().public_bytes_raw(),
                 )
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_mldsa_sign_verify(self):
         """Test a token signed with ML-DSA verifies against the published JWKS"""
         provider = OAuth2Provider.objects.create(
