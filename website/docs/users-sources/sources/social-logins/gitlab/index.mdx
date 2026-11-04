@@ -1,12 +1,15 @@
 ---
-title: Log in with GitLab
+title: Log in to authentik with GitLab
 sidebar_label: GitLab
+description: "Let users log in to authentik with their GitLab account."
 tags:
     - source
     - gitlab
 ---
 
-This source lets users authenticate with their GitLab credentials by configuring GitLab as a federated identity provider with OAuth 2.0.
+This source lets users log in to authentik with their GitLab account by configuring GitLab as a federated identity provider with OAuth 2.0.
+
+To let users log in to GitLab with their authentik credentials instead, see the [GitLab integration guide](/integrations/development/gitlab/).
 
 ## Preparation
 
@@ -24,6 +27,7 @@ To integrate GitLab with authentik, you need to create an OAuth application in G
     - For a group-owned application, navigate to the group and then click **Settings** > **Applications**.
     - For an instance-wide application, navigate to **Admin** > **Applications**.
 2. Click **Add new application** or **New application** and set the following values:
+
     - **Name**: `authentik`
     - **Redirect URI**: `https://authentik.company/source/oauth/callback/gitlab/`
     - **Scopes**: select all four of the following:

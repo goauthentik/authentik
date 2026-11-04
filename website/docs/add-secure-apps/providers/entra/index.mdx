@@ -7,10 +7,16 @@ sidebar_label: "Microsoft Entra ID Provider"
 
 The Entra ID provider allows you to integrate with your Entra ID tenant. It supports syncing users and groups from authentik to Entra ID, allowing authentik to act as a source of truth for all users and groups.
 
-- For instructions on configuring your Entra ID tenant in prepation for creating an Entra ID provider, refer to [Configure Entra ID](./configure-entra.mdx).
+- For instructions on configuring your Entra ID tenant in preparation for creating an Entra ID provider, refer to [Configure Entra ID](./configure-entra.mdx).
 - For instructions on creating an Entra ID provider, refer to [Create an Entra ID provider](./create-entra-provider.mdx).
 
-If you also want to authenticate to Entra ID using authentik credentials, refer to our [Microsoft 365 SAML](/integrations/platforms/microsoft-saml/) or [Microsoft 365 WS-Federation](/integrations/platforms/microsoft-ws-federation/) integrations guides.
+:::info Entra ID provider or Entra ID source?
+This page covers the **Entra ID provider**, which provisions users and groups from authentik into Entra ID.
+
+- To let users log in to Entra ID with their authentik credentials, refer to our [Microsoft 365 SAML](/integrations/platforms/microsoft-saml/) or [Microsoft 365 WS-Federation](/integrations/platforms/microsoft-ws-federation/) integration guides.
+- To let users log in to authentik with their Entra ID credentials, or to provision users and groups from Entra ID into authentik, refer to [Log in to authentik with Entra ID](../../../users-sources/sources/social-logins/entra-id/index.mdx).
+
+:::
 
 ## Discovery
 

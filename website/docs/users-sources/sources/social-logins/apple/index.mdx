@@ -1,12 +1,15 @@
 ---
-title: Log in with Apple
+title: Log in to authentik with Apple
 sidebar_label: Apple
+description: "Let users log in to authentik with their Apple ID."
 tags:
     - source
     - apple
 ---
 
-This source lets users authenticate with their Apple ID credentials by configuring Apple as a federated identity provider with OAuth 2.0.
+This source lets users log in to authentik with their Apple ID by configuring Apple as a federated identity provider with OAuth 2.0.
+
+To let users sign in to Apple devices and services that are managed with Apple Business using their authentik credentials instead, see the [Apple Business Manager integration guide](/integrations/device-management/apple/).
 
 ## Preparation
 
@@ -62,6 +65,7 @@ To support the integration of Apple with authentik, you need to create an Apple 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, then configure the following settings:
+
     - **Select type**: select **Apple OAuth Source**.
     - **Create Apple OAuth Source**: provide a name, a slug that must match the slug used in the Apple `Return URL`, and the following required configurations:
         - Under **Protocol Settings**:

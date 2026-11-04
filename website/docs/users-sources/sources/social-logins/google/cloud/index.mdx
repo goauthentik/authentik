@@ -1,6 +1,7 @@
 ---
-title: Google Cloud (with OAuth)
+title: Log in to authentik with Google Cloud (OAuth)
 sidebar_label: Google Cloud (OAuth)
+description: "Let users log in to authentik with their Google account using OAuth 2.0."
 tags:
     - source
     - google
@@ -8,7 +9,9 @@ tags:
     - oauth
 ---
 
-This source lets users authenticate with their Google credentials by configuring Google Cloud as a federated identity provider with OAuth 2.0.
+This source lets users log in to authentik with their Google account by configuring Google Cloud as a federated identity provider with OAuth 2.0.
+
+To let users log in to Google Workspace with their authentik credentials instead, see the [Google Workspace integration guide](/integrations/cloud-providers/google/).
 
 ## Preparation
 
@@ -26,6 +29,7 @@ To integrate Google with authentik, you need to create a new project and OAuth c
 ![](./googledeveloper1.png)
 
 3. Set the following values:
+
     - **Project Name**: Provide a name
     - **Organization**: Leave as default if unsure
     - **Location**: Leave as default if unsure

@@ -4,6 +4,10 @@ title: LDAP source
 
 Sources allow you to connect authentik to an existing user directory. This source allows you to import users and groups from an LDAP server.
 
+:::info LDAP source or LDAP provider?
+This page covers the **LDAP source**, which imports users and groups into authentik from an LDAP server. To let applications search and authenticate authentik users over LDAP, use the [LDAP provider](../../../../add-secure-apps/providers/ldap/index.mdx) instead.
+:::
+
 User and group synchronization only creates or updates objects in authentik, not on the LDAP server. **User password writeback** separately writes password changes to LDAP. Creating a user in an external LDAP directory from authentik requires custom automation, such as a [notification rule expression policy](../../../../sys-mgmt/events/notification_rule_expression_policies.mdx#create-ldap-users-from-authentik-events).
 
 :::info

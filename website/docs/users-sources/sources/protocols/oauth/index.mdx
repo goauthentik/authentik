@@ -2,16 +2,20 @@
 title: OAuth source
 ---
 
-This source allows users to enroll themselves with an external OAuth-based identity provider. The generic provider expects the endpoint to return OpenID Connect-compatible information. Vendor-specific implementations have their own OAuth source.
+The OAuth source lets users log in to authentik, and enroll themselves, with an external OAuth-based identity provider. In this setup, authentik acts as the OAuth client (relying party). The generic OAuth source expects the identity provider to return OpenID Connect-compatible information. Service-specific guides are available in the [external identity providers](../../social-logins/index.mdx) section.
 
-- Policies: Allow/Forbid users from linking their accounts with this provider.
+:::info OAuth source or OAuth 2.0 provider?
+This page covers the **OAuth source**, where an external identity provider logs users in to authentik. To let an application log users in with authentik as the OAuth 2.0 or OpenID Connect identity provider, use the [OAuth 2.0 provider](../../../../add-secure-apps/providers/oauth2/index.mdx) instead.
+:::
+
+- Policies: Allow/Forbid users from linking their accounts with this identity provider.
 - Icon: Optional icon or image shown for the source. See [File picker values](../../../../customize/file-picker.mdx).
-- Request Token URL: This field is used for OAuth v1 implementations and will be provided by the provider.
-- Authorization URL: This value will be provided by the provider.
-- Access Token URL: This value will be provided by the provider.
+- Request Token URL: This field is used for OAuth v1 implementations and will be provided by the identity provider.
+- Authorization URL: This value will be provided by the identity provider.
+- Access Token URL: This value will be provided by the identity provider.
 - Profile URL: This URL is called by authentik to retrieve user information upon successful authentication.
-- Consumer key/Consumer secret: These values will be provided by the provider.
-- Scopes: Configure additional scopes to send to the provider.
+- Consumer key/Consumer secret: These values will be provided by the identity provider.
+- Scopes: Configure additional scopes to send to the identity provider.
 
     Starting with authentik 2022.10, the default scopes can be replaced by prefixing the value for scopes with `*`.
 

@@ -1,12 +1,13 @@
 ---
-title: Log in with Twitch
+title: Log in to authentik with Twitch
 sidebar_label: Twitch
+description: "Let users log in to authentik with their Twitch account."
 tags:
     - source
     - twitch
 ---
 
-This source lets users authenticate with their Twitch credentials by configuring Twitch as a federated identity provider with OAuth 2.0.
+This source lets users log in to authentik with their Twitch account by configuring Twitch as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -20,6 +21,7 @@ To integrate Twitch with authentik, create an OAuth application in the Twitch De
 
 1. Log in to the [Twitch Developers Console](https://dev.twitch.tv/console).
 2. Next to **Applications** click **Register Your Application** and set the following fields:
+
     - **Name**: `authentik`
     - **OAuth Redirect URLs**: `https://authentik.company/source/oauth/callback/twitch`
     - **Category**: select a category for your application
