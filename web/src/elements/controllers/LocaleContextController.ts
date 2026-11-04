@@ -1,8 +1,9 @@
-import { sourceLocale, targetLocales } from "../../locale-codes.js";
+import { sourceLocale } from "../../locale-codes.js";
 
-import { LocaleLoaderRecord, TargetLanguageTag } from "#common/ui/locale/definitions";
+import { TargetLanguageTag } from "#common/ui/locale/definitions";
 import { formatDisplayName } from "#common/ui/locale/format";
-import { autoDetectLanguage, isTargetLanguageTag } from "#common/ui/locale/utils";
+import { localization } from "#common/ui/locale/runtime";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
 
 import { kAKLocale, LocaleContext, LocaleContextValue, LocaleMixin } from "#elements/mixins/locale";
 import type { ReactiveElementHost } from "#elements/types";
@@ -10,44 +11,10 @@ import type { ReactiveElementHost } from "#elements/types";
 import { ConsoleLogger } from "#logger/browser";
 
 import { ContextProvider } from "@lit/context";
-import {
-    configureLocalization,
-    LOCALE_STATUS_EVENT,
-    LocaleModule,
-    LocaleStatusEventDetail,
-} from "@lit/localize";
+import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import type { ReactiveController } from "lit";
 
 const logger = ConsoleLogger.prefix("controller/locale");
-
-/**
- * Loads the locale module for the given locale code.
- *
- * @remarks
- *   This is used by `@lit/localize` to dynamically load locale modules,
- *   as well synchronizing the document's `lang` attribute.
- * @param locale The locale code to load.
- */
-function loadLocale(locale: string): Promise<LocaleModule> {
-    const languageNames = new Intl.DisplayNames([locale, sourceLocale], {
-        type: "language",
-    });
-
-    const displayName = formatDisplayName(locale, locale, languageNames);
-
-    if (!isTargetLanguageTag(locale)) {
-        // Lit localize ensures this function is only called with valid locales
-        // but we add a runtime check nonetheless.
-
-        throw new TypeError(`Unsupported locale code: ${locale} (${displayName})`);
-    }
-
-    logger.debug(`Loading "${displayName}" module...`);
-
-    const loader = LocaleLoaderRecord[locale];
-
-    return loader();
-}
 
 /**
  * A controller that provides the application configuration to the element.
@@ -56,11 +23,7 @@ export class LocaleContextController implements ReactiveController {
     /**
      * A shared locale context value.
      */
-    protected static context: LocaleContextValue = configureLocalization({
-        sourceLocale,
-        targetLocales,
-        loadLocale,
-    });
+    protected static context: LocaleContextValue = localization;
 
     protected static DocumentObserverInit: MutationObserverInit = {
         attributes: true,
