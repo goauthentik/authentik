@@ -7,27 +7,41 @@ draft: true
 ## Highlights
 
 - **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
-- **Secrets**: :ak-preview Store OAuth2/OpenID and Proxy provider credentials as secrets with their own permissions, rotation, and audit events. More object types follow in later releases.
+- **Secrets**: :ak-preview Store the credentials of providers, sources, stages, and connectors as secrets with their own permissions, rotation, and audit events.
 
 ## Breaking changes
 
 ### Secrets :ak-preview
 
-Manage credentials under **System** > **Secrets**, or create them directly from the form that uses them. Each secret has its own permissions, so a role can edit a provider without being able to read its client secret. Viewing a value and replacing or rotating it require their own permissions, and authentik records an event each time someone does either.
+Manage credentials under **System** > **Secrets**, or create them directly from the form that uses them. Each secret has its own permissions, so a role can edit an integration without being able to read its password. Viewing a value and replacing or rotating it require their own permissions, and authentik records an event each time someone does either.
 
 Several objects can reference the same secret, so you update a shared credential in one place. You can rotate text secrets from the Admin interface or the API. Rotation changes the value in authentik only, so update the clients that use it afterward. Secret values are stored unencrypted in the database, as these credentials were before.
 
-Secrets are in preview, and authentik moves credentials to them gradually. In this release, OAuth2/OpenID and Proxy providers use secrets. Other providers, sources, stages, and connectors follow in later releases. Send feedback to [hello+feature/secrets@goauthentik.io](mailto:hello+feature/secrets@goauthentik.io).
+Secrets are in preview. Send feedback to [hello+feature/secrets@goauthentik.io](mailto:hello+feature/secrets@goauthentik.io).
 
 See [Secrets](../../sys-mgmt/secrets/index.mdx).
 
-#### OAuth2/OpenID and Proxy provider credentials are stored as secrets
+#### Credentials are stored as secrets
 
-**Only OAuth2/OpenID and Proxy providers are migrated in this release.** Their client secrets, and the cookie secrets of Proxy providers, are now stored as secrets that the providers reference. Other providers, sources, stages, and connectors keep their credentials as before.
+Credentials that were stored on providers, sources, stages, and connectors are now stored as [secrets](../../sys-mgmt/secrets/index.mdx), which those objects reference. This applies to credentials such as:
+
+- OAuth2/OpenID client secrets
+- Proxy provider cookie secrets
+- RADIUS shared secrets
+- LDAP and Kerberos source bind and sync passwords
+- OAuth, Plex, and Telegram source credentials
+- SCIM provider tokens and Basic authentication passwords
+- SMTP passwords
+- Duo, captcha, and SMS stage keys
+- Notification transport webhook URLs
+- Microsoft Entra and Fleet credentials
+- Google service account keys
+- Kubernetes kubeconfigs
+- Kerberos keytabs and credential caches
 
 During the upgrade, authentik creates a secret for each existing credential with its exact value, and copies existing role permissions to the new secrets. See [Permissions after upgrading](../../sys-mgmt/secrets/permissions.mdx#permissions-after-upgrading).
 
-On OAuth2/OpenID providers, the `client_secret` field in the API and blueprints is replaced by `client_secret_ref`, which references a secret. Requests and blueprints that still set `client_secret` fail with a validation error that names the new field. In blueprints, define the secret as its own entry and reference it with `!KeyOf` or `!Find`. Blueprint exports no longer include OAuth2/OpenID client secrets. See [API and blueprints](../../sys-mgmt/secrets/index.mdx#api-and-blueprints).
+The credential fields in the API and blueprints, such as `client_secret`, `shared_secret`, `bind_password`, and `token`, are replaced by reference fields named `<field>_ref`, such as `client_secret_ref`. Requests and blueprints that still set an old field fail with a validation error that names the new field. In blueprints, define the secret as its own entry and reference it with `!KeyOf` or `!Find`. Blueprint exports no longer include credential values, including OAuth2 client secrets and RADIUS shared secrets that earlier exports contained. See [API and blueprints](../../sys-mgmt/secrets/index.mdx#api-and-blueprints).
 
 ### RAC endpoints are now devices
 
