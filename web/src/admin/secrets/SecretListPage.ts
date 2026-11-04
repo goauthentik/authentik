@@ -33,7 +33,7 @@ export class SecretListPage extends TablePage<Secret> {
 
     public pageTitle = msg("Secrets", { id: "secret.verbose-name-plural" });
     public pageDescription = msg(
-        "Credentials used by OAuth2/OpenID and Proxy providers. Each secret has its own permissions.",
+        "Credentials used by providers, sources, stages, and connectors. Each secret has its own permissions.",
         { id: "secret.list.description" },
     );
     public pageIcon = "pf-icon pf-icon-key";
