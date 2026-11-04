@@ -49,7 +49,12 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
-from authentik.providers.oauth2.client import LegacyClientSelector, OAuthClientContext
+from authentik.providers.oauth2.client import (
+    ClientRegistrationKind,
+    ClientSelector,
+    LegacyClientSelector,
+    OAuthClientContext,
+)
 from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
@@ -114,9 +119,12 @@ class OAuthAuthorizationParams:
     client: OAuthClientContext | None = None
 
     github_compat: InitVar[bool] = False
+    selector: InitVar[ClientSelector | None] = None
 
     @staticmethod
-    def from_request(request: HttpRequest, github_compat=False) -> OAuthAuthorizationParams:
+    def from_request(
+        request: HttpRequest, github_compat=False, selector: ClientSelector | None = None
+    ) -> OAuthAuthorizationParams:
         """
         Get all the params used by the Authorization Code Flow
         (and also for the Implicit and Hybrid).
@@ -153,10 +161,11 @@ class OAuthAuthorizationParams:
             code_challenge_method=query_dict.get("code_challenge_method", "plain"),
             dpop_jkt=dpop_jkt,
             github_compat=github_compat,
+            selector=selector,
         )
 
-    def __post_init__(self, github_compat=False):
-        self.client = LegacyClientSelector().resolve(self.client_id)
+    def __post_init__(self, github_compat=False, selector: ClientSelector | None = None):
+        self.client = (selector or LegacyClientSelector()).resolve(self.client_id)
         if not self.client:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
@@ -253,6 +262,21 @@ class OAuthAuthorizationParams:
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls).with_cause("redirect_uri_missing")
+        if self.client.registration_kind == ClientRegistrationKind.METADATA:
+            # PROTOTYPE (01b)
+            from authentik.providers.oauth2.prototype_cimd import match_redirect_uri, record
+
+            matched = match_redirect_uri(self.client, self.redirect_uri)
+            record(
+                "redirect_uri",
+                client_id=self.client_id,
+                redirect_uri=self.redirect_uri,
+                registered=self.client.redirect_uris,
+                matched=matched,
+            )
+            if not matched:
+                raise RedirectUriError(self.redirect_uri, []).with_cause("redirect_uri_no_match")
+            return
 
         match_found = False
         for allowed in allowed_redirect_urls:
@@ -448,7 +472,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
             raise Http404
         try:
             self.params = OAuthAuthorizationParams.from_request(
-                self.request, github_compat=self.github_compat
+                self.request, github_compat=self.github_compat, selector=self.get_client_selector()
             )
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri, cause=error.cause)
@@ -470,6 +494,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.params.response_mode,
             )
             raise RequestValidationError(error.get_response(self.request))
+
+    def get_client_selector(self) -> ClientSelector:
+        return LegacyClientSelector()
 
     def resolve_provider_application(self):
         # pre_permission_check already resolved the client from the same request
@@ -812,3 +839,15 @@ class OAuthFulfillmentStage(StageView):
         )
         query_fragment["state"] = self.params.state if self.params.state else ""
         return query_fragment
+
+
+class PrototypeScopedAuthorizationFlowInitView(AuthorizationFlowInitView):
+    """PROTOTYPE (01b): /application/o/<slug>/authorize/ for a CIMD-enabled provider"""
+
+    def get_client_selector(self) -> ClientSelector:
+        from authentik.providers.oauth2.prototype_cimd import (
+            PrototypeScopedClientSelector,
+            scoped_provider,
+        )
+
+        return PrototypeScopedClientSelector(scoped_provider(self.kwargs["application_slug"]))

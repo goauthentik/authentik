@@ -71,6 +71,9 @@ class TokenView(View):
         cors_allow(self.request, response, self.provider.redirect_uris if self.provider else [])
         return response
 
+    def get_client_selector(self) -> ClientSelector:
+        return self.client_selector
+
     def options(self, request: HttpRequest) -> HttpResponse:
         return TokenResponse({})
 
@@ -81,7 +84,7 @@ class TokenView(View):
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
-                self.client = self.client_selector.resolve(client_id)
+                self.client = self.get_client_selector().resolve(client_id)
                 if not self.client:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
@@ -399,3 +402,27 @@ class TokenView(View):
                 timedelta_from_string(provider.access_token_validity).total_seconds()
             ),
         }
+
+
+class PrototypeScopedTokenView(TokenView):
+    """PROTOTYPE (01b): /application/o/<slug>/token/ for a CIMD-enabled provider"""
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        from authentik.providers.oauth2.prototype_cimd import cors_allow_any
+
+        return cors_allow_any(request, super().dispatch(request, *args, **kwargs))
+
+    def options(self, request: HttpRequest, **kwargs: Any) -> HttpResponse:
+        return super().options(request)
+
+    def post(self, request: HttpRequest, **kwargs: Any) -> HttpResponse:
+        # The slug stays available to get_client_selector via self.kwargs
+        return super().post(request)
+
+    def get_client_selector(self) -> ClientSelector:
+        from authentik.providers.oauth2.prototype_cimd import (
+            PrototypeScopedClientSelector,
+            scoped_provider,
+        )
+
+        return PrototypeScopedClientSelector(scoped_provider(self.kwargs["application_slug"]))

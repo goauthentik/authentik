@@ -11,14 +11,17 @@ from authentik.providers.oauth2.api.tokens import (
     AuthorizationCodeViewSet,
     RefreshTokenViewSet,
 )
-from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
+from authentik.providers.oauth2.views.authorize import (
+    AuthorizationFlowInitView,
+    PrototypeScopedAuthorizationFlowInitView,
+)
 from authentik.providers.oauth2.views.dcr import DynamicClientRegistrationView
 from authentik.providers.oauth2.views.device_backchannel import DeviceView
 from authentik.providers.oauth2.views.end_session import EndSessionView
 from authentik.providers.oauth2.views.introspection import TokenIntrospectionView
 from authentik.providers.oauth2.views.jwks import JWKSView
 from authentik.providers.oauth2.views.provider import ProviderInfoView
-from authentik.providers.oauth2.views.token import TokenView
+from authentik.providers.oauth2.views.token import PrototypeScopedTokenView, TokenView
 from authentik.providers.oauth2.views.token_revoke import TokenRevokeView
 from authentik.providers.oauth2.views.userinfo import UserInfoView
 
@@ -51,6 +54,17 @@ urlpatterns = [
         name="end-session",
     ),
     path("<slug:application_slug>/jwks/", JWKSView.as_view(), name="jwks"),
+    # PROTOTYPE (01b): scoped endpoints for CIMD-enabled providers
+    path(
+        "<slug:application_slug>/authorize/",
+        PrototypeScopedAuthorizationFlowInitView.as_view(),
+        name="prototype-scoped-authorize",
+    ),
+    path(
+        "<slug:application_slug>/token/",
+        PrototypeScopedTokenView.as_view(),
+        name="prototype-scoped-token",
+    ),
     path(
         "<slug:application_slug>/",
         RedirectView.as_view(pattern_name="authentik_providers_oauth2:provider-info"),

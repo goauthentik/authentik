@@ -126,6 +126,30 @@ class ProviderInfoView(View):
             "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
             "dpop_signing_alg_values_supported": sorted(DPOP_SUPPORTED_ALGS),
         }
+        from authentik.providers.oauth2.prototype_cimd import is_enabled
+
+        if is_enabled(provider):
+            # PROTOTYPE (01b)
+            slug = provider.application.slug
+            config["authorization_endpoint"] = self.request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:prototype-scoped-authorize",
+                    kwargs={"application_slug": slug},
+                )
+            )
+            config["token_endpoint"] = self.request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:prototype-scoped-token",
+                    kwargs={"application_slug": slug},
+                )
+            )
+            config["client_id_metadata_document_supported"] = True
+            config["code_challenge_methods_supported"] = [PKCE_METHOD_S256]
+            config["token_endpoint_auth_methods_supported"] = [
+                "none",
+                "client_secret_post",
+                "client_secret_basic",
+            ]
         if provider.encryption_key:
             config["id_token_encryption_alg_values_supported"] = ["RSA-OAEP-256"]
             config["id_token_encryption_enc_values_supported"] = ["A256CBC-HS512"]
@@ -195,4 +219,8 @@ class ProviderInfoView(View):
         )
         response = super().dispatch(request, *args, **kwargs)
         cors_allow(request, response, self.provider.redirect_uris)
+        from authentik.providers.oauth2.prototype_cimd import cors_allow_any, is_enabled
+
+        if is_enabled(self.provider):
+            cors_allow_any(request, response)
         return response

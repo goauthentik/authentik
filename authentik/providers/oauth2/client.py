@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import Any
 
 from authentik.providers.oauth2.models import OAuth2Provider
 
@@ -13,6 +14,8 @@ class ClientRegistrationKind(StrEnum):
 
     # Registered as an OAuth2Provider and identified by its client ID
     LEGACY = "legacy"
+    # PROTOTYPE (01b): identified by a Client ID Metadata Document URL
+    METADATA = "metadata"
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,6 +30,9 @@ class OAuthClientContext:
     provider: OAuth2Provider
     client_id: str
     registration_kind: ClientRegistrationKind
+    # PROTOTYPE (01b): values taken from a fetched client metadata document
+    redirect_uris: tuple[str, ...] = ()
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
     def for_provider(provider: OAuth2Provider) -> OAuthClientContext:

@@ -306,6 +306,9 @@ MIDDLEWARE = [
     "authentik.rbac.middleware.InitialPermissionsMiddleware",
     "authentik.rbac.middleware.AlterResponseMiddleware",
 ]
+if CONFIG.get("cimd_prototype.applications"):
+    # PROTOTYPE (01b)
+    MIDDLEWARE.insert(0, "authentik.providers.oauth2.prototype_cimd.PrototypeRecordingMiddleware")
 MIDDLEWARE_LAST = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]

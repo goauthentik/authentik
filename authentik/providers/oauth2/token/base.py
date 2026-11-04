@@ -180,6 +180,15 @@ class TokenRequest:
             raise TokenError("invalid_request") from exc
 
     def check_redirect_uri(self, request: HttpRequest):
+        from authentik.providers.oauth2.client import ClientRegistrationKind
+
+        if self.client.registration_kind == ClientRegistrationKind.METADATA:
+            # PROTOTYPE (01b): the code is not bound to the redirect URI yet (step 02)
+            from authentik.providers.oauth2.prototype_cimd import match_redirect_uri
+
+            if not match_redirect_uri(self.client, self.redirect_uri):
+                raise TokenError("invalid_client")
+            return
         allowed_redirect_urls = self.provider.authorization_redirect_uris
         # At this point, no provider should have a blank redirect_uri, in case they do
         # this will check an empty array and raise an error

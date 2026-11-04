@@ -46,4 +46,16 @@ urlpatterns = [
         ProviderInfoView.as_view(),
         name="providers-oauth2-authorization-server-metadata",
     ),
+    # PROTOTYPE (01b): RFC 8414 path insertion without the trailing slash, and the
+    # OpenID Connect equivalent, to see which forms MCP clients try
+    path(
+        ".well-known/oauth-authorization-server/application/o/<slug:application_slug>",
+        ProviderInfoView.as_view(),
+        name="prototype-authorization-server-metadata-noslash",
+    ),
+    path(
+        ".well-known/openid-configuration/application/o/<slug:application_slug>/",
+        ProviderInfoView.as_view(),
+        name="prototype-openid-configuration-insertion",
+    ),
 ]
