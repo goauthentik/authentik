@@ -54,7 +54,7 @@ To use OAuth authentication for your application, create and connect an [OAuth s
 SCIM data is synchronized in response to changes and through scheduled full syncs:
 
 - When a user or group is created, modified, or deleted, that change is sent to all SCIM providers.
-- When application bindings, group membership, or group ancestry change, affected SCIM providers automatically reevaluate user access. Changes to the application's policy engine mode also trigger reevaluation.
+- When an application's bindings or policy engine mode change, or when group membership or group hierarchy changes, each affected SCIM provider reevaluates which users are in its sync scope. It then provisions or deprovisions users to match.
 - Once an hour, all SCIM providers are fully synchronized.
 
 The synchronization process runs in the authentik worker. To improve scalability, authentik starts a task for each batch of 100 users or groups, so the workload can be distributed across multiple workers.
