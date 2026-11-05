@@ -182,9 +182,8 @@ export class AKPageNavbar
                                   >`
                                 : nothing
                         }
-                        <span id="page-navbar-heading"
-                            >${this.header}<slot name="bookmark"></slot
-                        ></span>
+                        <span id="page-navbar-heading">${this.header}</span
+                        ><slot name="bookmark"></slot>
                     </h1>
                 </div>
                 <div
@@ -194,9 +193,11 @@ export class AKPageNavbar
                     class="items page-description pf-c-content"
                 >
                     ${
-                        this.description /* && false */
+                        this.description
                             ? html`<p>${this.description}</p>`
-                            : html`<p><slot name="breadcrumbs"></slot></p>`
+                            : html`<div class="items page-description pf-c-content">
+                                  <slot name="breadcrumbs"></slot>
+                              </div>`
                     }
                 </div>
 
