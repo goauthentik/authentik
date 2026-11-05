@@ -1,10 +1,54 @@
 import { expect, test } from "#e2e";
+import type { FormFixture } from "#e2e/fixtures/FormFixture";
+import type { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
+import type { PointerFixture } from "#e2e/fixtures/PointerFixture";
 import { randomName } from "#e2e/utils/generators";
 
 import { IDGenerator } from "@goauthentik/core/id";
 import { series } from "@goauthentik/core/promises";
 
+import type { Page } from "@playwright/test";
 import { snakeCase } from "change-case";
+
+interface CreateUserContext {
+    navigator: NavigatorFixture;
+    form: FormFixture;
+    pointer: PointerFixture;
+    page: Page;
+}
+
+/**
+ * Create an internal user through the admin UI and leave the browser on the users list.
+ */
+async function createInternalUser(
+    { navigator, form, pointer, page }: CreateUserContext,
+    username: string,
+    displayName: string,
+): Promise<void> {
+    const { fill } = form;
+    const { click } = pointer;
+
+    await navigator.navigate("/if/admin/#/identity/users");
+
+    const dialog = page.getByRole("dialog", { name: "New User Wizard" });
+
+    await click("New User", "button");
+
+    await expect(dialog, "User wizard opens").toBeVisible();
+
+    await dialog.getByRole("radio", { name: "Internal" }).click({ force: true });
+
+    await series(
+        [fill, /^Username/, username, dialog],
+        [fill, /^Display Name/, displayName, dialog],
+        [fill, /^Email Address/, `${username}@example.com`, dialog],
+        [fill, /^Path/, "users", dialog],
+    );
+
+    await dialog.getByRole("button", { name: "Create" }).click();
+
+    await expect(dialog, "User wizard closes after creation").toBeHidden();
+}
 
 test.describe("Groups", () => {
     const adminGroupName = "authentik Admins";
@@ -96,16 +140,16 @@ test.describe("Groups", () => {
         });
     });
 
-    test("Simple group", async ({ form, pointer, page }, testInfo) => {
+    test("Simple group", async ({ navigator, form, pointer, page }, testInfo) => {
         const groupName = groupNames.get(testInfo.testId)!;
+        const username = usernames.get(testInfo.testId)!;
+        const userDisplayName = `Member ${username}`;
 
         const { fill, search } = form;
         const { click } = pointer;
 
         const dialog = page.getByRole("dialog", { name: "New Group" });
 
-<<<<<<< HEAD
-=======
         // A second user, picked in a separate visit to the selection dialog, so the test
         // covers the assign form accumulating selections rather than replacing them.
         // User search matches substrings, so neither username may contain the other.
@@ -123,9 +167,9 @@ test.describe("Groups", () => {
             );
         });
 
-        await test.step("Return to groups", () => navigator.navigate("/if/admin/identity/groups"));
+        await test.step("Return to groups", () =>
+            navigator.navigate("/if/admin/#/identity/groups"));
 
->>>>>>> 7bc9d25f7 (web/admin: keep earlier picks when assigning users to a group (#27468))
         await test.step("Group Creation", async () => {
             await expect(dialog, "Dialog is initially closed").toBeHidden();
 
@@ -167,14 +211,6 @@ test.describe("Groups", () => {
                 [click, "Add existing user", "button"],
             );
 
-<<<<<<< HEAD
-            const adminRow = await test.step("Find admin via search", () =>
-                search(adminUsername, selectUsersModal));
-
-            await expect(adminRow, "Admin is visible").toBeVisible();
-
-            await adminRow.getByRole("checkbox").check();
-=======
             const pickUser = (name: string) =>
                 test.step(`Pick ${name} in the selection dialog`, async () => {
                     await click("Open user selection dialog", "button", assignUsersModal);
@@ -182,7 +218,6 @@ test.describe("Groups", () => {
                     await expect(selectUsersModal, "Selection dialog opens").toBeVisible();
 
                     const userRow = await search(name, selectUsersModal);
->>>>>>> 7bc9d25f7 (web/admin: keep earlier picks when assigning users to a group (#27468))
 
                     await expect(userRow, "User is visible").toBeVisible();
 
@@ -210,17 +245,6 @@ test.describe("Groups", () => {
                 timeout: 10_000,
             });
 
-<<<<<<< HEAD
-            await test.step("Verify admin user assignment", async () => {
-                // eslint-disable-next-line max-nested-callbacks
-                const groupRow = await test.step("Find group via search", () => {
-                    const context = page.getByRole("tabpanel", { name: "Users" });
-
-                    return search(adminUsername, context);
-                });
-
-                await expect(groupRow, "Group is visible").toBeVisible();
-=======
             await test.step("Verify user assignment", async () => {
                 await expect(
                     usersPanel.getByRole("row", { name: new RegExp(username) }).first(),
@@ -233,7 +257,6 @@ test.describe("Groups", () => {
 
                     await expect(memberRow, `${name} is a member of the group`).toBeVisible();
                 }
->>>>>>> 7bc9d25f7 (web/admin: keep earlier picks when assigning users to a group (#27468))
             });
         });
     });
