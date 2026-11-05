@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from json import loads
 
 from django.urls.base import reverse
+from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
@@ -11,6 +12,7 @@ from authentik.core.api.tokens import TokenSerializer
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
+    Group,
     Token,
     TokenIntents,
     default_token_duration,
@@ -244,6 +246,87 @@ class TestTokenAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 201)
+        token = Token.objects.get(identifier="test-token")
+        self.assertFalse(token.expiring)
+        self.assertEqual(token.expires.timestamp(), expires.timestamp())
+
+    def test_token_create_group_max_lifetime(self):
+        """Maximum lifetime set on a group applies to its members"""
+        group = Group.objects.create(
+            name=generate_id(),
+            attributes={USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME: "hours=1"},
+        )
+        group.users.add(self.user)
+        for intent in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
+            with self.subTest(intent=intent):
+                response = self.client.post(
+                    reverse("authentik_api:token-list"),
+                    {
+                        "identifier": generate_id(),
+                        "expires": datetime.now() + timedelta(hours=2),
+                        "intent": intent,
+                    },
+                )
+                self.assertEqual(response.status_code, 400)
+
+    def test_token_create_superuser_for_capped_user(self):
+        """Superusers may create tokens for other users beyond their maximum lifetime"""
+        self.user.attributes[USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME] = "hours=1"
+        self.user.save()
+        self.client.force_login(self.admin)
+        expires = datetime.now() + timedelta(days=7)
+        response = self.client.post(
+            reverse("authentik_api:token-list"),
+            {
+                "identifier": "test-token",
+                "user": self.user.pk,
+                "expires": expires,
+                "intent": TokenIntents.INTENT_APP_PASSWORD,
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        token = Token.objects.get(identifier="test-token")
+        self.assertEqual(token.user, self.user)
+        self.assertEqual(token.expires.timestamp(), expires.timestamp())
+
+    def test_token_update_keeps_expires(self):
+        """Updating a token without sending expires keeps its existing expiry"""
+        expires = now() + timedelta(minutes=10)
+        token = Token.objects.create(
+            identifier=generate_id(),
+            user=self.user,
+            intent=TokenIntents.INTENT_API,
+            expires=expires,
+        )
+        response = self.client.patch(
+            reverse("authentik_api:token-detail", kwargs={"identifier": token.identifier}),
+            {"description": generate_id()},
+        )
+        self.assertEqual(response.status_code, 200)
+        token.refresh_from_db()
+        self.assertEqual(token.expires, expires)
+
+    def test_token_update_expires(self):
+        """Updating a token honors the submitted expiry within the maximum lifetime"""
+        self.user.attributes[USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME] = "hours=2"
+        self.user.save()
+        token = Token.objects.create(
+            identifier=generate_id(),
+            user=self.user,
+            intent=TokenIntents.INTENT_API,
+            expires=now() + timedelta(minutes=10),
+        )
+        url = reverse("authentik_api:token-detail", kwargs={"identifier": token.identifier})
+        expires = now() + timedelta(hours=1)
+        response = self.client.patch(url, {"expires": expires.isoformat()})
+        self.assertEqual(response.status_code, 200)
+        token.refresh_from_db()
+        self.assertEqual(token.expires, expires)
+
+        response = self.client.patch(url, {"expires": (now() + timedelta(hours=3)).isoformat()})
+        self.assertEqual(response.status_code, 400)
+        token.refresh_from_db()
+        self.assertEqual(token.expires, expires)
 
     def test_token_change_user(self):
         """Test creating a token and then changing the user"""
