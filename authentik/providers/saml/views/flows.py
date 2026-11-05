@@ -26,7 +26,7 @@ from authentik.lib.views import bad_request_message
 from authentik.policies.utils import delete_none_values
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider, SAMLSession
 from authentik.providers.saml.processors.assertion import AssertionProcessor
-from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequest, get_acs_url
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
 from authentik.sources.saml.exceptions import SAMLException
 
@@ -104,6 +104,7 @@ class SAMLFlowFinalView(ChallengeStageView):
             flow=self.executor.plan.flow_pk,
         ).from_http(self.request)
 
+        acs_url = get_acs_url(provider, auth_n_request)
         if provider.sp_binding == SAMLBindings.POST:
             form_attrs = delete_none_values(
                 {
@@ -119,7 +120,7 @@ class SAMLFlowFinalView(ChallengeStageView):
                         PLAN_CONTEXT_TITLE,
                         _("Redirecting to {app}...").format(app=application.name),
                     ),
-                    "url": provider.acs_url,
+                    "url": acs_url,
                     "attrs": form_attrs,
                 },
             )
@@ -142,12 +143,12 @@ class SAMLFlowFinalView(ChallengeStageView):
                 return HttpChallengeResponse(
                     RedirectChallenge(
                         instance={
-                            "to": f"{provider.acs_url}?{querystring}",
+                            "to": f"{acs_url}?{querystring}",
                             "final_redirect": True,
                         }
                     )
                 )
-            return redirect(f"{provider.acs_url}?{querystring}")
+            return redirect(f"{acs_url}?{querystring}")
         return bad_request_message(request, _("Invalid sp_binding specified"))
 
     def get_challenge(self, *args, **kwargs) -> Challenge:

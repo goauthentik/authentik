@@ -1,4 +1,6 @@
-"""Test storing multiple ACS URLs for SAML providers"""
+"""Test multiple ACS URLs for SAML providers"""
+
+from base64 import b64encode
 
 from django.db import connection
 from django.db.migrations.loader import MigrationLoader
@@ -6,13 +8,37 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.blueprints.tests import apply_blueprint
+from authentik.common.saml.constants import NS_MAP
+from authentik.common.saml.exceptions import CannotHandleAssertion
+from authentik.core.models import Application
+from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.saml.models import SAMLACSURL, SAMLACSURLMatchingMode, SAMLProvider
+from authentik.providers.saml.processors.assertion import AssertionProcessor
+from authentik.providers.saml.processors.authn_request_parser import (
+    AuthNRequest,
+    AuthNRequestParser,
+    get_acs_url,
+)
 
 DEFAULT = "https://sp.example.com/acs"
 SECOND = "https://sp.example.com/acs/second"
 REGEX = r"https://[a-z0-9-]+\.tenant\.example\.com/saml/acs"
+
+
+def build_request(acs_url: str | None = None, acs_index: str | None = None) -> str:
+    """Build a base64 encoded, unsigned AuthnRequest"""
+    attrs = ""
+    if acs_url is not None:
+        attrs += f' AssertionConsumerServiceURL="{acs_url}"'
+    if acs_index is not None:
+        attrs += f' AssertionConsumerServiceIndex="{acs_index}"'
+    xml = (
+        '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+        f'ID="_{generate_id()}" Version="2.0" IssueInstant="2026-01-01T00:00:00Z"{attrs}/>'
+    )
+    return b64encode(xml.encode()).decode()
 
 
 def create_provider(**kwargs) -> SAMLProvider:
@@ -32,7 +58,7 @@ def create_provider(**kwargs) -> SAMLProvider:
 
 
 class TestSAMLProviderACSURLs(TestCase):
-    """Test storing ACS URLs on the model"""
+    """Test ACS URL resolution on the model"""
 
     def setUp(self):
         self.provider = create_provider()
@@ -40,6 +66,7 @@ class TestSAMLProviderACSURLs(TestCase):
     def test_default(self):
         """Test that the entry marked as default is used, regardless of order"""
         self.assertEqual(self.provider.acs_url, DEFAULT)
+        self.assertEqual(self.provider.resolve_acs_url(), DEFAULT)
 
     def test_default_first_strict(self):
         """Test that without an explicit default, the first strict entry is used"""
@@ -54,6 +81,7 @@ class TestSAMLProviderACSURLs(TestCase):
         """Test a provider without any ACS URL"""
         provider = SAMLProvider(name=generate_id())
         self.assertEqual(provider.acs_url, "")
+        self.assertIsNone(provider.resolve_acs_url())
 
     def test_set_acs_url(self):
         """Test that setting `acs_url` only changes the default entry"""
@@ -79,6 +107,126 @@ class TestSAMLProviderACSURLs(TestCase):
         self.provider.save(update_fields=["_acs_urls"])
         self.provider.refresh_from_db()
         self.assertEqual(self.provider.legacy_acs_url, SECOND)
+
+    def test_strict(self):
+        """Test strict matching, which is case insensitive"""
+        self.assertEqual(self.provider.resolve_acs_url(url=SECOND), SECOND)
+        self.assertEqual(self.provider.resolve_acs_url(url=SECOND.upper()), SECOND)
+        self.assertIsNone(self.provider.resolve_acs_url(url=f"{SECOND}/foo"))
+
+    def test_index(self):
+        """Test matching by index"""
+        self.assertEqual(self.provider.resolve_acs_url(index=1), DEFAULT)
+        self.assertEqual(self.provider.resolve_acs_url(index=2), SECOND)
+        self.assertIsNone(self.provider.resolve_acs_url(index=3))
+
+    def test_regex(self):
+        """Test regex matching returns the requested URL"""
+        url = "https://customer-a.tenant.example.com/saml/acs"
+        self.assertEqual(self.provider.resolve_acs_url(url=url), url)
+
+    def test_regex_full_match(self):
+        """Test that a regex has to match the entire URL, so the host can't be swapped out"""
+        self.assertIsNone(
+            self.provider.resolve_acs_url(
+                url="https://attacker.com/?https://a.tenant.example.com/saml/acs"
+            )
+        )
+        self.assertIsNone(
+            self.provider.resolve_acs_url(url="https://a.tenant.example.com/saml/acs/extra")
+        )
+
+    def test_regex_scheme(self):
+        """Test that a regex can't allow non-http(s) URLs"""
+        self.provider.acs_urls = [
+            SAMLACSURL(url=DEFAULT, is_default=True),
+            SAMLACSURL(url=".*", matching_mode=SAMLACSURLMatchingMode.REGEX),
+        ]
+        self.assertIsNone(self.provider.resolve_acs_url(url="javascript:alert(1)"))
+        self.assertEqual(
+            self.provider.resolve_acs_url(url="https://anything.example.com"),
+            "https://anything.example.com",
+        )
+
+    def test_regex_invalid(self):
+        """Test that an invalid stored regex doesn't match and doesn't raise"""
+        self.provider.acs_urls = [
+            SAMLACSURL(url=DEFAULT, is_default=True),
+            SAMLACSURL(url="[", matching_mode=SAMLACSURLMatchingMode.REGEX),
+        ]
+        self.assertIsNone(self.provider.resolve_acs_url(url="https://foo.example.com"))
+
+
+class TestAuthNRequestACSURLs(TestCase):
+    """Test ACS URL handling when parsing AuthnRequests and building responses"""
+
+    @apply_blueprint("system/providers-saml.yaml")
+    def setUp(self):
+        self.provider = create_provider()
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=self.provider)
+
+    def parse(self, **kwargs) -> AuthNRequest:
+        return AuthNRequestParser(self.provider).parse(build_request(**kwargs))
+
+    def test_no_acs(self):
+        """Test that requests without an ACS URL or index use the default"""
+        self.assertEqual(self.parse().acs_url, DEFAULT)
+
+    def test_acs_url(self):
+        """Test that a configured, non-default ACS URL is accepted"""
+        self.assertEqual(self.parse(acs_url=SECOND).acs_url, SECOND)
+
+    def test_acs_url_regex(self):
+        """Test that an ACS URL matching a regex is accepted"""
+        url = "https://customer-a.tenant.example.com/saml/acs"
+        self.assertEqual(self.parse(acs_url=url).acs_url, url)
+
+    def test_acs_url_invalid(self):
+        """Test that an ACS URL that isn't configured is rejected"""
+        with self.assertRaises(CannotHandleAssertion):
+            self.parse(acs_url="https://attacker.example.com/acs")
+
+    def test_acs_index(self):
+        """Test resolving the ACS URL by index"""
+        self.assertEqual(self.parse(acs_index="2").acs_url, SECOND)
+
+    def test_acs_index_invalid(self):
+        """Test that unknown or malformed indexes are rejected"""
+        with self.assertRaises(CannotHandleAssertion):
+            self.parse(acs_index="5")
+        with self.assertRaises(CannotHandleAssertion):
+            self.parse(acs_index="foo")
+
+    def test_acs_url_and_index(self):
+        """Test that ACS URL and index are mutually exclusive"""
+        with self.assertRaises(CannotHandleAssertion):
+            self.parse(acs_url=SECOND, acs_index="2")
+
+    def test_no_default(self):
+        """Test a provider with only regex ACS URLs can't handle requests without an ACS URL"""
+        self.provider.acs_urls = [SAMLACSURL(url=REGEX, matching_mode=SAMLACSURLMatchingMode.REGEX)]
+        with self.assertRaises(CannotHandleAssertion):
+            self.parse()
+
+    def test_response_destination(self):
+        """Test that the response is addressed to the requested ACS URL"""
+        user = create_test_admin_user()
+        http_request = RequestFactory().get("/", user=user)
+        response = AssertionProcessor(
+            self.provider, http_request, self.parse(acs_url=SECOND)
+        ).get_response()
+        self.assertEqual(response.attrib["Destination"], SECOND)
+        confirmation = response.xpath("//saml:SubjectConfirmationData", namespaces=NS_MAP)[0]
+        self.assertEqual(confirmation.attrib["Recipient"], SECOND)
+
+    def test_response_destination_idp_initiated(self):
+        """Test that IdP-initiated responses are sent to the default ACS URL"""
+        user = create_test_admin_user()
+        http_request = RequestFactory().get("/", user=user)
+        auth_n_request = AuthNRequestParser(self.provider).idp_initiated()
+        self.assertEqual(get_acs_url(self.provider, auth_n_request), DEFAULT)
+        response = AssertionProcessor(self.provider, http_request, auth_n_request).get_response()
+        self.assertEqual(response.attrib["Destination"], DEFAULT)
 
 
 class TestLegacyACSURLWrites(TestCase):
