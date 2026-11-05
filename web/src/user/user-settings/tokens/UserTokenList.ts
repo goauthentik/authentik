@@ -5,7 +5,7 @@ import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/user-settings/tokens/UserTokenForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/ak-tooltip";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
@@ -89,6 +89,13 @@ export class UserTokenList extends Table<Token> {
     }
 
     renderExpanded(item: Token): TemplateResult {
+        const expiration = (item: Token) => {
+            return html`<ak-tooltip placement="top">
+                <span>${formatElapsedTime(item.expires!)}</span>
+                <span slot="tooltip">${item.expires?.toLocaleString()}</span>
+            </ak-tooltip>`;
+        };
+
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
@@ -114,16 +121,7 @@ export class UserTokenList extends Table<Token> {
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        ${
-                            item.expiring
-                                ? html`<pf-tooltip
-                                      position="top"
-                                      .content=${item.expires?.toLocaleString()}
-                                  >
-                                      ${formatElapsedTime(item.expires!)}
-                                  </pf-tooltip>`
-                                : msg("-")
-                        }
+                        ${item.expiring ? expiration(item) : msg("-")}
                     </div>
                 </dd>
             </div>
@@ -171,11 +169,19 @@ export class UserTokenList extends Table<Token> {
                         .instancePk=${item.identifier}
                     >
                     </ak-user-token-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i aria-hidden="true" class="fas fa-edit"></i>
-                        </pf-tooltip>
-                    </button>
+                    <span slot="trigger">
+                        <ak-tooltip placement="top">
+                            <button
+                                aria-label=${msg("Edit token", {
+                                    id: "user.tokens.edit-button.aria-label",
+                                })}
+                                class="pf-c-button pf-m-plain"
+                            >
+                                <i aria-hidden="true" class="fas fa-edit"></i>
+                            </button>
+                            <span slot="tooltip">${msg("Edit")}</span>
+                        </ak-tooltip>
+                    </span>
                 </ak-forms-modal>
                 ${IconTokenCopyButton(item)}
             `,

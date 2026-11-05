@@ -3,6 +3,9 @@ import { isFirefox } from "#elements/utils/useragent";
 export const AnchorPositionSupported: boolean =
     CSS.supports("position-anchor", "--x") && CSS.supports("top", "anchor(bottom)");
 
+export const PopoverSupported: boolean =
+    typeof HTMLElement !== "undefined" && "popover" in HTMLElement.prototype;
+
 /**
  * Whether the browser supports the `anchor-size()` function for sizing an element
  * against its anchor (e.g. `width: anchor-size(width)`).
