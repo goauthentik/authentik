@@ -31,7 +31,7 @@ export const BoundPoliciesExpansion: LitFC<PolicyBindingProps> = ({ label, descr
             .allowedTypes=${allowed ?? defaultAllowedTypes}
             .typeNotices=${notices ?? []}
         >
-            ${description ? html`<span slot="description">${description}</span>` : nothing}
+            ${description ? html`<span slot="description">${description}</span>` : null}
         </ak-bound-policies-list>
     </ak-section-card>`;
 }
