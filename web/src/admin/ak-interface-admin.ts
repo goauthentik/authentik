@@ -15,12 +15,10 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-
 import { isAPIResultReady } from "#common/api/responses";
 import { globalAK } from "#common/global";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
-
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import {
     CommandPrefix,
@@ -43,7 +41,6 @@ import { matchRoute } from "#elements/router/core/matcher";
 import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
-
 import { AKDrawerChangeEvent } from "#components/notifications/events";
 import {
     DrawerState,
@@ -51,7 +48,6 @@ import {
     readDrawerParams,
     renderNotificationDrawerPanel,
 } from "#components/notifications/utils";
-
 import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
 import { BookmarkController } from "#admin/sidebar/Bookmarks/BookmarkController";
@@ -146,6 +142,7 @@ export class AdminInterface extends WithLicenseSummary(
     };
 
     private _breadcrumbManager = new BreadcrumbController(this);
+
     private bookmarkManager = new BookmarkController(this);
 
     /**

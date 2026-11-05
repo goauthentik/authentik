@@ -120,6 +120,10 @@
     flex: 1 0 auto;
 }
 
+[part="label-text"] {
+    flex: 1 0 auto;
+}
+
 [part="notice"] {
     flex: 0 1 auto;
     color: var(--pf-global--Color--dark-200);
