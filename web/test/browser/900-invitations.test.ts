@@ -25,7 +25,7 @@ test.describe("Invitation form", () => {
     //#endregion
 
     // Regression for goauthentik/authentik#22637: typing custom attributes into the
-    // CodeMirror editor must not block submission.
+    // code editor must not block submission.
     test("Create invitation with custom attributes", async ({ page, form, pointer }, testInfo) => {
         const name = invitationNames.get(testInfo.testId)!;
         const { fill, selectSearchValue } = form;
