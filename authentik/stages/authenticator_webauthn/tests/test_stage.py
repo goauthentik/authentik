@@ -2,6 +2,7 @@
 
 from base64 import b64decode
 from json import loads
+from unittest.mock import patch
 
 from django.urls import reverse
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
@@ -25,10 +26,7 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
-<<<<<<< HEAD
-=======
 from authentik.stages.authenticator_webauthn.tests.credentials import SoftwareCredential
->>>>>>> 5d82f6dbb (stages/authenticator_webauthn: don't offer signature algorithms OpenSSL can't verify when FIPS is enabled (#27116))
 
 
 class TestAuthenticatorWebAuthnStage(FlowTestCase):
@@ -571,11 +569,9 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             ),
         )
         self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
-<<<<<<< HEAD
-=======
 
     def test_registration_options_algorithms(self):
-        """Registration offers the classical algorithms first and the ML-DSA sets last"""
+        """Registration offers the preferred algorithms in order"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -587,7 +583,6 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         params = response.json()["registration"]["pubKeyCredParams"]
         self.assertEqual([p["alg"] for p in params], [int(alg) for alg in PREFERRED_PUB_KEY_ALGS])
-        self.assertEqual([p["alg"] for p in params][-3:], [-48, -49, -50])
 
     def _enable_fips(self):
         """Pretend the OpenSSL FIPS provider is active, which has neither Ed25519 nor ML-DSA"""
@@ -663,31 +658,3 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             },
         )
         self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
-
-    def test_register_mldsa(self):
-        """Test registration of an ML-DSA-44 (FIPS 204) credential"""
-        credential = SoftwareCredential(rp_id="localhost", origin="http://localhost:9000")
-        challenge = b"\x01" * 64
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = challenge
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            data={
-                "component": "ak-stage-authenticator-webauthn",
-                "response": credential.registration_response(challenge),
-            },
-            SERVER_NAME="localhost",
-            SERVER_PORT="9000",
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
-        device = WebAuthnDevice.objects.filter(user=self.user).first()
-        self.assertIsNotNone(device)
-        self.assertEqual(device.credential_id, bytes_to_base64url(credential.credential_id))
-        self.assertEqual(device.public_key, bytes_to_base64url(credential.cose_public_key))
-        self.assertIsNone(device.attestation_certificate_pem)
->>>>>>> 5d82f6dbb (stages/authenticator_webauthn: don't offer signature algorithms OpenSSL can't verify when FIPS is enabled (#27116))

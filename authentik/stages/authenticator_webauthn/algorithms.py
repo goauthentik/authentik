@@ -4,16 +4,11 @@ from cryptography.hazmat.backends.openssl.backend import backend
 from webauthn.helpers.cose import COSEAlgorithmIdentifier
 from webauthn.helpers.decode_credential_public_key import decode_credential_public_key
 
-# TODO: Remove the ML-DSA entries once py_webauthn adds ML-DSA to its default supported algorithms.
-# Offered in order of preference, so the post-quantum ML-DSA sets (FIPS 204) are only
-# chosen by an authenticator that supports none of the classical algorithms.
+# Offered in order of preference
 PREFERRED_PUB_KEY_ALGS = [
     COSEAlgorithmIdentifier.EDDSA,
     COSEAlgorithmIdentifier.ECDSA_SHA_256,
     COSEAlgorithmIdentifier.RSASSA_PKCS1_v1_5_SHA_256,
-    COSEAlgorithmIdentifier.ML_DSA_44,
-    COSEAlgorithmIdentifier.ML_DSA_65,
-    COSEAlgorithmIdentifier.ML_DSA_87,
 ]
 
 # TODO: Remove when OpenSSL/FIPS is updated
