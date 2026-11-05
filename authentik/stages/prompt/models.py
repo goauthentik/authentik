@@ -18,7 +18,6 @@ from rest_framework.fields import (
     EmailField,
     HiddenField,
     IntegerField,
-    ReadOnlyField,
 )
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
@@ -278,9 +277,7 @@ class Prompt(SerializerModel):
             case FieldTypes.TEXT | FieldTypes.TEXT_AREA:
                 kwargs["trim_whitespace"] = False
                 kwargs["allow_blank"] = not self.required
-            case FieldTypes.TEXT_READ_ONLY, FieldTypes.TEXT_AREA_READ_ONLY:
-                field_class = ReadOnlyField
-                # required can't be set for ReadOnlyField
+            case FieldTypes.TEXT_READ_ONLY | FieldTypes.TEXT_AREA_READ_ONLY:
                 kwargs["required"] = False
                 kwargs["allow_blank"] = True
             case FieldTypes.EMAIL:
