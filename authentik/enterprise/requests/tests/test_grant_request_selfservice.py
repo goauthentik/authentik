@@ -11,14 +11,9 @@ from authentik.enterprise.requests.models import (
     RequestRuleBinding,
     RequestStatus,
 )
-<<<<<<< HEAD
-from authentik.flows.models import Flow, FlowDesignation
-from authentik.flows.tests import FlowTestCase
-=======
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
-from authentik.flows.tests import APIFlowTestCase
->>>>>>> dbf9cc239 (enterprise/requests: record requester and reviewer notes on events (#27285))
+from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
