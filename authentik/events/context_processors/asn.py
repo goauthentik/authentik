@@ -27,6 +27,9 @@ class ASNDict(TypedDict):
 class ASNContextProcessor(MMDBContextProcessor):
     """ASN Database reader wrapper"""
 
+    default_path = "/geoip/dbip-asn-lite.mmdb"
+    legacy_path = "/geoip/GeoLite2-ASN.mmdb"
+
     def capability(self) -> Capabilities | None:
         from authentik.api.v3.config import Capabilities
 

@@ -74,10 +74,15 @@ jobs:
           # inputs
           context: .
           file: "${{ inputs.image-dockerfile }}"
+<<<<<<< HEAD
           build-args: "${{ inputs.image-build-args }}"
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
+=======
+          target: "${{ inputs.image-target }}"
+          build-args: ${{ inputs.image-build-args }}
+>>>>>>> 62e10f61e (events: bundle DB-IP Lite GeoIP databases instead of MaxMind GeoLite2 (#27102))
           # outputs
           push: false
           cache-from: |
