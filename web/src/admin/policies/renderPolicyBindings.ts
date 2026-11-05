@@ -20,8 +20,7 @@ interface PolicyBindingProps {
     notices?: PolicyBindingNotice[];
 }
 
-export function renderBoundPoliciesExpansion(props: PolicyBindingProps) {
-    const { label, description, allowed, target, mode, notices } = props;
+export const BoundPoliciesExpansion: LitFC<PolicyBindingProps> = ({ label, description, allowed, target, mode, notices }) {
 
     return html`<ak-section-card
         label=${label ?? msg("Policy bindings", { id: "policy-bindings.label" })}
