@@ -417,7 +417,6 @@ class OAuthAuthorizationParams:
                 grant_type=self.grant_type,
                 state=self.state,
                 response_mode=self.response_mode,
-                description="max_age must be a non-negative integer",
             )
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
