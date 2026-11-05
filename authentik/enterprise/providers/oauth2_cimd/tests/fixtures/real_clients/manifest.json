@@ -1,0 +1,30 @@
+{
+    "description": "Client ID Metadata Documents captured from real clients during first login. Semantic JSON captures (parsed and re-serialized), not byte-for-byte wire captures. Only Content-Type and Cache-Control response headers are recorded.",
+    "source": "https://github.com/goauthentik/authentik/issues/27566#issuecomment-6665192491",
+    "clients": {
+        "claude_code": {
+            "client": "Claude Code",
+            "client_version": "2.1.318",
+            "captured_at": "2026-11-05T16:53:55.580068+00:00",
+            "url": "https://claude.ai/oauth/claude-code-client-metadata",
+            "status": 200,
+            "headers": {
+                "Content-Type": "application/json",
+                "Cache-Control": "public, max-age=300"
+            },
+            "document": "claude_code_2.1.318.json"
+        },
+        "vscode": {
+            "client": "Visual Studio Code",
+            "client_version": "1.137.0",
+            "captured_at": "2026-11-05T17:01:37.941865+00:00",
+            "url": "https://vscode.dev/oauth/client-metadata.json",
+            "status": 200,
+            "headers": {
+                "Content-Type": "application/json; charset=utf-8",
+                "Cache-Control": "no-store,no-cache,max-age=0"
+            },
+            "document": "vscode_1.137.0.json"
+        }
+    }
+}
