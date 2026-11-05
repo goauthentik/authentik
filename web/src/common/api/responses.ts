@@ -26,7 +26,7 @@ export type APIResult<T extends object> = APIResultLoading | APIResultError | AP
 export function isAPIResultReady<T extends object>(
     result: APIResult<T> | null | undefined,
 ): result is APIResultSuccess<T> {
-    return !!(result && result.loading !== false && result.error !== null);
+    return !!result && !result.loading && !result.error;
 }
 
 /**
