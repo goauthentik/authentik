@@ -4,6 +4,7 @@ from typing import Any
 
 from django.db import models
 from django.db.models import Model
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type
 from drf_spectacular.types import OpenApiTypes
@@ -71,6 +72,20 @@ class ModelSerializer(BaseModelSerializer):
         return data
 
     def to_internal_value(self, data):
+        from authentik.crypto.secrets.api import SecretReferenceField
+
+        # Credentials moved from their own fields to secret references. Reject the old field
+        # names instead of ignoring them, so existing blueprints and API clients fail loudly.
+        # Remove with the legacy credential columns in 2027.2.
+        if hasattr(data, "keys"):
+            legacy = {
+                name: [_("Use %(field)s to reference a secret instead.") % {"field": f"{name}_ref"}]
+                for name in data.keys()
+                if name not in self.fields
+                and isinstance(self.fields.get(f"{name}_ref"), SecretReferenceField)
+            }
+            if legacy:
+                raise ValidationError(legacy)
         # Strip updates to fields not visible to the user
         instance = self.instance if isinstance(self.instance, Model) else None
         if rules := self.field_rules(instance):
@@ -132,7 +147,18 @@ class ModelSerializer(BaseModelSerializer):
         ):
             relation_info = relation_info._replace(has_through_model=False)
 
-        return super().build_relational_field(field_name, relation_info)
+        field_class, field_kwargs = super().build_relational_field(field_name, relation_info)
+        if relation_info.related_model._meta.label_lower == "authentik_crypto_secrets.secret":
+            from authentik.crypto.secrets.api import SecretReferenceField
+
+            # The model field says whether a secret is required, optional, or generated when
+            # the object is created: generated references are blank, but not null.
+            model_field = relation_info.model_field
+            field_class = SecretReferenceField
+            field_kwargs["required"] = not model_field.blank
+            field_kwargs["allow_null"] = model_field.blank
+            field_kwargs["required_on_update"] = not model_field.null
+        return field_class, field_kwargs
 
 
 class PassiveSerializer(Serializer):

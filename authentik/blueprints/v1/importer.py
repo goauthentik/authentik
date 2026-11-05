@@ -55,6 +55,11 @@ from authentik.rbac.models import Role
 # Context set when the serializer is created in a blueprint context
 # Update website/docs/customize/blueprints/v1/models.mdx when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
+# User importing the blueprint through the API, whose permissions serializers check when there
+# is no request. Blueprints that authentik applies itself have no user.
+SERIALIZER_CONTEXT_USER = "blueprint_user"
+# (model, pk) of each object the import has created so far
+SERIALIZER_CONTEXT_CREATED = "blueprint_created"
 
 
 def excluded_models() -> list[type[Model]]:
@@ -128,8 +133,10 @@ class Importer:
     logger: BoundLogger
     _import: Blueprint
 
-    def __init__(self, blueprint: Blueprint, context: dict | None = None):
+    def __init__(self, blueprint: Blueprint, context: dict | None = None, user: User | None = None):
         self.__pk_map: dict[Any, Model] = {}
+        self.__created: set[tuple[type[Model], Any]] = set()
+        self._user = user
         self._import = blueprint
         self.logger = get_logger()
         ctx = self.default_context()
@@ -153,7 +160,9 @@ class Importer:
         return context
 
     @staticmethod
-    def from_string(yaml_input: str, context: dict | None = None) -> Importer:
+    def from_string(
+        yaml_input: str, context: dict | None = None, user: User | None = None
+    ) -> Importer:
         """Parse YAML string and create blueprint importer from it"""
         try:
             import_dict = load(yaml_input, BlueprintLoader)
@@ -165,7 +174,14 @@ class Importer:
             )
         except DaciteError as exc:
             raise EntryInvalidError(exc) from exc
-        return Importer(_import, context)
+        return Importer(_import, context, user)
+
+    def _serializer_context(self, entry: BlueprintEntry) -> dict[str, Any]:
+        return {
+            SERIALIZER_CONTEXT_BLUEPRINT: entry,
+            SERIALIZER_CONTEXT_USER: self._user,
+            SERIALIZER_CONTEXT_CREATED: self.__created,
+        }
 
     @property
     def blueprint(self) -> Blueprint:
@@ -231,9 +247,7 @@ class Importer:
             serializer_class: type[Serializer] = model.serializer()
             serializer = serializer_class(
                 data=entry.get_attrs(self._import),
-                context={
-                    SERIALIZER_CONTEXT_BLUEPRINT: entry,
-                },
+                context=self._serializer_context(entry),
             )
             try:
                 serializer.is_valid(raise_exception=True)
@@ -305,9 +319,7 @@ class Importer:
         serializer_kwargs["data"] = full_data
 
         serializer: Serializer = model().serializer(
-            context={
-                SERIALIZER_CONTEXT_BLUEPRINT: entry,
-            },
+            context=self._serializer_context(entry),
             **serializer_kwargs,
         )
         try:
@@ -389,6 +401,7 @@ class Importer:
     def _apply_models(self, raise_errors=False) -> bool:
         """Apply (create/update) models yaml"""
         self.__pk_map = {}
+        self.__created.clear()
         for entry in self._import.iter_entries():
             model_app_label, model_name = entry.get_model(self._import).split(".")
             try:
@@ -433,9 +446,13 @@ class Importer:
                         pk=instance.pk,
                     )
                 else:
+                    adding = instance is not None and instance._state.adding
                     instance = self._save_with_retry(serializer, entry, raise_errors)
                     if instance is None:
                         return False
+                    # A retry saves an instance another process created in the meantime.
+                    if adding and instance is serializer.instance:
+                        self.__created.add((type(instance), instance.pk))
                     self.logger.debug("Updated model", model=instance)
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk
