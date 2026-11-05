@@ -18,11 +18,8 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.tests.utils import load_fixture
-<<<<<<< HEAD
-from authentik.tenants.models import Tenant
-=======
 from authentik.tasks.models import Task, TaskStatus
->>>>>>> a96ef0eb3 (lib/sync/outgoing: report conflicting objects instead of failing sync (#27287))
+from authentik.tenants.models import Tenant
 
 domains_list_v1_mock = load_fixture("fixtures/domains_list_v1.json")
 

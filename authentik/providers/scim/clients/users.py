@@ -4,12 +4,7 @@ from copy import deepcopy
 from typing import Any
 
 from django.db import transaction
-<<<<<<< HEAD
 from django.db.models import Q
-from django.utils.http import urlencode
-=======
-from django.db.models import Q, QuerySet
->>>>>>> a96ef0eb3 (lib/sync/outgoing: report conflicting objects instead of failing sync (#27287))
 from pydantic import ValidationError
 
 from authentik.core.models import User

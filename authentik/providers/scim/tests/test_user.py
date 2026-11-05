@@ -17,12 +17,8 @@ from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.providers.scim.clients.users import SCIMUserClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects, sync_tasks
-<<<<<<< HEAD
-from authentik.tasks.models import Task
-from authentik.tenants.models import Tenant
-=======
 from authentik.tasks.models import Task, TaskStatus
->>>>>>> a96ef0eb3 (lib/sync/outgoing: report conflicting objects instead of failing sync (#27287))
+from authentik.tenants.models import Tenant
 
 
 @patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)

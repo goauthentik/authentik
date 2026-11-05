@@ -31,11 +31,8 @@ from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
-<<<<<<< HEAD
-from authentik.tenants.models import Tenant
-=======
 from authentik.tasks.models import Task, TaskStatus
->>>>>>> a96ef0eb3 (lib/sync/outgoing: report conflicting objects instead of failing sync (#27287))
+from authentik.tenants.models import Tenant
 
 
 class MicrosoftEntraGroupTests(TestCase):
