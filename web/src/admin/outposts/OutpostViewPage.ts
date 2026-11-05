@@ -11,7 +11,7 @@ import "#admin/outposts/OutpostProviderList";
 import "#elements/buttons/TokenCopyButton/ak-token-copy-button";
 
 import { aki } from "#common/api/client";
-import { docLink } from "#common/global";
+import { docLink, globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
@@ -245,7 +245,7 @@ export class OutpostViewPage extends AKElement {
                             class="pf-c-form-control"
                             readonly
                             type="text"
-                            value="${document.location.origin}"
+                            value="${globalAK().api.base}"
                         />
                     </div>
                     <div class="pf-c-form__group">
