@@ -20,8 +20,7 @@ interface PolicyBindingProps {
     notices?: PolicyBindingNotice[];
 }
 
-export function renderBoundPoliciesExpansion(props: PolicyBindingProps) {
-    const { label, description, allowed, target, mode, notices } = props;
+export const BoundPoliciesExpansion: LitFC<PolicyBindingProps> = ({ label, description, allowed, target, mode, notices }) {
 
     return html`<ak-section-card
         label=${label ?? msg("Policy bindings", { id: "policy-bindings.label" })}
@@ -32,7 +31,7 @@ export function renderBoundPoliciesExpansion(props: PolicyBindingProps) {
             .allowedTypes=${allowed ?? defaultAllowedTypes}
             .typeNotices=${notices ?? []}
         >
-            ${description ? html`<span slot="description">${description}</span>` : nothing}
+            ${description ? html`<span slot="description">${description}</span>` : null}
         </ak-bound-policies-list>
     </ak-section-card>`;
 }

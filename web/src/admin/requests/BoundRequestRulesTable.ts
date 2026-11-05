@@ -88,7 +88,7 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
             target: item.pbmUuid,
             mode: item.policyEngineMode,
             description: msg(
-                "These bindings control which users/groups can request access to this object.",
+                "These bindings control which users or groups can request access to this object.",
             ),
         });
     }
