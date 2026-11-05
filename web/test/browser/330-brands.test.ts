@@ -49,9 +49,9 @@ test.describe("Brands", () => {
         await test.step("Brand form keeps its state and selects the upload", async () => {
             await expect(brandingGroup, "Branding group stays open").toHaveAttribute("open");
 
-            const { combobox } = await form.findSearchSelect("Logo", dialog);
+            const control = dialog.getByRole("textbox", { name: "Logo", exact: true });
 
-            await expect(combobox, "Uploaded file is selected").toHaveValue(
+            await expect(control, "Uploaded file is selected").toHaveValue(
                 new RegExp(`${fileName}\\.svg`),
             );
         });
