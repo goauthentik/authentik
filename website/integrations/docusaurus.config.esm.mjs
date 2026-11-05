@@ -95,7 +95,11 @@ export default /** @type {import("@docusaurus/types").Config} */ (
 
             //#region Theme
 
-            themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
+            themes: [
+                "@goauthentik/docusaurus-theme",
+                "@docusaurus/theme-mermaid",
+                "@goauthentik/docusaurus-theme/toc",
+            ],
             favicon: "https://goauthentik.io/img/icon.png",
             themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
                 algolia: createAlgoliaConfig({

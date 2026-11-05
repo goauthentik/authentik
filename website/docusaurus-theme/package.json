@@ -16,6 +16,7 @@
         ".": "./index.js",
         "./custom.css": "./custom.css",
         "./config": "./config.js",
+        "./toc": "./toc/index.js",
         "./remark": "./remark/index.mjs",
         "./components/*": "./components/*",
         "./redirects/plugin": "./redirects/plugin.mjs",
