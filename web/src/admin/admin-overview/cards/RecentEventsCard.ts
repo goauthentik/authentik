@@ -23,7 +23,7 @@ export class RecentEventsCard extends SimpleEventTable {
 
     public override expandable = false;
     // Rough approximate based on admin overview card height
-    public override pageSize = 6;
+    public override pageSize = 8;
 
     @property()
     order = "-created";

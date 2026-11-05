@@ -91,6 +91,7 @@ export class AdminLoginAuthorizeChart extends ChartCardWithStats {
             {
                 label: msg("Issues"),
                 ...weekOverWeek(data, issueActions, "up-bad"),
+                tooltip: msg("System exceptions, exceptions in tasks/policies/property mappings"),
             },
         ];
     }
