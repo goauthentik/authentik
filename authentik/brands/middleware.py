@@ -7,9 +7,10 @@ from django.http.response import HttpResponse
 from django.utils.translation import override
 
 from authentik.brands.utils import get_brand_for_request
+from authentik.lib.tracing.otel_django_middleware import TracedMiddleware
 
 
-class BrandMiddleware:
+class BrandMiddleware(TracedMiddleware):
     """Add current brand to http request"""
 
     get_response: Callable[[HttpRequest], HttpResponse]

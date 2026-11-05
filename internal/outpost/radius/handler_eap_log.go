@@ -1,6 +1,9 @@
 package radius
 
 import (
+	"fmt"
+	"strconv"
+
 	"beryju.io/radius-eap/protocol"
 	"github.com/sirupsen/logrus"
 )
@@ -38,34 +41,56 @@ func (i *iter) At() (k string, v any) {
 
 	if i.i+1 == len(i.f) {
 		// Non even number of elements, add empty string.
-		return i.f[i.i].(string), ""
+		return toString(i.f[i.i]), ""
 	}
-	return i.f[i.i].(string), i.f[i.i+1]
+	return toString(i.f[i.i]), i.f[i.i+1]
+}
+
+func toString(v any) string {
+	switch t := v.(type) {
+	case string:
+		return t
+	case *string:
+		return *t
+	case bool:
+		return strconv.FormatBool(t)
+	case float32:
+		return strconv.FormatFloat(float64(t), 'f', -1, 64)
+	case float64:
+		return strconv.FormatFloat(t, 'f', -1, 64)
+	case int:
+		return strconv.FormatInt(int64(t), 10)
+	default:
+		return fmt.Sprintf("%s", t)
+	}
 }
 
 type logrusAdapter struct {
 	entry *logrus.Entry
 }
 
-func (l *logrusAdapter) Debug(format string, args ...any) {
-	l.entry.Debugf(format, args...)
-}
-func (l *logrusAdapter) Info(format string, args ...any) {
-	l.entry.Infof(format, args...)
-}
-func (l *logrusAdapter) Warn(format string, args ...any) {
-	l.entry.Warnf(format, args...)
-}
-func (l *logrusAdapter) Error(format string, args ...any) {
-	l.entry.Errorf(format, args...)
-}
-func (l *logrusAdapter) With(args ...any) protocol.Logger {
+func (l *logrusAdapter) fields(args ...any) map[string]any {
 	f := make(map[string]any, len(args)/2)
 	i := Fields(args).Iterator()
 	for i.Next() {
 		k, v := i.At()
 		f[k] = v
 	}
-	e := l.entry.WithFields(f)
-	return &logrusAdapter{e}
+	return f
+}
+
+func (l *logrusAdapter) Debug(msg string, args ...any) {
+	l.entry.WithFields(l.fields(args...)).Debug(msg)
+}
+func (l *logrusAdapter) Info(msg string, args ...any) {
+	l.entry.WithFields(l.fields(args...)).Info(msg)
+}
+func (l *logrusAdapter) Warn(msg string, args ...any) {
+	l.entry.WithFields(l.fields(args...)).Warn(msg)
+}
+func (l *logrusAdapter) Error(msg string, args ...any) {
+	l.entry.WithFields(l.fields(args...)).Error(msg)
+}
+func (l *logrusAdapter) With(args ...any) protocol.Logger {
+	return &logrusAdapter{l.entry.WithFields(l.fields(args...))}
 }

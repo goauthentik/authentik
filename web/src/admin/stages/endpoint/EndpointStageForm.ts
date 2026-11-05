@@ -1,88 +1,66 @@
+import "#components/ak-text-input";
 import "#elements/forms/Radio";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#elements/forms/FormGroup";
+import { aki } from "#common/api/client";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
+
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    Connector,
-    EndpointsApi,
-    EndpointsConnectorsListRequest,
-    EndpointStage,
-    StageModeEnum,
-    StagesApi,
-} from "@goauthentik/api";
+import { Connector, EndpointsApi, EndpointStage, StageModeEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+
+const connectorSource: SearchSelectSource<Connector> = {
+    fetchObjects: (query) =>
+        aki(EndpointsApi)
+            .endpointsConnectorsList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (connector) => connector.connectorUuid ?? "",
+    labelOf: (connector) => connector.name,
+    describe: (connector) => connector.verboseName,
+};
 
 @customElement("ak-endpoints-stage-form")
 export class EndpointStageForm extends BaseStageForm<EndpointStage> {
-    loadInstance(pk: string): Promise<EndpointStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesEndpointsRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: EndpointStage): Promise<EndpointStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesEndpointsUpdate({
-                stageUuid: this.instance.pk || "",
-                endpointStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesEndpointsCreate({
-            endpointStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesEndpointsRetrieve({ stageUuid }),
+        create: (endpointStageRequest: EndpointStage) =>
+            aki(StagesApi).stagesEndpointsCreate({ endpointStageRequest }),
+        update: (stageUuid: string, endpointStageRequest: EndpointStage) =>
+            aki(StagesApi).stagesEndpointsUpdate({ stageUuid, endpointStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg("Stage which associates the currently used device with the current session.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Connector")} required name="connector">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Connector[]> => {
-                                const args: EndpointsConnectorsListRequest = {
-                                    ordering: "name",
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const users = await new EndpointsApi(
-                                    DEFAULT_CONFIG,
-                                ).endpointsConnectorsList(args);
-                                return users.results;
-                            }}
-                            .renderElement=${(connector: Connector): string => {
-                                return connector.name;
-                            }}
-                            .renderDescription=${(connector: Connector): TemplateResult => {
-                                return html`${connector.verboseName}`;
-                            }}
-                            .value=${(connector: Connector | undefined): string | undefined => {
-                                return connector?.connectorUuid;
-                            }}
-                            .selected=${(connector: Connector): boolean => {
-                                return connector.connectorUuid === this.instance?.connector;
-                            }}
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "connector",
+                            source: connectorSource,
+                            value: this.instance?.connector,
+                            blankable: false,
+                        })}
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal label=${msg("Mode")} required name="mode">

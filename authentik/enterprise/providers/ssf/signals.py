@@ -1,8 +1,9 @@
 from hashlib import sha256
 
 from django.db.models import Model
-from django.db.models.signals import post_delete, post_save, pre_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+from django.http import HttpRequest
 
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
@@ -12,13 +13,17 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.core.signals import password_changed
+from authentik.core.signals import (
+    admin_authenticated_session_deleted,
+    password_changed,
+    password_hash_changed,
+)
 from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
 )
 from authentik.enterprise.providers.ssf.tasks import send_ssf_events
-from authentik.events.middleware import audit_ignore
+from authentik.events.middleware import audit_ignore, is_audit_ignored
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import DuoDevice
 from authentik.stages.authenticator_static.models import StaticDevice
@@ -27,6 +32,7 @@ from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     WebAuthnDevice,
 )
+from authentik.stages.password.models import PasswordDevice
 
 USER_PATH_PROVIDERS_SSF = USER_PATH_SYSTEM_PREFIX + "/providers/ssf"
 
@@ -59,8 +65,10 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
             instance.save()
 
 
-@receiver(pre_delete, sender=AuthenticatedSession)
-def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSession, **_):
+@receiver(admin_authenticated_session_deleted)
+def ssf_user_session_delete_session_revoked(
+    sender, instance: AuthenticatedSession, request: HttpRequest, **_
+):
     """Session revoked trigger (users' session has been deleted)
 
     As this signal is also triggered with a regular logout, we can't be sure
@@ -70,6 +78,7 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
         {
             "initiating_entity": "user",
         },
+        request=request,
         sub_id={
             "format": "complex",
             "session": {
@@ -84,14 +93,13 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
     )
 
 
-@receiver(password_changed)
-def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
+def _send_password_credential_change(user: User, change_type: str):
     """Credential change trigger (password changed)"""
     send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         {
             "credential_type": "password",
-            "change_type": "revoke" if password is None else "update",
+            "change_type": change_type,
         },
         sub_id={
             "format": "complex",
@@ -101,6 +109,16 @@ def ssf_password_changed_cred_change(sender, user: User, password: str | None, *
             },
         },
     )
+
+
+@receiver(password_hash_changed)
+@receiver(password_changed)
+def ssf_password_changed_cred_change(signal, sender, user: User, password: str | None = None, **_):
+    """Credential change trigger (password changed)"""
+    if signal is password_hash_changed:
+        _send_password_credential_change(user, "update")
+        return
+    _send_password_credential_change(user, "revoke" if password is None else "update")
 
 
 device_type_map = {
@@ -113,7 +131,14 @@ device_type_map = {
 
 @receiver(post_save)
 def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, **_):
-    if not isinstance(instance, Device):
+    # Password changes are emitted by ssf_password_changed_cred_change.
+    if not isinstance(instance, Device) or isinstance(instance, PasswordDevice):
+        return
+    # authentication using an authenticator device might modify the device (for example
+    # with TOTP last_t is updated, and with WebAuthn the sign_count)
+    # We don't want to send an event for that since most SSF clients expect this event to
+    # be an actual user-initiated modification to a credential
+    if is_audit_ignored():
         return
     if not instance.confirmed:
         return
@@ -140,7 +165,7 @@ def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, *
 
 @receiver(post_delete)
 def ssf_device_post_delete(sender: type[Model], instance: Device, **_):
-    if not isinstance(instance, Device):
+    if not isinstance(instance, Device) or isinstance(instance, PasswordDevice):
         return
     if not instance.confirmed:
         return

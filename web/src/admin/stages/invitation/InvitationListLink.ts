@@ -1,23 +1,23 @@
 import "#admin/stages/invitation/InvitationSendEmailForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { writeToClipboard } from "#common/clipboard";
+import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
 @customElement("ak-stage-invitation-list-link")
 export class InvitationListLink extends AKElement {
@@ -27,13 +27,28 @@ export class InvitationListLink extends AKElement {
     @property()
     selectedFlow?: string;
 
-    static styles: CSSResult[] = [PFForm, PFFormControl, PFDescriptionList, PFButton];
+    static styles: CSSResult[] = [
+        PFForm,
+        PFFormControl,
+        PFDescriptionList,
+        PFButton,
+        css`
+            :host {
+                display: block;
+                width: 100%;
+            }
+            input.pf-c-form-control {
+                width: 100%;
+            }
+        `,
+    ];
 
     renderLink(): string {
         if (this.invitation?.flowObj) {
             this.selectedFlow = this.invitation.flowObj?.slug;
         }
-        return `${window.location.protocol}//${window.location.host}/if/flow/${this.selectedFlow}/?itoken=${this.invitation?.pk}`;
+
+        return `${globalAK().api.base}if/flow/${this.selectedFlow}/?itoken=${this.invitation?.pk}`;
     }
 
     renderFlowSelector(): TemplateResult {
@@ -51,7 +66,7 @@ export class InvitationListLink extends AKElement {
                         }}
                     >
                         ${until(
-                            new StagesApi(DEFAULT_CONFIG)
+                            aki(StagesApi)
                                 .stagesInvitationStagesList({
                                     ordering: "name",
                                     noFlows: false,
@@ -64,13 +79,17 @@ export class InvitationListLink extends AKElement {
                                     ) {
                                         this.selectedFlow = stages.results[0].flowSet[0].slug;
                                     }
+
                                     const seenFlowSlugs: string[] = [];
+
                                     return stages.results.map((stage) => {
                                         return stage.flowSet?.map((flow) => {
                                             if (seenFlowSlugs.includes(flow.slug)) {
                                                 return nothing;
                                             }
+
                                             seenFlowSlugs.push(flow.slug);
+
                                             return html`<option
                                                 value=${flow.slug}
                                                 ?selected=${flow.slug === this.selectedFlow}
@@ -103,6 +122,7 @@ export class InvitationListLink extends AKElement {
                             class="pf-c-form-control"
                             readonly
                             type="text"
+                            style="width: 100%;"
                             value=${this.renderLink()}
                         />
                     </div>

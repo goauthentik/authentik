@@ -7,11 +7,10 @@ from uuid import uuid4
 from django.contrib.postgres.indexes import HashIndex
 from django.db import models
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 
-from authentik.core.models import ExpiringModel
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
 
 if TYPE_CHECKING:
     from authentik.enterprise.license import LicenseKey
@@ -63,7 +62,7 @@ class License(SerializerModel):
 
 
 class LicenseUsageStatus(models.TextChoices):
-    """License states an instance/tenant can be in"""
+    """License states an instance can be in"""
 
     UNLICENSED = "unlicensed"
     VALID = "valid"

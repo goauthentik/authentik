@@ -2,8 +2,6 @@ from datetime import datetime
 from functools import cached_property
 from uuid import uuid4
 
-from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -12,9 +10,14 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 
-from authentik.core.models import BackchannelProvider, ExpiringModel, Token
+from authentik.core.models import BackchannelProvider, Token
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import CreatedUpdatedModel, InternallyManagedMixin
+from authentik.lib.models import (
+    CreatedUpdatedModel,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
 from authentik.tasks.models import TasksModel
@@ -24,8 +27,31 @@ class EventTypes(models.TextChoices):
     """SSF Event types supported by authentik"""
 
     CAEP_SESSION_REVOKED = "https://schemas.openid.net/secevent/caep/event-type/session-revoked"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.1"""
+    CAEP_TOKEN_CLAIMS_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/token-claims-change"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.2"""
     CAEP_CREDENTIAL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/credential-change"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.3"""
+    CAEP_ASSURANCE_LEVEL_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/assurance-level-change"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.4"""
+    CAEP_DEVICE_COMPLIANCE_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/device-compliance-change"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.5"""
+    CAEP_SESSION_ESTABLISHED = (
+        "https://schemas.openid.net/secevent/caep/event-type/session-established"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.6"""
+    CAEP_SESSION_PRESENTED = "https://schemas.openid.net/secevent/caep/event-type/session-presented"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.7"""
+    CAEP_RISK_LEVEL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/risk-level-change"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.8"""
     SET_VERIFICATION = "https://schemas.openid.net/secevent/ssf/event-type/verification"
+    """https://openid.net/specs/openid-sharedsignals-framework-1_0.html#section-8.1.4.1"""
 
 
 class DeliveryMethods(models.TextChoices):
@@ -46,10 +72,12 @@ class SSFEventStatus(models.TextChoices):
 
 
 class StreamStatus(models.TextChoices):
+    """SSF Stream status"""
 
     ENABLED = "enabled"
     PAUSED = "paused"
     DISABLED = "disabled"
+    DISABLED_DELETED = "disabled_deleted"
 
 
 class SSFProvider(TasksModel, BackchannelProvider):
@@ -65,7 +93,9 @@ class SSFProvider(TasksModel, BackchannelProvider):
 
     push_verify_certificates = models.BooleanField(default=True)
 
-    oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
+    oidc_auth_providers = models.ManyToManyField(
+        OAuth2Provider, blank=True, default=None, through="SSFProviderOIDCAuthProvider"
+    )
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
 
@@ -79,11 +109,7 @@ class SSFProvider(TasksModel, BackchannelProvider):
         """Get either the configured certificate or the client secret"""
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
-        if isinstance(private_key, RSAPrivateKey):
-            return private_key, JWTAlgorithms.RS256
-        if isinstance(private_key, EllipticCurvePrivateKey):
-            return private_key, JWTAlgorithms.ES256
-        raise ValueError(f"Invalid private key type: {type(private_key)}")
+        return private_key, JWTAlgorithms.from_private_key(private_key)
 
     @property
     def service_account_identifier(self) -> str:
@@ -97,7 +123,7 @@ class SSFProvider(TasksModel, BackchannelProvider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/ssf.svg")
+        return static("authentik/sources/ssf/light.svg")
 
     @property
     def component(self) -> str:
@@ -111,6 +137,29 @@ class SSFProvider(TasksModel, BackchannelProvider):
             # as the user requesting to add a stream must have the permission on the provider
             ("add_stream", _("Add stream to SSF provider")),
         ]
+
+
+class SSFProviderOIDCAuthProvider(SimpleThroughModel):
+    ssf_provider = models.ForeignKey(
+        SSFProvider, on_delete=models.CASCADE, db_column="ssfprovider_id"
+    )
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        db_column="oauth2provider_id",
+    )
+
+    class Meta:
+        db_table = "authentik_providers_ssf_ssfprovider_oidc_auth_providers"
+        unique_together = (("ssf_provider", "oauth2_provider"),)
+        verbose_name = _("SSF Provider OIDC Auth Provider")
+        verbose_name_plural = _("SSF Provider OIDC Auth Providers")
+
+    def __str__(self):
+        return (
+            f"SSFProviderOIDCAuthProvider for SSFProvider {self.ssf_provider_id} "
+            f"and OAuth2Provider {self.oauth2_provider_id}."
+        )
 
 
 class Stream(models.Model):

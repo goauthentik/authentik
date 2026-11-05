@@ -1,8 +1,7 @@
 import "#elements/Spinner";
-
 import { loadTelegramWidget, TelegramUserResponse } from "../../../flow/sources/telegram/utils";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -23,7 +22,7 @@ export class SourceSettingsTelegram extends BaseUserSettings {
     connectBtnRef = createRef();
 
     protected disconnectSource(): Promise<void> {
-        return new SourcesApi(DEFAULT_CONFIG)
+        return aki(SourcesApi)
             .sourcesUserConnectionsTelegramDestroy({
                 id: this.connectionPk,
             })
@@ -35,6 +34,7 @@ export class SourceSettingsTelegram extends BaseUserSettings {
             })
             .catch(async (error: unknown) => {
                 const parsedError = await parseAPIResponseError(error);
+
                 showMessage({
                     level: MessageLevel.error,
                     message: msg(
@@ -68,13 +68,15 @@ export class SourceSettingsTelegram extends BaseUserSettings {
         const params = new URLSearchParams(this.configureURL || "");
         const botUsername: string = params.get("bot_username") || "";
         const requestMessageAccess = params.get("request_message_access") === "True";
+
         if (this.connectBtnRef.value) this.connectBtnRef.value.textContent = "";
+
         loadTelegramWidget(
             this.connectBtnRef.value,
             botUsername,
             requestMessageAccess,
             (user: TelegramUserResponse) => {
-                new SourcesApi(DEFAULT_CONFIG)
+                aki(SourcesApi)
                     .sourcesTelegramConnectUserCreate({
                         slug: this.objectId,
                         telegramAuthRequest: {
@@ -89,6 +91,7 @@ export class SourceSettingsTelegram extends BaseUserSettings {
                     })
                     .then((connection: UserTelegramSourceConnection) => {
                         this.connectionPk = connection.pk;
+
                         showMessage({
                             level: MessageLevel.info,
                             message: msg("Successfully connected source"),
@@ -96,6 +99,7 @@ export class SourceSettingsTelegram extends BaseUserSettings {
                     })
                     .catch(async (error: unknown) => {
                         const parsedError = await parseAPIResponseError(error);
+
                         showMessage({
                             level: MessageLevel.error,
                             message: msg(

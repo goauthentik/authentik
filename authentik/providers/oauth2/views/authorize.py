@@ -1,8 +1,9 @@
 """authentik OAuth2 Authorization views"""
 
+from base64 import urlsafe_b64decode
 from dataclasses import InitVar, dataclass, field
 from datetime import timedelta
-from json import dumps
+from json import JSONDecodeError, dumps, loads
 from re import error as RegexError
 from re import fullmatch
 from typing import Any
@@ -25,6 +26,7 @@ from authentik.common.oauth.constants import (
     PROMPT_LOGIN,
     PROMPT_NONE,
     QS_LOGIN_HINT,
+    SCOPE_BOUND_KEY,
     SCOPE_GITHUB,
     SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
@@ -47,6 +49,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
     ClientIdError,
@@ -59,6 +62,7 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantType,
     OAuth2Provider,
+    OAuth2SessionLogin,
     RedirectURIMatchingMode,
     ResponseMode,
     ResponseTypes,
@@ -89,7 +93,7 @@ class OAuthAuthorizationParams:
     response_type: str
     response_mode: str | None
     scope: set[str]
-    state: str
+    state: str | None
     nonce: str | None
     prompt: set[str]
     grant_type: str
@@ -102,6 +106,7 @@ class OAuthAuthorizationParams:
 
     code_challenge: str | None = None
     code_challenge_method: str | None = None
+    dpop_jkt: str | None = None
 
     github_compat: InitVar[bool] = False
 
@@ -116,7 +121,6 @@ class OAuthAuthorizationParams:
         # Because in this endpoint we handle both GET
         # and POST request.
         query_dict = request.POST if request.method == "POST" else request.GET
-        state = query_dict.get("state")
         redirect_uri = query_dict.get("redirect_uri", "")
 
         response_type = query_dict.get("response_type", "")
@@ -126,6 +130,7 @@ class OAuthAuthorizationParams:
         response_mode = query_dict.get("response_mode", False)
 
         max_age = query_dict.get("max_age")
+        dpop_jkt = query_dict.get("dpop_jkt")
         return OAuthAuthorizationParams(
             client_id=query_dict.get("client_id", ""),
             redirect_uri=redirect_uri,
@@ -133,13 +138,14 @@ class OAuthAuthorizationParams:
             response_mode=response_mode,
             grant_type="",
             scope=set(query_dict.get("scope", "").split()),
-            state=state,
+            state=query_dict.get("state"),
             nonce=query_dict.get("nonce"),
             prompt=ALLOWED_PROMPT_PARAMS.intersection(set(query_dict.get("prompt", "").split())),
             request=query_dict.get("request", None),
             max_age=int(max_age) if max_age else None,
             code_challenge=query_dict.get("code_challenge"),
             code_challenge_method=query_dict.get("code_challenge_method", "plain"),
+            dpop_jkt=dpop_jkt,
             github_compat=github_compat,
         )
 
@@ -151,45 +157,90 @@ class OAuthAuthorizationParams:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
         self.check_redirect_uri()
+        if self.request:
+            # We don't support request objects, but the error must still be returned to the
+            # client using the response mode and type it requested - which, may only be present
+            # inside the request object. So we parse just enough to handle this
+            self.resolve_routing_from_request_object()
+            self.grant_type = self.resolve_grant_type()
+            self.set_default_response_mode()
+            raise AuthorizeError(
+                self.redirect_uri,
+                error="request_not_supported",
+                grant_type=self.grant_type or "",
+                state=self.state,
+                response_mode=self.response_mode,
+            )
         self.check_grant()
         self.check_scope(github_compat)
-        if self.request:
-            raise AuthorizeError(
-                self.redirect_uri, "request_not_supported", self.grant_type, self.state
-            )
+        self.check_dpop_jkt()
         self.check_nonce()
         self.check_code_challenge()
+
+    def resolve_grant_type(self) -> str | None:
+        """Map the response_type to the grant_type/flow it implies, without validation."""
+        return {
+            ResponseTypes.CODE: GrantType.AUTHORIZATION_CODE,
+            ResponseTypes.ID_TOKEN: GrantType.IMPLICIT,
+            ResponseTypes.ID_TOKEN_TOKEN: GrantType.IMPLICIT,
+            ResponseTypes.CODE_TOKEN: GrantType.HYBRID,
+            ResponseTypes.CODE_ID_TOKEN: GrantType.HYBRID,
+            ResponseTypes.CODE_ID_TOKEN_TOKEN: GrantType.HYBRID,
+        }.get(self.response_type)
+
+    def set_default_response_mode(self):
+        """Default the response mode based on the grant type when not explicitly requested."""
+        if self.response_mode not in ResponseMode.values:
+            self.response_mode = ResponseMode.QUERY
+            if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID]:
+                self.response_mode = ResponseMode.FRAGMENT
+
+    def resolve_routing_from_request_object(self):
+        """Best-effort decode of the by-value request object to recover the response routing
+        parameters (response_type, response_mode) when they aren't passed as top-level request
+        parameters. Only these two values are read - used solely to return errors via the
+        response mode the client requested. The object is not verified or otherwise processed."""
+        if not self.request:
+            return
+        try:
+            payload = self.request.split(".")[1]
+            payload += "=" * (-len(payload) % 4)
+            claims = loads(urlsafe_b64decode(payload))
+        except IndexError, ValueError, JSONDecodeError:
+            return
+        if not isinstance(claims, dict):
+            return
+        if not self.response_type:
+            self.response_type = claims.get("response_type", "")
+        if not self.response_mode:
+            self.response_mode = claims.get("response_mode", False)
 
     def check_grant(self):
         """Check grant"""
         # Determine which flow to use.
-        if self.response_type in [ResponseTypes.CODE]:
-            self.grant_type = GrantType.AUTHORIZATION_CODE
-        elif self.response_type in [
-            ResponseTypes.ID_TOKEN,
-            ResponseTypes.ID_TOKEN_TOKEN,
-        ]:
-            self.grant_type = GrantType.IMPLICIT
-        elif self.response_type in [
-            ResponseTypes.CODE_TOKEN,
-            ResponseTypes.CODE_ID_TOKEN,
-            ResponseTypes.CODE_ID_TOKEN_TOKEN,
-        ]:
-            self.grant_type = GrantType.HYBRID
+        self.grant_type = self.resolve_grant_type()
         # Grant type validation.
         if not self.grant_type:
             LOGGER.warning("Invalid response type", type=self.response_type)
-            raise AuthorizeError(self.redirect_uri, "unsupported_response_type", "", self.state)
+            raise AuthorizeError(
+                redirect_uri=self.redirect_uri,
+                error="unsupported_response_type",
+                grant_type="",
+                state=self.state,
+                response_mode=self.response_mode,
+            )
 
         if self.grant_type not in self.provider.grant_types:
             LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
-            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
+            raise AuthorizeError(
+                redirect_uri=self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
+            )
 
-        if self.response_mode not in ResponseMode.values:
-            self.response_mode = ResponseMode.QUERY
-
-            if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID]:
-                self.response_mode = ResponseMode.FRAGMENT
+        self.set_default_response_mode()
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
@@ -254,7 +305,11 @@ class OAuthAuthorizationParams:
         ):
             LOGGER.warning("Missing 'openid' scope.")
             raise AuthorizeError(
-                self.redirect_uri, "invalid_scope", self.grant_type, self.state
+                redirect_uri=self.redirect_uri,
+                error="invalid_scope",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
             ).with_cause("scope_openid_missing")
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
@@ -272,6 +327,38 @@ class OAuthAuthorizationParams:
                 # Spec says to ignore the scope when the response_type wouldn't result
                 # in an authorization code being generated
                 self.scope.remove(SCOPE_OFFLINE_ACCESS)
+        # Key binding requires dpop_jkt at authorization time
+        if SCOPE_BOUND_KEY in self.scope and not self.dpop_jkt:
+            raise AuthorizeError(
+                self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
+                description="dpop_jkt is required when bound_key scope is requested",
+            )
+        # dpop_jkt should only be set if requesting the key binding scope
+        if SCOPE_BOUND_KEY not in self.scope and self.dpop_jkt:
+            raise AuthorizeError(
+                self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
+                description="dpop_jkt is set when bound_key scope is not requested",
+            )
+
+    def check_dpop_jkt(self):
+        """Validate dpop_jkt format if provided."""
+        if self.dpop_jkt and not is_valid_jkt(self.dpop_jkt):
+            raise AuthorizeError(
+                self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
+                description="dpop_jkt must be a base64url-encoded SHA-256 JWK thumbprint",
+            )
 
     def check_nonce(self):
         """Nonce parameter validation."""
@@ -291,7 +378,11 @@ class OAuthAuthorizationParams:
         if not self.nonce:
             LOGGER.warning("Missing nonce for OpenID Request")
             raise AuthorizeError(
-                self.redirect_uri, "invalid_request", self.grant_type, self.state
+                redirect_uri=self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
             ).with_cause("nonce_missing")
 
     def check_code_challenge(self):
@@ -301,11 +392,12 @@ class OAuthAuthorizationParams:
             PKCE_METHOD_S256,
         ]:
             raise AuthorizeError(
-                self.redirect_uri,
-                "invalid_request",
-                self.grant_type,
-                self.state,
-                f"Unsupported challenge method {self.code_challenge_method}",
+                redirect_uri=self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
+                description=f"Unsupported challenge method {self.code_challenge_method}",
             )
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
@@ -328,6 +420,9 @@ class OAuthAuthorizationParams:
         if self.code_challenge and self.code_challenge_method:
             code.code_challenge = self.code_challenge
             code.code_challenge_method = self.code_challenge_method
+
+        if self.dpop_jkt:
+            code.dpop_jkt = self.dpop_jkt
 
         return code
 
@@ -367,6 +462,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 "login_required",
                 self.params.grant_type,
                 self.params.state,
+                self.params.response_mode,
             )
             raise RequestValidationError(error.get_response(self.request))
 
@@ -418,7 +514,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
             if isinstance(response, HttpResponseRedirect):
                 parsed_url = urlparse(response.url)
-                args = parse_qs(parsed_url.query)
+                args = parse_qs(parsed_url.query, keep_blank_values=True)
                 args["locale"] = selected_language
                 response["Location"] = urlunparse(
                     parsed_url._replace(query=urlencode(args, quote_via=quote, doseq=True))
@@ -531,7 +627,8 @@ class OAuthFulfillmentStage(StageView):
             # this picks the first item in the list if the value is a list,
             # otherwise just the value as-is
             query_params = dict(
-                (k, v[0] if isinstance(v, list) else v) for k, v in parse_qs(parsed.query).items()
+                (k, v[0] if isinstance(v, list) else v)
+                for k, v in parse_qs(parsed.query, keep_blank_values=True).items()
             )
 
             challenge = AutosubmitChallenge(
@@ -539,7 +636,7 @@ class OAuthFulfillmentStage(StageView):
                     "component": "ak-stage-autosubmit",
                     "title": self.executor.plan.context.get(
                         PLAN_CONTEXT_TITLE,
-                        _("Redirecting to {app}...".format_map({"app": self.application.name})),
+                        _("Redirecting to {app}...").format(app=self.application.name),
                     ),
                     "url": self.params.redirect_uri,
                     "attrs": query_params,
@@ -574,6 +671,7 @@ class OAuthFulfillmentStage(StageView):
                     "consent_required",
                     self.params.grant_type,
                     self.params.state,
+                    self.params.response_mode,
                 )
             Event.new(
                 EventAction.AUTHORIZE_APPLICATION,
@@ -609,7 +707,8 @@ class OAuthFulfillmentStage(StageView):
             if self.params.response_mode == ResponseMode.QUERY:
                 query_params = parse_qs(uri.query)
                 query_params["code"] = code.code
-                query_params["state"] = [str(self.params.state) if self.params.state else ""]
+                if self.params.state is not None:
+                    query_params["state"] = self.params.state
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
@@ -618,7 +717,8 @@ class OAuthFulfillmentStage(StageView):
                 query_fragment = {}
                 if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     query_fragment["code"] = code.code
-                    query_fragment["state"] = [str(self.params.state) if self.params.state else ""]
+                    if self.params.state is not None:
+                        query_fragment["state"] = self.params.state
                 else:
                     query_fragment = self.create_implicit_response(code)
 
@@ -632,7 +732,8 @@ class OAuthFulfillmentStage(StageView):
                 post_params = {}
                 if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     post_params["code"] = code.code
-                    post_params["state"] = [str(self.params.state) if self.params.state else ""]
+                    if self.params.state is not None:
+                        post_params["state"] = self.params.state
                 else:
                     post_params = self.create_implicit_response(code)
 
@@ -648,6 +749,7 @@ class OAuthFulfillmentStage(StageView):
                 "server_error",
                 self.params.grant_type,
                 self.params.state,
+                self.params.response_mode,
             ) from None
 
     def create_implicit_response(self, code: AuthorizationCode | None) -> dict:
@@ -697,6 +799,7 @@ class OAuthFulfillmentStage(StageView):
             token._id_token = dumps(id_token.to_dict())
 
         token.save()
+        OAuth2SessionLogin.record(token, id_token)
 
         # Code parameter must be present if it's Hybrid Flow.
         if self.params.grant_type == GrantType.HYBRID:
@@ -706,5 +809,6 @@ class OAuthFulfillmentStage(StageView):
         query_fragment["expires_in"] = int(
             timedelta_from_string(self.provider.access_token_validity).total_seconds()
         )
-        query_fragment["state"] = self.params.state if self.params.state else ""
+        if self.params.state is not None:
+            query_fragment["state"] = self.params.state
         return query_fragment

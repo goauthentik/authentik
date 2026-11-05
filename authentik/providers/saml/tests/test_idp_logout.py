@@ -15,7 +15,7 @@ from authentik.common.saml.constants import (
 )
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.planner import FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.providers.iframe_logout import (
     IframeLogoutChallenge,
@@ -47,7 +47,7 @@ class TestNativeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp1.example.com/acs",
             sls_url="https://sp1.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
@@ -58,7 +58,7 @@ class TestNativeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp2.example.com/acs",
             sls_url="https://sp2.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="post",
             sls_binding="post",
             logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
@@ -218,7 +218,7 @@ class TestIframeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp1.example.com/acs",
             sls_url="https://sp1.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             logout_method="frontchannel_iframe",
@@ -229,7 +229,7 @@ class TestIframeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp2.example.com/acs",
             sls_url="https://sp2.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="post",
             sls_binding="post",
             logout_method="frontchannel_iframe",
@@ -353,7 +353,7 @@ class TestIframeLogoutStageView(TestCase):
         self.assertEqual(request.session, {})
 
 
-class TestIdPLogoutIntegration(FlowTestCase):
+class TestIdPLogoutIntegration(APIFlowTestCase):
     """Integration tests for IdP logout flow"""
 
     def setUp(self):
@@ -372,7 +372,7 @@ class TestIdPLogoutIntegration(FlowTestCase):
             authorization_flow=self.flow,
             acs_url="https://sp.example.com/acs",
             sls_url="https://sp.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             signing_kp=self.keypair,

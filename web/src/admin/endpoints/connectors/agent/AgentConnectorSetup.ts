@@ -1,17 +1,21 @@
 import "#elements/buttons/ActionButton/ak-action-button";
-import "#elements/forms/SearchSelect/index";
+import "#elements/forms/SearchSelect/ak-search-select";
 import "#admin/endpoints/connectors/agent/ConfigModal";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
-import type SearchSelect from "#elements/forms/SearchSelect/SearchSelect";
+import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 
 import {
     AgentConnector,
     DeviceFactsOSFamily,
-    EndpointsAgentsEnrollmentTokensListRequest,
     EndpointsApi,
     EnrollmentToken,
 } from "@goauthentik/api";
@@ -20,10 +24,6 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-endpoints-connector-agent-setup")
 export class AgentConnectorSetup extends AKElement {
@@ -34,6 +34,21 @@ export class AgentConnectorSetup extends AKElement {
     token?: EnrollmentToken;
 
     #tokenSelectRef = createRef<SearchSelect<EnrollmentToken>>();
+
+    #tokenSource: SearchSelectSource<EnrollmentToken> = {
+        fetchObjects: (query) =>
+            aki(EndpointsApi)
+                .endpointsAgentsEnrollmentTokensList(
+                    withQuery(query, {
+                        ordering: "name",
+                        connector: this.connector?.connectorUuid,
+                    }),
+                )
+                .then(({ results }) => results),
+        keyOf: (token) => token.tokenUuid,
+        labelOf: (token) => token.name,
+        describe: (token) => html`${token.name}`,
+    };
 
     static styles: CSSResult[] = [
         PFGrid,
@@ -62,7 +77,7 @@ export class AgentConnectorSetup extends AKElement {
     }
 
     #refreshHandler = () => {
-        this.#tokenSelectRef.value?.updateData();
+        this.#tokenSelectRef.value?.refresh();
     };
 
     render() {
@@ -114,33 +129,11 @@ export class AgentConnectorSetup extends AKElement {
                 <div class="pf-l-grid__item pf-m-12-col">
                     <ak-search-select
                         ${ref(this.#tokenSelectRef)}
-                        .fetchObjects=${async (query?: string): Promise<EnrollmentToken[]> => {
-                            const args: EndpointsAgentsEnrollmentTokensListRequest = {
-                                ordering: "name",
-                                connector: this.connector?.connectorUuid,
-                            };
-                            if (query !== undefined) {
-                                args.search = query;
-                            }
-                            const token = await new EndpointsApi(
-                                DEFAULT_CONFIG,
-                            ).endpointsAgentsEnrollmentTokensList(args);
-                            return token.results;
+                        .source=${this.#tokenSource}
+                        @ak-change=${(event: SearchSelectChangeEvent<EnrollmentToken>) => {
+                            this.token = event.detail.value ?? undefined;
                         }}
-                        .renderElement=${(token: EnrollmentToken): string => {
-                            return token.name;
-                        }}
-                        .renderDescription=${(token: EnrollmentToken) => {
-                            return html`${token.name}`;
-                        }}
-                        .value=${(token: EnrollmentToken | null) => {
-                            return token?.tokenUuid;
-                        }}
-                        @ak-change=${(ev: CustomEvent) => {
-                            this.token = ev.detail.value;
-                        }}
-                    >
-                    </ak-search-select>
+                    ></ak-search-select>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col">
                     <ul class="pf-c-list pf-m-inline">

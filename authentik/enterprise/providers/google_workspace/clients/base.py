@@ -25,15 +25,19 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
     """Base client for syncing to google workspace"""
 
     domains: list
+    can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
         super().__init__(provider)
-        self.directory_service = build(
-            "admin",
-            "directory_v1",
-            cache_discovery=False,
-            **provider.google_credentials(),
-        )
+        try:
+            self.directory_service = build(
+                "admin",
+                "directory_v1",
+                cache_discovery=False,
+                **provider.google_credentials(),
+            )
+        except GoogleAuthError as exc:
+            raise StopSync(exc) from exc
         self.__prefetch_domains()
 
     def __prefetch_domains(self):
@@ -54,22 +58,22 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
             raise StopSync(exc) from exc
         except HttpLib2Error as exc:
             if isinstance(exc, HttpLib2ErrorWithResponse):
-                self._response_handle_status_code(request.body, exc.response.status, exc)
+                self._response_handle_status_code(exc.response.status, exc)
             raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
         except HttpError as exc:
-            self._response_handle_status_code(request.body, exc.status_code, exc)
+            self._response_handle_status_code(exc.status_code, exc)
             raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
         except Error as exc:
             raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
         return response
 
-    def _response_handle_status_code(self, request: dict, status_code: int, root_exc: Exception):
+    def _response_handle_status_code(self, status_code: int, root_exc: Exception):
         if status_code == HttpResponseNotFound.status_code:
-            raise NotFoundSyncException("Object not found") from root_exc
+            raise NotFoundSyncException(root_exc) from root_exc
         if status_code == HTTP_CONFLICT:
-            raise ObjectExistsSyncException("Object exists") from root_exc
+            raise ObjectExistsSyncException(root_exc) from root_exc
         if status_code == HttpResponseBadRequest.status_code:
-            raise BadRequestSyncException("Bad request", request) from root_exc
+            raise BadRequestSyncException(root_exc) from root_exc
 
     def check_email_valid(self, *emails: str):
         for email in emails:

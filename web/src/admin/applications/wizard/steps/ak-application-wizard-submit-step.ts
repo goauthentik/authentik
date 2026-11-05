@@ -1,10 +1,17 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_REFRESH } from "#common/constants";
+import "#elements/Divider";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+
+import { aki } from "#common/api/client";
 import { parseAPIResponseError } from "#common/errors/network";
+import { AKRefreshEvent } from "#common/events";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { WizardNavigationEvent } from "#components/ak-wizard/events";
 import { type WizardButton } from "#components/ak-wizard/shared";
@@ -36,24 +43,19 @@ import {
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-
 const _submitStates = ["reviewing", "running", "submitted"] as const;
+
 type SubmitStates = (typeof _submitStates)[number];
 
 type StrictProviderModelEnum = Exclude<ProviderModelEnum, "11184809">;
 
 const providerMap: Map<string, StrictProviderModelEnum> = Object.values(ProviderModelEnum)
     .filter((value): value is StrictProviderModelEnum => {
-        return /^authentik_providers_/.test(value) && /provider$/.test(value);
+        return value.startsWith("authentik_providers_") && value.endsWith("provider");
     })
     .reduce((acc: Map<string, StrictProviderModelEnum>, value) => {
         const key = value.split(".")[1];
@@ -67,6 +69,14 @@ type NonEmptyArray<T> = [T, ...T[]];
 function isNotEmpty<T>(arr: T[] | undefined): arr is NonEmptyArray<T> {
     return Array.isArray(arr) && arr.length > 0;
 }
+
+// Providers that only work once they are assigned to an outpost.
+const outpostProviderModels: ReadonlySet<string> = new Set([
+    "proxyprovider",
+    "ldapprovider",
+    "radiusprovider",
+    "racprovider",
+]);
 
 const cleanApplication = (app: Partial<ApplicationRequest>): ApplicationRequest => ({
     name: "",
@@ -86,7 +96,7 @@ const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest =
 });
 
 @customElement("ak-application-wizard-submit-step")
-export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
+export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
     static styles = [
         ...ApplicationWizardStep.styles,
         PFBullseye,
@@ -107,11 +117,14 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     @state()
     protected state: SubmitStates = "reviewing";
 
+    @state()
+    protected createdProviderPk: number | null = null;
+
     async sendSAMLMetadataImport() {
         const providerData = this.wizard.provider as ProvidersSamlImportMetadataCreateRequest;
-        const providersApi = new ProvidersApi(DEFAULT_CONFIG);
-        const coreApi = new CoreApi(DEFAULT_CONFIG);
-        const policiesApi = new PoliciesApi(DEFAULT_CONFIG);
+        const providersApi = aki(ProvidersApi);
+        const coreApi = aki(CoreApi);
+        const policiesApi = aki(PoliciesApi);
 
         try {
             // Step 1: Import SAML metadata to create the provider
@@ -133,6 +146,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             // Step 3: Create policy bindings
             for (const binding of this.wizard.bindings ?? []) {
                 const bindingData = cleanBinding(binding);
+
                 await policiesApi.policiesBindingsCreate({
                     policyBindingRequest: {
                         ...bindingData,
@@ -141,7 +155,8 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 });
             }
 
-            this.dispatchCustomEvent(EVENT_REFRESH);
+            this.dispatchEvent(new AKRefreshEvent());
+            this.createdProviderPk = createdProvider.pk;
             this.state = "submitted";
         } catch (error) {
             const parsedError = await parseAPIResponseError(error);
@@ -149,6 +164,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             if (!instanceOfValidationError(parsedError)) {
                 showAPIErrorMessage(parsedError);
                 this.state = "reviewing";
+
                 return;
             }
 
@@ -204,12 +220,20 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             policyBindings: (this.wizard.bindings ?? []).map(cleanBinding),
         };
 
-        return new CoreApi(DEFAULT_CONFIG)
+        return aki(CoreApi)
             .coreTransactionalApplicationsUpdate({
                 transactionApplicationRequest: request,
             })
-            .then((_response: TransactionApplicationResponse) => {
-                this.dispatchCustomEvent(EVENT_REFRESH);
+            .then(async (_response: TransactionApplicationResponse) => {
+                this.dispatchEvent(new AKRefreshEvent());
+
+                // The transactional response doesn't include the provider, so look it up.
+                // Failing here only hides the link; the application is already saved.
+                const createdApp = await aki(CoreApi)
+                    .coreApplicationsRetrieve({ slug: request.app.slug })
+                    .catch(() => null);
+
+                this.createdProviderPk = createdApp?.provider ?? null;
                 this.state = "submitted";
             })
 
@@ -290,7 +314,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         state: string,
         label: string,
         icons: string[],
-        extraInfo: SlottedTemplateResult = nothing,
+        extraInfo: SlottedTemplateResult = null,
     ) {
         const icon = classMap(icons.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}));
 
@@ -307,12 +331,51 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         </div>`;
     }
 
+    renderNextSteps() {
+        const needsOutpost = outpostProviderModels.has(this.wizard.providerModel);
+
+        return html`${
+                needsOutpost
+                    ? html`<div class="pf-c-empty-state__body">
+                          ${msg(
+                              "This provider must be assigned to an outpost before users can access the application.",
+                              { id: "application.wizard.next-steps.outpost.description" },
+                          )}
+                      </div>`
+                    : null
+            }
+            <div class="pf-c-empty-state__primary">
+                ${
+                    typeof this.createdProviderPk === "number"
+                        ? html`<a
+                              class="pf-c-button pf-m-primary"
+                              href=${toAdminInterface(`core/providers/${this.createdProviderPk}`)}
+                              >${msg("View Provider", {
+                                  id: "application.wizard.next-steps.view-provider.label",
+                              })}</a
+                          >`
+                        : null
+                }
+                ${
+                    needsOutpost
+                        ? html`<a
+                              class="pf-c-button pf-m-secondary"
+                              href=${toAdminInterface("outpost/outposts")}
+                              >${msg("Go to Outposts", {
+                                  id: "application.wizard.next-steps.outposts.label",
+                              })}</a
+                          >`
+                        : null
+                }
+            </div>`;
+    }
+
     renderError() {
         const { errors } = this.wizard;
 
-        if (Object.keys(errors).length === 0) return nothing;
+        if (Object.keys(errors).length === 0) return null;
 
-        return html` <hr class="pf-c-divider" />
+        return html` <ak-divider></ak-divider>
             ${match(errors)
                 .with(
                     { app: P.nonNullable },
@@ -381,7 +444,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         return html`<h2 class="pf-c-wizard__main-title">
                     ${msg("Review the Application and Provider")}
                 </h2>
-                <fieldset>
+                <fieldset class="ak-c-fieldset" name="application-details">
                     <legend>${msg("Application Details")}</legend>
                     <dl class="pf-c-description-list">
                         <div class="pf-c-description-list__group">
@@ -412,14 +475,14 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                                           ${metaLaunchUrl}
                                       </dt>
                                   </div>`
-                                : nothing
+                                : null
                         }
                     </dl>
                 </fieldset>
 
                 ${
                     renderer
-                        ? html`<fieldset>
+                        ? html`<fieldset class="ak-c-fieldset" name="provider-details">
                               <legend>${msg("Provider Details")}</legend>
                               ${renderer(provider)}
                           </fieldset>`
@@ -432,17 +495,22 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     renderMain() {
         const app = this.wizard.app;
         const provider = this.wizard.provider;
+
         if (!(this.wizard && app && provider)) {
             throw new Error("Submit step received uninitialized wizard context");
         }
+
         // An empty object is truthy, an empty array is falsey. *WAT JavaScript*.
         const keys = Object.keys(this.wizard.errors);
+
         return match([this.state, keys])
             .with(["submitted", P._], () =>
-                this.renderInfo("success", msg("Your application has been saved"), [
-                    "fa-check-circle",
-                    "pf-m-success",
-                ]),
+                this.renderInfo(
+                    "success",
+                    msg("Your application has been saved"),
+                    ["fa-check-circle", "pf-m-success"],
+                    this.renderNextSteps(),
+                ),
             )
             .with(["running", P._], () =>
                 this.renderInfo("running", msg("Saving application..."), ["fa-cogs", "pf-m-info"]),

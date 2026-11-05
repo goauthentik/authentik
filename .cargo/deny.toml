@@ -7,7 +7,6 @@ allow = [
   "CDLA-Permissive-2.0",
   "ISC",
   "MIT",
-  "MPL-2.0",
   "OpenSSL",
   "Unicode-3.0",
   "Zlib",
@@ -45,3 +44,9 @@ allow = [
 ]
 name = "aws-lc-rs"
 exact = true
+
+[advisories]
+ignore = [
+  # https://github.com/askama-rs/askama/issues/594
+  { id = "RUSTSEC-2026-0374", reason = "basic-toml is a build-time only dependency of the askama template engine, not shipped in the app or daemon; remove when askama drops basic-toml" },
+]

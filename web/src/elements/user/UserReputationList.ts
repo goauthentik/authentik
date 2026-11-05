@@ -1,6 +1,5 @@
 import "#elements/forms/DeleteBulkForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -15,6 +14,9 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-reputation-list")
 export class UserReputationList extends Table<Reputation> {
+    public static override verboseName = msg("Reputation score");
+    public static override verboseNamePlural = msg("Reputation scores");
+
     @property()
     targetUsername!: string;
 
@@ -23,10 +25,12 @@ export class UserReputationList extends Table<Reputation> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         const identifiers = [this.targetUsername];
+
         if (this.targetEmail !== undefined) {
             identifiers.push(this.targetEmail);
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
+
+        return aki(PoliciesApi).policiesReputationScoresList({
             ...(await this.defaultEndpointConfig()),
             identifierIn: identifiers,
         });
@@ -49,16 +53,17 @@ export class UserReputationList extends Table<Reputation> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Reputation score(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresUsedByList({
+                return aki(PoliciesApi).policiesReputationScoresUsedByList({
                     reputationUuid: item.pk || "",
                 });
             }}
             .delete=${(item: Reputation) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresDestroy({
+                return aki(PoliciesApi).policiesReputationScoresDestroy({
                     reputationUuid: item.pk || "",
                 });
             }}
@@ -72,9 +77,11 @@ export class UserReputationList extends Table<Reputation> {
     row(item: Reputation): SlottedTemplateResult[] {
         return [
             html`${item.identifier}`,
-            html`${item.ipGeoData?.country
-                ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
-                : nothing}
+            html`${
+                item.ipGeoData?.country
+                    ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
+                    : nothing
+            }
             ${item.ip}`,
             html`${item.score}`,
             Timestamp(item.updated),

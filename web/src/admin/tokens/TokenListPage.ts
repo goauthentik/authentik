@@ -6,13 +6,14 @@ import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { intentToLabel } from "#common/labels";
+import { aki } from "#common/api/client";
+import { formatIntentLabel } from "#common/labels";
 
 import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconTokenEditButton } from "#elements/buttons/IconTokenEditButton";
+import { ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -44,7 +45,7 @@ export class TokenListPage extends TablePage<Token> {
     public override order = "expires";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Token>> {
-        return new CoreApi(DEFAULT_CONFIG).coreTokensList(await this.defaultEndpointConfig());
+        return aki(CoreApi).coreTokensList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -58,6 +59,7 @@ export class TokenListPage extends TablePage<Token> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}
@@ -65,12 +67,12 @@ export class TokenListPage extends TablePage<Token> {
                 return [{ key: msg("Identifier"), value: item.identifier }];
             }}
             .usedBy=${(item: Token) => {
-                return new CoreApi(DEFAULT_CONFIG).coreTokensUsedByList({
+                return aki(CoreApi).coreTokensUsedByList({
                     identifier: item.identifier,
                 });
             }}
             .delete=${(item: Token) => {
-                return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
+                return aki(CoreApi).coreTokensDestroy({
                     identifier: item.identifier,
                 });
             }}
@@ -88,29 +90,24 @@ export class TokenListPage extends TablePage<Token> {
     protected override row(item: Token): SlottedTemplateResult[] {
         return [
             html`<div>${item.identifier}</div>
-                ${item.managed
-                    ? html`<small>${msg("Token is managed by authentik.")}</small>`
-                    : nothing}`,
-            html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
+                ${
+                    item.managed
+                        ? html`<small>${msg("Token is managed by authentik.")}</small>`
+                        : nothing
+                }`,
+            html`<a href=${toAdminInterface(`identity/users/${item.userObj?.pk}`)}
+                >${item.userObj?.username}</a
+            >`,
             html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
             Timestamp(item.expires && item.expiring ? item.expires : null),
-            html`${intentToLabel(item.intent ?? IntentEnum.Api)}`,
+            html`${formatIntentLabel(item.intent ?? IntentEnum.Api)}`,
             html`<div class="ak-c-table__actions">
-                ${!item.managed
-                    ? IconEditButton(TokenForm, item.identifier, item.identifier)
-                    : html`<button class="pf-c-button pf-m-plain" disabled type="button">
-                          <pf-tooltip
-                              position="top"
-                              content=${msg("Editing is disabled for managed tokens")}
-                          >
-                              <i class="fas fa-edit" aria-hidden="true"></i>
-                          </pf-tooltip>
-                      </button>`}
+                ${IconTokenEditButton(item)}
                 ${IconPermissionButton(item.identifier, {
                     model: ModelEnum.AuthentikCoreToken,
                     objectPk: item.pk,
                 })}
-                ${IconTokenCopyButton(item.identifier)}
+                ${IconTokenCopyButton(item)}
             </div>`,
         ];
     }

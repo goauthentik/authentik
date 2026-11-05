@@ -1,15 +1,13 @@
 import "#admin/lifecycle/LifecycleRuleForm";
 import "#admin/lifecycle/LifecyclePreviewBanner";
-import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskList";
+import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -26,7 +24,6 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-lifecycle-rule-list")
 export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
-    public override expandable = true;
     public override checkbox = true;
     public override clearOnRefresh = true;
     public override searchPlaceholder = msg("Search for a lifecycle rule by name or target...");
@@ -39,9 +36,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
     protected override searchEnabled = true;
 
     protected async apiEndpoint(): Promise<PaginatedResponse<LifecycleRule>> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleRulesList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(LifecycleApi).lifecycleRulesList(await this.defaultEndpointConfig());
     }
 
     protected override renderSectionBefore(): SlottedTemplateResult {
@@ -58,12 +53,13 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html` <ak-forms-delete-bulk
             object-label=${msg("Lifecycle rule(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: LifecycleRule) => {
                 if (item.id)
-                    return new LifecycleApi(DEFAULT_CONFIG).lifecycleRulesDestroy({
+                    return aki(LifecycleApi).lifecycleRulesDestroy({
                         id: item.id,
                     });
             }}
@@ -95,26 +91,6 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
         ];
     }
 
-    protected override renderExpanded(item: LifecycleRule): SlottedTemplateResult {
-        const [appLabel, modelName] = ModelEnum.AuthentikLifecycleLifecyclerule.split(".");
-        return html`<dl class="pf-c-description-list pf-m-horizontal">
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
-                        <ak-task-list
-                            search-placeholder=${msg("Search tasks...")}
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${item.id}"
-                        ></ak-task-list>
-                    </div>
-                </dd>
-            </div>
-        </dl>`;
-    }
     protected override renderObjectCreate(): SlottedTemplateResult {
         return ModalInvokerButton(LifecycleRuleForm);
     }

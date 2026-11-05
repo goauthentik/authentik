@@ -1,14 +1,10 @@
 package flow
 
 import (
-	"regexp"
-	"strconv"
 	"strings"
 )
 
 const CodePasswordSeparator = ";"
-
-var alphaNum = regexp.MustCompile(`^[a-zA-Z0-9]*$`)
 
 // Sets the secret answers for the flow executor for protocols that only support username/password
 // according to used options
@@ -33,21 +29,9 @@ func (fe *FlowExecutor) SetSecrets(password string, mfaCodeBased bool) {
 	}
 	idx := strings.LastIndex(password, CodePasswordSeparator)
 	authenticator := password[idx+1:]
-	// Authenticator is either 6 chars (totp code) or 8 chars (long totp or static)
-	if len(authenticator) == 6 {
-		// authenticator answer isn't purely numerical, so won't be value
-		if _, err := strconv.Atoi(authenticator); err != nil {
-			return
-		}
-	} else if len(authenticator) == 8 {
-		// 8 chars can be a long totp or static token, so it needs to be alphanumerical
-		if !alphaNum.MatchString(authenticator) {
-			return
-		}
-	} else {
-		// Any other length, doesn't contain an answer
-		return
-	}
+	// Authenticator is either 6 / 8 digits (TOTP) or any length (static code)
+	// and as a result we can't really validate whether what we've
+	// extracted is a valid recovery code.
 	fe.Answers[StagePassword] = password[:idx]
 	fe.Answers[StageAuthenticatorValidate] = authenticator
 }

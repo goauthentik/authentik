@@ -73,8 +73,16 @@ entries:
       redirect_uris:
         - matching_mode: strict
           url: https://localhost:8443/test/a/authentik/callback
+          redirect_uri_type: authorization
         - matching_mode: strict
           url: https://host.docker.internal:8443/test/a/authentik/callback
+          redirect_uri_type: authorization
+        - matching_mode: strict
+          url: https://localhost:8443/test/a/authentik/post_logout_redirect
+          redirect_uri_type: logout
+        - matching_mode: strict
+          url: https://host.docker.internal:8443/test/a/authentik/post_logout_redirect
+          redirect_uri_type: logout
       grant_types:
         - authorization_code
         - implicit
@@ -108,8 +116,16 @@ entries:
       redirect_uris:
         - matching_mode: strict
           url: https://localhost:8443/test/a/authentik/callback
+          redirect_uri_type: authorization
         - matching_mode: strict
           url: https://host.docker.internal:8443/test/a/authentik/callback
+          redirect_uri_type: authorization
+        - matching_mode: strict
+          url: https://localhost:8443/test/a/authentik/post_logout_redirect
+          redirect_uri_type: logout
+        - matching_mode: strict
+          url: https://host.docker.internal:8443/test/a/authentik/post_logout_redirect
+          redirect_uri_type: logout
       grant_types:
         - authorization_code
         - implicit

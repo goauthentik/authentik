@@ -1,5 +1,11 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -15,12 +21,13 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+/**
+ * Split a token into groups of four, e.g. `abcd-efgh-ijkl`, so it's easier to read back
+ * and type by hand. The backend ignores the hyphens when the token is used.
+ */
+function formatToken(token: string): string {
+    return token.match(/.{1,4}/g)?.join("-") ?? token;
+}
 
 @customElement("ak-stage-authenticator-static")
 export class AuthenticatorStaticStage extends BaseStage<
@@ -61,12 +68,12 @@ export class AuthenticatorStaticStage extends BaseStage<
 
                 <ul class="pf-c-form__group token-list">
                     ${this.challenge.codes.map((token) => {
-                        return html`<li>${token}</li>`;
+                        return html`<li>${formatToken(token)}</li>`;
                     })}
                 </ul>
                 <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
 
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"

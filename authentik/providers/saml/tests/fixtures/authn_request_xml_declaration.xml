@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<saml2p:AuthnRequest xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol" ID="_1fac8a70c9d2766aed298165ed66dcae" Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z">
+    <saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">https://sp.example.invalid/saml</saml2:Issuer>
+</saml2p:AuthnRequest>

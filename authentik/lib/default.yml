@@ -22,6 +22,7 @@ postgresql:
   port: 5432
   password: "env://POSTGRES_PASSWORD"
   sslmode: disable
+  conn_max_age: 0
   conn_health_checks: false
   use_pool: False
   test:
@@ -47,7 +48,7 @@ listen:
     - "[::]:9300"
   debug: 0.0.0.0:9900
   debug_py: 0.0.0.0:9901
-  debug_tokio: "[::]:6669"
+  # debug_tokio: "[::]:6669"
   trusted_proxy_cidrs:
     - 127.0.0.0/8
     - 10.0.0.0/8
@@ -63,6 +64,10 @@ cache:
   timeout: 300
   timeout_flows: 300
   timeout_policies: 300
+  # Duration a user's application list, as determined by policies, will be cached.
+  timeout_application_policies: 86400
+  timeout_brands: 15
+  timeout_system_settings: 15
 
 # channel:
 #   url: ""
@@ -90,10 +95,12 @@ log:
 
 sessions:
   unauthenticated_age: days=1
+  user_switching_age: days=365
 
 error_reporting:
   enabled: false
   sentry_dsn: https://151ba72610234c4c97c5bcff4e1cffd8@authentik.error-reporting.a7k.io/4504163677503489
+  otel_endpoint: ""
   environment: customer
   send_pii: false
   sample_rate: 0.1
@@ -143,23 +150,20 @@ disable_update_check: false
 disable_startup_analytics: false
 events:
   context_processors:
-    geoip: "/geoip/GeoLite2-City.mmdb"
-    asn: "/geoip/GeoLite2-ASN.mmdb"
+    geoip: "/geoip/dbip-city-lite.mmdb"
+    asn: "/geoip/dbip-asn-lite.mmdb"
 compliance:
   fips:
     enabled: false
 
 cert_discovery_dir: /certs
 
-tenants:
-  enabled: false
-  api_key: ""
-
 blueprints_dir: /blueprints
 
 web:
   workers: 2
   threads: 4
+  base_url: ""
   path: /
   timeout_http_read_header: 5s
   timeout_http_read: 30s

@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
@@ -14,7 +14,7 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
     public override label = msg("Workers");
 
     getPrimaryValue(): Promise<Worker[]> {
-        return new TasksApi(DEFAULT_CONFIG).tasksWorkersList();
+        return aki(TasksApi).tasksWorkersList();
     }
 
     getStatus(value: Worker[]): Promise<AdminStatus> {
@@ -22,15 +22,19 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-times-circle pf-m-danger",
                 message: html`${msg("No workers connected. Background tasks will not run.")}`,
+                tone: "danger",
             });
         } else if (value.filter((w) => !w.versionMatching).length > 0) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-times-circle pf-m-danger",
                 message: html`${msg("Worker with incorrect version connected.")}`,
+                tone: "danger",
             });
         }
+
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
+            tone: "success",
         });
     }
 

@@ -1,7 +1,8 @@
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -11,8 +12,6 @@ import { CoreApi, Group } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-user-group-table")
 export class UserGroupTable extends Table<Group> {
@@ -27,7 +26,7 @@ export class UserGroupTable extends Table<Group> {
     public override order = "name";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Group>> {
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
+        return aki(CoreApi).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             includeUsers: false,
         });

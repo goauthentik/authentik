@@ -1,9 +1,11 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/HorizontalFormElement";
 import "#flow/stages/prompt/PromptStage";
 import "#components/ak-switch-input";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { parseAPIResponseError } from "#common/errors/network";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -21,9 +23,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
 
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
 class PreviewStageHost implements StageHost {
     challenge = undefined;
     flowSlug = undefined;
@@ -31,6 +30,7 @@ class PreviewStageHost implements StageHost {
     brand = undefined;
     async submit(payload: unknown): Promise<boolean> {
         this.promptForm.previewResult = payload;
+
         return false;
     }
 
@@ -61,21 +61,24 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     send(data: Prompt): Promise<unknown> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUpdate({
+            return aki(StagesApi).stagesPromptPromptsUpdate({
                 promptUuid: this.instance.pk || "",
                 promptRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
+
+        return aki(StagesApi).stagesPromptPromptsCreate({
             promptRequest: data,
         });
     }
 
     async loadInstance(pk: string): Promise<Prompt> {
-        const prompt = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsRetrieve({
+        const prompt = await aki(StagesApi).stagesPromptPromptsRetrieve({
             promptUuid: pk,
         });
+
         await this.refreshPreview(prompt);
+
         return prompt;
     }
 
@@ -86,7 +89,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             return;
         }
 
-        return new StagesApi(DEFAULT_CONFIG)
+        return aki(StagesApi)
             .stagesPromptPromptsPreviewCreate({
                 promptRequest,
             })
@@ -115,6 +118,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         // Only check if we should update once a second, to prevent spamming API requests
         // when many fields are edited
         const minUpdateDelay = 1000;
+
         this._timer = setInterval(() => {
             if (this._shouldRefresh) {
                 this.refreshPreview();
@@ -148,9 +152,14 @@ export class PromptForm extends ModelForm<Prompt, string> {
             [PromptTypeEnum.Separator, msg("Separator: Static Separator Line")],
             [PromptTypeEnum.Hidden, msg("Hidden: Hidden field, can be used to insert data into form.")],
             [PromptTypeEnum.Static, msg("Static: Static value, displayed as-is.")],
+            [PromptTypeEnum.AlertInfo, msg("Alert (Info): Static alert box with info styling")],
+            [PromptTypeEnum.AlertWarning, msg("Alert (Warning): Static alert box with warning styling")],
+            [PromptTypeEnum.AlertDanger, msg("Alert (Danger): Static alert box with danger styling")],
             [PromptTypeEnum.AkLocale, msg("authentik: Locale: Displays a list of locales authentik supports.")],
         ];
+
         const currentType = this.instance?.type;
+
         return html` ${map(
             promptTypesWithLabels,
             ([promptType, label]) =>
@@ -182,26 +191,30 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         </ak-stage-prompt>
                     </div>
                 </div>
-                ${this.previewError
-                    ? html`
-                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__body">${msg("Preview errors")}</div>
-                              <div class="pf-c-card__body">
-                                  ${AKFormErrors({ errors: [this.previewError] })}
+                ${
+                    this.previewError
+                        ? html`
+                              <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                                  <div class="pf-c-card__body">${msg("Preview errors")}</div>
+                                  <div class="pf-c-card__body">
+                                      ${AKFormErrors({ errors: [this.previewError] })}
+                                  </div>
                               </div>
-                          </div>
-                      `
-                    : nothing}
-                ${this.previewResult
-                    ? html`
-                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__body">${msg("Data preview")}</div>
-                              <div class="pf-c-card__body">
-                                  <pre>${JSON.stringify(this.previewResult, undefined, 4)}</pre>
+                          `
+                        : nothing
+                }
+                ${
+                    this.previewResult
+                        ? html`
+                              <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                                  <div class="pf-c-card__body">${msg("Data preview")}</div>
+                                  <div class="pf-c-card__body">
+                                      <pre>${JSON.stringify(this.previewResult, undefined, 4)}</pre>
+                                  </div>
                               </div>
-                          </div>
-                      `
-                    : nothing}
+                          `
+                        : nothing
+                }
             </div>
         `;
     }
@@ -285,14 +298,14 @@ export class PromptForm extends ModelForm<Prompt, string> {
             If the evaluation fails, the placeholder itself is returned.`)}
             ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Placeholder")} name="placeholder">
-                <ak-codemirror
+                <ak-code-editor
                     mode="python"
                     value="${ifDefined(this.instance?.placeholder)}"
                     @change=${() => {
                         this._shouldRefresh = true;
                     }}
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         `Optionally provide a short hint that describes the expected input value.
@@ -312,8 +325,8 @@ export class PromptForm extends ModelForm<Prompt, string> {
             If the evaluation fails, the initial value itself is returned.`)}
             ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Initial value")} name="initialValue">
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.initialValue)}">
-                </ak-codemirror>
+                <ak-code-editor mode="python" value="${ifDefined(this.instance?.initialValue)}">
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         `Optionally pre-fill the input with an initial value.
@@ -323,14 +336,14 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Help text")} name="subText">
-                <ak-codemirror
+                <ak-code-editor
                     mode="html"
                     value="${ifDefined(this.instance?.subText)}"
                     @change=${() => {
                         this._shouldRefresh = true;
                     }}
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">${msg("Any HTML can be used.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Order")} required name="order">

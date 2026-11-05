@@ -4,7 +4,8 @@ import {
     formatLocaleDisplayNames,
     LocaleDisplay,
 } from "#common/ui/locale/format";
-import { getBestMatchLocale, getSessionLocale } from "#common/ui/locale/utils";
+import { readPersistedLocale } from "#common/ui/locale/persist";
+import { getBestMatchLocale } from "#common/ui/locale/utils";
 
 import { LocaleOptions } from "#elements/locale/utils";
 import { LitFC } from "#elements/types";
@@ -14,9 +15,6 @@ import { StagePrompt } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { guard } from "lit/directives/guard.js";
-
-// Fixes horizontal rule <hr> warning in select dropdowns.
-/* eslint-disable lit/no-invalid-html */
 
 export interface LocalePromptProps {
     activeLanguageTag: TargetLanguageTag;
@@ -33,10 +31,10 @@ export const LocalePrompt: LitFC<LocalePromptProps> = ({
     debug,
     fieldId,
 }) => {
-    const sessionLocale = getSessionLocale();
+    const persistedLocale = readPersistedLocale();
 
     return guard(
-        [activeLanguageTag, prompt.fieldKey, prompt.initialValue, disabled, sessionLocale],
+        [activeLanguageTag, prompt.fieldKey, prompt.initialValue, disabled, persistedLocale],
         () => {
             const entries = formatLocaleDisplayNames(activeLanguageTag, {
                 debug,
@@ -51,12 +49,14 @@ export const LocalePrompt: LitFC<LocalePromptProps> = ({
                 : null;
 
             /**
-             *  This is a bit subtle.
+             * This is a bit subtle.
              *
              * -
              */
             const autoDetectedLocale = formatAutoDetectLocaleDisplayName(
-                sessionLocale ? languagesByTag.get(selectedLanguageTag || activeLanguageTag) : null,
+                persistedLocale
+                    ? languagesByTag.get(selectedLanguageTag || activeLanguageTag)
+                    : null,
             );
 
             return html`<select

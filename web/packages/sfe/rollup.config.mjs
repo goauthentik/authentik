@@ -1,6 +1,6 @@
 /**
- * @file Rollup configuration for the SFE package.
  * @import { Plugin, RollupOptions } from "rollup";
+ * @file Rollup configuration for the SFE package.
  */
 
 import * as fs from "node:fs/promises";
@@ -45,7 +45,12 @@ export async function createConfig() {
         context: "window",
         plugins: [
             copyPlugin,
-            resolve({ browser: true }),
+            // `.ts`/`.tsx` so the linked `@goauthentik/api` source (resolved from
+            // its package `main`) and its relative imports resolve; swc transpiles them.
+            resolve({
+                browser: true,
+                extensions: [".mjs", ".js", ".json", ".node", ".ts", ".tsx"],
+            }),
             commonjs(),
             swc({
                 swc: {

@@ -1,0 +1,5 @@
+.ak-tooltip__content--inline {
+    display: flex;
+    align-items: center;
+    gap: var(--pf-global--spacer--sm);
+}

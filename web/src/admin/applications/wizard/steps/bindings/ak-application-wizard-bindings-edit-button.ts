@@ -1,11 +1,11 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+
 import { AKElement } from "#elements/Base";
 import { bound } from "#elements/decorators/bound";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-application-wizard-binding-step-edit-button")
 export class ApplicationWizardBindingStepEditButton extends AKElement {
@@ -17,6 +17,7 @@ export class ApplicationWizardBindingStepEditButton extends AKElement {
     @bound
     onClick(ev: Event) {
         ev.stopPropagation();
+
         this.dispatchEvent(
             new CustomEvent<number>("click-edit", {
                 bubbles: true,

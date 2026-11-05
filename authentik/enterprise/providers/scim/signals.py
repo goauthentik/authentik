@@ -14,7 +14,10 @@ def scim_provider_post_save(sender: type[Model], instance: SCIMProvider, created
     """Create service account before provider is saved"""
     identifier = f"ak-providers-scim-{instance.pk}"
     with audit_ignore():
-        if instance.auth_mode == SCIMAuthenticationMode.OAUTH:
+        if instance.auth_mode in [
+            SCIMAuthenticationMode.OAUTH_SILENT,
+            SCIMAuthenticationMode.OAUTH_INTERACTIVE,
+        ]:
             user, user_created = User.objects.update_or_create(
                 username=identifier,
                 defaults={

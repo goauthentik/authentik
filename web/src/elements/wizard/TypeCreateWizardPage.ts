@@ -1,8 +1,14 @@
 import "#elements/LicenseNotice";
 import "#elements/Alert";
 import "#elements/forms/FormGroup";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { renderSourceIcon } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { WizardPage } from "#elements/wizard/WizardPage";
@@ -10,17 +16,11 @@ import { WizardPage } from "#elements/wizard/WizardPage";
 import { TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html } from "lit";
+import { css, CSSResult, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 export enum TypeCreateWizardPageLayouts {
     list = "list",
@@ -64,9 +64,6 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 max-height: 2em;
                 min-height: 2em;
             }
-            :host([theme="dark"]) .pf-c-card__header-main img {
-                filter: invert(1);
-            }
 
             :host([theme="dark"]) .pf-c-card {
                 --pf-c-card--BackgroundColor: var(--pf-global--BackgroundColor--150);
@@ -89,6 +86,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     //#endregion
 
+    //#region Lifecycle
+
     public reset = () => {
         super.reset();
 
@@ -100,7 +99,13 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         this.host.valid = !!this.selectedType;
     };
 
-    #selectDispatch = (type: TypeCreate) => {
+    protected override updated(changedProperties: PropertyValues<this>): void {
+        if (changedProperties.has("selectedType")) {
+            this.#selectDispatch(this.selectedType);
+        }
+    }
+
+    #selectDispatch = (type: TypeCreate | null) => {
         this.dispatchEvent(
             new CustomEvent("ak-type-create-select", {
                 detail: type,
@@ -109,6 +114,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             }),
         );
     };
+
+    //#endregion
 
     //#region Rendering
 
@@ -150,26 +157,35 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                     this.#selectDispatch(type);
                 }}
             >
-                ${type.iconUrl
-                    ? html`<div role="presentation" class="pf-c-card__header">
-                          <div role="presentation" class="pf-c-card__header-main">
-                              <img
+                ${
+                    type.iconUrl
+                        ? html`<div role="presentation" class="pf-c-card__header">
+                              <div
+                                  role="presentation"
                                   aria-hidden="true"
-                                  src=${type.iconUrl}
-                                  alt=${msg(str`${type.name} Icon`)}
-                              />
-                          </div>
-                      </div>`
-                    : null}
+                                  class="pf-c-card__header-main"
+                              >
+                                  ${renderSourceIcon(
+                                      msg(str`${type.name} Icon`),
+                                      type.iconUrl,
+                                      type.iconThemedUrls,
+                                      this.activeTheme,
+                                  )}
+                              </div>
+                          </div>`
+                        : null
+                }
                 <div role="heading" aria-level="2" class="pf-c-card__title">${type.name}</div>
                 <div class="pf-c-card__body" id=${`${inputID}-description`}>
                     ${type.description}
                 </div>
-                ${disabled
-                    ? html`<div class="pf-c-card__footer">
-                          <ak-license-notice></ak-license-notice>
-                      </div> `
-                    : null}
+                ${
+                    disabled
+                        ? html`<div class="pf-c-card__footer">
+                              <ak-license-notice></ak-license-notice>
+                          </div> `
+                        : null
+                }
             </div>`;
         });
     }
@@ -217,9 +233,9 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                     aria-describedby=${`${inputID}-description`}
                     @change=${() => {
                         this.selectedType = type;
-                        this.#selectDispatch(type);
                     }}
                     ?disabled=${disabled}
+                    .checked=${selected}
                 />
                 <div
                     aria-selected="${selected ? "true" : "false"}"
@@ -231,11 +247,13 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 <span id="${inputID}-description" class="pf-c-radio__description"
                     >${type.description}
                     ${disabled ? html`<ak-license-notice></ak-license-notice>` : null}
-                    ${type.deprecated
-                        ? html`<ak-alert class="pf-c-radio__description" inline plain>
-                              ${msg("This type is deprecated.")}
-                          </ak-alert>`
-                        : null}
+                    ${
+                        type.deprecated
+                            ? html`<ak-alert class="pf-c-radio__description" inline plain>
+                                  ${msg("This type is deprecated.")}
+                              </ak-alert>`
+                            : null
+                    }
                 </span>
             </label>`;
         });
@@ -247,6 +265,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         }
 
         const renderedItems = this.renderListItems();
+
         const content = this.groupLabel
             ? html`<ak-form-group
                   label=${this.groupLabel}
@@ -263,7 +282,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             html`<form
                 ${ref(this.formRef)}
                 part="form type-create list"
-                class="pf-c-form pf-m-horizontal ak-m-content-center"
+                class="pf-c-form pf-m-horizontal"
                 role="radiogroup"
                 aria-label=${ifPresent(this.headline)}
             >
@@ -276,9 +295,9 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     //#endregion
 
     protected override render(): SlottedTemplateResult {
-        const { layout, types, selectedType } = this;
+        const { layout, types, selectedType, activeTheme } = this;
 
-        const content = guard([layout, types, selectedType], () => {
+        const content = guard([layout, types, selectedType, activeTheme], () => {
             switch (layout) {
                 case TypeCreateWizardPageLayouts.grid:
                     return this.renderGrid();

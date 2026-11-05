@@ -34,9 +34,9 @@ use tokio::{
     sync::Mutex,
     time::{Duration, interval},
 };
-use tracing::{info, instrument, trace, warn};
+use tracing::{debug, info, instrument, trace, warn};
 
-use crate::server::socket_path;
+use crate::server::{is_connect_not_found, socket_path};
 
 mod healthcheck;
 mod worker_status;
@@ -53,7 +53,9 @@ pub(crate) struct Cli {}
 const INITIAL_WORKER_ID: usize = 1000;
 static INITIAL_WORKER_READY: AtomicBool = AtomicBool::new(false);
 
+#[derive(Debug)]
 pub(crate) struct Worker {
+    worker_id: usize,
     worker: Child,
     client: Client<UnixSocketConnector<PathBuf>, Body>,
     socket_path: PathBuf,
@@ -75,6 +77,7 @@ impl Worker {
             .build(UnixSocketConnector::new(socket_path.clone()));
 
         Ok(Self {
+            worker_id,
             worker: cmd
                 .kill_on_drop(true)
                 .stdin(Stdio::null())
@@ -108,7 +111,7 @@ impl Worker {
         self.shutdown(Signal::SIGINT).await
     }
 
-    #[instrument(skip_all)]
+    #[instrument(skip(self), fields(worker_id = self.worker_id))]
     fn is_alive(&mut self) -> bool {
         let try_wait = self.worker.try_wait();
         match try_wait {
@@ -133,34 +136,58 @@ impl Worker {
         result.is_ok()
     }
 
-    #[instrument(skip_all)]
+    #[instrument(skip(self), fields(worker_id = self.worker_id))]
     async fn health_live(&self) -> Result<bool> {
+        trace!("sending health live request to worker");
         let req = Request::builder()
             .method("GET")
             .uri("http://localhost:8000/-/health/live/")
             .header(HOST, "localhost")
-            .body(Body::from(""))?;
-        Ok(self.client.request(req).await?.status().is_success())
+            .body(Body::empty())?;
+        Ok(self
+            .client
+            .request(req)
+            .await
+            .inspect_err(|err| {
+                if is_connect_not_found(err) {
+                    debug!(?err, "worker socket not yet ready (health live)");
+                } else {
+                    warn!(?err, "failed to send health live request to worker");
+                }
+            })?
+            .status()
+            .is_success())
     }
 
-    #[instrument(skip_all)]
+    #[instrument(skip(self), fields(worker_id = self.worker_id))]
     async fn health_ready(&self) -> Result<bool> {
+        trace!("sending health ready request to worker");
         let req = Request::builder()
             .method("GET")
             .uri("http://localhost:8000/-/health/ready/")
             .header(HOST, "localhost")
-            .body(Body::from(""))?;
-        Ok(self.client.request(req).await?.status().is_success())
+            .body(Body::empty())?;
+        Ok(self
+            .client
+            .request(req)
+            .await
+            .inspect_err(|err| warn!(?err, "failed to send health ready request to worker"))?
+            .status()
+            .is_success())
     }
 
-    #[instrument(skip_all)]
+    #[instrument(skip(self), fields(worker_id = self.worker_id))]
     async fn notify_metrics(&self) -> Result<()> {
+        trace!("sending metrics request to worker");
         let req = Request::builder()
             .method("GET")
             .uri("http://localhost:8000/-/metrics/")
             .header(HOST, "localhost")
-            .body(Body::from(""))?;
-        self.client.request(req).await?;
+            .body(Body::empty())?;
+        self.client
+            .request(req)
+            .await
+            .inspect_err(|err| warn!(?err, "failed to send metrics request to worker"))?;
         Ok(())
     }
 }
@@ -173,6 +200,7 @@ impl Drop for Worker {
     }
 }
 
+#[derive(Debug)]
 pub(crate) struct Workers(Mutex<Vec<Worker>>);
 
 impl Workers {
@@ -217,7 +245,7 @@ impl Workers {
     }
 
     #[instrument(skip_all)]
-    async fn are_alive(&self) -> bool {
+    pub(crate) async fn are_alive(&self) -> bool {
         for worker in self.0.lock().await.iter_mut() {
             if !worker.is_alive() {
                 return false;
@@ -234,7 +262,7 @@ impl Workers {
     }
 
     #[instrument(skip_all)]
-    async fn health_live(&self) -> Result<bool> {
+    pub(crate) async fn health_live(&self) -> Result<bool> {
         for worker in self.0.lock().await.iter() {
             if !worker.health_live().await? {
                 return Ok(false);
@@ -244,7 +272,7 @@ impl Workers {
     }
 
     #[instrument(skip_all)]
-    async fn health_ready(&self) -> Result<bool> {
+    pub(crate) async fn health_ready(&self) -> Result<bool> {
         for worker in self.0.lock().await.iter() {
             if !worker.health_ready().await? {
                 return Ok(false);
@@ -270,8 +298,11 @@ async fn watch_workers(arbiter: Arbiter, workers: Arc<Workers>) -> Result<()> {
 
     loop {
         tokio::select! {
-            Ok(Event::Signal(signal)) = events_rx.recv() => {
-                if signal == SignalKind::user_defined2() && !INITIAL_WORKER_READY.load(Ordering::Relaxed) {
+            event = events_rx.recv() => {
+                if let Ok(Event::Signal(signal)) = event
+                    && signal == SignalKind::user_defined2()
+                    && !INITIAL_WORKER_READY.load(Ordering::Relaxed)
+                {
                     info!("worker notified us ready, marked ready for operation");
                     INITIAL_WORKER_READY.store(true, Ordering::Relaxed);
                     workers.start_other_workers().await?;
@@ -323,14 +354,7 @@ pub(crate) fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
         let router = healthcheck::build_router(Arc::clone(&workers));
 
         for addr in config::get().listen.http.iter().copied() {
-            ak_axum::server::start_plain(
-                tasks,
-                "worker",
-                router.clone(),
-                addr,
-                true, /* Allow failure in case the server is running on the same machine, like
-                       * in dev. */
-            )?;
+            ak_axum::server::start_plain(tasks, "worker", router.clone(), addr)?;
         }
 
         ak_axum::server::start_unix(
@@ -338,7 +362,6 @@ pub(crate) fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
             "worker",
             router,
             unix::net::SocketAddr::from_pathname(socket_path())?,
-            true, // Allow failure in case the server is running on the same machine, like in dev.
         )?;
     }
 

@@ -19,11 +19,11 @@ import (
 	"goauthentik.io/internal/constants"
 )
 
-func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string, query url.Values) *url.URL {
+func (ac *APIController) getWebsocketURL(akURL url.URL, query url.Values, elem ...string) *url.URL {
 	wsUrl := &url.URL{}
 	wsUrl.Scheme = strings.ReplaceAll(akURL.Scheme, "http", "ws")
 	wsUrl.Host = akURL.Host
-	_p, _ := url.JoinPath(akURL.Path, "ws/outpost/", outpostUUID, "/")
+	_p, _ := url.JoinPath(akURL.Path, elem...)
 	wsUrl.Path = _p
 	v := url.Values{}
 	maps.Insert(v, maps.All(akURL.Query()))
@@ -32,12 +32,10 @@ func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string, quer
 	return wsUrl
 }
 
-func (ac *APIController) initEvent(outpostUUID string, attempt int) error {
+// DialWebsocket connects to the websocket at the given path elements below the authentik URL,
+// so that it is reached under the same path as the API
+func (ac *APIController) DialWebsocket(query url.Values, elem ...string) (*websocket.Conn, error) {
 	akURL := ac.akURL
-	query := akURL.Query()
-	query.Set("instance_uuid", ac.instanceUUID.String())
-	query.Set("attempt", strconv.Itoa(attempt))
-
 	authHeader := fmt.Sprintf("Bearer %s", ac.token)
 
 	header := http.Header{
@@ -63,9 +61,18 @@ func (ac *APIController) initEvent(outpostUUID string, attempt int) error {
 		}
 	}
 
-	wsu := ac.getWebsocketURL(akURL, outpostUUID, query).String()
+	wsu := ac.getWebsocketURL(akURL, query, elem...).String()
 	ac.logger.WithField("url", wsu).Debug("connecting to websocket")
 	ws, _, err := dialer.Dial(wsu, header)
+	return ws, err
+}
+
+func (ac *APIController) initEvent(outpostUUID string, attempt int) error {
+	query := url.Values{}
+	query.Set("instance_uuid", ac.instanceUUID.String())
+	query.Set("attempt", strconv.Itoa(attempt))
+
+	ws, err := ac.DialWebsocket(query, "ws/outpost/", outpostUUID, "/")
 	if err != nil {
 		ac.logger.WithError(err).Warning("failed to connect websocket")
 		return err

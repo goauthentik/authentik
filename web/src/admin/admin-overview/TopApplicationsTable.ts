@@ -1,6 +1,7 @@
 import "#elements/Spinner";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -10,8 +11,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
-
 @customElement("ak-top-applications-table")
 export class TopApplicationsTable extends AKElement {
     @property({ attribute: false })
@@ -20,7 +19,7 @@ export class TopApplicationsTable extends AKElement {
     static styles: CSSResult[] = [PFTable];
 
     firstUpdated(): void {
-        new EventsApi(DEFAULT_CONFIG)
+        aki(EventsApi)
             .eventsEventsTopPerUserList({
                 action: "authorize_application",
                 topN: 11,
@@ -53,9 +52,11 @@ export class TopApplicationsTable extends AKElement {
                 </tr>
             </thead>
             <tbody role="rowgroup">
-                ${this.topN
-                    ? this.topN.map((e) => this.renderRow(e))
-                    : html`<ak-spinner></ak-spinner>`}
+                ${
+                    this.topN
+                        ? this.topN.map((e) => this.renderRow(e))
+                        : html`<ak-spinner></ak-spinner>`
+                }
             </tbody>
         </table>`;
     }

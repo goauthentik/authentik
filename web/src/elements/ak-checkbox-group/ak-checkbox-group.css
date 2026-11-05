@@ -1,0 +1,113 @@
+.pf-c-form__group-control {
+    padding-block: calc(var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3);
+    --pf-c-grid__group-control--m-stack--Gap: 0;
+}
+
+label.pf-c-check {
+    --pf-c-check--checkmark--BorderColor: var(--pf-global--BorderColor--100);
+    --pf-c-check--checkmark--Color: transparent;
+    --pf-c-check--BorderColor: transparent;
+
+    --pf-c-check--checked--BackgroundColor: transparent;
+    --pf-c-check--checked--BorderColor: var(--pf-global--active-color--300);
+    --pf-c-check--checked--Hover--BorderColor: var(--pf-global--active-color--400);
+
+    --pf-c-check--hover--BorderColor: var(--pf-global--active-color--200);
+
+    --pf-c-check--disabled--BackgroundColor: var(--pf-global--BackgroundColor--150);
+    transition:
+        border-color 0.2s,
+        color 0.2s;
+
+    padding-inline: var(--pf-global--spacer--form-element);
+    padding-block: var(--pf-global--spacer--sm);
+    cursor: pointer;
+    background-color: var(--pf-c-check--BackgroundColor, transparent);
+    border-radius: var(--pf-global--BorderRadius--sm);
+    position: relative;
+    user-select: none;
+
+    align-content: center;
+    display: grid;
+    grid-template-areas: "input .";
+    grid-template-columns: auto 1fr;
+    column-gap: var(--pf-global--spacer--md);
+    row-gap: 0;
+
+    .pf-c-check__input {
+        grid-area: input;
+        align-self: center;
+        margin-block: 0;
+        appearance: none;
+        content: none;
+
+        width: 1.5em;
+        height: 1.5em;
+        padding: 0.25em;
+        border: 0.5px solid;
+        color: var(--pf-c-check--checkmark--BorderColor, transparent);
+        border-radius: 3px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+        background: color-mix(var(--pf-c-check--checkmark--BorderColor), transparent 84%);
+        box-shadow: inset 0 0 1px
+            color-mix(var(--pf-c-check--checkmark--BorderColor), var(--pf-global--BorderColor--200));
+
+        &::after {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+
+            content: "\f00c";
+            display: block;
+            line-height: 1;
+            color: var(--pf-c-check--checkmark--Color);
+            transition: color 0.2s;
+
+            filter: drop-shadow(color-mix(currentColor, transparent 50%) 0 0 1px);
+        }
+    }
+
+    &:hover:has(.pf-c-check__input:not(:disabled)) .pf-c-check__label {
+        text-decoration: underline;
+        text-decoration-color: var(--pf-c-check--checked--BorderColor);
+        text-decoration-thickness: 1px;
+    }
+
+    &:has(.pf-c-check__input:checked:not(:disabled)) {
+        --pf-c-check--BackgroundColor: var(--pf-c-check--checked--BackgroundColor);
+        --pf-c-check--BorderColor: var(--pf-c-check--checked--BorderColor);
+        --pf-c-check--checkmark--BorderColor: var(--pf-global--active-color--300);
+        --pf-c-check--checkmark--Color: var(--pf-c-check--checked--BorderColor);
+    }
+
+    &:hover:has(.pf-c-check__input:checked:not(:disabled)) {
+        --pf-c-check--checkmark--BorderColor: var(--pf-c-check--checked--Hover--BorderColor);
+        --pf-c-check--checkmark--Color: var(--pf-c-check--checked--Hover--BorderColor);
+    }
+
+    &:hover:not(:has(.pf-c-check__input:checked)):not(:has(.pf-c-check__input:disabled)) {
+        --pf-c-check--checkmark--BorderColor: var(--pf-c-check--hover--BorderColor);
+        --pf-c-check--checkmark--Color: color-mix(
+            var(--pf-c-check--hover--BorderColor),
+            transparent 75%
+        );
+    }
+
+    &:has(.pf-c-check__input:disabled) {
+        cursor: not-allowed;
+
+        --pf-c-check--BackgroundColor: var(--pf-c-check--disabled--BackgroundColor) !important;
+    }
+
+    .pf-c-check__label {
+        align-self: center;
+        font-weight: var(--pf-global--FontWeight--overpass--semi-bold);
+        font-family: var(--pf-global--FontFamily--redhat-updated--heading--sans-serif);
+    }
+
+    &:has(.pf-c-check__input:last-child) .pf-c-check__label {
+        grid-row: 1 / -1;
+    }
+}

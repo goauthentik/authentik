@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
+from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -11,6 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.providers.saml.api.providers import SAMLMetadataSerializer
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
@@ -18,6 +20,14 @@ from authentik.sources.saml.processors.metadata import MetadataProcessor
 
 class SAMLSourceSerializer(SourceSerializer):
     """SAMLSource Serializer"""
+
+    url_issuer = SerializerMethodField()
+
+    def get_url_issuer(self, instance: SAMLSource) -> str:
+        """Get the resolved Issuer, falling back to the metadata URL when unset"""
+        if "request" not in self._context:
+            return instance.issuer_override or ""
+        return instance.get_issuer(self._context["request"]._request)
 
     def validate(self, attrs: dict):
         if attrs.get("verification_kp"):
@@ -36,7 +46,8 @@ class SAMLSourceSerializer(SourceSerializer):
         fields = SourceSerializer.Meta.fields + [
             "group_matching_mode",
             "pre_authentication_flow",
-            "issuer",
+            "issuer_override",
+            "url_issuer",
             "sso_url",
             "slo_url",
             "allow_idp_initiated",
@@ -52,6 +63,11 @@ class SAMLSourceSerializer(SourceSerializer):
             "signed_assertion",
             "signed_response",
         ]
+        extra_kwargs = {
+            "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "verification_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "encryption_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+        }
 
 
 class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
@@ -71,7 +87,7 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
         "policy_engine_mode",
         "user_matching_mode",
         "pre_authentication_flow",
-        "issuer",
+        "issuer_override",
         "sso_url",
         "slo_url",
         "allow_idp_initiated",

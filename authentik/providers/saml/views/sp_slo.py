@@ -1,12 +1,22 @@
 """SP-initiated SAML Single Logout Views"""
 
+from base64 import b64decode
+
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.exceptions import CannotHandleAssertion
+from authentik.common.saml.parsers.logout_request import LogoutRequestParser
+from authentik.common.saml.parsers.logout_response import LogoutResponseParser
+from authentik.common.saml.parsers.verify import (
+    verify_detached_signature,
+    verify_enveloped_signature,
+)
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, in_memory_stage
@@ -16,7 +26,6 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.iframe_logout import IframeLogoutStageView
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import (
     SAMLBindings,
     SAMLLogoutMethods,
@@ -24,7 +33,6 @@ from authentik.providers.saml.models import (
     SAMLSession,
 )
 from authentik.providers.saml.native_logout import NativeLogoutStageView
-from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
 from authentik.providers.saml.tasks import send_saml_logout_response
 from authentik.providers.saml.utils.encoding import nice64
@@ -36,6 +44,8 @@ from authentik.providers.saml.views.flows import (
     REQUEST_KEY_RELAY_STATE,
     REQUEST_KEY_SAML_REQUEST,
     REQUEST_KEY_SAML_RESPONSE,
+    REQUEST_KEY_SAML_SIG_ALG,
+    REQUEST_KEY_SAML_SIGNATURE,
 )
 
 LOGGER = get_logger()
@@ -107,12 +117,25 @@ class SPInitiatedSLOView(PolicyAccessView):
             # Store relay state for the logout response
             plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
 
+            # Look up the session issuer to use in the logout response
+            auth_session = AuthenticatedSession.from_request(request, request.user)
+            session_issuer = None
+            if auth_session:
+                saml_session = SAMLSession.objects.filter(
+                    session=auth_session,
+                    user=request.user,
+                    provider=self.provider,
+                ).first()
+                if saml_session:
+                    session_issuer = saml_session.issuer
+
             if self.provider.logout_method == SAMLLogoutMethods.FRONTCHANNEL_NATIVE:
                 # Native mode - user will be redirected/posted away from authentik
                 processor = LogoutResponseProcessor(
                     self.provider,
                     logout_request,
                     destination=self.provider.sls_url,
+                    issuer=session_issuer,
                 )
 
                 if self.provider.sls_binding == SAMLBindings.POST:
@@ -152,6 +175,7 @@ class SPInitiatedSLOView(PolicyAccessView):
                     sls_url=self.provider.sls_url,
                     logout_request_id=logout_request.id if logout_request else None,
                     relay_state=relay_state,
+                    issuer=session_issuer,
                 )
 
                 LOGGER.debug(
@@ -168,6 +192,7 @@ class SPInitiatedSLOView(PolicyAccessView):
                     self.provider,
                     logout_request,
                     destination=self.provider.sls_url,
+                    issuer=session_issuer,
                 )
 
                 logout_response = processor.build_response()
@@ -216,30 +241,69 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Override dispatch to handle logout responses before authentication check"""
-        # Check if this is a LogoutResponse before doing any authentication checks
-        # If we receive a logoutResponse, this means we are using native redirect
+        # If we receive a LogoutResponse, this means we are using native redirect
         # IDP SLO, so we want to redirect to our next provider
         if REQUEST_KEY_SAML_RESPONSE in request.GET:
-            relay_state = request.GET.get(REQUEST_KEY_RELAY_STATE, "")
-            redirect_url = _get_redirect_url(request, relay_state)
-            if redirect_url:
-                return redirect(redirect_url)
-            return redirect("authentik_core:root-redirect")
-
+            return self.handle_logout_response(request, kwargs.get("application_slug", ""))
         # For SAML logout requests, use the parent dispatch with auth checks
         return super().dispatch(request, *args, **kwargs)
+
+    def handle_logout_response(self, request: HttpRequest, application_slug: str) -> HttpResponse:
+        """Validate a LogoutResponse received via redirect binding, verifying its detached
+        signature when the provider has a verification certificate configured"""
+        relay_state = request.GET.get(REQUEST_KEY_RELAY_STATE, "")
+
+        try:
+            application = Application.objects.get(slug=application_slug)
+            provider = SAMLProvider.objects.get(pk=application.provider_id)
+        except Application.DoesNotExist, SAMLProvider.DoesNotExist:
+            return redirect("authentik_core:root-redirect")
+
+        try:
+            parser = LogoutResponseParser()
+            logout_response = parser.parse_detached(
+                request.GET[REQUEST_KEY_SAML_RESPONSE],
+                relay_state=relay_state or None,
+            )
+            parser.verify_status(logout_response)
+            if provider.verification_kp:
+                verify_detached_signature(
+                    "SAMLResponse",
+                    request.GET[REQUEST_KEY_SAML_RESPONSE],
+                    relay_state or None,
+                    request.GET.get(REQUEST_KEY_SAML_SIGNATURE),
+                    request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
+                    provider.verification_kp,
+                )
+        except CannotHandleAssertion as exc:
+            LOGGER.warning("Failed to verify SAML LogoutResponse", exc=str(exc))
+            return redirect("authentik_core:root-redirect")
+
+        redirect_url = _get_redirect_url(request, relay_state)
+        if redirect_url:
+            return redirect(redirect_url)
+        return redirect("authentik_core:root-redirect")
 
     def check_saml_request(self) -> HttpRequest | None:
         # Logout responses are now handled in dispatch()
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("check_saml_request: SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
-            logout_request = LogoutRequestParser(self.provider).parse_detached(
+            logout_request = LogoutRequestParser().parse_detached(
                 self.request.GET[REQUEST_KEY_SAML_REQUEST],
                 relay_state=self.request.GET.get(REQUEST_KEY_RELAY_STATE, None),
             )
+            if self.provider.verification_kp:
+                verify_detached_signature(
+                    "SAMLRequest",
+                    self.request.GET[REQUEST_KEY_SAML_REQUEST],
+                    self.request.GET.get(REQUEST_KEY_RELAY_STATE),
+                    self.request.GET.get(REQUEST_KEY_SAML_SIGNATURE),
+                    self.request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
+                    self.provider.verification_kp,
+                )
             self.plan_context[PLAN_CONTEXT_SAML_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:
             Event.new(
@@ -258,32 +322,65 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
     """SAML Handler for SP-initiated SLO with POST binding"""
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Override dispatch to handle logout requests and responses"""
-        # Check if this is a LogoutResponse before doing any authentication checks
-        # If we receive a logoutResponse, this means we are using native redirect
+        """Override dispatch to handle logout responses before authentication check"""
+        # If we receive a LogoutResponse, this means we are using native redirect
         # IDP SLO, so we want to redirect to our next provider
         if REQUEST_KEY_SAML_RESPONSE in request.POST:
-            relay_state = request.POST.get(REQUEST_KEY_RELAY_STATE, "")
-            redirect_url = _get_redirect_url(request, relay_state)
-            if redirect_url:
-                return redirect(redirect_url)
-            return redirect("authentik_core:root-redirect")
-
+            return self.handle_logout_response(request, kwargs.get("application_slug", ""))
         # For SAML logout requests, use the parent dispatch with auth checks
         return super().dispatch(request, *args, **kwargs)
+
+    def handle_logout_response(self, request: HttpRequest, application_slug: str) -> HttpResponse:
+        """Validate a LogoutResponse received via POST binding, verifying its enveloped
+        signature when the provider has a verification certificate configured"""
+        relay_state = request.POST.get(REQUEST_KEY_RELAY_STATE, "")
+
+        try:
+            application = Application.objects.get(slug=application_slug)
+            provider = SAMLProvider.objects.get(pk=application.provider_id)
+        except Application.DoesNotExist, SAMLProvider.DoesNotExist:
+            return redirect("authentik_core:root-redirect")
+
+        try:
+            parser = LogoutResponseParser()
+            logout_response = parser.parse(
+                request.POST[REQUEST_KEY_SAML_RESPONSE],
+                relay_state=relay_state or None,
+            )
+            parser.verify_status(logout_response)
+            if provider.verification_kp:
+                verify_enveloped_signature(
+                    b64decode(request.POST[REQUEST_KEY_SAML_RESPONSE].encode()),
+                    provider.verification_kp,
+                    "/samlp:LogoutResponse/ds:Signature",
+                )
+        except CannotHandleAssertion as exc:
+            LOGGER.warning("Failed to verify SAML LogoutResponse", exc=str(exc))
+            return redirect("authentik_core:root-redirect")
+
+        redirect_url = _get_redirect_url(request, relay_state)
+        if redirect_url:
+            return redirect(redirect_url)
+        return redirect("authentik_core:root-redirect")
 
     def check_saml_request(self) -> HttpRequest | None:
         payload = self.request.POST
         # Logout responses are now handled in dispatch()
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("check_saml_request: SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
-            logout_request = LogoutRequestParser(self.provider).parse(
+            logout_request = LogoutRequestParser().parse(
                 payload[REQUEST_KEY_SAML_REQUEST],
                 relay_state=payload.get(REQUEST_KEY_RELAY_STATE, None),
             )
+            if self.provider.verification_kp:
+                verify_enveloped_signature(
+                    b64decode(payload[REQUEST_KEY_SAML_REQUEST].encode()),
+                    self.provider.verification_kp,
+                    "/samlp:LogoutRequest/ds:Signature",
+                )
             self.plan_context[PLAN_CONTEXT_SAML_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:
             LOGGER.info(str(exc))

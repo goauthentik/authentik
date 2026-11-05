@@ -1,7 +1,15 @@
 import "#elements/LoadingOverlay";
-
 import { isFormField } from "./form-associated-element";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+import type { NamedEntityElement } from "#common/api/entities";
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import {
@@ -21,17 +29,18 @@ import {
     renderModal,
 } from "#elements/dialogs";
 import {
-    EntityDescriptorElement,
     isTransclusionParentElement,
     TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
 import { reportInvalidFields } from "#elements/forms/errors";
+import { AKFormSubmittedEvent } from "#elements/forms/events";
 import Styles from "#elements/forms/Form.css";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { serializeForm } from "#elements/forms/serialization";
+import { settleFormFields } from "#elements/forms/settle-form-fields";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { createFileMap } from "#elements/utils/inputs";
@@ -40,21 +49,13 @@ import { ConsoleLogger } from "#logger/browser";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
+import { createRef, ref } from "lit-html/directives/ref.js";
+
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
-import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 //#region Form
 
@@ -74,36 +75,36 @@ export interface AKFormSubmitEvent<T> extends SubmitEvent {
  * produce the actual form, or include the form in-line as a slotted element. Bizarrely, this form
  * will not render at all if it's not actually in the viewport?[2]
  *
- * @class Form
+ * @remarks
+ *   TODO:
  *
- * @slot - Where the form goes if `renderForm()` returns undefined.
- * @fires ak-refresh - Dispatched when the form has been successfully submitted and data has changed.
- * @fires ak-submitted - Dispatched when the form is submitted.
- * @fires submit - The native submit event, re-dispatched after a successful submission for parent components to listen for.
- * @csspart partname - description
+ *   1. Specialization: Separate this component into three different classes:
  *
+ *   - The base class
+ *   - The "use `renderForm` class
+ *   - The slotted class.
  *
+ *   2. There is already specialization-by-type throughout all of our code. Consider refactoring
+ *      serializeForm() so that the conversions are on the input types, rather than here. (i.e.
+ *      "Polymorphism is better than switch.")
+ * @fires ak-refresh - Dispatched when the form has been successfully submitted and data has
+ *   changed.
+ * @fires ak-form-submitted - Dispatched after a successful submission, carrying the `send()`
+ *   response.
+ * @fires submit - The native submit event, re-dispatched after a successful submission for parent
+ *   components to listen for.
  * @template T - The type of the form data to be sent. Must be serializable by `serializeForm()`.
  * @template D - The type of the data returned by the `send()` method. Defaults to the same as `T`. *
- *
- * @remarks
- * TODO:
- *
- * 1. Specialization: Separate this component into three different classes:
- *    - The base class
- *    - The "use `renderForm` class
- *    - The slotted class.
- * 2. There is already specialization-by-type throughout all of our code.
- *    Consider refactoring serializeForm() so that the conversions are on
- *    the input types, rather than here. (i.e. "Polymorphism is better than
- *    switch.")
+ * @class Form
+ * @slot - Where the form goes if `renderForm()` returns undefined.
+ * @csspart partname - description
  */
 @customElement("ak-form")
 export class Form<T = Record<string, unknown>, D = T>
     extends AKElement
     implements TransclusionChildElement
 {
-    declare ["constructor"]: EntityDescriptorElement;
+    declare ["constructor"]: NamedEntityElement;
 
     public static styles: CSSResult[] = [
         PFCard,
@@ -142,10 +143,18 @@ export class Form<T = Record<string, unknown>, D = T>
     });
 
     /**
-     * The gerund to use in the message key for the submission message, e.g. "Creating" or "Updating".
+     * The gerund to use in the message key for the submission message, e.g. "Creating" or
+     * "Updating".
      */
     public static submittingVerb: string = msg("Creating", {
         id: "form.submit.verb.creating",
+    });
+
+    /**
+     * The past-tense verb to use in the default success message, e.g. "Created" or "Updated".
+     */
+    public static submittedVerb: string = msg("Created", {
+        id: "form.submit.verb.created",
     });
 
     //#region Modal helpers
@@ -167,8 +176,8 @@ export class Form<T = Record<string, unknown>, D = T>
     /**
      * Show a modal containing this form.
      *
-     * @see {@linkcode renderModal} for the underlying implementation.
      * @returns A promise that resolves when the modal is closed.
+     * @see {@linkcode renderModal} for the underlying implementation.
      */
     public static showModal(init?: DialogInit): Promise<void> {
         return renderModal(new this(), init);
@@ -194,11 +203,29 @@ export class Form<T = Record<string, unknown>, D = T>
     /**
      * Send the serialized form to its destination.
      *
-     * @param data The serialized form data.
-     * @returns A promise that resolves when the data has been sent.
      * @abstract
+     * @param data The serialized form data.
+     *
+     * @returns A promise that resolves when the data has been sent.
      */
     protected send?(data: NonNullable<D>): Promise<unknown>;
+
+    /**
+     * Type-check a field name against the submitted data type.
+     *
+     * Lit doesn't type-check literal attribute values, and the generated API client
+     * silently drops unrecognized properties, so a misnamed field appears to save
+     * but is discarded. Use as `name=${this.field("enabled")}`.
+     *
+     * @remarks
+     *   Names are checked against `D`, which defaults to the model type `T`. Pass the
+     *   form's `*Request` type as `D` before using this helper: model types include
+     *   read-only fields (`pk`, `component`, …) and omit write-only fields such as
+     *   passwords and secrets, which only exist on the request type.
+     */
+    protected field<K extends keyof NonNullable<D> & string>(name: K): K {
+        return name;
+    }
 
     //#region Properties
 
@@ -206,8 +233,8 @@ export class Form<T = Record<string, unknown>, D = T>
      * Whether the table is visible in the viewport.
      *
      * @remarks
-     * We cache the visibility between frames to avoid the synchronous `getBoundingClientRect()`
-     * call within {@linkcode isInViewport}.
+     *   We cache the visibility between frames to avoid the synchronous `getBoundingClientRect()`
+     *   call within {@linkcode isInViewport}.
      */
     @intersectionObserver()
     public visible = false;
@@ -239,6 +266,14 @@ export class Form<T = Record<string, unknown>, D = T>
      */
     @property({ type: String, attribute: "submitting-label", useDefault: true })
     public submittingLabel: string | null = null;
+
+    /**
+     * The message shown after the form has been successfully submitted. If not provided,
+     * a default label will be generated based on `submittedVerb` and `verboseName`,
+     * falling back to "Created".
+     */
+    @property({ type: String, attribute: "submitted-label", useDefault: true })
+    public submittedLabel: string | null = null;
 
     @property({ type: String, attribute: "cancel-label", useDefault: true })
     public cancelButtonLabel: string | null = msg("Cancel");
@@ -289,7 +324,7 @@ export class Form<T = Record<string, unknown>, D = T>
      *
      * Overrides the static `verboseName` property for this instance.
      */
-    @property({ type: String, attribute: "entity-singular" })
+    @property({ type: String, attribute: "verbose-name" })
     public set verboseName(value: string | null) {
         this.#verboseName = value;
 
@@ -309,7 +344,7 @@ export class Form<T = Record<string, unknown>, D = T>
      *
      * Overrides the static `verboseNamePlural` property for this instance.
      */
-    @property({ type: String, attribute: "entity-plural" })
+    @property({ type: String, attribute: "verbose-name-plural" })
     public set verboseNamePlural(value: string | null) {
         this.#verboseNamePlural = value;
 
@@ -414,10 +449,37 @@ export class Form<T = Record<string, unknown>, D = T>
 
         const { submittingVerb, verboseName } = this.constructor as typeof Form;
 
+        if (!verboseName) {
+            return msg(str`${submittingVerb}...`, {
+                id: "form.submitting.no-entity",
+                desc: "The message shown while a form is being submitted, when no entity name is provided.",
+            });
+        }
+
         return msg(str`${submittingVerb} ${verboseName}...`, {
             id: "form.submitting",
             desc: "The message shown while a form is being submitted.",
         });
+    }
+
+    /**
+     * An overridable method for formatting the message shown after the form has been
+     * successfully submitted.
+     */
+    protected formatSubmittedLabel(submittedLabel = this.submittedLabel): string {
+        if (submittedLabel) {
+            return submittedLabel;
+        }
+
+        const noun = this.verboseName;
+        const verb = (this.constructor as typeof Form).submittedVerb;
+
+        return noun
+            ? msg(str`${verb} ${noun}`, {
+                  id: "form.submitted.verb-entity",
+                  desc: "The message shown after a form is successfully submitted.",
+              })
+            : verb;
     }
 
     //#endregion
@@ -448,6 +510,7 @@ export class Form<T = Record<string, unknown>, D = T>
 
         if (!form) {
             this.logger.warn("Unable to check validity, no form found", this);
+
             return true;
         }
 
@@ -498,10 +561,15 @@ export class Form<T = Record<string, unknown>, D = T>
      * this to work. If processing the data results in an error, we catch the error, distribute
      * field-levels errors to the fields, and send the rest of them to the Notifications.
      *
-     * @returns A promise that resolves to the response from `send()`, or `false` if the form is invalid.
+     * @returns A promise that resolves to the response from `send()`, or `false` if the form is
+     *   invalid.
      */
-    public submit = <T = unknown>(submitEvent: SubmitEvent): Promise<T | false> => {
+    public submit = async <T = unknown>(submitEvent: SubmitEvent): Promise<T | false> => {
         submitEvent.preventDefault();
+
+        if (this.form) {
+            await settleFormFields(this.form);
+        }
 
         if (!this.reportValidity()) {
             return Promise.resolve(false);
@@ -530,6 +598,7 @@ export class Form<T = Record<string, unknown>, D = T>
         if (!this.send) {
             this.logger.info("No send() method implemented on form, dispatching submit event");
             this.dispatchEvent(submitEvent);
+
             return Promise.resolve(false);
         }
 
@@ -557,6 +626,8 @@ export class Form<T = Record<string, unknown>, D = T>
                         composed: true,
                     }),
                 );
+
+                this.dispatchEvent(new AKFormSubmittedEvent(response));
 
                 // Re-dispatch the submit event so that parent components can listen for it.
                 this.dispatchEvent(submitEvent);
@@ -615,6 +686,8 @@ export class Form<T = Record<string, unknown>, D = T>
     protected doSubmit = (event: SubmitEvent): void => {
         if (this.submitting) {
             this.logger.info("Skipping submit. Already submitting!");
+
+            return;
         }
 
         this.submitting = true;
@@ -638,7 +711,7 @@ export class Form<T = Record<string, unknown>, D = T>
     //#endregion
 
     //#region Lifecycle
-    public updated(changedProperties: PropertyValues<this>): void {
+    protected override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
         if (changedProperties.has("size")) {
@@ -712,8 +785,8 @@ export class Form<T = Record<string, unknown>, D = T>
      * An overridable method for rendering the form header.
      *
      * @remarks
-     * If this form is slotted, such as in a modal, this method will not render anything,
-     * allowing the slot parent to provide the header in a more visually appropriate manner.
+     *   If this form is slotted, such as in a modal, this method will not render anything,
+     *   allowing the slot parent to provide the header in a more visually appropriate manner.
      */
     public renderHeader(force?: boolean): SlottedTemplateResult {
         const { headline, assignedSlot, verboseName } = this;
@@ -749,8 +822,8 @@ export class Form<T = Record<string, unknown>, D = T>
      * An overridable method for rendering the form actions.
      *
      * @remarks
-     * If this form is slotted, such as in a modal, this method will not render anything,
-     * allowing the slot parent to provide the actions in a more visually appropriate manner.
+     *   If this form is slotted, such as in a modal, this method will not render anything,
+     *   allowing the slot parent to provide the actions in a more visually appropriate manner.
      */
     public renderActions(force?: boolean): SlottedTemplateResult {
         const { submitLabel, assignedSlot } = this;

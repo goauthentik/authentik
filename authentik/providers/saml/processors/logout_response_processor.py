@@ -8,14 +8,15 @@ from lxml import etree
 from lxml.etree import Element, SubElement
 
 from authentik.common.saml.constants import (
+    DEFAULT_ISSUER,
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.common.saml.parsers.logout_request import LogoutRequest
 from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.providers.saml.utils.time import get_time_string
@@ -28,27 +29,38 @@ class LogoutResponseProcessor:
     logout_request: LogoutRequest
     destination: str | None
     relay_state: str | None
+    issuer: str | None
     _issue_instant: str
     _response_id: str
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         provider: SAMLProvider,
         logout_request: LogoutRequest,
         destination: str | None = None,
         relay_state: str | None = None,
+        issuer: str | None = None,
     ):
         self.provider = provider
         self.logout_request = logout_request
         self.destination = destination
         self.relay_state = relay_state or (logout_request.relay_state if logout_request else None)
+        self.issuer = issuer
         self._issue_instant = get_time_string()
         self._response_id = get_random_id()
+
+    def _get_issuer_value(self) -> str:
+        """Get issuer value from session, with fallback to provider"""
+        if self.issuer:
+            return self.issuer
+        if self.provider.issuer_override:
+            return self.provider.issuer_override
+        return DEFAULT_ISSUER
 
     def get_issuer(self) -> Element:
         """Get Issuer element"""
         issuer = Element(f"{{{NS_SAML_ASSERTION}}}Issuer")
-        issuer.text = self.provider.issuer
+        issuer.text = self._get_issuer_value()
         return issuer
 
     def build(self, status: str = "Success") -> Element:

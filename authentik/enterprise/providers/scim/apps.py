@@ -7,3 +7,4 @@ class AuthentikEnterpriseProviderSCIMConfig(EnterpriseConfig):
     label = "authentik_enterprise_providers_scim"
     verbose_name = "authentik Enterprise.Providers.SCIM"
     default = True
+    mountpoint = "application/scim/"

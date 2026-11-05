@@ -1,6 +1,5 @@
 /**
  * @file Global constants used throughout the application.
- *
  * @todo Much of this content can be moved to a specific file, element, or component.
  */
 
@@ -45,11 +44,5 @@ export const EVENT_REFRESH = "ak-refresh";
  * @deprecated Use {@linkcode AKEnterpriseRefreshEvent}
  */
 export const EVENT_REFRESH_ENTERPRISE = "ak-refresh-enterprise";
-
-//#endregion
-
-//#region LocalStorage
-
-export const LOCALSTORAGE_AUTHENTIK_KEY = "authentik-local-settings";
 
 //#endregion

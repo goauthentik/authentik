@@ -1,5 +1,4 @@
 import "../ak-simple-table.js";
-
 import { SimpleTable } from "../ak-simple-table.js";
 import { TableSortEvent } from "../TableColumn.js";
 import type { TableRow } from "../types.js";
@@ -58,6 +57,7 @@ const container = (testItem: TemplateResult) =>
     </div>`;
 
 const columns = ["Name", "Calories", "Protein", "Fiber", "Sugar"];
+
 const content = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) => [
     name,
     calories,
@@ -87,10 +87,13 @@ export class SimpleTableSortTest extends LitElement {
 
     get content() {
         const content = [...nutritionDbUSDA];
+
         const comparison = this.sortDown
             ? (a: Ord, b: Ord) => (a[this.order] < b[this.order] ? -1 : 1)
             : (a: Ord, b: Ord) => (a[this.order] < b[this.order] ? 1 : -1);
+
         content.sort(comparison);
+
         return content.map(({ name, calories, sugar, fiber, protein }) => [
             name,
             calories,
@@ -104,8 +107,10 @@ export class SimpleTableSortTest extends LitElement {
         const onTableSort = (event: TableSortEvent) => {
             if (event.value === this.order) {
                 this.sortDown = !this.sortDown;
+
                 return;
             }
+
             this.order = event.value;
         };
 

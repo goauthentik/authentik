@@ -1,10 +1,8 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/endpoints/DeviceAccessGroupForm";
-import "#admin/policies/BoundPoliciesList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -12,6 +10,7 @@ import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { DeviceAccessGroupForm } from "#admin/endpoints/DeviceAccessGroupForm";
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 
 import { DeviceAccessGroup, EndpointsApi } from "@goauthentik/api";
 
@@ -36,7 +35,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     public override expandable = true;
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<DeviceAccessGroup>> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsList(
+        return aki(EndpointsApi).endpointsDeviceAccessGroupsList(
             await this.defaultEndpointConfig(),
         );
     }
@@ -52,9 +51,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     }
 
     protected override renderExpanded(item: DeviceAccessGroup) {
-        return html`<div class="pf-c-content">
-            <ak-bound-policies-list .target=${item.pbmUuid}></ak-bound-policies-list>
-        </div>`;
+        return renderBoundPoliciesExpansion({ target: item.pbmUuid });
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
@@ -63,6 +60,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
 
     renderToolbarSelected() {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Device Group(s)")}
             .objects=${this.selectedElements}
@@ -70,12 +68,12 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
                 return [{ key: msg("Name"), value: item.name }];
             }}
             .usedBy=${(item: DeviceAccessGroup) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsUsedByList({
+                return aki(EndpointsApi).endpointsDeviceAccessGroupsUsedByList({
                     pbmUuid: item.pbmUuid,
                 });
             }}
             .delete=${(item: DeviceAccessGroup) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsDestroy({
+                return aki(EndpointsApi).endpointsDeviceAccessGroupsDestroy({
                     pbmUuid: item.pbmUuid,
                 });
             }}

@@ -5,10 +5,10 @@ from django.contrib.auth import get_user_model
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.parsers.logout_request import LogoutRequest
 from authentik.events.models import Event, EventAction
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
-from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
 from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
 
 LOGGER = get_logger()
@@ -22,6 +22,7 @@ def send_saml_logout_request(
     name_id: str,
     name_id_format: str,
     session_index: str,
+    issuer: str,
 ):
     """Send SAML LogoutRequest to a Service Provider using session data"""
     provider = SAMLProvider.objects.filter(pk=provider_pk).first()
@@ -47,6 +48,7 @@ def send_saml_logout_request(
         name_id=name_id,
         name_id_format=name_id_format,
         session_index=session_index,
+        issuer=issuer,
     )
 
     return send_post_logout_request(provider, processor)
@@ -89,6 +91,7 @@ def send_saml_logout_response(
     sls_url: str,
     logout_request_id: str | None = None,
     relay_state: str | None = None,
+    issuer: str | None = None,
 ):
     """Send SAML LogoutResponse to a Service Provider using backchannel (server-to-server)"""
     provider = SAMLProvider.objects.filter(pk=provider_pk).first()
@@ -119,6 +122,7 @@ def send_saml_logout_response(
         logout_request=logout_request,
         destination=sls_url,
         relay_state=relay_state,
+        issuer=issuer,
     )
 
     encoded_response = processor.encode_post()

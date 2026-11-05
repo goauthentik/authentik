@@ -44,7 +44,7 @@ class MetaModelRegistry:
 
     def get_models(self):
         """Wrapper for django's `get_models` to list all models"""
-        models = apps.get_models()
+        models = list(apps.get_models())
         for _, value in self.models.items():
             models.append(value)
         return sorted(models, key=str)

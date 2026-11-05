@@ -1,5 +1,8 @@
 import "#elements/wizard/ActionWizardPage";
 import "#elements/LoadingOverlay";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
 import { AKRefreshEvent } from "#common/events";
 
@@ -14,17 +17,14 @@ import { ButtonKindLabelRecord } from "#components/ak-wizard/shared";
 
 import { ConsoleLogger } from "#logger/browser";
 
+import { guard } from "lit-html/directives/guard.js";
+
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { property } from "@lit/reactive-element/decorators/property.js";
 import { css, CSSResult, html, PropertyValues } from "lit";
-import { guard } from "lit-html/directives/guard.js";
 import { state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
 export interface WizardAction {
     displayName: string;
@@ -62,23 +62,6 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                 display: block;
                 height: min(var(--ak-c-dialog--AspectRatioHeight), var(--ak-c-dialog--MaxHeight));
             }
-
-            .pf-c-wizard__main {
-                overscroll-behavior: contain;
-                display: flex;
-                flex-flow: column;
-            }
-
-            .pf-c-wizard__main,
-            .pf-c-wizard__main-body {
-                transform: translate3d(0, 0, 0);
-                will-change: transform;
-            }
-
-            .pf-c-wizard__main-body {
-                display: flex;
-                flex: 1 1 auto;
-            }
         `,
     ];
 
@@ -89,12 +72,13 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     //#region Public Properties
 
     /**
-     * Formats the ARIA label for the wizard, using the {@linkcode verboseName} property if available.
+     * Formats the ARIA label for the wizard, using the {@linkcode verboseName} property if
+     * available.
      */
     public formatARIALabel(verboseName = this.verboseName): string {
         return verboseName
             ? msg(str`New ${verboseName} Wizard`, {
-                  id: "wizard.ariaLabel.entity-singular",
+                  id: "wizard.ariaLabel.verbose-name.one",
                   desc: "ARIA label for the creation wizard, where the entity singular is interpolated.",
               })
             : msg("Wizard", {
@@ -104,12 +88,13 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     }
 
     /**
-     * Formats the header text for the wizard, using the {@linkcode verboseName} property if available.
+     * Formats the header text for the wizard, using the {@linkcode verboseName} property if
+     * available.
      */
     public formatHeader(verboseName = this.verboseName): string {
         if (verboseName) {
             return msg(str`Create New ${verboseName}`, {
-                id: "wizard.header.entity-singular",
+                id: "wizard.header.verbose-name.one",
                 desc: "Header for the creation wizard, where the entity singular is interpolated.",
             });
         }
@@ -147,7 +132,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
      *
      * Overrides the static `verboseName` property for this instance.
      */
-    @property({ type: String, attribute: "entity-singular" })
+    @property({ type: String, attribute: "verbose-name" })
     public set verboseName(value: string | null) {
         this.#verboseName = value;
 
@@ -161,14 +146,15 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     }
 
     /**
-     * Optional plural label for the type of entity this wizard creates, used in messages and the like.
+     * Optional plural label for the type of entity this wizard creates, used in messages and the
+     * like.
      */
-    @property({ type: String, attribute: "entity-plural" })
+    @property({ type: String, attribute: "verbose-name-plural" })
     public verboseNamePlural: string | null = null;
 
     /**
-     * An optional description to show on the initial page of the wizard,
-     * used to explain the different types or provide general information about the creation process.
+     * An optional description to show on the initial page of the wizard, used to explain the
+     * different types or provide general information about the creation process.
      */
     @property({ type: String })
     public description: string | null = null;
@@ -182,8 +168,32 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     /**
      * Actions to display at the end of the wizard.
      */
+    private _actions: WizardAction[] = [];
+
     @property({ attribute: false })
-    public actions: WizardAction[] = [];
+    public get actions(): WizardAction[] {
+        return this._actions;
+    }
+
+    public set actions(value: WizardAction[]) {
+        const oldValue = this._actions;
+        this._actions = value;
+
+        if (this._actions.length > 0) {
+            if (!this.querySelector(`[slot="ak-wizard-page-action"]`)) {
+                const actionPage = document.createElement("ak-wizard-page-action");
+                actionPage.slot = "ak-wizard-page-action";
+                actionPage.dataset.wizardmanaged = "true";
+                this.appendChild(actionPage);
+            }
+
+            if (!this.steps.includes("ak-wizard-page-action")) {
+                this.steps = [...this.steps, "ak-wizard-page-action"];
+            }
+        }
+
+        this.requestUpdate("actions", oldValue);
+    }
 
     @property({ attribute: false })
     public finalHandler?: () => Promise<void>;
@@ -225,6 +235,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
         if (applyStepPresent) {
             nextSteps.push(ApplyActionsSlot);
         }
+
         this.#steps = nextSteps;
     }
 
@@ -261,9 +272,9 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
      * and whether it's the last page.
      *
      * @remarks
-     * TODO: This causes a synchronous update of the active step element.
-     * It'd be nice if this could be decoupled. Leaving as is for now since,
-     * x`but something to keep in mind if we run into weird update issues.
+     *   TODO: This causes a synchronous update of the active step element.
+     *   It'd be nice if this could be decoupled. Leaving as is for now since,
+     *   x`but something to keep in mind if we run into weird update issues.
      */
     protected takeStepProgress(): StepProgress {
         if (!this.activeStepElement) {
@@ -299,6 +310,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
 
         if (prevPage) {
             this.activeStepElement = prevPage;
+
             return Promise.resolve(true);
         }
 
@@ -314,12 +326,19 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
 
         if (!activeStepElement) return false;
 
+        // A second activation while the step is saving would submit it twice.
+        if (this.loading) return false;
+
         if (activeStepElement.nextCallback) {
             this.loading = true;
 
-            const completedStep = await activeStepElement.nextCallback(event);
+            let completedStep: boolean;
 
-            this.loading = false;
+            try {
+                completedStep = await activeStepElement.nextCallback(event);
+            } finally {
+                this.loading = false;
+            }
 
             if (!completedStep) return false;
 
@@ -329,6 +348,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                 return promise
                     .then(() => {
                         this.requestClose("submitted");
+
                         return true;
                     })
                     .finally(() => {
@@ -389,6 +409,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     public requestClose = (returnValue?: string) => {
         if (!this.dialog) {
             this.logger.warn("Skipping close request: No dialog found for wizard.");
+
             return;
         }
 
@@ -495,7 +516,16 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                         slotSelector: `[slot=${step}]`,
                         renderRootChildren: renderRoot.children,
                     });
+
                     return html`<p>Unexpected missing step: ${step}</p>`;
+                }
+
+                // By default, disable steps ahead of the current step
+                let disabled = activeStepIndex < idx;
+
+                // If this wizard is at the end, disable navigation back
+                if (activeStepIndex === this.steps.length - 1 && idx !== activeStepIndex) {
+                    disabled = true;
                 }
 
                 return html`<li role="presentation" class="pf-c-wizard__nav-item">
@@ -505,8 +535,9 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                             "pf-m-current": idx === activeStepIndex,
                         })}
                         type="button"
-                        ?disabled=${activeStepIndex < idx}
+                        ?disabled=${disabled}
                         @click=${() => {
+                            if (idx === activeStepIndex) return;
                             this.activeStepElement = stepEl;
                         }}
                     >
@@ -530,12 +561,15 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
         return guard(
             [activeStepIndex, lastPage, canBack, cancelable, valid, childElementCount],
             () => {
+                const customLabel = this.activeStepElement?.formatNextLabel();
+
                 const nextLabel =
-                    lastPage && activeStepIndex > 0
+                    customLabel ??
+                    (lastPage && activeStepIndex > 0
                         ? this.cancelable
                             ? ButtonKindLabelRecord.create()
                             : ButtonKindLabelRecord.finish()
-                        : ButtonKindLabelRecord.next();
+                        : ButtonKindLabelRecord.next());
 
                 return [
                     cancelable
@@ -563,7 +597,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                     html`<button
                         data-test-id="wizard-navigation-next"
                         class="pf-c-button pf-m-primary"
-                        ?disabled=${!this.valid}
+                        ?disabled=${!this.valid || this.loading}
                         type="button"
                         @click=${this.navigateNext}
                     >

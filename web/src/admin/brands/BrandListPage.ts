@@ -5,8 +5,10 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { globalAK } from "#common/global";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -17,12 +19,13 @@ import { BrandForm } from "#admin/brands/BrandForm";
 
 import { Brand, CoreApi, ModelEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
+import { msg, str } from "@lit/localize";
+import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
+    public static styles: CSSResult[] = [...super.styles, PFBanner];
     protected override searchEnabled = true;
     public override searchPlaceholder = msg("Search by domain or brand name...");
     public pageTitle = msg("Brands");
@@ -36,7 +39,7 @@ export class BrandListPage extends TablePage<Brand> {
     order = "domain";
 
     async apiEndpoint(): Promise<PaginatedResponse<Brand>> {
-        return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig());
+        return aki(CoreApi).coreBrandsList(await this.defaultEndpointConfig());
     }
 
     protected override rowLabel(item: Brand): string | null {
@@ -60,12 +63,12 @@ export class BrandListPage extends TablePage<Brand> {
                 return [{ key: msg("Domain"), value: item.domain }];
             }}
             .usedBy=${(item: Brand) => {
-                return new CoreApi(DEFAULT_CONFIG).coreBrandsUsedByList({
+                return aki(CoreApi).coreBrandsUsedByList({
                     brandUuid: item.brandUuid,
                 });
             }}
             .delete=${(item: Brand) => {
-                return new CoreApi(DEFAULT_CONFIG).coreBrandsDestroy({
+                return aki(CoreApi).coreBrandsDestroy({
                     brandUuid: item.brandUuid,
                 });
             }}
@@ -76,11 +79,26 @@ export class BrandListPage extends TablePage<Brand> {
         </ak-forms-delete-bulk>`;
     }
 
+    renderSectionBefore() {
+        // Double the delta to account for variance in multiple server instances
+        const delta = globalAK().config.cacheTimeoutBrands * 2;
+
+        const formatted = new Intl.DurationFormat("default", {
+            style: "long",
+        }).format({
+            seconds: delta,
+        });
+
+        return html`<div class="pf-c-banner pf-m-info">
+            ${msg(str`Changes to brands will take up to ${formatted} to become effective.`)}
+        </div>`;
+    }
+
     protected override row(item: Brand): SlottedTemplateResult[] {
         return [
             item.domain,
             item.brandingTitle || msg("-"),
-            html`<ak-status-label ?good=${item._default}></ak-status-label>`,
+            html`<ak-status-label ?good=${item._default} type="neutral"></ak-status-label>`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(BrandForm, item.brandUuid, item.brandingTitle)}
 

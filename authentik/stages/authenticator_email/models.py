@@ -4,6 +4,7 @@ from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
 from django.template import TemplateSyntaxError
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_noop
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
@@ -14,7 +15,7 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.stages.authenticator.models import SideChannelDevice
+from authentik.stages.authenticator.models import SideChannelDevice, ThrottlingMixin
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 
@@ -44,7 +45,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         validators=[timedelta_string_validator],
         help_text=_("Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."),
     )
-    subject = models.TextField(default="authentik Sign-in code")
+    subject = models.TextField(default=gettext_noop("authentik Sign-in code"))
     template = models.TextField(default=EmailTemplates.EMAIL_OTP)
 
     @property
@@ -116,12 +117,12 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         verbose_name_plural = _("Email Authenticator Setup Stages")
 
 
-class EmailDevice(SerializerModel, SideChannelDevice):
+class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
     """Email Device"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     email = models.EmailField()
-    stage = models.ForeignKey(AuthenticatorEmailStage, on_delete=models.CASCADE)
+    stage = models.ForeignKey(AuthenticatorEmailStage, on_delete=models.PROTECT)
     last_used = models.DateTimeField(auto_now=True)
 
     @property
@@ -129,6 +130,20 @@ class EmailDevice(SerializerModel, SideChannelDevice):
         from authentik.stages.authenticator_email.api import EmailDeviceSerializer
 
         return EmailDeviceSerializer
+
+    def verify_token(self, token: str) -> bool:
+        verify_allowed, _ = self.verify_is_allowed()
+        if verify_allowed:
+            verified = super().verify_token(token)
+
+            if verified:
+                self.throttle_reset()
+            else:
+                self.throttle_increment()
+        else:
+            verified = False
+
+        return verified
 
     def _compose_email(self) -> TemplateEmailMessage:
         try:

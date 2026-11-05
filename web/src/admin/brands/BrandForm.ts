@@ -1,31 +1,36 @@
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-flow-search";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
+import "#elements/Alert";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-file-search-input";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { DefaultBrand } from "#common/ui/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 import { DefaultFlowBackground } from "#elements/utils/images";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
-import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
+import { certificateSelector, tlsCertificateProvider } from "#admin/brands/Certificates";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
 
 import {
     Application,
+    AuthenticationEnum,
     Brand,
     CoreApi,
-    CoreApplicationsListRequest,
+    Flow,
     FlowDesignationEnum,
+    FlowsApi,
     UsageEnum,
 } from "@goauthentik/api";
 
@@ -33,34 +38,75 @@ import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
+
+const applicationSource: SearchSelectSource<Application> = {
+    fetchObjects: (query) =>
+        aki(CoreApi)
+            .coreApplicationsList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (application) => application.pk,
+    labelOf: (application) => application.name,
+    describe: (application) => html`${application.slug}`,
+};
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
     public static override verboseName = msg("Brand");
     public static override verboseNamePlural = msg("Brands");
 
-    loadInstance(pk: string): Promise<Brand> {
-        return new CoreApi(DEFAULT_CONFIG).coreBrandsRetrieve({
-            brandUuid: pk,
+    #coreAPI = aki(CoreApi);
+    #flowsAPI = aki(FlowsApi);
+
+    @state()
+    protected lockdownFlowAuthentication: AuthenticationEnum | null = null;
+
+    async loadInstance(pk: string): Promise<Brand> {
+        return this.#coreAPI.coreBrandsRetrieve({ brandUuid: pk }).then(async (brand) => {
+            if (!brand.flowLockdown) {
+                this.lockdownFlowAuthentication = null;
+
+                return brand;
+            }
+
+            return this.#flowsAPI
+                .flowsInstancesList({ flowUuid: brand.flowLockdown })
+                .then((flows) => {
+                    this.lockdownFlowAuthentication = flows.results[0]?.authentication ?? null;
+
+                    return brand;
+                });
         });
     }
 
-    getSuccessMessage(): string {
+    protected lockdownFlowInputListener = ({ detail }: SearchSelectChangeEvent<Flow>): void => {
+        this.lockdownFlowAuthentication = detail.value?.authentication ?? null;
+    };
+
+    protected get lockdownWarningVisible(): boolean {
+        return !!(
+            this.lockdownFlowAuthentication &&
+            this.lockdownFlowAuthentication !== AuthenticationEnum.RequireAuthenticated
+        );
+    }
+
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated brand.")
             : msg("Successfully created brand.");
     }
 
-    async send(data: Brand): Promise<Brand> {
+    protected override async send(data: Brand): Promise<Brand> {
         data.attributes ??= {};
+
         if (this.instance?.brandUuid) {
-            return new CoreApi(DEFAULT_CONFIG).coreBrandsPartialUpdate({
+            return this.#coreAPI.coreBrandsPartialUpdate({
                 brandUuid: this.instance.brandUuid,
                 patchedBrandRequest: data,
             });
         }
-        return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
+
+        return this.#coreAPI.coreBrandsCreate({
             brandRequest: data,
         });
     }
@@ -71,6 +117,7 @@ export class BrandForm extends ModelForm<Brand, string> {
             brandingLogo = "",
             brandingFavicon = "",
             brandingCustomCss = "",
+            brandingMapTiles = "",
         } = this.instance ?? DefaultBrand;
 
         const defaultFlowBackground =
@@ -97,7 +144,7 @@ export class BrandForm extends ModelForm<Brand, string> {
             >
             </ak-switch-input>
 
-            <ak-form-group label="${msg("Branding settings")} ">
+            <ak-form-group label=${msg("Branding settings")} open>
                 <div class="pf-c-form">
                     <ak-text-input
                         required
@@ -139,6 +186,20 @@ export class BrandForm extends ModelForm<Brand, string> {
                         )}
                     ></ak-file-search-input>
 
+                    <ak-text-input
+                        name="brandingMapTiles"
+                        input-hint="code"
+                        placeholder="pmtiles://https://tiles.example.com/basemap.pmtiles"
+                        value=${brandingMapTiles}
+                        label=${msg("Map tiles", { id: "brand.map-tiles.label" })}
+                        autocomplete="off"
+                        spellcheck="false"
+                        help=${msg(
+                            "Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server. This URL is served to unauthenticated clients along with the rest of the brand, so avoid tile providers that carry an API key in the URL.",
+                            { id: "brand.map-tiles.description" },
+                        )}
+                    ></ak-text-input>
+
                     <ak-form-element-horizontal name="brandingCustomCss">
                         ${AKLabel(
                             {
@@ -149,12 +210,12 @@ export class BrandForm extends ModelForm<Brand, string> {
                             msg("Custom CSS"),
                         )}
 
-                        <ak-codemirror
+                        <ak-code-editor
                             id="branding-custom-css"
                             mode="css"
                             value=${brandingCustomCss}
                         >
-                        </ak-codemirror>
+                        </ak-code-editor>
                         <p class="pf-c-form__helper-text">
                             ${msg("Custom CSS to apply to pages when this brand is active.")}
                         </p>
@@ -168,31 +229,13 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Default application")}
                         name="defaultApplication"
                     >
-                        <ak-search-select
-                            placeholder=${msg("Select an application...")}
-                            blankable
-                            .fetchObjects=${async (query?: string): Promise<Application[]> => {
-                                const args: CoreApplicationsListRequest = {
-                                    ordering: "name",
-                                    superuserFullList: true,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const users = await new CoreApi(
-                                    DEFAULT_CONFIG,
-                                ).coreApplicationsList(args);
-
-                                return users.results;
-                            }}
-                            .renderElement=${(item: Application) => item.name}
-                            .renderDescription=${(item: Application) => html`${item.slug}`}
-                            .value=${(item: Application | null) => item?.pk}
-                            .selected=${(item: Application): boolean => {
-                                return item.pk === this.instance?.defaultApplication;
-                            }}
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "defaultApplication",
+                            source: applicationSource,
+                            placeholder: msg("Select an application..."),
+                            value: this.instance?.defaultApplication,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When configured, external users will automatically be redirected to this application when not attempting to access a different application",
@@ -208,11 +251,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Authentication Flow")}
                         name="flowAuthentication"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select an authentication flow...")}
-                            flowType=${FlowDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.flowAuthentication}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowAuthentication", placeholder: msg("Select an authentication flow..."), flowType: FlowDesignationEnum.Authentication, value: this.instance?.flowAuthentication })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.",
@@ -220,14 +259,31 @@ export class BrandForm extends ModelForm<Brand, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("User switch flow", {
+                            id: "brand.form.flow-user-switch.label",
+                        })}
+                        name="flowUserSwitch"
+                    >
+                        ${AKFlowSearch({
+                            name: "flowUserSwitch",
+                            placeholder: msg("Select a user switch flow...", {
+                                id: "brand.form.flow-user-switch.placeholder",
+                            }),
+                            flowType: FlowDesignationEnum.Authentication,
+                            value: this.instance?.flowUserSwitch,
+                        })}
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.",
+                                { id: "brand.form.flow-user-switch.description" },
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Invalidation Flow")}
                         name="flowInvalidation"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select an invalidation flow...")}
-                            flowType=${FlowDesignationEnum.Invalidation}
-                            .currentFlow=${this.instance?.flowInvalidation}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowInvalidation", placeholder: msg("Select an invalidation flow..."), flowType: FlowDesignationEnum.Invalidation, value: this.instance?.flowInvalidation })}
 
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -236,21 +292,13 @@ export class BrandForm extends ModelForm<Brand, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="flowRecovery">
-                        <ak-flow-search
-                            placeholder=${msg("Select a recovery flow...")}
-                            flowType=${FlowDesignationEnum.Recovery}
-                            .currentFlow=${this.instance?.flowRecovery}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowRecovery", placeholder: msg("Select a recovery flow..."), flowType: FlowDesignationEnum.Recovery, value: this.instance?.flowRecovery })}
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Unenrollment flow")}
                         name="flowUnenrollment"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select an unenrollment flow...")}
-                            flowType=${FlowDesignationEnum.Unenrollment}
-                            .currentFlow=${this.instance?.flowUnenrollment}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowUnenrollment", placeholder: msg("Select an unenrollment flow..."), flowType: FlowDesignationEnum.Unenrollment, value: this.instance?.flowUnenrollment })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.",
@@ -261,11 +309,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("User settings flow")}
                         name="flowUserSettings"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select a user settings flow...")}
-                            flowType=${FlowDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.flowUserSettings}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowUserSettings", placeholder: msg("Select a user settings flow..."), flowType: FlowDesignationEnum.StageConfiguration, value: this.instance?.flowUserSettings })}
                         <p class="pf-c-form__helper-text">
                             ${msg("If set, users are able to configure details of their profile.")}
                         </p>
@@ -274,15 +318,37 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Device code flow")}
                         name="flowDeviceCode"
                     >
-                        <ak-flow-search
-                            placeholder=${msg("Select a device code flow...")}
-                            flowType=${FlowDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.flowDeviceCode}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({ name: "flowDeviceCode", placeholder: msg("Select a device code flow..."), flowType: FlowDesignationEnum.StageConfiguration, value: this.instance?.flowDeviceCode })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "If set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code.",
                             )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Account lockdown flow")}
+                        name="flowLockdown"
+                    >
+                        ${AKFlowSearch({ name: "flowLockdown", placeholder: msg("Select an account lockdown flow..."), flowType: FlowDesignationEnum.StageConfiguration, value: this.instance?.flowLockdown, onChange: this.lockdownFlowInputListener })}
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.",
+                            )}
+                        </p>
+                        ${
+                            this.lockdownWarningVisible
+                                ? html`<ak-alert inline>
+                                      ${msg(
+                                          "Account lockdown flows should require authentication so they can only be started from a signed-in session.",
+                                      )}
+                                  </ak-alert>`
+                                : null
+                        }
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Request flow")} name="flowRequest">
+                        ${AKFlowSearch({ name: "flowRequest", placeholder: msg("Select a request flow..."), flowType: FlowDesignationEnum.StageConfiguration, value: this.instance?.flowRequest })}
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Default flow used by users requesting access.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
@@ -293,16 +359,14 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Web Certificate")}
                         name="webCertificate"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.webCertificate}
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "webCertificate", value: this.instance?.webCertificate, allowedKeyTypes: TLSKeyTypes })}
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Client Certificates")}
                         name="clientCertificates"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${certificateProvider}
+                            .provider=${tlsCertificateProvider}
                             .selector=${certificateSelector(this.instance?.clientCertificates)}
                             available-label=${msg("Available Certificates")}
                             selected-label=${msg("Selected Certificates")}
@@ -318,14 +382,14 @@ export class BrandForm extends ModelForm<Brand, string> {
                             },
                             msg("Attributes"),
                         )}
-                        <ak-codemirror
+                        <ak-code-editor
                             id="attributes"
                             name="attributes"
                             mode="yaml"
                             value="${YAML.stringify(this.instance?.attributes ?? {})}"
                             aria-describedby="attributes-help"
                         >
-                        </ak-codemirror>
+                        </ak-code-editor>
                         <p class="pf-c-form__helper-text" id="attributes-help">
                             ${msg(
                                 "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.",

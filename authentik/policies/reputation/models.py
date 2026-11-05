@@ -7,13 +7,12 @@ from django.db import models
 from django.db.models import Sum
 from django.db.models.query_utils import Q
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
-from authentik.core.models import ExpiringModel
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.root.middleware import ClientIPMiddleware

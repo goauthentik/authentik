@@ -1,17 +1,17 @@
 import "#admin/applications/entitlements/ApplicationEntitlementForm";
-import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 
 import { ApplicationEntitlement, CoreApi, ModelEnum } from "@goauthentik/api";
 
@@ -34,7 +34,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     protected override searchEnabled = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsList({
+        return aki(CoreApi).coreApplicationEntitlementsList({
             ...(await this.defaultEndpointConfig()),
             app: this.app || "",
         });
@@ -48,16 +48,17 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Application entitlement(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ApplicationEntitlement) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsUsedByList({
+                return aki(CoreApi).coreApplicationEntitlementsUsedByList({
                     pbmUuid: item.pbmUuid || "",
                 });
             }}
             .delete=${(item: ApplicationEntitlement) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsDestroy({
+                return aki(CoreApi).coreApplicationEntitlementsDestroy({
                     pbmUuid: item.pbmUuid || "",
                 });
             }}
@@ -95,14 +96,11 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     }
 
     renderExpanded(item: ApplicationEntitlement): TemplateResult {
-        return html`<div class="pf-c-content">
-            <p>${msg("These bindings control which users have access to this entitlement.")}</p>
-            <ak-bound-policies-list
-                .target=${item.pbmUuid}
-                .allowedTypes=${[PolicyBindingCheckTarget.Group, PolicyBindingCheckTarget.User]}
-            >
-            </ak-bound-policies-list>
-        </div>`;
+        return renderBoundPoliciesExpansion({
+            target: item.pbmUuid,
+            allowed: [PolicyBindingCheckTarget.Group, PolicyBindingCheckTarget.User],
+            description: msg("These bindings control which users have access to this entitlement."),
+        });
     }
 
     protected override renderEmpty(): SlottedTemplateResult {

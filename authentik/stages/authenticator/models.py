@@ -131,6 +131,8 @@ class Device(CreatedUpdatedModel):
             this must be called inside a transaction.
 
         """
+        from authentik.stages.password.models import PasswordDevice
+
         device = None
 
         try:
@@ -138,7 +140,7 @@ class Device(CreatedUpdatedModel):
             app_label, model_name = model_label.split(".")
 
             device_cls = apps.get_model(app_label, model_name)
-            if issubclass(device_cls, Device):
+            if issubclass(device_cls, Device) and not issubclass(device_cls, PasswordDevice):
                 device_set = device_cls.objects.filter(id=int(device_id))
                 if for_verify:
                     device_set = device_set.select_for_update()
@@ -291,7 +293,7 @@ class VerifyNotAllowed:
 
 class ThrottlingMixin(models.Model):
     """
-    Mixin class for models that want throttling behaviour.
+    Mixin class for models that want throttling behavior.
 
     This implements exponential back-off for verifying tokens. Subclasses must
     implement :meth:`get_throttle_factor`, and must use the
@@ -389,17 +391,19 @@ class ThrottlingMixin(models.Model):
         """Check if throttling is enabled"""
         return self.get_throttle_factor() > 0
 
-    def get_throttle_factor(self):  # pragma: no cover
+    def get_throttle_factor(self) -> float:  # pragma: no cover
         """
-        This must be implemented to return the throttle factor.
+        Returns the throttling factor.
+        """
+        return getattr(self, "_throttle_factor", 1.0)
+
+    def set_throttle_factor(self, throttle_factor: float) -> None:
+        """
+        Sets the throttle factor to use. Call this to override the default value of 1.
 
         The number of seconds required between verification attempts will be
         :math:`c2^{n-1}` where `c` is this factor and `n` is the number of
         previous failures. A factor of 1 translates to delays of 1, 2, 4, 8,
         etc. seconds. A factor of 0 disables the throttling.
-
-        Normally this is just a wrapper for a plugin-specific setting like
-        :setting:`OTP_EMAIL_THROTTLE_FACTOR`.
-
         """
-        raise NotImplementedError()
+        self._throttle_factor = throttle_factor

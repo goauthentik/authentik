@@ -4,9 +4,8 @@ import os
 from base64 import b64decode
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-import gssapi
 import pglock
 from django.db import connection, models
 from django.http import HttpRequest
@@ -27,9 +26,13 @@ from authentik.core.models import (
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
+from authentik.lib.config import advisory_lock_db_alias
 from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
+
+if TYPE_CHECKING:
+    import gssapi
 
 LOGGER = get_logger()
 
@@ -133,7 +136,7 @@ class KerberosSource(IncomingSyncSource):
     def icon_url(self) -> str:
         icon = super().icon_url
         if not icon:
-            return static("authentik/sources/kerberos.png")
+            return static("authentik/sources/kerberos/light.png")
         return icon
 
     @property
@@ -169,6 +172,7 @@ class KerberosSource(IncomingSyncSource):
             ),
             name=self.name,
             icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
+            icon_themed_urls=self.get_icon_themed_urls(request, use_cache=False),
             promoted=self.promoted,
         )
 
@@ -182,6 +186,7 @@ class KerberosSource(IncomingSyncSource):
                     kwargs={"source_slug": self.slug},
                 ),
                 "icon_url": self.icon_url,
+                "icon_themed_urls": self.icon_themed_urls,
             }
         )
 
@@ -192,6 +197,7 @@ class KerberosSource(IncomingSyncSource):
             lock_id=f"goauthentik.io/{connection.schema_name}/sources/kerberos/sync/{self.slug}",
             timeout=0,
             side_effect=pglock.Return,
+            using=advisory_lock_db_alias(),
         )
 
     def get_base_user_properties(self, principal: str, **kwargs):
@@ -217,14 +223,7 @@ class KerberosSource(IncomingSyncSource):
     @property
     def tempdir(self) -> Path:
         """Get temporary storage for Kerberos files"""
-        path = (
-            Path(gettempdir())
-            / "authentik"
-            / connection.schema_name
-            / "sources"
-            / "kerberos"
-            / str(self.pk)
-        )
+        path = Path(gettempdir()) / "authentik" / "sources" / "kerberos" / str(self.pk)
         path.mkdir(mode=0o700, parents=True, exist_ok=True)
         return path
 
@@ -332,6 +331,8 @@ class KerberosSource(IncomingSyncSource):
 
     def get_gssapi_creds(self) -> gssapi.creds.Credentials | None:
         """Get GSSAPI credentials for this source"""
+        import gssapi
+
         try:
             name = None
             if self.spnego_server_name:
@@ -375,6 +376,8 @@ class Krb5ConfContext:
 
 class KerberosSourcePropertyMapping(PropertyMapping):
     """Map Kerberos Property to User object attribute"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

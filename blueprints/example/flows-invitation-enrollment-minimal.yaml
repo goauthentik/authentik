@@ -1,0 +1,211 @@
+# Minimal Invitation-based Enrollment Blueprint
+#
+# Companion to flows-invitation-enrollment.yaml, intended for the "New Invitation"
+# wizard in the admin UI. Creates a single enrollment flow with an invitation stage
+# bound to it, plus the supporting prompt/user-write/user-login stages.
+#
+# All user-facing fields are parameterized via !Context with fallback defaults, so
+# this blueprint can be imported directly (without context) or through the wizard
+# with custom values.
+#
+# Context keys (all optional):
+#   flow_name                        Display name of the enrollment flow.
+#   flow_slug                        URL slug of the flow and suffix for sub-entity
+#                                    identifiers (so repeated imports with different
+#                                    slugs don't overwrite each other).
+#   stage_name                       Name of the invitation stage.
+#   continue_flow_without_invitation Whether the flow continues when no invitation
+#                                    is supplied (default: false).
+#   user_type                        "external" or "internal" (default: "external").
+#                                    Drives the user-write stage's user_type and
+#                                    user_path_template.
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
+  name: Invitation-based Enrollment (minimal)
+entries:
+  - identifiers:
+      slug: !Context [flow_slug, invitation-enrollment-flow]
+    model: authentik_flows.flow
+    id: flow
+    attrs:
+      name: !Context [flow_name, Invitation Enrollment Flow]
+      title: !Context [flow_name, Invitation Enrollment Flow]
+      designation: enrollment
+      authentication: require_unauthenticated
+
+  - identifiers:
+      name: !Context [stage_name, invitation-stage]
+    id: invitation-stage
+    model: authentik_stages_invitation.invitationstage
+    attrs:
+      continue_flow_without_invitation: !Context [continue_flow_without_invitation, false]
+
+  - identifiers:
+      name:
+        !Format [
+          "invitation-enrollment-field-username-%s",
+          !Context [flow_slug, invitation-enrollment-flow],
+        ]
+    id: prompt-field-username
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: username
+      label: Username
+      type: username
+      required: true
+      placeholder: Username
+      placeholder_expression: false
+      order: 0
+
+  - identifiers:
+      name:
+        !Format [
+          "invitation-enrollment-field-password-%s",
+          !Context [flow_slug, invitation-enrollment-flow],
+        ]
+    id: prompt-field-password
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: password
+      label: Password
+      type: password
+      required: true
+      placeholder: Password
+      placeholder_expression: false
+      order: 1
+
+  - identifiers:
+      name:
+        !Format [
+          "invitation-enrollment-field-password-repeat-%s",
+          !Context [flow_slug, invitation-enrollment-flow],
+        ]
+    id: prompt-field-password-repeat
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: password_repeat
+      label: Password (repeat)
+      type: password
+      required: true
+      placeholder: Password (repeat)
+      placeholder_expression: false
+      order: 2
+
+  - identifiers:
+      name:
+        !Format [
+          "invitation-enrollment-field-name-%s",
+          !Context [flow_slug, invitation-enrollment-flow],
+        ]
+    id: prompt-field-name
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: name
+      label: Name
+      type: text
+      required: true
+      placeholder: Name
+      placeholder_expression: false
+      order: 0
+
+  - identifiers:
+      name:
+        !Format [
+          "invitation-enrollment-field-email-%s",
+          !Context [flow_slug, invitation-enrollment-flow],
+        ]
+    id: prompt-field-email
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: email
+      label: Email
+      type: email
+      required: true
+      placeholder: Email
+      placeholder_expression: false
+      order: 1
+
+  - identifiers:
+      name:
+        !Format [
+          "invitation-enrollment-prompt-credentials-%s",
+          !Context [flow_slug, invitation-enrollment-flow],
+        ]
+    id: prompt-stage-credentials
+    model: authentik_stages_prompt.promptstage
+    attrs:
+      fields:
+        - !KeyOf prompt-field-username
+        - !KeyOf prompt-field-password
+        - !KeyOf prompt-field-password-repeat
+
+  - identifiers:
+      name:
+        !Format [
+          "invitation-enrollment-prompt-details-%s",
+          !Context [flow_slug, invitation-enrollment-flow],
+        ]
+    id: prompt-stage-details
+    model: authentik_stages_prompt.promptstage
+    attrs:
+      fields:
+        - !KeyOf prompt-field-name
+        - !KeyOf prompt-field-email
+
+  - identifiers:
+      name:
+        !Format [
+          "invitation-enrollment-user-write-%s",
+          !Context [flow_slug, invitation-enrollment-flow],
+        ]
+    id: user-write-stage
+    model: authentik_stages_user_write.userwritestage
+    attrs:
+      user_creation_mode: always_create
+      user_type: !Context [user_type, external]
+      user_path_template:
+        !Format ["users/%s", !Context [user_type, external]]
+
+  - identifiers:
+      name:
+        !Format [
+          "invitation-enrollment-user-login-%s",
+          !Context [flow_slug, invitation-enrollment-flow],
+        ]
+    id: user-login-stage
+    model: authentik_stages_user_login.userloginstage
+
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf invitation-stage
+      order: 5
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: true
+
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf prompt-stage-credentials
+      order: 10
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf prompt-stage-details
+      order: 15
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf user-write-stage
+      order: 20
+    model: authentik_flows.flowstagebinding
+
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf user-login-stage
+      order: 100
+    model: authentik_flows.flowstagebinding

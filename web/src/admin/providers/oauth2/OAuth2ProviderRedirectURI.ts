@@ -1,18 +1,17 @@
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 
 import { AKControlElement } from "#elements/ControlElement";
 import { LitPropertyRecord } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { MatchingModeEnum, RedirectURI, RedirectUriTypeEnum } from "@goauthentik/api";
+import { MatchingModeEnum, RedirectURI, RedirectURITypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 
 export type RedirectURIProperties = LitPropertyRecord<{
     redirectURI: RedirectURI;
@@ -23,6 +22,8 @@ export type RedirectURIProperties = LitPropertyRecord<{
 
 @customElement("ak-provider-oauth2-redirect-uri")
 export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
+    static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
+
     static styles = [
         PFInputGroup,
         PFFormControl,
@@ -37,7 +38,7 @@ export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
     public redirectURI: RedirectURI = {
         matchingMode: MatchingModeEnum.Strict,
         url: "",
-        redirectUriType: RedirectUriTypeEnum.Authorization,
+        redirectUriType: RedirectURITypeEnum.Authorization,
     };
 
     @property({ type: String, useDefault: true })
@@ -89,15 +90,17 @@ export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
                 @change=${onChange}
             >
                 <option
-                    value="${RedirectUriTypeEnum.Authorization}"
-                    ?selected=${(this.redirectURI.redirectUriType ??
-                        RedirectUriTypeEnum.Authorization) === RedirectUriTypeEnum.Authorization}
+                    value="${RedirectURITypeEnum.Authorization}"
+                    ?selected=${
+                        (this.redirectURI.redirectUriType ?? RedirectURITypeEnum.Authorization) ===
+                        RedirectURITypeEnum.Authorization
+                    }
                 >
                     ${msg("Authorization")}
                 </option>
                 <option
-                    value="${RedirectUriTypeEnum.Logout}"
-                    ?selected=${this.redirectURI.redirectUriType === RedirectUriTypeEnum.Logout}
+                    value="${RedirectURITypeEnum.Logout}"
+                    ?selected=${this.redirectURI.redirectUriType === RedirectURITypeEnum.Logout}
                 >
                     ${msg("Post Logout")}
                 </option>

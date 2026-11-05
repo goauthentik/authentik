@@ -13,6 +13,17 @@ class RACProviderSerializer(ProviderSerializer):
 
     outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
+    def to_representation(self, instance: RACProvider) -> dict:
+        data = super().to_representation(instance)
+        request = self.context.get("request")
+        # `settings` may hold connection credentials; only callers who can view the
+        # provider should receive it.
+        if request and not request.user.has_perm(
+            "authentik_providers_rac.view_racprovider", instance
+        ):
+            data["settings"] = {}
+        return data
+
     class Meta:
         model = RACProvider
         fields = [
@@ -31,6 +42,9 @@ class RACProviderSerializer(ProviderSerializer):
             "meta_model_name",
             "settings",
             "outpost_set",
+            "access_group",
+            "maximum_connections",
+            "auth_mode",
             "connection_expiry",
             "delete_token_on_disconnect",
         ]

@@ -1,8 +1,7 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/buttons/ActionButton/index";
 import "#elements/Expand";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { downloadFile } from "#common/download";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -50,9 +49,11 @@ export class ConfigModal extends ModalButton {
 
     connectedCallback(): void {
         super.connectedCallback();
+
         this.addEventListener("ak-modal-show", () => {
             if (!this.request) return;
-            new EndpointsApi(DEFAULT_CONFIG)
+
+            aki(EndpointsApi)
                 .endpointsAgentsConnectorsMdmConfigCreate(this.request)
                 .then((e) => {
                     this.config = e;
@@ -79,14 +80,14 @@ export class ConfigModal extends ModalButton {
                     text-closed=${msg("Show MDM configuration")}
                     text-open=${msg("Hide MDM configuration")}
                 >
-                    <ak-codemirror
+                    <ak-code-editor
                         mode="xml"
                         readonly
                         value="${ifDefined(this.config?.config)}"
-                    ></ak-codemirror>
+                    ></ak-code-editor>
                 </ak-expand>
             </div>
-            <fieldset class="pf-c-modal-box__footer">
+            <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <button
                     class="pf-c-button pf-m-plain"
@@ -107,6 +108,7 @@ export class ConfigModal extends ModalButton {
                                 }),
                             );
                         }
+
                         return navigator.clipboard.writeText(this.config?.config || "");
                     }}
                 >

@@ -1,13 +1,13 @@
-.pf-c-card > fieldset {
+.pf-c-card > .ak-c-fieldset {
     margin-inline: var(--pf-global--spacer--md);
     margin-block-end: var(--pf-global--spacer--md);
 
     @media not (prefers-contrast: more) {
-        --ak-fieldset__legend--MarginInlineStart: calc(
-            var(--pf-c-card--child--PaddingLeft) - var(--ak-fieldset__legend--PaddingInlineBase)
+        --ak-c-fieldset__legend--MarginInlineStart: calc(
+            var(--pf-c-card--child--PaddingLeft) - var(--ak-c-fieldset__legend--PaddingInlineBase)
         );
         --ak-legend-margin-inline-end: calc(
-            var(--pf-c-card--child--PaddingRight) - var(--ak-fieldset__legend--PaddingInlineBase)
+            var(--pf-c-card--child--PaddingRight) - var(--ak-c-fieldset__legend--PaddingInlineBase)
         );
 
         border-width: 0;

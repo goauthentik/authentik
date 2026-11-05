@@ -2,8 +2,8 @@
 
 from base64 import b32encode
 from os import urandom
+from re import compile as re_compile
 
-from django.conf import settings
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -14,6 +14,11 @@ from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device, ThrottlingMixin
+
+# Tokens are displayed in hyphenated groups and are often typed by hand, so separators
+# are accepted on input. Generated tokens are alphanumeric, so removing these never
+# changes which token matches.
+TOKEN_SEPARATORS = re_compile(r"[\s-]")
 
 
 class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
@@ -78,13 +83,11 @@ class StaticDevice(SerializerModel, ThrottlingMixin, Device):
 
         return StaticDeviceSerializer
 
-    def get_throttle_factor(self):
-        return getattr(settings, "OTP_STATIC_THROTTLE_FACTOR", 1)
-
     def verify_token(self, token):
         verify_allowed, _ = self.verify_is_allowed()
         if verify_allowed:
-            match = self.token_set.filter(token=token).first()
+            candidates = {token, TOKEN_SEPARATORS.sub("", token)} - {""}
+            match = self.token_set.filter(token__in=candidates).first()
             if match is not None:
                 match.delete()
                 self.throttle_reset()

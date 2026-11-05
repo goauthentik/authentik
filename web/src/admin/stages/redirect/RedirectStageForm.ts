@@ -1,20 +1,12 @@
 import "#components/ak-switch-input";
-import "#elements/forms/SearchSelect/ak-search-select";
+import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
+import { aki } from "#common/api/client";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
-
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    Flow,
-    FlowsApi,
-    FlowsInstancesListRequest,
-    RedirectStage,
-    RedirectStageModeEnum,
-    StagesApi,
-} from "@goauthentik/api";
+import { RedirectStage, RedirectStageModeEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -26,40 +18,48 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
     mode: string = RedirectStageModeEnum.Static;
 
     loadInstance(pk: string): Promise<RedirectStage> {
-        return new StagesApi(DEFAULT_CONFIG)
+        return aki(StagesApi)
             .stagesRedirectRetrieve({
                 stageUuid: pk,
             })
             .then((stage) => {
                 this.mode = stage.mode ?? RedirectStageModeEnum.Static;
+
                 return stage;
             });
     }
 
     async send(data: RedirectStage): Promise<RedirectStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesRedirectUpdate({
+            return aki(StagesApi).stagesRedirectUpdate({
                 stageUuid: this.instance.pk || "",
                 redirectStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesRedirectCreate({
+
+        return aki(StagesApi).stagesRedirectCreate({
             redirectStageRequest: data,
         });
     }
 
     protected override renderForm(): TemplateResult {
         return html`<span>
-                ${msg("Redirect the user to another flow, potentially with all gathered context")}
+                ${msg(
+                    "Redirect the user to a static URL or another flow, optionally with all gathered context.",
+                )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
@@ -107,27 +107,11 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                         name="targetFlow"
                         required
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => RenderFlowOption(flow)}
-                            .renderDescription=${(flow: Flow): TemplateResult => html`${flow.name}`}
-                            .value=${(flow: Flow | undefined): string | undefined => flow?.pk}
-                            .selected=${(flow: Flow): boolean =>
-                                this.instance?.targetFlow === flow.pk}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "targetFlow",
+                            value: this.instance?.targetFlow,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">${msg("Redirect the user to a Flow.")}</p>
                     </ak-form-element-horizontal>
                     <ak-switch-input

@@ -1,9 +1,12 @@
+import PFAlignment from "@patternfly/patternfly/utilities/Alignment/alignment.css";
+
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
+
 import { WizardUpdateEvent } from "#components/ak-wizard/events";
 
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { WizardValidationRecord } from "#admin/applications/wizard/steps/providers/shared";
 import {
-    ProxyModeValue,
     renderForm,
     type SetMode,
     type SetShowHttpBasic,
@@ -17,16 +20,16 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-application-wizard-provider-for-proxy")
 export class ApplicationWizardProxyProviderForm extends ApplicationWizardProviderForm<ProxyProvider> {
+    static styles = [...super.styles, PFAlignment];
+
     label = msg("Configure Proxy Provider");
 
     @state()
     showHttpBasic = true;
 
     protected renderForm(provider: ProxyProvider, errors: WizardValidationRecord = {}) {
-        const onSetMode: SetMode = (ev: CustomEvent<ProxyModeValue>) => {
-            this.dispatchEvent(
-                new WizardUpdateEvent({ ...this.wizard, proxyMode: ev.detail.value }),
-            );
+        const onSetMode: SetMode = (ev: ToggleGroupEvent<ProxyMode>) => {
+            this.dispatchEvent(new WizardUpdateEvent({ ...this.wizard, proxyMode: ev.value }));
             // We deliberately chose not to make the forms "controlled," but we do need this form to
             // respond immediately to a state change in the wizard.
             window.setTimeout(() => this.requestUpdate(), 0);
@@ -56,6 +59,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Proxy Provider Step received uninitialized wizard context.");
         }
+
         return this.renderForm(this.wizard.provider, this.wizard.errors?.provider);
     }
 }

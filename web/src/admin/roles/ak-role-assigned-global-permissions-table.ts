@@ -1,8 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 import "#admin/roles/ak-role-permission-form";
 import "#elements/forms/ModalForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -28,7 +27,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     public override order = "content_type__app_label,content_type__model";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+        return aki(RbacApi).rbacPermissionsList({
             ...(await this.defaultEndpointConfig()),
             role: this.roleUuid ?? undefined,
         });
@@ -63,13 +62,12 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
 
     protected renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Permission) => {
-                return new RbacApi(
-                    DEFAULT_CONFIG,
-                ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
+                return aki(RbacApi).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
                     uuid: this.roleUuid || "",
                     patchedPermissionAssignRequest: {
                         permissions: [`${item.appLabel}.${item.codename}`],

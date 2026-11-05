@@ -12,10 +12,11 @@ from structlog.stdlib import get_logger
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
-    ExpiringModel,
     User,
 )
-from authentik.lib.utils.db import chunked_queryset
+from authentik.lib.models import ExpiringModel
+from authentik.lib.sync.models import Sync
+from authentik.lib.utils.db import chunked_queryset, delete_in_batches
 from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
@@ -25,26 +26,28 @@ LOGGER = get_logger()
 def clean_expired_models():
     self = CurrentTask.get_task()
     for cls in ExpiringModel.__subclasses__():
-        cls: ExpiringModel
         objects = (
             cls.objects.including_expired()
             .all()
             .exclude(expiring=False)
             .exclude(expiring=True, expires__gt=now())
         )
-        amount = objects.count()
-        for obj in chunked_queryset(objects):
-            obj.expire_action()
+        if cls.expire_action is ExpiringModel.expire_action:
+            amount = delete_in_batches(objects)
+        else:
+            amount = objects.count()
+            for obj in chunked_queryset(objects):
+                obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
     clear_expired_cache()
     for cls in [Message, GroupChannel]:
-        objects = cls.objects.all().filter(expires__lt=now())
-        amount = objects.count()
-        for obj in chunked_queryset(objects):
-            obj.delete()
+        amount = delete_in_batches(cls.objects.filter(expires__lt=now()))
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
+    for cls in Sync.__subclasses__():
+        amount = cls.cleanup()
+        LOGGER.debug("Expired models", model=cls, amount=amount)
 
 
 @actor(description=_("Remove temporary users created by SAML Sources."))

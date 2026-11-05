@@ -1,7 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-text-input";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -21,7 +20,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
     intent: IntentEnum = IntentEnum.Api;
 
     loadInstance(pk: string): Promise<Token> {
-        return new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
+        return aki(CoreApi).coreTokensRetrieve({
             identifier: pk,
         });
     }
@@ -35,19 +34,23 @@ export class UserTokenForm extends ModelForm<Token, string> {
     async send(data: Token): Promise<Token> {
         if (this.instance) {
             data.intent = this.instance.intent;
-            return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
+
+            return aki(CoreApi).coreTokensUpdate({
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
         }
+
         data.intent = this.intent;
-        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+
+        return aki(CoreApi).coreTokensCreate({
             tokenRequest: data,
         });
     }
 
     protected override renderForm(): TemplateResult {
         const now = new Date();
+
         const expiringDate = this.instance?.expires
             ? new Date(this.instance.expires.getTime())
             : new Date(now.getTime() + 30 * 60000);
@@ -70,26 +73,28 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 placeholder=${msg("Type a description for this token...")}
             ></ak-text-input>
 
-            ${this.intent === IntentEnum.AppPassword
-                ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
-                      ${AKLabel(
-                          {
-                              slot: "label",
-                              className: "pf-c-form__group-label",
-                              htmlFor: "expiration-date-input",
-                          },
-                          msg("Expires on"),
-                      )}
+            ${
+                this.intent === IntentEnum.AppPassword
+                    ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
+                          ${AKLabel(
+                              {
+                                  slot: "label",
+                                  className: "pf-c-form__group-label",
+                                  htmlFor: "expiration-date-input",
+                              },
+                              msg("Expires on"),
+                          )}
 
-                      <input
-                          id="expiration-date-input"
-                          type="datetime-local"
-                          value="${dateTimeLocal(expiringDate)}"
-                          min="${dateTimeLocal(now)}"
-                          class="pf-c-form-control"
-                      />
-                  </ak-form-element-horizontal>`
-                : nothing}`;
+                          <input
+                              id="expiration-date-input"
+                              type="datetime-local"
+                              value="${dateTimeLocal(expiringDate)}"
+                              min="${dateTimeLocal(now)}"
+                              class="pf-c-form-control"
+                          />
+                      </ak-form-element-horizontal>`
+                    : nothing
+            }`;
     }
 }
 

@@ -44,7 +44,6 @@ from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_ME
 
 
 class AgentConnectorSerializer(ConnectorSerializer):
-
     class Meta(ConnectorSerializer.Meta):
         model = AgentConnector
         fields = ConnectorSerializer.Meta.fields + [
@@ -63,7 +62,6 @@ class AgentConnectorSerializer(ConnectorSerializer):
 
 
 class MDMConfigSerializer(PassiveSerializer):
-
     platform = ChoiceField(choices=OSFamily.choices)
     enrollment_token = PrimaryKeyRelatedField(
         queryset=EnrollmentToken.objects.including_expired().all()
@@ -89,7 +87,6 @@ class AgentConnectorViewSet(
     UsedByMixin,
     ModelViewSet,
 ):
-
     queryset = AgentConnector.objects.all()
     serializer_class = AgentConnectorSerializer
     search_fields = ["name"]
@@ -121,15 +118,16 @@ class AgentConnectorViewSet(
         methods=["POST"],
         detail=False,
         authentication_classes=[AgentEnrollmentAuth],
+        permission_classes=[IsAuthenticated],
     )
     def enroll(self, request: Request):
         token: EnrollmentToken = request.auth
         data = EnrollSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        device, _ = Device.objects.get_or_create(
+        device = Device.get_or_create(
             identifier=data.validated_data["device_serial"],
+            name=data.validated_data["device_name"],
             defaults={
-                "name": data.validated_data["device_name"],
                 "expiring": False,
                 "access_group": token.device_group,
             },
@@ -151,7 +149,12 @@ class AgentConnectorViewSet(
         request=OpenApiTypes.NONE,
         responses=AgentConfigSerializer(),
     )
-    @action(methods=["GET"], detail=False, authentication_classes=[AgentAuth])
+    @action(
+        methods=["GET"],
+        detail=False,
+        authentication_classes=[AgentAuth],
+        permission_classes=[IsAuthenticated],
+    )
     def agent_config(self, request: Request):
         token: DeviceToken = request.auth
         connector: AgentConnector = token.device.connector.agentconnector
@@ -165,7 +168,12 @@ class AgentConnectorViewSet(
         request=DeviceFacts(),
         responses={204: OpenApiResponse(description="Successfully checked in")},
     )
-    @action(methods=["POST"], detail=False, authentication_classes=[AgentAuth])
+    @action(
+        methods=["POST"],
+        detail=False,
+        authentication_classes=[AgentAuth],
+        permission_classes=[IsAuthenticated],
+    )
     def check_in(self, request: Request):
         token: DeviceToken = request.auth
         data = DeviceFacts(data=request.data)

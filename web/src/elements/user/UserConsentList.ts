@@ -1,8 +1,7 @@
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -15,11 +14,14 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {
+    public static override verboseName = msg("Consent");
+    public static override verboseNamePlural = msg("Consents");
+
     @property({ type: Number })
     userId?: number;
 
     async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
-        return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
+        return aki(CoreApi).coreUserConsentList({
             ...(await this.defaultEndpointConfig()),
             user: this.userId,
         });
@@ -41,6 +43,7 @@ export class UserConsentList extends Table<UserConsent> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Consent(s)")}
             .objects=${this.selectedElements}
@@ -55,12 +58,12 @@ export class UserConsentList extends Table<UserConsent> {
                 ];
             }}
             .usedBy=${(item: UserConsent) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
+                return aki(CoreApi).coreUserConsentUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: UserConsent) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUserConsentDestroy({
+                return aki(CoreApi).coreUserConsentDestroy({
                     id: item.pk,
                 });
             }}
@@ -75,13 +78,15 @@ export class UserConsentList extends Table<UserConsent> {
         return [
             html`${item.application.name}`,
             Timestamp(item.expires && item.expiring ? item.expires : null),
-            html`${item.permissions
-                ? html`<ak-chip-group>
-                      ${item.permissions.split(" ").map((perm) => {
-                          return html`<ak-chip .removable=${false}>${perm}</ak-chip>`;
-                      })}
-                  </ak-chip-group>`
-                : html`-`}`,
+            html`${
+                item.permissions
+                    ? html`<ak-chip-group>
+                          ${item.permissions.split(" ").map((perm) => {
+                              return html`<ak-chip .removable=${false}>${perm}</ak-chip>`;
+                          })}
+                      </ak-chip-group>`
+                    : html`-`
+            }`,
         ];
     }
 }

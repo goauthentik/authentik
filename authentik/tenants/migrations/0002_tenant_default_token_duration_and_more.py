@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             model_name="tenant",
             name="default_token_duration",
             field=models.TextField(
-                default=CONFIG.get("default_token_duration", "minutes=30"),
+                default=CONFIG.get("default_token_duration", "days=1"),
                 help_text="Default token duration",
                 validators=[authentik.lib.utils.time.timedelta_string_validator],
             ),

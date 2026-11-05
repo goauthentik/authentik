@@ -14,11 +14,27 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
     @property({ type: Number, reflect: true })
     min = NaN;
 
+    @property({ type: Boolean, reflect: true })
+    allowFloat = false;
+
+    @property({ type: Boolean, attribute: "readonly" })
+    readOnly = false;
+
     renderControl() {
         const setValue = (ev: InputEvent) => {
-            const value = (ev.target as HTMLInputElement).value;
-            this.value = value.trim() === "" ? NaN : parseInt(value, 10);
+            const value = (ev.target as HTMLInputElement).value.trim();
+
+            if (value === "") {
+                this.value = NaN;
+
+                return;
+            }
+
+            this.value = this.allowFloat === true ? parseFloat(value) : parseInt(value, 10);
         };
+
+        const attributeValue =
+            typeof this.value === "number" && !isNaN(this.value) ? this.value : undefined;
 
         return html`<input
             id=${this.fieldID}
@@ -26,10 +42,11 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
             type="number"
             @input=${setValue}
             aria-label=${ifPresent(this.label)}
-            value=${ifPresent(this.value)}
+            value=${ifDefined(attributeValue)}
             min=${ifDefined(this.min)}
             class="pf-c-form-control"
             ?required=${this.required}
+            ?readonly=${this.readOnly}
         />`;
     }
 }

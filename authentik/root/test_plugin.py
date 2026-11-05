@@ -19,6 +19,18 @@ def pytest_sessionstart(*_, **__):
     """Clear the console ahead of the pytest output starting"""
     if not IS_CI:
         print("\x1b[2J\x1b[H")
+    # Pre-warm cryptography's PyO3 PyDateTime type cache with the real
+    # datetime class. If the first extraction happens under @freeze_time
+    # (e.g. in MTLSStageTests), PyO3 caches freezegun's FakeDatetime,
+    # which breaks every later test that passes a real datetime into
+    # cryptography ("TypeError: 'datetime' object is not an instance
+    # of 'FakeDatetime'"). The discard is intentional — only side
+    # effect needed is the type-cache initialization.
+    from datetime import UTC, datetime
+
+    from cryptography.x509.verification import PolicyBuilder
+
+    PolicyBuilder().time(datetime.now(tz=UTC))
     yield
 
 
@@ -30,6 +42,19 @@ def pytest_report_header(*_, **__):
         f"OpenSSL version: {OPENSSL_VERSION}, FIPS: {backend._fips_enabled}",
         f"Local IP: {get_local_ip()} (Detected as {get_local_ip(override=False)})",
     ]
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_runtest_setup(item: Item):
+    """In-memory caches outlive each test's transaction rollback, so start every test empty.
+    This runs after fixture setup."""
+    from authentik.admin.utils import get_system_settings
+    from authentik.brands.utils import get_brand_for_request
+    from authentik.enterprise.license import LicenseKey
+
+    get_brand_for_request.cache_clear()
+    get_system_settings.cache_clear()
+    LicenseKey.cached_summary.cache_clear()
 
 
 def pytest_collection_modifyitems(config: Config, items: list[Item]) -> None:

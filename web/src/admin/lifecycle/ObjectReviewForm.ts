@@ -1,7 +1,6 @@
 import "#components/ak-textarea-input";
 import "#elements/forms/ModalForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -26,7 +25,7 @@ export class ObjectReviewForm extends ModelForm<Review, string, Review | null> {
     }
 
     protected send(data: Review): Promise<unknown> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsCreate({
+        return aki(LifecycleApi).lifecycleReviewsCreate({
             reviewRequest: data,
         });
     }

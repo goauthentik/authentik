@@ -1,6 +1,7 @@
 """Sync LDAP Users into authentik"""
 
 from collections.abc import Generator
+from typing import Any
 
 from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
@@ -56,12 +57,32 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             **kwargs,
         )
 
+    @staticmethod
+    def get_account_properties(
+        attributes: dict[str, Any],
+        syncers: tuple[MicrosoftActiveDirectory, FreeIPA],
+    ) -> dict[str, bool]:
+        """Combine directory restrictions, leaving unmapped account status unchanged."""
+        # Evaluate every handler so one cannot override another's restriction or hide an error.
+        account_states = [
+            state
+            for syncer in syncers
+            if (state := syncer.get_account_active(attributes)) is not None
+        ]
+        if not account_states:
+            return {}
+        return {"is_active": all(account_states)}
+
     def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Users and create authentik_core.User instances"""
         if not self._source.sync_users:
             self._task.info("User syncing is disabled for this Source")
             return -1
         user_count = 0
+
+        ms_ad_syncer = MicrosoftActiveDirectory(self._source, self._task)
+        freeipa_syncer = FreeIPA(self._source, self._task)
+
         for user in page_data:
             if (attributes := self.get_attributes(user)) is None:
                 continue
@@ -85,7 +106,10 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                         ldap=attributes,
                     ).items()
                 }
-                self._logger.debug("Writing user with attributes", **defaults)
+                defaults.update(
+                    self.get_account_properties(attributes, (ms_ad_syncer, freeipa_syncer))
+                )
+                self._logger.debug("Writing user with attributes", attributes=defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")
                 action, connection = self.matcher.get_user_action(uniq, defaults)
@@ -116,6 +140,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 if action in (Action.AUTH, Action.LINK):
                     ak_user = connection.user
                     ak_user.update_attributes(defaults)
+                    connection.save()
                 elif action == Action.DENY:
                     continue
             except PropertyMappingExpressionException as exc:
@@ -138,8 +163,6 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             else:
                 self._logger.debug("Synced User", user=ak_user.username, created=created)
                 user_count += 1
-                MicrosoftActiveDirectory(self._source, self._task).sync(
-                    attributes, ak_user, created
-                )
-                FreeIPA(self._source, self._task).sync(attributes, ak_user, created)
+                ms_ad_syncer.sync(attributes, ak_user, created)
+                freeipa_syncer.sync(attributes, ak_user, created)
         return user_count

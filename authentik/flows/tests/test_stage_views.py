@@ -1,12 +1,14 @@
 """stage view tests"""
 
 from collections.abc import Callable
+from unittest.mock import patch
 
 from django.test import RequestFactory, TestCase
+from django.urls import reverse
 
 from authentik.core.tests.utils import RequestFactory as AuthentikRequestFactory
 from authentik.core.tests.utils import create_test_flow
-from authentik.flows.models import FlowStageBinding
+from authentik.flows.models import Flow, FlowStageBinding
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.utils.reflection import all_subclasses
@@ -40,6 +42,46 @@ class TestViews(TestCase):
         self.assertEqual(
             challenge.initial_data["flow_info"]["background"],
             "/static/dist/assets/images/flow_background.jpg",
+        )
+
+    def test_flow_interface_css_background_preserves_presigned_url_query(self):
+        """Test flow CSS keeps signed URL query separators intact."""
+        flow = create_test_flow()
+        background_url = (
+            "https://s3.ca-central-1.amazonaws.com/example/media/public/background.png"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=credential"
+            "&X-Amz-Signature=signature"
+        )
+
+        with patch.object(Flow, "background_url", return_value=background_url):
+            response = self.client.get(
+                reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+            )
+
+        self.assertContains(
+            response,
+            f'--ak-global--background-image: url("{background_url}");',
+            html=False,
+        )
+
+    def test_flow_sfe_css_background_preserves_presigned_url_query(self):
+        """Test SFE flow CSS keeps signed URL query separators intact."""
+        flow = create_test_flow()
+        background_url = (
+            "https://s3.ca-central-1.amazonaws.com/example/media/public/background.png"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=credential"
+            "&X-Amz-Signature=signature"
+        )
+
+        with patch.object(Flow, "background_url", return_value=background_url):
+            response = self.client.get(
+                reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug}) + "?sfe"
+            )
+
+        self.assertContains(
+            response,
+            f'background-image: url("{background_url}");',
+            html=False,
         )
 
 

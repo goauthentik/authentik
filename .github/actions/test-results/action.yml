@@ -10,12 +10,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v5
+    - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v5
       with:
         files: ${{ inputs.files }}
         flags: ${{ inputs.flags }}
         use_oidc: true
-    - uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v5
+    - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v5
       with:
         files: ${{ inputs.files }}
         flags: ${{ inputs.flags }}

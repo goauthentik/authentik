@@ -1,11 +1,13 @@
 """SCIM Client"""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from django.core.cache import cache
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.utils.http import urlencode
+from msgspec.json import Encoder as JSONEncoder
 from pydantic import ValidationError
-from requests import RequestException, Session
+from requests import JSONDecodeError, RequestException, Session
 
 from authentik.lib.sync.outgoing import (
     HTTP_CONFLICT,
@@ -40,8 +42,11 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     _session: Session
     _config: ServiceProviderConfiguration
 
+    can_discover = True
+
     def __init__(self, provider: SCIMProvider):
         super().__init__(provider)
+        self._json_encoder = JSONEncoder(order="deterministic")
         self._session = get_http_session()
         self._session.verify = provider.verify_certificates
         self.provider = provider
@@ -84,7 +89,37 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             raise SCIMRequestException(response)
         if response.status_code == HTTP_NO_CONTENT:
             return {}
-        return response.json()
+        try:
+            return response.json()
+        except JSONDecodeError as exc:
+            raise SCIMRequestException(message="Failed to decode SCIM response") from exc
+
+    def lower_case_keys(self, raw: dict[str, Any]) -> dict[str, Any]:
+        """Lowercase all keys in the dict to ignore casing"""
+        return {k.lower(): v for k, v in raw.items()}
+
+    def find_conflicting(self, path: str, attribute: str, value: str) -> dict[str, Any] | None:
+        """Find the remote object that a create request conflicted with by its `attribute`, so
+        it can be linked. Returns None when the remote system can't be searched or has no
+        object with that value."""
+        if not self._config.filter.supported:
+            return None
+        try:
+            response = self._request(
+                "GET", f"{path}?{urlencode({'filter': f'{attribute} eq "{value}"'})}"
+            )
+        except (NotFoundSyncException, SCIMRequestException) as exc:
+            self.logger.warning("Failed to search for conflicting object", path=path, exc=exc)
+            return None
+        # A response that isn't a SCIM ListResponse, such as a bare JSON array, can't be matched
+        if not isinstance(response, dict):
+            return None
+        for resource in self.lower_case_keys(response).get("resources", []):
+            # Check the value, as remote systems that ignore the filter return other objects too
+            remote_value = self.lower_case_keys(resource).get(attribute.lower())
+            if str(remote_value).lower() == value.lower():
+                return resource
+        return None
 
     def get_service_provider_config(self):
         """Get Service provider config"""
@@ -97,7 +132,10 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         if cached_config is not None:
             return cached_config
 
-        if self.provider.compatibility_mode == SCIMCompatibilityMode.VCENTER:
+        if self.provider.compatibility_mode in [
+            SCIMCompatibilityMode.GITLAB,
+            SCIMCompatibilityMode.VCENTER,
+        ]:
             return default_config
 
         # Attempt to fetch from remote
@@ -124,3 +162,22 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         else:
             cache.delete(cache_key)
         return config
+
+    def paginate_resources(self, path: str):
+        start_index = 1
+        while True:
+            response: dict[str, Any] = self.lower_case_keys(
+                self._request(
+                    "GET",
+                    path,
+                    params={"count": self.provider.sync_page_size, "startIndex": start_index},
+                )
+            )
+            total_items = int(response["totalresults"])
+            start_index += int(response["itemsperpage"])
+            resources = response.get("resources", [])
+            if not resources:
+                break
+            yield from response["resources"]
+            if start_index >= total_items:
+                break

@@ -1,15 +1,13 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
-        "composite": true,
         "isolatedModules": true,
-        "incremental": true,
         "rootDir": "src",
         "strict": true,
         "newLine": "lf",
         "target": "ESNext",
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
         "outDir": "dist",
         "skipDefaultLibCheck": true,
         "skipLibCheck": true,
@@ -18,5 +16,6 @@
         "declarationMap": true,
         "lib": ["DOM", "DOM.Iterable", "ESNext"]
     },
+    "include": ["src"],
     "exclude": ["node_modules", "./out/**/*", "./dist/**/*"]
 }

@@ -1,6 +1,9 @@
 use std::{env::temp_dir, os::unix, path::PathBuf, sync::Arc};
 
-use ak_axum::{router::wrap_router, server};
+use ak_axum::{
+    router::{make_request_body_limit_layer, wrap_router},
+    server,
+};
 use ak_common::{
     arbiter::{Arbiter, Tasks},
     config,
@@ -16,16 +19,20 @@ use tokio::{
 use tracing::info;
 
 #[cfg(feature = "core")]
+use crate::server::Server;
+#[cfg(feature = "core")]
 use crate::worker::Workers;
 
 mod handlers;
 
-fn socket_path() -> PathBuf {
+pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik-metrics.sock")
 }
 
 pub(crate) struct Metrics {
     prometheus: PrometheusHandle,
+    #[cfg(feature = "core")]
+    pub(crate) server: ArcSwapOption<Server>,
     #[cfg(feature = "core")]
     pub(crate) workers: ArcSwapOption<Workers>,
 }
@@ -38,6 +45,8 @@ impl Metrics {
             .install_recorder()?;
         Ok(Self {
             prometheus,
+            #[cfg(feature = "core")]
+            server: ArcSwapOption::empty(),
             #[cfg(feature = "core")]
             workers: ArcSwapOption::empty(),
         })
@@ -65,6 +74,7 @@ fn build_router(state: Arc<Metrics>) -> Router {
             .with_state(state),
         true,
     )
+    .layer(make_request_body_limit_layer())
 }
 
 pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
@@ -78,13 +88,7 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         .spawn(run_upkeep(arbiter, Arc::clone(&metrics)))?;
 
     for addr in config::get().listen.metrics.iter().copied() {
-        server::start_plain(
-            tasks,
-            "metrics",
-            router.clone(),
-            addr,
-            true, // Allow failure in case the server is running on the same machine, like in dev
-        )?;
+        server::start_plain(tasks, "metrics", router.clone(), addr)?;
     }
 
     server::start_unix(
@@ -92,7 +96,6 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         "metrics",
         router,
         unix::net::SocketAddr::from_pathname(socket_path())?,
-        true, // Allow failure in case the server is running on the same machine, like in dev
     )?;
 
     Ok(metrics)

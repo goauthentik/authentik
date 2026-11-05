@@ -2,6 +2,7 @@
 
 from urllib.parse import urlencode
 
+from django.contrib.auth.hashers import make_password
 from django.contrib.contenttypes.models import ContentType
 from django.test import RequestFactory, TestCase
 from django.views.debug import SafeExceptionReporterFilter
@@ -10,11 +11,12 @@ from guardian.shortcuts import get_anonymous_user
 from authentik.brands.models import Brand
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_user
-from authentik.events.models import Event
+from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
+from authentik.stages.password.models import PasswordDevice
 
 
 class TestEvents(TestCase):
@@ -213,3 +215,28 @@ class TestEvents(TestCase):
         event = Event.new("unittest", foo="foo bar \u0000 baz")
         event.save()
         self.assertEqual(event.context["foo"], "foo bar  baz")
+
+    def test_password_set_signal_on_set_password_from_hash(self):
+        """Changing password from hash should still emit an audit event."""
+        user = create_test_user()
+        old_count = Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk).count()
+
+        PasswordDevice.set_password_from_hash(user, make_password(generate_id()))
+
+        new_count = Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk).count()
+        self.assertEqual(new_count, old_count + 1)
+        event = Event.objects.filter(action=EventAction.PASSWORD_SET, user__pk=user.pk).latest(
+            "created"
+        )
+        self.assertNotIn("hasher_defaults_overridden", event.context)
+
+    def test_log_deprecation(self):
+        """Test Event.log_deprecation"""
+        Event.log_deprecation(self.__module__, "Test deprecation")
+        Event.log_deprecation(self.__module__, "Test deprecation")
+        Event.log_deprecation(self.__module__, "Test deprecation")
+        Event.log_deprecation(self.__module__, "Test deprecation", cause=create_test_user())
+        logs = Event.objects.filter(
+            action=EventAction.CONFIGURATION_WARNING, context__deprecation=self.__module__
+        )
+        self.assertEqual(logs.count(), 2)

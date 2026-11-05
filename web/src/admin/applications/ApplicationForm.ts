@@ -14,12 +14,12 @@ import "#elements/forms/SearchSelect/ak-search-select";
 import "#admin/applications/ak-provider-table";
 import "#admin/applications/components/ak-backchannel-input";
 import "#admin/applications/components/ak-provider-search-input";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { navigate } from "#elements/router/RouterOutlet";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { navigate } from "#elements/router/core/navigation";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -34,11 +34,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 /**
  * Application Form
  *
- * @prop {string} instancePk - The primary key of the instance to load.
+ * @property {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
-    #api = new CoreApi(DEFAULT_CONFIG);
+    #api = aki(CoreApi);
 
     public static override verboseName = msg("Application");
     public static override verboseNamePlural = msg("Applications");
@@ -86,7 +86,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
 
         if (currentSlug && currentSlug !== nextSlug) {
             this.instancePk = nextSlug;
-            navigate(`/core/applications/${nextSlug}`);
+            navigate(toAdminInterface(`core/applications/${nextSlug}`));
         }
 
         return app;
@@ -113,14 +113,17 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );
+
         const providerFromInstance = this.instance?.provider;
         const providerValue = providerFromInstance ?? this.provider;
         const providerPrefilled = !this.instance && this.provider !== null;
 
         return html`
-            ${this.instance || this.provider
-                ? null
-                : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
+            ${
+                this.instance || this.provider
+                    ? null
+                    : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`
+            }
             <ak-text-input
                 name="name"
                 autocomplete="off"
@@ -129,7 +132,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 label=${msg("Application Name")}
                 spellcheck="false"
                 required
-                help=${msg("The name displayed in the application library.")}
+                help=${msg("The name displayed in the Application Dashboard.")}
             ></ak-text-input>
             <ak-slug-input
                 name="slug"
@@ -197,16 +200,16 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         ?checked=${this.instance?.openInNewTab ?? false}
                         label=${msg("Open in new tab")}
                         help=${msg(
-                            "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
+                            "If checked, the launch URL will open in a new browser tab or window from the user's Application Dashboard.",
                         )}
                     >
                     </ak-switch-input>
                     <ak-switch-input
                         name="metaHide"
                         ?checked=${this.instance?.metaHide ?? false}
-                        label=${msg("Hide from My applications")}
+                        label=${msg("Hide from Application Dashboard")}
                         help=${msg(
-                            "If checked, this application will not be shown on the user's My applications page.",
+                            "If checked, this application will not be shown on the user's Application Dashboard.",
                         )}
                     >
                     </ak-switch-input>
@@ -225,7 +228,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         name="metaPublisher"
                         value="${ifDefined(this.instance?.metaPublisher)}"
                         placeholder=${msg("Type an optional publisher name...")}
-                        help=${msg("The publisher is shown in the application library.")}
+                        help=${msg("The publisher is shown in the Application Dashboard.")}
                     ></ak-text-input>
                     <ak-textarea-input
                         label=${msg("Description")}
@@ -233,7 +236,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         placeholder=${msg("Type an optional description...")}
                         value=${ifDefined(this.instance?.metaDescription)}
                         help=${msg(
-                            "The description is shown in the application library and may provide additional information about the application to end users.",
+                            "The description is shown in the Application Dashboard and may provide additional information about the application to end users.",
                         )}
                     ></ak-textarea-input>
                 </div>

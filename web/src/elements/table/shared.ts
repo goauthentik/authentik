@@ -1,10 +1,9 @@
 import "#elements/timestamp/ak-timestamp";
-
 import { Pagination } from "@goauthentik/api";
 
-import { html, TemplateResult } from "lit";
+import { html, LitElement, TemplateResult } from "lit";
 
-export interface TableLike {
+export interface TableLike extends LitElement {
     /**
      * The column name to order by, optionally prefixed with `-` to reverse the order.
      */
@@ -32,5 +31,5 @@ export interface PaginatedResponse<T> {
  * @param timestamp - The timestamp to render.
  */
 export function Timestamp(timestamp?: Date | null): TemplateResult {
-    return html`<ak-timestamp .timestamp=${timestamp} elapsed datetime></ak-timestamp>`;
+    return html`<ak-timestamp .timestamp=${timestamp} datetime></ak-timestamp>`;
 }

@@ -1,23 +1,19 @@
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import {
-    CoreApi,
-    CoreGroupsListRequest,
-    Group,
-    GroupLDAPSourceConnection,
-    LDAPSource,
-    SourcesApi,
-} from "@goauthentik/api";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { groupSource } from "#admin/common/search-sources";
+
+import { GroupLDAPSourceConnection, LDAPSource, SourcesApi } from "@goauthentik/api";
+
+import { ifDefined } from "lit-html/directives/if-defined.js";
 
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-ldap-group-form")
@@ -30,39 +26,26 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
     }
 
     protected async loadInstance(pk: number): Promise<GroupLDAPSourceConnection> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapRetrieve({
+        return aki(SourcesApi).sourcesGroupConnectionsLdapRetrieve({
             id: pk,
         });
     }
 
     async send(data: GroupLDAPSourceConnection) {
         data.source = this.source?.pk || "";
-        return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapCreate({
+
+        return aki(SourcesApi).sourcesGroupConnectionsLdapCreate({
             groupLDAPSourceConnectionRequest: data,
         });
     }
 
     renderForm() {
         return html`<ak-form-element-horizontal label=${msg("Group")} name="group">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                        const args: CoreGroupsListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
-                        return groups.results;
-                    }}
-                    .renderElement=${(group: Group): string => {
-                        return group.name;
-                    }}
-                    .value=${(group: Group | undefined): string | undefined => {
-                        return group?.pk;
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "group",
+                    source: groupSource,
+                    blankable: false,
+                })}
             </ak-form-element-horizontal>
             <ak-text-input
                 name="identifier"

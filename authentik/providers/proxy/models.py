@@ -8,12 +8,11 @@ from uuid import uuid4
 
 from django.db import models
 from django.templatetags.static import static
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import ExpiringModel
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin
+from authentik.lib.models import DomainlessURLValidator, ExpiringModel, InternallyManagedMixin
 from authentik.outposts.models import OutpostModel
 from authentik.providers.oauth2.models import (
     ClientType,
@@ -147,7 +146,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/proxy.svg")
+        return static("authentik/sources/proxy/light.svg")
 
     @property
     def serializer(self) -> type[Serializer]:

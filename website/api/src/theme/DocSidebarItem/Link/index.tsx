@@ -1,5 +1,4 @@
 import "./styles.css";
-
 import { useCachedVersionPluginData } from "@goauthentik/docusaurus-theme/components/VersionPicker/utils.ts";
 
 import isInternalUrl from "@docusaurus/isInternalUrl";

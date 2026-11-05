@@ -3,8 +3,7 @@ import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -33,7 +32,7 @@ export class ReputationListPage extends TablePage<Reputation> {
     public override searchPlaceholder = msg("Search for a reputation by identifier or IP...");
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
+        return aki(PoliciesApi).policiesReputationScoresList({
             ...(await this.defaultEndpointConfig()),
         });
     }
@@ -52,16 +51,17 @@ export class ReputationListPage extends TablePage<Reputation> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Reputation")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresUsedByList({
+                return aki(PoliciesApi).policiesReputationScoresUsedByList({
                     reputationUuid: item.pk || "",
                 });
             }}
             .delete=${(item: Reputation) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresDestroy({
+                return aki(PoliciesApi).policiesReputationScoresDestroy({
                     reputationUuid: item.pk || "",
                 });
             }}
@@ -75,9 +75,11 @@ export class ReputationListPage extends TablePage<Reputation> {
     protected override row(item: Reputation): SlottedTemplateResult[] {
         return [
             item.identifier,
-            html`${item.ipGeoData?.country
-                ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
-                : nothing}
+            html`${
+                item.ipGeoData?.country
+                    ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
+                    : nothing
+            }
             ${item.ip}`,
             html`${item.score}`,
             Timestamp(item.updated),

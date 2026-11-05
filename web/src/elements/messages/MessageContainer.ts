@@ -1,7 +1,9 @@
 import "#elements/messages/Message";
+import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
+import { tryParsingJSON } from "#common/objects";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/messages/styles.css";
@@ -15,17 +17,24 @@ import { instanceOfValidationError } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
+import { repeat } from "lit/directives/repeat.js";
 
 const logger = ConsoleLogger.prefix("messages");
+
+/**
+ * Finds the message container shown to the user: the topmost open dialog's, or the page's.
+ *
+ * @param ownerDocument The document to query. Defaults to the global document.
+ */
+export function findMessageContainer(ownerDocument = document): MessageContainer | null {
+    return findTopmost(ownerDocument).querySelector<MessageContainer>("ak-message-container");
+}
 
 /**
  * Adds a message to the message container, displaying it to the user.
  *
  * @param message The message to display.
  * @param unique Whether to only display the message if the title is unique.
- *
  * @todo Consider making this a static method on singleton {@linkcode MessageContainer}
  */
 export function showMessage(message: APIMessage | null, unique: boolean = false): boolean {
@@ -40,9 +49,7 @@ export function showMessage(message: APIMessage | null, unique: boolean = false)
         message.description ??= msg("Please check the browser console for more details.");
     }
 
-    const topmost = findTopmost();
-
-    const container = topmost.querySelector<MessageContainer>("ak-message-container");
+    const container = findMessageContainer();
 
     if (!container) {
         logger.warn("authentik/messages: No message container found in DOM");
@@ -95,7 +102,7 @@ export function showAPIErrorMessage(error: unknown, unique = false): Promise<voi
             showMessage(
                 {
                     level: MessageLevel.error,
-                    message: message,
+                    message,
                 },
                 unique,
             );
@@ -106,32 +113,46 @@ export type MessageContainerAlignment = "top-left" | "top-right" | "bottom-left"
 
 @customElement("ak-message-container")
 export class MessageContainer extends AKElement {
+    public static readonly serializedSelector = "script[data-id=authentik-messages]";
+
     @property({ attribute: false })
     public messages: APIMessage[] = [];
 
     @property({ type: String, reflect: true, useDefault: true })
-    public alignment: MessageContainerAlignment = "bottom-right";
+    public alignment: MessageContainerAlignment = "bottom-left";
 
     static styles: CSSResult[] = [PFAlertGroup, Styles];
-
-    constructor() {
-        super();
-
-        // Note: This seems to be susceptible to race conditions.
-        // Events are dispatched regardless if the message container is listening.
-
-        window.addEventListener("ak-message", (event) => {
-            this.addMessage(event.message);
-        });
-    }
 
     public override connectedCallback(): void {
         super.connectedCallback();
 
         this.popover = "manual";
+
+        requestAnimationFrame(this.drainMessages);
     }
 
-    public updated(changedProperties: PropertyValues<this>) {
+    protected drainMessages = (): void => {
+        const selector = (this.constructor as typeof MessageContainer).serializedSelector;
+        const container = this.ownerDocument.querySelector<HTMLScriptElement>(selector);
+
+        if (!container) {
+            logger.warn(`Expected to find a script tag with ${selector}, but none was found.`);
+
+            return;
+        }
+
+        const messages = tryParsingJSON<APIMessage[]>(container.textContent);
+
+        if (!messages?.length) {
+            return;
+        }
+
+        for (const message of messages) {
+            this.addMessage(message);
+        }
+    };
+
+    protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
         if (changedProperties.has("messages") && this.messages.length) {
@@ -180,19 +201,26 @@ export class MessageContainer extends AKElement {
             class="pf-c-alert-group pf-m-toast"
             data-alignment=${this.alignment}
         >
-            ${this.messages.toReversed().map((message, idx) => {
-                const { message: title, description, level, icon } = message;
+            ${repeat(
+                this.messages.toReversed(),
+                // Key on the message itself so each toast keeps its own <ak-message>.
+                // Without a stable key, Lit reuses elements across messages and their
+                // per-element state (resolved icon, one-shot dismiss timer) bleeds over.
+                (message) => message,
+                (message, idx) => {
+                    const { message: title, description, level, icon } = message;
 
-                return html`<ak-message
-                    ?live=${idx === 0}
-                    icon=${ifPresent(icon)}
-                    level=${level}
-                    .description=${description}
-                    .onDismiss=${() => this.#removeMessage(message)}
-                >
-                    ${title}
-                </ak-message>`;
-            })}
+                    return html`<ak-message
+                        ?live=${idx === 0}
+                        icon=${ifPresent(icon)}
+                        level=${level}
+                        .description=${description}
+                        .onDismiss=${() => this.#removeMessage(message)}
+                    >
+                        ${title}
+                    </ak-message>`;
+                },
+            )}
         </ul>`;
     }
 }

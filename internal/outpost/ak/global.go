@@ -60,7 +60,7 @@ func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 				},
 			})
 			if err != nil {
-				l.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")
+				l.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialize sentry")
 			}
 		}
 	}

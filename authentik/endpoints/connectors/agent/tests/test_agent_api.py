@@ -124,6 +124,14 @@ class TestAgentAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 403)
 
+    @reconcile_app("authentik_crypto")
+    def test_config_none(self):
+        response = self.client.get(
+            reverse("authentik_api:agentconnector-agent-config"),
+            HTTP_AUTHORIZATION="Bearer foo",
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_check_in(self):
         response = self.client.post(
             reverse("authentik_api:agentconnector-check-in"),
@@ -223,3 +231,17 @@ class TestAgentAPI(APITestCase):
             data={"platform": OSFamily.macOS, "enrollment_token": self.token.pk},
         )
         self.assertEqual(res.status_code, 200)
+
+    def test_users_list(self):
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_other_api_forbidden(self):
+        response = self.client.get(
+            reverse("authentik_api:application-list"),
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+        self.assertEqual(response.status_code, 403)

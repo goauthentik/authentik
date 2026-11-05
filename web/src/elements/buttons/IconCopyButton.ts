@@ -1,6 +1,5 @@
 import "#elements/Spinner";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { ClipboardItemSource, writeToClipboard } from "#common/clipboard";
 import { PFSize } from "#common/enums";
 
@@ -14,7 +13,7 @@ export interface IconCopyButtonProps {
     buttonLabel?: string;
     tooltipLabel?: string;
     entityLabel?: string;
-    description?: string;
+    description?: SlottedTemplateResult;
 }
 
 export function IconCopyButton({
@@ -52,7 +51,8 @@ export function IconCopyButton({
         @click=${doCopy}
         aria-label=${buttonLabel}
     >
-        <i class="fas fa-copy" aria-hidden="true"></i>
-        <pf-tooltip position="top" content=${tooltipLabel}> </pf-tooltip>
+        <pf-tooltip position="top" content=${tooltipLabel}>
+            <i class="fas fa-copy" aria-hidden="true"></i>
+        </pf-tooltip>
     </button>`;
 }

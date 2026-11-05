@@ -1,21 +1,17 @@
 import "#components/ak-switch-input";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    ModelEnum,
-    PaginatedPermissionList,
-    RbacApi,
-    RbacRolesListRequest,
-    Role,
-} from "@goauthentik/api";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { roleSource } from "#admin/common/search-sources";
+
+import { ModelEnum, PaginatedPermissionList, RbacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -55,7 +51,8 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
 
     async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
-        this.modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+
+        this.modelPermissions = await aki(RbacApi).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",
@@ -73,7 +70,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
     send(data: RoleAssignData): Promise<unknown> {
         const [app, _model] = this.model?.split(".") || "";
 
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
+        return aki(RbacApi).rbacPermissionsAssignedByRolesAssign({
             uuid: data.role,
             permissionAssignRequest: {
                 permissions: Object.keys(data.permissions)
@@ -97,30 +94,17 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
             >
             <form class="pf-c-form pf-m-horizontal">
                 <ak-form-element-horizontal label=${msg("Role")} name="role">
-                    <ak-search-select
-                        placeholder=${msg("Select a role...")}
-                        .fetchObjects=${async (query?: string): Promise<Role[]> => {
-                            const args: RbacRolesListRequest = {
-                                ordering: "name",
-                            };
-                            if (query !== undefined) {
-                                args.search = query;
-                            }
-                            const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
-                            return roles.results;
-                        }}
-                        .renderElement=${(role: Role): string => {
-                            return role.name;
-                        }}
-                        .value=${(role: Role | undefined): string | undefined => {
-                            return role?.pk;
-                        }}
-                    >
-                    </ak-search-select>
+                    ${AKSearchSelect({
+                        name: "role",
+                        source: roleSource,
+                        placeholder: msg("Select a role..."),
+                        blankable: false,
+                    })}
                 </ak-form-element-horizontal>
                 ${this.modelPermissions?.results
                     .filter((perm) => {
                         const [_app, model] = this.model?.split(".") || "";
+
                         return perm.codename !== `add_${model}`;
                     })
                     .map((perm) => {

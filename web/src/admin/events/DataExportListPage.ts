@@ -3,13 +3,17 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskList";
+import "#components/tasks/TaskList";
 import "#components/ak-status-label";
+import "#elements/cards/SectionCard";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -21,8 +25,6 @@ import { DataExport, ReportsApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-data-export-list")
 export class DataExportListPage extends TablePage<DataExport> {
@@ -38,12 +40,10 @@ export class DataExportListPage extends TablePage<DataExport> {
     @property({ type: String })
     public order = "-requested_on";
 
-    static styles = [...TablePage.styles, PFDescriptionList];
+    static styles = [...TablePage.styles, PFDescriptionList, PFSpacing];
 
     async apiEndpoint(): Promise<PaginatedResponse<DataExport>> {
-        return new ReportsApi(DEFAULT_CONFIG).reportsExportsList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(ReportsApi).reportsExportsList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -56,6 +56,7 @@ export class DataExportListPage extends TablePage<DataExport> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Data export(s)")}
             .objects=${this.selectedElements}
@@ -67,7 +68,7 @@ export class DataExportListPage extends TablePage<DataExport> {
                 ];
             }}
             .delete=${(item: DataExport) => {
-                return new ReportsApi(DEFAULT_CONFIG).reportsExportsDestroy({
+                return aki(ReportsApi).reportsExportsDestroy({
                     id: item.id,
                 });
             }}
@@ -81,13 +82,15 @@ export class DataExportListPage extends TablePage<DataExport> {
     row(item: DataExport): SlottedTemplateResult[] {
         return [
             html`${item.contentType.verboseNamePlural}`,
-            html`<a href="#/identity/users/${item.requestedBy.pk}"
+            html`<a href=${toAdminInterface(`identity/users/${item.requestedBy.pk}`)}
                 >${item.requestedBy.username}</a
             >`,
             Timestamp(item.requestedOn),
-            html`${item.completed
-                ? html`<ak-label color=${PFColor.Green}>${msg("Finished")}</ak-label>`
-                : html`<ak-label color=${PFColor.Grey}>${msg("Queued")}</ak-label>`}`,
+            html`${
+                item.completed
+                    ? html`<ak-label color=${PFColor.Green}>${msg("Finished")}</ak-label>`
+                    : html`<ak-label color=${PFColor.Gray}>${msg("Queued")}</ak-label>`
+            }`,
             item.completed && item.fileUrl
                 ? html`<div>
                       <a href="${item.fileUrl}">
@@ -100,24 +103,16 @@ export class DataExportListPage extends TablePage<DataExport> {
         ];
     }
 
-    renderExpanded(item: DataExport): TemplateResult {
-        return html` <dl class="pf-c-description-list pf-m-horizontal">
-            <div class="pf-c-card__title">${msg("Query parameters")}</div>
-            <div class="pf-c-card__body">
-                ${renderDescriptionList(
-                    Object.keys(item.queryParams)
-                        .filter((key) => {
-                            if (key === "page" || key === "pageSize") return false;
+    renderExpanded({ queryParams }: DataExport): TemplateResult {
+        const queryParameterPairs: DescriptionPair[] = Object.entries(queryParams)
+            .filter(([key, value]) => !(key === "page" || key === "pageSize") && value)
+            .map(([key, value]) => [key, html`<pre>${value}</pre>`]);
 
-                            return !!item.queryParams[key];
-                        })
-                        .map((key): DescriptionPair => {
-                            return [key, html`<pre>${item.queryParams[key]}</pre>`];
-                        }),
-                    { horizontal: true, compact: true },
-                )}
+        return html`<ak-section-card label=${msg("Query parameters")}>
+            <div class="pf-u-mb-lg pf-u-mx-lg">
+                ${renderDescriptionList(queryParameterPairs, { horizontal: true, compact: true })}
             </div>
-        </dl>`;
+        </ak-section-card>`;
     }
 
     protected renderEmpty(_inner?: TemplateResult): SlottedTemplateResult {
@@ -126,8 +121,8 @@ export class DataExportListPage extends TablePage<DataExport> {
                 ><span
                     >${msg(
                         html`To create a data export, navigate to
-                            <a href="#/identity/users">Directory > Users</a> or to
-                            <a href="#/events/log">Events > Logs</a>.`,
+                            <a href=${toAdminInterface("identity/users")}>Directory > Users</a> or
+                            to <a href=${toAdminInterface("events/log")}>Events > Logs</a>.`,
                     )}</span
                 >
             </ak-empty-state>`,

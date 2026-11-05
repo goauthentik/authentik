@@ -1,7 +1,9 @@
 import {
     DigestAlgorithmEnum,
+    EncryptionAlgorithmEnum,
     KeyTypeEnum,
     SAMLBindingsEnum,
+    SAMLLogoutMethods,
     SignatureAlgorithmEnum,
 } from "@goauthentik/api";
 
@@ -22,11 +24,50 @@ export const spBindingOptions = toOptions([
     [msg("Post"), SAMLBindingsEnum.Post],
 ]);
 
+export function logoutMethodLabel(method?: SAMLLogoutMethods | string): string {
+    switch (method) {
+        case SAMLLogoutMethods.FrontchannelIframe:
+            return msg("Front-channel (Iframe)");
+        case SAMLLogoutMethods.FrontchannelNative:
+            return msg("Front-channel (Native)");
+        case SAMLLogoutMethods.Backchannel:
+            return msg("Back-channel (POST)");
+        default:
+            return method ?? "";
+    }
+}
+
+export function logoutMethodOptions(hasPostBinding: boolean) {
+    return [
+        {
+            label: logoutMethodLabel(SAMLLogoutMethods.FrontchannelIframe),
+            value: SAMLLogoutMethods.FrontchannelIframe,
+            default: true,
+        },
+        {
+            label: logoutMethodLabel(SAMLLogoutMethods.FrontchannelNative),
+            value: SAMLLogoutMethods.FrontchannelNative,
+        },
+        {
+            label: logoutMethodLabel(SAMLLogoutMethods.Backchannel),
+            value: SAMLLogoutMethods.Backchannel,
+            disabled: !hasPostBinding,
+        },
+    ];
+}
+
 export const digestAlgorithmOptions = toOptions([
     ["SHA1", DigestAlgorithmEnum.HttpWwwW3Org200009Xmldsigsha1],
     ["SHA256", DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha256, true],
     ["SHA384", DigestAlgorithmEnum.HttpWwwW3Org200104XmldsigMoresha384],
     ["SHA512", DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512],
+]);
+
+export const encryptionAlgorithmOptions = toOptions([
+    ["AES128-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes128Cbc],
+    ["AES256-CBC", EncryptionAlgorithmEnum.HttpWwwW3Org200104Xmlencaes256Cbc],
+    ["AES128-GCM", EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes128Gcm],
+    ["AES256-GCM", EncryptionAlgorithmEnum.HttpWwwW3Org2009Xmlenc11aes256Gcm, true],
 ]);
 
 export const signatureAlgorithmOptions = toOptions([
@@ -70,9 +111,8 @@ export function retrieveSignatureAlgorithm(
     algorithm: HashAlgorithm,
 ): SignatureAlgorithmEnum | null {
     const familyMap = SignatureFamilyByHashAlgorithm[family];
+
     if (!familyMap) return null;
 
     return familyMap.get(algorithm) ?? null;
 }
-
-export const SAMLSupportedKeyTypes = [KeyTypeEnum.Rsa, KeyTypeEnum.Ec, KeyTypeEnum.Dsa];

@@ -71,6 +71,16 @@ export abstract class WizardPage<S = WizardPageState> extends AKElement {
     }
 
     /**
+     * Optional override for the wizard's next-button label while this page is active.
+     *
+     * Return `null` (the default) to keep the wizard's default labeling
+     * (Next/Finish/Create).
+     */
+    public formatNextLabel(): SlottedTemplateResult | null {
+        return null;
+    }
+
+    /**
      * Called when the `next` button on the wizard is pressed. For forms, results in the submission
      * of the current form to the back-end before being allowed to proceed to the next page. This is
      * sub-optimal if we want to collect multiple bits of data before finishing the whole course.

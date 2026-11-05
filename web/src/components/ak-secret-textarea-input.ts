@@ -11,9 +11,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class AkSecretTextAreaInput extends AkSecretTextInput {
     protected override renderVisibleInput() {
         const code = this.inputHint === "code";
+
         const setValue = (ev: InputEvent) => {
             this.value = (ev.target as HTMLInputElement).value;
         };
+
         const classes = {
             "pf-c-form-control": true,
             "pf-m-monospace": code,

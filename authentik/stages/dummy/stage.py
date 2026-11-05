@@ -5,7 +5,7 @@ from rest_framework.fields import CharField
 
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 
 
 class DummyChallenge(Challenge):
@@ -31,7 +31,7 @@ class DummyStageView(ChallengeStageView):
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         if self.executor.current_stage.throw_error:
-            raise SentryIgnoredException("Test error")
+            raise TracingIgnoredException("Test error")
         return DummyChallenge(
             data={
                 "title": self.executor.current_stage.name,

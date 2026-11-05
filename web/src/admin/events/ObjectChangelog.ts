@@ -3,8 +3,7 @@ import "#elements/Tabs";
 import "#elements/buttons/Dropdown";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
@@ -38,15 +37,18 @@ export class ObjectChangelog extends Table<Event> {
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         let modelName = this.targetModelName;
         let appName = this.targetModelApp;
+
         if (this.targetModelName.indexOf(".") !== -1) {
             const parts = this.targetModelName.split(".", 1);
             appName = parts[0];
             modelName = parts[1];
         }
+
         if (this.targetModelName === "") {
             return Promise.reject();
         }
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
+
+        return aki(EventsApi).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             action: "model_",
             contextModelApp: appName,

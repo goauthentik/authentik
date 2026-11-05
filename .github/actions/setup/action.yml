@@ -20,12 +20,17 @@ runs:
     - name: Cleanup apt
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       shell: bash
-      run: sudo apt-get remove --purge man-db
+      run: |
+        # The runner image installs Chrome and leaves its apt source behind.
+        # Nothing here installs from it, and a broken index there breaks the
+        # apt-get update below. https://github.com/goauthentik/authentik/pull/25990
+        sudo rm -f /etc/apt/sources.list.d/google-chrome.*
+        sudo apt-get remove --purge man-db
     - name: Install apt deps
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
-      uses: gerlero/apt-install@f4fa5265092af9e750549565d28c99aec7189639
+      uses: gerlero/apt-install@c0fa73fe5c4a22deecf6d629565be92a15dd2026
       with:
-        packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext krb5-multidev libkrb5-dev heimdal-multidev libclang-dev krb5-kdc krb5-user krb5-admin-server
+        packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext libclang-dev libkadm5clnt-mit12 libkadm5clnt7t64-heimdal libkrb5-dev krb5-kdc krb5-user krb5-admin-server
         update: true
         upgrade: false
         install-recommends: false
@@ -37,65 +42,75 @@ runs:
         sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v5
+      uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v5
       with:
         enable-cache: true
     - name: Setup python
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
+      uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v5
       with:
         python-version-file: "${{ inputs.working-directory }}pyproject.toml"
     - name: Install Python deps
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: uv sync --all-extras --dev --frozen
+      run: uv sync --all-extras --dev --locked
     - name: Setup rust (stable)
       if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@a188e68d0fd2bd36ad51dccb2b07ba6e75105f30 # v2.0.1
       with:
         rustflags: ""
     - name: Setup rust (nightly)
       if: ${{ contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@a188e68d0fd2bd36ad51dccb2b07ba6e75105f30 # v2.0.1
       with:
         toolchain: nightly
         components: rustfmt
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@cf525cb33f51aca27cd6fa02034117ab963ff9f1 # v2
+      uses: taiki-e/install-action@682ce6c3c696a4cd5168a05f98e51aa02b877941 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
-    - name: Setup node (web)
+    - name: Setup pnpm
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+      uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       with:
-        node-version-file: "${{ inputs.working-directory }}web/package.json"
-        cache: "npm"
-        cache-dependency-path: "${{ inputs.working-directory }}web/package-lock.json"
-        registry-url: "https://registry.npmjs.org"
-    - name: Setup node (root)
+        package_json_file: ${{ inputs.working-directory }}package.json
+    - name: Pin pnpm store directory
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+      shell: bash
+      run: |
+        echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+        echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+    - name: Setup node (root, web)
+      if: ${{ contains(inputs.dependencies, 'node') }}
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
-        node-version-file: "${{ inputs.working-directory }}package.json"
-        cache: "npm"
-        cache-dependency-path: "${{ inputs.working-directory }}package-lock.json"
-        registry-url: "https://registry.npmjs.org"
-    - name: Install Node deps
+        node-version-file: ${{ inputs.working-directory }}package.json
+        cache: pnpm
+        cache-dependency-path: |
+          ${{ inputs.working-directory }}pnpm-lock.yaml
+          ${{ inputs.working-directory }}web/pnpm-lock.yaml
+    - name: Install node dependencies (root, web)
       if: ${{ contains(inputs.dependencies, 'node') }}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: npm ci
+      run: |
+        pnpm install --frozen-lockfile
+        pnpm --dir web install --frozen-lockfile
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
-      uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v5
+      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v5
       with:
         go-version-file: "${{ inputs.working-directory }}go.mod"
+        cache-dependency-path: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
       if: ${{ contains(inputs.dependencies, 'runtime') }}
-      uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
+      # The post step `docker save`s every new image, but digest-pinned images (e2e,
+      # kind) list without a tag and fail. Jobs share the key, so another job saves it.
+      continue-on-error: true
+      uses: AndreKurait/docker-cache@e1eb0120c0c16b3f1c6ff1c0ef4ebc9f67f8dc6a
       with:
         key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies
@@ -104,8 +119,16 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
-        docker compose -f .github/actions/setup/compose.yml up -d
-        cd web && npm ci
+        docker compose -f .github/actions/setup/compose.yml up -d --wait
+    - name: Install web dependencies
+      # Only when node is also requested: pnpm is provided by the node setup
+      # above, and the web workspace needs a pnpm lockfile to install from. This
+      # keeps runtime-only jobs (e.g. rust, pending-migrations) and the legacy
+      # stable checkout — which predates the pnpm migration — from invoking pnpm.
+      if: ${{ contains(inputs.dependencies, 'runtime') && contains(inputs.dependencies, 'node') }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm --dir web install --frozen-lockfile
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: uv run python {0}

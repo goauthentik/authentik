@@ -103,6 +103,7 @@ export class ModalOrchestrationController implements ReactiveController {
 
             break;
         }
+
         this.#knownModals = knownModals;
     };
 

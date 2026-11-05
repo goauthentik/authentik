@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
@@ -7,8 +7,6 @@ import { AdminApi, SystemInfo } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-type StatusContent = { icon: string; message: TemplateResult };
 
 @customElement("ak-admin-fips-status-system")
 export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
@@ -19,11 +17,12 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
     protected statusSummary?: string;
 
     async getPrimaryValue(): Promise<SystemInfo> {
-        return new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
+        return aki(AdminApi).adminSystemRetrieve();
     }
 
-    setStatus(summary: string, content: StatusContent): Promise<AdminStatus> {
+    setStatus(summary: string, content: AdminStatus): Promise<AdminStatus> {
         this.statusSummary = summary;
+
         return Promise.resolve<AdminStatus>(content);
     }
 
@@ -32,10 +31,12 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
             ? this.setStatus(msg("OK"), {
                   icon: "fa fa-check-circle pf-m-success",
                   message: html`${msg("FIPS compliance: passing")}`,
+                  tone: "success",
               })
             : this.setStatus(msg("Unverified"), {
                   icon: "fa fa-info-circle pf-m-warning",
                   message: html`${msg("FIPS compliance: unverified")}`,
+                  tone: "warning",
               });
     }
 

@@ -8,8 +8,14 @@ services:
       POSTGRES_USER: authentik
       POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
       POSTGRES_DB: authentik
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1"]
+      interval: 1s
+      timeout: 5s
+      retries: 60
     restart: always
   s3:
     container_name: s3

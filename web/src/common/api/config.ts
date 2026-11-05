@@ -1,55 +1,20 @@
-import {
-    CSRFMiddleware,
-    DevRepeatedRequestsMiddleware,
-    EventMiddleware,
-    LocaleMiddleware,
-    LoggingMiddleware,
-} from "#common/api/middleware";
-import { globalAK } from "#common/global";
-import { SentryMiddleware } from "#common/sentry/middleware";
+/**
+ * @file Helpers for the `next` parameter used by redirects and flow steps.
+ */
 
-import { CapabilitiesEnum, Configuration, CurrentBrand } from "@goauthentik/api";
+/**
+ * Append a `next` parameter to a URL, preserving any existing query string.
+ *
+ * @param href The URL to extend, absolute or relative to the current origin.
+ * @param next Where to return afterwards. Defaults to the current page.
+ */
+export function withNext(
+    href: string,
+    next: string = window.location.pathname + window.location.search,
+): string {
+    const url = new URL(href, window.location.origin);
 
-const { locale, api, brand, config } = globalAK();
+    url.searchParams.set("next", next);
 
-export const DEFAULT_CONFIG = new Configuration({
-    basePath: `${api.base}api/v3`,
-    middleware: [
-        new CSRFMiddleware(),
-        new EventMiddleware(),
-        new LoggingMiddleware(brand),
-        new SentryMiddleware(),
-        new LocaleMiddleware(locale),
-        ...(config.capabilities.includes(CapabilitiesEnum.CanDebug)
-            ? [new DevRepeatedRequestsMiddleware()]
-            : []),
-    ],
-});
-
-export function brandSetFavicon(brand: CurrentBrand) {
-    /**
-     *  <link rel="icon" href="/static/dist/assets/icons/icon.png">
-     *  <link rel="shortcut icon" href="/static/dist/assets/icons/icon.png">
-     */
-    const rels = ["icon", "shortcut icon"];
-    rels.forEach((rel) => {
-        let relIcon = document.head.querySelector<HTMLLinkElement>(`link[rel='${rel}']`);
-        if (!relIcon) {
-            relIcon = document.createElement("link");
-            relIcon.rel = rel;
-            document.getElementsByTagName("head")[0].appendChild(relIcon);
-        }
-        relIcon.href = brand.brandingFavicon;
-    });
+    return url.href;
 }
-
-// This is just a function so eslint doesn't complain about
-// missing-whitespace-between-attributes or
-// unexpected-character-in-attribute-name
-export function AndNext(url: string): string {
-    return `?next=${encodeURIComponent(url)}`;
-}
-
-console.debug(
-    `authentik(early): version ${import.meta.env.AK_VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`,
-);

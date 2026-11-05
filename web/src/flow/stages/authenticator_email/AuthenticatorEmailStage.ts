@@ -1,5 +1,12 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -17,14 +24,6 @@ import {
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-authenticator-email")
 export class AuthenticatorEmailStage extends BaseStage<
@@ -64,7 +63,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                     ${AKFormErrors({ errors: this.challenge?.responseErrors?.email })}
                 </div>
                 ${this.renderNonFieldErrors()}
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"
@@ -89,18 +88,20 @@ export class AuthenticatorEmailStage extends BaseStage<
             ${FlowUserDetails({ challenge: this.challenge })}
 
             <p>
-                ${email
-                    ? msg(
-                          str`A verification token has been sent to your configured email address: ${email}`,
-                          {
-                              id: "stage.authenticator.email.sent-to-address",
-                              desc: "Displayed when a verification token has been sent to the user's configured email address.",
-                          },
-                      )
-                    : msg("A verification token has been sent to your email address.", {
-                          id: "stage.authenticator.email.sent",
-                          desc: "Displayed when a verification token has been sent to the user's email address.",
-                      })}
+                ${
+                    email
+                        ? msg(
+                              str`A verification token has been sent to your configured email address: ${email}`,
+                              {
+                                  id: "stage.authenticator.email.sent-to-address",
+                                  desc: "Displayed when a verification token has been sent to the user's configured email address.",
+                              },
+                          )
+                        : msg("A verification token has been sent to your email address.", {
+                              id: "stage.authenticator.email.sent",
+                              desc: "Displayed when a verification token has been sent to the user's email address.",
+                          })
+                }
             </p>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <div class="pf-c-form__group">
@@ -120,7 +121,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                     ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
                 </div>
                 ${this.renderNonFieldErrors()}
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"
@@ -138,6 +139,7 @@ export class AuthenticatorEmailStage extends BaseStage<
         if (this.challenge?.emailRequired) {
             return this.renderEmailInput();
         }
+
         return this.renderEmailOTPInput();
     }
 }

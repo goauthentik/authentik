@@ -1,0 +1,23 @@
+/**
+ * @file Spacing tokens — single scale from xs (¼rem) to 4xl (5rem).
+ */
+
+import { instance } from "../shared.js";
+
+import { createUseVariable } from "@styleframe/theme";
+
+const useSpacing = createUseVariable("spacer");
+
+// 4, 8, 16, 24, 32, 48, 64, 80 pixels at the 16px base: the "standard" progression.
+
+export const spacers = useSpacing(instance, {
+    "xs": "0.25rem",
+    "sm": "0.5rem",
+    "md": "1rem",
+    "lg": "1.5rem",
+    "xl": "2rem",
+    "2xl": "3rem",
+    "3xl": "4rem",
+    "4xl": "5rem",
+    "form-element": "0.375rem",
+});

@@ -2,9 +2,10 @@
 
 from typing import Any
 
-from jwt import PyJWKSet, PyJWTError, decode, get_unverified_header
+from jwt import PyJWTError, decode, get_unverified_header
 from requests.auth import AuthBase, HTTPBasicAuth
 
+from authentik.lib.jwt_mldsa import key_from_jwk
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -24,17 +25,25 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
 class OpenIDConnectClient(UserprofileHeaderAuthClient):
     def get_access_token_args(self, callback: str, code: str) -> dict[str, Any]:
         args = super().get_access_token_args(callback, code)
+        client_id = self.get_client_id()
+        client_secret = self.get_client_secret()
         if self.source.authorization_code_auth_method == AuthorizationCodeAuthMethod.POST_BODY:
-            args["client_id"] = self.get_client_id()
-            args["client_secret"] = self.get_client_secret()
-        else:
+            args["client_id"] = client_id
+            if client_secret:
+                args["client_secret"] = client_secret
+        elif client_secret:
+            # Basic auth, credentials are sent in the header
             args.pop("client_id", None)
             args.pop("client_secret", None)
         return args
 
     def get_access_token_auth(self) -> AuthBase | None:
-        if self.source.authorization_code_auth_method == AuthorizationCodeAuthMethod.BASIC_AUTH:
-            return HTTPBasicAuth(self.get_client_id(), self.get_client_secret())
+        client_secret = self.get_client_secret()
+        if (
+            self.source.authorization_code_auth_method == AuthorizationCodeAuthMethod.BASIC_AUTH
+            and client_secret
+        ):
+            return HTTPBasicAuth(self.get_client_id(), client_secret)
         return None
 
     def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
@@ -47,8 +56,10 @@ class OpenIDConnectClient(UserprofileHeaderAuthClient):
         id_token = token["id_token"]
         try:
             raw = get_unverified_header(id_token)
-            jwk = PyJWKSet.from_dict(self.source.oidc_jwks)
-            key = [key for key in jwk.keys if key.key_id == raw["kid"]][0]
+            jwk = [
+                key for key in self.source.oidc_jwks.get("keys", []) if key.get("kid") == raw["kid"]
+            ][0]
+            key, _ = key_from_jwk(jwk)
             return decode(
                 id_token,
                 key=key,
@@ -67,7 +78,7 @@ class OpenIDConnectOAuth2Callback(OAuthCallback):
     client_class = OpenIDConnectClient
 
     def get_user_id(self, info: dict[str, str]) -> str:
-        return info.get("sub", None)
+        return str(info.get("sub") or info.get("id"))
 
 
 @registry.register()
@@ -80,6 +91,7 @@ class OpenIDConnectType(SourceType):
     name = "openidconnect"
 
     urls_customizable = True
+    requires_client_secret = False
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {

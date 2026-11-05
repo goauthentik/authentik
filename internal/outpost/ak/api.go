@@ -3,6 +3,7 @@ package ak
 import (
 	"context"
 	"crypto/fips140"
+	"errors"
 	"fmt"
 	"math/rand"
 	"net"
@@ -55,7 +56,7 @@ type APIController struct {
 	instanceUUID uuid.UUID
 }
 
-// NewAPIController initialise new API Controller instance from URL and API token
+// NewAPIController initialize new API Controller instance from URL and API token
 func NewAPIController(akURL url.URL, token string) *APIController {
 	rsp := sentry.StartSpan(context.Background(), "authentik.outposts.init")
 	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
@@ -96,9 +97,10 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	apiConfig.Host = akURL.Host
 	apiConfig.Scheme = akURL.Scheme
 	apiConfig.HTTPClient = &client
+	apiPath, _ := url.JoinPath(akURL.Path, "api/v3")
 	apiConfig.Servers = api.ServerConfigurations{
 		{
-			URL: fmt.Sprintf("%sapi/v3", akURL.Path),
+			URL: apiPath,
 		},
 	}
 	apiConfig.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
@@ -209,10 +211,6 @@ func (a *APIController) AddRefreshHandler(handler func()) {
 	a.refreshHandlers = append(a.refreshHandlers, handler)
 }
 
-func (a *APIController) Token() string {
-	return a.token
-}
-
 func (a *APIController) OnRefresh() error {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
@@ -220,6 +218,9 @@ func (a *APIController) OnRefresh() error {
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err
+	}
+	if outposts == nil || len(outposts.Results) < 1 {
+		return errors.New("no outposts found")
 	}
 	a.Outpost = outposts.Results[0]
 

@@ -1,10 +1,7 @@
 import "#admin/admin-settings/AdminSettingsFooterLinks";
 import "#elements/messages/MessageContainer";
 import "#elements/ak-array-input";
-
-import { IArrayInput } from "#elements/ak-array-input";
-
-import { FooterLinkInput } from "#admin/admin-settings/AdminSettingsFooterLinks";
+import { ArrayInput, IArrayInput } from "#elements/ak-array-input";
 
 import { FooterLink } from "@goauthentik/api";
 
@@ -31,16 +28,20 @@ const metadata: Meta<IArrayInput<unknown>> = {
         (story: Decorator) => {
             window.setTimeout(() => {
                 const menu = document.getElementById("ak-array-input");
+
                 if (!menu) {
                     throw new Error("Test was not initialized correctly.");
                 }
+
                 const messages = document.getElementById("reported-value");
+
                 menu.addEventListener("change", (event: Event) => {
                     if (!event?.target) {
                         return;
                     }
-                    const target = event.target as FooterLinkInput;
-                    messages!.innerText = `${JSON.stringify(target.toJSON(), null, 2)}\n\nValid: ${target.valid ? "Yes" : "No"}`;
+
+                    const target = event.target as ArrayInput<FooterLink>;
+                    messages!.innerText = `${JSON.stringify(target.toJSON(), null, 2)}\n\nValid: ${target.checkValidity() ? "Yes" : "No"}`;
                 });
             }, 250);
 

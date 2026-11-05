@@ -84,7 +84,7 @@ class BaseLDAPSynchronizer:
             return
         return flatten(attributes[self._source.object_uniqueness_field])
 
-    def search_paginator(  # noqa: PLR0913
+    def search_paginator(  # noqa: PLR0913, PLR0917
         self,
         search_base,
         search_filter,

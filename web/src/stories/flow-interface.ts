@@ -1,5 +1,4 @@
 import "#flow/FlowExecutor";
-
 import { resolveUITheme } from "#common/theme";
 import { DeepPartial } from "#common/types";
 
@@ -29,7 +28,11 @@ export class StoryFlowInterface extends AKElement {
     public challenge: ChallengeTypes | null = null;
 
     #synchronizeTheme = () => {
-        this.ownerDocument.documentElement.dataset.themeChoice = resolveUITheme(this.activeTheme);
+        const themeChoice = resolveUITheme(this.activeTheme);
+        const { documentElement } = this.ownerDocument;
+
+        documentElement.dataset.themeChoice = themeChoice;
+        documentElement.classList.toggle("pf-theme-dark", themeChoice === "dark");
     };
 
     public override updated(changed: PropertyValues<this>): void {

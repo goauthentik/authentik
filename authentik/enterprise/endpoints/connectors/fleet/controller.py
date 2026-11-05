@@ -30,6 +30,10 @@ from authentik.policies.utils import delete_none_values
 class FleetController(BaseController[DBC]):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        base_url = self.connector.url
+        if base_url.endswith("/"):
+            base_url = base_url[:-1]
+        self._base_url = base_url
         self._session = get_http_session()
         self._session.headers["Authorization"] = f"Bearer {self.connector.token}"
         if self.connector.headers_mapping:
@@ -51,7 +55,7 @@ class FleetController(BaseController[DBC]):
         return [Capabilities.STAGE_ENDPOINTS, Capabilities.ENROLL_AUTOMATIC_API]
 
     def _url(self, path: str) -> str:
-        return f"{self.connector.url}{path}"
+        return f"{self._base_url}{path}"
 
     def _paginate_hosts(self):
         try:
@@ -63,10 +67,13 @@ class FleetController(BaseController[DBC]):
                     params={
                         "order_key": "hardware_serial",
                         "page": page,
-                        "per_page": 50,
+                        # Small page size as Fleet's API response, with the populate fields below
+                        # can be quite large and eat a lot of memory
+                        "per_page": 1,
                         "device_mapping": "true",
-                        "populate_software": "true",
+                        "populate_software": "without_vulnerability_details",
                         "populate_users": "true",
+                        "populate_policies": "true",
                     },
                 )
                 res.raise_for_status()
@@ -120,8 +127,8 @@ class FleetController(BaseController[DBC]):
             self.logger.warning("Failed to sync conditional access CA", exc=exc)
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
-            device, _ = Device.objects.get_or_create(
-                identifier=serial, defaults={"name": host["hostname"], "expiring": False}
+            device = Device.get_or_create(
+                identifier=serial, name=host["hostname"], defaults={"expiring": False}
             )
             connection, _ = DeviceConnection.objects.update_or_create(
                 device=device,
@@ -235,11 +242,11 @@ class FleetController(BaseController[DBC]):
                 "fleetdm.com": {
                     "policies": [
                         delete_none_values({"name": policy["name"], "status": policy["response"]})
-                        for policy in host.get("policies", [])
+                        for policy in (host.get("policies") or [])
                     ],
                     "agent_version": fleet_version,
                     # Host UUID is required for conditional access matching
-                    "uuid": host.get("uuid", "").lower(),
+                    "uuid": (host.get("uuid") or "").lower(),
                 },
             },
         }

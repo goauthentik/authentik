@@ -28,7 +28,7 @@ class TestSendSamlLogoutResponse(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp.example.com/acs",
             sls_url="https://sp.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             signing_kp=self.cert,
         )
 
@@ -137,7 +137,7 @@ class TestSendSamlLogoutRequest(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp.example.com/acs",
             sls_url="https://sp.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             signing_kp=self.cert,
         )
 
@@ -155,6 +155,7 @@ class TestSendSamlLogoutRequest(TestCase):
             name_id="test@example.com",
             name_id_format=SAML_NAME_ID_FORMAT_EMAIL,
             session_index="test-session-123",
+            issuer="https://idp.example.com",
         )
 
         self.assertTrue(result)
@@ -179,6 +180,7 @@ class TestSendSamlLogoutRequest(TestCase):
             name_id="test@example.com",
             name_id_format=SAML_NAME_ID_FORMAT_EMAIL,
             session_index="test-session-123",
+            issuer="https://idp.example.com",
         )
 
         self.assertFalse(result)
@@ -198,6 +200,7 @@ class TestSendSamlLogoutRequest(TestCase):
                 name_id="test@example.com",
                 name_id_format=SAML_NAME_ID_FORMAT_EMAIL,
                 session_index="test-session-123",
+                issuer="https://idp.example.com",
             )
 
 
@@ -214,7 +217,7 @@ class TestSendPostLogoutRequest(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp.example.com/acs",
             sls_url="https://sp.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             signing_kp=self.cert,
         )
 

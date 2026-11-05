@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://goauthentik.io/img/icon_top_brand_colour.svg" height="150" alt="authentik logo">
+    <img src="https://docs.goauthentik.io/img/icon_top_brand_colour.svg" height="150" alt="authentik logo">
 </p>
 
 ---
@@ -35,6 +35,8 @@ Our [enterprise offering](https://goauthentik.io/pricing) is available for organ
 ## Development and contributions
 
 See the [Developer Documentation](https://docs.goauthentik.io/docs/developer-docs/) for information about setting up local build environments, testing your contributions, and our contribution process.
+
+When you contribute documentation, either to accompany a code change or as a standalone contribution, please be sure to follow our documentation [Style Guide](website/docs/developer-docs/docs/style-guide.mdx).
 
 ## Security
 
