@@ -1,3 +1,5 @@
+import { SidebarItem } from "#elements/sidebar/types";
+
 import { ROUTES } from "#admin/Routes";
 import { createAdminSidebarEntries } from "#admin/sidebar/constants";
 import { findSidebarSectionByRoute, resolveSidebarEntries } from "#admin/sidebar/sidebarTools";
@@ -118,5 +120,20 @@ describe("sidebar routes", () => {
 
     it.each(collectPaths(createAdminSidebarEntries(true)))("%s resolves to a route", (path) => {
         expect(ROUTES.some((route) => route.test(path))).toBe(true);
+    });
+});
+
+describe("sidebar item conformance", () => {
+    it("has a path or children (or both) for every entry", () => {
+        const resolved = resolveSidebarEntries(createAdminSidebarEntries(true), {
+            canEnterprise: true,
+            licensed: true,
+        });
+
+        const nonConforming = ({ path, children }: SidebarItem) =>
+            (!path && !(children && children.length > 0)) ||
+            (children && children.find(nonConforming));
+
+        expect(resolved.find(nonConforming)).toBeFalsy();
     });
 });

@@ -93,7 +93,7 @@ class OAuthAuthorizationParams:
     response_type: str
     response_mode: str | None
     scope: set[str]
-    state: str
+    state: str | None
     nonce: str | None
     prompt: set[str]
     grant_type: str
@@ -121,7 +121,6 @@ class OAuthAuthorizationParams:
         # Because in this endpoint we handle both GET
         # and POST request.
         query_dict = request.POST if request.method == "POST" else request.GET
-        state = query_dict.get("state")
         redirect_uri = query_dict.get("redirect_uri", "")
 
         response_type = query_dict.get("response_type", "")
@@ -139,7 +138,7 @@ class OAuthAuthorizationParams:
             response_mode=response_mode,
             grant_type="",
             scope=set(query_dict.get("scope", "").split()),
-            state=state,
+            state=query_dict.get("state"),
             nonce=query_dict.get("nonce"),
             prompt=ALLOWED_PROMPT_PARAMS.intersection(set(query_dict.get("prompt", "").split())),
             request=query_dict.get("request", None),
@@ -515,7 +514,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
             if isinstance(response, HttpResponseRedirect):
                 parsed_url = urlparse(response.url)
-                args = parse_qs(parsed_url.query)
+                args = parse_qs(parsed_url.query, keep_blank_values=True)
                 args["locale"] = selected_language
                 response["Location"] = urlunparse(
                     parsed_url._replace(query=urlencode(args, quote_via=quote, doseq=True))
@@ -628,7 +627,8 @@ class OAuthFulfillmentStage(StageView):
             # this picks the first item in the list if the value is a list,
             # otherwise just the value as-is
             query_params = dict(
-                (k, v[0] if isinstance(v, list) else v) for k, v in parse_qs(parsed.query).items()
+                (k, v[0] if isinstance(v, list) else v)
+                for k, v in parse_qs(parsed.query, keep_blank_values=True).items()
             )
 
             challenge = AutosubmitChallenge(
@@ -707,7 +707,8 @@ class OAuthFulfillmentStage(StageView):
             if self.params.response_mode == ResponseMode.QUERY:
                 query_params = parse_qs(uri.query)
                 query_params["code"] = code.code
-                query_params["state"] = [str(self.params.state) if self.params.state else ""]
+                if self.params.state is not None:
+                    query_params["state"] = self.params.state
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
@@ -716,7 +717,8 @@ class OAuthFulfillmentStage(StageView):
                 query_fragment = {}
                 if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     query_fragment["code"] = code.code
-                    query_fragment["state"] = [str(self.params.state) if self.params.state else ""]
+                    if self.params.state is not None:
+                        query_fragment["state"] = self.params.state
                 else:
                     query_fragment = self.create_implicit_response(code)
 
@@ -730,7 +732,8 @@ class OAuthFulfillmentStage(StageView):
                 post_params = {}
                 if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     post_params["code"] = code.code
-                    post_params["state"] = [str(self.params.state) if self.params.state else ""]
+                    if self.params.state is not None:
+                        post_params["state"] = self.params.state
                 else:
                     post_params = self.create_implicit_response(code)
 
@@ -806,5 +809,6 @@ class OAuthFulfillmentStage(StageView):
         query_fragment["expires_in"] = int(
             timedelta_from_string(self.provider.access_token_validity).total_seconds()
         )
-        query_fragment["state"] = self.params.state if self.params.state else ""
+        if self.params.state is not None:
+            query_fragment["state"] = self.params.state
         return query_fragment
