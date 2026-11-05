@@ -1,6 +1,7 @@
 """Generic models"""
 
 import re
+from hashlib import sha256
 from typing import Self
 
 from django.core.validators import URLValidator
@@ -8,6 +9,7 @@ from django.db import models
 from django.db.models import Manager, Q, QuerySet
 from django.utils.regex_helper import _lazy_re_compile
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 
@@ -81,6 +83,38 @@ class SimpleThroughModel(models.Model, InternallyManagedMixin):
 
     class Meta:
         abstract = True
+
+
+# Upper bound for stored client identifiers. Identifiers of registered OAuth2 providers are
+# much shorter, but other registration kinds may use URLs.
+CLIENT_ID_MAX_LENGTH = 2048
+
+
+def hash_client_id(client_id: str) -> str:
+    """Fixed-length digest of a client identifier, used to index rows by client.
+    The digest only narrows a lookup; the full client identifier must still be compared."""
+    return sha256(client_id.encode("utf-8")).hexdigest()
+
+
+class HashedClientIDModel(models.Model):
+    """Records the exact identifier of a client, which may be too long to index, together
+    with an indexable digest of it. Both are empty for rows that belong to no specific
+    client. The digest is kept in sync on every save."""
+
+    client_id = models.CharField(
+        max_length=CLIENT_ID_MAX_LENGTH, null=True, default=None, verbose_name=_("Client ID")
+    )
+    client_id_hash = models.CharField(max_length=64, null=True, default=None, editable=False)
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        self.client_id_hash = hash_client_id(self.client_id) if self.client_id is not None else None
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None and "client_id" in update_fields:
+            kwargs["update_fields"] = set(update_fields) | {"client_id_hash"}
+        return super().save(*args, **kwargs)
 
 
 class DomainlessURLValidator(URLValidator):
