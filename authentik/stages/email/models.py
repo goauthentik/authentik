@@ -15,8 +15,10 @@ from structlog.stdlib import get_logger
 from authentik.flows.models import Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_string_validator
-
-EMAIL_RECOVERY_MAX_ATTEMPTS = 5
+from authentik.stages.email.throttling import (
+    EMAIL_RECOVERY_CACHE_TIMEOUT,
+    EMAIL_RECOVERY_MAX_ATTEMPTS,
+)
 
 LOGGER = get_logger()
 
@@ -86,7 +88,7 @@ class EmailStage(Stage):
     from_address = models.EmailField(default="system@authentik.local")
     recovery_max_attempts = models.PositiveIntegerField(default=EMAIL_RECOVERY_MAX_ATTEMPTS)
     recovery_cache_timeout = models.TextField(
-        default="minutes=5",
+        default=EMAIL_RECOVERY_CACHE_TIMEOUT,
         validators=[timedelta_string_validator],
         help_text=_(
             "The time window used to count recent account recovery attempts. "
