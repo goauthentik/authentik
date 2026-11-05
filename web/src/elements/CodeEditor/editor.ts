@@ -3,14 +3,14 @@
  *   This should be imported dynamically to avoid the bundle size impact of CodeMirror.
  *
  *   ```ts
- *   const { CodeMirrorEditor } = await import("#elements/CodeMirror/editor");
+ *   const { CodeMirrorEditor } = await import("#elements/CodeEditor/editor");
  *   ```
  * @file CodeMirror editor module.
  */
 
 import { ResolvedUITheme, ThemeChangeEvent } from "#common/theme";
 
-import { CodeMirrorMode } from "#elements/CodeMirror/shared";
+import { CodeEditorMode } from "#elements/CodeEditor/shared";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
@@ -35,19 +35,19 @@ import { match } from "ts-pattern";
 
 //#region Language support
 
-export function createLanguageSupport(mode: CodeMirrorMode): LanguageSupport {
+export function createLanguageSupport(mode: CodeEditorMode): LanguageSupport {
     return match(mode)
-        .with(CodeMirrorMode.XML, () => xml())
-        .with(CodeMirrorMode.JavaScript, () => javascript())
-        .with(CodeMirrorMode.HTML, () => htmlLang())
-        .with(CodeMirrorMode.Python, () => python())
-        .with(CodeMirrorMode.CSS, () => cssLang())
-        .with(CodeMirrorMode.YAML, () => new LanguageSupport(StreamLanguage.define(yamlMode.yaml)))
+        .with(CodeEditorMode.XML, () => xml())
+        .with(CodeEditorMode.JavaScript, () => javascript())
+        .with(CodeEditorMode.HTML, () => htmlLang())
+        .with(CodeEditorMode.Python, () => python())
+        .with(CodeEditorMode.CSS, () => cssLang())
+        .with(CodeEditorMode.YAML, () => new LanguageSupport(StreamLanguage.define(yamlMode.yaml)))
         .exhaustive();
 }
 
 export interface CodeMirrorInit {
-    mode?: CodeMirrorMode;
+    mode?: CodeEditorMode;
     theme?: ResolvedUITheme;
     readOnly?: boolean;
     value?: string;
@@ -76,7 +76,7 @@ export class CodeMirrorEditor implements Disposable {
     #syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
 
     constructor({
-        mode = CodeMirrorMode.JavaScript,
+        mode = CodeEditorMode.JavaScript,
         theme = "light",
         readOnly = false,
         value = "",

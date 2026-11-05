@@ -1,5 +1,6 @@
 """password stage models"""
 
+from datetime import datetime
 from typing import Any
 
 from django.contrib.auth.hashers import check_password, make_password
@@ -172,16 +173,22 @@ class PasswordDevice(Device):
         cls._store(user, password_hash)
 
     @classmethod
-    def set_unusable_password(cls, user: User):
+    def set_unusable_password(cls, user: User, *, password_change_date: datetime | None = None):
         """Refuse password authentication until a new password is set.
 
+        The change date stays unless `password_change_date` gives the time the password
+        changed elsewhere, such as in a source directory.
         A user without a password device already has no usable password."""
         with transaction.atomic():
             device = cls.objects.select_for_update().filter(user=user).first()
             if device is None:
                 return
             device.password = make_password(None)
-            device.save(update_fields=["password", "last_updated"])
+            update_fields = ["password", "last_updated"]
+            if password_change_date is not None:
+                device.password_change_date = password_change_date
+                update_fields.append("password_change_date")
+            device.save(update_fields=update_fields)
             user.password_device = device
             # Saving the user dispatches outgoing sync and invalidates cached policy results.
             user.save(update_fields=["last_updated"])
