@@ -21,6 +21,10 @@ export const styles = css`
         display: inline-block;
     }
 
+    ::slotted(*) {
+        z-index: 30;
+    }
+
     /* Floating UI writes position, left, and top inline; inset/margin undo the UA dialog and
        popover centering, overflow keeps the arrow from being clipped by the popover UA style. */
     [part="tooltip"] {
@@ -31,6 +35,7 @@ export const styles = css`
         inset: auto;
         margin: 0;
         opacity: 0;
+        z-index: 20;
         overflow: visible;
         position: absolute;
         white-space: nowrap;
@@ -71,6 +76,7 @@ export const styles = css`
         left: var(--ak-c-tooltip__arrow--Left, auto);
         width: var(--ak-c-tooltip__arrow--Width);
         height: var(--ak-c-tooltip__arrow--Height);
+        z-index: 10;
         pointer-events: none;
         background-color: var(--ak-c-tooltip__arrow--BackgroundColor);
         box-shadow: var(--ak-c-tooltip__arrow--BoxShadow);
