@@ -36,7 +36,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "django>=5.2",
+    "django>=5.2,<7.0",
     "typing_extensions>=4.12.0; python_version<'3.15'",
 ]
 
