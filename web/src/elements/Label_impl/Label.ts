@@ -1,5 +1,5 @@
 /**
- * @file * @file Document-level CSS Custom Properties for Label components.
+ * @file @file Document-level CSS Custom Properties for Label components.
  */
 
 import Styles from "./Label.styles";

@@ -3,7 +3,6 @@
  */
 
 import "../Label";
-
 import { akLabel, type LabelProps } from "../Label";
 
 import type { Meta, StoryObj } from "@storybook/web-components";

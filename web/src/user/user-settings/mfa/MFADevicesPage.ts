@@ -4,7 +4,7 @@ import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
-import "#elements/Tooltip";
+import "#elements/ak-tooltip";
 import { aki } from "#common/api/client";
 import { AndNext } from "#common/api/config";
 import { createPaginatedResponse } from "#common/api/responses";
@@ -145,18 +145,20 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     row(item: Device): SlottedTemplateResult[] {
+        const description = item.extraDescription
+            ? html`<small>${item.extraDescription}</small>`
+            : nothing;
+
         return [
             html`${item.name}`,
             html`<div>${deviceTypeName(item)}</div>
                 ${
-                    item.extraDescription
-                        ? html`
-                                  <small>${item.extraDescription}</small>
-                                  <ak-tooltip position="top" for="small">
-                                      ${item.externalId || ""}
-                                  </ak-tooltip>
-                              `
-                        : nothing
+                    item.extraDescription && item.externalId
+                        ? html`<ak-tooltip placement="top">
+                              ${description}
+                              <span slot="tooltip">${item.externalId}</span>
+                          </ak-tooltip>`
+                        : description
                 } `,
             Timestamp(item.created),
             Timestamp(item.lastUsed),
@@ -166,11 +168,13 @@ export class MFADevicesPage extends Table<Device> {
                     <span slot="header">${msg("Update Device")}</span>
                     <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
                     </ak-user-mfa-form>
-                    <span slot="trigger"
-                        ><button aria-label=${msg("Edit device")} class="pf-c-button pf-m-plain">
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </button>
-                        <ak-tooltip for="button" position="top"> ${msg("Edit")} </ak-tooltip>
+                    <span slot="trigger">
+                        <ak-tooltip placement="top">
+                            <button aria-label=${msg("Edit device")} class="pf-c-button pf-m-plain">
+                                <i class="fas fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <span slot="tooltip">${msg("Edit")}</span>
+                        </ak-tooltip>
                     </span>
                 </ak-forms-modal>
             `,

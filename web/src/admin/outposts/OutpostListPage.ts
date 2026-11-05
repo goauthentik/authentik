@@ -93,13 +93,13 @@ export class OutpostListPage extends TablePage<Outpost> {
                 ${
                     (item.config.authentik_host ?? "") === ""
                         ? html`<ak-label status="warning" compact>
-                                  ${msg(
+                              ${msg(
                                   "Warning: authentik Domain is not configured, authentication will not work.",
                               )}
-                              </ak-label>`
+                          </ak-label>`
                         : html`<ak-label status="success" compact>
-                                  ${msg(str`Logging in via ${item.config.authentik_host}.`)}
-                              </ak-label>`
+                              ${msg(str`Logging in via ${item.config.authentik_host}.`)}
+                          </ak-label>`
                 }</a
             >`,
             html`${outpostTypeToLabel(item.type)}`,

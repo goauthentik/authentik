@@ -112,8 +112,8 @@ export class InvitationListPage extends TablePage<Invitation> {
                 ${
                     !item.flowObj && this.multipleEnrollmentFlows
                         ? html`
-                                  <ak-label status="warning">
-                                      ${msg(
+                              <ak-label status="warning">
+                                  ${msg(
                                       "Invitation not limited to any flow, and can be used with any enrollment flow.",
                                   )}
                               </ak-label>

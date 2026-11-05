@@ -63,11 +63,11 @@ export class PolicyListPage extends TablePage<Policy> {
                 ${
                     (item.boundTo || 0) > 0
                         ? html`<ak-label status="success" compact>
-                                  ${msg(str`Assigned to ${item.boundTo} object(s).`)}
-                              </ak-label>`
+                              ${msg(str`Assigned to ${item.boundTo} object(s).`)}
+                          </ak-label>`
                         : html`<ak-label status="warning" compact>
-                                  ${msg("Warning: Policy is not assigned.")}
-                              </ak-label>`
+                              ${msg("Warning: Policy is not assigned.")}
+                          </ak-label>`
                 }`,
             html`${item.verboseName}`,
             Timestamp(item.lastUpdated),

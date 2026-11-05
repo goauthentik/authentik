@@ -1,6 +1,6 @@
 import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
-import "#elements/Tooltip";
+import "#elements/ak-tooltip";
 import "./ak-library-application-empty-list.js";
 import Styles from "./ak-library-impl.css";
 import AKLibraryApplicationListStyles from "./ApplicationList.css";
@@ -427,20 +427,20 @@ export class LibraryPage extends WithSession(AKElement) {
         return guard([viewMode], () => {
             const [tooltipContent, icon] = createViewToggleContent(viewMode);
 
-            return html`<button
+            return html`<ak-tooltip class="library-view-toggle-tooltip" placement="top">
+                <button
                     id="library-view-toggle-button"
                     class="pf-c-button pf-m-plain library-view-toggle"
                     part="view-toggle"
                     type="button"
-                    aria-label=${tooltipContent}
+                    aria-labelledby="library-view-toggle-label"
                     aria-pressed=${viewMode === ViewMode.List}
                     @click=${this.#viewToggleListener}
                 >
                     ${icon}
                 </button>
-                <ak-tooltip position="top" for="library-view-toggle-button"
-                    >${tooltipContent}
-                </ak-tooltip>`;
+                <span slot="tooltip" id="library-view-toggle-label">${tooltipContent}</span>
+            </ak-tooltip>`;
         });
     }
 

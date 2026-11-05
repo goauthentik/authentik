@@ -8,7 +8,6 @@ export type { LabelProps };
 
 window.customElements.define("ak-label", Label);
 
-
 declare global {
     interface HTMLElementTagNameMap {
         "ak-label": Label;

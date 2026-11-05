@@ -6,10 +6,10 @@ import type { Tooltip } from "./Tooltip";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T = Record<string, unknown>> = new (...args: any[]) => T;
-type TooltipConstructor<T extends Tooltip = Tooltip> = Constructor<T>;
-type TooltipWithHoverType<Base extends TooltipConstructor> = Base & TooltipConstructor<Tooltip>;
 
-const validHtmlID = /^[A-Za-z][.\w\-:]*$/;
+type TooltipConstructor<T extends Tooltip = Tooltip> = Constructor<T>;
+
+type TooltipWithHoverType<Base extends TooltipConstructor> = Base & TooltipConstructor<Tooltip>;
 
 /**
  * This mixin replaces the `attachToAnchor` function, which uses mouseenter and mouseleave events to
@@ -29,53 +29,12 @@ export function TooltipWithHover<Base extends TooltipConstructor>(Superclass: Ba
     class TooltipWithHover extends Superclass {
         protected hoverCheckInterval = -1;
 
-        protected override attachToAnchor() {
-            this.anchor = null;
+        public override connectedCallback() {
+            super.connectedCallback();
 
-            if (!this.htmlFor) {
-                console.warn("ak-tooltip: tooltip without anchor declared.");
-                return;
-            }
-            const parent = this.getRootNode() as ParentNode;
-            if (
-                !(
-                    parent === document ||
-                    parent instanceof HTMLElement ||
-                    parent instanceof ShadowRoot
-                )
-            ) {
-                console.warn("ak-tooltip: component not running in a valid context");
-
-                return;
-            }
-
-            // Fallback to search based on selector, even if we're pretty sure it's an ID.
-            const anchor = validHtmlID.test(this.htmlFor)
-                ? parent.querySelector(`#${this.htmlFor}`) || parent.querySelector(this.htmlFor)
-                : parent.querySelector(this.htmlFor);
-
-            if (!anchor) {
-                console.warn("ak-tooltip: could not find anchor");
-
-                return;
-            }
-
-            if (!(anchor instanceof HTMLElement)) {
-                console.warn(
-                    `ak-tooltip: element '${this.htmlFor}' does not resolve to an HTMLElement`,
-                );
-
-                return;
-            }
-
-            this.anchor = anchor;
-
+            // The tooltip lives in this element's shadow tree, so `:hover` covers both parts.
             this.hoverCheckInterval = self.setInterval(() => {
-                const anchorHovered = this.anchor?.matches(":hover") ?? false;
-                const tooltipHovered = this.dialog.value?.matches(":hover") ?? false;
-
-                // Transition based on hover state
-                const currentlyHovering = anchorHovered || tooltipHovered;
+                const currentlyHovering = this.matches(":hover");
                 const wasHovering = this.state.type !== "tooltip-hidden";
 
                 if (currentlyHovering && !wasHovering) {

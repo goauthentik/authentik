@@ -8,6 +8,7 @@ type MaybeStyles = Partial<CSSStyleDeclaration> | null;
 
 const localDimensions = (container: Element, styles?: MaybeStyles, content?: string) => {
     const element = document.createElement("div");
+
     Object.assign(element.style, {
         ...element.style,
         position: "absolute",
@@ -15,7 +16,7 @@ const localDimensions = (container: Element, styles?: MaybeStyles, content?: str
         left: 0,
         top: 0,
         visibility: "hidden",
-        ...(styles ?? {}),
+        ...styles,
     });
 
     if (content) {
@@ -25,6 +26,7 @@ const localDimensions = (container: Element, styles?: MaybeStyles, content?: str
     container.appendChild(element);
     const dimensions = { width: element.offsetWidth, height: element.offsetHeight };
     container.removeChild(element);
+
     return dimensions;
 };
 
@@ -48,12 +50,16 @@ export const convert = {
 
 export function parseLength(length: string, element?: Element) {
     const g = /^([.]\d+|\d+[.]?\d*)\s*(rem|em|ch|px)/i.exec(length.trim());
+
     if (!g) {
         console.warn(`${length} is not a supported unit in our parseLength() function`);
+
         return 0;
     }
+
     try {
         const value = parseFloat(g[1]);
+
         return match([g[2], element])
             .with(["em", P.nullish], () => convert.fromRem(value))
             .with(["em", P.nonNullable], ([_, element]) => convert.fromEm(value, element))
@@ -63,6 +69,7 @@ export function parseLength(length: string, element?: Element) {
             .otherwise(() => value);
     } catch (e: unknown) {
         console.warn(`Error parsing length value: ${String(e)}`);
+
         return 0;
     }
 }

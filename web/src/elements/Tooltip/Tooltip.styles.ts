@@ -14,16 +14,35 @@ export const styles = css`
         }
     }
 
+    /* The anchor box needs a 'block' setting to ensure reading its dimensions returns a
+     * value that's meaningful to the tooltip position.
+     */
+    :host {
+        display: inline-block;
+    }
+
+    /* Floating UI writes position, left, and top inline; inset/margin undo the UA dialog and
+       popover centering, overflow keeps the arrow from being clipped by the popover UA style. */
     [part="tooltip"] {
-        font-family: var(--ak-c-tooltip--FontFamily);
+        font-family: var(--ak-c-tooltip__content--FontFamily);
         max-width: var(--ak-c-tooltip--MaxWidth);
         box-shadow: var(--ak-c-tooltip--BoxShadow);
         border: 0;
+        inset: auto;
         margin: 0;
         opacity: 0;
-        padding: 0;
+        overflow: visible;
         position: absolute;
         white-space: nowrap;
+        padding-block-start: var(--ak-c-tooltip__content--PaddingTop);
+        padding-block-end: var(--ak-c-tooltip__content--PaddingBottom);
+        padding-inline-start: var(--ak-c-tooltip__content--PaddingLeft);
+        padding-inline-end: var(--ak-c-tooltip__content--PaddingRight);
+        background: var(--ak-c-tooltip__content--BackgroundColor);
+        font-size: var(--ak-c-tooltip__content--FontSize);
+        color: var(--ak-c-tooltip__content--Color);
+        text-align: center;
+        overflow-wrap: anywhere;
         transition:
             display var(--ak-c-tooltip--TransitionDuration) var(--ak-c-tooltip--TimingFunction)
                 allow-discrete,
@@ -34,6 +53,12 @@ export const styles = css`
     }
 
     [part="tooltip"][open] {
+        animation: open var(--ak-c-tooltip--TransitionDuration) var(--ak-c-tooltip--TimingFunction)
+            forwards;
+    }
+
+    /* Separate rule: an unknown pseudo-class would invalidate a shared selector list. */
+    [part="tooltip"]:popover-open {
         animation: open var(--ak-c-tooltip--TransitionDuration) var(--ak-c-tooltip--TimingFunction)
             forwards;
     }
@@ -116,19 +141,6 @@ export const styles = css`
     .m-bottom-end {
         --ak-c-tooltip__arrow--Right: 0;
         --ak-c-tooltip__arrow--Left: auto;
-    }
-
-    [part="tooltip"] {
-        position: relative;
-        padding-block-start: var(--ak-c-tooltip__content--PaddingTop);
-        padding-block-end: var(--ak-c-tooltip__content--PaddingBottom);
-        padding-inline-start: var(--ak-c-tooltip__content--PaddingLeft);
-        padding-inline-end: var(--ak-c-tooltip__content--PaddingRight);
-        background: var(--ak-c-tooltip__content--BackgroundColor);
-        font-size: var(--ak-c-tooltip__content--FontSize);
-        color: var(--ak-c-tooltip__content--Color);
-        text-align: center;
-        overflow-wrap: anywhere;
     }
 
     :host([left-aligned]) [part="tooltip"] {
