@@ -67,10 +67,6 @@ pub(crate) struct Cli {}
 
 pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
 
-<<<<<<< HEAD
-=======
-pub(crate) type ServerClient = Client<UnixSocketConnector<PathBuf>, Body>;
-
 /// How long uvicorn keeps an idle connection open. Match `keepalive` in
 /// lifecycle/gunicorn.conf.py.
 const GUNICORN_KEEPALIVE: Duration = Duration::from_secs(5);
@@ -81,14 +77,13 @@ const GUNICORN_KEEPALIVE: Duration = Duration::from_secs(5);
 const UPSTREAM_POOL_IDLE_TIMEOUT: Duration =
     GUNICORN_KEEPALIVE.saturating_sub(Duration::from_secs(1));
 
-fn upstream_client(socket_path: PathBuf) -> ServerClient {
+fn upstream_client(socket_path: PathBuf) -> Client<UnixSocketConnector<PathBuf>, Body> {
     Client::builder(TokioExecutor::new())
         .pool_idle_timeout(UPSTREAM_POOL_IDLE_TIMEOUT)
         .set_host(false)
         .build(UnixSocketConnector::new(socket_path))
 }
 
->>>>>>> 62d919f36 (server, lifecycle: drop idle upstream connections before uvicorn does (#27192))
 pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik.sock")
 }
@@ -122,25 +117,9 @@ impl Server {
             .stderr(Stdio::inherit())
             .spawn()?;
 
-<<<<<<< HEAD
-        let client = Client::builder(TokioExecutor::new())
-            .pool_idle_timeout(Duration::from_mins(1))
-=======
-        // Keeps no idle connections, so a retry always gets a new one.
-        let retry_client = Client::builder(TokioExecutor::new())
-            .pool_max_idle_per_host(0)
->>>>>>> 62d919f36 (server, lifecycle: drop idle upstream connections before uvicorn does (#27192))
-            .set_host(false)
-            .build(UnixSocketConnector::new(socket_path.clone()));
-
         Ok(Self {
             gunicorn: Mutex::new(gunicorn),
-<<<<<<< HEAD
-            client,
-=======
             client: upstream_client(socket_path.clone()),
-            retry_client,
->>>>>>> 62d919f36 (server, lifecycle: drop idle upstream connections before uvicorn does (#27192))
             socket_path,
             workers: ArcSwapOption::empty(),
             proxy_outpost: Arc::new(ArcSwapOption::empty()),
@@ -463,7 +442,7 @@ mod tests {
         accepted
     }
 
-    async fn get(client: &ServerClient) {
+    async fn get(client: &Client<UnixSocketConnector<PathBuf>, Body>) {
         let request = Request::builder()
             .uri("http://localhost:8000/")
             .body(Body::empty())
