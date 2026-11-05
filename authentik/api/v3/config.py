@@ -20,6 +20,7 @@ from rest_framework.views import APIView
 
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
+from authentik.admin.utils import get_system_settings
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.context_processors.base import get_context_processors
 from authentik.lib.config import CONFIG
@@ -37,6 +38,8 @@ class Capabilities(models.TextChoices):
     CAN_IMPERSONATE = "can_impersonate"
     CAN_DEBUG = "can_debug"
     IS_ENTERPRISE = "is_enterprise"
+    CAN_REQUEST = "can_request"
+    CAN_AGENT_SELF_SERVICE = "can_agent_self_service"
 
 
 class ErrorReportingConfigSerializer(PassiveSerializer):
@@ -58,6 +61,8 @@ class ConfigSerializer(PassiveSerializer):
     cache_timeout = IntegerField(required=True)
     cache_timeout_flows = IntegerField(required=True)
     cache_timeout_policies = IntegerField(required=True)
+    cache_timeout_brands = IntegerField(required=True)
+    cache_timeout_system_settings = IntegerField(required=True)
 
 
 class ConfigView(APIView):
@@ -76,13 +81,13 @@ class ConfigView(APIView):
         for processor in get_context_processors():
             if cap := processor.capability():
                 caps.append(cap)
-        if request.tenant.impersonation:
+        if get_system_settings().impersonation:
             caps.append(Capabilities.CAN_IMPERSONATE)
         if settings.DEBUG:  # pragma: no cover
             caps.append(Capabilities.CAN_DEBUG)
         if "authentik.enterprise" in settings.INSTALLED_APPS:
             caps.append(Capabilities.IS_ENTERPRISE)
-        for _, result in capabilities.send(sender=ConfigView):
+        for _, result in capabilities.send(sender=ConfigView, request=request):
             if result:
                 caps.append(result)
         return caps
@@ -103,6 +108,8 @@ class ConfigView(APIView):
                 "cache_timeout": CONFIG.get_int("cache.timeout"),
                 "cache_timeout_flows": CONFIG.get_int("cache.timeout_flows"),
                 "cache_timeout_policies": CONFIG.get_int("cache.timeout_policies"),
+                "cache_timeout_brands": CONFIG.get_int("cache.timeout_brands"),
+                "cache_timeout_system_settings": CONFIG.get_int("cache.timeout_system_settings"),
             }
         )
 

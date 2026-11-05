@@ -6,9 +6,10 @@ import "#elements/forms/ModalForm";
 import "#components/tasks/TaskList";
 import "#components/ak-status-label";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
-
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -20,8 +21,6 @@ import { DataExport, ReportsApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-data-export-list")
 export class DataExportListPage extends TablePage<DataExport> {
@@ -53,6 +52,7 @@ export class DataExportListPage extends TablePage<DataExport> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Data export(s)")}
             .objects=${this.selectedElements}
@@ -78,13 +78,15 @@ export class DataExportListPage extends TablePage<DataExport> {
     row(item: DataExport): SlottedTemplateResult[] {
         return [
             html`${item.contentType.verboseNamePlural}`,
-            html`<a href="#/identity/users/${item.requestedBy.pk}"
+            html`<a href=${toAdminInterface(`identity/users/${item.requestedBy.pk}`)}
                 >${item.requestedBy.username}</a
             >`,
             Timestamp(item.requestedOn),
-            html`${item.completed
-                ? html`<ak-label status="success">${msg("Finished")}</ak-label>`
-                : html`<ak-label>${msg("Queued")}</ak-label>`}`,
+            html`${
+                item.completed
+                    ? html`<ak-label status="success">${msg("Finished")}</ak-label>`
+                    : html`<ak-label>${msg("Queued")}</ak-label>`
+            }`,
             item.completed && item.fileUrl
                 ? html`<div>
                       <a href="${item.fileUrl}">
@@ -123,8 +125,8 @@ export class DataExportListPage extends TablePage<DataExport> {
                 ><span
                     >${msg(
                         html`To create a data export, navigate to
-                            <a href="#/identity/users">Directory > Users</a> or to
-                            <a href="#/events/log">Events > Logs</a>.`,
+                            <a href=${toAdminInterface("identity/users")}>Directory > Users</a> or
+                            to <a href=${toAdminInterface("events/log")}>Events > Logs</a>.`,
                     )}</span
                 >
             </ak-empty-state>`,

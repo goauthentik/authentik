@@ -1,9 +1,5 @@
-@font-face {
-    font-family: "pficon";
-    src:
-        url("./assets/pficon/pficon.woff2") format("woff2"),
-        url("./assets/pficon/pficon.woff") format("woff");
-}
+/* The "pficon" @font-face lives in @goauthentik/fonts/icons.css, imported by
+ * the entrypoints. Only the icon classes are vendored here. */
 .pf-icon-zone:before,
 .pf-icon-warning-triangle:before,
 .pf-icon-volume:before,

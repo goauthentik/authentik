@@ -1,17 +1,14 @@
-fieldset[name="login-sources"],
-ak-stage-identification.style-scope fieldset[name="login-sources"] {
-    & {
-        --ak-c-login-sources-padding-inline: var(--pf-global--spacer--xl);
+fieldset[name="login-sources"] {
+    --ak-c-login-sources-padding-inline: var(--pf-global--spacer--xl);
 
-        flex: 1 1 auto;
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: center;
-        gap: var(--pf-global--spacer--sm);
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: var(--pf-global--spacer--sm);
 
-        padding-inline: var(--ak-c-login-sources-padding-inline) !important;
-        padding-block-start: var(--pf-global--spacer--md) !important;
-    }
+    padding-inline: var(--ak-c-login-sources-padding-inline) !important;
+    padding-block-start: var(--pf-global--spacer--md) !important;
 
     .source-button {
         display: flex;
@@ -50,10 +47,7 @@ ak-stage-identification.style-scope fieldset[name="login-sources"] {
 }
 
 .captcha-container {
-    /* compatibility-mode-fix */
-    & {
-        position: relative;
-    }
+    position: relative;
 
     .faux-input {
         position: absolute;
@@ -61,15 +55,5 @@ ak-stage-identification.style-scope fieldset[name="login-sources"] {
         left: 0;
         opacity: 0;
         pointer-events: none;
-    }
-}
-
-:host([theme="dark"]),
-ak-stage-identification[theme="dark"].style-scope {
-    fieldset[name="login-sources"] .pf-c-button__icon {
-        img,
-        .pf-c-button__icon .fas {
-            filter: invert(1);
-        }
     }
 }

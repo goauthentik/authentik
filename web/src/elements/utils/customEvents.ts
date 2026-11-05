@@ -6,7 +6,9 @@ export const customEvent = (name: string, details = {}) =>
     });
 
 export type SerializablePrimitive = number | string;
+
 export type SerializableArray = SerializablePrimitive[];
+
 export type CustomEventDetail = SerializablePrimitive | SerializableArray | object;
 
 /**

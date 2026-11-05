@@ -1,3 +1,5 @@
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+
 import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
@@ -8,8 +10,6 @@ import { CapabilitiesEnum } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { html } from "lit-html";
-
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 
 /**
  * A fallback element to render when a custom element fails to load, either due to a missing import,

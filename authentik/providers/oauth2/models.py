@@ -55,6 +55,7 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
+from authentik.lib.jwt_mldsa import MLDSAAlgorithm, MLDSAKey
 from authentik.lib.models import (
     DomainlessURLValidator,
     ExpiringModel,
@@ -62,7 +63,9 @@ from authentik.lib.models import (
     SerializerModel,
     SimpleThroughModel,
 )
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.policies.models import PolicyBindingModel
 from authentik.sources.oauth.models import OAuthSource
 
 if TYPE_CHECKING:
@@ -167,9 +170,14 @@ class JWTAlgorithms(models.TextChoices):
     ES384 = "ES384", _("ES384 (Asymmetric Encryption)")
     ES512 = "ES512", _("ES512 (Asymmetric Encryption)")
     EDDSA = "EdDSA", _("EdDSA (Asymmetric Encryption)")
+    MLDSA44 = "ML-DSA-44", _("ML-DSA-44 (Post-quantum, Asymmetric Encryption)")
+    MLDSA65 = "ML-DSA-65", _("ML-DSA-65 (Post-quantum, Asymmetric Encryption)")
+    MLDSA87 = "ML-DSA-87", _("ML-DSA-87 (Post-quantum, Asymmetric Encryption)")
 
     @classmethod
     def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
+        if isinstance(private_key, MLDSAKey):
+            return cls(MLDSAAlgorithm.algorithm_for_key(private_key))
         if isinstance(private_key, RSAPrivateKey):
             return cls.RS256
         if isinstance(private_key, EllipticCurvePrivateKey):
@@ -187,6 +195,8 @@ class JWTAlgorithms(models.TextChoices):
 
 class ScopeMapping(PropertyMapping):
     """Map an OAuth Scope to users properties"""
+
+    expression_allowed_types = [dict]
 
     scope_name = models.TextField(help_text=_("Scope used by the client"))
     description = models.TextField(
@@ -431,7 +441,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/openidconnect.svg")
+        return static("authentik/sources/openidconnect/light.svg")
 
     @property
     def component(self) -> str:
@@ -446,6 +456,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
+    @active_tracer().instrument()
     def encode(self, payload: dict[str, Any], jwt_type: str | None = None) -> str:
         """Represent the ID Token as a JSON Web Token (JWT).
 
@@ -562,6 +573,18 @@ class BaseGrantModel(models.Model):
     auth_time = models.DateTimeField(verbose_name="Authentication time")
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.CASCADE, default=None
+    )
+    # RFC 8693 §4.1 delegation: set when this grant was obtained via a token-exchange
+    # request presenting an `actor_token` (e.g. an Actor's own API token) alongside the
+    # `subject_token` -- `user` above stays the subject (unchanged), `actor` records who
+    # is actually exercising the token, and is mirrored into the issued token's `act` claim.
+    actor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name="actor_for_%(class)ss",
+        null=True,
+        blank=True,
+        default=None,
     )
 
     class Meta:
@@ -706,6 +729,44 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
         return TokenModelSerializer
 
 
+class OAuth2SessionLogin(InternallyManagedMixin, models.Model):
+    """Record of providers the user has logged in to this session. required for
+    front/backchannel logout because tokens can expire before the RP's session ends.
+
+    https://openid.net/specs/openid-connect-frontchannel-1_0.html#OPLogout
+    https://openid.net/specs/openid-connect-backchannel-1_0.html#Tracking"""
+
+    session = models.ForeignKey(AuthenticatedSession, on_delete=models.CASCADE)
+    provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
+    # Stored as issued to the RP, as the issuer can't be resolved without a request and the
+    # provider's `sub_mode` might change during the lifetime of the session.
+    iss = models.TextField()
+    sub = models.TextField()
+
+    class Meta:
+        verbose_name = _("OAuth2 Session Login")
+        verbose_name_plural = _("OAuth2 Session Logins")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("session", "provider"), name="oauth2_session_login_unique"
+            ),
+        ]
+
+    def __str__(self):
+        return f"Session Login for {self.provider_id} for session {self.session_id}"
+
+    @classmethod
+    def record(cls, token: BaseGrantModel, id_token: IDToken) -> None:
+        """Remember that the provider of `token` has been issued `id_token` for its session"""
+        if not token.session_id:
+            return
+        cls.objects.update_or_create(
+            session_id=token.session_id,
+            provider=token.provider,
+            defaults={"iss": id_token.iss, "sub": id_token.sub},
+        )
+
+
 class DeviceToken(InternallyManagedMixin, ExpiringModel):
     """Temporary device token for OAuth device flow"""
 
@@ -739,3 +800,107 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
 
     def __str__(self):
         return f"Device Token for {self.provider_id}"
+
+
+class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
+    """Configuration for Dynamic Client Registration (RFC 7591) on an OAuth2Provider."""
+
+    provider = models.OneToOneField(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="dcr_configuration",
+        verbose_name=_("Provider"),
+    )
+
+    default_application_group = models.TextField(
+        blank=True,
+        default="",
+        verbose_name=_("Default application group"),
+        help_text=_("Group to assign to automatically created applications."),
+    )
+
+    override_authorization_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Override authorization flow"),
+        help_text=_("Authorization flow applied to dynamically registered clients."),
+        related_name="dcr_override_authorization_flow",
+    )
+    override_invalidation_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Override invalidation flow"),
+        related_name="dcr_override_invalidation_flow",
+    )
+    override_property_mappings = models.ManyToManyField(
+        ScopeMapping,
+        blank=True,
+        verbose_name=_("Override property mappings"),
+        help_text=_("Scope mappings applied to dynamically registered clients."),
+        through="DynamicClientRegistrationPropertyMapping",
+    )
+
+    access_token_validity = models.TextField(
+        default="hours=1",
+        validators=[timedelta_string_validator],
+        verbose_name=_("Access token validity"),
+        help_text=_(
+            "Maximum access token validity for registered clients "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+    refresh_token_validity = models.TextField(
+        default="days=30",
+        validators=[timedelta_string_validator],
+        verbose_name=_("Refresh token validity"),
+        help_text=_(
+            "Maximum refresh token validity for registered clients "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+
+    allowed_grant_types = ArrayField(
+        models.TextField(choices=GrantType.choices),
+        default=list,
+        blank=True,
+        verbose_name=_("Allowed grant types"),
+        help_text=_("If empty, all grant types are allowed."),
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.oauth2.api.dcr import (
+            OAuth2DynamicClientRegistrationSerializer,
+        )
+
+        return OAuth2DynamicClientRegistrationSerializer
+
+    def __str__(self):
+        return f"DCR Configuration for {self.provider_id}"
+
+    class Meta:
+        verbose_name = _("OAuth2 Dynamic Client Registration")
+        verbose_name_plural = _("OAuth2 Dynamic Client Registrations")
+
+
+class DynamicClientRegistrationPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(ScopeMapping, on_delete=models.CASCADE)
+    dynamic_client_registration = models.ForeignKey(
+        OAuth2DynamicClientRegistration, on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = (("property_mapping", "dynamic_client_registration"),)
+        verbose_name = _("Dynamic Client Registration Property Mapping")
+        verbose_name_plural = _("Dynamic Client Registration Property Mappings")
+
+    def __str__(self):
+        return (
+            "DynamicClientRegistrationPropertyMapping for DCR "
+            f"{self.dynamic_client_registration_id} and PropertyMapping "
+            f"{self.property_mapping_id}."
+        )

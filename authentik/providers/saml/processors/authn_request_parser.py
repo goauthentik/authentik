@@ -2,34 +2,23 @@
 
 from base64 import b64decode
 from dataclasses import dataclass
-from urllib.parse import quote_plus
 from xml.etree.ElementTree import ParseError  # nosec
 
-import xmlsec
 from defusedxml import ElementTree
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
-    DSA_SHA1,
-    NS_MAP,
     NS_SAML_PROTOCOL,
-    RSA_SHA1,
-    RSA_SHA256,
-    RSA_SHA384,
-    RSA_SHA512,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
-from authentik.lib.xml import lxml_from_string
-from authentik.providers.saml.exceptions import CannotHandleAssertion
+from authentik.common.saml.exceptions import ERROR_CANNOT_DECODE_REQUEST, CannotHandleAssertion
+from authentik.common.saml.parsers.verify import (
+    verify_detached_signature,
+    verify_enveloped_signature,
+)
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 from authentik.sources.saml.models import SAMLNameIDPolicy
-
-ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
-ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
-    "Verification Certificate configured, but request is not signed."
-)
-ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 
 
 @dataclass(slots=True)
@@ -55,7 +44,15 @@ class AuthNRequestParser:
         self.logger = get_logger().bind(provider=self.provider)
 
     def _parse_xml(self, decoded_xml: str | bytes, relay_state: str | None) -> AuthNRequest:
-        root = ElementTree.fromstring(decoded_xml)
+        try:
+            root = ElementTree.fromstring(decoded_xml)
+        except (ParseError, ValueError) as exc:
+            self.logger.warning("Failed to parse SAML request", exc=exc)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from exc
+        # `ID` is a required attribute of every SAML request (SAML 2.0 core §3.2.1)
+        if "ID" not in root.attrib:
+            self.logger.warning("SAML request is missing the ID attribute")
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
 
         # http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
         # `AssertionConsumerServiceURL` can be omitted, and we should fallback to the
@@ -66,12 +63,15 @@ class AuthNRequestParser:
             request_acs_url = root.attrib["AssertionConsumerServiceURL"]
 
         if self.provider.acs_url.lower() != request_acs_url.lower():
-            msg = (
+            self.logger.warning(
+                "ACS URL of request doesn't match provider ACS URL",
+                request_acs_url=request_acs_url,
+                provider_acs_url=self.provider.acs_url,
+            )
+            raise CannotHandleAssertion(
                 f"ACS URL of {request_acs_url} doesn't match Provider "
                 f"ACS URL of {self.provider.acs_url}."
             )
-            self.logger.warning(msg)
-            raise CannotHandleAssertion(msg)
 
         # `ForceAuthn` is an optional attribute. When true, the SP requires the IdP to
         # actively re-authenticate the user instead of relying on an existing session
@@ -96,34 +96,15 @@ class AuthNRequestParser:
         """Validate and parse raw request with enveloped signautre."""
         try:
             decoded_xml = b64decode(saml_request.encode())
-        except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
+        except ValueError as exc:
+            self.logger.warning("Failed to decode SAML request", exc=exc)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from exc
 
         verifier = self.provider.verification_kp
         if not verifier:
             return self._parse_xml(decoded_xml, relay_state)
 
-        root = lxml_from_string(decoded_xml)
-        xmlsec.tree.add_ids(root, ["ID"])
-        signature_nodes = root.xpath("/samlp:AuthnRequest/ds:Signature", namespaces=NS_MAP)
-        # No signatures, no verifier configured -> decode xml directly
-        if len(signature_nodes) < 1:
-            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
-
-        signature_node = signature_nodes[0]
-
-        if signature_node is not None:
-            try:
-                ctx = xmlsec.SignatureContext()
-                key = xmlsec.Key.from_memory(
-                    verifier.certificate_data,
-                    xmlsec.constants.KeyDataFormatCertPem,
-                    None,
-                )
-                ctx.key = key
-                ctx.verify(signature_node)
-            except xmlsec.Error as exc:
-                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+        verify_enveloped_signature(decoded_xml, verifier, "/samlp:AuthnRequest/ds:Signature")
 
         return self._parse_xml(decoded_xml, relay_state)
 
@@ -137,51 +118,18 @@ class AuthNRequestParser:
         """Validate and parse raw request with detached signature"""
         try:
             decoded_xml = decode_base64_and_inflate(saml_request)
-        except UnicodeDecodeError:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
+        except ValueError as exc:
+            self.logger.warning("Failed to decode SAML request", exc=exc)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from exc
 
         verifier = self.provider.verification_kp
         if not verifier:
             return self._parse_xml(decoded_xml, relay_state)
 
-        if verifier and not (signature and sig_alg):
-            raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
-
-        if signature and sig_alg:
-            querystring = f"SAMLRequest={quote_plus(saml_request)}&"
-            if relay_state is not None:
-                querystring += f"RelayState={quote_plus(relay_state)}&"
-            querystring += f"SigAlg={quote_plus(sig_alg)}"
-
-            dsig_ctx = xmlsec.SignatureContext()
-            key = xmlsec.Key.from_memory(
-                verifier.certificate_data, xmlsec.constants.KeyDataFormatCertPem, None
-            )
-            dsig_ctx.key = key
-
-            sign_algorithm_transform_map = {
-                DSA_SHA1: xmlsec.constants.TransformDsaSha1,
-                RSA_SHA1: xmlsec.constants.TransformRsaSha1,
-                RSA_SHA256: xmlsec.constants.TransformRsaSha256,
-                RSA_SHA384: xmlsec.constants.TransformRsaSha384,
-                RSA_SHA512: xmlsec.constants.TransformRsaSha512,
-            }
-            sign_algorithm_transform = sign_algorithm_transform_map.get(
-                sig_alg, xmlsec.constants.TransformRsaSha1
-            )
-
-            try:
-                dsig_ctx.verify_binary(
-                    querystring.encode("utf-8"),
-                    sign_algorithm_transform,
-                    b64decode(signature),
-                )
-            except xmlsec.Error as exc:
-                raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
-        try:
-            return self._parse_xml(decoded_xml, relay_state)
-        except ParseError as exc:
-            raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+        verify_detached_signature(
+            "SAMLRequest", saml_request, relay_state, signature, sig_alg, verifier
+        )
+        return self._parse_xml(decoded_xml, relay_state)
 
     def idp_initiated(self) -> AuthNRequest:
         """Create IdP Initiated AuthNRequest"""

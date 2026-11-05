@@ -4,10 +4,10 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -76,10 +76,11 @@ export class OutpostListPage extends TablePage<Outpost> {
         if (item.providers.length < 1) {
             return html`-`;
         }
+
         return html`<ul>
             ${item.providersObj?.map((p) => {
                 return html`<li>
-                    <a href="#/core/providers/${p.pk}">${p.name}</a>
+                    <a href=${toAdminInterface(`core/providers/${p.pk}`)}>${p.name}</a>
                 </li>`;
             })}
         </ul>`;
@@ -87,17 +88,19 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     protected row(item: Outpost): SlottedTemplateResult[] {
         return [
-            html`<a href="#/outpost/outposts/${item.pk}"
+            html`<a href=${toAdminInterface(`outpost/outposts/${item.pk}`)}
                 ><div>${item.name}</div>
-                ${(item.config.authentik_host ?? "") === ""
-                    ? html`<ak-label status="warning" compact>
-                          ${msg(
-                              "Warning: authentik Domain is not configured, authentication will not work.",
-                          )}
-                      </ak-label>`
-                    : html`<ak-label status="success" compact>
-                          ${msg(str`Logging in via ${item.config.authentik_host}.`)}
-                      </ak-label>`}</a
+                ${
+                    (item.config.authentik_host ?? "") === ""
+                        ? html`<ak-label status="warning" compact>
+                                  ${msg(
+                                  "Warning: authentik Domain is not configured, authentication will not work.",
+                              )}
+                              </ak-label>`
+                        : html`<ak-label status="success" compact>
+                                  ${msg(str`Logging in via ${item.config.authentik_host}.`)}
+                              </ak-label>`
+                }</a
             >`,
             html`${outpostTypeToLabel(item.type)}`,
             this.renderItemProviders(item),
@@ -107,7 +110,9 @@ export class OutpostListPage extends TablePage<Outpost> {
             ></ak-outpost-health-simple>`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(OutpostForm, item.pk, item.name, {
-                    embedded: item.managed === embeddedOutpostManaged,
+                    modalProps: {
+                        embedded: item.managed === embeddedOutpostManaged,
+                    },
                 })}
             </div>`,
         ];

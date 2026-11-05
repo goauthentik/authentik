@@ -1,6 +1,7 @@
 """Sync LDAP Users into authentik"""
 
 from collections.abc import Generator
+from typing import Any
 
 from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
@@ -56,6 +57,22 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             **kwargs,
         )
 
+    @staticmethod
+    def get_account_properties(
+        attributes: dict[str, Any],
+        syncers: tuple[MicrosoftActiveDirectory, FreeIPA],
+    ) -> dict[str, bool]:
+        """Combine directory restrictions, leaving unmapped account status unchanged."""
+        # Evaluate every handler so one cannot override another's restriction or hide an error.
+        account_states = [
+            state
+            for syncer in syncers
+            if (state := syncer.get_account_active(attributes)) is not None
+        ]
+        if not account_states:
+            return {}
+        return {"is_active": all(account_states)}
+
     def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Users and create authentik_core.User instances"""
         if not self._source.sync_users:
@@ -89,7 +106,10 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                         ldap=attributes,
                     ).items()
                 }
-                self._logger.debug("Writing user with attributes", **defaults)
+                defaults.update(
+                    self.get_account_properties(attributes, (ms_ad_syncer, freeipa_syncer))
+                )
+                self._logger.debug("Writing user with attributes", attributes=defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")
                 action, connection = self.matcher.get_user_action(uniq, defaults)
@@ -120,6 +140,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 if action in (Action.AUTH, Action.LINK):
                     ak_user = connection.user
                     ak_user.update_attributes(defaults)
+                    connection.save()
                 elif action == Action.DENY:
                     continue
             except PropertyMappingExpressionException as exc:

@@ -6,6 +6,7 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import hashes
 from cryptography.x509 import (
     Certificate,
+    ExtensionNotFound,
     NameOID,
     ObjectIdentifier,
     RFC822Name,
@@ -13,6 +14,7 @@ from cryptography.x509 import (
     UnsupportedGeneralNameType,
     load_pem_x509_certificate,
 )
+from cryptography.x509.general_name import GeneralName
 from cryptography.x509.verification import PolicyBuilder, Store, VerificationError
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -30,6 +32,7 @@ from authentik.enterprise.stages.mtls.models import (
 from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.lib.utils.reflection import all_subclasses
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -176,7 +179,7 @@ class MTLSStageView(ChallengeStageView):
 
     def _cert_to_dict(self, cert: Certificate) -> dict:
         """Represent a certificate in a dictionary, as certificate objects cannot be pickled"""
-        return {
+        cert_dict = {
             "serial_number": str(cert.serial_number),
             "subject": cert.subject.rfc4514_string(),
             "issuer": cert.issuer.rfc4514_string(),
@@ -184,7 +187,20 @@ class MTLSStageView(ChallengeStageView):
             "fingerprint_sha1": hexlify(cert.fingerprint(hashes.SHA1()), ":").decode(  # nosec
                 "utf-8"
             ),
+            "san": {},
         }
+        try:
+            san_ext = cert.extensions.get_extension_for_class(SubjectAlternativeName)
+        except ExtensionNotFound:
+            return cert_dict
+        # Map all SAN values into the dict, grouped by their type
+        for san_type in all_subclasses(GeneralName):
+            for san in san_ext.value.get_values_for_type(san_type):
+                type_str = san_type.__name__
+                if type_str not in cert_dict["san"]:
+                    cert_dict["san"][type_str] = []
+                cert_dict["san"][type_str].append(san)
+        return cert_dict
 
     def auth_user(self, user: User, cert: Certificate):
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user

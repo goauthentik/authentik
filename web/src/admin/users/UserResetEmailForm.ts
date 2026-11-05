@@ -1,24 +1,28 @@
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { Form } from "#elements/forms/Form";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 
-import {
-    CoreApi,
-    Stage,
-    StagesAllListRequest,
-    StagesApi,
-    User,
-    UserRecoveryEmailRequest,
-} from "@goauthentik/api";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { CoreApi, Stage, StagesApi, User, UserRecoveryEmailRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+const emailStageSource: SearchSelectSource<Stage> = {
+    fetchObjects: (query) =>
+        aki(StagesApi)
+            .stagesEmailList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (stage) => stage.pk,
+    labelOf: (stage) => stage.name,
+    groupBy: (stages) => groupBy(stages, (stage) => stage.verboseNamePlural),
+};
 
 @customElement("ak-user-reset-email-form")
 export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
@@ -45,29 +49,12 @@ export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
                 required
                 name="emailStage"
             >
-                <ak-search-select
-                    placeholder=${msg("Select email stage...")}
-                    .fetchObjects=${async (query?: string): Promise<Stage[]> => {
-                        const args: StagesAllListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const stages = await aki(StagesApi).stagesEmailList(args);
-                        return stages.results;
-                    }}
-                    .groupBy=${(items: Stage[]) => {
-                        return groupBy(items, (stage) => stage.verboseNamePlural);
-                    }}
-                    .renderElement=${(stage: Stage): string => {
-                        return stage.name;
-                    }}
-                    .value=${(stage: Stage | undefined): string | undefined => {
-                        return stage?.pk;
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "emailStage",
+                    source: emailStageSource,
+                    placeholder: msg("Select email stage..."),
+                    blankable: false,
+                })}
             </ak-form-element-horizontal>
             <ak-text-input
                 name="tokenDuration"

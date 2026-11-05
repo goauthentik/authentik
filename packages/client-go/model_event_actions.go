@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.8.0-rc1
+API version: 2026.11.0-rc1
 Contact: hello@goauthentik.io
 */
 
@@ -28,6 +28,9 @@ const (
 	EVENTACTIONS_USER_OFFBOARDED            EventActions = "user_offboarded"
 	EVENTACTIONS_SUSPICIOUS_REQUEST         EventActions = "suspicious_request"
 	EVENTACTIONS_PASSWORD_SET               EventActions = "password_set"
+	EVENTACTIONS_AUTHENTICATOR_LOCKED       EventActions = "authenticator_locked"
+	EVENTACTIONS_AUTHENTICATOR_UNLOCKED     EventActions = "authenticator_unlocked"
+	EVENTACTIONS_REQUIRED_ACTION_COMPLETED  EventActions = "required_action_completed"
 	EVENTACTIONS_SECRET_VIEW                EventActions = "secret_view"
 	EVENTACTIONS_SECRET_ROTATE              EventActions = "secret_rotate"
 	EVENTACTIONS_INVITATION_USED            EventActions = "invitation_used"
@@ -54,6 +57,10 @@ const (
 	EVENTACTIONS_REVIEW_OVERDUE             EventActions = "review_overdue"
 	EVENTACTIONS_REVIEW_ATTESTED            EventActions = "review_attested"
 	EVENTACTIONS_REVIEW_COMPLETED           EventActions = "review_completed"
+	EVENTACTIONS_ACCESS_REQUEST_CREATED     EventActions = "access_request_created"
+	EVENTACTIONS_ACCESS_REQUEST_APPROVED    EventActions = "access_request_approved"
+	EVENTACTIONS_ACCESS_REQUEST_DENIED      EventActions = "access_request_denied"
+	EVENTACTIONS_ACCESS_REQUEST_REVOKED     EventActions = "access_request_revoked"
 	EVENTACTIONS_CUSTOM                     EventActions = "custom_"
 )
 
@@ -66,6 +73,9 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"user_offboarded",
 	"suspicious_request",
 	"password_set",
+	"authenticator_locked",
+	"authenticator_unlocked",
+	"required_action_completed",
 	"secret_view",
 	"secret_rotate",
 	"invitation_used",
@@ -92,6 +102,10 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"review_overdue",
 	"review_attested",
 	"review_completed",
+	"access_request_created",
+	"access_request_approved",
+	"access_request_denied",
+	"access_request_revoked",
 	"custom_",
 }
 

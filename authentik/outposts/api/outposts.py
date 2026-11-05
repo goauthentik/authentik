@@ -4,10 +4,12 @@ from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, DateTimeField, SerializerMethodField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -19,6 +21,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Provider
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
@@ -33,6 +36,7 @@ from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
 from authentik.providers.rac.models import RACProvider
 from authentik.providers.radius.models import RadiusProvider
+from authentik.rbac.decorators import permission_required
 
 
 class OutpostSerializer(ModelSerializer):
@@ -202,9 +206,27 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
             )
         return Response(OutpostHealthSerializer(states, many=True).data)
 
+    @permission_required("authentik_outposts.change_outpost")
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={204: OpenApiResponse(description="Permissions rebuilt")},
+    )
+    @action(
+        detail=True,
+        methods=["POST"],
+        pagination_class=None,
+        filter_backends=[],
+        permission_classes=[IsAuthenticated],
+    )
+    def rebuild_permissions(self, request: Request, pk: str) -> Response:
+        """Delete and recreate all permissions of the outpost's service account"""
+        outpost: Outpost = self.get_object()
+        outpost.build_user_permissions(outpost.user, rebuild=True)
+        return Response(status=204)
+
     @extend_schema(responses={200: OutpostDefaultConfigSerializer(many=False)})
     @action(detail=False, methods=["GET"])
     def default_settings(self, request: Request) -> Response:
         """Global default outpost config"""
-        host = self.request.build_absolute_uri("/")
+        host = self.request.build_absolute_uri(CONFIG.get("web.path", "/"))
         return Response({"config": default_outpost_config(host)})

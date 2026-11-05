@@ -25,11 +25,6 @@ services:
       - s3-data:/usr/src/app/localData
       - s3-metadata:/usr/scr/app/localMetadata
     restart: always
-  spotlight:
-    image: ghcr.io/getsentry/spotlight
-    ports:
-      - 127.0.0.1:8969:8969
-    restart: always
   diff:
     image: docker.io/openapitools/openapi-diff:2.1.7
     # Only run when explicitly invoked (e.g. `make gen-diff`), never on `docker compose up`.

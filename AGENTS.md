@@ -7,8 +7,8 @@ It is a **polyglot monorepo**. Most work lands in one of the subtrees below; whe
 | Language       | Where                      | What it is                                                                              | Deeper guide                                |
 | -------------- | -------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------- |
 | **Python**     | `authentik/`, `lifecycle/` | The core server — a Django + Django REST Framework app. The source of truth for the IdP. | —                                           |
-| **Go**         | `cmd/`, `internal/`        | **Outposts** (LDAP, proxy, RAC, RADIUS) and the front reverse-proxy that fronts Django.  | —                                           |
-| **Rust**       | `src/`, `packages/ak-*`    | Newer server/worker components and shared crates (`ak-axum`, `ak-common`, `ak-guardian`). | —                                           |
+| **Go**         | `cmd/`, `internal/`        | **Outposts** (LDAP, RAC, RADIUS).  | —                                           |
+| **Rust**       | `src/`, `packages/ak-*`    | Newer server/worker/proxy outpost components and shared crates (`ak-axum`, `ak-common`, `ak-guardian`). | —                                           |
 | **TypeScript** | `web/`                     | The web UI — three Lit + PatternFly apps (Admin, User, Flow).                            | [`web/AGENTS.md`](web/AGENTS.md)            |
 | **Docs**       | `website/`                 | The documentation, integrations, and API sites (Docusaurus).                             | [`website/AGENTS.md`](website/AGENTS.md)    |
 
@@ -19,18 +19,18 @@ The Python core and the web UI talk through a **generated OpenAPI client** — n
 ```
 authentik/          # Django core — the IdP itself (see "The authentik Django package" below)
 lifecycle/          # Boot/runtime: migrations, gunicorn config, the `ak` CLI, container + AWS entrypoints
-cmd/                # Go entrypoints: ldap/ proxy/ rac/ radius/ outposts + server/ (front reverse-proxy)
-internal/           # Shared Go: outpost implementations, config, web proxy, gounicorn process manager
+cmd/                # Go entrypoints: ldap/ rac/ radius/ outposts
+internal/           # Shared Go: outpost implementations, config
 src/                # Rust server/worker (ak-axum based; gated behind cargo features)
 packages/           # Shared workspace packages, polyglot:
                     #   client-go / client-rust / client-ts  — GENERATED API clients (do not hand-edit)
                     #   ak-axum / ak-common / ak-guardian     — Rust crates
                     #   django-*                              — reusable Django apps (channels, dramatiq, cache)
-                    #   eslint-config / prettier-config / tsconfig / theme / docusaurus-config — shared JS config
+                    #   oxlint-config / oxfmt-config / tsconfig / theme / docusaurus-config — shared JS config
 web/                # TypeScript web UI (own AGENTS.md)
 website/            # Docs / integrations / API sites (own AGENTS.md)
 blueprints/         # YAML declarative config (default/ system/ example/) applied at startup
-locale/             # Backend translations (.po) + shared cspell dictionaries (en/dictionaries/)
+locale/             # Backend translations (.po) + cspell overrides dictionary (en/dictionaries/)
 tests/              # Cross-cutting test support: e2e/, integration/, geoip/, openid_conformance/
 schemas/            # Third-party XSD/JSON schemas (SAML, WS-*, SCIM) used at runtime
 scripts/            # Repo automation (schema build, compose generation, node setup, semver)
@@ -52,7 +52,7 @@ go.mod              # Go module (module path: goauthentik.io)
 - **`sources/`** — inbound identity (LDAP, OAuth, SAML, SCIM, Kerberos source).
 - **`providers/`** — outbound protocols authentik exposes (SAML, OAuth2/OIDC, Proxy, LDAP, RADIUS, SCIM, RAC).
 - **`outposts/`** — management/coordination of the Go outposts.
-- **`brands/`** + **`tenants/`** — branding/theming and multi-tenancy (`django-tenants`).
+- **`brands/`** — branding/theming per domain.
 - **`blueprints/`** — the engine that applies the YAML under the top-level `blueprints/` directory.
 - **`rbac/`**, **`crypto/`**, **`events/`** (audit log), **`enterprise/`** (EE-licensed features), **`api/`** - **`admin/`** (REST surfaces), **`root/`** (Django project: settings, URLs, ASGI/WSGI).
 
@@ -64,7 +64,7 @@ Most tasks land in one subtree and have one follow-up step. Find the row, then r
 | ------------------------------------------------------------------ | ------------------------------ | ------------------------------------------------------------------------------------ |
 | Add or change a REST endpoint, model field, or serializer          | `authentik/` (Python)          | `make gen` to refresh `schema.yml` + clients, and commit the generated migration     |
 | Change UI behavior, a flow screen, or an admin page                | `web/`                         | [`web/AGENTS.md`](web/AGENTS.md) — call the API only through `@goauthentik/api`       |
-| Write or edit docs, an integration guide, or a glossary term       | `website/`                     | [`website/AGENTS.md`](website/AGENTS.md), then `make docs` / `make integrations`      |
+| Write or edit docs or an integration guide                         | `website/`                     | [`website/AGENTS.md`](website/AGENTS.md), then `make docs` / `make integrations`      |
 | Change an outpost (LDAP, proxy, RAC, RADIUS) or the front proxy    | `cmd/` + `internal/` (Go)      | `make go-test`                                                                       |
 | Change a native server/worker component or shared crate            | `src/` + `packages/ak-*` (Rust)| `make rust-test`                                                                     |
 | Seed or reconcile a managed object (flow, stage, policy, brand)    | `blueprints/` (YAML)           | prefer a blueprint over an ad-hoc data migration                                     |
@@ -106,8 +106,9 @@ make web-test          # Web UI tests (delegates to web/)
 ```bash
 make lint-fix          # Auto-fix: black + ruff (Python) and rustfmt (Rust)
 make lint              # Check: bandit, mypy --strict, golangci-lint, cargo deny/machete
-make lint-spellcheck   # cspell across the repo (shared dictionaries in locale/en/dictionaries/)
+make lint-spellcheck   # cspell across the repo (typo-only mode: reports known misspellings and forbidden British spellings, not unknown words)
 make lint-catalogs     # pnpm catalog pins in sync across the root/web/website workspaces
+make lint-locales      # translation files + generated locale lists match locales.yaml (`make gen-locales` regenerates)
 ```
 
 CI mirrors these as `ci-lint-*` / `ci-test` targets. Run the matching `make lint` / `make test` (plus `make web` / `make docs` for those subtrees) before pushing — CI runs the same checks.
@@ -144,9 +145,9 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 
 - `setup/full-dev-environment.mdx` — full backend + frontend dev environment.
 - `setup/frontend-dev-environment.mdx` — web-only setup.
-- `setup/debugging.md` — attaching a debugger (VS Code config included).
+- `setup/debugging.mdx` — attaching a debugger (VS Code config included).
 - `docs/style-guide.mdx` — the canonical prose style guide (also governs this repo's docs).
-- `contributing.md` / top-level `CONTRIBUTING.md` — contribution process. `SECURITY.md` — reporting vulnerabilities.
+- `contributing.mdx` / top-level `CONTRIBUTING.md` — contribution process. `SECURITY.md` — reporting vulnerabilities.
 
 ## Tech stack
 
@@ -154,7 +155,7 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 | --------------- | ------------------------------------------------------------------------ |
 | Core server     | Python 3.14, Django 5.2 + Django REST Framework, Channels (ASGI)         |
 | Background work | Dramatiq (Postgres broker)                                               |
-| Datastore       | PostgreSQL (multi-tenant via `django-tenants`) + Redis                   |
+| Datastore       | PostgreSQL                                                               |
 | Outposts        | Go 1.26 (`goauthentik.io` module) — LDAP, proxy, RAC, RADIUS             |
 | Native services | Rust (2024 edition, `axum`) — server/worker components + shared crates   |
 | Web UI          | TypeScript, Lit 3, PatternFly 4 (see `web/`)                             |

@@ -1,7 +1,6 @@
 /**
+ * @import {SidebarItemConfig} from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
  * @file Sidebar configuration for documentation entries.
- *
- * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
  */
 
 import * as fs from "node:fs";
@@ -143,9 +142,7 @@ const autoCategories = categories.map(([dirName, label]) => {
     // When the section has a root index doc, make the category label link to it
     // (clicking the section navigates to its Overview page). The doc also renders
     // as the first child, labelled "Overview" via its frontmatter.
-    const hasIndex = ["index.md", "index.mdx"].some((file) =>
-        fs.existsSync(path.join(__dirname, dirName, file)),
-    );
+    const hasIndex = fs.existsSync(path.join(__dirname, dirName, "index.mdx"));
 
     if (hasIndex) {
         sidebarCategory.link = {

@@ -3,6 +3,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/ak-status-label";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 
@@ -36,6 +37,7 @@ export function formatObjectAttributeType(type?: ObjectAttributeTypeEnum): strin
 
 @customElement("ak-object-attribute-list")
 export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
+    static styles = [...super.styles, PFBanner];
     protected override searchEnabled = true;
     protected override rowLabel(item: ObjectAttribute): string | null {
         return item.pk ?? null;
@@ -61,6 +63,15 @@ export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
         [msg("Object type"), "object_type"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
+
+    protected override renderSectionBefore(): SlottedTemplateResult {
+        return html`<div class="pf-c-banner pf-m-info">
+            ${msg("Object Attributes are in preview.")}
+            <a href="mailto:hello+feature/objectattributes@goauthentik.io"
+                >${msg("Send us feedback!")}</a
+            >
+        </div>`;
+    }
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         return html`<ak-forms-delete-bulk

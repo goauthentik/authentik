@@ -1,0 +1,13 @@
+:::info Package install scripts are disabled by default
+In this repository, pnpm is configured to not run a dependency's `preinstall`/`install`/`postinstall` lifecycle scripts unless that package is explicitly allow-listed. This neutralizes a dominant supply-chain attack pattern at the cost of skipping a few legitimate native-binary unpacks.
+
+Each workspace keeps its allow-list in its own `pnpm-workspace.yaml`: `onlyBuiltDependencies` lists the packages whose scripts may run, and `allowBuilds` records an explicit `true`/`false` for each one so pnpm doesn't prompt for approval at install time.
+
+If a build fails because a package needs its install script (commonly `esbuild`, `chromedriver`, `tree-sitter`, or `tree-sitter-json`), add it to both lists in the relevant `pnpm-workspace.yaml`, then rebuild just that package:
+
+```shell
+pnpm rebuild esbuild
+```
+
+Allow-listing a package grants it arbitrary code execution during install, so treat any addition as a change that needs review.
+:::

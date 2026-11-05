@@ -5,7 +5,6 @@ import "#admin/applications/wizard/steps/ak-application-wizard-edit-binding-step
 import "#admin/applications/wizard/steps/ak-application-wizard-provider-choice-step";
 import "#admin/applications/wizard/steps/ak-application-wizard-provider-step";
 import "#admin/applications/wizard/steps/ak-application-wizard-submit-step";
-
 import { aki } from "#common/api/client";
 import { assertEveryPresent } from "#common/utils";
 
@@ -95,7 +94,8 @@ export class AKApplicationWizard extends CreateWizard {
     // This is the actual top of the Wizard; so this is where we accept the update information and
     // incorporate it into the wizard.
     /**
-     * Handles updates to the wizard context, which are emitted by the individual steps when their data changes.
+     * Handles updates to the wizard context, which are emitted by the individual steps when their
+     * data changes.
      */
     @listen(WizardUpdateEvent)
     handleUpdate(ev: WizardUpdateEvent<ApplicationWizardContextUpdate>) {

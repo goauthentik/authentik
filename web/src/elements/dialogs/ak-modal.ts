@@ -1,5 +1,12 @@
 import Styles from "./ak-modal.css";
 import DialogStyles from "./dialog.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { PFSize } from "#common/enums";
 
@@ -15,35 +22,27 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
 
+import { createRef, ref } from "lit-html/directives/ref.js";
+
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
-import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 /**
  * A component used to display any content in a modal dialog with a consistent style and behavior.
- * This component may be used directly to wrap content, or extended for more specific modal implementations.
- *
- * @see {@link renderDialog} for a low-level API to render arbitrary content in a modal dialog.
+ * This component may be used directly to wrap content, or extended for more specific modal
+ * implementations.
  *
  * @remarks
- * The flexibility this component offers is made possible with a parent `<dialog>` element.
- * The browser-native `<dialog>` element provides the underlying functionality for modal behavior,
- * along with screen-reader friendly semantics and accessibility features.
- *
- * The content within the modal is typically slotted in, however this can be
- * customized by overriding the `render` method. If your slotted content includes
- * a header or actions, consider implementing {@linkcode TransclusionChildElement}
- * to allow this modal to automatically apply appropriate styles and structure.
+ *   The flexibility this component offers is made possible with a parent `<dialog>` element.
+ *   The browser-native `<dialog>` element provides the underlying functionality for modal behavior,
+ *   along with screen-reader friendly semantics and accessibility features.
+ *   The content within the modal is typically slotted in, however this can be
+ *   customized by overriding the `render` method. If your slotted content includes
+ *   a header or actions, consider implementing {@linkcode TransclusionChildElement}
+ *   to allow this modal to automatically apply appropriate styles and structure.
+ * @see {@link renderDialog} for a low-level API to render arbitrary content in a modal dialog.
  */
 @customElement("ak-modal")
 export class AKModal extends AKElement implements TransclusionParentElement {
@@ -64,9 +63,8 @@ export class AKModal extends AKElement implements TransclusionParentElement {
     /**
      * Show a modal containing this element.
      *
-     * @see {@linkcode renderDialog} for the underlying implementation.
-     *
      * @returns A promise that resolves when the modal is closed.
+     * @see {@linkcode renderDialog} for the underlying implementation.
      */
     public static showModal(init?: DialogInit) {
         return renderDialog(new this(), init);
@@ -90,7 +88,8 @@ export class AKModal extends AKElement implements TransclusionParentElement {
     protected logger: Logger;
 
     /**
-     * An optional Lit ref which can automatically synchronize the modal's height with the element's height.
+     * An optional Lit ref which can automatically synchronize the modal's height with the element's
+     * height.
      */
     protected scrollContainerRef = createRef<HTMLElement>();
 
@@ -99,7 +98,8 @@ export class AKModal extends AKElement implements TransclusionParentElement {
     }
 
     /**
-     * A ref to the modal title element, used for accessibility purposes (e.g., setting `aria-labelledby` on the dialog).
+     * A ref to the modal title element, used for accessibility purposes (e.g., setting
+     * `aria-labelledby` on the dialog).
      */
     protected modalTitleRef = createRef<HTMLElement>();
 
@@ -188,6 +188,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
 
         if (!dialogElement) {
             this.logger.debug("No parentElement, cannot close modal", this);
+
             return;
         }
 
@@ -233,6 +234,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
         if (!this.parentElement) {
             this.logger.debug("No parentElement, cannot delegate close", this);
             this.#closing = false;
+
             return;
         }
 
@@ -270,8 +272,8 @@ export class AKModal extends AKElement implements TransclusionParentElement {
      * A stable reference to the dialog's backdrop click event listener.
      *
      * @remarks
-     * Note that if the browser supports {@linkcode HTMLDialogElement}'s `closeBy` property,
-     * the backdrop click may trigger a "cancel" event instead of a "click" event.
+     *   Note that if the browser supports {@linkcode HTMLDialogElement}'s `closeBy` property,
+     *   the backdrop click may trigger a "cancel" event instead of a "click" event.
      */
     protected backdropClickListener = (event: Event) => {
         if (event.target !== this.parentElement) {
@@ -290,11 +292,12 @@ export class AKModal extends AKElement implements TransclusionParentElement {
     //#region Lifecycle
 
     /**
-     * A bound render method that can be safely passed as a callback without losing the correct `this` context.
+     * A bound render method that can be safely passed as a callback without losing the correct
+     * `this` context.
      *
      * @remarks
-     * This allows the implementing class to use `render`, reducing the mental
-     * overhead of which method should be used for rendering content.
+     *   This allows the implementing class to use `render`, reducing the mental
+     *   overhead of which method should be used for rendering content.
      */
     protected renderContent: () => unknown;
 
@@ -312,11 +315,13 @@ export class AKModal extends AKElement implements TransclusionParentElement {
         this.beforeBodySlot.name = "before-body";
 
         this.dialogBody = this.ownerDocument.createElement("div");
+
         this.dialogBody.classList.add(
             "ak-c-dialog__body",
             "ak-m-thin-scrollbar",
             "ak-m-scroll-shadows",
         );
+
         this.dialogBody.setAttribute("part", "body");
 
         this.dialogBody.role = "region";
@@ -336,6 +341,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
 
         if (!dialogElement) {
             this.logger.debug("Skipping connectedCallback, no parentElement", this);
+
             return;
         }
 
@@ -345,6 +351,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
             this.logger.error("Parent element is not a <dialog>, cannot initialize modal", {
                 parentElement: dialogElement,
             });
+
             throw new TypeError(
                 `authentik/modal: ${localName} must be placed inside a <dialog> element.`,
             );
@@ -399,10 +406,13 @@ export class AKModal extends AKElement implements TransclusionParentElement {
      * Synchronize the modal's ARIA attributes with its content for accessibility purposes.
      *
      * @remarks
-     * The preferred order for determining the modal's accessible name is:
-     * 1. The text content of the element referenced by {@linkcode modalTitleRef}, if it exists and has non-empty text.
-     * 2. The static {@linkcode AKModal.formatARIALabel} property of the modal class, if it is defined.
-     * 3. Otherwise, no accessible name is set on the dialog.
+     *   The preferred order for determining the modal's accessible name is:
+     *
+     *   1. The text content of the element referenced by {@linkcode modalTitleRef}, if it exists and
+     *      has non-empty text.
+     *   2. The static {@linkcode AKModal.formatARIALabel} property of the modal class, if it is
+     *      defined.
+     *   3. Otherwise, no accessible name is set on the dialog.
      */
     protected synchronizeARIA = (): void => {
         const dialogElement = this.parentElement;
@@ -438,7 +448,8 @@ export class AKModal extends AKElement implements TransclusionParentElement {
     }
 
     /**
-     * The internal render method, including the close button and header, which are common to all modals.
+     * The internal render method, including the close button and header, which are common to all
+     * modals.
      */
     protected renderInternal() {
         if (!this.shouldRenderModalContent()) {
@@ -469,8 +480,8 @@ export class AKModal extends AKElement implements TransclusionParentElement {
      *
      * This method may be overridden to customize the modal header.
      *
-     * @protected
      * @abstract
+     * @protected
      */
     protected renderHeader(): SlottedTemplateResult {
         const { headline, slottedElement, slottedElementUpdatedAt } = this;
@@ -509,8 +520,8 @@ export class AKModal extends AKElement implements TransclusionParentElement {
      *
      * This method may be overridden to customize the modal actions.
      *
-     * @protected
      * @abstract
+     * @protected
      */
     protected renderActions(): SlottedTemplateResult {
         const { slottedElement, slottedElementUpdatedAt } = this;
@@ -520,6 +531,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
             if (!hasActionsSlot && !slottedElement) {
                 return null;
             }
+
             if (slottedElement && !slottedElement.renderActions) {
                 // Slotted element is possibly nested, but does not implement an actions render method,
                 // so we cannot render actions for it.
@@ -532,9 +544,11 @@ export class AKModal extends AKElement implements TransclusionParentElement {
                       class="pf-c-button pf-m-link"
                       type="button"
                   >
-                      ${this.cancelButtonLabel ??
-                      slottedElement?.cancelButtonLabel ??
-                      msg("Cancel")}
+                      ${
+                          this.cancelButtonLabel ??
+                          slottedElement?.cancelButtonLabel ??
+                          msg("Cancel")
+                      }
                   </button>`
                 : null;
 
@@ -554,8 +568,8 @@ export class AKModal extends AKElement implements TransclusionParentElement {
      *
      * Note that this method is only called when the modal is open.
      *
-     * @protected
      * @abstract
+     * @protected
      */
     protected render(): unknown {
         if (this.beforeBodySlot.assignedElements().length) {

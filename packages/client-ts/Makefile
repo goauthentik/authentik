@@ -15,4 +15,5 @@ build:
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 	rm -rf "${PWD}/.openapi-generator"
-	npx prettier --write -u "${PWD}"
+	pnpm run post-process
+	pnpm run fix

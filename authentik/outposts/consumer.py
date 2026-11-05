@@ -70,6 +70,18 @@ class OutpostConsumer(JsonWebsocketConsumer):
         super().__init__(*args, **kwargs)
         self.logger = get_logger()
 
+    def _refresh_group_memberships(self):
+        """Add the connection to its groups or refresh their expiry."""
+        if self.outpost is None or self.instance_uid is None:
+            raise DenyConnection()
+        async_to_sync(self.channel_layer.group_add)(
+            build_outpost_group(self.outpost.pk), self.channel_name
+        )
+        async_to_sync(self.channel_layer.group_add)(
+            build_outpost_group_instance(self.outpost.pk, self.instance_uid),
+            self.channel_name,
+        )
+
     def connect(self):
         uuid = self.scope["url_route"]["kwargs"]["pk"]
         user = self.scope["user"]
@@ -86,15 +98,8 @@ class OutpostConsumer(JsonWebsocketConsumer):
             raise DenyConnection() from None
         query = QueryDict(self.scope["query_string"].decode())
         self.instance_uid = query.get("instance_uuid", self.channel_name)
-        async_to_sync(self.channel_layer.group_add)(
-            build_outpost_group(self.outpost.pk), self.channel_name
-        )
-        async_to_sync(self.channel_layer.group_add)(
-            build_outpost_group_instance(self.outpost.pk, self.instance_uid),
-            self.channel_name,
-        )
+        self._refresh_group_memberships()
         GAUGE_OUTPOSTS_CONNECTED.labels(
-            tenant=connection.schema_name,
             outpost=self.outpost.name,
             uid=self.instance_uid,
             expected=self.outpost.config.kubernetes_replicas,
@@ -112,7 +117,6 @@ class OutpostConsumer(JsonWebsocketConsumer):
                 )
         if self.outpost and self.instance_uid:
             GAUGE_OUTPOSTS_CONNECTED.labels(
-                tenant=connection.schema_name,
                 outpost=self.outpost.name,
                 uid=self.instance_uid,
                 expected=self.outpost.config.kubernetes_replicas,
@@ -128,6 +132,7 @@ class OutpostConsumer(JsonWebsocketConsumer):
         state.hostname = msg.args.pop("hostname", "")
 
         if msg.instruction == WebsocketMessageInstruction.HELLO:
+            self._refresh_group_memberships()
             state.version = msg.args.pop("version", None)
             state.build_hash = msg.args.pop("buildHash", "")
             state.golang_version = msg.args.pop("golangVersion", "")
@@ -138,7 +143,6 @@ class OutpostConsumer(JsonWebsocketConsumer):
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
         GAUGE_OUTPOSTS_LAST_UPDATE.labels(
-            tenant=connection.schema_name,
             outpost=self.outpost.name,
             uid=self.instance_uid or "",
             version=state.version or "",

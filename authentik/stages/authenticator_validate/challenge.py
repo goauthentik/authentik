@@ -3,11 +3,12 @@
 from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
+from cryptography.exceptions import InternalError, UnsupportedAlgorithm
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.db import transaction
 from django.http import HttpRequest
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField, ChoiceField, DateTimeField
 from rest_framework.serializers import ValidationError
@@ -16,7 +17,12 @@ from webauthn.authentication.generate_authentication_options import generate_aut
 from webauthn.authentication.verify_authentication_response import verify_authentication_response
 from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
+from webauthn.helpers.exceptions import (
+    InvalidJSONStructure,
+    UnsupportedPublicKey,
+    WebAuthnException,
+)
+from webauthn.helpers.exceptions import UnsupportedAlgorithm as WebAuthnUnsupportedAlgorithm
 from webauthn.helpers.options_to_json_dict import options_to_json_dict
 from webauthn.helpers.structs import PublicKeyCredentialType, UserVerificationRequirement
 
@@ -36,6 +42,7 @@ from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, Duo
 from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
+from authentik.stages.authenticator_webauthn.algorithms import credential_key_type
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
@@ -141,16 +148,47 @@ def select_challenge_email(request: HttpRequest, device: EmailDevice):
     device.stage.send(device)
 
 
-def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Device:
-    """Validate code-based challenges. We test against every device, on purpose, as
-    the user mustn't choose between totp and static devices."""
+def validate_challenge_code(
+    code: str, stage_view: StageView, user: User, challenges: list[dict]
+) -> Device:
+    """Validate code-based challenges against eligible devices.
 
-    with transaction.atomic():
+    TOTP and static challenges represent all of the user's devices of that class,
+    while email and SMS challenges are bound to a specific device.
+    """
+    stage = stage_view.executor.current_stage
+    class_wide_challenges = {
+        challenge["device_class"]
+        for challenge in challenges
+        if challenge["device_class"] in (DeviceClasses.TOTP, DeviceClasses.STATIC)
+    }
+    device_specific_challenges = {
+        (challenge["device_class"], challenge["device_uid"])
+        for challenge in challenges
+        if challenge["device_class"] in (DeviceClasses.EMAIL, DeviceClasses.SMS)
+    }
+
+    # audit_ignore decorator to prevent them being logged during authentication,
+    # and to send them via SSF
+
+    with transaction.atomic(), audit_ignore():
         for device in devices_for_user(user, for_verify=True):
+            device_class = DeviceClasses.from_model_label(device.model_label())
+            if device_class not in stage.device_classes:
+                continue
+            if device_class in (DeviceClasses.TOTP, DeviceClasses.STATIC):
+                # One challenge covers all enrolled devices of this class.
+                if device_class not in class_wide_challenges:
+                    continue
+            elif device_class in (DeviceClasses.EMAIL, DeviceClasses.SMS):
+                # Delivery-based codes must belong to the challenged device.
+                if (device_class, str(device.pk)) not in device_specific_challenges:
+                    continue
+            else:
+                # Other device classes cannot authenticate through the code field.
+                continue
             if isinstance(device, ThrottlingMixin):
-                throttling_factor = stage_view.executor.current_stage.get_throttling_factor(
-                    DeviceClasses.from_model_label(device.model_label())
-                )
+                throttling_factor = stage.get_throttling_factor(device_class)
                 if throttling_factor is not None:
                     device.set_throttle_factor(throttling_factor)
             if device.verify_token(code):
@@ -216,10 +254,8 @@ def validate_challenge_webauthn(
         and not stage.webauthn_allowed_device_types.filter(pk=device.device_type.pk).exists()
     ):
         raise ValidationError(
-            _(
-                "Invalid device type. Contact your {brand} administrator for help.".format(
-                    brand=stage_view.request.brand.branding_title
-                )
+            _("Invalid device type. Contact your {brand} administrator for help.").format(
+                brand=stage_view.request.brand.branding_title
             ),
             "invalid",
         )
@@ -233,8 +269,41 @@ def validate_challenge_webauthn(
             credential_current_sign_count=device.sign_count,
             require_user_verification=stage.webauthn_user_verification == UserVerification.REQUIRED,
         )
-    except InvalidAuthenticationResponse as exc:
-        LOGGER.warning("Assertion failed", exc=exc)
+    except (WebAuthnException, ValueError, InternalError, UnsupportedAlgorithm) as exc:
+        error = _("Assertion failed")
+        event_context = {}
+        if isinstance(
+            exc,
+            ValueError
+            | InternalError
+            | UnsupportedAlgorithm
+            | UnsupportedPublicKey
+            | WebAuthnUnsupportedAlgorithm,
+        ):
+            # TODO: Remove when OpenSSL/FIPS is updated
+            # The credential's public key could not be loaded or used because its algorithm has
+            # no implementation in the current OpenSSL configuration, for example an Ed25519 or
+            # ML-DSA credential under the validated FIPS provider. cryptography reports a missing
+            # Ed25519 implementation as a key-length ValueError; py_webauthn wraps the ML-DSA
+            # failure in UnsupportedPublicKey.
+            key_type = credential_key_type(base64url_to_bytes(device.public_key))
+            fips_enabled = backend._fips_enabled
+            if fips_enabled:
+                detail = f"Cannot log in with {key_type} security key while FIPS mode is enabled"
+            else:
+                detail = (
+                    f"Cannot log in with {key_type} security key: the key type is not available "
+                    "in the current OpenSSL configuration"
+                )
+            LOGGER.warning(
+                detail, key_type=key_type, fips_enabled=fips_enabled, device=device, exc=exc
+            )
+            # The user gets a generic error; the details are for administrators in the log and
+            # event. Event context keys containing "key" are masked, hence "algorithm".
+            error = _("Invalid security key. Please re-register or contact an administrator.")
+            event_context = {"message": detail, "algorithm": key_type, "fips_enabled": fips_enabled}
+        else:
+            LOGGER.warning("Assertion failed", exc=exc)
         login_failed.send(
             sender=__name__,
             credentials={"username": user.username},
@@ -246,9 +315,10 @@ def validate_challenge_webauthn(
                     "device_class": DeviceClasses.WEBAUTHN.value,
                     "device_type": device.device_type,
                 },
+                **event_context,
             },
         )
-        raise ValidationError("Assertion failed") from exc
+        raise ValidationError(error) from exc
 
     with audit_ignore():
         device.set_sign_count(authentication_verification.new_sign_count)
@@ -265,10 +335,10 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
 
     # Get additional context for push
     pushinfo = {
-        __("Domain"): stage_view.request.get_host(),
+        str(_("Domain")): stage_view.request.get_host(),
     }
     if PLAN_CONTEXT_APPLICATION in stage_view.executor.plan.context:
-        pushinfo[__("Application")] = stage_view.executor.plan.context.get(
+        pushinfo[str(_("Application"))] = stage_view.executor.plan.context.get(
             PLAN_CONTEXT_APPLICATION, Application()
         ).name
 
@@ -277,12 +347,8 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
             "auto",
             user_id=device.duo_user_id,
             ipaddr=ClientIPMiddleware.get_client_ip(stage_view.request),
-            type=__(
-                "{brand_name} Login request".format_map(
-                    {
-                        "brand_name": stage_view.request.brand.branding_title,
-                    }
-                )
+            type=_("{brand_name} Login request").format(
+                brand_name=stage_view.request.brand.branding_title
             ),
             display_username=user.username,
             device="auto",
