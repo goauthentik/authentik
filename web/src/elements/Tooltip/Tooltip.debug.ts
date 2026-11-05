@@ -21,7 +21,7 @@ const validHtmlID = /^[A-Za-z][.\w\-:]*$/;
  * customElements call with:
  *
  * ```ts
- * import { TooltipWithHover } from "./Tooltip_impl/Tooltip.debug";
+ * import { TooltipWithHover } from "./Tooltip/Tooltip.debug";
  * window.customElements.define("ak-tooltip", TooltipWithHover(Tooltip));
  * ```
  */

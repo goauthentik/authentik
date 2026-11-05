@@ -2,7 +2,6 @@
  * @file Implementation code for the Tooltip component
  */
 
-import { findNearestSibling } from "../utils/nearestSibling.js";
 import { parseLength } from "../utils/parseSize.js";
 import { TooltipInitialState, type TooltipState } from "./StateMachine";
 import Styles from "./Tooltip.styles";
@@ -19,7 +18,6 @@ export type Trigger = "hover" | "focus";
 const DEFAULT_SHOW_DELAY = "100ms";
 const DEFAULT_HIDE_DELAY = "150ms";
 
-const validHtmlId = /^[A-Za-z][.\w\-:]*$/;
 const delaySyntax = /^(\d+)\s*(ms|s)$/;
 
 function parseDelay(delay: string) {
@@ -31,12 +29,6 @@ function parseDelay(delay: string) {
 }
 
 /**
- * @class Tooltip
- * @element ak-tooltip
- *
- * @summary A **tooltip** is a an element that appears on hover to provide additional information
- *
- * @description
  * A tooltip displays additional information when users hover over or focus on an anchor element
  * in order to provide context or to provide a textual label for icons and pictograms. Think
  * of a tooltip as an extra label that can be made to appear near an HTMLElement that may require
@@ -49,20 +41,13 @@ function parseDelay(delay: string) {
  * HTMLFormElement controls.
  *
  * - @attr {string} for - Like a `<label>`, the ID (or selector) of a sibling element which the
- *   tooltip will appear nearby.
- *
- * or:<
- *
+ *   tooltip will appear nearby. or:<
  * - @property {HTMLElement} target - A direct reference to the anchor element. Takes precedence over
- *   "for" attribute. Unlike HTMLLabelElement.control, this property is read/write.
- *
- * If both are set, `target` takes precendence.
- *
- * Other attributes:
- *
+ *   "for" attribute. Unlike HTMLLabelElement.control, this property is read/write. If both are set,
+ *   `target` takes precendence. Other attributes:
  * - @attr {"hover"|"focus"} trigger - Event type that triggers tooltip display (default: "hover")
- *   - "hover": Shows on mouseenter/mouseleave events
- *   - "focus": Shows on focus/blur events
+ * - "hover": Shows on mouseenter/mouseleave events
+ * - "focus": Shows on focus/blur events
  * - @attr {Placement} placement - Positioning relative to anchor: "top", "top-start", "top-end",
  *   "right", "right-start", "right-end", "bottom", "bottom-start", "bottom-end", "left",
  *   "left-start", "left-end" (default: "top")
@@ -74,6 +59,11 @@ function parseDelay(delay: string) {
  *
  * ## Slots
  *
+ * @class Tooltip
+ * @element ak-tooltip
+ *
+ * @summary A **tooltip** is a an element that appears on hover to provide additional information
+ *
  * @slot - Slot for tooltip content. Anonymous, no `slot` attribute required. Prefer using this
  * over the `content` attribute.
  *
@@ -82,15 +72,13 @@ function parseDelay(delay: string) {
  * @csspart tooltip - The dialog element containing the tooltip
  * @csspart arrow - The arrow element pointing toward the anchor
  * @csspart content - The content wrapper element inside the tooltip
- *
  */
 export class Tooltip extends LitElement {
     public static readonly styles = [Styles];
 
     /**
-     * @attr {string} content: What to show in the tooltip
-     *
      * @deprecated prefer using slots.
+     * @attr {string} content: What to show in the tooltip
      */
     @property({ type: String })
     public content = "";
@@ -100,20 +88,6 @@ export class Tooltip extends LitElement {
      */
     @property({ type: Boolean, attribute: "hide-arrow" })
     public hideArrow = false;
-
-    /**
-     * @attr {string} for: The id or selector for the target. Must be in the same context as the
-     * tooltip.
-     */
-    @property({ type: String, attribute: "for" })
-    public htmlFor = "";
-
-    /**
-     * @attr {object} target: A reference to the target. Must be in the same or in a sibling context
-       of the tooltip.  `.target` takes precedence over `for`
-     */
-    @property({ type: Object })
-    public target?: HTMLElement;
 
     /**
      * @attr {string} trigger - What event causes the tooltip to show up.
@@ -140,11 +114,8 @@ export class Tooltip extends LitElement {
     public showDelay = parseDelay(DEFAULT_SHOW_DELAY);
     public hideDelay = parseDelay(DEFAULT_HIDE_DELAY);
 
-    protected anchor: HTMLElement | null = null;
-
     #cleanupFloating?: () => void;
     #anchorAbortController = new AbortController();
-    #tooltipAbortController = new AbortController();
 
     public setState(state: TooltipState) {
         this.state = state;
@@ -159,83 +130,10 @@ export class Tooltip extends LitElement {
         this.state.onAnchorLeave();
     };
 
-    #onTooltipEnter = () => {
-        this.state.onTooltipEnter();
-    };
-
-    #onTooltipLeave = () => {
-        this.state.onTooltipLeave();
-    };
-
-    #getAnchor() {
-        const parent = this.getRootNode() as ParentNode;
-        if (
-            !(parent === document || parent instanceof HTMLElement || parent instanceof ShadowRoot)
-        ) {
-            console.warn("ak-tooltip: component not running in a valid context");
-            return null;
-        }
-
-        if (!(this.htmlFor || this.target)) {
-            console.warn("ak-tooltip: tooltip without anchor declared.");
-            return null;
-        }
-
-        if (this.target) {
-            if (!(this.target instanceof HTMLElement)) {
-                console.warn("ak-tooltip: '.target' prop does not resolve to an HTMLElement");
-                return null;
-            }
-            return this.target;
-        }
-
-        // Fallback to search based on selector, even if we're pretty sure it's an ID.
-        const anchor = validHtmlId.test(this.htmlFor)
-            ? parent.querySelector(`#${this.htmlFor}`) ||
-              findNearestSibling(this, this.htmlFor) ||
-              parent.querySelector(this.htmlFor)
-            : findNearestSibling(this, this.htmlFor) || parent.querySelector(this.htmlFor);
-
-        if (!anchor) {
-            console.warn("ak-tooltip: could not find anchor");
-            return null;
-        }
-
-        if (!(anchor instanceof HTMLElement)) {
-            console.warn(
-                `ak-tooltip: element '${this.htmlFor}' does not resolve to an HTMLElement`,
-            );
-            return null;
-        }
-
-        return anchor;
-    }
-
-    protected attachToAnchor() {
-        this.anchor = this.#getAnchor();
-        if (!this.anchor) {
-            return;
-        }
-
-        const signal = { signal: this.#anchorAbortController.signal };
-        this.anchor.addEventListener("focus", this.onAnchorEnter, signal);
-        this.anchor.addEventListener("blur", this.onAnchorLeave, signal);
-        if (this.trigger === "hover") {
-            this.anchor.addEventListener("mouseenter", this.onAnchorEnter, signal);
-            this.anchor.addEventListener("touchstart", this.onAnchorEnter, signal);
-            this.anchor.addEventListener("mouseleave", this.onAnchorLeave, signal);
-            this.anchor.addEventListener("touchend", this.onAnchorLeave, signal);
-        }
-    }
-
     #detachFromAnchor() {
-        if (this.expanded) {
-            this.#detachDialogListeners();
-        }
-        if (this.anchor) {
-            this.#anchorAbortController.abort();
-            this.#anchorAbortController = new AbortController();
-        }
+        this.#anchorAbortController.abort();
+        this.#anchorAbortController = new AbortController();
+
         this.state.clearTimeout();
         this.#cleanupFloating?.();
     }
@@ -243,11 +141,15 @@ export class Tooltip extends LitElement {
     public override connectedCallback() {
         super.connectedCallback();
 
-        // `connectedCallback()` is run when the *opening* tag is parsed, not the entire component.
-        // Calling `attachToAnchor` at the end of the current task queue allows the browser to
-        // finishing parsing the tooltip and its anchor, which in turns allows the tooltip to find
-        // its anchor even if the anchor is a later sibling.
-        requestAnimationFrame(() => this.attachToAnchor());
+        const signal = { signal: this.#anchorAbortController.signal };
+        this.addEventListener("focusin", this.onAnchorEnter, signal);
+        this.addEventListener("focusout", this.onAnchorLeave, signal);
+        if (this.trigger === "hover") {
+            this.addEventListener("mouseenter", this.onAnchorEnter, signal);
+            this.addEventListener("touchstart", this.onAnchorEnter, signal);
+            this.addEventListener("mouseleave", this.onAnchorLeave, signal);
+            this.addEventListener("touchend", this.onAnchorLeave, signal);
+        }
     }
 
     public override disconnectedCallback() {
@@ -269,40 +171,29 @@ export class Tooltip extends LitElement {
 
     public override render() {
         const fromSlot = this.textContent?.trim() || this.childNodes.length > 0;
-        const content = fromSlot ? html`<slot></slot>` : this.content;
-        return html`<dialog
-            ${ref(this.dialog)}
-            part="tooltip"
-            role="tooltip"
-            tabindex="-1"
-            aria-live="polite"
-        >
-            ${this.hideArrow ? nothing : html`<div part="arrow"></div>`}
-            <div part="content">${content}</div>
-        </dialog>`;
-    }
-
-    #attachDialogListeners() {
-        if (!this.expanded) {
-            throw new Error("Can't happen.");
-        }
-
-        const options = { signal: this.#tooltipAbortController.signal };
-
-        this.dialog.value?.addEventListener("focus", this.#onTooltipEnter, options);
-        this.dialog.value?.addEventListener("blur", this.#onTooltipLeave, options);
-
-        if (this.trigger === "hover") {
-            this.dialog.value?.addEventListener("mouseenter", this.#onTooltipEnter, options);
-            this.dialog.value?.addEventListener("mouseleave", this.#onTooltipLeave, options);
-            this.dialog.value?.addEventListener("touchstart", this.#onTooltipEnter, options);
-            this.dialog.value?.addEventListener("touchend", this.#onTooltipLeave, options);
-        }
-    }
-
-    #detachDialogListeners() {
-        this.#tooltipAbortController.abort();
-        this.#tooltipAbortController = new AbortController();
+        return html` <div part="container">
+            <div part="content" role="tooltip" aria-labelledby="tooltip">
+                <slot
+                    id="content"
+                    @slotchange=${() => {
+                        this.requestUpdate();
+                    }}
+                ></slot>
+            </div>
+            <dialog
+                ${ref(this.dialog)}
+                id="tooltip"
+                part="tooltip"
+                role="tooltip"
+                tabindex="-1"
+                ?inert=${!open}
+            >
+                ${this.hideArrow ? nothing : html`<div part="arrow"></div>`}
+                <div part="tooltip-body">
+                    <slot name="tooltip">${this.content}</slot>
+                </div>
+            </dialog>
+        </div>`;
     }
 
     #updatePosition = async () => {
@@ -310,13 +201,13 @@ export class Tooltip extends LitElement {
             getComputedStyle(this).getPropertyValue("--ak-c-tooltip--Offset"),
         );
 
-        const [anchor, dialog] = [this.anchor, this.dialog.value];
-        if (!(anchor && dialog)) {
+        const dialog = this.dialog.value;
+        if (!dialog) {
             return;
         }
 
         const middleware: Middleware[] = [offset(offsetDistance), flip(), shift()];
-        const { x, y, placement } = await computePosition(anchor, dialog, {
+        const { x, y, placement } = await computePosition(this, dialog, {
             placement: this.placement,
             middleware,
         });
@@ -333,12 +224,12 @@ export class Tooltip extends LitElement {
     };
 
     #setPositioning() {
-        const [anchor, dialog] = [this.anchor, this.dialog.value];
-        if (!(anchor && dialog)) {
+        const dialog = this.dialog.value;
+        if (!dialog) {
             return;
         }
 
-        this.#cleanupFloating = autoUpdate(anchor, dialog, this.#updatePosition, {
+        this.#cleanupFloating = autoUpdate(this, dialog, this.#updatePosition, {
             ancestorScroll: true,
             ancestorResize: true,
             elementResize: true,
@@ -366,18 +257,11 @@ export class Tooltip extends LitElement {
     }
 
     public override updated(changed: PropertyValues<this>) {
-        if (changed.has("htmlFor")) {
-            this.#detachFromAnchor();
-            this.attachToAnchor();
-        }
-
         if (changed.has("expanded")) {
             if (this.expanded) {
-                this.#attachDialogListeners();
                 this.#setPositioning();
                 this.#showTooltip();
             } else {
-                this.#detachDialogListeners();
                 this.#hideTooltip();
             }
         }

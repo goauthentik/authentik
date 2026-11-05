@@ -4,10 +4,6 @@
 
 import { css } from "lit";
 
-/* This file is not automatically derived via WCCSS. It has been heavily modified to support using
- * `floating` and the `<dialog>` component.
- */
-
 export const styles = css`
     @media (prefers-reduced-motion) {
         :host {
@@ -122,7 +118,7 @@ export const styles = css`
         --ak-c-tooltip__arrow--Left: auto;
     }
 
-    [part="content"] {
+    [part="tooltip"] {
         position: relative;
         padding-block-start: var(--ak-c-tooltip__content--PaddingTop);
         padding-block-end: var(--ak-c-tooltip__content--PaddingBottom);
@@ -135,7 +131,7 @@ export const styles = css`
         overflow-wrap: anywhere;
     }
 
-    :host([left-aligned]) [part="content"] {
+    :host([left-aligned]) [part="tooltip"] {
         text-align: start;
     }
 

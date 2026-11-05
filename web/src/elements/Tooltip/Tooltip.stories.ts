@@ -2,10 +2,9 @@
  * @file Storybook stories and documentation for Tooltip components.
  */
 
-import "../Tooltip";
-
-import type { Tooltip } from "../Tooltip";
-import { akTooltip } from "../Tooltip";
+import "../ak-tooltip";
+import type { Tooltip } from "../ak-tooltip";
+import { akTooltip } from "../ak-tooltip";
 
 import { type Placement, placements } from "@floating-ui/utils";
 import { Meta, StoryObj } from "@storybook/web-components";
@@ -31,10 +30,6 @@ const metadata: Meta<Tooltip> = {
         content: {
             control: "text",
             description: "Text content of the tooltip (deprecated - prefer slots)",
-        },
-        htmlFor: {
-            control: "text",
-            description: "ID or selector of the anchor element",
         },
         placement: {
             control: "select",
@@ -70,20 +65,20 @@ const Template: Story = {
         html`<div
             style="padding: 6rem; display: flex; flex-direction: column; justify-content: center;"
         >
-            <button
-                id=${ifDefined(args.htmlFor)}
-                style="padding: 0.5rem 1rem; font-size: 1rem; cursor: pointer; width: fit-content;"
-            >
-                Reveal!
-            </button>
             <ak-tooltip
-                for=${ifDefined(args.htmlFor)}
                 placement=${ifDefined(args.placement)}
                 trigger=${ifDefined(args.trigger)}
                 show-delay=${ifDefined(args.showDelay)}
                 hide-delay=${ifDefined(args.hideDelay)}
                 ?hide-arrow=${!!args.hideArrow}
-                >${args.content}
+            >
+                <button
+                    id=${ifDefined(args.htmlFor)}
+                    style="padding: 0.5rem 1rem; font-size: 1rem; cursor: pointer; width: fit-content;"
+                >
+                    Reveal!
+                </button>
+                <span slot="tooltip">${args.content}</span>
             </ak-tooltip>
         </div>`,
 };
@@ -109,15 +104,15 @@ export const WithSlottedContent: Story = {
     },
     render: (args) =>
         html`<div style="padding: 100px; display: flex; justify-content: center;">
-            <button
-                id="slotted-button"
-                style="padding: 10px 20px; font-size: 16px; cursor: pointer;"
-            >
-                Hover for rich content
-            </button>
             <ak-tooltip for=${args.htmlFor} placement=${args.placement}>
                 <strong>Rich Tooltip Content</strong>
-                <p style="margin: 4px 0 0 0; font-size: 12px;">
+                <button
+                    id="slotted-button"
+                    style="padding: 10px 20px; font-size: 16px; cursor: pointer;"
+                >
+                    Hover for rich content
+                </button>
+                <p slot="tooltip" style="margin: 4px 0 0 0; font-size: 12px;">
                     This <em>color</em> is <span style="color: lightsalmon">fishy</span>.
                 </p>
             </ak-tooltip>
@@ -151,14 +146,14 @@ export const WithAnimatedContent: Story = {
                 }
             </style>
             <div style="padding: 100px; display: flex; justify-content: center;">
-                <button
-                    id="slotted-button"
-                    style="padding: 10px 20px; font-size: 16px; cursor: pointer;"
-                >
-                    Hover for rich content
-                </button>
-                <ak-tooltip for=${args.htmlFor} placement=${args.placement}>
-                    <strong class="pulse">❤️</strong>
+                <ak-tooltip placement=${args.placement}>
+                    <button
+                        id="slotted-button"
+                        style="padding: 10px 20px; font-size: 16px; cursor: pointer;"
+                    >
+                        Hover for rich content
+                    </button>
+                    <strong slot="tooltip" class="pulse">❤️</strong>
                 </ak-tooltip>
             </div>`,
 };
@@ -168,68 +163,53 @@ export const AllPlacements: Story = {
         html`<div
             style="padding: 150px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; justify-items: center; align-items: center;"
         >
-            <button id="top-left-btn" style="padding: 8px 16px;">Top Left</button>
-            <button id="top-btn" style="padding: 8px 16px;">Top</button>
-            <button id="top-right-btn" style="padding: 8px 16px;">Top Right</button>
-
-            <button id="left-btn" style="padding: 8px 16px;">Left</button>
-            <div style="padding: 20px; border: 2px dashed #ccc;">The Middle!</div>
-            <button id="right-btn" style="padding: 8px 16px;">Right</button>
-
-            <button id="bottom-left-btn" style="padding: 8px 16px;">Bottom Left</button>
-            <button id="bottom-btn" style="padding: 8px 16px;">Bottom</button>
-            <button id="bottom-right-btn" style="padding: 8px 16px;">Bottom Right</button>
-
             <ak-tooltip
                 for="top-left-btn"
                 content="Top left placement"
                 tabindex="0"
                 placement="top-start"
-            ></ak-tooltip>
-            <ak-tooltip
-                for="top-btn"
-                content="Top placement"
-                tabindex="0"
-                placement="top"
-            ></ak-tooltip>
+            >
+                <button id="top-left-btn" style="padding: 8px 16px;">Top Left</button>
+            </ak-tooltip>
+            <ak-tooltip for="top-btn" content="Top placement" tabindex="0" placement="top">
+                <button id="top-btn" style="padding: 8px 16px;">Top</button>
+            </ak-tooltip>
             <ak-tooltip
                 for="top-right-btn"
                 content="Top right placement"
                 tabindex="0"
                 placement="top-end"
-            ></ak-tooltip>
+            >
+                <button id="top-right-btn" style="padding: 8px 16px;">Top Right</button>
+            </ak-tooltip>
 
-            <ak-tooltip
-                for="left-btn"
-                content="Left placement"
-                tabindex="0"
-                placement="left"
-            ></ak-tooltip>
-            <ak-tooltip
-                for="right-btn"
-                content="Right placement"
-                tabindex="0"
-                placement="right"
-            ></ak-tooltip>
+            <ak-tooltip for="left-btn" content="Left placement" tabindex="0" placement="left">
+                <button id="left-btn" style="padding: 8px 16px;">Left</button>
+            </ak-tooltip>
+            <div style="padding: 20px; border: 2px dashed #ccc;">The Middle!</div>
+            <ak-tooltip for="right-btn" content="Right placement" tabindex="0" placement="right">
+                <button id="right-btn" style="padding: 8px 16px;">Right</button>
+            </ak-tooltip>
 
             <ak-tooltip
                 for="bottom-left-btn"
                 content="Bottom left placement"
                 tabindex="0"
                 placement="bottom-start"
-            ></ak-tooltip>
-            <ak-tooltip
-                for="bottom-btn"
-                content="Bottom placement"
-                tabindex="0"
-                placement="bottom"
-            ></ak-tooltip>
+            >
+                <button id="bottom-left-btn" style="padding: 8px 16px;">Bottom Left</button>
+            </ak-tooltip>
+            <ak-tooltip for="bottom-btn" content="Bottom placement" tabindex="0" placement="bottom">
+                <button id="bottom-btn" style="padding: 8px 16px;">Bottom</button>
+            </ak-tooltip>
             <ak-tooltip
                 for="bottom-right-btn"
                 content="Bottom right placement"
                 tabindex="0"
                 placement="bottom-end"
-            ></ak-tooltip>
+            >
+                <button id="bottom-right-btn" style="padding: 8px 16px;">Bottom Right</button>
+            </ak-tooltip>
         </div>`,
 };
 
@@ -241,22 +221,24 @@ export const OverflowContainer: Story = {
                 thanks to the dialog element's top layer. This also demonstrates how to override the
                 tooltip's styling with a <code>style</code> attribute on the component.
             </p>
-            <div style="overflow: hidden; border: 2px solid #ddd; padding: 20px; max-width: 300px;">
-                <p>This container has <code>overflow: hidden</code></p>
-                <button id="overflow-btn" style="padding: 10px 20px; margin-top: 10px;">
-                    Hover me
-                </button>
-            </div>
 
-            <ak-tooltip
-                style="--ak-c-tooltip__content--BackgroundColor: repeating-linear-gradient(45deg, hsl(43, 74%, 42%), hsl(43, 74%, 42%) 0.5rem, hsl(201, 12%, 40%) 0.5rem, hsl(201, 12%, 40%) 1rem);"
-                for="overflow-btn"
-                placement="right"
-                ><div style="white-space: nowrap; font-weight: bold;">
-                    Warning! The creature has escaped containment.<br />The creature has escaped
-                    containment!
-                </div></ak-tooltip
-            >
+            <div style="border: 2px solid #ddd; padding: 20px; max-width: 300px;">
+                <p>This container has <code>overflow: hidden</code></p>
+
+                <ak-tooltip
+                    style="--ak-c-tooltip__content--BackgroundColor: repeating-linear-gradient(45deg, hsl(43, 74%, 42%), hsl(43, 74%, 42%) 0.5rem, hsl(201, 12%, 40%) 0.5rem, hsl(201, 12%, 40%) 1rem);"
+                    for="overflow-btn"
+                    placement="right"
+                >
+                    <button id="overflow-btn" style="padding: 10px 20px; margin-top: 10px;">
+                        Hover me
+                    </button>
+                    <div slot="tooltip" style="white-space: nowrap; font-weight: bold;">
+                        Warning! The creature has escaped containment.<br />The creature has escaped
+                        containment!
+                    </div></ak-tooltip
+                >
+            </div>
         </div>`,
 };
 

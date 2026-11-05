@@ -2,8 +2,8 @@
  * @file Barrel file and default registry ('ak-tooltip') for the Tooltip component
  */
 
-import { Tooltip, type Trigger } from "./Tooltip_impl/Tooltip";
-import { akTooltip, type TooltipProps } from "./Tooltip_impl/Tooltip.builder";
+import { Tooltip, type Trigger } from "./Tooltip/Tooltip";
+import { akTooltip, type TooltipProps } from "./Tooltip/Tooltip.builder";
 
 export { akTooltip, Tooltip, type TooltipProps, type Trigger };
 
