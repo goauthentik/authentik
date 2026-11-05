@@ -320,9 +320,15 @@ class LifecycleIteration(SerializerModel, ManagedModel):
         self.rule.notify_reviewers(event, NotificationSeverity.NOTICE)
         self.save()
 
-    def on_review(self, request: HttpRequest):
+    def on_review(self, review: Review, request: HttpRequest):
         if self.state not in (ReviewState.PENDING, ReviewState.OVERDUE):
             raise AssertionError("Review is not pending or overdue")
+        Event.new(
+            EventAction.REVIEW_ATTESTED,
+            message=_(f"Access review attested for {self.content_type.name} {str(self.object)}"),
+            note=review.note,
+            **self._get_event_args(),
+        ).from_http(request, review.reviewer)
         if self.rule.is_satisfied_for_iteration(self):
             self.make_reviewed(request)
 

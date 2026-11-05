@@ -89,8 +89,6 @@ export class AKFileSearchInput extends AKElement {
         });
 
         return renderModal(fileUploadForm, {
-            invokerElement:
-                invocationEvent?.target instanceof HTMLElement ? invocationEvent.target : this,
             size: PFSize.Medium,
             onDispose: (disposeEvent) => {
                 const { target } = disposeEvent || {};
