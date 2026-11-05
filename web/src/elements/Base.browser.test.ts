@@ -1,4 +1,4 @@
-import { injectBrand } from "#common/brand";
+import { AuthentikWindow, GlobalAuthentik } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 
@@ -30,7 +30,31 @@ afterEach(() => {
     for (const element of mounted.splice(0)) {
         element.remove();
     }
+
+    delete (window as Partial<AuthentikWindow>).authentik;
 });
+
+/**
+ * Stand in for the server rendering a brand with the given custom CSS.
+ *
+ * @remarks
+ *
+ *   Sets the unconverted JSON the server renders, which `globalAK` converts on its
+ *   first read.
+ */
+function injectBrandCSS(cssText: string): void {
+    const authentik = {
+        locale: "en",
+        config: { capabilities: [] },
+        brand: { branding_custom_css: cssText, ui_footer_links: [] },
+        versionFamily: "",
+        versionSubdomain: "",
+        build: "",
+        api: { base: "/", relBase: "/" },
+    };
+
+    (window as unknown as AuthentikWindow).authentik = authentik as unknown as GlobalAuthentik;
+}
 
 async function mountParent(): Promise<TestParent> {
     const parent = document.createElement("ak-test-base-parent");
@@ -64,7 +88,7 @@ function sheetWithSelector(element: AKElement, selector: string): CSSStyleSheet 
 
 describe("AKElement brand CSS", () => {
     it("adopts one shared style sheet in every element and nested shadow root", async () => {
-        injectBrand({ brandingCustomCss: ".brand-shared { color: red; }" });
+        injectBrandCSS(".brand-shared { color: red; }");
 
         const first = await mountParent();
         const second = await mountParent();
@@ -78,10 +102,10 @@ describe("AKElement brand CSS", () => {
     });
 
     it("builds a new style sheet when the brand CSS changes", async () => {
-        injectBrand({ brandingCustomCss: ".brand-before { color: red; }" });
+        injectBrandCSS(".brand-before { color: red; }");
         const before = await mountParent();
 
-        injectBrand({ brandingCustomCss: ".brand-after { color: blue; }" });
+        injectBrandCSS(".brand-after { color: blue; }");
         const after = await mountParent();
 
         expect(sheetWithSelector(after, ".brand-before")).toBeUndefined();
