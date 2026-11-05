@@ -24,6 +24,9 @@ const MonarchScopes: Record<string, string> = {
     "namespace": "entity.name.module",
     "operators": "keyword.operator",
     "regexp": "string.embedded",
+    // Monaco's JSON tokenizer.
+    "string.key.json": "support.dictionary.json",
+    "keyword.json": "constant.language",
 };
 
 function toRule(token: string, { foreground, background, fontStyle }: TokenColor["settings"]) {
