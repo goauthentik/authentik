@@ -29,11 +29,13 @@ provider, _ = OAuth2Provider.objects.update_or_create(
         "signing_key": CertificateKeyPair.objects.get(name="authentik Self-signed Certificate"),
         "issuer_mode": IssuerMode.PER_PROVIDER,
         "grant_types": [GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN],
-        # Short-lived access tokens, so clients refresh during a session
-        "access_token_validity": "minutes=5",
+        # Short enough that clients refresh during a session, but longer than the
+        # ~5 minute pre-expiry refresh margin MCP clients appear to use; at 5 minutes,
+        # Claude Code refreshed before every request and VS Code refreshed in a loop
+        "access_token_validity": "minutes=10",
         "refresh_token_validity": "days=7",
         "refresh_token_threshold": "seconds=0",
-        "redirect_uris": [],
+        "_redirect_uris": [],
     },
 )
 provider.property_mappings.set(

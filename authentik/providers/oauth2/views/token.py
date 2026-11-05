@@ -156,7 +156,9 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
+            "id_token": access_token.id_token.to_jwt(
+                self.provider, jwt_type=id_token_jwt_type, client=self.client
+            ),
         }
 
         if SCOPE_OFFLINE_ACCESS in self.params.authorization_code.scope:
@@ -222,7 +224,9 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
+            "id_token": access_token.id_token.to_jwt(
+                self.provider, jwt_type=id_token_jwt_type, client=self.client
+            ),
         }
 
         refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)

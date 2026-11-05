@@ -163,6 +163,8 @@ class ProviderInfoView(View):
             )
         except OAuth2DynamicClientRegistration.DoesNotExist:
             pass
+        if is_enabled(provider):
+            config.pop("registration_endpoint", None)
         return config
 
     def get_claims_cached(self, provider: OAuth2Provider) -> list[str]:

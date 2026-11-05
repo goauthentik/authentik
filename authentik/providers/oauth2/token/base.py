@@ -3,7 +3,6 @@ from re import fullmatch
 from urllib.parse import urlparse
 
 from django.http import HttpRequest
-from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -165,7 +164,7 @@ class TokenRequest:
             kwargs = {}
             if raw_code is not None:
                 kwargs["expected_c_s256"] = pkce_s256_challenge(raw_code)
-            token_url = request.build_absolute_uri(reverse("authentik_providers_oauth2:token"))
+            token_url = request.build_absolute_uri(request.path)
             self.dpop_jwk = DPoPValidator().validate(
                 self.dpop_proof,
                 expected_htm="POST",

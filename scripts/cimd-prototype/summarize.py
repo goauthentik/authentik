@@ -12,9 +12,10 @@ import sys
 from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 
-def load(path: Path) -> list[dict]:
+def load(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
     rows = []
@@ -26,19 +27,20 @@ def load(path: Path) -> list[dict]:
     return rows
 
 
-def ts(row: dict) -> datetime:
+def ts(row: dict[str, Any]) -> datetime:
     return datetime.fromisoformat(row["ts"])
 
 
-def param(row: dict, key: str):
-    return (row.get("query") or {}).get(key, (row.get("form") or {}).get(key))
+def param(row: dict[str, Any], key: str) -> str | None:
+    value = (row.get("query") or {}).get(key, (row.get("form") or {}).get(key))
+    return value if isinstance(value, str) else None
 
 
-def main(directory: Path):
+def main(directory: Path) -> None:
     auth = load(directory / "requests.jsonl")
     mcp = load(directory / "mcp.jsonl")
     http = [r for r in auth if r.get("kind") == "http"]
-    out = []
+    out: list[str] = []
     p = out.append
 
     run = directory / "current-run"
@@ -57,7 +59,7 @@ def main(directory: Path):
     p("- User agents:")
     for agent, count in agents.most_common():
         p(f"  - `{agent}` ({count} requests)")
-    client_ids = Counter(param(r, "client_id") for r in http if param(r, "client_id"))
+    client_ids = Counter(client_id for row in http if (client_id := param(row, "client_id")))
     p("- client_id values sent:")
     for client_id, count in client_ids.most_common():
         kind = "URL (CIMD)" if str(client_id).startswith(("https://", "http://")) else "registered"
@@ -69,10 +71,10 @@ def main(directory: Path):
     for r in mcp:
         if r.get("kind") != "http":
             continue
-        key = (r["method"], r["path"], r.get("code"))
-        if key in seen:
+        request_key = (r["method"], r["path"], r.get("code"))
+        if request_key in seen:
             continue
-        seen.add(key)
+        seen.add(request_key)
         extra = " (WWW-Authenticate sent)" if r.get("www_authenticate") else ""
         p(f"- `{r['method']} {r['path']}` -> {r.get('code')}{extra}")
     p("\nauthentik side, in order (first occurrence of each):\n")
@@ -80,10 +82,10 @@ def main(directory: Path):
     for r in http:
         if ".well-known" not in r["path"] and not r["path"].endswith("/jwks/"):
             continue
-        key = (r["method"], r["path"], r["status"])
-        if key in seen:
+        request_key = (r["method"], r["path"], r["status"])
+        if request_key in seen:
             continue
-        seen.add(key)
+        seen.add(request_key)
         p(f"- `{r['method']} {r['path']}` -> {r['status']}")
 
     p("\n## Client metadata documents\n")
@@ -92,7 +94,9 @@ def main(directory: Path):
     for r in fetches:
         by_client[r["client_id"]].append(r)
     if not by_client:
-        p("No metadata fetches: the client did not use a URL client_id.")
+        p("No metadata fetches recorded; this alone does not establish whether CIMD was used.")
+        if any(client_id.startswith(("https://", "http://")) for client_id in client_ids):
+            p("URL client_id observed; metadata may have been served from a warm cache.")
     for client_id, rows in by_client.items():
         last = rows[-1]
         p(f"### `{client_id}`\n")
@@ -159,7 +163,7 @@ def main(directory: Path):
         p(f"- DPoP header: {sum(1 for r in rows if 'DPoP' in r['headers'])}/{len(rows)}")
         p(f"- Origin header (browser client): {Counter(r['headers'].get('Origin') for r in rows)}")
 
-    p("\n## Refresh behaviour\n")
+    p("\n## Refresh behavior\n")
     issued = {}  # refresh token sha -> issue time
     for r in token:
         body = r.get("response") or {}

@@ -101,6 +101,11 @@ make rust-test         # Rust tests (cargo nextest)
 make web-test          # Web UI tests (delegates to web/)
 ```
 
+The throwaway CIMD probe has additional harness checks documented in
+`scripts/cimd-prototype/README.md`. Use an explicit isolated PostgreSQL test name and the
+optional inline MCP dependency to run those checks without skips. Its launcher binds only
+loopback listeners; `CIMD_PROTOTYPE_STATE` relocates both logs and run archives.
+
 ### Lint & format
 
 ```bash

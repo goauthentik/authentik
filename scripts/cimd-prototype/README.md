@@ -6,7 +6,16 @@ Documents). Everything the clients send is logged, and `run.sh summary` turns th
 the 01b findings checklist.
 
 The code is deliberately unhardened: any metadata URL is admitted, fetches have no SSRF
-protection, and codes are not bound to the client. Run it only on localhost.
+protection, and codes and refresh tokens are not bound to the client. Run it only on
+localhost. The launcher binds authentik's HTTP, HTTPS, and metrics listeners to both
+`127.0.0.1` and `::1`, and its debug listeners to loopback. The MCP server binds both
+loopback address families, never a wildcard address.
+
+ID tokens returned by code redemption and refresh target the resolved URL client. Access
+tokens retain the prototype's provider audience; the MCP verifier deliberately accepts
+that audience as well as its resource URL. This is not resource-bound access-token
+enforcement. Scoped discovery omits `registration_endpoint` until scoped registration is
+supported; legacy discovery and DCR are unchanged.
 
 ## Pieces
 
@@ -17,7 +26,13 @@ protection, and codes are not bound to the client. Run it only on localhost.
 | Logs | `/tmp/cimd-prototype/requests.jsonl` (authentik), `mcp.jsonl` (MCP server) | |
 
 The provider uses its own database, `authentik_cimd`, created on first start. Access tokens
-last 5 minutes so clients refresh during a session, and refresh tokens rotate on every use.
+last 10 minutes so clients refresh during a session, and refresh tokens rotate on every use.
+With 5-minute tokens, clients refreshed continuously, apparently because they refresh about
+5 minutes before expiry. `run.sh mcp` reapplies the provider settings on every start.
+Set `CIMD_PROTOTYPE_STATE` in every terminal to relocate both logs and run archives.
+Rotating logs with `new-run` does not clear the metadata cache. A run without a metadata
+fetch is therefore inconclusive; a URL client ID can reuse a warm cache. The live tail
+follows the filename across rotation without needing a restart.
 
 ## Prerequisites
 
@@ -33,6 +48,11 @@ scripts/cimd-prototype/run.sh authentik   # 1: authentik server + worker
 scripts/cimd-prototype/run.sh mcp         # 2: MCP server (creates the provider on first run)
 scripts/cimd-prototype/run.sh tail        # 3: live view of the OAuth traffic
 ```
+
+Before making requests, inspect the actual listeners (for example, with
+`lsof -nP -iTCP -sTCP:LISTEN` on macOS). Ports 9000, 9443, 9300, and 8765 must show only
+`127.0.0.1` or `[::1]`, not `*`, `0.0.0.0`, or `[::]`. Check debug ports too if enabled.
+Both IPv4 and IPv6 loopback must be available; listener binding failures stop startup.
 
 The browser login is `akadmin` with the password from `scripts/cimd-prototype/run.sh password`.
 
@@ -56,7 +76,8 @@ scripts/cimd-prototype/run.sh save                  # writes runs/claude-code/su
 Each run covers four scenarios. Watch terminal 3 while doing them.
 
 1. **First login.** Connect, log in, approve consent, call `whoami`. It should return
-   `akadmin`.
+   `akadmin`. No `refresh_token` grant should follow straight away; if one does, note the
+   interval between refreshes.
 2. **Refresh.** Wait 6 minutes, call `whoami` again. Expect a `refresh_token` grant.
 3. **Concurrent refresh.** Wait another 6 minutes. Open a second session or window of the
    same client, then call `whoami` in both at the same moment. Note whether both send the
@@ -116,6 +137,25 @@ changing the probe itself: serve a metadata document with `python3 -m http.serve
 loopback port (allowed by `AUTHENTIK_CIMD_PROTOTYPE__ALLOW_HTTP_LOCALHOST`), then call the
 scoped authorize and token endpoints with that URL as `client_id`. See
 `authentik/providers/oauth2/tests/test_prototype_cimd.py` for the request shapes.
+
+## Regression checks
+
+Use an explicitly isolated PostgreSQL test database, not the default `test_authentik`:
+
+```bash
+env AUTHENTIK_POSTGRESQL__NAME=cimd_review_core_20261105 \
+  AUTHENTIK_POSTGRESQL__TEST__NAME=test_cimd_fix_poc_20261105 \
+  PYTHONDONTWRITEBYTECODE=1 UV_NO_SYNC=1 \
+  uv run --offline --with 'mcp==2.3.0' manage.py test --keepdb \
+  authentik/providers/oauth2/tests/test_prototype_cimd.py \
+  authentik/providers/oauth2/tests/test_prototype_harness.py
+```
+
+The MCP dependency is inline and optional, not a core dependency. Without `--with`, the
+four MCP-specific harness tests skip; the summary, launcher, and live-tail tests still run.
+The project mypy configuration tolerates absent optional MCP/Starlette imports and the
+consequently untyped MCP tool decorators; check with the inline dependencies installed too.
+Tests use temporary state and fixture credentials, never the demo's password or logs.
 
 ## Cleanup
 

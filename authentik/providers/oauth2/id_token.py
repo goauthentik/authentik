@@ -22,6 +22,7 @@ from authentik.lib.tracing import active_tracer
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 if TYPE_CHECKING:
+    from authentik.providers.oauth2.client import OAuthClientContext
     from authentik.providers.oauth2.models import BaseGrantModel, OAuth2Provider
 
 
@@ -181,6 +182,18 @@ class IDToken:
         final.setdefault("scope", " ".join(token.scope))
         return provider.encode(final)
 
-    def to_jwt(self, provider: OAuth2Provider, jwt_type: str | None = None) -> str:
-        """Shortcut to encode id_token to jwt, signed by self.provider"""
-        return provider.encode(self.to_dict(), jwt_type=jwt_type)
+    def to_jwt(
+        self,
+        provider: OAuth2Provider,
+        jwt_type: str | None = None,
+        *,
+        client: OAuthClientContext | None = None,
+    ) -> str:
+        """Encode for the resolved client without changing the access-token template."""
+        claims = self.to_dict()
+        if client is not None:
+            if client.provider != provider:
+                raise ValueError("ID token client belongs to another provider")
+            if not client.is_legacy:
+                claims["aud"] = client.client_id
+        return provider.encode(claims, jwt_type=jwt_type)

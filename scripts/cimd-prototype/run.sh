@@ -21,12 +21,18 @@ fi
 
 export AUTHENTIK_POSTGRESQL__NAME=authentik_cimd
 export AUTHENTIK_WEB__BASE_URL=http://localhost:9000
+export AUTHENTIK_LISTEN__HTTP='127.0.0.1:9000,[::1]:9000'
+export AUTHENTIK_LISTEN__HTTPS='127.0.0.1:9443,[::1]:9443'
+export AUTHENTIK_LISTEN__METRICS='127.0.0.1:9300,[::1]:9300'
+export AUTHENTIK_LISTEN__DEBUG=127.0.0.1:9900
+export AUTHENTIK_LISTEN__DEBUG_PY=127.0.0.1:9901
+export AUTHENTIK_LISTEN__DEBUG_TOKIO='[::1]:6669'
 export AUTHENTIK_BOOTSTRAP_PASSWORD="$(cat "$STATE/akadmin-password")"
 export AUTHENTIK_BOOTSTRAP_EMAIL=akadmin@localhost.invalid
 export AUTHENTIK_CIMD_PROTOTYPE__APPLICATIONS=$SLUG
 export AUTHENTIK_CIMD_PROTOTYPE__LOG="$STATE/requests.jsonl"
 export AUTHENTIK_CIMD_PROTOTYPE__ALLOW_HTTP_LOCALHOST=true
-# macOS: forked gunicorn workers crash once the Objective-C runtime is initialised
+# macOS: forked gunicorn workers crash once the Objective-C runtime is initialized
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 export NO_PROXY="*"
 # Reuse the main checkout's Rust build, if there is one
@@ -73,7 +79,7 @@ case "${1:-}" in
     ;;
   tail)
     touch "$STATE/requests.jsonl"
-    tail -n 0 -f "$STATE/requests.jsonl" | jq -c --unbuffered '
+    tail -n 0 -F "$STATE/requests.jsonl" | jq -c --unbuffered '
       if .kind == "http" then
         {t: .ts[11:19], req: "\(.method) \(.path)", status,
          client_id: (.query.client_id // .form.client_id),
