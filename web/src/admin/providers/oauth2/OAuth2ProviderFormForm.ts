@@ -433,6 +433,14 @@ export function renderForm({
                         "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
                     )}
                 ></ak-switch-input>
+                <ak-switch-input
+                    name="ignorePromptLogin"
+                    label=${msg("Ignore prompt=login")}
+                    ?checked=${provider.ignorePromptLogin ?? false}
+                    help=${msg(
+                        "When enabled, the prompt=login parameter in authorization requests is ignored and an existing session is used. When disabled, prompt=login requires the user to re-authenticate.",
+                    )}
+                ></ak-switch-input>
                 <ak-radio-input
                     name="issuerMode"
                     label=${msg("Issuer mode")}

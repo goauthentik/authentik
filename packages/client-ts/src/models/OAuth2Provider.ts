@@ -114,6 +114,11 @@ export interface OAuth2Provider {
      */
     includeClaimsInIdToken?: boolean;
     /**
+     * When enabled, the prompt=login parameter in authorization requests is ignored and an existing
+     * session is used. When disabled, prompt=login requires the user to re-authenticate.
+     */
+    ignorePromptLogin?: boolean;
+    /**
      * Key used to sign the tokens.
      */
     signingKey?: string | null;
@@ -271,6 +276,8 @@ export function OAuth2ProviderFromJSONTyped(
             json["include_claims_in_id_token"] == null
                 ? undefined
                 : json["include_claims_in_id_token"],
+        ignorePromptLogin:
+            json["ignore_prompt_login"] == null ? undefined : json["ignore_prompt_login"],
         signingKey:
             json["signing_key"] === undefined
                 ? undefined
@@ -340,6 +347,7 @@ export function OAuth2ProviderToJSONTyped(
         refresh_token_validity: value["refreshTokenValidity"],
         refresh_token_threshold: value["refreshTokenThreshold"],
         include_claims_in_id_token: value["includeClaimsInIdToken"],
+        ignore_prompt_login: value["ignorePromptLogin"],
         signing_key: value["signingKey"],
         encryption_key: value["encryptionKey"],
         redirect_uris: (value["redirectUris"] as Array<any>).map(RedirectURIToJSON),

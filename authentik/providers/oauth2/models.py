@@ -277,6 +277,15 @@ class OAuth2Provider(WebfingerProvider, Provider):
             "that don't access the userinfo endpoint."
         ),
     )
+    ignore_prompt_login = models.BooleanField(
+        default=False,
+        verbose_name=_("Ignore prompt=login"),
+        help_text=_(
+            "When enabled, the prompt=login parameter in authorization requests is ignored "
+            "and an existing session is used. When disabled, prompt=login requires the user "
+            "to re-authenticate."
+        ),
+    )
 
     access_code_validity = models.TextField(
         default="minutes=1",

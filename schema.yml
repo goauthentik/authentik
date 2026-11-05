@@ -18925,6 +18925,10 @@ paths:
             Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
 
       - in: query
+        name: ignore_prompt_login
+        schema:
+          type: boolean
+      - in: query
         name: include_claims_in_id_token
         schema:
           type: boolean
@@ -46577,6 +46581,12 @@ components:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
             that don't access the userinfo endpoint.
+        ignore_prompt_login:
+          type: boolean
+          title: Ignore prompt=login
+          description: When enabled, the prompt=login parameter in authorization requests
+            is ignored and an existing session is used. When disabled, prompt=login
+            requires the user to re-authenticate.
         signing_key:
           type: string
           format: uuid
@@ -46707,6 +46717,12 @@ components:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
             that don't access the userinfo endpoint.
+        ignore_prompt_login:
+          type: boolean
+          title: Ignore prompt=login
+          description: When enabled, the prompt=login parameter in authorization requests
+            is ignored and an existing session is used. When disabled, prompt=login
+            requires the user to re-authenticate.
         signing_key:
           type: string
           format: uuid
@@ -52713,6 +52729,12 @@ components:
           type: boolean
           description: Include User claims from scopes in the id_token, for applications
             that don't access the userinfo endpoint.
+        ignore_prompt_login:
+          type: boolean
+          title: Ignore prompt=login
+          description: When enabled, the prompt=login parameter in authorization requests
+            is ignored and an existing session is used. When disabled, prompt=login
+            requires the user to re-authenticate.
         signing_key:
           type: string
           format: uuid
