@@ -1119,7 +1119,7 @@ class TestAuthorize(OAuthTestCase):
 
     def test_prompt_login_ignored(self):
         """Test that prompt=login is ignored when the provider is configured to do so"""
-        provider = self._prompt_login_provider(honor_prompt_login=False)
+        provider = self._prompt_login_provider(ignore_prompt_login=True)
         response = self._authorize_with_prompt_login(provider)
         self.assertEqual(response.status_code, 302)
         self.assertIn(provider.authorization_flow.slug, response.url)

@@ -10607,10 +10607,10 @@
                     "title": "Include claims in id_token",
                     "description": "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
                 },
-                "honor_prompt_login": {
+                "ignore_prompt_login": {
                     "type": "boolean",
-                    "title": "Honor prompt=login",
-                    "description": "When enabled, an authorization request with prompt=login requires the user to re-authenticate. When disabled, the parameter is ignored and an existing session is used."
+                    "title": "Ignore prompt=login",
+                    "description": "When enabled, the prompt=login parameter in authorization requests is ignored and an existing session is used. When disabled, prompt=login requires the user to re-authenticate."
                 },
                 "signing_key": {
                     "type": "string",

@@ -12,11 +12,11 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="oauth2provider",
-            name="honor_prompt_login",
+            name="ignore_prompt_login",
             field=models.BooleanField(
-                default=True,
-                help_text="When enabled, an authorization request with prompt=login requires the user to re-authenticate. When disabled, the parameter is ignored and an existing session is used.",
-                verbose_name="Honor prompt=login",
+                default=False,
+                help_text="When enabled, the prompt=login parameter in authorization requests is ignored and an existing session is used. When disabled, prompt=login requires the user to re-authenticate.",
+                verbose_name="Ignore prompt=login",
             ),
         ),
     ]

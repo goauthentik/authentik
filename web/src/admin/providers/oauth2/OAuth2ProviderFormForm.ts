@@ -434,11 +434,11 @@ export function renderForm({
                     )}
                 ></ak-switch-input>
                 <ak-switch-input
-                    name="honorPromptLogin"
-                    label=${msg("Honor prompt=login")}
-                    ?checked=${provider.honorPromptLogin ?? true}
+                    name="ignorePromptLogin"
+                    label=${msg("Ignore prompt=login")}
+                    ?checked=${provider.ignorePromptLogin ?? false}
                     help=${msg(
-                        "When enabled, an authorization request with prompt=login requires the user to re-authenticate. When disabled, the parameter is ignored and an existing session is used.",
+                        "When enabled, the prompt=login parameter in authorization requests is ignored and an existing session is used. When disabled, prompt=login requires the user to re-authenticate.",
                     )}
                 ></ak-switch-input>
                 <ak-radio-input

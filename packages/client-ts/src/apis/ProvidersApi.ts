@@ -802,7 +802,7 @@ export interface ProvidersOauth2ListRequest {
     authorizationFlow?: string;
     clientId?: string;
     clientType?: ClientTypeEnum;
-    honorPromptLogin?: boolean;
+    ignorePromptLogin?: boolean;
     includeClaimsInIdToken?: boolean;
     issuerMode?: IssuerModeEnum;
     name?: string;
@@ -5633,8 +5633,8 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["client_type"] = requestParameters["clientType"];
         }
 
-        if (requestParameters["honorPromptLogin"] != null) {
-            queryParameters["honor_prompt_login"] = requestParameters["honorPromptLogin"];
+        if (requestParameters["ignorePromptLogin"] != null) {
+            queryParameters["ignore_prompt_login"] = requestParameters["ignorePromptLogin"];
         }
 
         if (requestParameters["includeClaimsInIdToken"] != null) {

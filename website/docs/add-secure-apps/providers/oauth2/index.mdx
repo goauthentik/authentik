@@ -125,7 +125,7 @@ By default, a client adding `prompt=login` to an authorization request makes aut
 
 ### Ignoring `prompt=login` :ak-version[2026.11]
 
-Some clients always send `prompt=login` and provide no way to disable it. To ignore it and allow reuse of a valid authentik session, disable **Honor prompt=login** under the OAuth 2.0 provider's **Advanced protocol settings**. Requests are then handled as if `prompt=login` were absent.
+Some clients always send `prompt=login` and provide no way to disable it. To ignore it and allow reuse of a valid authentik session, enable **Ignore prompt=login** under the OAuth 2.0 provider's **Advanced protocol settings**. Requests are then handled as if `prompt=login` were absent.
 
 This setting affects only that provider and does not change `max_age` handling, which can still require re-authentication. The ID token's `auth_time` claim still records the actual authentication time, allowing clients to detect that re-authentication did not occur.
 
