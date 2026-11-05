@@ -37,7 +37,7 @@ import { guard } from "lit-html/directives/guard.js";
 import { match, P } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 const Status = BlueprintInstanceStatusEnum;
@@ -129,9 +129,9 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 ${
                     description
                         ? html`<small><ak-mdx .content=${description}></ak-mdx></small>`
-                        : nothing
+                        : null
                 }
-                ${path ? html`<div><small>${urlLabel}:&nbsp;${path}</small></div>` : nothing}`,
+                ${path ? html`<div><small>${urlLabel}:&nbsp;${path}</small></div>` : null}`,
 
             BlueprintStatus(item),
             Timestamp(lastApplied),
