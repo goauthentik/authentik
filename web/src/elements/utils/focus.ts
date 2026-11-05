@@ -128,13 +128,28 @@ export class FocusTarget<T extends HTMLElement = HTMLElement> {
 }
 
 /**
+ * Get the focused element, descending through open shadow roots.
+ */
+function getDeepActiveElement(): Element | null {
+    let active = document.activeElement;
+
+    while (active?.shadowRoot?.activeElement) {
+        active = active.shadowRoot.activeElement;
+    }
+
+    return active;
+}
+
+/**
  * Given a collection of potentially focusable inputs, find the first which is
  * blank and shaped like an interactive text field.
  */
 export function findEmptyFocusCandidate<T extends HTMLInputElement | null | undefined>(
     ...inputs: T[]
 ): T | null {
-    const { activeElement } = document;
+    // `document.activeElement` is the outermost shadow host when focus is inside a shadow tree
+    // (e.g. a stage using `delegatesFocus`), so descend to the element that actually has focus.
+    const activeElement = getDeepActiveElement();
     const candidates = inputs.filter(isFocusable);
 
     if (activeElement !== document.body && isInteractiveElement(activeElement)) {
