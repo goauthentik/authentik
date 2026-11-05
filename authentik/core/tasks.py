@@ -32,9 +32,12 @@ def clean_expired_models():
             .exclude(expiring=False)
             .exclude(expiring=True, expires__gt=now())
         )
-        amount = objects.count()
-        for obj in chunked_queryset(objects):
-            obj.expire_action()
+        if cls.expire_action is ExpiringModel.expire_action:
+            amount = delete_in_batches(objects)
+        else:
+            amount = objects.count()
+            for obj in chunked_queryset(objects):
+                obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
     clear_expired_cache()
