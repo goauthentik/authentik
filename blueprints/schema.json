@@ -11324,10 +11324,48 @@
                     },
                     "title": "Property mappings"
                 },
+                "acs_urls": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "url": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Url"
+                            },
+                            "matching_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "strict",
+                                    "regex"
+                                ],
+                                "title": "Matching mode"
+                            },
+                            "index": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ],
+                                "minimum": 0,
+                                "title": "Index"
+                            },
+                            "is_default": {
+                                "type": "boolean",
+                                "title": "Is default"
+                            }
+                        },
+                        "required": [
+                            "url"
+                        ]
+                    },
+                    "title": "Acs urls"
+                },
                 "acs_url": {
                     "type": "string",
                     "minLength": 1,
-                    "title": "ACS URL"
+                    "title": "ACS URL",
+                    "description": "Deprecated, use acs_urls instead. URL of the default ACS URL. When set without acs_urls, only the default ACS URL is changed."
                 },
                 "sls_url": {
                     "type": "string",

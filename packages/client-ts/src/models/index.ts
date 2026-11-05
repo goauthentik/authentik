@@ -776,6 +776,8 @@ export * from "./RoleAssignedObjectPermission.js";
 export * from "./RoleModelPermission.js";
 export * from "./RoleObjectPermission.js";
 export * from "./RoleRequest.js";
+export * from "./SAMLACSURL.js";
+export * from "./SAMLACSURLRequest.js";
 export * from "./SAMLBindingsEnum.js";
 export * from "./SAMLLogoutMethods.js";
 export * from "./SAMLMetadata.js";
