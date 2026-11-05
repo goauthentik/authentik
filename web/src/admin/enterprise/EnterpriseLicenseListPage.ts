@@ -18,7 +18,6 @@ import { docLink } from "#common/global";
 
 import { IconCopyButton } from "#elements/buttons/IconCopyButton";
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -33,6 +32,8 @@ import {
     LicenseUserCounts,
     ModelEnum,
 } from "@goauthentik/api";
+
+import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
@@ -325,27 +326,23 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     }
 
     row(item: License): SlottedTemplateResult[] {
-        let color = PFColor.Green;
+        const [now, inAMonth] = [new Date(), new Date()];
+        inAMonth.setDate(inAMonth.getDate() + 30);
 
-        if (item.expiry) {
-            const now = new Date();
-            const inAMonth = new Date();
-            inAMonth.setDate(inAMonth.getDate() + 30);
+        // Date logic often confuses. Read `expired <=` as "expired before..." or "the expiration
+        // date happened earlier than..."
 
-            if (item.expiry <= inAMonth) {
-                color = PFColor.Orange;
-            }
-
-            if (item.expiry <= now) {
-                color = PFColor.Red;
-            }
-        }
+        // prettier-ignore
+        const status = match(item.expiry)
+            .when((expired: Date) => expired <= now, () => "danger")
+            .when((expired: Date) => expired <= inAMonth, () => "warning")
+            .otherwise(() => "success");
 
         return [
             html`<div>${item.name}</div>`,
             html`<div>${msg(str`Internal: ${item.internalUsers}`)}</div>
                 <div>${msg(str`External: ${item.externalUsers}`)}</div>`,
-            html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
+            html`<ak-label status=${status}> ${item.expiry?.toLocaleString()} </ak-label>`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(EnterpriseLicenseForm, item.licenseUuid, item.name)}
 

@@ -9,7 +9,6 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
-import { PFColor } from "#elements/Label";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { setPageDetails } from "#elements/router/meta";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -113,7 +112,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                 ${
                     !item.flowObj && this.multipleEnrollmentFlows
                         ? html`
-                              <ak-label color=${PFColor.Orange}>
+                              <ak-label status="warning">
                                   ${msg(
                                       "Invitation not limited to any flow, and can be used with any enrollment flow.",
                                   )}

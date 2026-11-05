@@ -16,7 +16,6 @@ import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -63,10 +62,10 @@ export class PolicyListPage extends TablePage<Policy> {
             html`<div>${item.name}</div>
                 ${
                     (item.boundTo || 0) > 0
-                        ? html`<ak-label color=${PFColor.Green} compact>
+                        ? html`<ak-label status="success" compact>
                               ${msg(str`Assigned to ${item.boundTo} object(s).`)}
                           </ak-label>`
-                        : html`<ak-label color=${PFColor.Orange} compact>
+                        : html`<ak-label status="warning" compact>
                               ${msg("Warning: Policy is not assigned.")}
                           </ak-label>`
                 }`,
