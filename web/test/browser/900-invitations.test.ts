@@ -33,7 +33,7 @@ test.describe("Invitation form", () => {
 
         const $dialog = page.getByRole("dialog", { name: "New Invitation" });
         const $successDialog = page.getByRole("dialog", { name: "Invitation Details" });
-        const $editor = $dialog.locator("ak-codemirror");
+        const $editor = $dialog.locator("ak-code-editor");
 
         await test.step("Open the invitation form", async () => {
             await expect($dialog, "Form is initially closed").toBeHidden();

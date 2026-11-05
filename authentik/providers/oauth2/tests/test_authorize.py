@@ -150,22 +150,27 @@ class TestAuthorize(OAuthTestCase):
                 self.assertIn("state=value%20%26%3D%23%20%2B%25%26iss%3D", response_params)
 
     def test_error_without_state(self):
-        """An absent state is omitted from query and fragment errors."""
-        for response_mode in [ResponseMode.QUERY, ResponseMode.FRAGMENT]:
-            with self.subTest(response_mode=response_mode):
-                error = AuthorizeError(
-                    "https://app.example/cb",
-                    "invalid_request",
-                    GrantType.AUTHORIZATION_CODE,
-                    "",
-                    response_mode=response_mode,
-                )
-                uri = urlparse(error.get_response(self.factory.get("/")).url)
-                params = parse_qs(
-                    uri.query if response_mode == ResponseMode.QUERY else uri.fragment
-                )
-                self.assertEqual(params["error"], ["invalid_request"])
-                self.assertNotIn("state", params)
+        """An absent state is omitted from query and fragment errors, an empty one is echoed."""
+        for state in [None, ""]:
+            for response_mode in [ResponseMode.QUERY, ResponseMode.FRAGMENT]:
+                with self.subTest(state=state, response_mode=response_mode):
+                    error = AuthorizeError(
+                        "https://app.example/cb",
+                        "invalid_request",
+                        GrantType.AUTHORIZATION_CODE,
+                        state,
+                        response_mode=response_mode,
+                    )
+                    uri = urlparse(error.get_response(self.factory.get("/")).url)
+                    params = parse_qs(
+                        uri.query if response_mode == ResponseMode.QUERY else uri.fragment,
+                        keep_blank_values=True,
+                    )
+                    self.assertEqual(params["error"], ["invalid_request"])
+                    if state is None:
+                        self.assertNotIn("state", params)
+                    else:
+                        self.assertEqual(params["state"], [""])
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_key_binding_errors_form_post(self):
@@ -798,6 +803,122 @@ class TestAuthorize(OAuthTestCase):
                 },
             },
         )
+
+    def test_code_without_state(self):
+        """An absent state is omitted from code responses in every response mode, an empty
+        state is echoed back as-is."""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            signing_key=self.keypair,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        for state in [None, ""]:
+            for response_mode in [
+                ResponseMode.QUERY,
+                ResponseMode.FRAGMENT,
+                ResponseMode.FORM_POST,
+            ]:
+                with self.subTest(state=state, response_mode=response_mode):
+                    user = create_test_admin_user()
+                    self.client.force_login(user)
+                    data = {
+                        "response_type": "code",
+                        "response_mode": response_mode,
+                        "client_id": provider.client_id,
+                        "scope": "openid",
+                        "redirect_uri": "http://localhost",
+                    }
+                    if state is not None:
+                        data["state"] = state
+                    response = self.client.get(
+                        reverse("authentik_providers_oauth2:authorize"), data=data
+                    )
+                    if response_mode == ResponseMode.FORM_POST:
+                        response = self.client.get(
+                            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+                        )
+                        params = {k: [v] for k, v in response.json()["attrs"].items()}
+                    else:
+                        uri = urlparse(response.url)
+                        params = parse_qs(
+                            uri.query if response_mode == ResponseMode.QUERY else uri.fragment,
+                            keep_blank_values=True,
+                        )
+                    code = AuthorizationCode.objects.get(user=user)
+                    self.assertEqual(params["code"], [code.code])
+                    if state is None:
+                        self.assertNotIn("state", params)
+                    else:
+                        self.assertEqual(params["state"], [""])
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_implicit_without_state(self):
+        """An absent state is omitted from implicit responses, an empty state is echoed back."""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            signing_key=self.keypair,
+            grant_types=[GrantType.IMPLICIT],
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(managed="goauthentik.io/providers/oauth2/scope-openid")
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        self.client.force_login(create_test_admin_user())
+        for state in [None, ""]:
+            with self.subTest(state=state):
+                data = {
+                    "response_type": "id_token",
+                    "client_id": provider.client_id,
+                    "scope": "openid",
+                    "redirect_uri": "http://localhost",
+                    "nonce": generate_id(),
+                }
+                if state is not None:
+                    data["state"] = state
+                response = self.client.get(
+                    reverse("authentik_providers_oauth2:authorize"), data=data
+                )
+                params = parse_qs(urlparse(response.url).fragment, keep_blank_values=True)
+                self.assertIn("id_token", params)
+                if state is None:
+                    self.assertNotIn("state", params)
+                else:
+                    self.assertEqual(params["state"], [""])
+
+    def test_error_empty_state_ui_locales(self):
+        """An empty state survives the ui_locales rewrite of error redirects."""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": provider.client_id,
+                "redirect_uri": "http://localhost",
+                "prompt": "none",
+                "state": "",
+                "ui_locales": "fr",
+            },
+        )
+        params = parse_qs(urlparse(response.url).query, keep_blank_values=True)
+        self.assertEqual(params["error"], ["login_required"])
+        self.assertEqual(params["locale"], ["fr"])
+        self.assertEqual(params["state"], [""])
 
     def test_openid_missing_invalid(self):
         """test request requiring an OpenID scope to be set"""

@@ -48,5 +48,6 @@ docker compose run --rm \
     -e PYTEST_ADDOPTS=--junitxml=/dev/shm/unittest.xml \
     -e PYTHONPATH=/test-kit/sc \
     -e CI -e CI_RUN_ID -e CI_TOTAL_RUNS -e CI_TEST_SEED -e GITHUB_ACTIONS \
+    -e AUTHENTIK_COMPLIANCE__FIPS__ENABLED \
     server test-all
 docker compose down -v

@@ -74,6 +74,11 @@ def audit_ignore():
         _CTX_IGNORE.set(False)
 
 
+def is_audit_ignored() -> bool:
+    """Return true if the current operation should be ignored for auditing"""
+    return _CTX_IGNORE.get()
+
+
 class EventNewThread(Thread):
     """Create Event in background thread"""
 

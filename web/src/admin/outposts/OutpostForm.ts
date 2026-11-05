@@ -1,4 +1,4 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -259,7 +259,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             msg("Configuration"),
                         )}
 
-                        <ak-codemirror
+                        <ak-code-editor
                             id="configuration"
                             name="config"
                             mode="yaml"
@@ -267,7 +267,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                                 this.instance ? this.instance.config : this.defaultConfig?.config,
                             )}"
                             aria-describedby="config-help"
-                        ></ak-codemirror>
+                        ></ak-code-editor>
                         <div id="config-help">
                             <p class="pf-c-form__helper-text">
                                 ${msg("Set custom attributes using YAML or JSON.")}
