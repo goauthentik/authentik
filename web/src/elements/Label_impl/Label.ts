@@ -1,5 +1,5 @@
 /**
- * @file * @file Document-level CSS Custom Properties for Label components.
+ * @file Document-level CSS Custom Properties for Label components.
  */
 
 import Styles from "./Label.styles";
@@ -14,6 +14,7 @@ import { html, LitElement, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 
 const labelColors = ["blue", "green", "orange", "red", "purple", "cyan", "gold", "gray"] as const;
+
 export type LabelColor = (typeof labelColors)[number];
 
 export const statusNames = [
@@ -27,9 +28,11 @@ export const statusNames = [
     "bad",
     "ok",
 ];
+
 export type Status = (typeof statusNames)[number];
 
 type StatusDetail = [LabelColor, string];
+
 // prettier-ignore
 const chromeList: Map<Status, StatusDetail> = new Map([
     ["danger",  ["red", "fa-times"]],
@@ -65,6 +68,7 @@ export class Label extends LitElement {
 
     private handleIconSlotChange = (ev: Event) => {
         const nodes = (ev.target as HTMLSlotElement).assignedNodes({ flatten: false });
+
         this.hasSlottedIcon = nodes.some(
             (n) =>
                 n.nodeType === Node.ELEMENT_NODE ||
@@ -74,11 +78,13 @@ export class Label extends LitElement {
 
     get statusDetails(): StatusDetail | [null, null] {
         const status = this.status ? chromeList.get(this.status) : null;
+
         if (this.status && !status) {
             console.warn(
                 `${this.tagName.toLowerCase()}: '${this.status}' is not a valid status token.`,
             );
         }
+
         return status ? status : [null, null];
     }
 
@@ -89,11 +95,13 @@ export class Label extends LitElement {
     getIcon() {
         const [_, iconClass] = this.statusDetails;
         const icon = this.icon ?? iconClass;
+
         return icon ? html`<i class="fas fa-fw ${icon}" aria-hidden="true"></i>` : nothing;
     }
 
     getColor() {
         const [colorName, _] = this.statusDetails;
+
         return colorName ? `status-${colorName}` : null;
     }
 
@@ -120,7 +128,13 @@ export interface LabelProps {
     status?: Status;
 }
 
-export function akLabel(properties: LabelProps, content: SlottedTemplateResult = nothing) {
+export function akLabel(
+    { compact, outline, ...properties }: LabelProps,
+    content: SlottedTemplateResult = nothing,
+) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
-    return html`<ak-label ${spread(properties as Spread)}>${message}</ak-label>`;
+    // `?` prefix: spread() would otherwise stringify `false` to an attribute that still matches.
+    const attributes: Spread = { ...properties, "?compact": compact, "?outline": outline };
+
+    return html`<ak-label ${spread(attributes)}>${message}</ak-label>`;
 }

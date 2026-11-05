@@ -5,7 +5,6 @@ import "#elements/Label";
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
-import { PFColor } from "#elements/Label";
 import { setPageDetails } from "#elements/router/meta";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -78,7 +77,7 @@ export class PermissionCheckListPage extends TablePage<PermissionCheck> {
                 (endpoint) =>
                     html`<code>${endpoint}</code> ${
                             item.unknownEndpoints.includes(endpoint)
-                                ? html`<ak-label color=${PFColor.Orange} compact>
+                                ? html`<ak-label color="orange" compact>
                                       ${msg("No longer exists")}
                                   </ak-label>`
                                 : nothing

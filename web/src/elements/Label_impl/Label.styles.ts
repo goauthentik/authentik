@@ -283,7 +283,7 @@ export const styles = css`
         );
     }
 
-    :host([outline]) {
+    :host([outline]) [part="label"] {
         --ak-c-label__content--Color: var(--ak-c-label--m-outline__content--Color);
         --ak-c-label__content--before--BorderWidth: var(
             --ak-c-label--m-outline__content--before--BorderWidth

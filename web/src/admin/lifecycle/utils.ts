@@ -1,5 +1,6 @@
 import "#components/ak-status-label";
 import { MessageFormatter } from "#common/ui/locale/format";
+
 import { LitFC, LitPropertyRecord } from "#elements/types";
 
 import AkStatusLabel from "#components/ak-status-label";

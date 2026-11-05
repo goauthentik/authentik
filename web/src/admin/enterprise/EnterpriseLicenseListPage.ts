@@ -328,6 +328,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     row(item: License): SlottedTemplateResult[] {
         const [now, inAMonth] = [new Date(), new Date()];
         inAMonth.setDate(inAMonth.getDate() + 30);
+
         // Date logic often confuses. Read `expired <=` as "expired before..." or "the expiration
         // date happened earlier than..."
 

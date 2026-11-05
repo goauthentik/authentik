@@ -182,7 +182,7 @@ export class UserInfoCard extends AKElement {
             >
                 ${
                     user.pk === this.currentUserPk
-                        ? html`<ak-label slot="notice" color="warning">
+                        ? html`<ak-label slot="notice" status="warning">
                               ${msg(
                                   str`Warning: You are about to delete user ${user.username}, but you are currently logged in as this user. Proceed at your own risk.`,
                                   { id: "users.delete.self-warning.description" },
