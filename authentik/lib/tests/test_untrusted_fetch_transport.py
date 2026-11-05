@@ -28,6 +28,7 @@ from authentik.lib.utils.untrusted_fetch import (
     ConnectError,
     DeadlineExceeded,
     DestinationPolicy,
+    ProtocolError,
     RedirectNotAllowed,
     ResponseTooLarge,
     TLSError,
@@ -38,6 +39,8 @@ from authentik.lib.utils.untrusted_fetch.transport import (
     ConnectTarget,
     Deadline,
     HTTPClientTransport,
+    _PinnedHTTPSConnection,
+    _Watchdog,
     default_ssl_context,
 )
 
@@ -269,6 +272,135 @@ class TestHTTPClientTransport(TestCase):
         with self.assertRaises(TLSError):
             self.fetcher(ssl_context=default_ssl_context()).fetch(self.url, max_bytes=1024)
         self.assertEqual(self.server.requests, [])
+
+    def test_premature_content_length_eof(self):
+        for body, encoding in ((b"", b""), (b"{}", b""), (gzip.compress(b"{}"), b"gzip")):
+            with self.subTest(body=body, encoding=encoding):
+                self.server.handler = respond(
+                    b"HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Encoding: %s\r\n\r\n%s"
+                    % (len(body) + 100, encoding, body)
+                )
+                with self.assertRaises(ProtocolError):
+                    self.fetcher().fetch(self.url, max_bytes=1024)
+
+    def test_complete_response_framing(self):
+        for headers, body in (
+            (b"Content-Length: 0\r\n", b""),
+            (b"Content-Length: 2\r\nConnection: close\r\n", b"{}"),
+            (b"Connection: close\r\n", b"{}"),
+        ):
+            with self.subTest(headers=headers):
+                self.server.handler = respond(b"HTTP/1.1 200 OK\r\n" + headers + b"\r\n" + body)
+                self.assertEqual(self.fetcher().fetch(self.url, max_bytes=1024).content, body)
+
+    def test_premature_chunked_eof(self):
+        for body in (b"2\r\n{", b"2\r\n{}\r\n"):
+            with self.subTest(body=body):
+                self.server.handler = respond(
+                    b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n" + body
+                )
+                with self.assertRaises(ProtocolError):
+                    self.fetcher().fetch(self.url, max_bytes=1024)
+
+    def assert_watchdog_closed(self, watchdog, duplicate):
+        self.assertIsNone(watchdog._sock)
+        self.assertEqual(duplicate.fileno(), -1)
+        self.assertTrue(watchdog._timer.finished.is_set())
+        watchdog._timer.join(timeout=2)
+        self.assertFalse(watchdog._timer.is_alive())
+
+    def test_interrupted_open_closes_real_tls_connection(self):
+        for error_type in (KeyboardInterrupt, SystemExit, BaseException, RuntimeError):
+            with self.subTest(error_type=error_type):
+                interruption = error_type("interrupted response")
+                captured = []
+
+                def interrupt(connection, captured=captured, interruption=interruption):
+                    self.addCleanup(connection._watchdog.cancel)
+                    self.addCleanup(connection.close)
+                    captured.append((connection, connection.sock, connection._watchdog._sock))
+                    raise interruption
+
+                fetcher = self.fetcher()
+                with patch.object(_PinnedHTTPSConnection, "getresponse", new=interrupt):
+                    with self.assertRaises(error_type) as raised:
+                        fetcher.fetch(self.url, max_bytes=1024)
+                self.assertIs(raised.exception, interruption)
+                ((connection, sock, duplicate),) = captured
+                self.assertIsNone(connection.sock)
+                self.assertEqual(sock.fileno(), -1)
+                self.assert_watchdog_closed(connection._watchdog, duplicate)
+                self.assertTrue(fetcher._slots.acquire(blocking=False))
+                fetcher._slots.release()
+                self.assertEqual(fetcher.fetch(self.url, max_bytes=1024).content, b'{"a": 1}')
+
+    def test_interrupted_response_wrapper_closes_detached_response(self):
+        self.server.handler = respond(
+            b"HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: 2\r\n\r\n{}"
+        )
+        interruption = KeyboardInterrupt("interrupted wrapper")
+        captured = []
+
+        def interrupt(connection, response, watchdog):
+            self.addCleanup(watchdog.cancel)
+            self.addCleanup(connection.close)
+            self.addCleanup(response.close)
+            captured.append((connection, response, response.fp, watchdog, watchdog._sock))
+            raise interruption
+
+        with patch(
+            "authentik.lib.utils.untrusted_fetch.transport._HTTPClientResponse", new=interrupt
+        ):
+            with self.assertRaises(KeyboardInterrupt) as raised:
+                self.fetcher().fetch(self.url, max_bytes=1024)
+        self.assertIs(raised.exception, interruption)
+        ((connection, response, reader, watchdog, duplicate),) = captured
+        self.assertIsNone(connection.sock)
+        self.assertTrue(response.isclosed())
+        self.assertTrue(reader.closed)
+        self.assert_watchdog_closed(watchdog, duplicate)
+
+    def test_failed_connection_construction_cancels_watchdog(self):
+        interruption = KeyboardInterrupt("interrupted constructor")
+        captured = []
+
+        def interrupt(*args, watchdog, **kwargs):
+            self.addCleanup(watchdog.cancel)
+            captured.append(watchdog)
+            raise interruption
+
+        with patch(
+            "authentik.lib.utils.untrusted_fetch.transport._PinnedHTTPSConnection", new=interrupt
+        ):
+            with self.assertRaises(KeyboardInterrupt) as raised:
+                self.fetcher().fetch(self.url, max_bytes=1024)
+        self.assertIs(raised.exception, interruption)
+        (watchdog,) = captured
+        self.assertTrue(watchdog._timer.finished.is_set())
+        watchdog._timer.join(timeout=2)
+        self.assertFalse(watchdog._timer.is_alive())
+
+    def test_fired_watchdog_closes_duplicate_without_cancellation(self):
+        with socket.socket() as sock:
+            watchdog = _Watchdog(Deadline(5))
+            self.addCleanup(watchdog.cancel)
+            watchdog.attach(sock)
+            duplicate = watchdog._sock
+            watchdog._fire()
+            self.assertTrue(watchdog.fired)
+            self.assertIsNone(watchdog._sock)
+            self.assertEqual(duplicate.fileno(), -1)
+
+    def test_attach_after_watchdog_fires_closes_duplicate(self):
+        with socket.socket() as sock:
+            watchdog = _Watchdog(Deadline(5))
+            self.addCleanup(watchdog.cancel)
+            watchdog._fire()
+            duplicate = sock.dup()
+            with patch.object(socket.socket, "dup", return_value=duplicate):
+                watchdog.attach(sock)
+            self.assertIsNone(watchdog._sock)
+            self.assertEqual(duplicate.fileno(), -1)
 
     def test_hostname_mismatch(self):
         transport = HTTPClientTransport(self.ssl_context())

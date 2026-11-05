@@ -1,8 +1,13 @@
 """Tests for the untrusted URL fetcher (policy and fetcher logic, no network)"""
 
 import gzip
+import socket
+import threading
+from concurrent.futures import Future
 from ipaddress import ip_address
+from time import monotonic
 from unittest import TestCase
+from unittest.mock import patch
 
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.untrusted_fetch import (
@@ -31,6 +36,11 @@ from authentik.lib.utils.untrusted_fetch.testing import (
     StaticResolver,
     mock_fetcher,
     use_fetcher,
+)
+from authentik.lib.utils.untrusted_fetch.transport import (
+    MAX_RESOLVED_ADDRESSES,
+    Deadline,
+    SystemResolver,
 )
 
 URL = "https://client.example.com/oauth/metadata.json"
@@ -86,6 +96,183 @@ PRIVATE = [
     "64:ff9b::a00:1",
     "2002:a00:1::1",
 ]
+
+
+class TestSystemResolver(TestCase):
+    """Real executor lifecycle with deterministic, event-blocked DNS work"""
+
+    def setUp(self):
+        self.resolver = SystemResolver(max_workers=1)
+        self.entered = threading.Event()
+        self.release = threading.Event()
+        self.addCleanup(self.shutdown)
+        self.addCleanup(self.release.set)
+
+    def shutdown(self):
+        self.resolver._executor.shutdown(wait=True)
+        self.assertTrue(all(not worker.is_alive() for worker in self.resolver._executor._threads))
+
+    def answer(self, addresses=(PUBLIC_V4,)):
+        return [
+            (socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP, "", (address, 443))
+            for address in addresses
+        ]
+
+    def blocked_lookup(self, *args, **kwargs):
+        self.entered.set()
+        if not self.release.wait(5):
+            raise AssertionError("Blocked resolver was not released")
+        return self.answer()
+
+    def assert_capacity_recovers(self):
+        self.release.set()
+        self.assertTrue(self.resolver._slots.acquire(timeout=2))
+        self.resolver._slots.release()
+        self.assertEqual(
+            self.resolver.resolve("client.example.com", 443, Deadline(2)),
+            [ip_address(PUBLIC_V4)],
+        )
+
+    def assert_no_new_submissions(self, submit, queued):
+        start = monotonic()
+        for _ in range(5):
+            with self.assertRaises(DeadlineExceeded):
+                self.resolver.resolve("client.example.com", 443, Deadline(0.01))
+        self.assertLess(monotonic() - start, 2)
+        self.assertEqual(submit.call_count, 1)
+        self.assertEqual(self.resolver._executor._work_queue.qsize(), queued)
+        self.assertFalse(self.resolver._slots.acquire(blocking=False))
+
+    def test_running_timeout_retains_capacity(self):
+        with (
+            patch("socket.getaddrinfo", side_effect=self.blocked_lookup) as lookup,
+            patch.object(
+                self.resolver._executor, "submit", wraps=self.resolver._executor.submit
+            ) as submit,
+        ):
+            with self.assertRaises(DeadlineExceeded):
+                self.resolver.resolve("client.example.com", 443, Deadline(0.05))
+            self.assertTrue(self.entered.wait(2))
+            self.assert_no_new_submissions(submit, queued=0)
+            self.assertEqual(lookup.call_count, 1)
+            self.assert_capacity_recovers()
+
+    def test_queued_timeout_does_not_accumulate_cancelled_work(self):
+        blocker = self.resolver._executor.submit(self.blocked_lookup)
+        self.assertTrue(self.entered.wait(2))
+        with (
+            patch("socket.getaddrinfo", return_value=self.answer()) as lookup,
+            patch.object(
+                self.resolver._executor, "submit", wraps=self.resolver._executor.submit
+            ) as submit,
+        ):
+            with self.assertRaises(DeadlineExceeded):
+                self.resolver.resolve("client.example.com", 443, Deadline(0.01))
+            self.assert_no_new_submissions(submit, queued=1)
+            lookup.assert_not_called()
+            self.assert_capacity_recovers()
+            blocker.result(timeout=2)
+            self.assertEqual(lookup.call_count, 2)
+
+    def test_running_interruption_retains_capacity_and_fetch_slot_recovers(self):
+        interruption = KeyboardInterrupt("cancelled fetch")
+        fetcher = UntrustedURLFetcher(
+            resolver=self.resolver,
+            transport=MockTransport({URL: MockResponse(body=b"{}")}),
+            max_concurrency=1,
+        )
+
+        def interrupt_result(future, timeout=None):
+            self.assertTrue(self.entered.wait(2))
+            raise interruption
+
+        with (
+            patch("socket.getaddrinfo", side_effect=self.blocked_lookup),
+            patch.object(
+                self.resolver._executor, "submit", wraps=self.resolver._executor.submit
+            ) as submit,
+        ):
+            with patch.object(Future, "result", new=interrupt_result):
+                with self.assertRaises(KeyboardInterrupt) as raised:
+                    fetcher.fetch(URL, max_bytes=1024)
+            self.assertIs(raised.exception, interruption)
+            self.assertTrue(fetcher._slots.acquire(blocking=False))
+            fetcher._slots.release()
+            self.assert_no_new_submissions(submit, queued=0)
+            self.assert_capacity_recovers()
+            self.assertEqual(fetcher.fetch(URL, max_bytes=1024).content, b"{}")
+
+    def test_queued_interruption_retains_capacity(self):
+        blocker = self.resolver._executor.submit(self.blocked_lookup)
+        self.assertTrue(self.entered.wait(2))
+        interruption = BaseException("cancelled queued lookup")
+        with (
+            patch("socket.getaddrinfo", return_value=self.answer()) as lookup,
+            patch.object(
+                self.resolver._executor, "submit", wraps=self.resolver._executor.submit
+            ) as submit,
+        ):
+            with patch.object(Future, "result", side_effect=interruption):
+                with self.assertRaises(BaseException) as raised:
+                    self.resolver.resolve("client.example.com", 443, Deadline(2))
+            self.assertIs(raised.exception, interruption)
+            self.assert_no_new_submissions(submit, queued=1)
+            lookup.assert_not_called()
+            self.assert_capacity_recovers()
+            blocker.result(timeout=2)
+            self.assertEqual(lookup.call_count, 2)
+
+    def test_submission_failure_releases_capacity(self):
+        interruption = KeyboardInterrupt("interrupted submit")
+        with patch.object(self.resolver._executor, "submit", side_effect=interruption):
+            with self.assertRaises(KeyboardInterrupt) as raised:
+                self.resolver.resolve("client.example.com", 443, Deadline(2))
+        self.assertIs(raised.exception, interruption)
+        with patch("socket.getaddrinfo", return_value=self.answer()):
+            self.assert_capacity_recovers()
+
+    def test_expired_deadline_never_submits(self):
+        with patch.object(self.resolver._executor, "submit") as submit:
+            with self.assertRaises(DeadlineExceeded):
+                self.resolver.resolve("client.example.com", 443, Deadline(0))
+        submit.assert_not_called()
+        with patch("socket.getaddrinfo", return_value=self.answer()):
+            self.assert_capacity_recovers()
+
+    def test_lookup_failure_releases_capacity(self):
+        with patch("socket.getaddrinfo", side_effect=socket.gaierror("no answer")):
+            with self.assertRaises(ResolutionError):
+                self.resolver.resolve("client.example.com", 443, Deadline(2))
+        with patch("socket.getaddrinfo", return_value=self.answer()):
+            self.assert_capacity_recovers()
+
+    def test_oversized_answer_rejected_before_connect(self):
+        public = [f"93.184.215.{index + 1}" for index in range(MAX_RESOLVED_ADDRESSES)]
+        transport = MockTransport({URL: MockResponse(body=b"{}")})
+        fetcher = UntrustedURLFetcher(resolver=self.resolver, transport=transport)
+        for tail in ("127.0.0.1", "10.0.0.1", "93.184.215.100"):
+            with self.subTest(tail=tail):
+                with patch("socket.getaddrinfo", return_value=self.answer([*public, tail])):
+                    with self.assertRaises(ResolutionError):
+                        fetcher.fetch(URL, max_bytes=1024)
+        self.assertEqual(transport.requests, [])
+
+    def test_answer_limit_counts_distinct_addresses(self):
+        public = [f"93.184.215.{index + 1}" for index in range(MAX_RESOLVED_ADDRESSES)]
+        with patch("socket.getaddrinfo", return_value=self.answer(public * 2)):
+            self.assertEqual(
+                self.resolver.resolve("client.example.com", 443, Deadline(2)),
+                [ip_address(address) for address in public],
+            )
+
+    def test_blocked_address_at_limit_rejects_whole_answer(self):
+        public = [f"93.184.215.{index + 1}" for index in range(MAX_RESOLVED_ADDRESSES - 1)]
+        transport = MockTransport({URL: MockResponse(body=b"{}")})
+        fetcher = UntrustedURLFetcher(resolver=self.resolver, transport=transport)
+        with patch("socket.getaddrinfo", return_value=self.answer([*public, "127.0.0.1"])):
+            with self.assertRaises(BlockedDestination):
+                fetcher.fetch(URL, max_bytes=1024)
+        self.assertEqual(transport.requests, [])
 
 
 class TestDestinationPolicy(TestCase):

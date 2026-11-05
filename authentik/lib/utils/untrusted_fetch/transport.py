@@ -17,8 +17,9 @@ import threading
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FutureTimeoutError
+from contextlib import ExitStack
 from dataclasses import dataclass
-from http.client import HTTPException, HTTPResponse, HTTPSConnection
+from http.client import HTTPException, HTTPResponse, HTTPSConnection, IncompleteRead
 from ipaddress import IPv6Address, ip_address
 from time import monotonic
 from typing import Protocol
@@ -96,12 +97,19 @@ class Transport(Protocol):
 
 
 class SystemResolver:
-    """Resolve using the system resolver, bounded by the deadline"""
+    """Resolve within the deadline, with at most max_workers outstanding lookups.
+
+    Timed-out or interrupted callers leave their lookup running, retaining its
+    slot until completion. Never cancel queued futures: cancellation completes
+    the future without removing its work item from the executor's queue.
+    Answers with more than 16 distinct addresses are rejected, not truncated.
+    """
 
     def __init__(self, max_workers: int = 4):
         self._executor = ThreadPoolExecutor(
             max_workers=max_workers, thread_name_prefix="untrusted-fetch-dns"
         )
+        self._slots = threading.BoundedSemaphore(max_workers)
 
     def _lookup(self, hostname: str, port: int) -> list[IPAddress]:
         infos = socket.getaddrinfo(
@@ -118,20 +126,29 @@ class SystemResolver:
             addr = ip_address(raw)
             if addr not in addresses:
                 addresses.append(addr)
+                if len(addresses) > MAX_RESOLVED_ADDRESSES:
+                    raise ResolutionError("Hostname resolved to too many addresses")
         return addresses
 
     def resolve(self, hostname: str, port: int, deadline: Deadline) -> list[IPAddress]:
-        future = self._executor.submit(self._lookup, hostname, port)
+        if not self._slots.acquire(timeout=deadline.remaining()):
+            raise DeadlineExceeded("Timed out waiting for DNS capacity")
+        try:
+            deadline.remaining()
+            future = self._executor.submit(self._lookup, hostname, port)
+        except BaseException:
+            self._slots.release()
+            raise
+        future.add_done_callback(lambda completed: self._slots.release())
         try:
             addresses = future.result(timeout=deadline.remaining())
         except FutureTimeoutError as exc:
-            future.cancel()
             raise DeadlineExceeded("DNS resolution timed out") from exc
         except (OSError, UnicodeError, ValueError) as exc:
             raise ResolutionError("DNS resolution failed") from exc
         if not addresses:
             raise ResolutionError("Hostname did not resolve")
-        return addresses[:MAX_RESOLVED_ADDRESSES]
+        return addresses
 
 
 def default_ssl_context() -> ssl.SSLContext:
@@ -218,6 +235,9 @@ class _Watchdog:
             self._sock.shutdown(socket.SHUT_RDWR)
         except OSError:
             pass
+        finally:
+            self._sock.close()
+            self._sock = None
 
     def _fire(self) -> None:
         with self._lock:
@@ -250,7 +270,10 @@ class _HTTPClientResponse:
         if sock is not None:
             sock.settimeout(deadline.remaining())
         try:
-            return self._response.read1(max_bytes)
+            chunk = self._response.read1(max_bytes)
+            if not chunk and self._response.length:
+                raise IncompleteRead(b"", self._response.length)
+            return chunk
         except TimeoutError as exc:
             raise DeadlineExceeded("Read timed out") from exc
         except (OSError, HTTPException, ValueError) as exc:
@@ -278,40 +301,36 @@ class HTTPClientTransport:
     def open(self, target: ConnectTarget, deadline: Deadline) -> TransportResponse:
         timeout = deadline.remaining()
         watchdog = _Watchdog(deadline)
-        connection = _PinnedHTTPSConnection(
-            target.address,
-            target.hostname,
-            target.port,
-            self._ssl_context,
-            timeout=timeout,
-            watchdog=watchdog,
-        )
         try:
-            connection.connect()
-            connection.putrequest("GET", target.path, skip_host=True, skip_accept_encoding=True)
-            for name, value in target.headers:
-                connection.putheader(name, value)
-            connection.endheaders()
-            connection.sock.settimeout(deadline.remaining())
-            response = connection.getresponse()
-        except DeadlineExceeded:
-            watchdog.cancel()
-            connection.close()
-            raise
+            with ExitStack() as cleanup:
+                cleanup.callback(watchdog.cancel)
+                connection = _PinnedHTTPSConnection(
+                    target.address,
+                    target.hostname,
+                    target.port,
+                    self._ssl_context,
+                    timeout=timeout,
+                    watchdog=watchdog,
+                )
+                cleanup.callback(connection.close)
+                connection.connect()
+                connection.putrequest("GET", target.path, skip_host=True, skip_accept_encoding=True)
+                for name, value in target.headers:
+                    connection.putheader(name, value)
+                connection.endheaders()
+                connection.sock.settimeout(deadline.remaining())
+                response = connection.getresponse()
+                cleanup.callback(response.close)
+                result = _HTTPClientResponse(connection, response, watchdog)
+                cleanup.pop_all()
+                return result
         except (ConnectError, TLSError) as exc:
-            watchdog.cancel()
-            connection.close()
             if watchdog.fired or deadline.expired():
                 raise DeadlineExceeded("Deadline exceeded while connecting") from exc
             raise
         except TimeoutError as exc:
-            watchdog.cancel()
-            connection.close()
             raise DeadlineExceeded("Timed out waiting for response") from exc
         except (OSError, HTTPException, ValueError) as exc:
-            watchdog.cancel()
-            connection.close()
             if watchdog.fired or deadline.expired():
                 raise DeadlineExceeded("Deadline exceeded waiting for response") from exc
             raise ProtocolError("Invalid HTTP response") from exc
-        return _HTTPClientResponse(connection, response, watchdog)
