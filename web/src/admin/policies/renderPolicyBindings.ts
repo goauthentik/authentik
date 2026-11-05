@@ -9,7 +9,7 @@ import { defaultAllowedTypes } from "#admin/policies/BoundPoliciesList";
 import { type PolicyEngineMode } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 
 interface PolicyBindingProps {
     label?: string;
@@ -20,8 +20,14 @@ interface PolicyBindingProps {
     notices?: PolicyBindingNotice[];
 }
 
-export const BoundPoliciesExpansion: LitFC<PolicyBindingProps> = ({ label, description, allowed, target, mode, notices }) {
-
+export function renderBoundPoliciesExpansion({
+    label,
+    description,
+    allowed,
+    target,
+    mode,
+    notices,
+}: PolicyBindingProps) {
     return html`<ak-section-card
         label=${label ?? msg("Policy bindings", { id: "policy-bindings.label" })}
     >
