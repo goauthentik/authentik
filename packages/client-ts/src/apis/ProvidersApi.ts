@@ -1092,6 +1092,9 @@ export interface ProvidersSamlImportMetadataCreateRequest {
 }
 
 export interface ProvidersSamlListRequest {
+    /**
+     * ACS URL
+     */
     acsUrl?: string;
     assertionValidNotBefore?: string;
     assertionValidNotOnOrAfter?: string;
@@ -1436,6 +1439,9 @@ export interface ProvidersWsfedDestroyRequest {
 }
 
 export interface ProvidersWsfedListRequest {
+    /**
+     * ACS URL
+     */
     acsUrl?: string;
     assertionValidNotBefore?: string;
     assertionValidNotOnOrAfter?: string;

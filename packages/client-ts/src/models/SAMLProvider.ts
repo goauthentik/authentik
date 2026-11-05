@@ -17,6 +17,8 @@ import {
     EncryptionAlgorithmEnumFromJSON,
     EncryptionAlgorithmEnumToJSON,
 } from "./EncryptionAlgorithmEnum.js";
+import type { SAMLACSURL } from "./SAMLACSURL.js";
+import { SAMLACSURLFromJSON, SAMLACSURLToJSON } from "./SAMLACSURL.js";
 import type { SAMLBindingsEnum } from "./SAMLBindingsEnum.js";
 import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum.js";
 import type { SAMLLogoutMethods } from "./SAMLLogoutMethods.js";
@@ -87,7 +89,12 @@ export interface SAMLProvider {
      * Return internal model name
      */
     readonly metaModelName: string;
-    acsUrl: string;
+    acsUrls?: Array<SAMLACSURL>;
+    /**
+     * Deprecated, use acs_urls instead. URL of the default ACS URL. When set without acs_urls, only
+     * the default ACS URL is changed.
+     */
+    acsUrl?: string;
     /**
      * Single Logout Service URL where the logout response should be sent.
      */
@@ -286,13 +293,6 @@ export function instanceOfSAMLProvider(value: object): value is SAMLProvider {
     )
         return false;
     if (
-        (!("acsUrl" in (value as Record<string, any>)) &&
-            !("acs_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["acsUrl"] === undefined &&
-            (value as Record<string, any>)["acs_url"] === undefined)
-    )
-        return false;
-    if (
         (!("urlDownloadMetadata" in (value as Record<string, any>)) &&
             !("url_download_metadata" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["urlDownloadMetadata"] === undefined &&
@@ -386,7 +386,11 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         verboseName: json["verbose_name"],
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
-        acsUrl: json["acs_url"],
+        acsUrls:
+            json["acs_urls"] == null
+                ? undefined
+                : (json["acs_urls"] as Array<any>).map(SAMLACSURLFromJSON),
+        acsUrl: json["acs_url"] == null ? undefined : json["acs_url"],
         slsUrl: json["sls_url"] == null ? undefined : json["sls_url"],
         audience: json["audience"] == null ? undefined : json["audience"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
@@ -516,6 +520,10 @@ export function SAMLProviderToJSONTyped(
         authorization_flow: value["authorizationFlow"],
         invalidation_flow: value["invalidationFlow"],
         property_mappings: value["propertyMappings"],
+        acs_urls:
+            value["acsUrls"] == null
+                ? undefined
+                : (value["acsUrls"] as Array<any>).map(SAMLACSURLToJSON),
         acs_url: value["acsUrl"],
         sls_url: value["slsUrl"],
         audience: value["audience"],
