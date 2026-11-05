@@ -196,45 +196,11 @@ gen-build:  ## Generate schema.yml and blueprints/schema.json from Django model 
 gen-compose:
 	$(UV) run scripts/generate_compose.py
 
-# Release targets take the release being prepared, e.g. `version=2026.11.0`, and write into that
-# release family's partials under website/docs/releases/<year>/.
-release_family = $(word 1,$(subst ., ,$(version))).$(word 2,$(subst ., ,$(version)))
-release_partial = website/docs/releases/$(word 1,$(subst ., ,$(version)))/v$(release_family)/_$(1).mdx
-# The newest non-rc tag older than the given version.
-previous_release = $(shell { git tag --list 'version/*' | grep -vE 'rc[0-9]+$$' | sed 's|^version/||'; echo $(1); } | sort -uV | grep -B1 -xF '$(1)' | head -1)
-require_version = $(if $(filter 3,$(words $(subst ., ,$(version)))),,$(error Pass the release being prepared, e.g. `make $@ version=2026.11.0`))
-
 gen-changelog:  ## (Release) Write commits since the previous release into the release's changelog partial (`version=2026.11.0`)
-# These are best-effort guesses based on commit messages
-	$(require_version)
-	$(eval last_version := version/$(call previous_release,$(version)))
-	$(eval current_commit := $(shell git rev-parse HEAD))
-	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
-	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
-	{ grep -Eo 'cherry-pick (#[0-9]+)' merged_to_last || true; } | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
-	grep -vf cherry_picked_to_last merged_to_current | grep -vE '^- (ci:|website)' | sort > changelog.md
-	rm merged_to_current
-	rm merged_to_last
-	rm cherry_picked_to_last
-	node ./scripts/node/release-changelog.ts --version $(version) --output $(call release_partial,changelog) changelog.md
-	rm changelog.md
-	pnpm exec oxfmt --write $(call release_partial,changelog)
+	node ./scripts/node/release-changelog.ts changelog --version "$(version)"
 
 gen-diff:  ## (Release) Write the API schema diff against the previous release family into the release's API changes partial (`version=2026.11.0`)
-	$(require_version)
-	$(eval last_version := version/$(call previous_release,$(release_family).0))
-	git show ${last_version}:schema.yml > schema-old.yml
-	docker compose -f scripts/compose.yml run --rm --user "${UID}:${GID}" diff \
-		--markdown \
-		/local/diff.md \
-		/local/schema-old.yml \
-		/local/schema.yml
-	rm schema-old.yml
-	$(SED_INPLACE) 's/{/\&#123;/g' diff.md
-	$(SED_INPLACE) 's/}/\&#125;/g' diff.md
-	mkdir -p $(dir $(call release_partial,api-changes))
-	mv diff.md $(call release_partial,api-changes)
-	pnpm exec oxfmt --write $(call release_partial,api-changes)
+	node ./scripts/node/release-changelog.ts diff --version "$(version)"
 
 gen-client-go:  ## Build and install the authentik API for Golang
 	$(UV) run make -C "${PWD}/packages/client-go" build
