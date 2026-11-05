@@ -1,6 +1,6 @@
 import "#components/ak-switch-input";
 import "#components/ak-radio-input";
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/ak-array-input";
@@ -20,6 +20,7 @@ import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { RadioOption } from "#elements/forms/Radio";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
 import { JWEEncryptionKeyTypes, JWTSigningKeyTypes } from "#admin/common/certificate-key-types";
@@ -216,20 +217,23 @@ export function renderForm({
                     .errorMessages=${errors.clientId}
                 >
                 </ak-text-input>
-                <ak-secret-text-input
-                    name="clientSecret"
+                <ak-secret-search-input
+                    name="clientSecretRef"
                     label=${msg("Client Secret")}
-                    value=${ifDefined(
+                    value=${ifPresent(provider.clientSecretRef)}
+                    ?blankable=${!provider.pk}
+                    help=${
                         provider.pk
-                            ? provider.clientSecret
-                            : randomString(128, ascii_letters + digits),
-                    )}
-                    input-hint="code"
-                    plaintext
-                    ?revealed=${!provider.pk}
+                            ? msg("Secret the client authenticates with.", {
+                                  id: "provider.oauth2.form.secret.description.edit",
+                              })
+                            : msg(
+                                  "Secret the client authenticates with. Leave empty to create one for this provider.",
+                                  { id: "provider.oauth2.form.secret.description.create" },
+                              )
+                    }
                     ?hidden=${!showClientSecret}
-                >
-                </ak-secret-text-input>
+                ></ak-secret-search-input>
                 <ak-form-element-horizontal label=${msg("Grant Types")} required name="grantTypes">
                     <ak-checkbox-group
                         name="users"

@@ -39,6 +39,7 @@ from authentik.crypto.models import (
     generate_key_id,
     generate_key_id_legacy,
 )
+from authentik.crypto.secrets.tests.utils import create_test_secret
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
 from authentik.crypto.validators import TLS_KEY_TYPES, XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.lib.config import CONFIG
@@ -429,7 +430,7 @@ class TestCrypto(APITestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_key(),
+            client_secret_ref=create_test_secret(generate_key()),
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=keypair,
@@ -461,7 +462,7 @@ class TestCrypto(APITestCase):
         OAuth2Provider.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_key(),
+            client_secret_ref=create_test_secret(generate_key()),
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=keypair,
