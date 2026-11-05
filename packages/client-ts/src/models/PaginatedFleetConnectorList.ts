@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { FleetConnector } from "./FleetConnector";
-import { FleetConnectorFromJSON, FleetConnectorToJSON } from "./FleetConnector";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { FleetConnector } from "./FleetConnector.js";
+import { FleetConnectorFromJSON, FleetConnectorToJSON } from "./FleetConnector.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

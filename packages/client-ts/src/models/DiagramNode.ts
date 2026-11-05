@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { DiagramNodeTypeEnum } from "./DiagramNodeTypeEnum";
-import { DiagramNodeTypeEnumFromJSON } from "./DiagramNodeTypeEnum";
+import type { DiagramNodeTypeEnum } from "./DiagramNodeTypeEnum.js";
+import { DiagramNodeTypeEnumFromJSON } from "./DiagramNodeTypeEnum.js";
 
 /**
  * Base serializer class which doesn't implement create/update methods

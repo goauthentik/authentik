@@ -256,16 +256,18 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signing_kp",
             "verification_kp",
             "encryption_kp",
+            "encryption_algorithm",
             "sign_assertion",
             "sign_response",
             "sign_logout_request",
             "sign_logout_response",
-            "honor_force_authn",
+            "ignore_force_authn",
             "sp_binding",
             "sls_binding",
             "logout_method",
             "default_relay_state",
             "default_name_id_policy",
+            "jwt_federation_providers",
             "url_download_metadata",
             "url_issuer",
             "url_unified",
@@ -279,6 +281,8 @@ class SAMLProviderSerializer(ProviderSerializer):
         extra_kwargs = {
             **ProviderSerializer.Meta.extra_write_kwargs,
             "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "verification_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "encryption_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
         }
 
 
@@ -406,7 +410,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))
             raise ValidationError(
-                _("Failed to import Metadata: {messages}".format_map({"messages": str(exc)})),
+                _("Failed to import Metadata: {messages}").format(messages=str(exc)),
             ) from None
 
     @permission_required(

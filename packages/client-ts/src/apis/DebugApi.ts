@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import { type ServerLogRequest, ServerLogRequestToJSON } from "../models/ServerLogRequest";
-import * as runtime from "../runtime";
+import { type ServerLogRequest, ServerLogRequestToJSON } from "../models/ServerLogRequest.js";
+import * as runtime from "../runtime.js";
 
 export interface DebugLogCreateRequest {
     serverLogRequest: ServerLogRequest;

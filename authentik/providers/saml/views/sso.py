@@ -78,7 +78,7 @@ class SAMLSSOView(PolicyAccessView):
         auth_n_request: AuthNRequest | None = self.plan_context.get(
             PLAN_CONTEXT_SAML_AUTH_N_REQUEST
         )
-        if auth_n_request and auth_n_request.force_authn and self.provider.honor_force_authn:
+        if auth_n_request and auth_n_request.force_authn and not self.provider.ignore_force_authn:
             reauth_response = self.check_force_authn(request)
             if reauth_response:
                 return reauth_response
@@ -145,7 +145,7 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
         """Handle REDIRECT bindings"""
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse_detached(
@@ -181,7 +181,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
             payload = self.request.session.pop(SESSION_KEY_POST)
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("SAML payload missing")
-            return bad_request_message(self.request, "The SAML request payload is missing.")
+            return bad_request_message(self.request, _("The SAML request payload is missing."))
 
         try:
             auth_n_request = AuthNRequestParser(self.provider).parse(

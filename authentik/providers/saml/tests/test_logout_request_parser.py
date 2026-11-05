@@ -1,12 +1,16 @@
 """logout request tests"""
 
+from base64 import b64encode
+
 from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_TRANSIENT
+from authentik.common.saml.exceptions import ERROR_CANNOT_DECODE_REQUEST, CannotHandleAssertion
 from authentik.common.saml.parsers.logout_request import LogoutRequestParser
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.sources.saml.models import SAMLSource
 
 GET_LOGOUT_REQUEST = (
@@ -66,3 +70,29 @@ class TestLogoutRequest(TestCase):
         # The POST request has an empty NameID element with transient format
         self.assertIsNone(request.name_id)  # Empty NameID element returns None
         self.assertEqual(request.name_id_format, SAML_NAME_ID_FORMAT_TRANSIENT)
+
+    def test_malformed(self):
+        """Test that malformed logout requests are rejected with a handled error"""
+        missing_id = (
+            '<samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'Version="2.0" IssueInstant="2022-02-21T22:50:33.999Z"/>'
+        )
+        parser = LogoutRequestParser()
+        for payload in ("this is not xml", missing_id):
+            with self.subTest(payload=payload, binding="post"):
+                with self.assertRaisesMessage(
+                    CannotHandleAssertion, str(ERROR_CANNOT_DECODE_REQUEST)
+                ):
+                    parser.parse(b64encode(payload.encode()).decode())
+            with self.subTest(payload=payload, binding="redirect"):
+                with self.assertRaisesMessage(
+                    CannotHandleAssertion, str(ERROR_CANNOT_DECODE_REQUEST)
+                ):
+                    parser.parse_detached(deflate_and_base64_encode(payload))
+
+        for binding, method in (("post", parser.parse), ("redirect", parser.parse_detached)):
+            with self.subTest(payload="not base64", binding=binding):
+                with self.assertRaisesMessage(
+                    CannotHandleAssertion, str(ERROR_CANNOT_DECODE_REQUEST)
+                ):
+                    method("%%%not-base64%%%", None)

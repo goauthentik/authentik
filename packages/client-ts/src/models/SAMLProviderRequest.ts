@@ -10,19 +10,27 @@
  * Do not edit the class manually.
  */
 
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
-import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
-import type { SAMLLogoutMethods } from "./SAMLLogoutMethods";
-import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum.js";
+import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum.js";
+import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum.js";
+import {
+    EncryptionAlgorithmEnumFromJSON,
+    EncryptionAlgorithmEnumToJSON,
+} from "./EncryptionAlgorithmEnum.js";
+import type { SAMLBindingsEnum } from "./SAMLBindingsEnum.js";
+import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum.js";
+import type { SAMLLogoutMethods } from "./SAMLLogoutMethods.js";
+import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods.js";
+import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum.js";
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from "./SAMLNameIDPolicyEnum.js";
+import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum.js";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
+} from "./SignatureAlgorithmEnum.js";
 
 /**
  * SAMLProvider Serializer
@@ -103,16 +111,20 @@ export interface SAMLProviderRequest {
      * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
+    /**
+     * Block cipher used to encrypt the assertion.
+     */
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     signAssertion?: boolean;
     signResponse?: boolean;
     signLogoutRequest?: boolean;
     signLogoutResponse?: boolean;
     /**
-     * When enabled, a ForceAuthn attribute set by the Service Provider on an AuthnRequest requires
-     * the user to re-authenticate. When disabled, the attribute is ignored and an existing session
-     * is used.
+     * When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is
+     * ignored and an existing session is used. When disabled, ForceAuthn requires the user to
+     * re-authenticate.
      */
-    honorForceAuthn?: boolean;
+    ignoreForceAuthn?: boolean;
     /**
      * This determines how authentik sends the response back to the Service Provider.
      */
@@ -133,6 +145,11 @@ export interface SAMLProviderRequest {
      */
     defaultRelayState?: string;
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
+    /**
+     * OAuth2 providers which can exchange their JWTs for a SAML Response of this provider via token
+     * exchange.
+     */
+    jwtFederationProviders?: Array<number>;
 }
 
 /**
@@ -240,13 +257,18 @@ export function SAMLProviderRequestFromJSONTyped(
                 : json["encryption_kp"] === null
                   ? null
                   : json["encryption_kp"],
+        encryptionAlgorithm:
+            json["encryption_algorithm"] == null
+                ? undefined
+                : EncryptionAlgorithmEnumFromJSON(json["encryption_algorithm"]),
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signResponse: json["sign_response"] == null ? undefined : json["sign_response"],
         signLogoutRequest:
             json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
         signLogoutResponse:
             json["sign_logout_response"] == null ? undefined : json["sign_logout_response"],
-        honorForceAuthn: json["honor_force_authn"] == null ? undefined : json["honor_force_authn"],
+        ignoreForceAuthn:
+            json["ignore_force_authn"] == null ? undefined : json["ignore_force_authn"],
         spBinding:
             json["sp_binding"] == null ? undefined : SAMLBindingsEnumFromJSON(json["sp_binding"]),
         slsBinding:
@@ -261,6 +283,8 @@ export function SAMLProviderRequestFromJSONTyped(
             json["default_name_id_policy"] == null
                 ? undefined
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
+        jwtFederationProviders:
+            json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
     };
 }
 
@@ -296,15 +320,17 @@ export function SAMLProviderRequestToJSONTyped(
         signing_kp: value["signingKp"],
         verification_kp: value["verificationKp"],
         encryption_kp: value["encryptionKp"],
+        encryption_algorithm: EncryptionAlgorithmEnumToJSON(value["encryptionAlgorithm"]),
         sign_assertion: value["signAssertion"],
         sign_response: value["signResponse"],
         sign_logout_request: value["signLogoutRequest"],
         sign_logout_response: value["signLogoutResponse"],
-        honor_force_authn: value["honorForceAuthn"],
+        ignore_force_authn: value["ignoreForceAuthn"],
         sp_binding: SAMLBindingsEnumToJSON(value["spBinding"]),
         sls_binding: SAMLBindingsEnumToJSON(value["slsBinding"]),
         logout_method: SAMLLogoutMethodsToJSON(value["logoutMethod"]),
         default_relay_state: value["defaultRelayState"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
+        jwt_federation_providers: value["jwtFederationProviders"],
     };
 }

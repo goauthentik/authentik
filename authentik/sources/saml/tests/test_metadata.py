@@ -7,7 +7,14 @@ from defusedxml import ElementTree
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
 
-from authentik.common.saml.constants import NS_MAP
+from authentik.common.saml.constants import (
+    AES128_CBC,
+    AES128_GCM,
+    AES256_CBC,
+    AES256_GCM,
+    NS_MAP,
+    RSA_OAEP_MGF1P,
+)
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.lib.xml import lxml_from_string
@@ -62,6 +69,46 @@ class TestMetadataProcessor(TestCase):
         xml = MetadataProcessor(self.source, request).build_entity_descriptor()
         metadata = ElementTree.fromstring(xml)
         self.assertEqual(metadata.attrib["entityID"], "authentik")
+
+    def test_metadata_encryption_methods(self):
+        """Test that the encryption KeyDescriptor advertises supported algorithms by preference"""
+        request = self.factory.get("/")
+        metadata = lxml_from_string(
+            MetadataProcessor(self.source, request).build_entity_descriptor()
+        )
+        self.assertEqual(
+            metadata.xpath(
+                "/md:EntityDescriptor/md:SPSSODescriptor/md:KeyDescriptor[@use='encryption']"
+                "/md:EncryptionMethod/@Algorithm",
+                namespaces=NS_MAP,
+            ),
+            [AES256_GCM, AES128_GCM, AES256_CBC, AES128_CBC, RSA_OAEP_MGF1P],
+        )
+        # The signing KeyDescriptor must not advertise encryption algorithms
+        self.assertEqual(
+            metadata.xpath(
+                "/md:EntityDescriptor/md:SPSSODescriptor/md:KeyDescriptor[@use='signing']"
+                "/md:EncryptionMethod",
+                namespaces=NS_MAP,
+            ),
+            [],
+        )
+
+    def test_metadata_without_encryption(self):
+        """Test that no encryption KeyDescriptor is emitted without an encryption keypair"""
+        self.source.encryption_kp = None
+        self.source.save()
+        request = self.factory.get("/")
+        metadata = lxml_from_string(
+            MetadataProcessor(self.source, request).build_entity_descriptor()
+        )
+        self.assertEqual(
+            metadata.xpath(
+                "/md:EntityDescriptor/md:SPSSODescriptor/md:KeyDescriptor[@use='encryption']",
+                namespaces=NS_MAP,
+            ),
+            [],
+        )
 
     def test_metadata_certificate_chain(self):
         """Test that only the leaf certificate of a certificate chain is included"""

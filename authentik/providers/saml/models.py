@@ -10,6 +10,10 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
+    AES128_CBC,
+    AES128_GCM,
+    AES256_CBC,
+    AES256_GCM,
     DSA_SHA1,
     ECDSA_SHA1,
     ECDSA_SHA256,
@@ -39,6 +43,7 @@ from authentik.lib.models import (
     ExpiringModel,
     InternallyManagedMixin,
     SerializerModel,
+    SimpleThroughModel,
 )
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.models import SAMLNameIDPolicy
@@ -238,6 +243,16 @@ class SAMLProvider(Provider):
         verbose_name=_("Encryption Keypair"),
         related_name="+",
     )
+    encryption_algorithm = models.TextField(
+        choices=(
+            (AES128_CBC, _("AES128-CBC")),
+            (AES256_CBC, _("AES256-CBC")),
+            (AES128_GCM, _("AES128-GCM")),
+            (AES256_GCM, _("AES256-GCM")),
+        ),
+        default=AES256_GCM,
+        help_text=_("Block cipher used to encrypt the assertion."),
+    )
 
     default_relay_state = models.TextField(
         default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
@@ -251,12 +266,24 @@ class SAMLProvider(Provider):
     sign_logout_request = models.BooleanField(default=False)
     sign_logout_response = models.BooleanField(default=False)
 
-    honor_force_authn = models.BooleanField(
-        default=True,
+    ignore_force_authn = models.BooleanField(
+        default=False,
         help_text=_(
-            "When enabled, a ForceAuthn attribute set by the Service Provider on an "
-            "AuthnRequest requires the user to re-authenticate. When disabled, the "
-            "attribute is ignored and an existing session is used."
+            "When enabled, the ForceAuthn attribute set by the Service Provider on an "
+            "AuthnRequest is ignored and an existing session is used. When disabled, "
+            "ForceAuthn requires the user to re-authenticate."
+        ),
+    )
+
+    jwt_federation_providers = models.ManyToManyField(
+        "authentik_providers_oauth2.OAuth2Provider",
+        blank=True,
+        default=None,
+        related_name="saml_federation_providers",
+        through="SAMLProviderJWTFederationProvider",
+        help_text=_(
+            "OAuth2 providers which can exchange their JWTs for a SAML Response "
+            "of this provider via token exchange."
         ),
     )
 
@@ -273,7 +300,7 @@ class SAMLProvider(Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/saml.png")
+        return static("authentik/sources/saml/light.png")
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -291,6 +318,24 @@ class SAMLProvider(Provider):
     class Meta:
         verbose_name = _("SAML Provider")
         verbose_name_plural = _("SAML Providers")
+
+
+class SAMLProviderJWTFederationProvider(SimpleThroughModel):
+    saml_provider = models.ForeignKey(SAMLProvider, on_delete=models.CASCADE)
+    oauth2_provider = models.ForeignKey(
+        "authentik_providers_oauth2.OAuth2Provider", on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = (("saml_provider", "oauth2_provider"),)
+        verbose_name = _("SAML Provider JWT Federation Provider")
+        verbose_name_plural = _("SAML Provider JWT Federation Providers")
+
+    def __str__(self):
+        return (
+            f"SAMLProviderJWTFederationProvider for SAMLProvider {self.saml_provider_id} "
+            f"and OAuth2Provider {self.oauth2_provider_id}."
+        )
 
 
 class SAMLPropertyMapping(PropertyMapping):
@@ -327,7 +372,7 @@ class SAMLProviderImportModel(CreatableType, Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/saml.png")
+        return static("authentik/sources/saml/light.png")
 
     class Meta:
         abstract = True
