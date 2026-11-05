@@ -1,4 +1,4 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
 import { aki } from "#common/api/client";
@@ -58,11 +58,11 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
             >
             </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Kubeconfig")} name="kubeconfig">
-                <ak-codemirror
+                <ak-code-editor
                     mode="yaml"
                     value="${YAML.stringify(this.instance?.kubeconfig ?? {})}"
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
