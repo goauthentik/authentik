@@ -1,13 +1,16 @@
 """v1 blueprints tasks"""
 
 from dataclasses import asdict, dataclass, field
+from datetime import timedelta
 from pathlib import Path
 from sys import platform
+from typing import Any
 from uuid import UUID
 
+import pglock
 from dacite.core import from_dict
 from django.conf import settings
-from django.db import DatabaseError, InternalError, ProgrammingError
+from django.db import DEFAULT_DB_ALIAS, DatabaseError, InternalError, ProgrammingError, connection
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -36,7 +39,8 @@ from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.events.logs import capture_logs
 from authentik.events.utils import sanitize_dict
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, advisory_lock_db_alias, postgresql_direct_db_enabled
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.tasks.apps import PRIORITY_HIGH
 from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.schedules.models import Schedule
@@ -100,7 +104,11 @@ class BlueprintEventHandler(FileSystemEventHandler):
         rel_path = str(path.relative_to(root))
         for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
             LOGGER.debug("modified blueprint file, starting apply", instance=instance)
-            apply_blueprint.send_with_options(args=(instance.pk,), rel_obj=instance)
+            # A single change can raise several events, and the same change is seen by
+            # every worker's watcher, so only apply if the content changed
+            apply_blueprint.send_with_options(
+                args=(instance.pk,), kwargs={"only_if_changed": True}, rel_obj=instance
+            )
 
 
 @actor(
@@ -144,21 +152,61 @@ def blueprints_find() -> list[BlueprintFile]:
     return blueprints
 
 
+# Largest value Postgres accepts for `lock_timeout`
+MAX_LOCK_TIMEOUT = timedelta(milliseconds=2**31 - 1)
+
+
+def _blueprint_lock_timeout() -> timedelta:
+    """How long to wait for a blueprint lock.
+
+    Waits for at most half the task time limit, so the wait times out before the time
+    limit can interrupt the task while the lock is being granted, which would leave the
+    lock held. Behind a transaction pooler without a direct connection, the lock and its
+    timeout can land on different server connections, so do not wait at all there."""
+    if CONFIG.get_bool("postgresql.use_pgbouncer", False) and not postgresql_direct_db_enabled():
+        return timedelta(0)
+    time_limit = timedelta_from_string(CONFIG.get("worker.task_default_time_limit"))
+    return min(time_limit / 2, MAX_LOCK_TIMEOUT)
+
+
+def _blueprint_lock(name: str) -> pglock.advisory:
+    """Session-level advisory lock serializing blueprint work across worker threads and
+    replicas. Waits instead of skipping where it can, as the holder may be working from
+    content older than the change that triggered the waiting task. A task that gives up
+    leaves the change to the next discovery."""
+    return pglock.advisory(
+        lock_id=f"goauthentik.io/{connection.schema_name}/blueprints/{name}",
+        timeout=_blueprint_lock_timeout(),
+        side_effect=pglock.Return,
+        using=advisory_lock_db_alias(),
+    )
+
+
 @actor(description=_("Find blueprints and check if they need to be created in the database."))
 def blueprints_discovery(path: str | None = None):
     self = CurrentTask.get_task()
-    count = 0
-    for blueprint in blueprints_find():
-        if path and blueprint.path != path:
-            continue
-        check_blueprint_v1_file(blueprint)
-        count += 1
+    # Discovery runs on every process start, so on a fresh install several runs can
+    # otherwise create the same instance at once
+    with _blueprint_lock("discovery") as acquired:
+        if not acquired:
+            self.warning("Timed out waiting for another blueprint discovery to finish")
+            return
+        count = 0
+        for blueprint in blueprints_find():
+            if path and blueprint.path != path:
+                continue
+            check_blueprint_v1_file(blueprint)
+            count += 1
     self.info(f"Successfully imported {count} files.")
 
 
 def check_blueprint_v1_file(blueprint: BlueprintFile):
     """Check if blueprint should be imported"""
-    instance: BlueprintInstance = BlueprintInstance.objects.filter(path=blueprint.path).first()
+    # Read from the primary, so an instance created by a discovery that finished while
+    # this one waited for the lock is not missed on a lagging replica
+    instance: BlueprintInstance = (
+        BlueprintInstance.objects.using(DEFAULT_DB_ALIAS).filter(path=blueprint.path).first()
+    )
     if (
         blueprint.meta
         and blueprint.meta.labels.get(LABEL_AUTHENTIK_INSTANTIATE, "").lower() == "false"
@@ -180,44 +228,86 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
         )
     if instance.last_applied_hash != blueprint.hash:
         LOGGER.info("Applying blueprint due to changed file", instance=instance, path=instance.path)
-        apply_blueprint.send_with_options(args=(instance.pk,), rel_obj=instance)
+    elif instance.status == BlueprintInstanceStatus.ERROR:
+        LOGGER.info("Retrying failed blueprint", instance=instance, path=instance.path)
+    else:
+        return
+    apply_blueprint.send_with_options(
+        args=(instance.pk,), kwargs={"only_if_changed": True}, rel_obj=instance
+    )
+
+
+def _save_result(instance: BlueprintInstance, status: BlueprintInstanceStatus, **fields: Any):
+    """Write the outcome of an apply. Only the columns an apply owns are written, so this
+    neither reverts changes made to the instance while the apply ran nor re-creates an
+    instance deleted in the meantime, which a full `save()` would do."""
+    instance.status = status
+    for key, value in fields.items():
+        setattr(instance, key, value)
+    BlueprintInstance.objects.filter(pk=instance.pk).update(
+        status=status, metadata=instance.metadata, last_updated=now(), **fields
+    )
 
 
 @actor(description=_("Apply single blueprint."))
-def apply_blueprint(instance_pk: UUID):
+def apply_blueprint(instance_pk: UUID, only_if_changed: bool = False):
+    """Apply a blueprint instance. With `only_if_changed`, skip it if the current
+    content was already applied successfully, which collapses duplicate requests."""
     self = CurrentTask.get_task()
     self.set_uid(str(instance_pk))
-    instance: BlueprintInstance | None = None
+    # Concurrent applies of the same instance would create the same objects twice and
+    # overwrite each other's result
+    with _blueprint_lock(f"apply/{instance_pk}") as acquired:
+        if not acquired:
+            self.warning("Timed out waiting for another apply of this blueprint to finish")
+            return
+        _apply_blueprint(instance_pk, only_if_changed)
+
+
+def _apply_blueprint(instance_pk: UUID, only_if_changed: bool):
+    self = CurrentTask.get_task()
+    # Read the instance only once the lock is held, and from the primary rather than a
+    # possibly lagging replica, so it reflects any apply that finished while this one waited
+    instance: BlueprintInstance | None = (
+        BlueprintInstance.objects.using(DEFAULT_DB_ALIAS).filter(pk=instance_pk).first()
+    )
+    if not instance:
+        self.warning(f"Could not find blueprint {instance_pk}, skipping")
+        return
+    self.set_uid(slugify(instance.name))
+    if not instance.enabled:
+        self.info(f"Blueprint {instance.name} is disabled, skipping")
+        return
     try:
-        instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
-        if not instance:
-            self.warning(f"Could not find blueprint {instance_pk}, skipping")
-            return
-        self.set_uid(slugify(instance.name))
-        if not instance.enabled:
-            self.info(f"Blueprint {instance.name} is disabled, skipping")
-            return
         blueprint_content = instance.retrieve()
         file_hash = blueprint_hash(blueprint_content)
+        if (
+            only_if_changed
+            and instance.status == BlueprintInstanceStatus.SUCCESSFUL
+            and instance.last_applied_hash == file_hash
+        ):
+            self.info(f"Blueprint {instance.name} is already applied, skipping")
+            return
         importer = Importer.from_string(blueprint_content, instance.context)
         if importer.blueprint.metadata:
             instance.metadata = asdict(importer.blueprint.metadata)
         valid, logs = importer.validate()
         if not valid:
-            instance.status = BlueprintInstanceStatus.ERROR
-            instance.save()
+            _save_result(instance, BlueprintInstanceStatus.ERROR)
             self.logs(logs)
             return
         with capture_logs() as logs:
             applied = importer.apply()
             if not applied:
-                instance.status = BlueprintInstanceStatus.ERROR
-                instance.save()
+                _save_result(instance, BlueprintInstanceStatus.ERROR)
                 self.logs(logs)
                 return
-        instance.status = BlueprintInstanceStatus.SUCCESSFUL
-        instance.last_applied_hash = file_hash
-        instance.last_applied = now()
+        _save_result(
+            instance,
+            BlueprintInstanceStatus.SUCCESSFUL,
+            last_applied_hash=file_hash,
+            last_applied=now(),
+        )
     except (
         OSError,
         DatabaseError,
@@ -226,12 +316,8 @@ def apply_blueprint(instance_pk: UUID):
         BlueprintRetrievalFailed,
         EntryInvalidError,
     ) as exc:
-        if instance:
-            instance.status = BlueprintInstanceStatus.ERROR
+        _save_result(instance, BlueprintInstanceStatus.ERROR)
         self.error(exc)
-    finally:
-        if instance:
-            instance.save()
 
 
 @actor(description=_("Remove blueprints which couldn't be fetched."))
