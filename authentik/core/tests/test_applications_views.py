@@ -60,6 +60,20 @@ class TestApplicationsViews(APIFlowTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, f"https://goauthentik.io/{self.user.username}")
 
+    def test_check_redirect_auth_relative(self):
+        """Test redirect to a launch URL relative to the current host"""
+        self.client.force_login(self.user)
+        self.app.meta_launch_url = "/app/%(username)s"
+        self.app.save()
+        response = self.client.get(
+            reverse(
+                "authentik_core:application-launch",
+                kwargs={"application_slug": self.app.slug},
+            ),
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f"/app/{self.user.username}")
+
     def test_redirect_application_auth_flow(self):
         """Test launching an application with a provider and an authentication flow set"""
         self.client.logout()

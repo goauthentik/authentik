@@ -49,8 +49,8 @@ from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,
-    DomainlessFormattedURLValidator,
     ExpiringModel,
+    LaunchURLValidator,
     SerializerModel,
     SimpleThroughModel,
 )
@@ -765,9 +765,7 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
         "Provider", null=True, blank=True, default=None, on_delete=models.SET_DEFAULT
     )
 
-    meta_launch_url = models.TextField(
-        default="", blank=True, validators=[DomainlessFormattedURLValidator()]
-    )
+    meta_launch_url = models.TextField(default="", blank=True, validators=[LaunchURLValidator()])
 
     open_in_new_tab = models.BooleanField(
         default=False, help_text=_("Open launch URL in a new browser tab or window.")
