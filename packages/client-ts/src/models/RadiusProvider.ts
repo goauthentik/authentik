@@ -73,7 +73,7 @@ export interface RadiusProvider {
     /**
      * Shared secret between clients and server to hash packets.
      */
-    sharedSecret?: string;
+    sharedSecretRef?: string | null;
     readonly outpostSet: Array<string>;
     /**
      * When enabled, code-based multi-factor authentication can be used by appending a semicolon and
@@ -197,7 +197,12 @@ export function RadiusProviderFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
-        sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
+        sharedSecretRef:
+            json["shared_secret_ref"] === undefined
+                ? undefined
+                : json["shared_secret_ref"] === null
+                  ? null
+                  : json["shared_secret_ref"],
         outpostSet: json["outpost_set"],
         mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
         certificate:
@@ -240,7 +245,7 @@ export function RadiusProviderToJSONTyped(
         invalidation_flow: value["invalidationFlow"],
         property_mappings: value["propertyMappings"],
         client_networks: value["clientNetworks"],
-        shared_secret: value["sharedSecret"],
+        shared_secret_ref: value["sharedSecretRef"],
         mfa_support: value["mfaSupport"],
         certificate: value["certificate"],
     };

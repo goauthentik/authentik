@@ -26,10 +26,7 @@ export interface RadiusOutpostConfig {
      * match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
      */
     clientNetworks?: string;
-    /**
-     * Shared secret between clients and server to hash packets.
-     */
-    sharedSecret?: string;
+    readonly sharedSecret: string;
     /**
      * When enabled, code-based multi-factor authentication can be used by appending a semicolon and
      * the TOTP code to the password. This should only be enabled if all users that will bind to
@@ -60,6 +57,13 @@ export function instanceOfRadiusOutpostConfig(value: object): value is RadiusOut
             (value as Record<string, any>)["auth_flow_slug"] === undefined)
     )
         return false;
+    if (
+        (!("sharedSecret" in (value as Record<string, any>)) &&
+            !("shared_secret" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["sharedSecret"] === undefined &&
+            (value as Record<string, any>)["shared_secret"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -80,7 +84,7 @@ export function RadiusOutpostConfigFromJSONTyped(
         applicationSlug: json["application_slug"],
         authFlowSlug: json["auth_flow_slug"],
         clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
-        sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
+        sharedSecret: json["shared_secret"],
         mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
         certificate:
             json["certificate"] === undefined
@@ -96,7 +100,7 @@ export function RadiusOutpostConfigToJSON(json: any): RadiusOutpostConfig {
 }
 
 export function RadiusOutpostConfigToJSONTyped(
-    value?: Omit<RadiusOutpostConfig, "pk"> | null,
+    value?: Omit<RadiusOutpostConfig, "pk" | "sharedSecret"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -108,7 +112,6 @@ export function RadiusOutpostConfigToJSONTyped(
         application_slug: value["applicationSlug"],
         auth_flow_slug: value["authFlowSlug"],
         client_networks: value["clientNetworks"],
-        shared_secret: value["sharedSecret"],
         mfa_support: value["mfaSupport"],
         certificate: value["certificate"],
     };

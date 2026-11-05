@@ -108,12 +108,34 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         choices=SCIMAuthenticationMode.choices, default=SCIMAuthenticationMode.TOKEN
     )
 
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     token = models.TextField(help_text=_("Authentication token"), blank=True)
+    token_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Token"),
+        help_text=_("Authentication token"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="scim_token_providers",
+    )
     auth_basic_user = models.TextField(
         help_text=_("Username used for Basic authentication"), blank=True
     )
+    # Legacy column, kept for downgrades. Remove in 2027.2.
     auth_basic_password = models.TextField(
         help_text=_("Password used for Basic authentication"), blank=True
+    )
+    auth_basic_password_ref = models.ForeignKey(
+        "authentik_crypto_secrets.Secret",
+        verbose_name=_("Password"),
+        help_text=_("Password used for Basic authentication"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="scim_basic_password_providers",
     )
     auth_oauth = models.ForeignKey(
         "authentik_sources_oauth.OAuthSource",
