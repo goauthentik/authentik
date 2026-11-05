@@ -20205,6 +20205,7 @@ paths:
         name: acs_url
         schema:
           type: string
+        description: ACS URL
       - in: query
         name: assertion_valid_not_before
         schema:
@@ -21380,6 +21381,7 @@ paths:
         name: acs_url
         schema:
           type: string
+        description: ACS URL
       - in: query
         name: assertion_valid_not_before
         schema:
@@ -53982,9 +53984,15 @@ components:
           items:
             type: string
             format: uuid
+        acs_urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLACSURLRequest'
         acs_url:
           type: string
           minLength: 1
+          description: Deprecated, use acs_urls instead. URL of the default ACS URL.
+            When set without acs_urls, only the default ACS URL is changed.
           format: uri
         sls_url:
           type: string
@@ -57806,6 +57814,45 @@ components:
           minLength: 1
       required:
       - name
+    SAMLACSURL:
+      type: object
+      description: A single Assertion Consumer Service URL
+      properties:
+        url:
+          type: string
+        matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/MatchingModeEnum'
+          default: strict
+        index:
+          type: integer
+          minimum: 0
+          nullable: true
+        is_default:
+          type: boolean
+          default: false
+      required:
+      - url
+    SAMLACSURLRequest:
+      type: object
+      description: A single Assertion Consumer Service URL
+      properties:
+        url:
+          type: string
+          minLength: 1
+        matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/MatchingModeEnum'
+          default: strict
+        index:
+          type: integer
+          minimum: 0
+          nullable: true
+        is_default:
+          type: boolean
+          default: false
+      required:
+      - url
     SAMLBindingsEnum:
       enum:
       - redirect
@@ -57982,8 +58029,14 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
+        acs_urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLACSURL'
         acs_url:
           type: string
+          description: Deprecated, use acs_urls instead. URL of the default ACS URL.
+            When set without acs_urls, only the default ACS URL is changed.
           format: uri
         sls_url:
           type: string
@@ -58130,7 +58183,6 @@ components:
           description: Get SLO redirect URL
           readOnly: true
       required:
-      - acs_url
       - assigned_application_name
       - assigned_application_slug
       - assigned_backchannel_application_name
@@ -58199,9 +58251,15 @@ components:
           items:
             type: string
             format: uuid
+        acs_urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLACSURLRequest'
         acs_url:
           type: string
           minLength: 1
+          description: Deprecated, use acs_urls instead. URL of the default ACS URL.
+            When set without acs_urls, only the default ACS URL is changed.
           format: uri
         sls_url:
           type: string
@@ -58315,7 +58373,6 @@ components:
           description: OAuth2 providers which can exchange their JWTs for a SAML Response
             of this provider via token exchange.
       required:
-      - acs_url
       - authorization_flow
       - invalidation_flow
       - name
