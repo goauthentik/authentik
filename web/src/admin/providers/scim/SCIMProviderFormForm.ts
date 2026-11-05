@@ -5,7 +5,7 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/LicenseNotice";
 import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
@@ -85,8 +85,8 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: Valid
             </p>
         </ak-form-element-horizontal>
         <ak-form-element-horizontal label=${msg("OAuth Parameters")} name="authOauthParams">
-            <ak-codemirror mode="yaml" value="${YAML.stringify(provider?.authOauthParams ?? {})}">
-            </ak-codemirror>
+            <ak-code-editor mode="yaml" value="${YAML.stringify(provider?.authOauthParams ?? {})}">
+            </ak-code-editor>
             <p class="pf-c-form__helper-text">
                 ${msg("Additional OAuth parameters, such as grant_type.")}
             </p>
