@@ -1,6 +1,6 @@
 """SAML ServiceProvider Metadata Parser and dataclass"""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import xmlsec
 from cryptography.hazmat.backends import default_backend
@@ -16,7 +16,12 @@ from authentik.common.saml.constants import (
 from authentik.crypto.models import CertificateKeyPair, format_cert
 from authentik.flows.models import Flow
 from authentik.lib.xml import lxml_from_string
-from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.models import (
+    SAMLACSURL,
+    SAMLBindings,
+    SAMLPropertyMapping,
+    SAMLProvider,
+)
 from authentik.sources.saml.models import SAMLNameIDPolicy
 
 LOGGER = get_logger()
@@ -48,6 +53,9 @@ class ServiceProviderMetadata:
     sls_binding: str | None = None
     sls_location: str | None = None
 
+    # All ACS endpoints using `acs_binding`, `acs_location` is the default one
+    acs_urls: list[SAMLACSURL] = field(default_factory=list)
+
     def to_provider(
         self, name: str, authorization_flow: Flow, invalidation_flow: Flow
     ) -> SAMLProvider:
@@ -57,7 +65,10 @@ class ServiceProviderMetadata:
             name=name, authorization_flow=authorization_flow, invalidation_flow=invalidation_flow
         )
         provider.sp_binding = self.acs_binding
-        provider.acs_url = self.acs_location
+        if self.acs_urls:
+            provider.acs_urls = self.acs_urls
+        else:
+            provider.acs_url = self.acs_location
         provider.audience = self.entity_id
         provider.default_name_id_policy = self.name_id_policy
         # Single Logout Service
@@ -169,6 +180,32 @@ class ServiceProviderMetadataParser:
         )[0]
         return binding, location
 
+    def get_acs_urls(
+        self, endpoints: list[etree.Element], binding: SAMLBindings, default_location: str
+    ) -> list[SAMLACSURL]:
+        """Get all ACS URLs out of `endpoints` that use `binding`, as authentik can only send
+        responses with a single binding. `default_location` is marked as the default."""
+        acs_urls = []
+        default_set = False
+        for endpoint in endpoints:
+            if SAMLBindings.from_metadata_binding(endpoint.attrib.get("Binding")) != binding:
+                continue
+            location = endpoint.attrib.get("Location")
+            if not location:
+                continue
+            index = None
+            try:
+                index = int(endpoint.attrib.get("index", ""))
+            except ValueError:
+                # Invalid or missing ACS index in metadata; keep index unset.
+                index = None
+            if index is not None and any(entry.index == index for entry in acs_urls):
+                index = None
+            is_default = not default_set and location == default_location
+            default_set = default_set or is_default
+            acs_urls.append(SAMLACSURL(url=location, index=index, is_default=is_default))
+        return acs_urls
+
     def check_signature(self, root: etree.Element, keypair: CertificateKeyPair):
         """If Metadata is signed, check validity of signature"""
         xmlsec.tree.add_ids(root, ["ID"])
@@ -222,6 +259,8 @@ class ServiceProviderMetadataParser:
                 "Only HTTP-POST and HTTP-Redirect are supported."
             )
 
+        acs_urls = self.get_acs_urls(acs_services, acs_binding, acs_location)
+
         signing_keypair = self.get_signing_cert(root)
         if signing_keypair:
             self.check_signature(root, signing_keypair)
@@ -244,6 +283,7 @@ class ServiceProviderMetadataParser:
             entity_id=entity_id,
             acs_binding=acs_binding,
             acs_location=acs_location,
+            acs_urls=acs_urls,
             auth_n_request_signed=auth_n_request_signed,
             assertion_signed=assertion_signed,
             signing_keypair=signing_keypair,
