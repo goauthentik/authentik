@@ -46,19 +46,6 @@ COPY ./website /work/website/
 RUN pnpm run build && \
     pnpm run build:sfe
 
-# Stage: MaxMind GeoIP
-FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v8.0.0@sha256:51e70dd6f16cd3e4d845ac02d09940b10772a75b9d741427d235a78570923c1d AS geoip
-
-ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
-ENV GEOIPUPDATE_VERBOSE="1"
-ENV GEOIPUPDATE_ACCOUNT_ID_FILE="/run/secrets/GEOIPUPDATE_ACCOUNT_ID"
-
-USER root
-RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
-    --mount=type=secret,id=GEOIPUPDATE_LICENSE_KEY \
-    mkdir -p /usr/share/GeoIP && \
-    /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
-
 # Stage: download Rust toolchain
 FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:d363011346c52a8db30fb88769af5f81aefd2e506942b44a4d8aa9cb60238003 AS rust-toolchain
 
@@ -83,7 +70,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.13.7@sha256:96f40d3904aad8d0bd010539001d36c8e2188b981e1334471a90c4a1d93bb490 AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.10-slim-trixie-fips@sha256:9f2478ddb774b8d4b2c2d91fa4d5d0cfd0172726a7b2e2e06fc200d9b3090f35 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.10-p1-slim-trixie-fips@sha256:69e705858101d3e4ed0be9aa0ac0bc32792c08c3f11f9e500ce5bff165462677 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -282,7 +269,7 @@ RUN ln -s /ak-root/packages /packages && \
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/
-COPY --from=geoip /usr/share/GeoIP /geoip
+COPY --from=ghcr.io/goauthentik/geoip:latest /geoip /geoip
 
 # Stage: distroless root filesystem
 # prune.sh copies the files the distroless image needs into /out

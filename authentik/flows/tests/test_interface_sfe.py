@@ -3,8 +3,12 @@
 from django.test import RequestFactory
 from django.urls import reverse
 
+from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_flow
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import APIFlowTestCase
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.flows.views.interface import FlowInterfaceView
 
 
@@ -120,6 +124,52 @@ class TestFlowInterfaceTitle(APIFlowTestCase):
             reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         )
         self.assertContains(response, '<meta name="ak-flow-title" content="100% secure">')
+
+    def test_title_plan_context(self):
+        """Placeholders are filled from the plan in the session"""
+        flow = create_test_flow()
+        flow.title = "Sign in to %(app)s as %(user)s"
+        flow.save()
+        plan = FlowPlan(flow_pk=flow.pk.hex)
+        plan.context[PLAN_CONTEXT_APPLICATION] = Application(name="Grafana")
+        plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = "jdoe"
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.get(
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+        )
+        self.assertContains(
+            response, '<meta name="ak-flow-title" content="Sign in to Grafana as jdoe">'
+        )
+
+    def test_title_plan_other_flow(self):
+        """A plan for a different flow still fills placeholders"""
+        flow = create_test_flow()
+        flow.title = "Sign in to %(app)s"
+        flow.save()
+        plan = FlowPlan(flow_pk=create_test_flow().pk.hex)
+        plan.context[PLAN_CONTEXT_APPLICATION] = Application(name="Grafana")
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.get(
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+        )
+        self.assertContains(response, '<meta name="ak-flow-title" content="Sign in to Grafana">')
+
+    def test_title_plan_invalid_placeholder(self):
+        """Unknown placeholders with a plan keep the original title"""
+        flow = create_test_flow()
+        flow.title = "Hello %(foo)s"
+        flow.save()
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = FlowPlan(flow_pk=flow.pk.hex)
+        session.save()
+        response = self.client.get(
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+        )
+        self.assertContains(response, '<meta name="ak-flow-title" content="Hello %(foo)s">')
 
 
 class TestFlowInterfaceBackground(APIFlowTestCase):

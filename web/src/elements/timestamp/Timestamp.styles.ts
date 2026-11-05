@@ -13,6 +13,10 @@ export const styles = css`
         display: inline-block;
     }
 
+    [part="label"][hidden] {
+        display: none;
+    }
+
     [part="elapsed"] {
         display: inline-block;
     }
