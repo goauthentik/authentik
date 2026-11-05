@@ -4563,6 +4563,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: client_id
+        schema:
+          type: string
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -39373,6 +39377,12 @@ components:
           type: string
         header_text:
           type: string
+        client_id:
+          type: string
+        client_name:
+          type: string
+        redirect_host:
+          type: string
         permissions:
           type: array
           items:
@@ -62042,9 +62052,13 @@ components:
           $ref: '#/components/schemas/Application'
         permissions:
           type: string
-          default: ''
+        client_id:
+          type: string
+          readOnly: true
+          nullable: true
       required:
       - application
+      - client_id
       - pk
       - user
     UserCreationModeEnum:

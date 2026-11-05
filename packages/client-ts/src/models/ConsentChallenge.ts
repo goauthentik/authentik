@@ -29,6 +29,9 @@ export interface ConsentChallenge {
     pendingUser: string;
     pendingUserAvatar: string;
     headerText?: string;
+    clientId?: string;
+    clientName?: string;
+    redirectHost?: string;
     permissions: Array<ConsentPermission>;
     additionalPermissions: Array<ConsentPermission>;
     token: string;
@@ -83,6 +86,9 @@ export function ConsentChallengeFromJSONTyped(
         pendingUser: json["pending_user"],
         pendingUserAvatar: json["pending_user_avatar"],
         headerText: json["header_text"] == null ? undefined : json["header_text"],
+        clientId: json["client_id"] == null ? undefined : json["client_id"],
+        clientName: json["client_name"] == null ? undefined : json["client_name"],
+        redirectHost: json["redirect_host"] == null ? undefined : json["redirect_host"],
         permissions: (json["permissions"] as Array<any>).map(ConsentPermissionFromJSON),
         additionalPermissions: (json["additional_permissions"] as Array<any>).map(
             ConsentPermissionFromJSON,
@@ -110,6 +116,9 @@ export function ConsentChallengeToJSONTyped(
         pending_user: value["pendingUser"],
         pending_user_avatar: value["pendingUserAvatar"],
         header_text: value["headerText"],
+        client_id: value["clientId"],
+        client_name: value["clientName"],
+        redirect_host: value["redirectHost"],
         permissions: (value["permissions"] as Array<any>).map(ConsentPermissionToJSON),
         additional_permissions: (value["additionalPermissions"] as Array<any>).map(
             ConsentPermissionToJSON,

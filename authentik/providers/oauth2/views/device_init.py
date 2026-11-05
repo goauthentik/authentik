@@ -16,14 +16,21 @@ from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView
+from authentik.providers.oauth2.client import OAuthClientContext, OAuthClientResolver
 from authentik.providers.oauth2.models import DeviceToken
+from authentik.providers.oauth2.views.authorize import (
+    PLAN_CONTEXT_OAUTH_CLIENT,
+    consent_client_for,
+)
 from authentik.providers.oauth2.views.device_finish import (
     PLAN_CONTEXT_DEVICE,
     OAuthDeviceCodeFinishStage,
 )
 from authentik.providers.oauth2.views.userinfo import UserInfoView
 from authentik.stages.consent.stage import (
+    PLAN_CONTEXT_CONSENT_CLIENT,
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
 )
@@ -35,16 +42,39 @@ QS_KEY_CODE = "code"  # nosec
 class CodeValidatorView(PolicyAccessView):
     """Helper to validate frontside token"""
 
+    token: DeviceToken
+    # Client the device code was issued to
+    client: OAuthClientContext
+
     def __init__(self, code: str, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.code = code
 
+    def get_client_resolver(self) -> OAuthClientResolver:
+        """Resolver used to find the client the device code was issued to, within the
+        device code's provider"""
+        return OAuthClientResolver.legacy()
+
     def resolve_provider_application(self):
-        self.token = DeviceToken.objects.filter(user_code=self.code).first()
-        if not self.token:
+        token = DeviceToken.objects.select_related("provider").filter(user_code=self.code).first()
+        if not token:
             raise Application.DoesNotExist
-        self.provider = self.token.provider
-        self.application = self.token.provider.application
+        client = self.get_client_resolver().resolve_in_provider(
+            self.request, token.provider, token.bound_client_id
+        )
+        if not client or not token.is_bound_to(client):
+            LOGGER.warning(
+                "Client of device code could not be resolved", client_id=token.bound_client_id
+            )
+            raise Application.DoesNotExist
+        self.token = token
+        self.client = client
+        self.provider = token.provider
+        self.application = token.provider.application
+
+    def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
+        request.context[PLAN_CONTEXT_OAUTH_CLIENT] = self.client
+        return request
 
     def post(self, request: HttpRequest, *args, **kwargs):
         return self.get(request, *args, **kwargs)
@@ -54,20 +84,24 @@ class CodeValidatorView(PolicyAccessView):
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
         planner.use_cache = False
+        context: dict[str, Any] = {
+            PLAN_CONTEXT_SSO: True,
+            PLAN_CONTEXT_APPLICATION: self.application,
+            # OAuth2 related params
+            PLAN_CONTEXT_DEVICE: self.token,
+            PLAN_CONTEXT_OAUTH_CLIENT: self.client,
+            # Consent related params
+            PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
+            % {"application": self.application.name},
+            PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
+        }
+        # Consent for a device code is given to the client it was issued to, exactly like
+        # consent in the authorization code flow
+        consent_client = consent_client_for(self.client)
+        if consent_client:
+            context[PLAN_CONTEXT_CONSENT_CLIENT] = consent_client
         try:
-            plan = planner.plan(
-                request,
-                {
-                    PLAN_CONTEXT_SSO: True,
-                    PLAN_CONTEXT_APPLICATION: self.application,
-                    # OAuth2 related params
-                    PLAN_CONTEXT_DEVICE: self.token,
-                    # Consent related params
-                    PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
-                    % {"application": self.application.name},
-                    PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
-                },
-            )
+            plan = planner.plan(request, context)
         except FlowNonApplicableException:
             LOGGER.warning("Flow not applicable to user")
             return None

@@ -353,4 +353,6 @@ ignore_name = [
   "0026_remove_samlsource_audience_override",
   # Adds (provider, client_id_hash) indexes to the grant tables, which a linter cannot tell apart from a risky CREATE INDEX.
   "0039_client_bound_grants",
+  # Swaps the consent (user, application, permissions) unique_together for partial unique indexes per client, on a small table.
+  "0008_userconsent_client",
 ]
