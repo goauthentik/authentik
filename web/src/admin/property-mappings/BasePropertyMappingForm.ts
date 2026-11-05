@@ -1,4 +1,4 @@
-import "#elements/CodeMirror/ak-codemirror";
+import "#elements/CodeEditor/ak-code-editor";
 import "#components/ak-text-input";
 import { docLink } from "#common/global";
 
@@ -45,8 +45,8 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
             </ak-text-input>
             ${this.renderExtraFields()}
             <ak-form-element-horizontal label=${msg("Expression")} required name="expression">
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
-                </ak-codemirror>
+                <ak-code-editor mode="python" value="${ifDefined(this.instance?.expression)}">
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg("Expression using Python.")}
                     <a target="_blank" rel="noopener noreferrer" href=${docLink(this.docLink)}>

@@ -953,8 +953,7 @@ export abstract class Table<T extends object, D = T>
                     "pf-m-expanded": expanded,
                 })}"
             >
-                <td aria-hidden="true"></td>
-                <td colspan=${this.columnCount - 1}>
+                <td colspan=${this.columnCount}>
                     <div class="pf-c-table__expandable-row-content">
                         ${this.renderExpanded(item)}
                     </div>

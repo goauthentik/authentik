@@ -5,7 +5,6 @@ from collections import OrderedDict
 from pathlib import Path
 
 from django.utils import http as utils_http
-from xmlsec import enable_debug_trace
 
 from authentik import authentik_version
 from authentik.lib.config import (
@@ -144,6 +143,7 @@ INSTALLED_APPS = [
 
 GUARDIAN_GROUP_MODEL = "authentik_core.Group"
 GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
+GUARDIAN_GET_INIT_ANONYMOUS_USER = "authentik.core.models.get_init_anonymous_user"
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
@@ -304,6 +304,7 @@ MIDDLEWARE = [
     "authentik.core.middleware.ImpersonateMiddleware",
     "authentik.core.middleware.LocaleOverrideMiddleware",
     "authentik.rbac.middleware.InitialPermissionsMiddleware",
+    "authentik.rbac.middleware.AlterResponseMiddleware",
 ]
 MIDDLEWARE_LAST = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",
@@ -587,6 +588,8 @@ except ImportError:
 
 if DEBUG:
     INSTALLED_APPS.insert(INSTALLED_APPS.index("django.contrib.staticfiles"), "daphne")
+    from xmlsec import enable_debug_trace
+
     enable_debug_trace(True)
 
 

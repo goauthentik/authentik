@@ -3,12 +3,6 @@
 from enum import IntFlag
 from re import split
 
-from ldap3 import BASE
-from ldap3.core.exceptions import (
-    LDAPAttributeError,
-    LDAPNoSuchAttributeResult,
-    LDAPUnwillingToPerformResult,
-)
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
@@ -72,6 +66,9 @@ class LDAPPasswordChanger:
 
     def check_ad_password_complexity_enabled(self) -> bool:
         """Check if DOMAIN_PASSWORD_COMPLEX is enabled"""
+        from ldap3 import BASE
+        from ldap3.core.exceptions import LDAPAttributeError, LDAPUnwillingToPerformResult
+
         root_dn = self.get_domain_root_dn()
         try:
             root_attrs = self._connection.extend.standard.paged_search(
@@ -106,6 +103,12 @@ class LDAPPasswordChanger:
 
     def change_password(self, user: User, password: str):
         """Change user's password"""
+        from ldap3.core.exceptions import (
+            LDAPAttributeError,
+            LDAPNoSuchAttributeResult,
+            LDAPUnwillingToPerformResult,
+        )
+
         user_dn = user.attributes.get(LDAP_DISTINGUISHED_NAME, None)
         if not user_dn:
             LOGGER.info(f"User has no {LDAP_DISTINGUISHED_NAME} set.")
@@ -119,6 +122,8 @@ class LDAPPasswordChanger:
 
     def _ad_check_password_existing(self, password: str, user_dn: str) -> bool:
         """Check if a password contains sAMAccount or displayName"""
+        from ldap3 import BASE
+
         users = list(
             self._connection.extend.standard.paged_search(
                 search_base=user_dn,

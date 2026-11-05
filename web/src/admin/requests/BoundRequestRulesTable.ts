@@ -2,7 +2,6 @@ import "#admin/requests/ak-request-rule-wizard";
 import "#admin/requests/RequestRuleBindingForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#admin/policies/BoundPoliciesList";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { aki } from "#common/api/client";
@@ -11,6 +10,7 @@ import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 import { AKRequestRuleWizard } from "#admin/requests/ak-request-rule-wizard";
 import { RequestRuleBindingForm } from "#admin/requests/RequestRuleBindingForm";
 
@@ -84,18 +84,13 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
     }
 
     protected override renderExpanded(item: RequestRuleBinding): SlottedTemplateResult {
-        return html`<div class="pf-c-content">
-            <ak-bound-policies-list
-                .target=${item.pbmUuid}
-                .policyEngineMode=${item.policyEngineMode}
-            >
-                <span slot="description"
-                    >${msg(
-                        "These bindings control which users/groups can request access to this object.",
-                    )}</span
-                >
-            </ak-bound-policies-list>
-        </div>`;
+        return renderBoundPoliciesExpansion({
+            target: item.pbmUuid,
+            mode: item.policyEngineMode,
+            description: msg(
+                "These bindings control which users or groups can request access to this object.",
+            ),
+        });
     }
 
     protected override row(item: RequestRuleBinding): SlottedTemplateResult[] {

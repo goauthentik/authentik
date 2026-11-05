@@ -4,7 +4,7 @@ import { BreadcrumbContext, BreadcrumbEntries } from "#admin/sidebar/BreadcrumbC
 
 import { consume } from "@lit/context";
 import { PropertyValues } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-ui-breadcrumbs")
 export class AkBreadcrumbs extends Breadcrumbs {
