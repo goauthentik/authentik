@@ -44,7 +44,7 @@ use tokio::{
     time::{Duration, Instant, interval},
 };
 use tower::ServiceExt as _;
-use tracing::{info, instrument, trace, warn};
+use tracing::{debug, info, instrument, trace, warn};
 
 use crate::{
     brands::tls::BrandCertResolver,
@@ -69,8 +69,40 @@ pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
 
 pub(crate) type ServerClient = Client<UnixSocketConnector<PathBuf>, Body>;
 
+/// How long uvicorn keeps an idle connection open. Match `keepalive` in
+/// lifecycle/gunicorn.conf.py.
+const GUNICORN_KEEPALIVE: Duration = Duration::from_secs(5);
+
+/// Reusing a connection uvicorn is closing resets the request after it was
+/// sent, and the client gets a 503. Drop idle connections a second before
+/// uvicorn does, leaving room for a stalled event loop on either side.
+const UPSTREAM_POOL_IDLE_TIMEOUT: Duration =
+    GUNICORN_KEEPALIVE.saturating_sub(Duration::from_secs(1));
+
+fn upstream_client(socket_path: PathBuf) -> ServerClient {
+    Client::builder(TokioExecutor::new())
+        .pool_idle_timeout(UPSTREAM_POOL_IDLE_TIMEOUT)
+        .set_host(false)
+        .build(UnixSocketConnector::new(socket_path))
+}
+
 pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik.sock")
+}
+
+/// Returns `true` when `err` (or any error in its source chain) is an
+/// `io::Error` with `ErrorKind::NotFound`
+pub(crate) fn is_connect_not_found(err: &dyn std::error::Error) -> bool {
+    let mut source = err.source();
+    while let Some(e) = source {
+        if let Some(io_err) = e.downcast_ref::<std::io::Error>()
+            && io_err.kind() == std::io::ErrorKind::NotFound
+        {
+            return true;
+        }
+        source = e.source();
+    }
+    false
 }
 
 #[derive(Debug)]
@@ -104,10 +136,6 @@ impl Server {
             .stderr(Stdio::inherit())
             .spawn()?;
 
-        let client = Client::builder(TokioExecutor::new())
-            .pool_idle_timeout(Duration::from_mins(1))
-            .set_host(false)
-            .build(UnixSocketConnector::new(socket_path.clone()));
         // Keeps no idle connections, so a retry always gets a new one.
         let retry_client = Client::builder(TokioExecutor::new())
             .pool_max_idle_per_host(0)
@@ -116,7 +144,7 @@ impl Server {
 
         Ok(Self {
             gunicorn: Mutex::new(gunicorn),
-            client,
+            client: upstream_client(socket_path.clone()),
             retry_client,
             socket_path,
             workers: ArcSwapOption::empty(),
@@ -186,7 +214,13 @@ impl Server {
             .client
             .request(req)
             .await
-            .inspect_err(|err| warn!(?err, "failed to send health live request to server"))?
+            .inspect_err(|err| {
+                if is_connect_not_found(err) {
+                    debug!(?err, "upstream socket not yet ready (health live)");
+                } else {
+                    warn!(?err, "failed to send health live request to server");
+                }
+            })?
             .status()
             .is_success())
     }
@@ -389,4 +423,98 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     }
 
     Ok(server)
+}
+
+#[cfg(test)]
+mod tests {
+    use std::sync::atomic::AtomicUsize;
+
+    use http_body_util::BodyExt as _;
+    use tempfile::TempDir;
+    use tokio::{
+        io::{AsyncReadExt as _, AsyncWriteExt as _},
+        net::UnixListener,
+        time::sleep,
+    };
+
+    use super::*;
+
+    /// Stands in for uvicorn: answers every request on a connection and keeps
+    /// it open. Returns how many connections it accepted.
+    fn spawn_upstream(socket_path: &std::path::Path) -> Arc<AtomicUsize> {
+        let listener = UnixListener::bind(socket_path).expect("failed to bind upstream socket");
+        let accepted = Arc::new(AtomicUsize::new(0));
+        let counter = Arc::clone(&accepted);
+
+        tokio::spawn(async move {
+            loop {
+                let (mut stream, _) = listener.accept().await.expect("failed to accept");
+                counter.fetch_add(1, Ordering::SeqCst);
+                tokio::spawn(async move {
+                    let mut request = Vec::new();
+                    let mut buf = [0_u8; 1024];
+                    loop {
+                        let read = stream.read(&mut buf).await.expect("failed to read");
+                        if read == 0 {
+                            return;
+                        }
+                        request.extend_from_slice(&buf[..read]);
+                        if request.ends_with(b"\r\n\r\n") {
+                            request.clear();
+                            stream
+                                .write_all(b"HTTP/1.1 200 OK\r\ncontent-length: 0\r\n\r\n")
+                                .await
+                                .expect("failed to write response");
+                        }
+                    }
+                });
+            }
+        });
+
+        accepted
+    }
+
+    async fn get(client: &ServerClient) {
+        let request = Request::builder()
+            .uri("http://localhost:8000/")
+            .body(Body::empty())
+            .expect("failed to build request");
+        let response = client.request(request).await.expect("request failed");
+        response
+            .into_body()
+            .collect()
+            .await
+            .expect("failed to read body");
+    }
+
+    /// Uvicorn may already be closing a connection that has been idle for
+    /// almost its whole keep-alive, so the client must not pick it up again.
+    #[tokio::test]
+    async fn upstream_client_does_not_reuse_connections_uvicorn_is_closing() {
+        let dir = TempDir::new().expect("failed to create temp dir");
+        let socket_path = dir.path().join("authentik.sock");
+        let accepted = spawn_upstream(&socket_path);
+        let client = upstream_client(socket_path);
+
+        get(&client).await;
+        sleep(GUNICORN_KEEPALIVE.saturating_sub(Duration::from_millis(200))).await;
+        get(&client).await;
+
+        assert_eq!(accepted.load(Ordering::SeqCst), 2);
+    }
+
+    /// Back-to-back requests still share a connection. This also shows the
+    /// upstream above tells reuse apart from new connections.
+    #[tokio::test]
+    async fn upstream_client_reuses_fresh_connections() {
+        let dir = TempDir::new().expect("failed to create temp dir");
+        let socket_path = dir.path().join("authentik.sock");
+        let accepted = spawn_upstream(&socket_path);
+        let client = upstream_client(socket_path);
+
+        get(&client).await;
+        get(&client).await;
+
+        assert_eq!(accepted.load(Ordering::SeqCst), 1);
+    }
 }

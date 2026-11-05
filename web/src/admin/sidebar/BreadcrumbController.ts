@@ -104,7 +104,7 @@ export class BreadcrumbController implements ReactiveController {
         this.publish();
     };
 
-    publish() {
+    protected publish() {
         if (this.#pathname === null || this.#match === null) {
             return;
         }
@@ -122,19 +122,19 @@ export class BreadcrumbController implements ReactiveController {
         }
     }
 
-    hostConnected() {
+    public hostConnected() {
         this.#abortController?.abort();
         const { signal } = (this.#abortController = new AbortController());
         window.addEventListener(ActiveTabChangeEvent.eventName, this.activeTabListener, { signal });
         window.addEventListener(PageDetailsUpdate.eventName, this.pageDetailsListener, { signal });
     }
 
-    hostDisconnected() {
+    public hostDisconnected() {
         this.#abortController?.abort();
         this.#abortController = null;
     }
 
-    hostUpdated() {
+    public hostUpdated() {
         if (this.host.pathname !== this.#pathname) {
             const match = matchRoute(currentInterfacePath(this.host.pathname), ROUTES);
 

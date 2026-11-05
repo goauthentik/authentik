@@ -2,15 +2,33 @@
 
 authentik supports GeoIP to add additional information to login/authorization/enrollment requests. Additionally, a [GeoIP Policy](../../customize/policies/types/geoip.mdx) can be used to make policy decisions based on the lookup result.
 
-### Configuration
+authentik reads two databases in the MaxMind DB (`.mmdb`) format:
 
-:::info
-Starting with authentik 2022.12, GeoIP is bundled and does not require any additional setup.
+- a **City** database, which provides the continent, country, city, and coordinates of an IP address
+- an **ASN** database, which provides the autonomous system number and organization of an IP address
+
+## Bundled databases
+
+The authentik server image includes the free [DB-IP](https://db-ip.com) Lite City and ASN databases, so GeoIP works without any additional setup. DB-IP publishes a new edition of these databases each month, and each authentik image contains the edition that was current when the image was built.
+
+| Database | Default path                 |
+| -------- | ---------------------------- |
+| City     | `/geoip/dbip-city-lite.mmdb` |
+| ASN      | `/geoip/dbip-asn-lite.mmdb`  |
+
+To load a database from another path, set [`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`](../../install-config/configuration/configuration.mdx#authentik_events__context_processors__geoip) and [`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`](../../install-config/configuration/configuration.mdx#authentik_events__context_processors__asn). authentik automatically reloads a database file when it changes.
+
+:::info Attribution
+The DB-IP Lite databases are licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/). IP geolocation by [DB-IP](https://db-ip.com).
 :::
 
-By default, the GeoIP database is loaded from `/geoip/GeoLite2-City.mmdb`. If more frequent database updates are desired, a volume can be mounted to `/geoip` to update this file externally. authentik will automatically re-load the file when it changes.
+### MaxMind GeoLite2 databases
 
-### Deactivate GeoIP
+authentik versions before 2026.11 bundled the MaxMind GeoLite2 databases. You can still use them, or any other database in the same format, by mounting the files into the container and setting the paths described above.
+
+If the default DB-IP file is missing and a MaxMind file exists at its previous default path (`/geoip/GeoLite2-City.mmdb` or `/geoip/GeoLite2-ASN.mmdb`), authentik loads the MaxMind file instead and logs a warning. This keeps existing setups that mount a volume over `/geoip` working. To silence the warning, set the paths explicitly.
+
+## Deactivate GeoIP
 
 If you want to disable GeoIP, you can set the path to a non-existent path and authentik will skip the GeoIP.
 
@@ -50,7 +68,49 @@ Afterwards, run the upgrade commands from the latest release notes.
   </TabItem>
 </Tabs>
 
-### External updates
+## External updates
+
+To get database updates without upgrading authentik, mount a volume to `/geoip` and keep the files in it up to date. The volume replaces the bundled databases.
+
+### DB-IP
+
+DB-IP does not require an account. The following Docker Compose example downloads the current edition once a day:
+
+Add the following block to a `compose.override.yml` file in the same folder as the authentik `compose.yml` file:
+
+```yaml
+services:
+    server:
+        volumes:
+            - geoip:/geoip
+    worker:
+        volumes:
+            - geoip:/geoip
+    geoipupdate:
+        image: docker.io/library/alpine:3.22
+        volumes:
+            - geoip:/geoip
+        command:
+            - sh
+            - -c
+            - |
+                while true; do
+                    month="$$(date -u +%Y-%m)"
+                    for edition in city asn; do
+                        wget -q -O - "https://download.db-ip.com/free/dbip-$$edition-lite-$$month.mmdb.gz" \
+                            | gunzip > "/geoip/dbip-$$edition-lite.mmdb.tmp" \
+                            && mv "/geoip/dbip-$$edition-lite.mmdb.tmp" "/geoip/dbip-$$edition-lite.mmdb"
+                    done
+                    sleep 86400
+                done
+volumes:
+    geoip:
+        driver: local
+```
+
+Afterwards, run the upgrade commands from the latest release notes.
+
+### MaxMind
 
 [Create a free MaxMind account](https://www.maxmind.com/en/geolite2/signup).
 
@@ -62,14 +122,20 @@ Afterwards, run the upgrade commands from the latest release notes.
   ]}>
   <TabItem value="docker-compose">
 
-Add the following block to a `compose.override.yml` file in the same folder as the authentik docker-compose file:
+Add the following block to a `compose.override.yml` file in the same folder as the authentik `compose.yml` file:
 
 ```yaml
 services:
     server:
+        environment:
+            AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP: /geoip/GeoLite2-City.mmdb
+            AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN: /geoip/GeoLite2-ASN.mmdb
         volumes:
             - geoip:/geoip
     worker:
+        environment:
+            AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP: /geoip/GeoLite2-City.mmdb
+            AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN: /geoip/GeoLite2-ASN.mmdb
         volumes:
             - geoip:/geoip
     geoipupdate:
@@ -93,6 +159,11 @@ Afterwards, run the upgrade commands from the latest release notes.
 Add the following block to your `values.yml` file:
 
 ```yaml
+authentik:
+    events:
+        context_processors:
+            geoip: "/geoip/GeoLite2-City.mmdb"
+            asn: "/geoip/GeoLite2-ASN.mmdb"
 geoip:
     enabled: true
     accountId: "*your account ID*"

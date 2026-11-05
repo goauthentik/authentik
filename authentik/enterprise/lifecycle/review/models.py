@@ -9,7 +9,7 @@ from django.db.models.fields import Field
 from django.db.models.functions import Cast
 from django.http import HttpRequest
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 
 from authentik.blueprints.models import ManagedModel
@@ -270,7 +270,7 @@ class LifecycleIteration(SerializerModel, ManagedModel):
         return {
             "target": self.object,
             "hyperlink": link_for_model(self.object),
-            "hyperlink_label": _(f"Go to {self._get_model_name()}"),
+            "hyperlink_label": _("Go to {model_name}").format(model_name=self._get_model_name()),
             "lifecycle_iteration": self.id,
         }
 
@@ -283,7 +283,9 @@ class LifecycleIteration(SerializerModel, ManagedModel):
             object_label = str(self.object)
         event = Event.new(
             EventAction.REVIEW_INITIATED,
-            message=_(f"Access review is due for {self.content_type.name.lower()} {object_label}"),
+            message=_("Access review is due for {model_name} {object_label}").format(
+                model_name=self.content_type.name.lower(), object_label=object_label
+            ),
             **self._get_event_args(),
         )
         event.save()
@@ -294,7 +296,9 @@ class LifecycleIteration(SerializerModel, ManagedModel):
 
         event = Event.new(
             EventAction.REVIEW_OVERDUE,
-            message=_(f"Access review is overdue for {self.content_type.name} {str(self.object)}"),
+            message=_("Access review is overdue for {model_name} {object_label}").format(
+                model_name=self.content_type.name, object_label=str(self.object)
+            ),
             **self._get_event_args(),
         )
         event.save()
@@ -313,16 +317,26 @@ class LifecycleIteration(SerializerModel, ManagedModel):
         self.state = ReviewState.REVIEWED
         event = Event.new(
             EventAction.REVIEW_COMPLETED,
-            message=_(f"Access review completed for {self.content_type.name} {str(self.object)}"),
+            message=_("Access review completed for {model_name} {object_label}").format(
+                model_name=self.content_type.name, object_label=str(self.object)
+            ),
             **self._get_event_args(),
         ).from_http(request)
         event.save()
         self.rule.notify_reviewers(event, NotificationSeverity.NOTICE)
         self.save()
 
-    def on_review(self, request: HttpRequest):
+    def on_review(self, review: Review, request: HttpRequest):
         if self.state not in (ReviewState.PENDING, ReviewState.OVERDUE):
             raise AssertionError("Review is not pending or overdue")
+        Event.new(
+            EventAction.REVIEW_ATTESTED,
+            message=_("Access review attested for {model_name} {object_label}").format(
+                model_name=self.content_type.name, object_label=str(self.object)
+            ),
+            note=review.note,
+            **self._get_event_args(),
+        ).from_http(request, review.reviewer)
         if self.rule.is_satisfied_for_iteration(self):
             self.make_reviewed(request)
 

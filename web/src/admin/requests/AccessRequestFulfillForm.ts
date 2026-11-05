@@ -1,5 +1,5 @@
 import "#components/ak-text-input";
-import "#elements/CodeMirror/ak-codemirror";
+import "#elements/CodeEditor/ak-code-editor";
 import "#components/ak-radio-input";
 import { aki } from "#common/api/client";
 
@@ -70,7 +70,7 @@ export class AccessRequestFulfillForm extends WithSession(Form<PatchedGrantReque
                 <pre>${JSON.stringify(this.request?.requesterData, null, 4)}</pre>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Data")} name="data">
-                <ak-codemirror mode="yaml" value="${YAML.stringify({})}"> </ak-codemirror>
+                <ak-code-editor mode="yaml" value="${YAML.stringify({})}"> </ak-code-editor>
             </ak-form-element-horizontal>
         `;
     }
