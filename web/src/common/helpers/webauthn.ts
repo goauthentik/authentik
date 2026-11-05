@@ -126,6 +126,7 @@ export interface Assertion {
     response: {
         clientDataJSON: string;
         attestationObject: string;
+        transports: string[];
     };
 }
 
@@ -136,9 +137,8 @@ export interface Assertion {
  * @param {PublicKeyCredential} newAssertion
  */
 export function transformNewAssertionForServer(newAssertion: PublicKeyCredential): Assertion {
-    const attObj = new Uint8Array(
-        (newAssertion.response as AuthenticatorAttestationResponse).attestationObject,
-    );
+    const response = newAssertion.response as AuthenticatorAttestationResponse;
+    const attObj = new Uint8Array(response.attestationObject);
 
     const clientDataJSON = new Uint8Array(newAssertion.response.clientDataJSON);
     const rawId = new Uint8Array(newAssertion.rawId);
@@ -153,6 +153,7 @@ export function transformNewAssertionForServer(newAssertion: PublicKeyCredential
         response: {
             clientDataJSON: b64enc(clientDataJSON),
             attestationObject: b64enc(attObj),
+            transports: response.getTransports?.() ?? [],
         },
     };
 }
