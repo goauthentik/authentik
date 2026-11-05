@@ -94,12 +94,20 @@ monaco.defineTheme("ak-dark", OneDark);
  */
 const LanguageServices: Partial<Record<CodeEditorMode, () => Promise<unknown>>> = {
     [CodeEditorMode.CSS]: () => import("#elements/CodeEditor/languages/css-service"),
+    [CodeEditorMode.Python]: () => import("#elements/CodeEditor/languages/python-service"),
 };
 
 function loadLanguageService(mode: CodeEditorMode): void {
     LanguageServices[mode]?.().catch((error: unknown) => {
         console.warn("code-editor: failed to load language service", mode, error);
     });
+}
+
+/**
+ * Python is indented by four spaces by convention, and in authentik's documentation.
+ */
+function tabSize(mode: CodeEditorMode): number {
+    return mode === CodeEditorMode.Python ? 4 : 2;
 }
 
 function themeName(theme: ResolvedUITheme): string {
@@ -146,7 +154,7 @@ export class MonacoEditor implements Disposable {
             automaticLayout: true,
             minimap: { enabled: false },
             wordWrap: "on",
-            tabSize: 2,
+            tabSize: tabSize(mode),
             // The editor grows with its content, see the content size listener below.
             scrollBeyondLastLine: false,
             // Let the page scroll once the editor has nothing left to scroll.
@@ -194,7 +202,10 @@ export class MonacoEditor implements Disposable {
     public setMode(mode: CodeEditorMode): void {
         const model = this.editor.getModel();
 
-        if (model) monaco.setModelLanguage(model, mode);
+        if (model) {
+            monaco.setModelLanguage(model, mode);
+            model.updateOptions({ tabSize: tabSize(mode) });
+        }
 
         loadLanguageService(mode);
     }
