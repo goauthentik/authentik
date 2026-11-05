@@ -126,7 +126,7 @@ class TestManagedProfile(SimpleTestCase):
         self.assertTrue(caps.confidential)
         self.assertEqual(
             caps.grant_types,
-            frozenset(("authorization_code", "refresh_token", "client_credentials")),
+            frozenset(("authorization_code", "refresh_token")),
         )
         self.assertTrue(caps.pkce_required)
 
@@ -134,10 +134,7 @@ class TestManagedProfile(SimpleTestCase):
         md = validate_metadata(
             managed_document(grant_types=["client_credentials"], redirect_uris=None), CLIENT_ID
         )
-        caps = negotiate(md, MANAGED_PROFILE, KEYS)
-        self.assertEqual(caps.grant_types, frozenset(("client_credentials",)))
-        self.assertFalse(caps.pkce_required)
-        self.assertEqual(caps.redirect_uris, ())
+        self.assertUnsupported(md, "no_common_grant", KEYS)
 
     def test_declares_none(self):
         """Declaring `none` can't bypass the required method"""
