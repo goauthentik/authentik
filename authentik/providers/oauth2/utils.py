@@ -267,20 +267,21 @@ def client_may_access_grant(grant: ClientBoundModel, client: OAuthClientContext)
 
     Grants of the client's own provider must be bound to the client itself. Grants of
     other providers are only reachable through JWT federation, which is a relationship
-    between providers, so it only covers grants of those providers' registered clients."""
+    between providers, so both the requester and the grant must belong to their
+    providers' registered clients."""
     if grant.provider_id == client.provider.pk:
         return grant.is_bound_to(client)
-    return grant.is_bound_to_registered_client()
+    return client.is_registered_client and grant.is_bound_to_registered_client()
 
 
 def find_client_token(
     raw_token: str, client: OAuthClientContext, include_federated: bool = False
 ) -> AccessToken | RefreshToken | None:
     """Find an access or refresh token which `client` may introspect or revoke. With
-    `include_federated`, tokens of providers federating with the client's provider are
-    included."""
+    `include_federated`, a registered client may also access registered-client tokens
+    of providers federating with its provider."""
     query = ClientBoundModel.bound_to_q(client)
-    if include_federated:
+    if include_federated and client.is_registered_client:
         query |= (
             Q(provider__jwt_federation_providers__in=[client.provider])
             & ClientBoundModel.registered_client_q()

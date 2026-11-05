@@ -1,7 +1,7 @@
 """Test grants bound to a client within a provider, and access token audiences"""
 
 from base64 import b64encode
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import timedelta
 from json import dumps, loads
 from unittest.mock import patch
@@ -47,7 +47,7 @@ from authentik.providers.oauth2.models import (
     hash_client_id,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
-from authentik.providers.oauth2.utils import find_client_token
+from authentik.providers.oauth2.utils import client_may_access_grant, find_client_token
 from authentik.providers.oauth2.views.token import TokenView
 
 CLIENT_A = "https://a.example.com/oauth/client.json"
@@ -247,6 +247,60 @@ class TestClientBoundGrants(OAuthTestCase):
         code.save()
         code.refresh_from_db()
         self.assertEqual(code.client_id_hash, hash_client_id(CLIENT_B))
+
+    def test_partial_save_keeps_hash(self):
+        """Partial identity updates persist the matching hash on every grant model."""
+        for model in (AuthorizationCode, AccessToken, RefreshToken, DeviceToken):
+            with self.subTest(model=model.__name__):
+                fields = {"provider": self.provider, "user": self.user}
+                if model != DeviceToken:
+                    fields["auth_time"] = timezone.now()
+                grant = model(**fields)
+                grant.bind_client(self.client_a)
+                grant.save()
+                for client_id in (CLIENT_B, None, CLIENT_A):
+                    with self.subTest(client_id=client_id):
+                        grant.client_id = client_id
+                        update_fields = {"client_id"}
+                        grant.save(update_fields=update_fields)
+                        self.assertEqual(update_fields, {"client_id"})
+                        grant.refresh_from_db()
+                        self.assertEqual(grant.client_id, client_id)
+                        self.assertEqual(
+                            grant.client_id_hash,
+                            hash_client_id(client_id) if client_id is not None else None,
+                        )
+                        for client in (self.client_a, self.client_b, self.registered):
+                            matches = model.objects.filter(
+                                ClientBoundModel.bound_to_q(client), pk=grant.pk
+                            ).exists()
+                            self.assertEqual(
+                                matches,
+                                client.client_id == (client_id or self.provider.client_id),
+                            )
+
+    def test_partial_save_unrelated_field_preserves_binding(self):
+        """Saving another field must not persist an unsaved identity or its hash."""
+        token = self.create_refresh_token(self.client_a)
+        token.client_id = CLIENT_B
+        token.resource = RESOURCE
+        token.save(update_fields={"resource"})
+        token.refresh_from_db()
+        self.assertEqual(token.resource, RESOURCE)
+        self.assertEqual(token.client_id, CLIENT_A)
+        self.assertEqual(token.client_id_hash, hash_client_id(CLIENT_A))
+        self.assertEqual(find_client_token(token.token, self.client_a), token)
+        self.assertIsNone(find_client_token(token.token, self.client_b))
+
+    def test_partial_save_empty_fields_preserves_binding(self):
+        """An empty update_fields remains a no-op even after changing client_id."""
+        token = self.create_refresh_token(self.client_a)
+        token.client_id = CLIENT_B
+        with self.assertNumQueries(0):
+            token.save(update_fields=set())
+        token.refresh_from_db()
+        self.assertEqual(token.client_id, CLIENT_A)
+        self.assertEqual(token.client_id_hash, hash_client_id(CLIENT_A))
 
     def test_unbound_grant(self):
         """Grants without a binding belong to the registered client only"""
@@ -450,6 +504,53 @@ class TestClientBoundGrants(OAuthTestCase):
         self.assertIsNone(find_client_token(token_a.token, self.registered))
         self.assertEqual(find_client_token(unbound.token, self.registered), unbound)
         self.assertIsNone(find_client_token(unbound.token, self.client_a))
+        self.assertTrue(client_may_access_grant(token_a, self.client_a))
+        self.assertEqual(
+            find_client_token(token_a.token, self.client_a, include_federated=True), token_a
+        )
+
+    def test_federation_rejects_nonregistered_requesters(self):
+        """Both permission and database lookup restrict federation to registered requesters."""
+        other = OAuth2Provider.objects.create(name=generate_id(), authorization_flow=None)
+        other.jwt_federation_providers.add(self.provider)
+        requesters = (
+            self.client_a,
+            synthetic_client(self.provider, self.provider.client_id),
+            replace(self.registered, client_id=CLIENT_A),
+        )
+        for model in (AccessToken, RefreshToken):
+            for bound in (False, True):
+                with self.subTest(model=model.__name__, bound=bound):
+                    token = model(
+                        provider=other,
+                        user=self.user,
+                        token=generate_id(),
+                        auth_time=timezone.now(),
+                    )
+                    if bound:
+                        token.bind_client(OAuthClientContext.for_provider(other))
+                    token.save()
+                    self.assertTrue(client_may_access_grant(token, self.registered))
+                    self.assertEqual(
+                        find_client_token(token.token, self.registered, include_federated=True),
+                        token,
+                    )
+                    self.assertIsNone(find_client_token(token.token, self.registered))
+                    for requester in requesters:
+                        with self.subTest(requester=requester):
+                            self.assertFalse(client_may_access_grant(token, requester))
+                            self.assertIsNone(
+                                find_client_token(token.token, requester, include_federated=True)
+                            )
+                            with patch(
+                                "authentik.providers.oauth2.utils.client_may_access_grant",
+                                return_value=True,
+                            ):
+                                self.assertIsNone(
+                                    find_client_token(
+                                        token.token, requester, include_federated=True
+                                    )
+                                )
 
     def test_find_client_token_federated(self):
         """Federation reaches only the registered client's tokens of the other provider"""

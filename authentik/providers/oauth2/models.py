@@ -630,6 +630,9 @@ class ClientBoundModel(models.Model):
 
     def save(self, *args, **kwargs):
         self.client_id_hash = hash_client_id(self.client_id) if self.client_id is not None else None
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None and "client_id" in update_fields:
+            kwargs["update_fields"] = set(update_fields) | {"client_id_hash"}
         return super().save(*args, **kwargs)
 
     def bind_client(self, client: OAuthClientContext, *, resource: str | None = None) -> None:

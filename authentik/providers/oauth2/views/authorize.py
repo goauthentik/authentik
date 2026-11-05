@@ -440,7 +440,7 @@ class OAuthAuthorizationParams:
     def bound_client(self) -> OAuthClientContext:
         """Client grants for this request are issued to. Parameters stored in a flow plan
         before the client was resolved belong to the provider's registered client."""
-        return self.client or OAuthClientContext.for_provider(self.provider)
+        return getattr(self, "client", None) or OAuthClientContext.for_provider(self.provider)
 
 
 class AuthorizationFlowInitView(PolicyAccessView):
