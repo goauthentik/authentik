@@ -116,15 +116,16 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return ModalInvokerButton(RuleForm);
     }
 
-    protected override renderExpanded(item: NotificationRule): TemplateResult {
-        return html` ${renderBoundPoliciesExpansion({
+    protected override renderExpanded(item: NotificationRule) {
+        const boundPolicies = renderBoundPoliciesExpansion({
             target: item.pk,
             description: msg(
                 `These bindings control upon which events this rule triggers.
-Bindings to groups/users are checked against the user of the event.`,
+                Bindings to groups/users are checked against the user of the event.`,
             ),
-        })}
-        ${taskCard(NOTIFICATION_MODEL, item.pk)}`;
+        });
+
+        return [boundPolicies, taskCard(NOTIFICATION_MODEL, item.pk)];
     }
 }
 

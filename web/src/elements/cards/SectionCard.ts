@@ -32,7 +32,7 @@ export class SectionCard extends AKElement {
     @property({ type: String })
     public label: string | null = null;
 
-    public override render() {
+    protected override render() {
         return html`<section class="pf-c-card" aria-labelledby="card-title" part="card">
             <div class="pf-c-card__header" part="card-header">
                 <h3 class="pf-c-card__title" id="card-title" part="card-title">${this.label}</h3>
