@@ -417,7 +417,7 @@ class OAuthAuthorizationParams:
                 grant_type=self.grant_type,
                 state=self.state,
                 response_mode=self.response_mode,
-            )
+            ).with_cause("max_age_invalid")
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""
