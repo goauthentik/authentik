@@ -1,6 +1,9 @@
 """authentik SAML Provider Models"""
 
 from dataclasses import asdict, dataclass
+from re import error as RegexError
+from re import fullmatch
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from dacite import Config
@@ -372,6 +375,32 @@ class SAMLProvider(Provider):
         else:
             entries.insert(0, SAMLACSURL(url=value, is_default=True))
         self.acs_urls = entries
+
+    def resolve_acs_url(self, url: str | None = None, index: int | None = None) -> str | None:
+        """Find the URL a response should be sent to, based on the `AssertionConsumerServiceURL`
+        or `AssertionConsumerServiceIndex` of a request. Returns the default URL when neither is
+        given, and None when the requested URL or index isn't configured for this provider."""
+        if url is None and index is None:
+            return self.acs_url or None
+        for entry in self.acs_urls:
+            if index is not None:
+                if entry.index == index and entry.matching_mode == SAMLACSURLMatchingMode.STRICT:
+                    return entry.url
+                continue
+            if entry.matching_mode == SAMLACSURLMatchingMode.STRICT:
+                if entry.url.lower() == url.lower():
+                    return entry.url
+            elif entry.matching_mode == SAMLACSURLMatchingMode.REGEX:
+                # The requested URL is used as-is, so make sure it can't be something like a
+                # `javascript:` URL even if the expression would allow it
+                if urlparse(url).scheme not in ("http", "https"):
+                    continue
+                try:
+                    if fullmatch(entry.url, url):
+                        return url
+                except RegexError as exc:
+                    LOGGER.warning("Failed to match ACS URL regex", exc=exc, pattern=entry.url)
+        return None
 
     @property
     def launch_url(self) -> str | None:
