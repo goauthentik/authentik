@@ -1,5 +1,7 @@
 """Test storing multiple ACS URLs for SAML providers"""
 
+from django.db import connection
+from django.db.migrations.loader import MigrationLoader
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -77,6 +79,66 @@ class TestSAMLProviderACSURLs(TestCase):
         self.provider.save(update_fields=["_acs_urls"])
         self.provider.refresh_from_db()
         self.assertEqual(self.provider.legacy_acs_url, SECOND)
+
+
+class TestLegacyACSURLWrites(TestCase):
+    """Exercise the SQL issued by instances running before migration 0025."""
+
+    @classmethod
+    def setUpTestData(cls):
+        old_apps = (
+            MigrationLoader(connection)
+            .project_state(
+                [("authentik_providers_saml", "0024_samlprovider_jwt_federation_providers")]
+            )
+            .apps
+        )
+        cls.old_provider_model = old_apps.get_model("authentik_providers_saml", "SAMLProvider")
+
+    def test_old_insert(self):
+        """An old instance can insert a provider without supplying the new JSON column."""
+        old = self.old_provider_model.objects.create(name=generate_id(), acs_url=DEFAULT)
+        provider = SAMLProvider.objects.get(pk=old.pk)
+        self.assertEqual(provider.acs_urls, [SAMLACSURL(url=DEFAULT, is_default=True)])
+        self.assertEqual(provider.acs_url, DEFAULT)
+        self.assertTrue(
+            SAMLProvider.objects.filter(_acs_urls__contains=[{"url": DEFAULT}]).exists()
+        )
+
+    def test_old_update_preserves_other_entries(self):
+        """An old URL edit replaces only the selected default, retaining its index."""
+        provider = create_provider()
+        new_url = "https://sp.example.com/new"
+        self.old_provider_model.objects.filter(pk=provider.pk).update(acs_url=new_url)
+        provider.refresh_from_db()
+        self.assertEqual(provider.acs_url, new_url)
+        self.assertEqual(provider.default_acs_url.index, 1)
+        self.assertEqual([entry.url for entry in provider.acs_urls], [SECOND, new_url, REGEX])
+        provider.name = generate_id()
+        provider.save()
+        old = self.old_provider_model.objects.get(pk=provider.pk)
+        self.assertEqual(old.acs_url, new_url)
+
+    def test_old_update_implicit_default(self):
+        """Without an explicit default, an old edit changes the first strict entry."""
+        provider = create_provider()
+        provider.acs_urls = [
+            SAMLACSURL(url=REGEX, matching_mode=SAMLACSURLMatchingMode.REGEX),
+            SAMLACSURL(url=SECOND, index=2),
+            SAMLACSURL(url=DEFAULT, index=1),
+        ]
+        provider.save()
+        self.old_provider_model.objects.filter(pk=provider.pk).update(acs_url=DEFAULT)
+        provider.refresh_from_db()
+        self.assertEqual(provider.acs_urls[0].url, REGEX)
+        self.assertEqual(provider.default_acs_url, SAMLACSURL(url=DEFAULT, index=2))
+
+    def test_new_list_update_is_visible_to_old_instances(self):
+        """New writes select the same default for old and new instances."""
+        provider = create_provider()
+        provider.acs_urls = [SAMLACSURL(url=SECOND, index=2, is_default=True)]
+        provider.save(update_fields=["_acs_urls"])
+        self.assertEqual(self.old_provider_model.objects.get(pk=provider.pk).acs_url, SECOND)
 
 
 class TestSAMLProviderACSURLsAPI(APITestCase):

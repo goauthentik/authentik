@@ -103,6 +103,7 @@ class SAMLProvider(Provider):
 
     _acs_urls = models.JSONField(
         default=list,
+        db_default=[],
         verbose_name=_("ACS URLs"),
         help_text=_(
             "Assertion Consumer Service URLs the provider may send responses to. The default "
@@ -111,8 +112,9 @@ class SAMLProvider(Provider):
     )
     # Deprecated, replaced by `_acs_urls`. The `acs_url` column is kept, in sync with the
     # default ACS URL, so instances still running a previous version keep working during an
-    # upgrade. It isn't exposed in the API; use the `acs_url` property instead.
-    # TODO: Remove after 2026.11, and drop the column
+    # upgrade. A database trigger also copies writes by old instances into `_acs_urls`.
+    # It isn't exposed in the API; use the `acs_url` property instead.
+    # TODO: Remove after 2026.11, including the compatibility trigger and function
     legacy_acs_url = models.TextField(
         db_column="acs_url",
         default="",
