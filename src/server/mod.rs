@@ -335,14 +335,28 @@ async fn route_core_and_outpost(
 }
 
 fn build_router(server: &Arc<Server>) -> Result<Router> {
-    let core_router = core::build_router(server)?;
-    let proxy_router = outpost::proxy::embedded_router();
-
     metrics::describe_histogram!(
         "authentik_main_request_duration",
         metrics::Unit::Seconds,
         "API request latencies in seconds"
     );
+
+    Ok(main_router(
+        core::build_router(server)?,
+        outpost::proxy::embedded_router(),
+        Arc::clone(&server.proxy_outpost),
+    ))
+}
+
+fn main_router(
+    core_router: Router,
+    proxy_router: Router,
+    proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>,
+) -> Router {
+    // Only requests to core have a body size limit. Applications behind the
+    // embedded outpost accept uploads of any size, as they do behind a
+    // standalone outpost.
+    let core_router = core_router.layer(make_request_body_limit_layer());
 
     let router = if config::get().outposts.disable_embedded_outpost {
         Router::new()
@@ -350,12 +364,11 @@ fn build_router(server: &Arc<Server>) -> Result<Router> {
         Router::new().route("/outpost.goauthentik.io/ping", any(StatusCode::NO_CONTENT))
     };
 
-    Ok(router
+    router
         .fallback(any(route_core_and_outpost))
-        .with_state((core_router, proxy_router, Arc::clone(&server.proxy_outpost)))
+        .with_state((core_router, proxy_router, proxy_outpost))
         .layer(from_fn(host_middleware))
         .layer(from_fn(trusted_proxy_middleware))
-        .layer(make_request_body_limit_layer()))
 }
 
 pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
@@ -516,5 +529,52 @@ mod tests {
         get(&client).await;
 
         assert_eq!(accepted.load(Ordering::SeqCst), 1);
+    }
+
+    /// Applications behind the embedded outpost take uploads of any size,
+    /// while core keeps its limit on request bodies.
+    #[tokio::test]
+    async fn only_core_limits_request_body_size() {
+        // One byte over the limit.
+        const BODY_SIZE: usize = 32 * 1024 * 1024 + 1;
+
+        std::env::set_current_dir(env!("CARGO_MANIFEST_DIR")).expect("chdir to crate root");
+        config::init().expect("init config");
+        let read_body = || {
+            Router::new().fallback(async |request: Request| {
+                request
+                    .into_body()
+                    .collect()
+                    .await
+                    .expect("failed to read body");
+            })
+        };
+        let upload = |host| {
+            Request::builder()
+                .method("POST")
+                .header(HOST, host)
+                .header("content-length", BODY_SIZE)
+                .body(Body::from(vec![0_u8; BODY_SIZE]))
+                .expect("failed to build request")
+        };
+        let proxy_outpost = ProxyOutpost::with_app("app.example.com").await;
+        let router = main_router(
+            read_body(),
+            read_body(),
+            Arc::new(ArcSwapOption::from_pointee(proxy_outpost)),
+        );
+
+        let response = router
+            .clone()
+            .oneshot(upload("app.example.com"))
+            .await
+            .expect("infallible");
+        assert_eq!(response.status(), StatusCode::OK);
+
+        let response = router
+            .oneshot(upload("authentik.example.com"))
+            .await
+            .expect("infallible");
+        assert_eq!(response.status(), StatusCode::PAYLOAD_TOO_LARGE);
     }
 }

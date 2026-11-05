@@ -1,6 +1,6 @@
 use std::{collections::HashMap, sync::Arc};
 
-use ak_axum::router::{make_request_body_limit_layer, wrap_router};
+use ak_axum::router::wrap_router;
 use ak_client::{apis::outposts_api::outposts_proxy_list, models::ProxyMode};
 use ak_common::{
     Tasks,
@@ -295,5 +295,43 @@ fn build_router(outpost: Arc<ProxyOutpost>) -> Router {
             .with_state(outpost),
         true,
     )
-    .layer(make_request_body_limit_layer())
+}
+
+#[cfg(test)]
+impl ProxyOutpost {
+    /// An outpost serving one proxy-mode application on `host`, built without
+    /// fetching its configuration from authentik.
+    pub(crate) async fn with_app(host: &str) -> Self {
+        let outpost = Self {
+            controller: Arc::new(OutpostController {
+                api_config: ak_client::apis::configuration::Configuration::default(),
+                outpost: ArcSwap::from_pointee(ak_client::models::Outpost::default()),
+                instance_uuid: uuid::Uuid::nil(),
+                reload_offset: std::time::Duration::ZERO,
+                m_info: metrics::Gauge::noop(),
+                m_last_update: metrics::Gauge::noop(),
+                m_connection: metrics::Gauge::noop(),
+            }),
+            backchannel_client: BackchannelClient::new(reqwest::Client::builder())
+                .expect("backchannel client"),
+            apps: ArcSwap::from_pointee(HashMap::new()),
+            certificate_store: CertificateStore::new(),
+            default_cert: Arc::new(
+                tls::self_signed::generate_certifiedkey().expect("default certificate"),
+            ),
+        };
+        let provider = ak_client::models::ProxyOutpostConfig {
+            external_host: format!("http://{host}"),
+            cookie_secret: Some("0123456789abcdef0123456789abcdef".to_owned()),
+            mode: Some(ProxyMode::Proxy),
+            ..Default::default()
+        };
+        let app = Application::new(&outpost, provider)
+            .await
+            .expect("application");
+        outpost
+            .apps
+            .store(Arc::new(HashMap::from([(host.to_owned(), Arc::new(app))])));
+        outpost
+    }
 }
