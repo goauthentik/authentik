@@ -11,8 +11,6 @@ from authentik.enterprise.providers.oauth2_cimd.constants import (
 )
 from authentik.enterprise.providers.oauth2_cimd.errors import CIMDError
 
-_STRING_RE = re.compile(r'"(?:[^"\\]|\\.)*"', re.DOTALL)
-_BRACKET_RE = re.compile(r"[\[\]{}]")
 _MEDIA_TYPE_SUFFIX_RE = re.compile(r"^application/[a-z0-9!#$&^_.+-]+\+json$")
 
 
@@ -43,12 +41,23 @@ def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
 
 def _nesting_exceeds(text: str, limit: int) -> bool:
     depth = 0
-    for match in _BRACKET_RE.finditer(_STRING_RE.sub("", text)):
-        if match.group() in "[{":
+    in_string = False
+    escaped = False
+    for character in text:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == '"':
+                in_string = False
+        elif character == '"':
+            in_string = True
+        elif character in "[{":
             depth += 1
             if depth > limit:
                 return True
-        else:
+        elif character in "]}":
             depth -= 1
     return False
 

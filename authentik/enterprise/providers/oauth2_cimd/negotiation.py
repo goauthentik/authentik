@@ -7,7 +7,6 @@ from authentik.enterprise.providers.oauth2_cimd.constants import (
     AUTH_METHOD_NONE,
     AUTH_METHOD_PRIVATE_KEY_JWT,
     GRANT_AUTHORIZATION_CODE,
-    GRANT_CLIENT_CREDENTIALS,
     GRANT_DEVICE_CODE,
     GRANT_JWT_BEARER,
     GRANT_REFRESH_TOKEN,
@@ -79,7 +78,6 @@ MANAGED_PROFILE = ClientProfile(
         (
             GRANT_AUTHORIZATION_CODE,
             GRANT_REFRESH_TOKEN,
-            GRANT_CLIENT_CREDENTIALS,
             GRANT_DEVICE_CODE,
             GRANT_TOKEN_EXCHANGE,
             GRANT_JWT_BEARER,

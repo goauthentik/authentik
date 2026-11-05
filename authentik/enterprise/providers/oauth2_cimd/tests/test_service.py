@@ -492,7 +492,9 @@ class TestInvalidation(TestCase):
             return entry
 
         service._fetch = fetch_then_invalidate
-        service.resolve(CLIENT_ID, PUBLIC_PROFILE)
+        with self.assertRaises(MetadataUnavailable) as ctx:
+            service.resolve(CLIENT_ID, PUBLIC_PROFILE)
+        self.assertEqual(ctx.exception.code, "invalidated")
         service._fetch = original_fetch
         service.resolve(CLIENT_ID, PUBLIC_PROFILE)
         self.assertEqual(len(transport.requests), 2)
@@ -559,7 +561,7 @@ def wait_for_waiters(service: ClientMetadataService, count: int):
     entry_key = service._entry_key(Kind.METADATA, CLIENT_ID)
 
     def ready():
-        flight = service._flights.get(entry_key)
+        flight = service._flights.get((entry_key, service._generation(CLIENT_ID), None))
         return flight is not None and flight.waiters >= count
 
     wait_until(ready)
@@ -654,7 +656,7 @@ class TestCoalescing(TestCase):
         follower, transport, _ = make_service(
             {CLIENT_ID: json_response(public_document())}, shared_cache=shared
         )
-        lock_key = follower._lock_key(follower._entry_key(Kind.METADATA, CLIENT_ID))
+        lock_key = follower._lock_key(follower._entry_key(Kind.METADATA, CLIENT_ID)) + ":0"
         shared.add(lock_key, "other-worker", timeout=30)
         follower._sleep = lambda seconds: shared.delete(lock_key)
         with self.assertRaises(MetadataUnavailable) as ctx:
@@ -670,7 +672,7 @@ class TestCoalescing(TestCase):
         follower, transport, _ = make_service(
             {CLIENT_ID: json_response(public_document())}, shared_cache=shared
         )
-        lock_key = follower._lock_key(follower._entry_key(Kind.METADATA, CLIENT_ID))
+        lock_key = follower._lock_key(follower._entry_key(Kind.METADATA, CLIENT_ID)) + ":0"
         shared.add(lock_key, "stuck-worker", timeout=30)
         with self.assertRaises(MetadataUnavailable) as ctx:
             follower.resolve(CLIENT_ID, PUBLIC_PROFILE)
