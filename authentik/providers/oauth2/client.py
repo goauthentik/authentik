@@ -16,6 +16,11 @@ its own client. Other registration kinds are supplied by components outside core
 which add their own selectors and adapters, and subclass ``OAuthClientContext`` to
 carry their own client attributes. Legacy resolution never fetches anything from the
 network; a registered ``client_id`` that happens to be an HTTPS URL is a static client.
+
+How a client authenticates is part of its context too: ``token_endpoint_auth_method``
+and ``authenticate``. Callers resolve the client first and let it authenticate the
+presented credentials, so the method is decided by the client's registration, never by
+which parameters a request happens to carry.
 """
 
 from collections.abc import Sequence
@@ -27,6 +32,12 @@ from typing import TYPE_CHECKING
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.providers.oauth2.client_auth import (
+    ClientAuthentication,
+    ClientAuthenticationError,
+    ClientAuthMethod,
+    PresentedClientCredentials,
+)
 from authentik.providers.oauth2.models import ClientType, OAuth2Provider, RedirectURI
 
 if TYPE_CHECKING:
@@ -83,15 +94,62 @@ class OAuthClientContext:
         return self.client_type == ClientType.CONFIDENTIAL
 
     def check_client_secret(self, client_secret: str) -> bool:
-        """Check a shared client secret. Only legacy clients have shared secrets;
-        subclasses for other registration kinds authenticate clients differently.
-
-        Non-legacy confidential clients are intentionally unauthenticatable (this always
-        returns False) until a subclass overrides this method; that arrives in
-        `cimd/11-private-key-jwt`."""
+        """Check a shared client secret. Only legacy clients have shared secrets, so this
+        always returns False for other registration kinds: their subclasses authenticate
+        clients by overriding ``token_endpoint_auth_method`` and ``authenticate`` (for
+        example with ``private_key_jwt``), and a confidential client of a kind that
+        doesn't is unauthenticatable."""
         if not self.is_legacy:
             return False
         return compare_digest(self.provider.client_secret, client_secret)
+
+    @property
+    def token_endpoint_auth_method(self) -> ClientAuthMethod:
+        """How this client authenticates (RFC 7591 ``token_endpoint_auth_method``).
+
+        Confidential legacy clients report ``client_secret_basic``, RFC 7591's default,
+        and accept ``client_secret_post`` as well, as they always have. Public clients
+        report ``none``. Subclasses for other registration kinds override this together
+        with ``authenticate``."""
+        if self.is_confidential:
+            return ClientAuthMethod.CLIENT_SECRET_BASIC
+        return ClientAuthMethod.NONE
+
+    def authenticate(
+        self, request: HttpRequest | None, credentials: PresentedClientCredentials
+    ) -> ClientAuthentication:
+        """Authenticate this client with the ``credentials`` presented in ``request``.
+        Raises ``ClientAuthenticationError``.
+
+        Called once the client was resolved from ``credentials.client_id``. The client
+        decides how it authenticates; presenting different credentials never selects
+        another method. Subclasses for other registration kinds override this together
+        with ``token_endpoint_auth_method``.
+
+        Legacy clients behave as the token endpoint always has: a confidential client
+        presents its shared secret (Basic or POST), checked with
+        ``check_client_secret``; a public client is not authenticated, and anything it
+        presents is ignored. A client assertion never authenticates a confidential
+        legacy client. (The ``client_assertion`` of the ``client_credentials`` grant is
+        a federated *user* JWT handled by that grant, not client authentication.)"""
+        from authentik.providers.oauth2.utils import is_all_vschar
+
+        if credentials.client_id != self.client_id:
+            raise ClientAuthenticationError("client_id_mismatch")
+        if not self.is_confidential:
+            return ClientAuthentication(client=self, method=ClientAuthMethod.NONE)
+        if credentials.method == ClientAuthMethod.PRIVATE_KEY_JWT:
+            raise ClientAuthenticationError("auth_method_not_allowed")
+        secret = credentials.client_secret
+        if (
+            credentials.method
+            not in (ClientAuthMethod.CLIENT_SECRET_BASIC, ClientAuthMethod.CLIENT_SECRET_POST)
+            or secret is None
+            or not is_all_vschar(secret)
+            or not self.check_client_secret(secret)
+        ):
+            raise ClientAuthenticationError("invalid_secret")
+        return ClientAuthentication(client=self, method=ClientAuthMethod(credentials.method))
 
     @staticmethod
     def for_provider(provider: OAuth2Provider) -> OAuthClientContext:
