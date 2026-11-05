@@ -17,6 +17,8 @@ class CaptchaStageSerializer(StageSerializer):
             "private_key",
             "js_url",
             "api_url",
+            "cap_wasm_url",
+            "cap_hashwx_wasm_url",
             "request_content_type",
             "interactive",
             "score_min_threshold",

@@ -382,6 +382,28 @@ export class CaptchaStage
 
     //#region Loading
 
+    #applyCapWasmOverrides(): void {
+        const scope = globalThis as typeof globalThis & {
+            CAP_CUSTOM_WASM_URL?: string;
+            CAP_CUSTOM_HASHWX_URL?: string;
+        };
+
+        const wasmUrl = this.challenge?.capWasmUrl;
+        const hashwxUrl = this.challenge?.capHashwxWasmUrl;
+
+        if (wasmUrl) {
+            scope.CAP_CUSTOM_WASM_URL = wasmUrl;
+        } else {
+            delete scope.CAP_CUSTOM_WASM_URL;
+        }
+
+        if (hashwxUrl) {
+            scope.CAP_CUSTOM_HASHWX_URL = hashwxUrl;
+        } else {
+            delete scope.CAP_CUSTOM_HASHWX_URL;
+        }
+    }
+
     async #load(): Promise<void> {
         const generation = ++this.#loadGeneration;
 
@@ -396,6 +418,8 @@ export class CaptchaStage
 
             return;
         }
+
+        this.#applyCapWasmOverrides();
 
         const challengeURL = new URL(source);
         const resolution = CaptchaController.resolve(CaptchaStage.controllers, challengeURL);
