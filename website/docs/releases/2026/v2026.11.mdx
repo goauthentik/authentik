@@ -6,7 +6,7 @@ draft: true
 
 ## Highlights
 
-{/* @dominic-r TODO: drop the managed secrets, password lockout, and required actions highlights if #25415, #24794, or #24846 miss 2026.11. */}
+{/* @dominic-r TODO: drop the managed secrets highlight if #25415 misses 2026.11. */}
 
 - **Managed secrets**: Store the credentials of providers, sources, and stages as secrets with their own permissions, audit trail, and rotation.
 - **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
@@ -132,11 +132,23 @@ When a SAML provider has a verification certificate, logout requests and logout 
 
 ### Passwords are stored as authenticator devices
 
-{/* @dominic-r TODO: move the "Passwords stored as authenticator devices" section from #24801 here. */}
+Password hashes are now stored on password devices belonging to users. Existing passwords migrate automatically during upgrade.
+
+Expressions can still read `user.password` and `user.password_change_date`. Expressions that change a password must use `PasswordDevice.set_password(user, password)` or `PasswordDevice.set_unusable_password(user)` from `authentik.stages.password.models`; `user.set_password()` and `user.set_unusable_password()` now raise an error.
+
+Password devices are excluded from MFA discovery and validation. Their lock state can be managed through the [password authenticator API](../../add-secure-apps/flows-stages/stages/password/index.mdx#manage-locks-through-the-api).
 
 ### Credentials move to managed secrets
 
 {/* @dominic-r TODO: fill in from #26095–#26103. Old credential field names fail with an error that names the `<field>_ref` replacement; list the affected providers, sources, and stages, and the blueprint and API changes. */}
+
+### Source icons are no longer inverted in dark mode
+
+In dark mode, authentik used to invert the colors of every source icon on the login page, in the user settings, and in the Admin interface's **Create** wizards. This turned colored logos into the wrong colors, for example Discord's blue into yellow. Source icons now keep their original colors.
+
+The built-in source and provider icons have been refreshed, and each now has a light and a dark version in its own folder, such as `/static/authentik/sources/github/%(theme)s.svg`. The previous files, such as `/static/authentik/sources/github.svg`, have been removed. Icons, logos, and backgrounds that pointed at them are updated to the new paths during the upgrade.
+
+If you set a custom source icon that relied on the inversion, such as a black logo, it will be hard to see in dark mode. Upload a version for each theme and use `%(theme)s` in the source's **Icon** field. For more details, refer to [Source icons in light and dark themes](../../customize/file-picker.mdx#source-icons-in-light-and-dark-themes).
 
 ### API changes
 
@@ -150,37 +162,7 @@ The following API changes may require updates to scripts and API clients:
 - Tokens return their owner in `user_obj` as a partial user, without groups, roles, or computed fields. The same applies to `token_obj` in SCIM sources and SSF providers.
 - In the generated API clients, the WS-Federation provider's `SamlVersionEnum` type has been renamed to `WSFedSAMLVersionEnum`. The values sent over the API are unchanged.
 
-### Applications API split into RBAC and policy access
-
-`GET /core/applications/` now lists applications the way other admin API endpoints do: it only returns applications the user has the `authentik_core.view_application` permission for, and does not evaluate policies. The `superuser_full_list`, `for_user`, and `only_with_launch_url` parameters have been removed from it.
-
-To list the applications a user can access based on policy bindings, as shown on the **Application Dashboard**, use the new `GET /core/applications/@accessible/` endpoint. It accepts the `for_user` and `only_with_launch_url` parameters. Update API clients and scripts that relied on the previous behavior of `/core/applications/`.
-
-### Password hash import settings
-
-Bootstrap and API password hash imports now enforce the [password hash import settings](../../core/password-hashes.mdx#password-hash-import-settings). Existing stored hashes and blueprint imports are unchanged.
-
-Generate a replacement hash with the target authentik version. API clients can use the override for another supported hash, but bootstrap imports do not support an override.
-
-### Source icons are no longer inverted in dark mode
-
-In dark mode, authentik used to invert the colors of every source icon on the login page, in the user settings, and in the Admin interface's **Create** wizards. This turned colored logos into the wrong colors, for example Discord's blue into yellow. Source icons now keep their original colors.
-
-The built-in source and provider icons have been refreshed, and each now has a light and a dark version in its own folder, such as `/static/authentik/sources/github/%(theme)s.svg`. The previous files, such as `/static/authentik/sources/github.svg`, have been removed. Icons, logos, and backgrounds that pointed at them are updated to the new paths during the upgrade.
-
-If you set a custom source icon that relied on the inversion, such as a black logo, it will be hard to see in dark mode. Upload a version for each theme and use `%(theme)s` in the source's **Icon** field. See [Source icons in light and dark themes](../../customize/file-picker.mdx#source-icons-in-light-and-dark-themes).
-
 ## New features and improvements
-
-- **Configurable SAML assertion encryption algorithm**: SAML providers now support AES128-CBC, AES256-CBC, AES128-GCM, and AES256-GCM for assertion encryption. New providers default to AES256-GCM, while existing providers retain AES128-CBC for compatibility. When you import SP metadata, authentik selects the first supported algorithm in the SP's order of preference. See [Encryption algorithm](../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm) for details and guidance on updating existing providers.
-- **SAML source metadata advertises encryption algorithms**: When an encryption keypair is configured, a SAML source's service provider metadata now advertises supported encryption algorithms in `<EncryptionMethod>` elements, with AES256-GCM listed first.
-
-- **Distroless server image**: The server image is now also published as a distroless variant, with the same name and a `-distroless` suffix on each tag, for example `ghcr.io/goauthentik/server:2026.11.0-distroless` or `ghcr.io/goauthentik/server:2026.11-distroless`. It contains only what authentik needs at runtime, without a shell or a package manager. To use it, set `AUTHENTIK_TAG=2026.11.0-distroless` in your `.env` file, or `global.image.tag: 2026.11.0-distroless` in your Helm values, and update the tag with each upgrade. The regular image stays the default, and debugging with `AUTHENTIK_DEBUGGER` needs it.
-- **DB-IP GeoIP databases**: The server image now bundles the free [DB-IP](https://db-ip.com) Lite City and ASN databases instead of the MaxMind GeoLite2 databases. The default paths are now `/geoip/dbip-city-lite.mmdb` and `/geoip/dbip-asn-lite.mmdb`. If you mount your own MaxMind databases to `/geoip`, they keep working: when the DB-IP file is missing, authentik falls back to the previous `GeoLite2-City.mmdb` and `GeoLite2-ASN.mmdb` filenames and logs a warning. See [GeoIP](../../sys-mgmt/ops/geoip.mdx).
-
-### Duplicate WebAuthn enrollment prevented by the authenticator
-
-The [WebAuthn authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) now sends the user's already-enrolled credentials in the `excludeCredentials` registration parameter. An authenticator that already holds a credential for the account refuses to create another one, so the same security key can no longer be enrolled twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8.
 
 ### Managed secrets
 
@@ -190,11 +172,15 @@ Credentials for providers, sources, and stages can be stored as managed secrets 
 
 ### Password lockout :ak-enterprise
 
-{/* @dominic-r TODO: move the "Password lockout" section from #24801 here. */}
+The [Password stage](../../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) can lock password login after a configured number of consecutive failed attempts. Lockout is disabled by default and also works when password validation is embedded in an Identification stage.
+
+Administrators with permission to view a user and reset their password can use **Lock password login** or **Unlock password login** on the user's details page. Changing the password preserves the lock. Existing sessions and passwordless authentication are unaffected. App passwords submitted through password stages also obey the lock. Optional warning and lockout messages help users understand failed attempts, and lock transitions appear in the audit log.
+
+An Enterprise license is required to create new locks. Existing locks remain enforced without a valid license, and administrators can still unlock them.
 
 ### Required actions :ak-enterprise
 
-{/* @dominic-r TODO: move the "Required actions" section from #24848 here. */}
+Administrators can require users to complete one or more flows, such as changing their password or setting up an authenticator, before they can continue. Actions apply on the user's next request, including in sessions that are already logged in, and are cleared as the user completes them. For more details, refer to the [required actions documentation](../../users-sources/user/required_actions.mdx).
 
 ### Single sign-on into devices managed by the authentik Agent
 
@@ -268,11 +254,17 @@ authentik only changes `jit` while it has PostgreSQL's built-in default, and onl
 
 The server image is now also published as a distroless variant, with the same name and a `-distroless` suffix on each tag, for example `ghcr.io/goauthentik/server:2026.11.0-distroless` or `ghcr.io/goauthentik/server:2026.11-distroless`. It contains only what authentik needs at runtime, without a shell or a package manager. To use it, set `AUTHENTIK_TAG=2026.11.0-distroless` in your `.env` file, or `global.image.tag: 2026.11.0-distroless` in your Helm values, and update the tag with each upgrade. The regular image remains the default, and you need it to debug with `AUTHENTIK_DEBUGGER`.
 
+### Custom permissions and permission checks :ak-preview
+
+Define your own permissions on authentik's models and assign them to roles like built-in permissions. A permission check is Python code that you bind to API endpoints. It has the final say on access: it can deny or grant requests, narrow or widen lists, hide fields or make them read-only, and change responses. Permission checks are disabled by default; enable them with the **Custom permissions** [setting](../../sys-mgmt/settings.mdx#custom-permissions). For details, refer to [Custom permissions and permission checks](../../users-sources/access-control/custom_permissions.mdx).
+
+**Initial Permissions** has moved from **Directory** to **Customization** in the Admin interface, next to **Custom Permissions** and **Permission Checks**.
+
 ### Small general improvements
 
 - **SCIM provider**: Providers can authenticate with HTTP Basic authentication. Discovery only links remote users and groups to authentik users and groups that are within the provider's synchronization scope, so cleanup no longer deletes remote accounts that authentik should not manage. For more details, refer to the [SCIM provider documentation](../../add-secure-apps/providers/scim/index.mdx).
 - **RADIUS provider**: Property mappings can return a dictionary of attributes, and the new `vendor_attribute()` helper defines vendor-specific attributes. A failing mapping is skipped instead of discarding every attribute. For more details, refer to the [RADIUS provider documentation](../../add-secure-apps/providers/radius/index.mdx).
-- **OAuth2 provider**: CORS checks apply regular-expression redirect URIs to the request's origin, so browser-based applications that use them can call the token endpoint.
+- **OAuth2 provider**: CORS checks apply regular-expression redirect URIs to the request's origin, so browser-based applications that use them can call the token endpoint. Authorization errors honor the requested `response_mode`, preserve existing callback query parameters, and correctly encode `state` values that contain special characters.
 - **Token exchange**: An OAuth2 provider's JWT can be exchanged for a SAML response from a SAML provider that lists it under **Federated OAuth2/OpenID Providers**, for example to call AWS `AssumeRoleWithSAML`. Exchanged tokens keep the subject token's chain of `act` claims, up to 10 levels deep.
 - **SAML and WS-Federation providers**: Assertions can be encrypted with AES128-CBC, AES256-CBC, AES128-GCM, or AES256-GCM. New providers default to AES256-GCM, and existing providers keep AES128-CBC. Importing SP metadata selects the first algorithm in the SP's order of preference that authentik supports. For more details, including how to update existing providers, refer to [Encryption algorithm](../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm).
 - **OpenID Connect sources**: Sources can be configured as public clients without a client secret when PKCE is enabled.
@@ -290,6 +282,7 @@ The server image is now also published as a distroless variant, with the same na
 - **Default brand**: Set `AUTHENTIK_DEFAULT_BRAND_ENABLED=false` to prevent the default brand blueprint from marking its brand as the default.
 - **Forms**: Search fields in Admin interface forms have been rebuilt for keyboard and screen reader use, and the current selection stays visible.
 - **Update banner**: The Admin interface shows a banner when a newer version is available. For a security release, the banner is red and labels the release as a security release.
+- **DB-IP GeoIP databases**: The server image now bundles the free [DB-IP](https://db-ip.com) Lite City and ASN databases instead of the MaxMind GeoLite2 databases. The default paths are now `/geoip/dbip-city-lite.mmdb` and `/geoip/dbip-asn-lite.mmdb`. If you mount your own MaxMind databases to `/geoip`, they keep working: when the DB-IP file is missing, authentik falls back to the previous `GeoLite2-City.mmdb` and `GeoLite2-ASN.mmdb` filenames and logs a warning. For more details, refer to the [GeoIP documentation](../../sys-mgmt/ops/geoip.mdx).
 - **Content Security Policy**: Rendered documentation in the Admin interface no longer requires `'unsafe-eval'`.
 
 ## New integration guides
@@ -317,38 +310,6 @@ The following source guides were recently added. A big thanks to our contributor
 - [JumpCloud directory sync](../../users-sources/sources/directory-sync/jumpcloud/index.mdx)
 - [Okta (SAML)](../../users-sources/sources/social-logins/okta/index.mdx)
 - [PingOne](../../users-sources/sources/social-logins/pingone/index.mdx)
-
-### Password lockout :ak-enterprise
-
-The [Password stage](../../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) can lock password login after a configured number of consecutive failed attempts. Lockout is disabled by default and also works when password validation is embedded in an Identification stage.
-
-Administrators with permission to view a user and reset their password can use **Lock password login** or **Unlock password login** on the user's details page. Changing the password preserves the lock. Existing sessions and passwordless authentication are unaffected. App passwords submitted through password stages also obey the lock. Optional warning and lockout messages help users understand failed attempts, and lock transitions appear in the audit log.
-
-An Enterprise license is required to create new locks. Existing locks remain enforced without a valid license, and administrators can still unlock them.
-
-### Passwords stored as authenticator devices
-
-Password hashes are now stored on password devices belonging to users. Existing passwords migrate automatically during upgrade.
-
-Expressions can still read `user.password` and `user.password_change_date`. Expressions that change a password must use `PasswordDevice.set_password(user, password)` or `PasswordDevice.set_unusable_password(user)` from `authentik.stages.password.models`; `user.set_password()` and `user.set_unusable_password()` now raise an error.
-
-Password devices are excluded from MFA discovery and validation. Their lock state can be managed through the [password authenticator API](../../add-secure-apps/flows-stages/stages/password/index.mdx#manage-locks-through-the-api).
-
-### Required actions :ak-enterprise
-
-Administrators can require users to complete one or more flows, such as changing their password or setting up an authenticator, before they can continue. Actions apply on the user's next request, including in sessions that are already logged in, and are cleared as the user completes them. See [Required actions](../../users-sources/user/required_actions.mdx).
-
-### PostgreSQL JIT compilation is disabled
-
-authentik now disables PostgreSQL's just-in-time (JIT) compilation for its own database user when it starts. In load tests, disabling JIT resolved a slowdown that built up over several hours. PostgreSQL 19 makes the same change to its default.
-
-authentik only changes `jit` while it has PostgreSQL's built-in default, and only for the user that authentik connects as, in the authentik database. If you have set `jit` explicitly, authentik leaves it unchanged. For details, including how to keep JIT enabled, see [authentik disables JIT compilation](../../troubleshooting/postgres/slow-queries.mdx#authentik-disables-jit-compilation).
-
-### Custom permissions and permission checks :ak-preview
-
-Define your own permissions on authentik's models and assign them to roles like built-in permissions. A permission check is Python code that you bind to API endpoints. It has the final say on access: it can deny or grant requests, narrow or widen lists, hide fields or make them read-only, and change responses. Permission checks are disabled by default; enable them with the **Custom permissions** [setting](../../sys-mgmt/settings.mdx#custom-permissions). For details, refer to [Custom permissions and permission checks](../../users-sources/access-control/custom_permissions.mdx).
-
-**Initial Permissions** has moved from **Directory** to **Customization** in the Admin interface, next to **Custom Permissions** and **Permission Checks**.
 
 ## Upgrading
 
@@ -395,8 +356,6 @@ Run `SHOW server_encoding;` to check. Converting an existing database means dump
 The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` setting and its read replica and direct connection equivalents were [deprecated in 2026.5](./v2026.5.mdx#postgresql-custom-connection-options-are-deprecated) and will be removed in an upcoming version. If you rely on a specific connection option, open an issue to discuss alternatives.
 
 ## Minor changes/fixes
-
-- [OAuth2 provider](../../add-secure-apps/providers/oauth2/index.mdx) authorization errors now honor the requested `response_mode`, preserve existing callback query parameters, and correctly encode `state` values containing special characters.
 
 <!-- _Insert the output of `make gen-changelog` here_ -->
 
