@@ -48,12 +48,8 @@ export class InvitationListLink extends AKElement {
         if (this.invitation?.flowObj) {
             this.selectedFlow = this.invitation.flowObj?.slug;
         }
-<<<<<<< HEAD
-        return `${window.location.protocol}//${window.location.host}/if/flow/${this.selectedFlow}/?itoken=${this.invitation?.pk}`;
-=======
 
         return `${globalAK().api.base}if/flow/${this.selectedFlow}/?itoken=${this.invitation?.pk}`;
->>>>>>> c8585f523 (web: keep the web path in URLs the interfaces build (#27291))
     }
 
     renderFlowSelector(): TemplateResult {

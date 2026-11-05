@@ -76,16 +76,11 @@ test("airgap: style references no absolute URLs", () => {
 });
 
 test("dark theme swaps palette", () => {
-<<<<<<< HEAD
-    const dark = buildHexworldStyle({ archiveURL: "/x.pmtiles", theme: "dark" });
-=======
     const dark = buildHexworldStyle({
         archiveURL: "/x.pmtiles",
         glyphsURL: "/x.pbf",
         theme: "dark",
     });
-
->>>>>>> c8585f523 (web: keep the web path in URLs the interfaces build (#27291))
     const bg = (spec: typeof style) =>
         paintOf(layerById(spec, "hexworld-background"))["background-color"];
     expect(bg(dark)).not.toBe(bg(style));
@@ -143,12 +138,7 @@ test("bandFadeOpacity cross-fades bands at their boundaries", () => {
 });
 
 test("hex and border layers use the band fade", () => {
-<<<<<<< HEAD
-    const faded = buildHexworldStyle({ archiveURL: "/x.pmtiles" });
-=======
     const faded = buildHexworldStyle({ archiveURL: "/x.pmtiles", glyphsURL: "/x.pbf" });
-
->>>>>>> c8585f523 (web: keep the web path in URLs the interfaces build (#27291))
     const opacity = (id: string, property: string) =>
         (paintOf(layerById(faded, id))[property] as unknown[])[0];
     expect(opacity("hexworld-hex", "fill-opacity")).toBe("interpolate");

@@ -131,19 +131,9 @@ export class RacInterface extends WithBrandConfig(Interface) {
     }
 
     async firstUpdated(): Promise<void> {
-<<<<<<< HEAD
         this.updateTitle();
-        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${window.location.host}/ws/rac/${this.token}/`;
-        this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
-        this.tunnel.receiveTimeout = 10 * 1000; // 10 seconds
-=======
-        this.synchronizeTitle();
-
         this.tunnel = new Guacamole.WebSocketTunnel(websocketURL(`ws/rac/${this.token}/`));
-        this.tunnel.receiveTimeout = 10 * 1000;
-
-        // 10 seconds
->>>>>>> c8585f523 (web: keep the web path in URLs the interfaces build (#27291))
+        this.tunnel.receiveTimeout = 10 * 1000; // 10 seconds
         this.tunnel.onerror = (status) => {
             console.debug("authentik/rac: tunnel error: ", status);
             this.reconnect();

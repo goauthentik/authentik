@@ -7,14 +7,11 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
-import { docLink } from "#common/global";
+import { AndNext } from "#common/api/config";
+import { docLink, globalAK } from "#common/global";
 import { groupBy } from "#common/utils";
 
 import { IconEditButton, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
-<<<<<<< HEAD
-=======
-import { toAdminInterface, toFlowInterface } from "#elements/router/core/interfaces";
->>>>>>> c8585f523 (web: keep the web path in URLs the interfaces build (#27291))
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -103,9 +100,7 @@ export class FlowListPage extends TablePage<Flow> {
                     aria-label=${msg(str`Execute "${item.name}"`)}
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
-                        const finalURL = toFlowInterface(item.slug, {
-                            next: `${window.location.pathname}#${window.location.hash}`,
-                        });
+                        const finalURL = `${globalAK().api.base}if/flow/${item.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
 
                         window.open(finalURL, "_blank");
                     }}
