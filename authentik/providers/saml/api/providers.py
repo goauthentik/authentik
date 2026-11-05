@@ -328,7 +328,7 @@ class SAMLProviderFilter(FilterSet):
     class Meta:
         model = SAMLProvider
         fields = "__all__"
-        exclude = ["_acs_urls"]
+        exclude = ["_acs_urls", "legacy_acs_url"]
 
 
 class SAMLProviderViewSet(UsedByMixin, ModelViewSet):

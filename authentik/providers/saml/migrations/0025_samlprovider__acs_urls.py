@@ -10,7 +10,7 @@ def migrate_acs_url(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     for provider in SAMLProvider.objects.using(db_alias).all():
         provider._acs_urls = [
             {
-                "url": provider.acs_url,
+                "url": provider.legacy_acs_url,
                 "matching_mode": "strict",
                 "index": None,
                 "is_default": True,
@@ -28,8 +28,8 @@ def reverse_migrate_acs_url(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
         default = next((entry for entry in strict if entry.get("is_default")), None)
         if not default and strict:
             default = strict[0]
-        provider.acs_url = default["url"] if default else ""
-        provider.save(update_fields=["acs_url"])
+        provider.legacy_acs_url = default["url"] if default else ""
+        provider.save(update_fields=["legacy_acs_url"])
 
 
 class Migration(migrations.Migration):
@@ -52,14 +52,22 @@ class Migration(migrations.Migration):
                 verbose_name="ACS URLs",
             ),
         ),
+        # `acs_url` is replaced by `_acs_urls`. Keep the column for instances still running a
+        # previous version during an upgrade, and drop it in a later release.
         migrations.AlterField(
             model_name="samlprovider",
             name="acs_url",
-            field=models.TextField(default="", verbose_name="ACS URL"),
+            field=models.TextField(
+                db_column="acs_url",
+                default="",
+                help_text="Deprecated, use ACS URLs instead.",
+                verbose_name="ACS URL (deprecated)",
+            ),
+        ),
+        migrations.RenameField(
+            model_name="samlprovider",
+            old_name="acs_url",
+            new_name="legacy_acs_url",
         ),
         migrations.RunPython(migrate_acs_url, reverse_migrate_acs_url),
-        migrations.RemoveField(
-            model_name="samlprovider",
-            name="acs_url",
-        ),
     ]

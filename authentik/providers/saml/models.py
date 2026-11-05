@@ -109,6 +109,16 @@ class SAMLProvider(Provider):
             "entry is used for IdP-initiated logins and requests without an ACS URL."
         ),
     )
+    # Deprecated, replaced by `_acs_urls`. The `acs_url` column is kept, in sync with the
+    # default ACS URL, so instances still running a previous version keep working during an
+    # upgrade. It isn't exposed in the API; use the `acs_url` property instead.
+    # TODO: Remove after 2026.11, and drop the column
+    legacy_acs_url = models.TextField(
+        db_column="acs_url",
+        default="",
+        verbose_name=_("ACS URL (deprecated)"),
+        help_text=_("Deprecated, use ACS URLs instead."),
+    )
     sp_binding = models.TextField(
         choices=SAMLBindings.choices,
         default=SAMLBindings.REDIRECT,
@@ -321,6 +331,14 @@ class SAMLProvider(Provider):
     @acs_urls.setter
     def acs_urls(self, value: list[SAMLACSURL]):
         self._acs_urls = [asdict(entry) for entry in value]
+
+    def save(self, *args, **kwargs):
+        # Keep the deprecated column in sync, see `legacy_acs_url`
+        self.legacy_acs_url = self.acs_url
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None and "_acs_urls" in update_fields:
+            kwargs["update_fields"] = {*update_fields, "legacy_acs_url"}
+        super().save(*args, **kwargs)
 
     @property
     def default_acs_url(self) -> SAMLACSURL | None:
