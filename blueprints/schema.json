@@ -11659,7 +11659,8 @@
                         "sfdc",
                         "gitlab",
                         "webex",
-                        "vcenter"
+                        "vcenter",
+                        "zulip"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
