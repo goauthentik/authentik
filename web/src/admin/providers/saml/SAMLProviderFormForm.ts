@@ -1,7 +1,9 @@
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
+import "#elements/ak-array-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#admin/providers/saml/SAMLProviderACSURL";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -38,6 +40,8 @@ import {
 
 import {
     KeyTypeEnum,
+    MatchingModeEnum,
+    SAMLACSURL,
     SAMLBindingsEnum,
     SAMLNameIDPolicyEnum,
     SAMLProvider,
@@ -47,7 +51,39 @@ import {
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
+import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+const acsURLHelpMessages: string[] = [
+    msg(
+        "URLs the Service Provider may receive responses at. A request's ACS URL or index must match one of these.",
+        { id: "provider.saml.acs-urls.description" },
+    ),
+    msg(
+        "The default URL is used for IdP-initiated logins and for requests that don't specify an ACS URL. Without an explicit default, the first strict URL is used.",
+        { id: "provider.saml.acs-urls.default.description" },
+    ),
+    msg(
+        "Regex URLs must match the entire requested URL. Be aware of the security implications, as responses are sent to any URL the expression matches.",
+        { id: "provider.saml.acs-urls.regex.description" },
+    ),
+];
+
+/**
+ * ACS URLs to show for `provider`, starting new providers with a single empty default entry.
+ */
+function initialACSURLs(provider: Partial<SAMLProvider>): SAMLACSURL[] {
+    if (provider.acsUrls?.length) return provider.acsUrls;
+
+    return [
+        {
+            matchingMode: MatchingModeEnum.Strict,
+            url: provider.acsUrl ?? "",
+            index: null,
+            isDefault: true,
+        },
+    ];
+}
 
 const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
     {
@@ -172,16 +208,37 @@ export function renderForm({
 
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
-                <ak-text-input
-                    name="acsUrl"
-                    label=${msg("ACS URL")}
-                    placeholder=${msg("https://...")}
-                    input-hint="code"
-                    inputmode="url"
-                    value="${ifDefined(provider.acsUrl)}"
+                <ak-form-element-horizontal
+                    label=${msg("ACS URLs", { id: "provider.saml.acs-urls.label" })}
+                    name="acsUrls"
                     required
-                    .errorMessages=${errors.acsUrl}
-                ></ak-text-input>
+                    .errorMessages=${errors.acsUrls}
+                >
+                    <ak-array-input
+                        required
+                        .items=${guard([provider.acsUrls, provider.acsUrl], () =>
+                            initialACSURLs(provider),
+                        )}
+                        .newItem=${(): SAMLACSURL => ({
+                            matchingMode: MatchingModeEnum.Strict,
+                            url: "",
+                            index: null,
+                            isDefault: false,
+                        })}
+                        .row=${(acsURL: SAMLACSURL, idx: number) => {
+                            return html`<ak-provider-saml-acs-url
+                                .acsURL=${acsURL}
+                                name="saml-acs-url"
+                                style="width: 100%"
+                                input-id="acs-url-${idx}"
+                            ></ak-provider-saml-acs-url>`;
+                        }}
+                    >
+                    </ak-array-input>
+                    ${acsURLHelpMessages.map(
+                        (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
+                    )}
+                </ak-form-element-horizontal>
                 <ak-text-input
                     name="audience"
                     label=${msg("Audience")}

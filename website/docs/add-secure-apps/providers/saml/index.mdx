@@ -26,6 +26,35 @@ Endpoint URLs specify where and how the messages are sent according to that bind
 The previous binding-specific endpoints (`/sso/binding/redirect/`, `/sso/binding/post/`, `/sso/binding/init/`, `/slo/binding/redirect/`, `/slo/binding/post/`) remain available for backward compatibility.
 :::
 
+## ACS URLs:ak-version[2026.11]
+
+The Assertion Consumer Service (ACS) URL is the SP endpoint that authentik sends SAML responses to. Some SPs use more than one ACS URL, for example one per tenant or per environment, so a SAML provider can have multiple ACS URLs. Configure them under **Protocol settings** > **ACS URLs**. Each entry has the following settings:
+
+- **Matching mode**: **Strict** compares the requested URL to the configured URL, ignoring case. **Regex** treats the configured value as a regular expression that must match the _entire_ requested URL.
+- **URL**: the ACS URL, or the regular expression when using **Regex**.
+- **Index** (optional): the value of the `index` attribute of the matching `AssertionConsumerService` element in the SP's metadata. SPs can select an ACS URL by index with the `AssertionConsumerServiceIndex` attribute of an `AuthnRequest`.
+- **Default**: marks the ACS URL that authentik uses when no specific URL is requested.
+
+When authentik receives an `AuthnRequest`, it chooses the ACS URL as follows:
+
+- If the request sets `AssertionConsumerServiceURL`, the URL must match one of the configured ACS URLs. The response is sent to that URL.
+- If the request sets `AssertionConsumerServiceIndex`, the index must match one of the configured ACS URLs.
+- If the request sets neither, and for IdP-initiated logins, authentik uses the default ACS URL. If no entry is marked as default, the first **Strict** entry is used. This follows the SAML metadata specification.
+
+Requests that set both attributes, or that request a URL or index that isn't configured, are rejected. The `Destination` and `Recipient` of the response are set to the ACS URL the response is sent to.
+
+Only **Strict** entries can have an index or be the default, and each provider needs at least one **Strict** entry.
+
+:::warning Regular expressions
+authentik sends signed assertions to any URL that matches a **Regex** entry, so write expressions that only match hosts you control. For example, `https://[a-z0-9-]+\.example\.com/saml/acs` matches any subdomain of `example.com`, but `https://.*\.example\.com/saml/acs` also matches `https://attacker.com/.example.com/saml/acs`. URLs that don't use `http` or `https` are always rejected.
+:::
+
+When you [import SP metadata](./create-saml-provider.mdx#create-a-saml-provider-from-sp-metadata-import-sp-metadata), authentik adds every `AssertionConsumerService` endpoint that uses the selected binding, including its index.
+
+:::info API compatibility
+The `acs_url` API field and blueprint attribute are deprecated in favor of `acs_urls`. Reading `acs_url` returns the default ACS URL. Writing `acs_url` without `acs_urls` only changes the default ACS URL and keeps all other entries.
+:::
+
 ## SAML metadata
 
 SAML Metadata ensures that SAML single sign-on works reliably by exchanging and maintaining identity and connection information. SAML metadata is an XML document that defines how IdPs and SPs securely interact for authentication. It includes information such as endpoints, bindings, certificates, and unique identifiers.

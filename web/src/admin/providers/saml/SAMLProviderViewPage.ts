@@ -37,6 +37,7 @@ import { userSource } from "#admin/common/search-sources";
 import {
     CertificateKeyPair,
     CryptoApi,
+    MatchingModeEnum,
     ModelEnum,
     ProvidersApi,
     SAMLMetadata,
@@ -345,11 +346,35 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("ACS URL")}</span>
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("ACS URLs", { id: "provider.saml.acs-urls.label" })}</span
+                                    >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.acsUrl}
+                                        <ul>
+                                            ${(this.provider.acsUrls ?? []).map(
+                                                (acsURL) =>
+                                                    html`<li>
+                                                        <code>${acsURL.url}</code>
+                                                        ${
+                                                            acsURL.matchingMode ===
+                                                            MatchingModeEnum.Regex
+                                                                ? html`(${msg("Regex")})`
+                                                                : nothing
+                                                        }
+                                                        ${
+                                                            acsURL.url === this.provider?.acsUrl &&
+                                                            acsURL.matchingMode !==
+                                                                MatchingModeEnum.Regex
+                                                                ? html`(${msg("Default", {
+                                                                      id: "provider.saml.acs-url.default.label",
+                                                                  })})`
+                                                                : nothing
+                                                        }
+                                                    </li>`,
+                                            )}
+                                        </ul>
                                     </div>
                                 </dd>
                             </div>
