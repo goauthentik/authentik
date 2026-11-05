@@ -335,6 +335,7 @@ class OAuthAuthorizationParams:
                 error="invalid_request",
                 grant_type=self.grant_type,
                 state=self.state,
+                response_mode=self.response_mode,
                 description="dpop_jkt is required when bound_key scope is requested",
             )
         # dpop_jkt should only be set if requesting the key binding scope
@@ -344,6 +345,7 @@ class OAuthAuthorizationParams:
                 error="invalid_request",
                 grant_type=self.grant_type,
                 state=self.state,
+                response_mode=self.response_mode,
                 description="dpop_jkt is set when bound_key scope is not requested",
             )
 
@@ -355,6 +357,7 @@ class OAuthAuthorizationParams:
                 error="invalid_request",
                 grant_type=self.grant_type,
                 state=self.state,
+                response_mode=self.response_mode,
                 description="dpop_jkt must be a base64url-encoded SHA-256 JWK thumbprint",
             )
 
@@ -633,7 +636,7 @@ class OAuthFulfillmentStage(StageView):
                     "component": "ak-stage-autosubmit",
                     "title": self.executor.plan.context.get(
                         PLAN_CONTEXT_TITLE,
-                        _("Redirecting to {app}...".format_map({"app": self.application.name})),
+                        _("Redirecting to {app}...").format(app=self.application.name),
                     ),
                     "url": self.params.redirect_uri,
                     "attrs": query_params,

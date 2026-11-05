@@ -7634,15 +7634,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Enterprise</source>
   <target>Enterprise</target>
 </trans-unit>
-<trans-unit id="sd51d6a39208696cc">
-  <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
-</trans-unit>
-<trans-unit id="scce64bcfb0a73ad7">
-  <source>Expand <x id="0" equiv-text="${this.label}"/></source>
-</trans-unit>
-<trans-unit id="sfe1fb536cab6c0f5">
-  <source><x id="0" equiv-text="${this.label}"/> navigation</source>
-</trans-unit>
 <trans-unit id="s8849ece8c65e3a18">
   <source>Dashboards</source>
   <target>Dashboard</target>
@@ -7750,17 +7741,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Notifications</source>
   <target>Notifiche</target>
 </trans-unit>
-<trans-unit id="sf1a3d030efd11f28">
-  <source>Open about dialog</source>
-</trans-unit>
-<trans-unit id="s95b96d7ead27527f">
-  <source>Product name</source>
-</trans-unit>
-<trans-unit id="s68b6d404c3349b18">
-  <source>Product version</source>
-</trans-unit>
 <trans-unit id="s358e08de4fbebf51">
-  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent}"/></source>
   <target>Versione <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="se0d7715f3211d220">
@@ -9823,10 +9805,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="command-palette.prefix.reloads-page">
   <source>Reloads page</source>
   <target>Ricarica pagina</target>
-</trans-unit>
-<trans-unit id="s35ed5cf95b0c7262">
-  <source>authentik information</source>
-  <target>Informazioni su authentik</target>
 </trans-unit>
 <trans-unit id="s55402a876309f95b">
   <source>Landmark: <x id="0" equiv-text="${capitalCase(this.pageIdentifier)}"/></source>
@@ -12418,6 +12396,27 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="permissions.delete.button">
   <source>Delete object permission</source>
+</trans-unit>
+<trans-unit id="s679140171e483ff5">
+  <source>Changes to system settings will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="se7820c791adf0953">
+  <source>Changes to brands will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="sde7cf26113f800fb">
+  <source>Selected providers can exchange their JWTs for a SAML Response of this provider via token exchange.</source>
+</trans-unit>
+<trans-unit id="s42cebc8c4e28982e">
+  <source>This security key is already registered on your account. Touch a different key to add it.</source>
+</trans-unit>
+<trans-unit id="sidebar.notice.enterprise-only">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="array-input.validation.invalid-entry">
+  <source>One or more entries are invalid.</source>
+</trans-unit>
+<trans-unit id="array-input.remove.aria-label">
+  <source>Remove entry</source>
 </trans-unit>
 </body>
 </file>

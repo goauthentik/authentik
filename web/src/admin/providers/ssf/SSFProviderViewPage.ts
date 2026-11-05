@@ -6,7 +6,7 @@ import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/ssf/StreamTable";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ObjectPermissionModal";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";

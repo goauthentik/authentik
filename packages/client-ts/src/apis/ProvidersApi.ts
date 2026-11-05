@@ -1108,6 +1108,7 @@ export interface ProvidersSamlListRequest {
     invalidationFlow?: string;
     isBackchannel?: boolean;
     issuerOverride?: string;
+    jwtFederationProviders?: Array<number>;
     logoutMethod?: SAMLLogoutMethods;
     name?: string;
     nameIdMapping?: string;
@@ -1451,6 +1452,7 @@ export interface ProvidersWsfedListRequest {
     invalidationFlow?: string;
     isBackchannel?: boolean;
     issuerOverride?: string;
+    jwtFederationProviders?: Array<number>;
     logoutMethod?: SAMLLogoutMethods;
     name?: string;
     nameIdMapping?: string;
@@ -7920,6 +7922,11 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["issuer_override"] = requestParameters["issuerOverride"];
         }
 
+        if (requestParameters["jwtFederationProviders"] != null) {
+            queryParameters["jwt_federation_providers"] =
+                requestParameters["jwtFederationProviders"];
+        }
+
         if (requestParameters["logoutMethod"] != null) {
             queryParameters["logout_method"] = requestParameters["logoutMethod"];
         }
@@ -10406,6 +10413,11 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["issuerOverride"] != null) {
             queryParameters["issuer_override"] = requestParameters["issuerOverride"];
+        }
+
+        if (requestParameters["jwtFederationProviders"] != null) {
+            queryParameters["jwt_federation_providers"] =
+                requestParameters["jwtFederationProviders"];
         }
 
         if (requestParameters["logoutMethod"] != null) {

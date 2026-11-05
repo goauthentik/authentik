@@ -1,4 +1,3 @@
-import "#admin/admin-overview/AdminOverviewPage";
 import { toUserInterface } from "#elements/router/core/interfaces";
 import { navigate } from "#elements/router/core/navigation";
 import { Route, type RouteLike } from "#elements/router/core/Route";
@@ -300,6 +299,24 @@ export const ROUTES: RouteLike[] = [
             return html`<ak-initial-permissions-list></ak-initial-permissions-list>`;
         },
         "initial-permissions",
+    ),
+    new Route(
+        "/identity/custom-permissions",
+        async () => {
+            await import("#admin/rbac/ak-custom-permission-list");
+
+            return html`<ak-custom-permission-list></ak-custom-permission-list>`;
+        },
+        "custom-permissions",
+    ),
+    new Route(
+        "/identity/permission-checks",
+        async () => {
+            await import("#admin/rbac/ak-permission-check-list");
+
+            return html`<ak-permission-check-list></ak-permission-check-list>`;
+        },
+        "permission-checks",
     ),
     new Route<{ id: string }>(
         "/identity/roles/:id{/*}?",

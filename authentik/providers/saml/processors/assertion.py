@@ -93,6 +93,11 @@ class AssertionProcessor:
             timedelta_from_string(self.provider.assertion_valid_not_on_or_after)
         )
 
+    @property
+    def _session_key(self) -> str:
+        # Sessionless requests (e.g. token exchange) fall back to a per-response value
+        return self.http_request.session.session_key or self._response_id
+
     def get_attributes(self) -> Element:
         """Get AttributeStatement Element with Attributes from Property Mappings."""
         # https://commons.lbl.gov/display/IDMgmt/Attribute+Definitions
@@ -164,9 +169,7 @@ class AssertionProcessor:
         """Generate AuthnStatement with AuthnContext and ContextClassRef Elements."""
         auth_n_statement = Element(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
         auth_n_statement.attrib["AuthnInstant"] = self._auth_instant
-        self.session_index = sha256(
-            self.http_request.session.session_key.encode("ascii")
-        ).hexdigest()
+        self.session_index = sha256(self._session_key.encode("ascii")).hexdigest()
         auth_n_statement.attrib["SessionIndex"] = self.session_index
         auth_n_statement.attrib["SessionNotOnOrAfter"] = self._session_not_on_or_after
 
@@ -293,8 +296,7 @@ class AssertionProcessor:
             return name_id
         if self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_TRANSIENT:
             # Use the hash of the user's session, which changes every session
-            session_key: str = self.http_request.session.session_key
-            name_id.text = sha256(session_key.encode()).hexdigest()
+            name_id.text = sha256(self._session_key.encode()).hexdigest()
             self.name_id = name_id.text
             return name_id
         raise UnsupportedNameIDFormat(

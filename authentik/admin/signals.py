@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from authentik.admin.models import SystemSettings
 from authentik.admin.tasks import _set_prom_info
-from authentik.admin.utils import clear_system_settings_cache
+from authentik.admin.utils import get_system_settings
 from authentik.root.signals import post_startup
 
 
@@ -14,4 +14,4 @@ def post_startup_admin_metrics(sender, **_):
 
 @receiver(post_save, sender=SystemSettings)
 def system_settings_saved(**_):
-    clear_system_settings_cache()
+    get_system_settings.cache_clear()

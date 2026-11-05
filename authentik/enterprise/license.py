@@ -35,6 +35,7 @@ from authentik.enterprise.models import (
     LicenseUsage,
     LicenseUsageStatus,
 )
+from authentik.root.cache import in_memory_cache
 from authentik.root.install_id import get_install_id
 
 CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
@@ -240,6 +241,8 @@ class LicenseKey:
         return summary
 
     @staticmethod
+    # Checked on every request and audited model save, so don't go to the cache each time
+    @in_memory_cache(key=lambda: None, timeout=30)
     def cached_summary() -> LicenseSummary:
         """Helper method which looks up the last summary"""
         summary = cache.get(CACHE_KEY_ENTERPRISE_LICENSE)
