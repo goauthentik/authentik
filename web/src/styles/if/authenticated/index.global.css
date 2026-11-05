@@ -34,11 +34,10 @@
 @import "#elements/Crontab_impl/Crontab.root.css" layer(components);
 @import "#elements/Divider_impl/Divider.root.css" layer(components);
 @import "#elements/Label_impl/Label.root.css" layer(components);
-@import "#elements/Progress_impl/Progress.root.css" layer(components);
-@import "#elements/Tooltip/Tooltip.root.css" layer(components);
 @import "#elements/Paginator_impl/Paginator.root.css" layer(components);
 @import "#elements/Progress_impl/Progress.root.css" layer(components);
 @import "#elements/ToggleGroup_impl/ToggleGroup.root.css" layer(components);
+@import "#elements/Tooltip/Tooltip.root.css" layer(components);
 @import "#elements/timestamp/Timestamp.root.css" layer(components);
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);

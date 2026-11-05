@@ -96,7 +96,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             html`<ak-status-label type="info" ?good=${item.local}></ak-status-label>`,
             html`${
                 itemState?.healthy
-                    ? html`<ak-label color="success">${ifDefined(itemState.version)}</ak-label>`
+                    ? html`<ak-label status="success">${ifDefined(itemState.version)}</ak-label>`
                     : html`<ak-label status="danger">${msg("Unhealthy")}</ak-label>`
             }`,
             html`<div class="ak-c-table__actions">

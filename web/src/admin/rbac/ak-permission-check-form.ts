@@ -9,7 +9,6 @@ import { docLink } from "#common/global";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
-import { PFColor } from "#elements/Label";
 
 import { PermissionCheck, RbacApi } from "@goauthentik/api";
 
@@ -25,7 +24,7 @@ function bindingPair(id: string, functions?: string, unknownFields?: string[]): 
             ${functions ? html`<div class="selection-desc">${functions}</div>` : nothing}
             ${
                 unknownFields?.length
-                    ? html`<ak-label color=${PFColor.Orange} compact>
+                    ? html`<ak-label color="orange" compact>
                           ${msg(str`Paths started with fields it lacks: ${unknownFields.join(", ")}`)}
                       </ak-label>`
                     : nothing
