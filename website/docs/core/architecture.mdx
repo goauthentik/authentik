@@ -7,48 +7,52 @@ tags:
 
 An authentik deployment has three required components: the server, the worker, and a PostgreSQL database. External outposts are optional, and a reverse proxy in front of the server is typical.
 
-The following diagram shows what runs inside the server and worker containers, how requests reach the server, and how both containers use PostgreSQL.
+The following diagram shows how the components of a deployment connect. Requests reach only the server container. Core, the embedded outpost, and the worker each connect to PostgreSQL, but the server and worker don't connect to each other directly. Optional [external outposts](#external-outposts) run separately and connect to the server through the router.
 
 ```mermaid
-graph TD
-    user(["User"])
+flowchart TD
+    users(["Users and applications"])
     rp["Reverse proxy<br/>(typical)"]
-    ext_outposts["Optional external outposts<br/>(LDAP, RADIUS, RAC, Proxy)"]
-    app["Application behind<br/>a Proxy provider"]
+
+    subgraph ext_group ["Runs separately"]
+        ext_outposts["Optional external outposts<br/>(LDAP, RADIUS, RAC, Proxy)"]
+    end
 
     subgraph server_container ["Server container"]
-        router["Router<br/>(also serves static files)"]
+        router["Router"]
         core["Core<br/>(API, flows, SSO)"]
-        embedded["Embedded outpost"]
+        embedded["Embedded outpost<br/>(Proxy providers)"]
     end
 
     subgraph worker_container ["Worker container"]
         worker["Background tasks"]
     end
 
-    db[("PostgreSQL<br/>(data, task queue,<br/>cache, and messaging)")]
+    db[("PostgreSQL<br/>(data, task queue, cache,<br/>messaging, and sessions)")]
 
-    user --> rp
-    rp -->|"HTTP 9000<br/>HTTPS 9443"| router
+    users --> rp -->|"HTTP 9000<br/>HTTPS 9443"| router
     ext_outposts -->|"API and<br/>WebSocket"| router
     router --> core
     router --> embedded
-    embedded -->|"Forwards<br/>authenticated requests"| app
     core --> db
+    embedded --> db
     worker --> db
-    worker -.->|"Can deploy<br/>and manage"| ext_outposts
+
+    %% Invisible link: aligns the worker with Core without implying a connection.
+    router ~~~ worker
 
     classDef external fill:transparent,stroke:#8a8d90,stroke-width:2px
+    classDef container fill:transparent,stroke:#fd4b2d,stroke-width:2px
     classDef authentik fill:#cf1f02,stroke:#a31801,stroke-width:2px,color:#ffffff
-    classDef outpost fill:#4a1673,stroke:#2f064b,stroke-width:2px,color:#ffffff
     classDef database fill:#336791,stroke:#24496a,stroke-width:2px,color:#ffffff
 
-    class user,rp,app external
-    class router,core,worker authentik
-    class embedded,ext_outposts outpost
+    class users,rp external
+    class ext_outposts container
+    class router,core,embedded,worker authentik
     class db database
 
     style rp stroke-dasharray:5 5
+    style ext_group fill:transparent,stroke:#8a8d90,stroke-width:2px,stroke-dasharray:5 5
     style server_container fill:transparent,stroke:#fd4b2d,stroke-width:2px
     style worker_container fill:transparent,stroke:#fd4b2d,stroke-width:2px
 ```
@@ -65,7 +69,7 @@ Core runs most of authentik's logic: it serves the [API](/api), executes [flows]
 
 ### Embedded outpost
 
-The [embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx) handles applications that use a [Proxy provider](../add-secure-apps/providers/proxy/index.mdx), so you don't need an [external outpost](#external-outposts) for them. It supports only Proxy providers. For details, see [Routing](../add-secure-apps/outposts/embedded/embedded.mdx#routing). If you don't need it, you can [turn it off](../security/security-hardening.mdx#embedded-outpost).
+The [embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx) handles applications that use a [Proxy provider](../add-secure-apps/providers/proxy/index.mdx), so you don't need an [external outpost](#external-outposts) for them. It supports only Proxy providers and stores its sessions in PostgreSQL. For details, see [Routing](../add-secure-apps/outposts/embedded/embedded.mdx#routing). If you don't need it, you can [turn it off](../security/security-hardening.mdx#embedded-outpost).
 
 ## Worker container
 
@@ -73,7 +77,7 @@ The worker container runs background tasks, such as sending emails and event not
 
 ## PostgreSQL database
 
-authentik stores its configuration and all other data, except uploaded files, in PostgreSQL. PostgreSQL is also the task queue, cache, and messaging layer, so the server and the worker communicate through it. For example, the server queues background tasks, and the worker picks them up. For connection options, see [PostgreSQL settings](../install-config/configuration/configuration.mdx#postgresql-settings).
+authentik stores its configuration and all other data, except uploaded files, in PostgreSQL. PostgreSQL is also the task queue, cache, and messaging layer. The server and the worker don't connect to each other directly; they exchange work only through PostgreSQL. For example, the server queues background tasks, and the worker picks them up. For connection options, see [PostgreSQL settings](../install-config/configuration/configuration.mdx#postgresql-settings).
 
 ## File storage
 
