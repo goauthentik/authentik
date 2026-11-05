@@ -21,6 +21,7 @@ import type { PaginatedResponse } from "#common/api/responses";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 import { truncateWords } from "#common/strings";
+import { plural } from "#common/ui/locale/plurals";
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
@@ -1139,9 +1140,22 @@ export abstract class Table<T extends object, D = T>
                 ${ref(this.selectAllCheckboxRef)}
                 name="select-all"
                 type="checkbox"
-                aria-label=${msg(
-                    str`Select all rows on page (${selectedCount} of ${pageItemCount} selected)`,
-                )}
+                aria-label=${plural(selectedCount, {
+                    one: () =>
+                        msg(
+                            str`Select all rows on page (${selectedCount} of ${pageItemCount} selected)`,
+                            {
+                                id: "table.select-all.aria-label.one",
+                            },
+                        ),
+                    other: () =>
+                        msg(
+                            str`Select all rows on page (${selectedCount} of ${pageItemCount} selected)`,
+                            {
+                                id: "table.select-all.aria-label.other",
+                            },
+                        ),
+                })}
                 .indeterminate=${indeterminate}
                 .checked=${checked}
                 @input=${this.#synchronizeCheckboxAll}

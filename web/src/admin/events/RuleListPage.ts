@@ -33,6 +33,13 @@ const NOTIFICATION_MODEL = ModelEnum.AuthentikEventsNotificationrule;
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
+    public static override verboseName = msg("Notification rule", {
+        id: "notification-rules.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Notification rules", {
+        id: "notification-rules.verbose-name-plural.label",
+    });
+
     public override expandable = true;
     public override checkbox = true;
     public override clearOnRefresh = true;
@@ -66,7 +73,6 @@ export class RuleListPage extends TablePage<NotificationRule> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Notification rule(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationRule) => {
                 return aki(EventsApi).eventsRulesUsedByList({

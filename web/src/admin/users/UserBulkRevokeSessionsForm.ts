@@ -3,6 +3,7 @@ import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
+import { plural } from "#common/ui/locale/plurals";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
@@ -117,10 +118,28 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
     }
 
     onSuccess(): void {
+        const { revokedCount } = this;
+        const userCount = this.users.length;
+
+        const users = plural(userCount, {
+            one: () => msg(str`${userCount} user`, { id: "users.revoke-sessions.user-count.one" }),
+            other: () =>
+                msg(str`${userCount} users`, { id: "users.revoke-sessions.user-count.other" }),
+        });
+
         showMessage({
-            message: msg(
-                str`Successfully revoked ${this.revokedCount} session(s) for ${this.users.length} user(s)`,
-            ),
+            message: plural(revokedCount, {
+                one: () =>
+                    msg(str`Successfully revoked ${revokedCount} session for ${users}.`, {
+                        id: "users.revoke-sessions.success.one",
+                        desc: "The second placeholder is a pluralized user count, such as '3 users'.",
+                    }),
+                other: () =>
+                    msg(str`Successfully revoked ${revokedCount} sessions for ${users}.`, {
+                        id: "users.revoke-sessions.success.other",
+                        desc: "The second placeholder is a pluralized user count, such as '3 users'.",
+                    }),
+            }),
             level: MessageLevel.success,
         });
     }
@@ -141,9 +160,18 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
             <section class="pf-c-modal-box__body pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
                     <p class="pf-c-title">
-                        ${msg(
-                            str`Are you sure you want to revoke all sessions for ${this.users.length} user(s)?`,
-                        )}
+                        ${plural(this.users.length, {
+                            one: () =>
+                                msg(
+                                    str`Are you sure you want to revoke all sessions for ${this.users.length} user?`,
+                                    { id: "users.revoke-sessions.confirmation.one" },
+                                ),
+                            other: () =>
+                                msg(
+                                    str`Are you sure you want to revoke all sessions for ${this.users.length} users?`,
+                                    { id: "users.revoke-sessions.confirmation.other" },
+                                ),
+                        })}
                     </p>
                     <p>
                         ${msg(

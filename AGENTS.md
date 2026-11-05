@@ -137,6 +137,7 @@ Consequences:
 - **Commit attribution:** do not add a Claude co-author trailer; credit human collaborators instead.
 - **`CODEOWNERS`** maps subtrees to teams. For a change that spans several teams' areas, prefer splitting into one PR per owning team (enabling/wiring changes merge last).
 - **Translations** (`locale/`) and web locales are extracted, not edited by hand — see `make i18n-extract`.
+- **Pluralize every message that shows a count**; never write `item(s)` or a `count == 1` branch. Use `ngettext` in Python. The web UI rules are in [`web/AGENTS.md`](web/AGENTS.md#counts-and-plurals).
 - When you change a documented workflow (a command, a path, a convention), update this file **and** the relevant sub-`AGENTS.md` / developer doc so they don't drift.
 
 ## Documentation pointers

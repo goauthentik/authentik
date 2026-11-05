@@ -13,6 +13,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
+import { plural } from "#common/ui/locale/plurals";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
@@ -32,6 +33,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
+    public static override verboseName = msg("Policy", { id: "policies.verbose-name.label" });
+    public static override verboseNamePlural = msg("Policies", {
+        id: "policies.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override pageTitle = msg("Policies");
@@ -64,7 +70,16 @@ export class PolicyListPage extends TablePage<Policy> {
                 ${
                     (item.boundTo || 0) > 0
                         ? html`<ak-label color=${PFColor.Green} compact>
-                              ${msg(str`Assigned to ${item.boundTo} object(s).`)}
+                              ${plural(item.boundTo, {
+                                  one: () =>
+                                      msg(str`Assigned to ${item.boundTo} object.`, {
+                                          id: "policies.bound-to.label.one",
+                                      }),
+                                  other: () =>
+                                      msg(str`Assigned to ${item.boundTo} objects.`, {
+                                          id: "policies.bound-to.label.other",
+                                      }),
+                              })}
                           </ak-label>`
                         : html`<ak-label color=${PFColor.Orange} compact>
                               ${msg("Warning: Policy is not assigned.")}
@@ -101,7 +116,6 @@ export class PolicyListPage extends TablePage<Policy> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Policy / Policies")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Policy) => {
                 return aki(PoliciesApi).policiesAllUsedByList({

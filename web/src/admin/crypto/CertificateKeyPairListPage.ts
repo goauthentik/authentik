@@ -27,6 +27,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
+    public static override verboseName = msg("Certificate-Key Pair", {
+        id: "certificate-key-pairs.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Certificate-Key Pairs", {
+        id: "certificate-key-pairs.verbose-name-plural.label",
+    });
+
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     public override expandable = true;
@@ -59,10 +66,8 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
-        const count = this.selectedElements.length;
 
         return html`<ak-forms-delete-bulk
-            object-label=${count === 1 ? msg("Certificate-Key Pair") : msg("Certificate-Key Pairs")}
             .objects=${this.selectedElements}
             .metadata=${(item: CertificateKeyPair) => {
                 return [

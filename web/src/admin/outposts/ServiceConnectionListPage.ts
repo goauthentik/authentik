@@ -39,6 +39,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
+    public static override verboseName = msg("Outpost integration", {
+        id: "outpost-integrations.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Outpost integrations", {
+        id: "outpost-integrations.verbose-name-plural.label",
+    });
+
     public pageTitle = msg("Outpost integrations");
     public pageDescription = msg(
         "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
@@ -123,7 +130,6 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Outpost integration(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ServiceConnection) => {
                 return aki(OutpostsApi).outpostsServiceConnectionsAllUsedByList({
