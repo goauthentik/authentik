@@ -16,6 +16,7 @@ from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.core.models import Application
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
+from authentik.lib.tests.utils import load_fixture
 from authentik.providers.saml.models import SAMLACSURL, SAMLACSURLMatchingMode, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import (
@@ -23,6 +24,7 @@ from authentik.providers.saml.processors.authn_request_parser import (
     AuthNRequestParser,
     get_acs_url,
 )
+from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 
 DEFAULT = "https://sp.example.com/acs"
 SECOND = "https://sp.example.com/acs/second"
@@ -446,3 +448,35 @@ class TestSAMLProviderACSURLsAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(provider.pk, [result["pk"] for result in response.json()["results"]])
         self.assertEqual(response.json()["pagination"]["count"], 2)
+
+
+class TestMetadataACSURLs(TestCase):
+    """Test importing multiple ACS URLs from SP metadata"""
+
+    def test_import(self):
+        """Test that all ACS endpoints with the selected binding are imported"""
+        metadata = ServiceProviderMetadataParser().parse(
+            load_fixture("fixtures/multi_bindings.xml").replace(
+                'bindings:HTTP-Artifact" '
+                'Location="https://sp-b.example.org/Shibboleth.sso/SAML2/Artifact"',
+                'bindings:HTTP-POST" '
+                'Location="https://sp-b.example.org/Shibboleth.sso/SAML2/POST-Default" '
+                'isDefault="true"',
+            )
+        )
+        provider = metadata.to_provider(generate_id(), create_test_flow(), create_test_flow())
+        provider.refresh_from_db()
+        self.assertEqual(
+            provider.acs_urls,
+            [
+                SAMLACSURL(url="https://sp-b.example.org/Shibboleth.sso/SAML2/POST", index=2),
+                SAMLACSURL(
+                    url="https://sp-b.example.org/Shibboleth.sso/SAML2/POST-Default",
+                    index=3,
+                    is_default=True,
+                ),
+            ],
+        )
+        self.assertEqual(
+            provider.acs_url, "https://sp-b.example.org/Shibboleth.sso/SAML2/POST-Default"
+        )
