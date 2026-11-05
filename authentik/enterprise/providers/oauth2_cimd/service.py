@@ -25,8 +25,11 @@ from hashlib import sha256
 from time import monotonic, sleep, time
 from typing import Any
 
-from django.core.cache import BaseCache, cache
-from django.db import connection, transaction
+from django.core.cache import BaseCache, cache, caches
+from django.db import connection, connections, router, transaction
+from django.utils.timezone import now as timezone_now
+from django_postgres_cache.backend import DatabaseCache
+from django_postgres_cache.models import CacheEntry
 from structlog.stdlib import get_logger
 
 from authentik.enterprise.providers.oauth2_cimd.bounded_json import (
@@ -82,7 +85,7 @@ from authentik.lib.utils.untrusted_fetch import (
 LOGGER = get_logger()
 
 CACHE_PREFIX = "authentik_enterprise_oauth2_cimd"
-ENTRY_VERSION = 1
+ENTRY_VERSION = 2
 METADATA_ACCEPT = "application/json"
 JWKS_ACCEPT = "application/jwk-set+json, application/json"
 # Lock lifetime on top of the fetcher's deadline, so a crashed leader can't block forever
@@ -118,6 +121,7 @@ class CachedMetadata:
     metadata: ClientMetadata
     fetched_at: float
     expires_at: float
+    generation: str
 
 
 @dataclass(frozen=True)
@@ -127,6 +131,7 @@ class CachedKeys:
     keys: ClientKeySet
     fetched_at: float
     expires_at: float
+    generation: str
 
 
 @dataclass(frozen=True)
@@ -141,6 +146,7 @@ class ResolvedClient:
     keys: ClientKeySet | None
     # Earliest expiry of the metadata and keys this was built from
     expires_at: float
+    generation: str
 
     def is_fresh(self, now: float) -> bool:
         """True until the underlying metadata or keys expire"""
@@ -185,7 +191,7 @@ class ClientMetadataService:
         self._sleep = sleep_func
         self.max_entries = max_entries
         self.key_refresh_interval = key_refresh_interval
-        self._flights: dict[str, _Flight] = {}
+        self._flights: dict[tuple[str, str, str | None], _Flight] = {}
         self._flights_lock = threading.Lock()
 
     # Public API
@@ -216,20 +222,49 @@ class ClientMetadataService:
         one refresh per client per `key_refresh_interval`, across all workers.
         Without a `kid`, the client must have exactly one key."""
         self._check_local(resolved.client_id)
-        if not resolved.is_fresh(self._clock()):
+        if not resolved.is_fresh(self._clock()) or resolved.generation != self._generation(
+            resolved.client_id
+        ):
             resolved = self.resolve(resolved.client_id, resolved.profile)
         key = resolved.keys.find(kid) if resolved.keys else None
         if key is not None:
+            self._check_snapshot(resolved.client_id, resolved.generation, resolved.expires_at)
+            return key
+        resolved = self.resolve(resolved.client_id, resolved.profile)
+        key = resolved.keys.find(kid) if resolved.keys else None
+        if key is not None:
+            self._check_snapshot(resolved.client_id, resolved.generation, resolved.expires_at)
             return key
         if kid is None:
             raise UnknownSigningKey("ambiguous_key", "No kid and not exactly one key")
-        if not self._acquire_refresh_slot(resolved.client_id):
-            raise UnknownSigningKey("refresh_rate_limited", "Unknown kid, refresh rate limited")
-        LOGGER.info("CIMD unknown key ID, refreshing keys", client_id=resolved.client_id)
-        refreshed = self._resolve(resolved.client_id, resolved.profile, refresh_keys=True)
+        refresh_key = f"{CACHE_PREFIX}:refresh:{_hash(resolved.client_id)}:{resolved.generation}"
+        token = secrets.token_hex(8)
+        started = self._clock()
+        active = {"token": token, "active": True}
+        if self._add(refresh_key, active, max(self.key_refresh_interval, self._lock_timeout())):
+            try:
+                LOGGER.info("CIMD unknown key ID, refreshing keys", client_id=resolved.client_id)
+                refreshed = self._resolve(resolved.client_id, resolved.profile, refresh_keys=True)
+            finally:
+                if self._cache.get(refresh_key) == active:
+                    remaining = max(0, self.key_refresh_interval - (self._clock() - started))
+                    self._cache.set(refresh_key, {"token": token, "active": False}, remaining)
+        else:
+            deadline = monotonic() + self._lock_timeout()
+            logical_deadline = self._clock() + self._lock_timeout()
+            while (marker := self._cache.get(refresh_key)) and marker.get("active"):
+                self._check_snapshot(resolved.client_id, resolved.generation, resolved.expires_at)
+                if monotonic() >= deadline or self._clock() >= logical_deadline:
+                    raise MetadataUnavailable("coalesce_timeout", "Timed out waiting for refresh")
+                self._sleep(POLL_INTERVAL)
+            refreshed = self.resolve(resolved.client_id, resolved.profile)
+            key = refreshed.keys.find(kid) if refreshed.keys else None
+            if key is None:
+                raise UnknownSigningKey("refresh_rate_limited", "Unknown kid, refresh rate limited")
         key = refreshed.keys.find(kid) if refreshed.keys else None
         if key is None:
             raise UnknownSigningKey("unknown_kid", "No key with this kid")
+        self._check_snapshot(refreshed.client_id, refreshed.generation, refreshed.expires_at)
         return key
 
     def get_metadata(self, client_id: str, *, force: bool = False) -> CachedMetadata:
@@ -251,7 +286,7 @@ class ClientMetadataService:
             client_id,
             entry_key,
             generation,
-            newer_than=entry["fetched_at"] if entry is not None and force else None,
+            newer_than=entry["revision"] if entry is not None and force else None,
         )
         return self._metadata_from_entry(client_id, entry)
 
@@ -260,15 +295,20 @@ class ClientMetadataService:
 
         Returns None if the document declares no keys. `force` refetches `jwks_uri`."""
         metadata = cached.metadata
+        self._check_snapshot(metadata.client_id, cached.generation, cached.expires_at)
         if metadata.jwks is not None:
-            return CachedKeys(metadata.jwks, cached.fetched_at, cached.expires_at)
+            return CachedKeys(
+                metadata.jwks, cached.fetched_at, cached.expires_at, cached.generation
+            )
         if metadata.jwks_uri is None:
             return None
         entry_key = self._entry_key(Kind.JWKS, f"{metadata.client_id}\n{metadata.jwks_uri}")
         entry, generation = self._lookup(Kind.JWKS, metadata.client_id, entry_key)
+        if generation != cached.generation:
+            raise MetadataUnavailable("invalidated", "Client changed during resolution")
         if entry is not None and not force:
             try:
-                return self._keys_from_entry(entry)
+                return self._keys_from_entry(metadata.client_id, entry)
             except InvalidClientKeys:
                 self._cache.delete(entry_key)
         entry = self._load(
@@ -277,9 +317,9 @@ class ClientMetadataService:
             metadata.jwks_uri,
             entry_key,
             generation,
-            newer_than=entry["fetched_at"] if entry is not None and force else None,
+            newer_than=entry["revision"] if entry is not None and force else None,
         )
-        return self._keys_from_entry(entry)
+        return self._keys_from_entry(metadata.client_id, entry)
 
     def invalidate(self, client_id: str) -> None:
         """Drop cached metadata and keys of `client_id` on all workers"""
@@ -294,6 +334,15 @@ class ClientMetadataService:
     def _check_local(self, client_id: str) -> None:
         if not self.local_check(client_id):
             raise ClientDisabled("disabled", "Client is not admitted locally")
+
+    def _generation(self, client_id: str) -> str:
+        return self._cache.get(self._generation_key(client_id)) or "0"
+
+    def _check_snapshot(self, client_id: str, generation: str, expires_at: float) -> None:
+        if generation != self._generation(client_id):
+            raise MetadataUnavailable("invalidated", "Client changed during resolution")
+        if self._clock() >= expires_at:
+            raise MetadataUnavailable("expired", "Client expired during resolution")
 
     def _resolve(
         self, client_id: str, profile: ClientProfile, *, refresh_keys: bool = False
@@ -317,6 +366,8 @@ class ClientMetadataService:
                 keys = cached_keys.keys
                 expires_at = min(expires_at, cached_keys.expires_at)
         capabilities = negotiate(cached.metadata, profile, keys)
+        self._check_local(client_id)
+        self._check_snapshot(client_id, cached.generation, expires_at)
         return ResolvedClient(
             client_id=client_id,
             profile=profile,
@@ -324,25 +375,27 @@ class ClientMetadataService:
             capabilities=capabilities,
             keys=keys,
             expires_at=expires_at,
+            generation=cached.generation,
         )
 
     def _metadata_from_entry(self, client_id: str, entry: dict[str, Any]) -> CachedMetadata:
+        metadata = validate_metadata(entry["document"], client_id)
+        self._check_snapshot(client_id, entry["generation"], entry["expires_at"])
         return CachedMetadata(
-            metadata=validate_metadata(entry["document"], client_id),
+            metadata=metadata,
             fetched_at=entry["fetched_at"],
             expires_at=entry["expires_at"],
+            generation=entry["generation"],
         )
 
-    def _keys_from_entry(self, entry: dict[str, Any]) -> CachedKeys:
+    def _keys_from_entry(self, client_id: str, entry: dict[str, Any]) -> CachedKeys:
+        keys = validate_jwks(entry["document"])
+        self._check_snapshot(client_id, entry["generation"], entry["expires_at"])
         return CachedKeys(
-            keys=validate_jwks(entry["document"]),
+            keys=keys,
             fetched_at=entry["fetched_at"],
             expires_at=entry["expires_at"],
-        )
-
-    def _acquire_refresh_slot(self, client_id: str) -> bool:
-        return self._add(
-            f"{CACHE_PREFIX}:refresh:{_hash(client_id)}", True, self.key_refresh_interval
+            generation=entry["generation"],
         )
 
     # Shared cache
@@ -392,10 +445,32 @@ class ClientMetadataService:
         return self._cache.has_key(entry_key)
 
     def _store(self, kind: Kind, client_id: str, entry_key: str, entry: dict[str, Any]) -> None:
+        self._check_snapshot(client_id, entry["generation"], entry["expires_at"])
+        backend = caches["default"] if self._cache is cache else self._cache
+        if isinstance(backend, DatabaseCache):
+            alias = router.db_for_write(CacheEntry)
+            prefix = backend.make_key(f"{CACHE_PREFIX}:{kind}:")
+            lock_id = int.from_bytes(sha256(prefix.encode()).digest()[:8], signed=True)
+            with transaction.atomic(using=alias):
+                with connections[alias].cursor() as cursor:
+                    cursor.execute("SELECT pg_advisory_xact_lock(%s)", [lock_id])
+                entries = CacheEntry.objects.using(alias).filter(cache_key__startswith=prefix)
+                entries.filter(expires__lt=timezone_now()).delete()
+                if (
+                    not entries.filter(cache_key=backend.make_key(entry_key)).exists()
+                    and entries.count() >= self.max_entries
+                ):
+                    LOGGER.warning(
+                        "CIMD cache is full, not caching", kind=kind, client_id=client_id
+                    )
+                    return
+                self._check_snapshot(client_id, entry["generation"], entry["expires_at"])
+                backend.set(entry_key, entry, timeout=int(entry["expires_at"] - self._clock()) + 1)
+            return
         if not self._has_room(kind, entry_key):
             LOGGER.warning("CIMD cache is full, not caching", kind=kind, client_id=client_id)
             return
-        ttl = entry["expires_at"] - entry["fetched_at"]
+        ttl = entry["expires_at"] - self._clock()
         # Backend expiry has second granularity; `expires_at` stays authoritative
         self._cache.set(entry_key, entry, timeout=int(ttl) + 1)
 
@@ -412,14 +487,15 @@ class ClientMetadataService:
         entry_key: str,
         generation: str,
         *,
-        newer_than: float | None,
+        newer_than: str | None,
     ) -> dict[str, Any]:
         """Fetch and store a document, sharing one fetch between concurrent callers"""
+        flight_key = (entry_key, generation, newer_than)
         with self._flights_lock:
-            flight = self._flights.get(entry_key)
+            flight = self._flights.get(flight_key)
             leader = flight is None
             if flight is None:
-                flight = self._flights[entry_key] = _Flight()
+                flight = self._flights[flight_key] = _Flight()
             else:
                 flight.waiters += 1
         if not leader:
@@ -429,18 +505,20 @@ class ClientMetadataService:
                 raise type(flight.error)(flight.error.code, str(flight.error))
             if flight.result is None:
                 raise MetadataUnavailable("coalesced_fetch_failed", "Concurrent fetch failed")
+            self._check_snapshot(client_id, generation, flight.result["expires_at"])
             return flight.result
         try:
             flight.result = self._load_shared(
                 kind, client_id, url, entry_key, generation, newer_than=newer_than
             )
+            self._check_snapshot(client_id, generation, flight.result["expires_at"])
             return flight.result
         except CIMDError as exc:
             flight.error = exc
             raise
         finally:
             with self._flights_lock:
-                self._flights.pop(entry_key, None)
+                self._flights.pop(flight_key, None)
             flight.done.set()
 
     def _load_shared(
@@ -451,24 +529,32 @@ class ClientMetadataService:
         entry_key: str,
         generation: str,
         *,
-        newer_than: float | None,
+        newer_than: str | None,
     ) -> dict[str, Any]:
         """Fetch under a cross-worker lock, or wait for the worker holding it"""
-        lock_key = self._lock_key(entry_key)
+        lock_key = f"{self._lock_key(entry_key)}:{generation}"
         token = secrets.token_hex(8)
         lock_timeout = self._lock_timeout()
         if self._add(lock_key, token, lock_timeout):
             try:
+                entry, current_generation = self._lookup(kind, client_id, entry_key, count=False)
+                if current_generation != generation:
+                    raise MetadataUnavailable("invalidated", "Client changed during resolution")
+                if entry is not None and (newer_than is None or entry["revision"] != newer_than):
+                    return entry
                 return self._fetch(kind, client_id, url, entry_key, generation)
             finally:
                 if self._cache.get(lock_key) == token:
                     self._cache.delete(lock_key)
         deadline = self._clock() + lock_timeout
-        while self._clock() < deadline:
+        monotonic_deadline = monotonic() + lock_timeout
+        while self._clock() < deadline and monotonic() < monotonic_deadline:
             self._sleep(POLL_INTERVAL)
             lock_released = self._cache.get(lock_key) is None
-            entry, _ = self._lookup(kind, client_id, entry_key, count=False)
-            if entry is not None and (newer_than is None or entry["fetched_at"] > newer_than):
+            entry, current_generation = self._lookup(kind, client_id, entry_key, count=False)
+            if current_generation != generation:
+                raise MetadataUnavailable("invalidated", "Client changed during resolution")
+            if entry is not None and (newer_than is None or entry["revision"] != newer_than):
                 return entry
             if lock_released:
                 # The other worker failed. Failures aren't cached or shared, and
@@ -480,6 +566,7 @@ class ClientMetadataService:
         self, kind: Kind, client_id: str, url: str, entry_key: str, generation: str
     ) -> dict[str, Any]:
         started = monotonic()
+        requested_at = self._clock()
         fetcher = self._fetcher or get_untrusted_fetcher()
         outcome = "success"
         try:
@@ -505,10 +592,11 @@ class ClientMetadataService:
             else:
                 validate_jwks(document)
             now = self._clock()
-            fresh = freshness(response.headers, now)
+            fresh = freshness(response.headers, now, response_delay=max(0, now - requested_at))
             entry = {
                 "version": ENTRY_VERSION,
                 "generation": generation,
+                "revision": secrets.token_hex(16),
                 "document": document,
                 "fetched_at": now,
                 "expires_at": now + fresh.ttl,

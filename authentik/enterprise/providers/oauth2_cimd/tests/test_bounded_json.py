@@ -1,6 +1,8 @@
 """Bounded JSON parsing"""
 
 import json
+import subprocess
+import sys
 
 from django.test import SimpleTestCase
 
@@ -33,6 +35,34 @@ class TestBoundedJSON(SimpleTestCase):
 
     def test_brackets_in_strings_ignored(self):
         self.parse(json.dumps({"a": "{" * 100, "b": '\\"[[[[[[[[[[['}).encode())
+
+    def test_unterminated_escaped_quotes_bounded(self):
+        script = """
+import sys
+from authentik.enterprise.providers.oauth2_cimd.bounded_json import parse_json_object
+from authentik.enterprise.providers.oauth2_cimd.errors import InvalidClientMetadata
+try:
+    parse_json_object(sys.stdin.buffer.read(), InvalidClientMetadata)
+except InvalidClientMetadata as error:
+    assert error.code == 'invalid_json', error.code
+else:
+    raise AssertionError('Malformed string was accepted')
+"""
+        for size in (32000, 65000):
+            with self.subTest(size=size):
+                subprocess.run(
+                    [sys.executable, "-c", script],
+                    input=b'{"a":"' + b'\\"' * size,
+                    capture_output=True,
+                    check=True,
+                    timeout=3,
+                )
+
+    def test_escaped_string_boundaries(self):
+        for backslashes in range(8):
+            with self.subTest(backslashes=backslashes):
+                document = {"string": "\\" * backslashes + '"{}[]', "array": [{}]}
+                self.assertEqual(self.parse(json.dumps(document).encode()), document)
 
     def test_array_size(self):
         self.parse(json.dumps({"a": list(range(64))}).encode())

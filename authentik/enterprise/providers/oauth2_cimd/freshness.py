@@ -6,13 +6,15 @@ from email.utils import parsedate_to_datetime
 
 from authentik.enterprise.providers.oauth2_cimd.constants import DEFAULT_TTL, MAX_TTL, MIN_TTL
 
+MAX_DELTA_DIGITS = 10
+
 
 @dataclass(frozen=True)
 class Freshness:
     """How long a response may be cached, and which header decided it"""
 
     ttl: int
-    # One of: no_store, no_cache, max_age, expires, default. Safe as a log field.
+    # One of: no_store, no_cache, invalid_age, max_age, expires, default. Safe as a log field.
     source: str
 
 
@@ -32,10 +34,10 @@ def _directives(header: str) -> dict[str, str | None]:
     return directives
 
 
-def _delta_seconds(value: str | None) -> int:
-    """Parse delta-seconds; invalid values count as 0 (stale)"""
-    if value is None or not value.isdigit():
-        return 0
+def _delta_seconds(value: str | None) -> int | None:
+    """Accept at most ten ASCII decimal digits, without unbounded integer conversion."""
+    if not value or len(value) > MAX_DELTA_DIGITS or not value.isascii() or not value.isdecimal():
+        return None
     return int(value)
 
 
@@ -55,6 +57,7 @@ def freshness(
     headers: Mapping[str, str],
     now: float,
     *,
+    response_delay: float = 0,
     minimum: int = MIN_TTL,
     maximum: int = MAX_TTL,
     default: int = DEFAULT_TTL,
@@ -74,14 +77,17 @@ def freshness(
     if "no-cache" in directives:
         # We never revalidate, so no-cache is treated like no-store
         return clamp(0, "no_cache")
-    age = _delta_seconds(headers.get("age"))
+    age = _delta_seconds(headers.get("age", "0"))
+    if age is None:
+        return clamp(0, "invalid_age")
+    date = _http_date(headers.get("date"))
+    current_age = max(0, now - date if date is not None else 0, age + max(0, response_delay))
     if "max-age" in directives:
-        return clamp(_delta_seconds(directives["max-age"]) - age, "max_age")
+        return clamp((_delta_seconds(directives["max-age"]) or 0) - current_age, "max_age")
     if "expires" in headers:
         expires = _http_date(headers["expires"])
         if expires is None:
             # Invalid Expires values mean "already expired"
             return clamp(0, "expires")
-        date = _http_date(headers.get("date"))
-        return clamp(expires - (date if date is not None else now) - age, "expires")
-    return clamp(default, "default")
+        return clamp(expires - (date if date is not None else now) - current_age, "expires")
+    return clamp(default - current_age, "default")
