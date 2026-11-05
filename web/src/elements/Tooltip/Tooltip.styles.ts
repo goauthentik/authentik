@@ -31,19 +31,15 @@ export const styles = css`
         font-family: var(--ak-c-tooltip__content--FontFamily);
         max-width: var(--ak-c-tooltip--MaxWidth);
         box-shadow: var(--ak-c-tooltip--BoxShadow);
+        background: transparent;
+        padding: 0;
         border: 0;
         inset: auto;
         margin: 0;
         opacity: 0;
-        z-index: 20;
         overflow: visible;
         position: absolute;
         white-space: nowrap;
-        padding-block-start: var(--ak-c-tooltip__content--PaddingTop);
-        padding-block-end: var(--ak-c-tooltip__content--PaddingBottom);
-        padding-inline-start: var(--ak-c-tooltip__content--PaddingLeft);
-        padding-inline-end: var(--ak-c-tooltip__content--PaddingRight);
-        background: var(--ak-c-tooltip__content--BackgroundColor);
         font-size: var(--ak-c-tooltip__content--FontSize);
         color: var(--ak-c-tooltip__content--Color);
         text-align: center;
@@ -68,6 +64,16 @@ export const styles = css`
             forwards;
     }
 
+    [part="tooltip-body"] {
+        position: relative;
+        z-index: 1;
+        background: var(--ak-c-tooltip__content--BackgroundColor);
+        padding-block-start: var(--ak-c-tooltip__content--PaddingTop);
+        padding-block-end: var(--ak-c-tooltip__content--PaddingBottom);
+        padding-inline-start: var(--ak-c-tooltip__content--PaddingLeft);
+        padding-inline-end: var(--ak-c-tooltip__content--PaddingRight);
+    }
+
     [part="arrow"] {
         position: absolute;
         top: var(--ak-c-tooltip__arrow--Top, auto);
@@ -76,7 +82,7 @@ export const styles = css`
         left: var(--ak-c-tooltip__arrow--Left, auto);
         width: var(--ak-c-tooltip__arrow--Width);
         height: var(--ak-c-tooltip__arrow--Height);
-        z-index: 10;
+        z-index: 0;
         pointer-events: none;
         background-color: var(--ak-c-tooltip__arrow--BackgroundColor);
         box-shadow: var(--ak-c-tooltip__arrow--BoxShadow);
