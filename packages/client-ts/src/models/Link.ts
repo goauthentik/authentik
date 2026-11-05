@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Returns a single link
+ *
  * @export
  * @interface Link
  */
 export interface Link {
-    /**
-     *
-     * @type {string}
-     * @memberof Link
-     */
     link: string;
 }
 

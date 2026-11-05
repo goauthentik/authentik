@@ -2,7 +2,6 @@
 
 import re
 import socket
-from copy import deepcopy
 from ipaddress import ip_address, ip_network
 from smtplib import SMTPException
 from textwrap import indent
@@ -18,15 +17,14 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
-from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
+from authentik.lib.tracing import Span, active_tracer
 from authentik.lib.utils.dict import get_path_from_dict
-from authentik.lib.utils.email import normalize_addresses
+from authentik.lib.utils.email import Address, normalize_addresses
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
@@ -208,7 +206,8 @@ class BaseEvaluator:
         user = self._context.get("user", get_anonymous_user())
         req = PolicyRequest(user)
         if "request" in self._context:
-            req = deepcopy(self._context["request"])
+            current_req: PolicyRequest = self._context["request"]
+            req = current_req.deepcopy()
         req.context.update(kwargs)
         proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
         return proc.profiling_wrapper()
@@ -253,21 +252,23 @@ class BaseEvaluator:
 
     def expr_send_email(  # noqa: PLR0913, PLR0917
         self,
-        address: str | list[str],
+        address: Address,
         subject: str,
         body: str | None = None,
         stage: EmailStage | None = None,
         template: str | None = None,
         context: dict | None = None,
-        cc: str | list[str] | None = None,
-        bcc: str | list[str] | None = None,
+        cc: Address = None,
+        bcc: Address = None,
     ) -> bool:
         """Send an email using authentik's email system
 
         Args:
             address: Email address(es) to send to. Can be:
                 - Single email: "user@example.com"
-                - List of emails: ["user1@example.com", "user2@example.com"]
+                - Formatted address: "John Doe <user@example.com>"
+                - (name, email) tuple: ("John Doe", "user@example.com")
+                - List of any of the above
             subject: Email subject
             body: Email body (plain text/HTML). Mutually exclusive with template.
             stage: EmailStage instance to use for settings. If None, uses global settings.
@@ -346,7 +347,7 @@ class BaseEvaluator:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        with start_span(op="authentik.lib.evaluator.evaluate") as span:
+        with active_tracer().start_span(op="authentik.lib.evaluator.evaluate") as span:
             span: Span
             span.description = self._filename
             span.set_data("expression", expression_source)

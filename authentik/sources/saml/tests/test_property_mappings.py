@@ -1,6 +1,7 @@
 """SAML Source tests"""
 
 from base64 import b64encode
+from unittest.mock import MagicMock, patch
 
 from defusedxml.lxml import fromstring
 from django.test import TestCase
@@ -22,6 +23,10 @@ NAME_ID = (
 )
 
 
+@patch(
+    "authentik.sources.saml.processors.response.reverse",
+    MagicMock(return_value="https://127.0.0.1:9443/source/saml/google/acs/"),
+)
 class TestPropertyMappings(TestCase):
     """Test Property Mappings"""
 
@@ -30,7 +35,7 @@ class TestPropertyMappings(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer_override="authentik",
+            issuer_override="https://accounts.google.com/o/saml2?idpid=",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )

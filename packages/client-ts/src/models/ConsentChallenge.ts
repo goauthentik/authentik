@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,71 +10,27 @@
  * Do not edit the class manually.
  */
 
-import type { ConsentPermission } from "./ConsentPermission";
-import { ConsentPermissionFromJSON, ConsentPermissionToJSON } from "./ConsentPermission";
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ConsentPermission } from "./ConsentPermission.js";
+import { ConsentPermissionFromJSON, ConsentPermissionToJSON } from "./ConsentPermission.js";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
 
 /**
  * Challenge info for consent screens
+ *
  * @export
  * @interface ConsentChallenge
  */
 export interface ConsentChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof ConsentChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof ConsentChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallenge
-     */
     pendingUser: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallenge
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallenge
-     */
     headerText?: string;
-    /**
-     *
-     * @type {Array<ConsentPermission>}
-     * @memberof ConsentChallenge
-     */
     permissions: Array<ConsentPermission>;
-    /**
-     *
-     * @type {Array<ConsentPermission>}
-     * @memberof ConsentChallenge
-     */
     additionalPermissions: Array<ConsentPermission>;
-    /**
-     *
-     * @type {string}
-     * @memberof ConsentChallenge
-     */
     token: string;
 }
 

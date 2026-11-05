@@ -93,6 +93,19 @@ The following flow stages are supported by the LDAP provider:
 - [User Login stage](../../flows-stages/stages/user_login/index.mdx)
 - [Deny stage](../../flows-stages/stages/deny/index.mdx)
 
+### Bind with an app password
+
+An [app password](../../../users-sources/user/user-interface.mdx#tokens-and-app-passwords) can replace the user's regular password in an LDAP bind. To enable this:
+
+1. In the Admin interface, open the LDAP provider under **Applications** > **Providers** and identify its **Bind Flow**.
+2. Open that flow under **Flows and Stages** > **Flows** and locate its [password stage](../../flows-stages/stages/password/index.mdx). If the identification stage has a **Password stage** configured, use that stage.
+3. Edit the password stage under **Flows and Stages** > **Stages** and select **User database + app passwords** in **Backends**.
+4. Configure the LDAP client with the user's bind DN, such as `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`, adjusted for your username and **Base DN**. Use the generated app password as the bind password.
+
+The app password must belong to the user in the bind DN and must not have expired. An API token cannot be used as an app password.
+
+An app password satisfies the password stage only. Other stages and policies in the **Bind Flow**, including MFA requirements, still apply unless explicitly skipped by a policy. If the flow requires MFA, configure a supported method as described in [Code-based MFA support](#code-based-mfa-support). The user must also have [access to the LDAP application](#searching).
+
 ### Bind modes
 
 The LDAP provider supports two different bind modes:
@@ -107,13 +120,16 @@ This mode uses the same logic as direct bind, however the result is cached for t
 
 ## Searching
 
-Any user that is authorized to access the LDAP provider's application can search the LDAP directory. Without explicit permissions to do broader searches, a user's search request will return information about themselves, including user info, group info, and group membership.
+A user must have access to the LDAP application before they can bind and search the directory. If the application uses [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access), they must allow the user access according to the application's **Policy engine mode**.
 
-[Users](../../../users-sources/user/index.mdx) and [roles](../../../users-sources/roles/index.mdx) can be assigned the permission `Search full LDAP directory` to allow them to search the full LDAP directory and retrieve information about all users in the authentik instance.
+By default, users can search only for their own user details and the groups they belong to. Group results include only the searching user as a member.
 
-:::info
-Up to authentik version 2024.8 this was managed using the LDAP provider's **Search group** setting, where users could be added to a group to grant them this permission. With authentik 2024.8 this is automatically migrated to the `Search full LDAP directory` permission, which can be assigned more flexibly.
-:::
+To search the full directory, add the [user](../../../users-sources/user/index.mdx) to a [role](../../../users-sources/roles/index.mdx) and assign the role the **Search full LDAP directory** permission. This permission allows the user to retrieve all users and groups that the LDAP provider exposes.
+
+You can assign the permission in one of two ways:
+
+- **Object permission** _(recommended)_: Open the LDAP provider's **Permissions** tab, click **Assign Role Object Permission**, select the role, enable **Search full LDAP directory**, and click **Assign Role Object Permission**. This permission applies only to that LDAP provider.
+- **Global permission**: Open the role's **Permissions** tab and assign **Search full LDAP directory** under **Assigned global permissions**. This permission applies to every LDAP provider, but the user still needs access to each provider's application. For detailed instructions, see [Manage permissions](../../../users-sources/access-control/manage_permissions.mdx#assign-or-remove-permissions-for-a-specific-role).
 
 ### Search modes
 
@@ -125,7 +141,7 @@ In this mode, every LDAP search request will trigger one or more requests to the
 
 #### Cached search
 
-In this mode, the outpost will periodically fetch all users and groups from the backend, hold them in memory, and respond to search queries directly. This means greatly improved performance but potentially returning old/invalid data.
+In this mode, the outpost periodically fetches all users and groups from the backend, holds them in memory, and responds to search queries directly. This improves performance, but can return stale data.
 
 ## Code-based MFA support
 

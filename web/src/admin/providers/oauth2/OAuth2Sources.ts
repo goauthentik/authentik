@@ -33,6 +33,7 @@ export function oauth2SourcesSelector(instanceMappings?: string[]): DualSelectPa
 
     const fetchAvailableOauth2Sources: DualSelectPairSource = async () => {
         const oauthSources = aki(SourcesApi);
+
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 oauthSources.sourcesOauthList({ pbmUuid: instanceId }),

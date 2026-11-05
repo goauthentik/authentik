@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,32 +12,23 @@
 
 /**
  * Password Uniqueness Policy Serializer
+ *
  * @export
  * @interface UniquePasswordPolicyRequest
  */
 export interface UniquePasswordPolicyRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof UniquePasswordPolicyRequest
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof UniquePasswordPolicyRequest
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
      * Field key to check, field keys defined in Prompt stages are available.
-     * @type {string}
-     * @memberof UniquePasswordPolicyRequest
      */
     passwordField?: string;
     /**
      * Number of passwords to check against.
-     * @type {number}
-     * @memberof UniquePasswordPolicyRequest
      */
     numHistoricalPasswords?: number;
 }

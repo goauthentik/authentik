@@ -6,8 +6,6 @@ from typing import TYPE_CHECKING, Any
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
-from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
@@ -24,6 +22,7 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.lib.config import CONFIG
+from authentik.lib.tracing import Span, active_tracer
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine
@@ -219,6 +218,8 @@ class FlowPlanner:
         if (
             self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
             and request.user.is_authenticated
+            # Allow re-authenticating the current user (e.g. via a source for prompt=login)
+            and context.get(PLAN_CONTEXT_PENDING_USER) != request.user
         ):
             raise FlowNonApplicableException()
         if (
@@ -261,7 +262,9 @@ class FlowPlanner:
     def plan(self, request: HttpRequest, default_context: dict[str, Any] | None = None) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
-        with start_span(op="authentik.flow.planner.plan", name=self.flow.slug) as span:
+        with active_tracer().start_span(
+            op="authentik.flow.planner.plan", name=self.flow.slug
+        ) as span:
             span: Span
             span.set_data("flow", self.flow)
             span.set_data("request", request)
@@ -319,7 +322,7 @@ class FlowPlanner:
         """Build flow plan by checking each stage in their respective
         order and checking the applied policies"""
         with (
-            start_span(
+            active_tracer().start_span(
                 op="authentik.flow.planner.build_plan",
                 name=self.flow.slug,
             ) as span,
@@ -337,10 +340,18 @@ class FlowPlanner:
             bindings = list(
                 FlowStageBinding.objects.filter(target__pk=self.flow.pk).order_by("order")
             )
-            stages = Stage.objects.filter(flowstagebinding__in=[binding.pk for binding in bindings])
+            stages = {
+                stage.pk: stage
+                for stage in Stage.objects.filter(
+                    pk__in=[binding.stage_id for binding in bindings]
+                ).select_subclasses()
+            }
             for binding in bindings:
                 binding: FlowStageBinding
-                stage = [stage for stage in stages if stage.pk == binding.stage_id][0]
+                stage = stages[binding.stage_id]
+                # Cache the subclassed stage on the binding so it is pickled with the plan,
+                # otherwise every executor request re-queries it with all subclass joins
+                binding.stage = stage
                 marker = StageMarker()
                 if binding.evaluate_on_plan:
                     self._logger.debug(

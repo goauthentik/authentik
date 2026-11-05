@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,75 +12,21 @@
 
 /**
  * rest_framework Serializer for OIDC Configuration
+ *
  * @export
  * @interface OpenIDConnectConfiguration
  */
 export interface OpenIDConnectConfiguration {
-    /**
-     *
-     * @type {string}
-     * @memberof OpenIDConnectConfiguration
-     */
     issuer: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OpenIDConnectConfiguration
-     */
     authorizationEndpoint: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OpenIDConnectConfiguration
-     */
     tokenEndpoint: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OpenIDConnectConfiguration
-     */
     userinfoEndpoint: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OpenIDConnectConfiguration
-     */
     endSessionEndpoint: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OpenIDConnectConfiguration
-     */
     introspectionEndpoint: string;
-    /**
-     *
-     * @type {string}
-     * @memberof OpenIDConnectConfiguration
-     */
     jwksUri: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof OpenIDConnectConfiguration
-     */
     responseTypesSupported: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof OpenIDConnectConfiguration
-     */
     idTokenSigningAlgValuesSupported: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof OpenIDConnectConfiguration
-     */
     subjectTypesSupported: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof OpenIDConnectConfiguration
-     */
     tokenEndpointAuthMethodsSupported: Array<string>;
 }
 

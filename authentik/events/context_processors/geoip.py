@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, TypedDict
 from django.http import HttpRequest
 from geoip2.errors import GeoIP2Error
 from geoip2.models import City
-from sentry_sdk import start_span
 
 from authentik.events.context_processors.mmdb import MMDBContextProcessor
 from authentik.lib.config import CONFIG
+from authentik.lib.tracing import active_tracer
 from authentik.root.middleware import ClientIPMiddleware
 
 if TYPE_CHECKING:
@@ -28,6 +28,9 @@ class GeoIPDict(TypedDict):
 
 class GeoIPContextProcessor(MMDBContextProcessor):
     """Slim wrapper around GeoIP API"""
+
+    default_path = "/geoip/dbip-city-lite.mmdb"
+    legacy_path = "/geoip/GeoLite2-City.mmdb"
 
     def capability(self) -> Capabilities | None:
         from authentik.api.v3.config import Capabilities
@@ -49,7 +52,7 @@ class GeoIPContextProcessor(MMDBContextProcessor):
 
     def city(self, ip_address: str) -> City | None:
         """Wrapper for Reader.city"""
-        with start_span(
+        with active_tracer().start_span(
             op="authentik.events.geo.city",
             name=ip_address,
         ):

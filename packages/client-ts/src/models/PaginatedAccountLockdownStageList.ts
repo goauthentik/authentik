@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { AccountLockdownStage } from "./AccountLockdownStage";
-import { AccountLockdownStageFromJSON, AccountLockdownStageToJSON } from "./AccountLockdownStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { AccountLockdownStage } from "./AccountLockdownStage.js";
+import {
+    AccountLockdownStageFromJSON,
+    AccountLockdownStageToJSON,
+} from "./AccountLockdownStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedAccountLockdownStageList
  */
 export interface PaginatedAccountLockdownStageList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedAccountLockdownStageList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<AccountLockdownStage>}
-     * @memberof PaginatedAccountLockdownStageList
-     */
     results: Array<AccountLockdownStage>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedAccountLockdownStageList
-     */
     autocomplete: { [key: string]: any };
 }
 

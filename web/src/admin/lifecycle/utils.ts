@@ -1,5 +1,4 @@
 import "#components/ak-status-label";
-
 import { MessageFormatter } from "#common/ui/locale/format";
 
 import { PFColor } from "#elements/Label";

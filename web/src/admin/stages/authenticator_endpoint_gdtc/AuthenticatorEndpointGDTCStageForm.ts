@@ -1,7 +1,8 @@
 import "#components/ak-text-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 
@@ -12,8 +13,6 @@ import { AuthenticatorEndpointGDTCStage, StagesApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
 export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<AuthenticatorEndpointGDTCStage> {
@@ -65,10 +64,10 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                         required
                         name="credentials"
                     >
-                        <ak-codemirror
+                        <ak-code-editor
                             mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
-                        ></ak-codemirror>
+                        ></ak-code-editor>
                         <p class="pf-c-form__helper-text">
                             ${msg("Google Cloud credentials file.")}
                         </p>

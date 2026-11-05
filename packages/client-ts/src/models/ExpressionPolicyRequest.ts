@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,17 @@
 
 /**
  * Group Membership Policy Serializer
+ *
  * @export
  * @interface ExpressionPolicyRequest
  */
 export interface ExpressionPolicyRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof ExpressionPolicyRequest
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof ExpressionPolicyRequest
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
-    /**
-     *
-     * @type {string}
-     * @memberof ExpressionPolicyRequest
-     */
     expression: string;
 }
 

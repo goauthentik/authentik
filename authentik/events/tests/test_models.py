@@ -5,6 +5,7 @@ from collections.abc import Callable
 from django.db.models import Model
 from django.test import TestCase
 
+from authentik.admin.utils import get_system_settings
 from authentik.core.models import default_token_key
 from authentik.events.models import default_event_duration
 from authentik.lib.utils.reflection import get_apps
@@ -23,8 +24,10 @@ def model_tester_factory(test_model: type[Model]) -> Callable:
         for field in test_model._meta.fields:
             if field.default in [default_token_key, default_event_duration]:
                 allowed += 1
+        get_system_settings.cache_clear()
         with self.assertNumQueries(allowed):
             str(test_model())
+        get_system_settings.cache_clear()
         with self.assertNumQueries(allowed):
             repr(test_model())
 

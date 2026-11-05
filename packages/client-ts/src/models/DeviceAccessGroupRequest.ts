@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,22 +11,11 @@
  */
 
 /**
- *
  * @export
  * @interface DeviceAccessGroupRequest
  */
 export interface DeviceAccessGroupRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof DeviceAccessGroupRequest
-     */
     name: string;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof DeviceAccessGroupRequest
-     */
     attributes?: { [key: string]: any };
 }
 

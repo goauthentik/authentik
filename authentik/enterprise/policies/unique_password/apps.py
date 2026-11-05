@@ -12,7 +12,7 @@ class AuthentikEnterprisePoliciesUniquePasswordConfig(EnterpriseConfig):
     default = True
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.enterprise.policies.unique_password.tasks import (
             check_and_purge_password_history,
             trim_password_histories,

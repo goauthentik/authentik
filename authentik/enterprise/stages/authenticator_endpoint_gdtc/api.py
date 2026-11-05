@@ -27,6 +27,7 @@ class AuthenticatorEndpointGDTCStageSerializer(EnterpriseRequiredMixin, StageSer
             "friendly_name",
             "credentials",
         ]
+        secret_fields = ["credentials"]
 
 
 class AuthenticatorEndpointGDTCStageViewSet(UsedByMixin, ModelViewSet):

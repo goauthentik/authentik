@@ -78,6 +78,27 @@ A verification certificate in authentik acts as the public key used to verify di
 
 An encryption certificate is a public key certificate used by authentik to encrypt sensitive data in SAML assertions before sending them to an SP. This ensures that sensitive data within the assertion, such as user attributes and authentication details, remain confidential and can only be decrypted by the SP possessing the corresponding private key.
 
+When an encryption certificate is configured, authentik encrypts the assertion in an `<EncryptedAssertion>` element. If assertion signing is enabled and a signing certificate is configured, authentik signs the assertion before encrypting it. If response signing is enabled and a signing certificate is configured, authentik signs the response after encrypting the assertion. The SP must decrypt the assertion before verifying its signature.
+
+#### Encryption algorithm:ak-version[2026.11]
+
+The **Encryption algorithm** field under **Advanced protocol settings** specifies the algorithm that authentik uses to encrypt SAML assertions. This field is available only when an encryption certificate is configured.
+
+| Encryption algorithm | XML Encryption identifier                     |
+| -------------------- | --------------------------------------------- |
+| AES128-CBC           | `http://www.w3.org/2001/04/xmlenc#aes128-cbc` |
+| AES256-CBC           | `http://www.w3.org/2001/04/xmlenc#aes256-cbc` |
+| AES128-GCM           | `http://www.w3.org/2009/xmlenc11#aes128-gcm`  |
+| AES256-GCM (default) | `http://www.w3.org/2009/xmlenc11#aes256-gcm`  |
+
+AES256-GCM is the recommended algorithm and the default for new providers. The other algorithms provide compatibility with SPs that do not support AES256-GCM.
+
+Providers created before authentik 2026.11 retain AES128-CBC to preserve compatibility. To use AES256-GCM with an existing provider, change its **Encryption algorithm** and verify that you can still log in to the SP.
+
+Regardless of the selected algorithm, authentik encrypts the assertion's symmetric key with the encryption certificate's public key using RSA-OAEP (`http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p`).
+
+When you [import SP metadata](./create-saml-provider.mdx#create-a-saml-provider-from-sp-metadata-import-sp-metadata), authentik reads the `<EncryptionMethod>` elements associated with the SP's encryption key. It selects the first supported algorithm in the SP's order of preference. If none of the listed algorithms are supported, or no algorithms are listed, authentik uses the default, AES256-GCM.
+
 ## SAML property mappings
 
 During a SAML authentication process, communication between the SP and the IdP relies on property mappings to align, or "map", user attributes values between the IdP and SP.
@@ -103,7 +124,7 @@ The following property mappings are automatically added when you create a new SA
 | authentik default SAML Mapping: Username                      | `http://schemas.goauthentik.io/2021/02/saml/username`                        |
 | authentik default SAML Mapping: WindowsAccountName (Username) | `http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname` |
 
-The default SAML property mappings can be viewed on the **Property Mappings** page of the admin interface by disabling the **Hide managed mappings** toggle.
+The default SAML property mappings can be viewed on the **Property Mappings** page of the Admin interface by setting the **Managed** filter to **All**.
 
 ### Custom SAML property mappings
 
@@ -148,10 +169,19 @@ In authentik, it's also possible to configure the default SAML NameID policy use
 | Windows - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                          |
 | Transient - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                | NameID will be set based on the user's session ID.                                                                                                                                                    |
 | Email address - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`         | NameID will be set to the user's email address.                                                                                                                                                       |
+| Unspecified - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`            | No default is applied. NameID will be set based on the policy requested by the SP; if the SP does not request one, it falls back to the persistent identifier.                                        |
 
 :::warning Email based NameID attribute
 By default, users are free to change their email addresses. Therefore, it is recommended to either: avoid using a user's email address as the NameID attribute or, if possible, disallow changing email addresses.
 :::
+
+## ForceAuthn:ak-version[2026.8]
+
+An SP can set the `ForceAuthn` attribute on its `AuthnRequest` to require that the user authenticates again, even when they already have a valid authentik session.
+
+authentik honors this attribute. When an incoming `AuthnRequest` sets `ForceAuthn="true"`, the user is sent through the provider's authentication flow before the SSO flow continues. If the provider does not have an authentication flow configured, authentik uses the authentication flow configured for the associated brand. This behaves similarly to `prompt=login` for OAuth 2.0 and OpenID Connect providers. Once the user has re-authenticated, the SSO flow proceeds normally.
+
+This requires no configuration on the provider, and it applies to any SP that sets the attribute. If users of an existing application are prompted to sign in again more often after upgrading to 2026.8, check whether that SP sets `ForceAuthn`.
 
 ## AuthnContextClassRef
 

@@ -103,7 +103,7 @@ impl Application {
         let client_id = self.provider.client_id.as_deref()?;
         let client_secret = self.provider.client_secret.as_deref()?;
         backchannel::introspect_token(
-            &self.api_config.client,
+            &self.backchannel_client,
             &self.endpoint.token_introspection,
             self.token_host.as_ref(),
             client_id,
@@ -116,7 +116,7 @@ impl Application {
         .flatten()
     }
 
-    /// Verify a signed token (HS256 by client secret, else RS256 via JWKS).
+    /// Verify a signed token (HS256 by client secret, else RS256 or ML-DSA via JWKS).
     pub(super) async fn verify_token(&self, token: &str) -> Result<Claims> {
         let client_id = self
             .provider
@@ -137,14 +137,14 @@ impl Application {
                 .ok_or_else(|| eyre!("provider has no client secret"))?;
             token::verify_hs256(token, client_secret, &self.endpoint.issuer, client_id)
         } else {
-            self.verify_rs256_cached(token, &self.endpoint.issuer, client_id)
+            self.verify_jwks_cached(token, &self.endpoint.issuer, client_id)
                 .await
         }
     }
 
-    /// Verify an RS256 token against the cached JWKS, refreshing it when the
+    /// Verify a token against the cached JWKS, refreshing it when the
     /// token's `kid` is not present (e.g. after key rotation).
-    async fn verify_rs256_cached(
+    async fn verify_jwks_cached(
         &self,
         token: &str,
         issuer: &str,
@@ -155,12 +155,12 @@ impl Application {
         if let Some(jwks) = self.jwks_cache.load_full()
             && jwks.find(&kid).is_some()
         {
-            return token::verify_rs256(token, &jwks, issuer, audience);
+            return token::verify_jwks(token, &jwks, issuer, audience);
         }
 
         let jwks =
-            backchannel::fetch_jwks(&self.api_config.client, &self.endpoint.jwks_uri).await?;
-        let claims = token::verify_rs256(token, &jwks, issuer, audience);
+            backchannel::fetch_jwks(&self.backchannel_client, &self.endpoint.jwks_uri).await?;
+        let claims = token::verify_jwks(token, &jwks, issuer, audience);
         self.jwks_cache.store(Some(Arc::new(jwks)));
         claims
     }
@@ -182,7 +182,7 @@ impl Application {
         let client_id = self.provider.client_id.as_deref()?;
         let scope = self.provider.scopes_to_request.join(" ");
         let id_token = backchannel::client_credentials_token(
-            &self.api_config.client,
+            &self.backchannel_client,
             &self.endpoint.token_url,
             self.token_host.as_ref(),
             client_id,

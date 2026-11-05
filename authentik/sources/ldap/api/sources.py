@@ -1,6 +1,7 @@
 """Source API Views"""
 
 from typing import Any
+from urllib.parse import urlparse
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
@@ -22,8 +23,9 @@ from authentik.lib.sync.api import SyncStatusSerializer
 from authentik.rbac.filters import ObjectFilter
 from authentik.sources.ldap.models import (
     LDAPSource,
+    LDAPSourceBindMethod,
 )
-from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES, ldap_sync
+from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, ldap_sync
 from authentik.tasks.models import Task, TaskStatus
 
 
@@ -67,10 +69,38 @@ class LDAPSourceSerializer(SourceSerializer):
                 raise ValidationError(
                     {
                         mappings_field: _(
-                            (
-                                "When 'Sync {type}s' is enabled, '{type}s property "
-                                "mappings' cannot be empty."
-                            ).format(type=type)
+                            "When 'Sync {type}s' is enabled, '{type}s property "
+                            "mappings' cannot be empty."
+                        ).format(type=type)
+                    }
+                )
+        service_bind_method = attrs.get(
+            "service_bind_method",
+            self.instance.service_bind_method if self.instance else LDAPSourceBindMethod.SIMPLE,
+        )
+        if service_bind_method == LDAPSourceBindMethod.SASL_EXTERNAL:
+            client_certificate = attrs.get(
+                "client_certificate",
+                self.instance.client_certificate if self.instance else None,
+            )
+            if not client_certificate or not client_certificate.key_data:
+                raise ValidationError(
+                    {
+                        "client_certificate": _(
+                            "SASL EXTERNAL requires a client certificate with a private key."
+                        )
+                    }
+                )
+            server_uri = attrs.get("server_uri", self.instance.server_uri if self.instance else "")
+            start_tls = attrs.get("start_tls", self.instance.start_tls if self.instance else False)
+            schemes = {urlparse(uri.strip()).scheme for uri in server_uri.split(",")}
+            expected_schemes = {"ldap"} if start_tls else {"ldaps"}
+            if schemes != expected_schemes:
+                raise ValidationError(
+                    {
+                        "server_uri": _(
+                            "SASL EXTERNAL requires ldap:// with StartTLS or ldaps:// without "
+                            "StartTLS."
                         )
                     }
                 )
@@ -84,6 +114,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "client_certificate",
             "bind_cn",
             "bind_password",
+            "service_bind_method",
             "start_tls",
             "sni",
             "base_dn",
@@ -121,6 +152,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "enabled",
         "server_uri",
         "bind_cn",
+        "service_bind_method",
         "peer_certificate",
         "client_certificate",
         "start_tls",
@@ -206,9 +238,21 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def debug(self, request: Request, slug: str) -> Response:
         """Get raw LDAP data to debug"""
+        from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
+        from authentik.sources.ldap.sync.membership import (
+            GroupHierarchyLDAPSynchronizer,
+            MembershipLDAPSynchronizer,
+        )
+        from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+
         source = self.get_object()
         all_objects = {}
-        for sync_class in SYNC_CLASSES:
+        for sync_class in (
+            UserLDAPSynchronizer,
+            GroupLDAPSynchronizer,
+            MembershipLDAPSynchronizer,
+            GroupHierarchyLDAPSynchronizer,
+        ):
             class_name = sync_class.name()
             all_objects.setdefault(class_name, [])
             for page in sync_class(source, Task()).get_objects(size_limit=10):

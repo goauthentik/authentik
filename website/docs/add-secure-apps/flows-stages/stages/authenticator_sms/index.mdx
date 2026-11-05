@@ -1,5 +1,6 @@
 ---
 title: SMS authenticator setup stage
+description: Set up SMS-based authenticators and one-time codes for users.
 ---
 
 The SMS Authenticator Setup stage enrolls an SMS-based authenticator for the current user by using either Twilio or a generic HTTP endpoint.
@@ -32,6 +33,8 @@ To require SMS during login, add an [Authenticator Validation stage](../authenti
 If you enable **Verify only**, phone numbers enrolled through this stage cannot be used by the [Authenticator Validation stage](../authenticator_validate/index.mdx).
 
 ## Notes
+
+SMS authenticators created through this stage are tied to it, so the stage cannot be deleted while any of those authenticators still exist. Delete the authenticators first, then delete the stage.
 
 ### Twilio
 

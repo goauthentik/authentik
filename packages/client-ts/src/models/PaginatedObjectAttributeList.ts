@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { ObjectAttribute } from "./ObjectAttribute";
-import { ObjectAttributeFromJSON, ObjectAttributeToJSON } from "./ObjectAttribute";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { ObjectAttribute } from "./ObjectAttribute.js";
+import { ObjectAttributeFromJSON, ObjectAttributeToJSON } from "./ObjectAttribute.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedObjectAttributeList
  */
 export interface PaginatedObjectAttributeList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedObjectAttributeList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<ObjectAttribute>}
-     * @memberof PaginatedObjectAttributeList
-     */
     results: Array<ObjectAttribute>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedObjectAttributeList
-     */
     autocomplete: { [key: string]: any };
 }
 

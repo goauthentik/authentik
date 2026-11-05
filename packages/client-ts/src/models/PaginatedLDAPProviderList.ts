@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { LDAPProvider } from "./LDAPProvider";
-import { LDAPProviderFromJSON, LDAPProviderToJSON } from "./LDAPProvider";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { LDAPProvider } from "./LDAPProvider.js";
+import { LDAPProviderFromJSON, LDAPProviderToJSON } from "./LDAPProvider.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedLDAPProviderList
  */
 export interface PaginatedLDAPProviderList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedLDAPProviderList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<LDAPProvider>}
-     * @memberof PaginatedLDAPProviderList
-     */
     results: Array<LDAPProvider>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedLDAPProviderList
-     */
     autocomplete: { [key: string]: any };
 }
 

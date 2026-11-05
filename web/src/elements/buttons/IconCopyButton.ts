@@ -1,6 +1,5 @@
 import "#elements/Spinner";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { ClipboardItemSource, writeToClipboard } from "#common/clipboard";
 import { PFSize } from "#common/enums";
 

@@ -1,3 +1,8 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+
 import { AKElement } from "#elements/Base";
 import { isActiveElement, isFocusable } from "#elements/utils/focus";
 
@@ -9,11 +14,6 @@ import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 
 /**
  * A configuration object for the visibility states of the password input.
@@ -189,6 +189,7 @@ export class InputPassword extends AKElement {
         if (!this.grabFocus) {
             return;
         }
+
         this.inputFocusIntervalID = setInterval(() => {
             const input = this.inputRef.value;
 
@@ -196,6 +197,7 @@ export class InputPassword extends AKElement {
 
             if (isActiveElement(input, document.activeElement)) {
                 console.debug("authentik/stages/password: cleared focus observer");
+
                 clearInterval(this.inputFocusIntervalID);
             }
 
@@ -245,7 +247,8 @@ export class InputPassword extends AKElement {
      * In the unlikely event that we want to make "show password" the _default_ behavior,
      * this effect handler is broken out into its own method.
      *
-     * The current behavior in the main {@linkcode render} method assumes the field is of type "password."
+     * The current behavior in the main {@linkcode render} method assumes the field is of type
+     * "password."
      *
      * To have this effect, er, take effect, call it in an {@linkcode updated} method.
      *

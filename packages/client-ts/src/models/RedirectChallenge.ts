@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,45 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
 
 /**
  * Challenge type to redirect the client
+ *
  * @export
  * @interface RedirectChallenge
  */
 export interface RedirectChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof RedirectChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof RedirectChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof RedirectChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof RedirectChallenge
-     */
     to: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof RedirectChallenge
-     */
     finalRedirect?: boolean;
 }
 

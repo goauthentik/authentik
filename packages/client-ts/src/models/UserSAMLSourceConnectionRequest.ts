@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,12 @@
 
 /**
  * User source connection
+ *
  * @export
  * @interface UserSAMLSourceConnectionRequest
  */
 export interface UserSAMLSourceConnectionRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof UserSAMLSourceConnectionRequest
-     */
     source: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSAMLSourceConnectionRequest
-     */
     identifier: string;
 }
 

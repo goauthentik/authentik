@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,81 +10,54 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticationEnum } from "./AuthenticationEnum";
-import { AuthenticationEnumFromJSON, AuthenticationEnumToJSON } from "./AuthenticationEnum";
-import type { DeniedActionEnum } from "./DeniedActionEnum";
-import { DeniedActionEnumFromJSON, DeniedActionEnumToJSON } from "./DeniedActionEnum";
-import type { FlowDesignationEnum } from "./FlowDesignationEnum";
-import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum";
-import type { FlowLayoutEnum } from "./FlowLayoutEnum";
-import { FlowLayoutEnumFromJSON, FlowLayoutEnumToJSON } from "./FlowLayoutEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { AuthenticationEnum } from "./AuthenticationEnum.js";
+import { AuthenticationEnumFromJSON, AuthenticationEnumToJSON } from "./AuthenticationEnum.js";
+import type { DeniedActionEnum } from "./DeniedActionEnum.js";
+import { DeniedActionEnumFromJSON, DeniedActionEnumToJSON } from "./DeniedActionEnum.js";
+import type { FlowDesignationEnum } from "./FlowDesignationEnum.js";
+import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum.js";
+import type { FlowLayoutEnum } from "./FlowLayoutEnum.js";
+import { FlowLayoutEnumFromJSON, FlowLayoutEnumToJSON } from "./FlowLayoutEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * Flow Serializer
+ *
  * @export
  * @interface PatchedFlowRequest
  */
 export interface PatchedFlowRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedFlowRequest
-     */
     name?: string;
     /**
      * Visible in the URL.
-     * @type {string}
-     * @memberof PatchedFlowRequest
      */
     slug?: string;
     /**
      * Shown as the Title in Flow pages.
-     * @type {string}
-     * @memberof PatchedFlowRequest
      */
     title?: string;
     /**
-     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-     * @type {FlowDesignationEnum}
-     * @memberof PatchedFlowRequest
+     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when
+     * an un-authenticated user visits authentik.
      */
     designation?: FlowDesignationEnum;
     /**
      * Background shown during execution
-     * @type {string}
-     * @memberof PatchedFlowRequest
      */
     background?: string;
-    /**
-     *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedFlowRequest
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * Enable compatibility mode, increases compatibility with password managers on mobile devices.
-     * @type {boolean}
-     * @memberof PatchedFlowRequest
      */
     compatibilityMode?: boolean;
-    /**
-     *
-     * @type {FlowLayoutEnum}
-     * @memberof PatchedFlowRequest
-     */
     layout?: FlowLayoutEnum;
     /**
      * Configure what should happen when a flow denies access to a user.
-     * @type {DeniedActionEnum}
-     * @memberof PatchedFlowRequest
      */
     deniedAction?: DeniedActionEnum;
     /**
      * Required level of authentication and authorization to access a flow.
-     * @type {AuthenticationEnum}
-     * @memberof PatchedFlowRequest
      */
     authentication?: AuthenticationEnum;
 }

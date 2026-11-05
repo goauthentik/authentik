@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,7 +11,6 @@
  */
 
 /**
- *
  * @export
  */
 export const EventActions = {
@@ -24,6 +21,9 @@ export const EventActions = {
     UserOffboarded: "user_offboarded",
     SuspiciousRequest: "suspicious_request",
     PasswordSet: "password_set",
+    AuthenticatorLocked: "authenticator_locked",
+    AuthenticatorUnlocked: "authenticator_unlocked",
+    RequiredActionCompleted: "required_action_completed",
     SecretView: "secret_view",
     SecretRotate: "secret_rotate",
     InvitationUsed: "invitation_used",

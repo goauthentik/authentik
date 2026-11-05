@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,68 +10,36 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
 
 /**
  * PromptStage Serializer
+ *
  * @export
  * @interface PromptStage
  */
 export interface PromptStage {
-    /**
-     *
-     * @type {string}
-     * @memberof PromptStage
-     */
     readonly pk: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PromptStage
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof PromptStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof PromptStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof PromptStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof PromptStage
      */
     readonly metaModelName: string;
-    /**
-     *
-     * @type {Array<FlowSet>}
-     * @memberof PromptStage
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PromptStage
-     */
     fields: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PromptStage
-     */
     validationPolicies?: Array<string>;
 }
 

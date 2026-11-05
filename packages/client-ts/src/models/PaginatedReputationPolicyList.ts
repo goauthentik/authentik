@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { ReputationPolicy } from "./ReputationPolicy";
-import { ReputationPolicyFromJSON, ReputationPolicyToJSON } from "./ReputationPolicy";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { ReputationPolicy } from "./ReputationPolicy.js";
+import { ReputationPolicyFromJSON, ReputationPolicyToJSON } from "./ReputationPolicy.js";
 
 /**
- *
  * @export
  * @interface PaginatedReputationPolicyList
  */
 export interface PaginatedReputationPolicyList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedReputationPolicyList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<ReputationPolicy>}
-     * @memberof PaginatedReputationPolicyList
-     */
     results: Array<ReputationPolicy>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedReputationPolicyList
-     */
     autocomplete: { [key: string]: any };
 }
 

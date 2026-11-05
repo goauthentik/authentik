@@ -1,5 +1,5 @@
 /**
- * @fileoverview Utilities for DOM element interaction, focus management, and event handling.
+ * @file Utilities for DOM element interaction, focus management, and event handling.
  */
 
 import { isInteractiveElement, isInteractiveTextElement } from "#elements/utils/interactivity";
@@ -24,6 +24,7 @@ export function assertFocusable(target: Element | null | undefined): asserts tar
     if (!target) {
         throw new FocusAssertionError("Skipping focus, no target", { target: null });
     }
+
     if (!(target instanceof HTMLElement)) {
         throw new FocusAssertionError("Skipping focus, target is not an HTMLElement", { target });
     }
@@ -44,6 +45,7 @@ export function assertFocusable(target: Element | null | undefined): asserts tar
         throw new FocusAssertionError("Skipping focus, target has no focus method", { target });
     }
 }
+
 /**
  * Recursively check if the target element or any of its children are active (i.e. "focused").
  *
@@ -59,6 +61,7 @@ export function isActiveElement(
 
     // Does the container element have a shadow root?
     if (!("shadowRoot" in containerElement)) return false;
+
     if (containerElement.shadowRoot === null) return false;
 
     // Is the target element the active element?
@@ -71,15 +74,15 @@ export function isActiveElement(
 /**
  * Type predicate to check if an element is focusable.
  *
- * @param target The element to check.
- *
  * @category DOM
+ * @param target The element to check.
  */
 export function isFocusable<T extends Element | null | undefined>(
     target: T,
 ): target is NonNullable<T> & HTMLElement {
     try {
         assertFocusable(target);
+
         return true;
     } catch (error) {
         if (error instanceof FocusAssertionError) {
@@ -87,6 +90,7 @@ export function isFocusable<T extends Element | null | undefined>(
         } else {
             console.error("Unexpected error during focus assertion", error);
         }
+
         return false;
     }
 }

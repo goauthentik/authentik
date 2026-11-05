@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,33 +10,19 @@
  * Do not edit the class manually.
  */
 
-import type { UserSelf } from "./UserSelf";
-import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf";
+import type { UserSelf } from "./UserSelf.js";
+import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf.js";
 
 /**
  * Response for the /user/me endpoint, returns the currently active user (as `user` property)
  * and, if this user is being impersonated, the original user in the `original` property.
+ *
  * @export
  * @interface SessionUser
  */
 export interface SessionUser {
-    /**
-     *
-     * @type {UserSelf}
-     * @memberof SessionUser
-     */
     user: UserSelf;
-    /**
-     *
-     * @type {UserSelf}
-     * @memberof SessionUser
-     */
     original?: UserSelf;
-    /**
-     *
-     * @type {Array<UserSelf>}
-     * @memberof SessionUser
-     */
     users: Array<UserSelf>;
 }
 

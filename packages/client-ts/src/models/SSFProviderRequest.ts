@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,39 +12,18 @@
 
 /**
  * SSFProvider Serializer
+ *
  * @export
  * @interface SSFProviderRequest
  */
 export interface SSFProviderRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof SSFProviderRequest
-     */
     name: string;
     /**
      * Key used to sign the SSF Events.
-     * @type {string}
-     * @memberof SSFProviderRequest
      */
     signingKey: string;
-    /**
-     *
-     * @type {Array<number>}
-     * @memberof SSFProviderRequest
-     */
     oidcAuthProviders?: Array<number>;
-    /**
-     *
-     * @type {string}
-     * @memberof SSFProviderRequest
-     */
     eventRetention?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof SSFProviderRequest
-     */
     pushVerifyCertificates?: boolean;
 }
 

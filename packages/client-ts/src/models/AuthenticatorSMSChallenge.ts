@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,51 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
 
 /**
  * SMS Setup challenge
+ *
  * @export
  * @interface AuthenticatorSMSChallenge
  */
 export interface AuthenticatorSMSChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof AuthenticatorSMSChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorSMSChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AuthenticatorSMSChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorSMSChallenge
-     */
     pendingUser: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AuthenticatorSMSChallenge
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof AuthenticatorSMSChallenge
-     */
     phoneNumberRequired?: boolean;
 }
 

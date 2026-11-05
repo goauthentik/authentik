@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,62 +12,31 @@
 
 /**
  * PolicyBinding Serializer
+ *
  * @export
  * @interface PolicyBindingRequest
  */
 export interface PolicyBindingRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PolicyBindingRequest
-     */
     policy?: string | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PolicyBindingRequest
-     */
     group?: string | null;
-    /**
-     *
-     * @type {number}
-     * @memberof PolicyBindingRequest
-     */
     user?: number | null;
-    /**
-     *
-     * @type {string}
-     * @memberof PolicyBindingRequest
-     */
     target: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof PolicyBindingRequest
      */
     negate?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PolicyBindingRequest
-     */
     enabled?: boolean;
     /**
-     *
-     * @type {number}
-     * @memberof PolicyBindingRequest
+     * Execute the policy but ignore its result.
      */
+    dryRun?: boolean;
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof PolicyBindingRequest
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof PolicyBindingRequest
      */
     failureResult?: boolean;
 }
@@ -107,6 +74,7 @@ export function PolicyBindingRequestFromJSONTyped(
         target: json["target"],
         negate: json["negate"] == null ? undefined : json["negate"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
@@ -132,6 +100,7 @@ export function PolicyBindingRequestToJSONTyped(
         target: value["target"],
         negate: value["negate"],
         enabled: value["enabled"],
+        dry_run: value["dryRun"],
         order: value["order"],
         timeout: value["timeout"],
         failure_result: value["failureResult"],

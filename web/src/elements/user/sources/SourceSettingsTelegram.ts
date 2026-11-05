@@ -1,5 +1,4 @@
 import "#elements/Spinner";
-
 import { loadTelegramWidget, TelegramUserResponse } from "../../../flow/sources/telegram/utils";
 
 import { aki } from "#common/api/client";
@@ -35,6 +34,7 @@ export class SourceSettingsTelegram extends BaseUserSettings {
             })
             .catch(async (error: unknown) => {
                 const parsedError = await parseAPIResponseError(error);
+
                 showMessage({
                     level: MessageLevel.error,
                     message: msg(
@@ -68,7 +68,9 @@ export class SourceSettingsTelegram extends BaseUserSettings {
         const params = new URLSearchParams(this.configureURL || "");
         const botUsername: string = params.get("bot_username") || "";
         const requestMessageAccess = params.get("request_message_access") === "True";
+
         if (this.connectBtnRef.value) this.connectBtnRef.value.textContent = "";
+
         loadTelegramWidget(
             this.connectBtnRef.value,
             botUsername,
@@ -89,6 +91,7 @@ export class SourceSettingsTelegram extends BaseUserSettings {
                     })
                     .then((connection: UserTelegramSourceConnection) => {
                         this.connectionPk = connection.pk;
+
                         showMessage({
                             level: MessageLevel.info,
                             message: msg("Successfully connected source"),
@@ -96,6 +99,7 @@ export class SourceSettingsTelegram extends BaseUserSettings {
                     })
                     .catch(async (error: unknown) => {
                         const parsedError = await parseAPIResponseError(error);
+
                         showMessage({
                             level: MessageLevel.error,
                             message: msg(

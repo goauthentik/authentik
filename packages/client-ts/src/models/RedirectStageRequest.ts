@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,47 +10,23 @@
  * Do not edit the class manually.
  */
 
-import type { RedirectStageModeEnum } from "./RedirectStageModeEnum";
+import type { RedirectStageModeEnum } from "./RedirectStageModeEnum.js";
 import {
     RedirectStageModeEnumFromJSON,
     RedirectStageModeEnumToJSON,
-} from "./RedirectStageModeEnum";
+} from "./RedirectStageModeEnum.js";
 
 /**
  * RedirectStage Serializer
+ *
  * @export
  * @interface RedirectStageRequest
  */
 export interface RedirectStageRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof RedirectStageRequest
-     */
     name: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof RedirectStageRequest
-     */
     keepContext?: boolean;
-    /**
-     *
-     * @type {RedirectStageModeEnum}
-     * @memberof RedirectStageRequest
-     */
     mode: RedirectStageModeEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof RedirectStageRequest
-     */
     targetStatic?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof RedirectStageRequest
-     */
     targetFlow?: string | null;
 }
 

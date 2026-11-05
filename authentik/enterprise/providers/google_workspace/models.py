@@ -174,7 +174,7 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/google.svg")
+        return static("authentik/sources/google/light.svg")
 
     @property
     def component(self) -> str:
@@ -222,6 +222,8 @@ class GoogleWorkspaceProviderPropertyMappingsGroup(SimpleThroughModel):
 
 class GoogleWorkspaceProviderMapping(PropertyMapping):
     """Map authentik data to outgoing Google requests"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

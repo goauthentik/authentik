@@ -4,11 +4,11 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { modalInvoker, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -131,6 +131,7 @@ export class RelatedGroupList extends Table<Group> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Group(s)")}
             submit-label=${msg("Remove from Group(s)")}
@@ -141,6 +142,7 @@ export class RelatedGroupList extends Table<Group> {
             .objects=${this.selectedElements}
             .delete=${(item: Group) => {
                 if (!this.targetUser) return;
+
                 return aki(CoreApi).coreGroupsRemoveUserCreate({
                     groupUuid: item.pk,
                     userAccountRequest: {
@@ -157,7 +159,7 @@ export class RelatedGroupList extends Table<Group> {
 
     row(item: Group): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
+            html`<a href=${toAdminInterface(`identity/groups/${item.pk}`)}>${item.name}</a>`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<button
                 class="pf-c-button pf-m-plain"
@@ -172,14 +174,16 @@ export class RelatedGroupList extends Table<Group> {
 
     renderToolbar(): TemplateResult {
         return html`
-            ${this.targetUser
-                ? html`<button
-                      class="pf-c-button pf-m-primary"
-                      ${modalInvoker(RelatedGroupAdd, { user: this.targetUser })}
-                  >
-                      ${msg("Add to existing group")}
-                  </button>`
-                : nothing}
+            ${
+                this.targetUser
+                    ? html`<button
+                          class="pf-c-button pf-m-primary"
+                          ${modalInvoker(RelatedGroupAdd, { user: this.targetUser })}
+                      >
+                          ${msg("Add to existing group")}
+                      </button>`
+                    : nothing
+            }
             <button class="pf-c-button pf-m-secondary" ${modalInvoker(GroupForm)}>
                 ${msg("Add new group")}
             </button>

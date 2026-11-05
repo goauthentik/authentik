@@ -30,14 +30,14 @@ The `#e2e` entry (`e2e/index.ts`) re-exports `expect` from Playwright and export
 
 Destructure what you need from the test callback. All are constructed per-test:
 
-| Fixture     | Purpose                                                                                                                                                                                                                                                                            |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `session`   | `login({ to, username?, password?, rememberMe? })`, `toLoginPage()`, `checkAuthenticated()`. Defaults to `test-admin@goauthentik.io` / `test-runner`.                                                                                                                              |
-| `navigator` | `navigate(to)` and `waitForPathname(to)` — use these over `page.goto` so URL waits are consistent.                                                                                                                                                                                 |
-| `form`      | `fill(label, value, ctx?)`, `search(query, ctx?)`, `selectSearchValue(label, pattern, ctx?)`, `setInputCheck(label, bool, ctx?)`, `setRadio(group, name, ctx?)`, `setFormGroup(pattern, open, ctx?)`. Knows about `ak-switch-input`, `ak-form-group`, and search-select dropdowns. |
-| `pointer`   | `click(name, role?, ctx?)` — high-level click by accessible name; defaults to buttons/links.                                                                                                                                                                                       |
-| `page`      | Raw Playwright `Page` for anything the fixtures don't cover. Shadow DOM is pierced automatically.                                                                                                                                                                                  |
-| `baseURL`   | The instance URL, from `AK_TEST_RUNNER_PAGE_URL` (defaults to `http://localhost:9000`).                                                                                                                                                                                            |
+| Fixture     | Purpose                                                                                                                                                                                                                                                                                                             |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `session`   | `login({ to, username?, password?, rememberMe? })`, `toLoginPage()`, `checkAuthenticated()`. Defaults to `test-admin@goauthentik.io` / `test-runner`.                                                                                                                                                               |
+| `navigator` | `navigate(to)` and `waitForPathname(to)` — use these over `page.goto` so URL waits are consistent.                                                                                                                                                                                                                  |
+| `form`      | `fill(label, value, ctx?)`, `search(query, ctx?)`, `selectSearchValue(label, pattern, ctx?)`, `findSearchSelect(label, ctx?)`, `setInputCheck(label, bool, ctx?)`, `setRadio(group, name, ctx?)`, `setFormGroup(pattern, open, ctx?)`. Knows about `ak-switch-input`, `ak-form-group`, and search-select dropdowns. |
+| `pointer`   | `click(name, role?, ctx?)` — high-level click by accessible name; defaults to buttons/links.                                                                                                                                                                                                                        |
+| `page`      | Raw Playwright `Page` for anything the fixtures don't cover. Shadow DOM is pierced automatically.                                                                                                                                                                                                                   |
+| `baseURL`   | The instance URL, from `AK_TEST_RUNNER_PAGE_URL` (defaults to `http://localhost:9000`).                                                                                                                                                                                                                             |
 
 Most steps in most tests should go through `form` and `pointer`. Reach for `page.locator(...)` only when there isn't a fixture method that fits.
 
@@ -58,7 +58,7 @@ test.describe("Feature name", () => {
         const { click } = pointer;
 
         await test.step("Authenticate", async () => {
-            await session.login({ to: "/if/admin/#/core/providers" });
+            await session.login({ to: "/if/admin/core/providers" });
         });
 
         const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
@@ -148,3 +148,5 @@ npx vitest run test/browser/foo.test.ts # Single browser test file
 ```
 
 The Playwright config (`playwright.config.js`) is also present for the `npm run test:e2e` path and configures Chromium with traces on first retry and a dark color scheme. The browser tests through Vitest use `@vitest/browser-playwright` and target the same `test/browser/` directory.
+
+Tests tagged `@vendor-network` (the CAPTCHA suite) load widgets from the vendors' servers, so the config skips them when `CI` is set. Run them locally with `npx playwright test --grep @vendor-network`.

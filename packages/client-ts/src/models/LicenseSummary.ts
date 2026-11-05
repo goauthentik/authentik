@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,49 +10,26 @@
  * Do not edit the class manually.
  */
 
-import type { LicenseFlagsEnum } from "./LicenseFlagsEnum";
-import { LicenseFlagsEnumFromJSON, LicenseFlagsEnumToJSON } from "./LicenseFlagsEnum";
-import type { LicenseSummaryStatusEnum } from "./LicenseSummaryStatusEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { LicenseFlagsEnum } from "./LicenseFlagsEnum.js";
+import { LicenseFlagsEnumFromJSON, LicenseFlagsEnumToJSON } from "./LicenseFlagsEnum.js";
+import type { LicenseSummaryStatusEnum } from "./LicenseSummaryStatusEnum.js";
 import {
     LicenseSummaryStatusEnumFromJSON,
     LicenseSummaryStatusEnumToJSON,
-} from "./LicenseSummaryStatusEnum";
+} from "./LicenseSummaryStatusEnum.js";
 
 /**
  * Serializer for license status
+ *
  * @export
  * @interface LicenseSummary
  */
 export interface LicenseSummary {
-    /**
-     *
-     * @type {number}
-     * @memberof LicenseSummary
-     */
     internalUsers: number;
-    /**
-     *
-     * @type {number}
-     * @memberof LicenseSummary
-     */
     externalUsers: number;
-    /**
-     *
-     * @type {LicenseSummaryStatusEnum}
-     * @memberof LicenseSummary
-     */
     status: LicenseSummaryStatusEnum;
-    /**
-     *
-     * @type {Date}
-     * @memberof LicenseSummary
-     */
     latestValid: Date;
-    /**
-     *
-     * @type {Array<LicenseFlagsEnum>}
-     * @memberof LicenseSummary
-     */
     licenseFlags: Array<LicenseFlagsEnum>;
 }
 
@@ -109,7 +84,10 @@ export function LicenseSummaryFromJSONTyped(
         internalUsers: json["internal_users"],
         externalUsers: json["external_users"],
         status: LicenseSummaryStatusEnumFromJSON(json["status"]),
-        latestValid: new Date(json["latest_valid"]),
+        latestValid:
+            json["latest_valid"] == null
+                ? json["latest_valid"]
+                : parseDateTime(json["latest_valid"]),
         licenseFlags: (json["license_flags"] as Array<any>).map(LicenseFlagsEnumFromJSON),
     };
 }
@@ -130,7 +108,10 @@ export function LicenseSummaryToJSONTyped(
         internal_users: value["internalUsers"],
         external_users: value["externalUsers"],
         status: LicenseSummaryStatusEnumToJSON(value["status"]),
-        latest_valid: value["latestValid"].toISOString(),
+        latest_valid:
+            value["latestValid"] == null
+                ? value["latestValid"]
+                : serializeDateTime(value["latestValid"]),
         license_flags: (value["licenseFlags"] as Array<any>).map(LicenseFlagsEnumToJSON),
     };
 }

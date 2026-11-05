@@ -60,9 +60,27 @@ Because LDAP does not natively support OTP, authentik supports [appending the OT
 
 #### Tokens and app passwords
 
-- **Tokens**: users can create access tokens for authorization, allowing a client application to access an API or other protected resource.
-- **App passwords**: app passwords can be used as a secondary form of authentication. For example, in situations where MFA is not natively supported for the protocol that the application uses, the app password behaves as the user's regular password.
+- **Tokens**: API tokens authenticate requests to the authentik API at `/api/v3/`. Send them in an `Authorization: Bearer <api_token>` header. They do not grant access to an application's API behind authentik.
+- **App passwords**: generated passwords that you use with your authentik username in supported authentication methods, such as LDAP binds, proxy HTTP Basic authentication, and OAuth2 machine-to-machine authentication. An app password is not an API token or an OAuth2 access token.
+
+To create an app password:
+
+1. Open your user settings and select **Credentials**.
+2. Under **Tokens and App passwords**, click **New App Password**.
+3. Enter a unique **Identifier**, optionally add a **Description**, and set **Expires on**.
+4. Click **Create App Password**.
+5. Use the copy button beside the new entry to copy the generated password. The **Identifier** is a label, not the password or your username.
+
+Administrators can also create app passwords for users under **Directory** > **Tokens and App passwords** by selecting the user and setting **Intent** to **App password**. For automation, see [Service accounts](./account-types/service-accounts.mdx).
+
+Choose the authentication method that your application uses:
+
+- **LDAP**: use the app password as the bind password for your user's DN. The password stage in the provider's **Bind Flow** must enable **User database + app passwords**. See [Bind with an app password](../../add-secure-apps/providers/ldap/index.mdx#bind-with-an-app-password).
+- **Proxy or forward auth**: send your authentik username and app password using HTTP Basic authentication. See the [proxy request example](../../add-secure-apps/providers/proxy/header_authentication.mdx#receiving-http-basic-authentication). Sending the app password directly as `Authorization: Bearer <app_password>` does not work.
+- **OAuth2/OIDC**: exchange your username and app password for an access token using [machine-to-machine authentication](../../add-secure-apps/providers/oauth2/machine_to_machine.mdx#request-with-username-and-app-password), then send the returned access token to the application as a Bearer token.
+
+App passwords authenticate as their owner and do not grant additional application access or permissions. They can be accepted wherever app-password authentication is enabled; the **Identifier** does not restrict a password to one application. To revoke an app password, delete its entry. To rotate it, create a replacement, update the client, and delete the old entry.
 
 ### Connected services
 
-If an authentik administrator adds a [source](../sources/index.mdx) to the instance, such as GitHub, Discord, Google Workspace or Microsoft Entra ID, then users will see a list of those sources here and can choose to log in (**Connect**) using credentials from that source, or **Disconnect** form the service. Note that SCIM and LDAP sources are not displayed.
+If an authentik administrator adds a [source](../sources/index.mdx) to the instance, such as GitHub, Discord, Google Workspace or Microsoft Entra ID, then users will see a list of those sources here and can choose to log in (**Connect**) using credentials from that source, or **Disconnect** from the service. Note that SCIM and LDAP sources are not displayed.

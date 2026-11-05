@@ -12,8 +12,10 @@ from authentik.events.utils import sanitize_item
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
+    BaseSyncException,
     DryRunRejected,
     NotFoundSyncException,
+    ObjectLockTimeout,
     StopSync,
     TransientSyncException,
 )
@@ -111,7 +113,7 @@ class SyncTasks:
                 self.logger.warning("transient sync exception", exc=exc)
                 task.warning("Sync encountered a transient exception. Retrying", exc=exc)
                 raise Retry() from exc
-            except StopSync as exc:
+            except BaseSyncException as exc:
                 task.error(exc)
                 return
 
@@ -197,7 +199,7 @@ class SyncTasks:
         for obj in paginator.page(page).object_list:
             obj: Model
             try:
-                client.write(obj)
+                client.write_locked(obj)
             except SkipObjectException:
                 self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
@@ -213,10 +215,11 @@ class SyncTasks:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
                 task.warning(
                     f"Failed to sync {str(obj)} due to error: {str(exc)}",
-                    arguments=exc.args[1:],
                     obj=sanitize_item(obj),
                     exception=exception_to_dict(exc),
                 )
+            except ObjectLockTimeout as exc:
+                raise Retry() from exc
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 task.warning(
@@ -231,6 +234,13 @@ class SyncTasks:
                     obj=sanitize_item(obj),
                 )
                 break
+            except BaseSyncException as exc:
+                self.logger.warning("failed to sync object", exc=exc, obj=obj)
+                task.warning(
+                    f"Failed to sync {str(obj)}: {exc.detail()}",
+                    obj=sanitize_item(obj),
+                    exception=exception_to_dict(exc),
+                )
 
     def sync_signal_direct_dispatch(
         self,
@@ -280,15 +290,20 @@ class SyncTasks:
             return
 
         try:
-            client.write(instance)
+            client.write_locked(instance)
         except TransientSyncException as exc:
             raise Retry() from exc
         except SkipObjectException:
             return
         except DryRunRejected as exc:
             self.logger.info("Rejected dry-run event", exc=exc)
-        except StopSync as exc:
-            self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+        except BaseSyncException as exc:
+            self.logger.warning("failed to sync object", exc=exc, obj=instance)
+            task.warning(
+                f"Failed to sync {str(instance)}: {exc.detail()}",
+                obj=sanitize_item(instance),
+                exception=exception_to_dict(exc),
+            )
 
     def sync_signal_delete_dispatch(
         self,
@@ -343,6 +358,12 @@ class SyncTasks:
             raise Retry() from exc
         except DryRunRejected as exc:
             self.logger.info("Rejected dry-run event", exc=exc)
+        except BaseSyncException as exc:
+            self.logger.warning("failed to delete object", exc=exc, identifier=identifier)
+            task.warning(
+                f"Failed to delete {model_class._meta.verbose_name} {identifier}: {exc.detail()}",
+                exception=exception_to_dict(exc),
+            )
 
     def sync_signal_m2m_dispatch(
         self,
@@ -404,17 +425,24 @@ class SyncTasks:
 
         client = provider.client_for_model(Group)
         try:
-            operation = None
             if action == "post_add":
                 operation = Direction.add
-            if action == "post_remove":
+            elif action == "post_remove":
                 operation = Direction.remove
-            client.update_group(group, operation, pk_set)
+            else:
+                self.logger.warning("Unknown group membership action", action=action)
+                return
+            client.sync_group_membership(group, operation, pk_set)
         except TransientSyncException as exc:
             raise Retry() from exc
         except SkipObjectException:
             return
         except DryRunRejected as exc:
             self.logger.info("Rejected dry-run event", exc=exc)
-        except StopSync as exc:
-            self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+        except BaseSyncException as exc:
+            self.logger.warning("failed to sync object", exc=exc, obj=group)
+            task.warning(
+                f"Failed to sync {str(group)}: {exc.detail()}",
+                obj=sanitize_item(group),
+                exception=exception_to_dict(exc),
+            )

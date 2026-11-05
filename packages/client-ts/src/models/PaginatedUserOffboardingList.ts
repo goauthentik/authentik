@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserOffboarding } from "./UserOffboarding";
-import { UserOffboardingFromJSON, UserOffboardingToJSON } from "./UserOffboarding";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { UserOffboarding } from "./UserOffboarding.js";
+import { UserOffboardingFromJSON, UserOffboardingToJSON } from "./UserOffboarding.js";
 
 /**
- *
  * @export
  * @interface PaginatedUserOffboardingList
  */
 export interface PaginatedUserOffboardingList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedUserOffboardingList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<UserOffboarding>}
-     * @memberof PaginatedUserOffboardingList
-     */
     results: Array<UserOffboarding>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserOffboardingList
-     */
     autocomplete: { [key: string]: any };
 }
 

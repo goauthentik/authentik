@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,15 +12,11 @@
 
 /**
  * Global default outpost config
+ *
  * @export
  * @interface OutpostDefaultConfig
  */
 export interface OutpostDefaultConfig {
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof OutpostDefaultConfig
-     */
     readonly config: { [key: string]: any };
 }
 

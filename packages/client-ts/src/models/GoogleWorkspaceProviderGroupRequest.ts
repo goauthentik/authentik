@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,27 +12,13 @@
 
 /**
  * GoogleWorkspaceProviderGroup Serializer
+ *
  * @export
  * @interface GoogleWorkspaceProviderGroupRequest
  */
 export interface GoogleWorkspaceProviderGroupRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderGroupRequest
-     */
     googleId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderGroupRequest
-     */
     group: string;
-    /**
-     *
-     * @type {number}
-     * @memberof GoogleWorkspaceProviderGroupRequest
-     */
     provider: number;
 }
 

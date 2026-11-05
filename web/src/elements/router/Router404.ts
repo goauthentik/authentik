@@ -1,11 +1,12 @@
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+
 import { AKElement } from "#elements/Base";
+import { toCurrentInterface } from "#elements/router/core/interfaces";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-router-404")
 export class Router404 extends AKElement {
@@ -22,7 +23,7 @@ export class Router404 extends AKElement {
                 <div class="pf-c-empty-state__body">
                     ${msg(str`The URL "${this.url}" was not found.`)}
                 </div>
-                <a href="#/" class="pf-c-button pf-m-primary" type="button"
+                <a href=${toCurrentInterface()} class="pf-c-button pf-m-primary" type="button"
                     >${msg("Return home")}</a
                 >
             </div>

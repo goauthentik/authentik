@@ -1,5 +1,6 @@
 ---
 title: Email authenticator setup stage
+description: Set up email-based authenticators and one-time codes for users.
 authentik_version: "2025.2"
 ---
 
@@ -48,6 +49,7 @@ To use the enrolled address during login, add an [Authenticator Validation stage
 
 ## Notes
 
+- Email authenticators created through this stage are tied to it, so the stage cannot be deleted while any of those authenticators still exist. Delete the authenticators first, then delete the stage.
 - If **Use global connection settings** is enabled, configure the global email settings first. See the installation docs for [Docker Compose](../../../../install-config/install/docker-compose#email-configuration-optional-but-recommended) and [Kubernetes](../../../../install-config/install/kubernetes#email-configuration-optional-but-recommended).
 - This stage is separate from the general-purpose [Email stage](../email/index.mdx), which is used for email verification and recovery.
 - If the user already has an email address on their account, authentik can use that address during enrollment instead of prompting for a new address.

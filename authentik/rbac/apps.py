@@ -1,6 +1,20 @@
 """authentik rbac app config"""
 
+from django.utils.translation import gettext_lazy as _
+
+from authentik.admin.flags import Flag
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.common import ScheduleSpec
+
+
+class EnableCustomPermissions(Flag[bool], key="rbac_custom_permissions"):
+    default = False
+    visibility = "none"
+    description = _(
+        "Let permission checks decide API access. While enabled, every API request costs an "
+        "additional database query."
+    )
 
 
 class AuthentikRBACConfig(ManagedAppConfig):
@@ -10,3 +24,14 @@ class AuthentikRBACConfig(ManagedAppConfig):
     label = "authentik_rbac"
     verbose_name = "authentik RBAC"
     default = True
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.rbac.tasks import clean_orphaned_object_permissions
+
+        return [
+            ScheduleSpec(
+                actor=clean_orphaned_object_permissions,
+                crontab=f"{fqdn_rand('clean_orphaned_object_permissions')} {fqdn_rand('clean_orphaned_object_permissions', 24)} * * *",  # noqa: E501
+            ),
+        ]

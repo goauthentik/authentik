@@ -1,5 +1,6 @@
 ---
 title: User delete stage
+description: Delete the current user's account during an unenrollment flow.
 ---
 
 The User Delete stage deletes the current `pending_user`.

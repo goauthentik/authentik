@@ -2,17 +2,26 @@
 
 from datetime import timedelta
 from typing import cast
+from unittest.mock import patch
 
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.http import urlencode
 from rest_framework import status
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 
 from authentik.core import user_switching
-from authentik.core.models import AuthenticatedSession, Session, User, UserSwitchingSession
+from authentik.core.api.users import UserViewSet
+from authentik.core.models import (
+    AuthenticatedSession,
+    Session,
+    User,
+    UserSwitchingSession,
+    UserTypes,
+)
 from authentik.core.tests.utils import (
     create_test_brand,
     create_test_flow,
@@ -21,7 +30,12 @@ from authentik.core.tests.utils import (
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
+from authentik.flows.models import (
+    Flow,
+    FlowAuthenticationRequirement,
+    FlowDesignation,
+    FlowStageBinding,
+)
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_ADD_USER,
@@ -30,7 +44,7 @@ from authentik.flows.planner import (
     FlowPlan,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import PolicyRequest
@@ -93,7 +107,7 @@ def _get_switching_token(client: APIClient) -> str:
     return token
 
 
-class TestUserSwitch(FlowTestCase):
+class TestUserSwitch(APIFlowTestCase):
     """Test starting and completing the brand's user switch flow."""
 
     def setUp(self):
@@ -157,6 +171,113 @@ class TestUserSwitch(FlowTestCase):
 
         self.assertNotEqual(self.client.session.session_key, first_session_key)
         self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
+
+    def test_add_user_rejects_unauthenticated_only_flow(self):
+        first_session_key = _login_through_flow(
+            self.client, self.flow, self.login_binding, self.user
+        )
+        self.flow.authentication = FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        self.flow.save()
+
+        response = _post_user_switch(self.client, {"action": "add"})
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(self.client.session.session_key, first_session_key)
+        self.assertNotIn(user_switching.SESSION_KEY_ADD_USER, self.client.session)
+
+    def test_interface_abandons_add_user(self):
+        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
+        self.assertTrue(self.client.session[user_switching.SESSION_KEY_ADD_USER])
+
+        self.client.get(reverse("authentik_core:if-user"))
+
+        self.assertNotIn(user_switching.SESSION_KEY_ADD_USER, self.client.session)
+
+    def test_add_user_refuses_non_internal_user(self):
+        first_session_key = _login_through_flow(
+            self.client, self.flow, self.login_binding, self.user
+        )
+        self.other_user.type = UserTypes.EXTERNAL
+        self.other_user.save()
+        _assert_switch_redirect(_post_user_switch(self.client, {"action": "add"}), self.flow)
+        plan = self.client.session[SESSION_KEY_PLAN]
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Only internal users can be added to user switching.",
+        )
+        self.assertEqual(self.client.session.session_key, first_session_key)
+        self.assertEqual(
+            self.client.get(reverse("authentik_api:user-me")).json()["user"]["pk"],
+            self.user.pk,
+        )
+
+    def test_non_internal_sessions_are_not_switch_targets(self):
+        _login_through_flow(self.client, self.flow, self.login_binding, self.user)
+        self.other_user.type = UserTypes.EXTERNAL
+        self.other_user.save()
+        create_test_session(self.other_user, _get_switching_token(self.client), is_current=False)
+
+        self.assertEqual(self.client.get(reverse("authentik_api:user-me")).json()["users"], [])
+        response = _post_user_switch(self.client, {"user_pk": self.other_user.pk})
+        self.assertEqual(response.status_code, 404)
+
+    def test_add_user_survives_concurrent_user_me(self):
+        """Adding a user keeps the first login when `users/me` overlaps the switch request"""
+        first_session_key = _login_through_flow(
+            self.client, self.flow, self.login_binding, self.user
+        )
+        user_me = UserViewSet.user_me
+
+        def add_user_during_user_me(viewset: UserViewSet, request: Request) -> Response:
+            # `users/me` has loaded the session by now, so the plan saved here is lost
+            # if `users/me` writes its copy of the session back.
+            response = _post_user_switch(self.client, {"action": "add"})
+            _assert_switch_redirect(response, self.flow)
+            return user_me(viewset, request)
+
+        with patch.object(UserViewSet, "user_me", add_user_during_user_me):
+            response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        session = self.client.session
+        plan = session[SESSION_KEY_PLAN]
+        self.assertIn(PLAN_CONTEXT_USER_SWITCH_ADD_USER, plan.context)
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.other_user
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertNotEqual(self.client.session.session_key, first_session_key)
+        self.assertTrue(Session.objects.filter(session_key=first_session_key).exists())
+        token = _get_switching_token(self.client)
+        self.assertEqual(
+            set(user_switching.live_sessions(token).values_list("user_id", flat=True)),
+            {self.user.pk, self.other_user.pk},
+        )
+
+    def test_plain_login_replaces_session_with_switching_enabled(self):
+        """Logging in as someone else without "Add another user" replaces the first login"""
+        first_session_key = _login_through_flow(
+            self.client, self.flow, self.login_binding, self.user
+        )
+
+        _login_through_flow(self.client, self.flow, self.login_binding, self.other_user)
+
+        self.assertFalse(Session.objects.filter(session_key=first_session_key).exists())
 
     def test_target_is_revalidated_before_login(self):
         first_session_key = _login_through_flow(

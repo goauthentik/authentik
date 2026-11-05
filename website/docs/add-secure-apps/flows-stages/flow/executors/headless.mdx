@@ -1,5 +1,6 @@
 ---
 title: Headless
+description: Run authentication flows for clients that do not have a web interface.
 ---
 
 The headless flow executor is used by clients that don't have access to the web interface. It is currently used by the LDAP and Radius outposts to authenticate users.

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,45 +12,22 @@
 
 /**
  * SCIMSource Serializer
+ *
  * @export
  * @interface PatchedSCIMSourceRequest
  */
 export interface PatchedSCIMSourceRequest {
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof PatchedSCIMSourceRequest
      */
     name?: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof PatchedSCIMSourceRequest
      */
     slug?: string;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedSCIMSourceRequest
-     */
     enabled?: boolean;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PatchedSCIMSourceRequest
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PatchedSCIMSourceRequest
-     */
     groupPropertyMappings?: Array<string>;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedSCIMSourceRequest
-     */
     userPathTemplate?: string;
 }
 

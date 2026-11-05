@@ -6,6 +6,7 @@ export const embeddedOutpostManaged = "goauthentik.io/outposts/embedded";
 
 export function outpostTypeToLabel(type?: OutpostTypeEnum): string {
     if (!type) return "";
+
     switch (type) {
         case OutpostTypeEnum.Proxy:
             return msg("Proxy");

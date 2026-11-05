@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { GroupLDAPSourceConnection } from "./GroupLDAPSourceConnection";
+import type { GroupLDAPSourceConnection } from "./GroupLDAPSourceConnection.js";
 import {
     GroupLDAPSourceConnectionFromJSON,
     GroupLDAPSourceConnectionToJSON,
-} from "./GroupLDAPSourceConnection";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./GroupLDAPSourceConnection.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedGroupLDAPSourceConnectionList
  */
 export interface PaginatedGroupLDAPSourceConnectionList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedGroupLDAPSourceConnectionList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<GroupLDAPSourceConnection>}
-     * @memberof PaginatedGroupLDAPSourceConnectionList
-     */
     results: Array<GroupLDAPSourceConnection>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGroupLDAPSourceConnectionList
-     */
     autocomplete: { [key: string]: any };
 }
 

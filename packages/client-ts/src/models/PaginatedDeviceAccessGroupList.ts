@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { DeviceAccessGroup } from "./DeviceAccessGroup.js";
+import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedDeviceAccessGroupList
  */
 export interface PaginatedDeviceAccessGroupList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedDeviceAccessGroupList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<DeviceAccessGroup>}
-     * @memberof PaginatedDeviceAccessGroupList
-     */
     results: Array<DeviceAccessGroup>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedDeviceAccessGroupList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,138 +10,55 @@
  * Do not edit the class manually.
  */
 
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { Role } from "./Role";
-import { RoleFromJSON } from "./Role";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { PartialGroup } from "./PartialGroup.js";
+import { PartialGroupFromJSON } from "./PartialGroup.js";
+import type { Role } from "./Role.js";
+import { RoleFromJSON } from "./Role.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * User Serializer
+ *
  * @export
  * @interface User
  */
 export interface User {
-    /**
-     *
-     * @type {number}
-     * @memberof User
-     */
     readonly pk: number;
-    /**
-     *
-     * @type {string}
-     * @memberof User
-     */
     username: string;
     /**
      * User's display name.
-     * @type {string}
-     * @memberof User
      */
     name: string;
     /**
-     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-     * @type {boolean}
-     * @memberof User
+     * Designates whether this user should be treated as active. Unselect this instead of deleting
+     * accounts.
      */
     isActive?: boolean;
-    /**
-     *
-     * @type {Date}
-     * @memberof User
-     */
     lastLogin?: Date | null;
-    /**
-     *
-     * @type {Date}
-     * @memberof User
-     */
     readonly dateJoined: Date;
-    /**
-     *
-     * @type {boolean}
-     * @memberof User
-     */
     readonly isSuperuser: boolean;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof User
-     */
     groups?: Array<string>;
-    /**
-     *
-     * @type {Array<PartialGroup>}
-     * @memberof User
-     */
     readonly groupsObj: Array<PartialGroup> | null;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof User
-     */
     roles?: Array<string>;
-    /**
-     *
-     * @type {Array<Role>}
-     * @memberof User
-     */
     readonly rolesObj: Array<Role> | null;
-    /**
-     *
-     * @type {string}
-     * @memberof User
-     */
     email?: string;
     /**
      * User's avatar, either a http/https URL or a data URI
-     * @type {string}
-     * @memberof User
      */
     readonly avatar: string;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof User
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     * @type {string}
-     * @memberof User
-     */
     readonly uid: string;
-    /**
-     *
-     * @type {string}
-     * @memberof User
-     */
     path?: string;
-    /**
-     *
-     * @type {UserTypeEnum}
-     * @memberof User
-     */
     type?: UserTypeEnum;
-    /**
-     *
-     * @type {string}
-     * @memberof User
-     */
     readonly uuid: string;
-    /**
-     *
-     * @type {Date}
-     * @memberof User
-     */
     readonly passwordChangeDate: Date;
     /**
-     *
-     * @type {Date}
-     * @memberof User
+     * Whether the user's password currently refuses authentication.
      */
+    readonly passwordLocked: boolean;
+    readonly passwordDevice: number | null;
     readonly lastUpdated: Date;
 }
 
@@ -193,6 +108,20 @@ export function instanceOfUser(value: object): value is User {
     )
         return false;
     if (
+        (!("passwordLocked" in (value as Record<string, any>)) &&
+            !("password_locked" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["passwordLocked"] === undefined &&
+            (value as Record<string, any>)["password_locked"] === undefined)
+    )
+        return false;
+    if (
+        (!("passwordDevice" in (value as Record<string, any>)) &&
+            !("password_device" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["passwordDevice"] === undefined &&
+            (value as Record<string, any>)["password_device"] === undefined)
+    )
+        return false;
+    if (
         (!("lastUpdated" in (value as Record<string, any>)) &&
             !("last_updated" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["lastUpdated"] === undefined &&
@@ -220,8 +149,9 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
                 ? undefined
                 : json["last_login"] === null
                   ? null
-                  : new Date(json["last_login"]),
-        dateJoined: new Date(json["date_joined"]),
+                  : parseDateTime(json["last_login"]),
+        dateJoined:
+            json["date_joined"] == null ? json["date_joined"] : parseDateTime(json["date_joined"]),
         isSuperuser: json["is_superuser"],
         groups: json["groups"] == null ? undefined : json["groups"],
         groupsObj:
@@ -238,8 +168,16 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         path: json["path"] == null ? undefined : json["path"],
         type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
         uuid: json["uuid"],
-        passwordChangeDate: new Date(json["password_change_date"]),
-        lastUpdated: new Date(json["last_updated"]),
+        passwordChangeDate:
+            json["password_change_date"] == null
+                ? json["password_change_date"]
+                : parseDateTime(json["password_change_date"]),
+        passwordLocked: json["password_locked"],
+        passwordDevice: json["password_device"],
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
     };
 }
 
@@ -259,6 +197,8 @@ export function UserToJSONTyped(
         | "uid"
         | "uuid"
         | "passwordChangeDate"
+        | "passwordLocked"
+        | "passwordDevice"
         | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
@@ -272,7 +212,7 @@ export function UserToJSONTyped(
         name: value["name"],
         is_active: value["isActive"],
         last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
+            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
         groups: value["groups"],
         roles: value["roles"],
         email: value["email"],

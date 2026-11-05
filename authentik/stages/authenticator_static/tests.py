@@ -42,6 +42,25 @@ class DeviceTest(TestCase):
 
         str(device)
 
+    def test_verify_token_separators(self):
+        """Test tokens entered with the displayed hyphens, or with spaces, are accepted"""
+        device = StaticDevice.objects.create(user=self.user, name="Device")
+        device.token_set.create(token="abcdEFGH1234")
+        device.token_set.create(token="wxyzWXYZ5678")
+
+        self.assertTrue(device.verify_token("abcd-EFGH-1234"))
+        self.assertTrue(device.verify_token(" wxyz WXYZ 5678 "))
+        self.assertFalse(device.token_set.exists())
+
+    def test_verify_token_separators_wrong_token(self):
+        """Test separators don't make an incorrect token valid"""
+        device = StaticDevice.objects.create(user=self.user, name="Device")
+        device.token_set.create(token="abcdEFGH1234")
+
+        self.assertFalse(device.verify_token("abcd-efgh-1234"))
+        self.assertFalse(device.verify_token("-"))
+        self.assertTrue(device.token_set.exists())
+
 
 class ThrottlingTestCase(ThrottlingTestMixin, TestCase):
     """Test static device throttling"""

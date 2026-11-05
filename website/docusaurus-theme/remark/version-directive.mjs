@@ -1,8 +1,7 @@
 /**
- * @file Remark plugin to transform `ak-version` directives into version badges.
- *
  * @import { Root } from "mdast";
  * @import {} from "mdast-util-directive";
+ * @file Remark plugin to transform `ak-version` directives into version badges.
  */
 
 import { assertVersionSupported } from "../releases/version.mjs";

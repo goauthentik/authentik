@@ -1,7 +1,6 @@
 import "#elements/messages/MessageContainer";
 import "../components/ak-dual-select-selected-pane.js";
 import "./sb-host-provider.js";
-
 import { AkDualSelectSelectedPane } from "../components/ak-dual-select-selected-pane.js";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
@@ -58,6 +57,7 @@ const container = (testItem: TemplateResult) =>
 const handleMoveChanged = (result: any) => {
     const target = document.querySelector("#action-button-message-pad");
     target!.innerHTML = "";
+
     result.detail.forEach((key: string) => {
         target!.append(new DOMParser().parseFromString(`<li>${key}</li>`, "text/xml").firstChild!);
     });

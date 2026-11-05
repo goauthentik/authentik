@@ -1,5 +1,6 @@
 ---
 title: Authenticator validation stage
+description: Validate the authentication methods that a user has already enrolled.
 ---
 
 The Authenticator Validation stage validates an already enrolled authenticator.

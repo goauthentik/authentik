@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,143 +10,101 @@
  * Do not edit the class manually.
  */
 
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SamlVersionEnum } from "./SamlVersionEnum";
-import { SamlVersionEnumFromJSON, SamlVersionEnumToJSON } from "./SamlVersionEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum.js";
+import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum.js";
+import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum.js";
+import {
+    EncryptionAlgorithmEnumFromJSON,
+    EncryptionAlgorithmEnumToJSON,
+} from "./EncryptionAlgorithmEnum.js";
+import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum.js";
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from "./SAMLNameIDPolicyEnum.js";
+import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum.js";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
+} from "./SignatureAlgorithmEnum.js";
+import type { WSFedSAMLVersionEnum } from "./WSFedSAMLVersionEnum.js";
+import {
+    WSFedSAMLVersionEnumFromJSON,
+    WSFedSAMLVersionEnumToJSON,
+} from "./WSFedSAMLVersionEnum.js";
 
 /**
  * WSFederationProvider Serializer
+ *
  * @export
  * @interface PatchedWSFederationProviderRequest
  */
 export interface PatchedWSFederationProviderRequest {
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
-     */
     name?: string;
     /**
-     * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
+     * Flow used for authentication when the associated application is accessed by an
+     * un-authenticated user.
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     authorizationFlow?: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     invalidationFlow?: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PatchedWSFederationProviderRequest
-     */
     propertyMappings?: Array<string>;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
-     */
     replyUrl?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
-     */
     wtrealm?: string;
     /**
-     * Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
+     * Assertion valid not before current time + this value (Format:
+     * hours=-1;minutes=-2;seconds=-3).
      */
     assertionValidNotBefore?: string;
     /**
-     * Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
+     * Assertion not valid on or after current time + this value (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     assertionValidNotOnOrAfter?: string;
     /**
-     * Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
+     * Session not valid on or after current time + this value (Format:
+     * hours=1;minutes=2;seconds=3).
      */
     sessionValidNotOnOrAfter?: string;
     /**
-     * Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
+     * Configure how the NameID value will be created. When left empty, the NameIDPolicy of the
+     * incoming request will be considered
      */
     nameIdMapping?: string | null;
     /**
-     * Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
+     * Configure how the AuthnContextClassRef value will be created. When left empty, the
+     * AuthnContextClassRef will be set based on which authentication methods the user used to
+     * authenticate.
      */
     authnContextClassRefMapping?: string | null;
     /**
-     * SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
-     * @type {SamlVersionEnum}
-     * @memberof PatchedWSFederationProviderRequest
+     * SAML assertion version to issue in the security token. Microsoft Entra ID and classic
+     * ADFS-style relying parties typically require SAML 1.1.
      */
-    samlVersion?: SamlVersionEnum;
-    /**
-     *
-     * @type {DigestAlgorithmEnum}
-     * @memberof PatchedWSFederationProviderRequest
-     */
+    samlVersion?: WSFedSAMLVersionEnum;
     digestAlgorithm?: DigestAlgorithmEnum;
-    /**
-     *
-     * @type {SignatureAlgorithmEnum}
-     * @memberof PatchedWSFederationProviderRequest
-     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Keypair used to sign outgoing Responses going to the Service Provider.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     signingKp?: string | null;
     /**
-     * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
+     * When selected, incoming assertions are encrypted by the IdP using the public key of the
+     * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
     /**
-     *
-     * @type {boolean}
-     * @memberof PatchedWSFederationProviderRequest
+     * Block cipher used to encrypt the assertion.
      */
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     signAssertion?: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof PatchedWSFederationProviderRequest
-     */
     signLogoutRequest?: boolean;
-    /**
-     *
-     * @type {SAMLNameIDPolicyEnum}
-     * @memberof PatchedWSFederationProviderRequest
-     */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
 }
 
@@ -215,7 +171,7 @@ export function PatchedWSFederationProviderRequestFromJSONTyped(
         samlVersion:
             json["saml_version"] == null
                 ? undefined
-                : SamlVersionEnumFromJSON(json["saml_version"]),
+                : WSFedSAMLVersionEnumFromJSON(json["saml_version"]),
         digestAlgorithm:
             json["digest_algorithm"] == null
                 ? undefined
@@ -236,6 +192,10 @@ export function PatchedWSFederationProviderRequestFromJSONTyped(
                 : json["encryption_kp"] === null
                   ? null
                   : json["encryption_kp"],
+        encryptionAlgorithm:
+            json["encryption_algorithm"] == null
+                ? undefined
+                : EncryptionAlgorithmEnumFromJSON(json["encryption_algorithm"]),
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signLogoutRequest:
             json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
@@ -273,11 +233,12 @@ export function PatchedWSFederationProviderRequestToJSONTyped(
         session_valid_not_on_or_after: value["sessionValidNotOnOrAfter"],
         name_id_mapping: value["nameIdMapping"],
         authn_context_class_ref_mapping: value["authnContextClassRefMapping"],
-        saml_version: SamlVersionEnumToJSON(value["samlVersion"]),
+        saml_version: WSFedSAMLVersionEnumToJSON(value["samlVersion"]),
         digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
         signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
         signing_kp: value["signingKp"],
         encryption_kp: value["encryptionKp"],
+        encryption_algorithm: EncryptionAlgorithmEnumToJSON(value["encryptionAlgorithm"]),
         sign_assertion: value["signAssertion"],
         sign_logout_request: value["signLogoutRequest"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),

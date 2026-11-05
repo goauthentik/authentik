@@ -10,7 +10,7 @@ The docs below cover applying, creating, editing, and managing blueprints.
 
 ## Apply a blueprint
 
-To _apply_ a blueprint is to have authentik read and execute the contents of a blueprint file. authentik provides many out-of-the-box blueprints, which can be applied either as a [blueprint instance](./index.mdx#blueprint-instance) or as an [imported flow](./index.mdx#imported-flow).
+To _apply_ a blueprint is to have authentik read and execute the contents of a blueprint file. authentik provides many out-of-the-box blueprints, which can be applied either as a [blueprint instance](./index.mdx#blueprint-instances) or as an [imported flow](./index.mdx#imported-flow).
 
 ### Create and apply a new blueprint
 
@@ -31,16 +31,16 @@ You can import and apply a blueprint from either the **Flows** page or the **Blu
 #### Flows page
 
 1. Log in to authentik as an administrator and open the Admin interface.
-2. Navigate to **Flows and Stages > Flows**, then click **Import**.
+2. Navigate to **Flows and Stages** > **Flows**, then click **Import**.
 3. Choose how to import the blueprint:
     - **File upload**: upload a `.yaml` file from your local file system. Typically this is a downloaded example flow or a file you [exported](./export.mdx).
-    - **Local path**: select one of the blueprints available on the authentik server, such as a bundled [example flow](../../add-secure-apps/flows-stages/flow/examples/flows.mdx).
+    - **Local path**: select one of the blueprints available on the authentik server, such as a bundled [example flow](../../add-secure-apps/flows-stages/flow/flows.mdx).
 4. Click **Import**.
 
 #### Blueprints page
 
 1. Log in to authentik as an administrator and open the Admin interface.
-2. Navigate to **Customization > Blueprints**.
+2. Navigate to **Customization** > **Blueprints**.
 3. Click **Import**.
 4. Choose **File upload** to upload a `.yaml` file, or choose **Local path** to select a blueprint available on the authentik server.
 5. Click **Import**.
@@ -54,7 +54,7 @@ You can import and apply a blueprint from either the **Flows** page or the **Blu
 
 ### Download an example flow, upload it, and apply it
 
-1. Download one of the [example flows](../../add-secure-apps/flows-stages/flow/examples/flows.mdx).
+1. Download one of the [example flows](../../add-secure-apps/flows-stages/flow/flows.mdx).
 2. Navigate to **Customization** > **Blueprints** and click **Import**.
 3. Choose **File upload**, select the downloaded `.yaml` file, and click **Import**.
 
@@ -62,7 +62,7 @@ You can import and apply a blueprint from either the **Flows** page or the **Blu
 
 - To edit a blueprint instance, navigate to **Customization** > **Blueprints** in the Admin interface and click the **Edit** icon of the instance. Alternatively, edit the YAML file directly.
 
-- To edit a flow, navigate to **Flows and Stages > Flows** in the Admin interface and click **Edit** next to the flow you want to modify.
+- To edit a flow, navigate to **Flows and Stages** > **Flows** in the Admin interface and click **Edit** next to the flow you want to modify.
 
 ## Delete a blueprint instance or flow
 

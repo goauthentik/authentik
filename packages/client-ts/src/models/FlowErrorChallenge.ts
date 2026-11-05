@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,52 +10,23 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
 
 /**
  * Challenge class when an unhandled error occurs during a stage. Normal users
  * are shown an error message, superusers are shown a full stacktrace.
+ *
  * @export
  * @interface FlowErrorChallenge
  */
 export interface FlowErrorChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof FlowErrorChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof FlowErrorChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof FlowErrorChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof FlowErrorChallenge
-     */
     requestId: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FlowErrorChallenge
-     */
     error?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof FlowErrorChallenge
-     */
     traceback?: string;
 }
 

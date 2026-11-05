@@ -2,7 +2,9 @@
 
 from json import loads
 from tempfile import TemporaryFile
+from unittest import skipIf
 
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -78,6 +80,7 @@ class TestSAMLProviderAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
     def test_create_validate_unsupported_key_type(self):
         """Test validation rejects unsupported key types (Ed25519)"""
 
@@ -99,7 +102,38 @@ class TestSAMLProviderAPI(APITestCase):
         self.assertIn("signing_kp", loads(response.content))
         self.assertJSONEqual(
             response.content,
-            {"signing_kp": ["Only RSA, EC, and DSA key types are supported for SAML signing."]},
+            {
+                "signing_kp": [
+                    "Key type Ed25519 is not supported. "
+                    "Supported key types are: RSA, Elliptic Curve, DSA."
+                ]
+            },
+        )
+
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
+    def test_create_validate_unsupported_key_type_verification_encryption(self):
+        """Test validation rejects unsupported key types on the verification and encryption
+        keypairs"""
+        ed25519_cert = create_test_cert(PrivateKeyAlg.ED25519)
+
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "acs_url": "http://localhost",
+                "verification_kp": ed25519_cert.pk,
+                "encryption_kp": ed25519_cert.pk,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        message = (
+            "Key type Ed25519 is not supported. Supported key types are: RSA, Elliptic Curve, DSA."
+        )
+        self.assertJSONEqual(
+            response.content,
+            {"verification_kp": [message], "encryption_kp": [message]},
         )
 
     def test_metadata(self):
@@ -208,6 +242,33 @@ class TestSAMLProviderAPI(APITestCase):
                 format="multipart",
             )
         self.assertEqual(400, response.status_code)
+
+    def test_import_doctype(self):
+        """Test metadata import (document type declaration)"""
+        authorization_flow = create_test_flow(FlowDesignation.AUTHORIZATION)
+        invalidation_flow = create_test_flow(FlowDesignation.INVALIDATION)
+        metadata_xml = load_fixture("fixtures/simple.xml").replace(
+            '<?xml version="1.0"?>',
+            '<?xml version="1.0"?><!DOCTYPE md:EntityDescriptor>',
+        )
+        with TemporaryFile() as metadata:
+            metadata.write(metadata_xml.encode())
+            metadata.seek(0)
+            response = self.client.post(
+                reverse("authentik_api:samlprovider-import-metadata"),
+                {
+                    "file": metadata,
+                    "name": generate_id(),
+                    "authorization_flow": authorization_flow.pk,
+                    "invalidation_flow": invalidation_flow.pk,
+                },
+                format="multipart",
+            )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json(),
+            ["Failed to import Metadata: XML document contains a DOCTYPE declaration"],
+        )
 
     def test_import_invalid(self):
         """Test metadata import (invalid input)"""

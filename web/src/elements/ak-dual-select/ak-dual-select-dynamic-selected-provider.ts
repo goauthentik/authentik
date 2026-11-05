@@ -1,5 +1,4 @@
 import "./ak-dual-select.js";
-
 import { AkDualSelectProvider } from "./ak-dual-select-provider.js";
 import type { DualSelectPairSource } from "./types.js";
 
@@ -34,6 +33,7 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
         // the selected list with the contents derived from the selector.
 
         if (this.#didFirstUpdate) return;
+
         if (this.options.length === 0) return;
 
         this.#didFirstUpdate = true;
@@ -47,8 +47,10 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}
-            .pages=${this.pagination}
             .selected=${this.selected}
+            item-count=${this.pageState.itemCount}
+            items-per-page=${this.pageState.itemsPerPage}
+            page=${this.pageState.page}
             available-label=${this.availableLabel}
             selected-label=${this.selectedLabel}
             ?preserve-order=${this.preserveOrder}

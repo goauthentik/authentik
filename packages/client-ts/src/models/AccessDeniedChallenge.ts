@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,51 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
 
 /**
  * Challenge when a flow's active stage calls `stage_invalid()`.
+ *
  * @export
  * @interface AccessDeniedChallenge
  */
 export interface AccessDeniedChallenge {
-    /**
-     *
-     * @type {ContextualFlowInfo}
-     * @memberof AccessDeniedChallenge
-     */
     flowInfo?: ContextualFlowInfo;
-    /**
-     *
-     * @type {string}
-     * @memberof AccessDeniedChallenge
-     */
     component?: string;
-    /**
-     *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AccessDeniedChallenge
-     */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {string}
-     * @memberof AccessDeniedChallenge
-     */
     pendingUser: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AccessDeniedChallenge
-     */
     pendingUserAvatar: string;
-    /**
-     *
-     * @type {string}
-     * @memberof AccessDeniedChallenge
-     */
     errorMessage?: string;
 }
 

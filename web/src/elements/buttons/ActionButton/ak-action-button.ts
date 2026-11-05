@@ -10,14 +10,13 @@ import { customElement, property } from "lit/decorators.js";
  * A button associated with an event handler for loading data. Takes an asynchronous function as its
  * only property.
  *
- * @element ak-action-button
- *
- * @slot - The label for the button
- *
  * @fires ak-button-click - When the button is first clicked.
  * @fires ak-button-success - When the async process succeeds
  * @fires ak-button-failure - When the async process fails
  * @fires ak-button-reset - When the button is reset after the async process completes
+ * @element ak-action-button
+ *
+ * @slot - The label for the button
  */
 
 @customElement("ak-action-button")

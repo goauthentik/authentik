@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,42 +10,22 @@
  * Do not edit the class manually.
  */
 
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls.js";
+
 /**
  * Serializer for User settings for stages and sources
+ *
  * @export
  * @interface UserSetting
  */
 export interface UserSetting {
-    /**
-     *
-     * @type {string}
-     * @memberof UserSetting
-     */
     objectUid: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSetting
-     */
     component: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSetting
-     */
     title: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSetting
-     */
     configureUrl?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSetting
-     */
     iconUrl?: string;
+    iconThemedUrls?: ThemedUrls | null;
 }
 
 /**
@@ -80,6 +58,12 @@ export function UserSettingFromJSONTyped(json: any, ignoreDiscriminator: boolean
         title: json["title"],
         configureUrl: json["configure_url"] == null ? undefined : json["configure_url"],
         iconUrl: json["icon_url"] == null ? undefined : json["icon_url"],
+        iconThemedUrls:
+            json["icon_themed_urls"] === undefined
+                ? undefined
+                : json["icon_themed_urls"] === null
+                  ? null
+                  : ThemedUrlsFromJSON(json["icon_themed_urls"]),
     };
 }
 
@@ -101,5 +85,6 @@ export function UserSettingToJSONTyped(
         title: value["title"],
         configure_url: value["configureUrl"],
         icon_url: value["iconUrl"],
+        icon_themed_urls: ThemedUrlsToJSON(value["iconThemedUrls"]),
     };
 }

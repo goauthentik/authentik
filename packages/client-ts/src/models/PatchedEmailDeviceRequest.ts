@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,14 +12,13 @@
 
 /**
  * Serializer for email authenticator devices
+ *
  * @export
  * @interface PatchedEmailDeviceRequest
  */
 export interface PatchedEmailDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof PatchedEmailDeviceRequest
      */
     name?: string;
 }

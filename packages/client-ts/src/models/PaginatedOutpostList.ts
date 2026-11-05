@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,34 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Outpost } from "./Outpost";
-import { OutpostFromJSON, OutpostToJSON } from "./Outpost";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Outpost } from "./Outpost.js";
+import { OutpostFromJSON, OutpostToJSON } from "./Outpost.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedOutpostList
  */
 export interface PaginatedOutpostList {
-    /**
-     *
-     * @type {Pagination}
-     * @memberof PaginatedOutpostList
-     */
     pagination: Pagination;
-    /**
-     *
-     * @type {Array<Outpost>}
-     * @memberof PaginatedOutpostList
-     */
     results: Array<Outpost>;
-    /**
-     *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedOutpostList
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,44 +10,20 @@
  * Do not edit the class manually.
  */
 
-import type { Permission } from "./Permission";
-import { PermissionFromJSON } from "./Permission";
+import type { Permission } from "./Permission.js";
+import { PermissionFromJSON } from "./Permission.js";
 
 /**
  * InitialPermissions serializer
+ *
  * @export
  * @interface InitialPermissions
  */
 export interface InitialPermissions {
-    /**
-     *
-     * @type {number}
-     * @memberof InitialPermissions
-     */
     readonly pk: number;
-    /**
-     *
-     * @type {string}
-     * @memberof InitialPermissions
-     */
     name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof InitialPermissions
-     */
     role: string;
-    /**
-     *
-     * @type {Array<number>}
-     * @memberof InitialPermissions
-     */
     permissions?: Array<number>;
-    /**
-     *
-     * @type {Array<Permission>}
-     * @memberof InitialPermissions
-     */
     readonly permissionsObj: Array<Permission>;
 }
 

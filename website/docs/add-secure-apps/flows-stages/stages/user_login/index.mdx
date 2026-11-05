@@ -1,5 +1,6 @@
 ---
 title: User login stage
+description: Create a user session and configure how long it remains active.
 toc_max_heading_level: 4
 ---
 
