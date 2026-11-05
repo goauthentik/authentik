@@ -80,7 +80,7 @@ export class RbacModelPermissionsList extends AKElement {
                 msg("global", { id: "permissions.kind.global" }),
             ]],
             ["object", [
-                msg("Object permission", { id: "permissions.kind.object" }),
+                msg("Object permission", { id: "permissions.aria.object" }),
                 msg("object", { id: "permissions.kind.object" }),
             ]]]);
 

@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SCIMSourceGroup } from "./SCIMSourceGroup";
-import { SCIMSourceGroupFromJSON, SCIMSourceGroupToJSON } from "./SCIMSourceGroup";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { SCIMSourceGroup } from "./SCIMSourceGroup.js";
+import { SCIMSourceGroupFromJSON, SCIMSourceGroupToJSON } from "./SCIMSourceGroup.js";
 
 /**
  * @export

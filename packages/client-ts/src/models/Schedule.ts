@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { LastTaskStatusEnum } from "./LastTaskStatusEnum";
-import { LastTaskStatusEnumFromJSON } from "./LastTaskStatusEnum";
+import { parseDateTime } from "../runtime.js";
+import type { LastTaskStatusEnum } from "./LastTaskStatusEnum.js";
+import { LastTaskStatusEnumFromJSON } from "./LastTaskStatusEnum.js";
 
 /**
  * @export

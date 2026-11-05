@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { NetworkInterfaceRequest } from "./NetworkInterfaceRequest";
+import type { NetworkInterfaceRequest } from "./NetworkInterfaceRequest.js";
 import {
     NetworkInterfaceRequestFromJSON,
     NetworkInterfaceRequestToJSON,
-} from "./NetworkInterfaceRequest";
+} from "./NetworkInterfaceRequest.js";
 
 /**
  * @export

@@ -1,6 +1,7 @@
 import { renderForm, SetMode, SetShowHttpBasic } from "./ProxyProviderFormForm.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFAlignment from "@patternfly/patternfly/utilities/Alignment/alignment.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { aki } from "#common/api/client";
@@ -14,7 +15,7 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
-    static styles: CSSResult[] = [...super.styles, PFContent, PFList, PFSpacing];
+    static styles: CSSResult[] = [...super.styles, PFContent, PFList, PFSpacing, PFAlignment];
 
     async loadInstance(pk: number): Promise<ProxyProvider> {
         const provider = await aki(ProvidersApi).providersProxyRetrieve({

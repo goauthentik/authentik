@@ -3,7 +3,7 @@ import "#admin/providers/proxy/ProxyProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
 import "#admin/events/ObjectChangelog";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";

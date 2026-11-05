@@ -34,6 +34,9 @@
 /hypervisors-orchestrators/nutanix-ahv                             /hypervisors-orchestrators/nutanix-pc 301!
 /hypervisors-orchestrators/nutanix-ahv/                            /hypervisors-orchestrators/nutanix-pc/ 301!
 
+/hypervisors-orchestrators/vmware-cloud-foundation                 /hypervisors-orchestrators/vmware-cloud-foundation-9 301!
+/hypervisors-orchestrators/vmware-cloud-foundation/                /hypervisors-orchestrators/vmware-cloud-foundation-9/ 301!
+
 #region Brand assets
 /img/icon_left_brand_colour.svg                                     /img/icon_left_brand_color.svg 301!
 /img/icon_top_brand_colour.svg                                      /img/icon_top_brand_color.svg 301!

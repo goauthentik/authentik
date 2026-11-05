@@ -42,6 +42,6 @@ export class IDGenerator {
     static randomID(characterLength = 6): string {
         const bytes = crypto.getRandomValues(new Uint8Array(characterLength / 2));
 
-        return Array.from(bytes, (a) => a.toString(16)).join("");
+        return Array.from(bytes, (a) => a.toString(16).padStart(2, "0")).join("");
     }
 }

@@ -3,7 +3,6 @@
  */
 
 import "#admin/events/RuleForm";
-import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
@@ -22,6 +21,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { taskCard } from "#components/tasks/taskCard";
 
 import { RuleForm } from "#admin/events/RuleForm";
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 
 import { EventsApi, ModelEnum, NotificationRule } from "@goauthentik/api";
 
@@ -116,15 +116,16 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return ModalInvokerButton(RuleForm);
     }
 
-    protected override renderExpanded(item: NotificationRule): TemplateResult {
-        return html`<p>
-                ${msg(
-                    `These bindings control upon which events this rule triggers.
-Bindings to groups/users are checked against the user of the event.`,
-                )}
-            </p>
-            <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
-            ${taskCard(NOTIFICATION_MODEL, item.pk)}`;
+    protected override renderExpanded(item: NotificationRule) {
+        const boundPolicies = renderBoundPoliciesExpansion({
+            target: item.pk,
+            description: msg(
+                `These bindings control upon which events this rule triggers.
+                Bindings to groups/users are checked against the user of the event.`,
+            ),
+        });
+
+        return [boundPolicies, taskCard(NOTIFICATION_MODEL, item.pk)];
     }
 }
 

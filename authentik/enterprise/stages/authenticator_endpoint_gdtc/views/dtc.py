@@ -7,7 +7,6 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_sameorigin
-from googleapiclient.discovery import build
 
 from authentik.enterprise.endpoints.connectors.google_chrome.controller import (
     HEADER_ACCESS_CHALLENGE,
@@ -37,6 +36,8 @@ class GoogleChromeDeviceTrustConnector(View):
 
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
         super().setup(request, *args, **kwargs)
+        from googleapiclient.discovery import build
+
         stage: AuthenticatorEndpointGDTCStage = self.get_flow_plan().bindings[0].stage
         self.google_client = build(
             "verifiedaccess",

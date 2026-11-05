@@ -4,10 +4,9 @@ import re
 from hashlib import sha1
 
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
-from zxcvbn import zxcvbn
 
 from authentik.lib.utils.http import get_http_session
 from authentik.policies.models import Policy
@@ -70,7 +69,7 @@ class PasswordPolicy(Policy):
                 field=self.password_field,
                 fields=request.context.keys(),
             )
-            return PolicyResult(False, _("Password not set in context"))
+            return PolicyResult(False, str(_("Password not set in context")))
         password = str(password)
 
         if self.check_static_rules:
@@ -91,7 +90,7 @@ class PasswordPolicy(Policy):
         """Check static rules"""
         error_message = self.error_message
         if error_message == "":
-            error_message = _("Invalid password.")
+            error_message = str(_("Invalid password."))
 
         if len(password) < self.length_min:
             LOGGER.debug("password failed", check="static", reason="length")
@@ -135,12 +134,14 @@ class PasswordPolicy(Policy):
         LOGGER.debug("got hibp result", count=final_count, hash=pw_hash[:5])
         if final_count > self.hibp_allowed_count:
             LOGGER.debug("password failed", check="hibp", count=final_count)
-            message = _("Password exists on {count} online lists.".format(count=final_count))
+            message = _("Password exists on {count} online lists.").format(count=final_count)
             return PolicyResult(False, message)
         return PolicyResult(True)
 
     def passes_zxcvbn(self, password: str, request: PolicyRequest) -> PolicyResult:
         """Check Dropbox's zxcvbn password estimator"""
+        from zxcvbn import zxcvbn
+
         user_inputs = []
         if request.user.is_authenticated:
             user_inputs.append(request.user.username)
@@ -155,7 +156,7 @@ class PasswordPolicy(Policy):
         LOGGER.debug("password failed", check="zxcvbn", score=results["score"])
         result = PolicyResult(results["score"] > self.zxcvbn_score_threshold)
         if not result.passing:
-            result.messages += tuple((_("Password is too weak."),))
+            result.messages += tuple((str(_("Password is too weak.")),))
         if isinstance(results["feedback"]["warning"], list):
             result.messages += tuple(results["feedback"]["warning"])
         if isinstance(results["feedback"]["suggestions"], list):

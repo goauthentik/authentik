@@ -36,10 +36,11 @@ import Configuration from "../_config.mdx";
 
 Requests are routed as follows:
 
-1. Paths starting with `/static`, `/media`, and `/help` return packaged CSS and JavaScript files, and user-uploaded media files.
-2. Paths starting with `/outpost.goauthentik.io` are sent to the embedded outpost.
-3. Any hosts configured in the providers assigned to the embedded outpost are sent to the outpost.
-4. Everything remaining is sent to the authentik backend server.
+1. When the embedded outpost is enabled, `/outpost.goauthentik.io/ping` returns `204 No Content` without requiring a matching application.
+2. All other requests are matched against applications configured on the embedded outpost, based on the request host and the provider configuration:
+    - In proxy mode, the outpost handles all paths, including `/static`, `/media`, and `/help`. These paths no longer take precedence over a matching proxy-mode application.
+    - In forward-auth mode, the outpost only handles paths starting with `/outpost.goauthentik.io` and OAuth callback or logout requests identified by the `X-authentik-auth-callback=true` or `X-authentik-logout=true` query parameters.
+3. Requests not handled by an embedded application fall through to the authentik core server, including its static and media file handlers.
 
 ## How the embedded outpost differs from managed outposts
 

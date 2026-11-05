@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Flow } from "./Flow";
-import { FlowFromJSON } from "./Flow";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { Flow } from "./Flow.js";
+import { FlowFromJSON } from "./Flow.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Invitation Serializer

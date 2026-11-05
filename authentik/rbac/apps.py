@@ -1,8 +1,20 @@
 """authentik rbac app config"""
 
+from django.utils.translation import gettext_lazy as _
+
+from authentik.admin.flags import Flag
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
+
+
+class EnableCustomPermissions(Flag[bool], key="rbac_custom_permissions"):
+    default = False
+    visibility = "none"
+    description = _(
+        "Let permission checks decide API access. While enabled, every API request costs an "
+        "additional database query."
+    )
 
 
 class AuthentikRBACConfig(ManagedAppConfig):
