@@ -69,6 +69,15 @@ class TestSAMLProviderACSURLs(TestCase):
         provider = SAMLProvider(name=generate_id(), acs_url=DEFAULT)
         self.assertEqual(provider.acs_urls, [SAMLACSURL(url=DEFAULT, is_default=True)])
 
+    def test_legacy_acs_url(self):
+        """Test that the deprecated `acs_url` column is kept in sync with the default ACS URL"""
+        self.provider.refresh_from_db()
+        self.assertEqual(self.provider.legacy_acs_url, DEFAULT)
+        self.provider.acs_urls = [SAMLACSURL(url=SECOND, is_default=True)]
+        self.provider.save(update_fields=["_acs_urls"])
+        self.provider.refresh_from_db()
+        self.assertEqual(self.provider.legacy_acs_url, SECOND)
+
 
 class TestSAMLProviderACSURLsAPI(APITestCase):
     """Test the deprecated `acs_url` API field with multiple ACS URLs"""
