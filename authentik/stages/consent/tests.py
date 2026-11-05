@@ -3,6 +3,7 @@
 from datetime import timedelta
 
 from django.urls import reverse
+from django.utils.timezone import now
 from freezegun import freeze_time
 
 from authentik.core.models import Application
@@ -15,8 +16,9 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
 from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
-from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
+from authentik.stages.consent.models import ConsentClient, ConsentMode, ConsentStage, UserConsent
 from authentik.stages.consent.stage import (
+    PLAN_CONTEXT_CONSENT_CLIENT,
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
     PLAN_CONTEXT_CONSENT_TOKEN,
@@ -402,3 +404,183 @@ class TestConsentStage(APIFlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertStageResponse(response, component="xak-flow-redirect")
+
+
+CLIENT_A = "https://a.example.com/oauth/client.json"
+CLIENT_B = "https://b.example.com/oauth/client.json"
+RESOURCE_A = "https://a.example.com/mcp"
+RESOURCE_B = "https://b.example.com/mcp"
+
+
+class TestConsentStageClients(APIFlowTestCase):
+    """Consent given to a client of an application instead of the application itself"""
+
+    def setUp(self):
+        super().setUp()
+        self.user = create_test_admin_user()
+        self.client.force_login(self.user)
+        self.application = Application.objects.create(name=generate_id(), slug=generate_id())
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage = ConsentStage.objects.create(name=generate_id(), mode=ConsentMode.PERMANENT)
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=stage, order=2)
+        self.url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+
+    def start(self, client: ConsentClient | None, permissions=("foo",)):
+        """Plan the consent stage for `client`, return the first stage response"""
+        context = {
+            PLAN_CONTEXT_APPLICATION: self.application,
+            PLAN_CONTEXT_CONSENT_PERMISSIONS: [
+                PermissionDict(id=perm, name=f"{perm}-desc") for perm in permissions
+            ],
+        }
+        if client:
+            context[PLAN_CONTEXT_CONSENT_CLIENT] = client
+        self.set_flow_plan(
+            FlowPlan(
+                flow_pk=self.flow.pk.hex,
+                bindings=[self.binding],
+                markers=[StageMarker()],
+                context=context,
+            )
+        )
+        return self.client.get(self.url)
+
+    def consent(self, client: ConsentClient | None, permissions=("foo",)) -> dict:
+        """Run the consent stage for `client` and accept the prompt, which must be shown"""
+        response = self.start(client, permissions)
+        challenge = self.assertStageResponse(response, component="ak-stage-consent")
+        response = self.client.post(self.url, {"token": challenge["token"]})
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        return challenge
+
+    def assertPrompted(self, client: ConsentClient | None, permissions=("foo",)) -> dict:
+        response = self.start(client, permissions)
+        return self.assertStageResponse(response, component="ak-stage-consent")
+
+    def assertNotPrompted(self, client: ConsentClient | None, permissions=("foo",)):
+        response = self.start(client, permissions)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_consent_stored_per_client(self):
+        """Consent given to a client records the client and resource, and is reused"""
+        client = ConsentClient(client_id=CLIENT_A, resource=RESOURCE_A)
+        self.consent(client)
+        consent = UserConsent.objects.get(user=self.user, application=self.application)
+        self.assertEqual(consent.client_id, CLIENT_A)
+        self.assertEqual(consent.resource, RESOURCE_A)
+        self.assertEqual(consent.binding_hash, client.binding_hash)
+        self.assertEqual(consent.permissions, "foo")
+        self.assertNotPrompted(client)
+
+    def test_application_consent_never_authorizes_client(self):
+        """Consent given to the application does not apply to its other clients"""
+        self.consent(None)
+        self.assertNotPrompted(None)
+        self.assertPrompted(ConsentClient(client_id=CLIENT_A))
+
+    def test_client_consent_never_authorizes_other_client(self):
+        """Consent given to client A applies neither to client B nor to the application"""
+        self.consent(ConsentClient(client_id=CLIENT_A))
+        self.assertPrompted(ConsentClient(client_id=CLIENT_B))
+        self.assertPrompted(None)
+        self.consent(ConsentClient(client_id=CLIENT_B))
+        self.assertEqual(
+            sorted(
+                UserConsent.objects.filter(application=self.application).values_list(
+                    "client_id", flat=True
+                )
+            ),
+            [CLIENT_A, CLIENT_B],
+        )
+
+    def test_resource_expansion_prompts(self):
+        """Consent for one resource does not cover another, or none"""
+        self.consent(ConsentClient(client_id=CLIENT_A, resource=RESOURCE_A))
+        self.assertPrompted(ConsentClient(client_id=CLIENT_A, resource=RESOURCE_B))
+        self.assertPrompted(ConsentClient(client_id=CLIENT_A))
+
+    def test_scope_expansion_prompts(self):
+        """Requesting more permissions prompts for only the new ones, and updates consent"""
+        client = ConsentClient(client_id=CLIENT_A)
+        self.consent(client)
+        challenge = self.assertPrompted(client, ("foo", "bar"))
+        self.assertEqual(challenge["permissions"], [{"id": "foo", "name": "foo-desc"}])
+        self.assertEqual(challenge["additional_permissions"], [{"id": "bar", "name": "bar-desc"}])
+        response = self.client.post(self.url, {"token": challenge["token"]})
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        consent = UserConsent.objects.get(user=self.user, application=self.application)
+        self.assertEqual(consent.client_id, CLIENT_A)
+        self.assertEqual(consent.permissions, "foo bar")
+
+    def test_challenge_client_fields(self):
+        """The challenge identifies a client; challenges for the application are unchanged"""
+        challenge = self.assertPrompted(
+            ConsentClient(client_id=CLIENT_A, name="Client A", redirect_host="127.0.0.1")
+        )
+        self.assertEqual(challenge["client_id"], CLIENT_A)
+        self.assertEqual(challenge["client_name"], "Client A")
+        self.assertEqual(challenge["redirect_host"], "127.0.0.1")
+        challenge = self.assertPrompted(ConsentClient(client_id=CLIENT_A))
+        self.assertEqual(challenge["client_id"], CLIENT_A)
+        self.assertNotIn("client_name", challenge)
+        self.assertNotIn("redirect_host", challenge)
+        challenge = self.assertPrompted(None)
+        for field in ("client_id", "client_name", "redirect_host"):
+            self.assertNotIn(field, challenge)
+
+    def test_expired_client_consent_replaced(self):
+        """Expired consent of a client is replaced without touching other consent"""
+        client = ConsentClient(client_id=CLIENT_A)
+        other = UserConsent.objects.create(
+            user=self.user,
+            application=self.application,
+            permissions="foo",
+            expires=now() - timedelta(days=1),
+        )
+        UserConsent.objects.create(
+            user=self.user,
+            application=self.application,
+            permissions="foo",
+            client_id=CLIENT_A,
+            expires=now() - timedelta(days=1),
+        )
+        self.consent(client)
+        consent = UserConsent.objects.get(user=self.user, client_id=CLIENT_A)
+        self.assertFalse(consent.expiring)
+        self.assertTrue(UserConsent.objects.including_expired().filter(pk=other.pk).exists())
+
+    def test_hash_collision_does_not_match(self):
+        """A consent whose hash matches but whose client differs is not used"""
+        client = ConsentClient(client_id=CLIENT_A)
+        UserConsent.objects.create(
+            user=self.user,
+            application=self.application,
+            permissions="foo",
+            client_id=CLIENT_B,
+            expiring=False,
+        )
+        UserConsent.objects.filter(client_id=CLIENT_B).update(binding_hash=client.binding_hash)
+        self.assertPrompted(client)
+
+    def test_api_lists_and_revokes_client_consent(self):
+        """Users list consent per client and revoke it without affecting other clients"""
+        self.consent(ConsentClient(client_id=CLIENT_A, resource=RESOURCE_A))
+        self.consent(ConsentClient(client_id=CLIENT_B))
+        response = self.client.get(
+            reverse("authentik_api:userconsent-list"),
+            {"client_id": CLIENT_A},
+        )
+        self.assertEqual(response.status_code, 200)
+        results = response.json()["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["client_id"], CLIENT_A)
+        self.assertEqual(results[0]["resource"], RESOURCE_A)
+        response = self.client.delete(
+            reverse(
+                "authentik_api:userconsent-detail",
+                kwargs={"pk": results[0]["pk"]},
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        self.assertPrompted(ConsentClient(client_id=CLIENT_A, resource=RESOURCE_A))
+        self.assertNotPrompted(ConsentClient(client_id=CLIENT_B))

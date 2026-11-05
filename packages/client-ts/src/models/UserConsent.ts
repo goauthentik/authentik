@@ -29,6 +29,8 @@ export interface UserConsent {
     user: User;
     application: Application;
     permissions?: string;
+    readonly clientId: string | null;
+    readonly resource: string | null;
 }
 
 /**
@@ -38,6 +40,14 @@ export function instanceOfUserConsent(value: object): value is UserConsent {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     if (!("application" in value) || value["application"] === undefined) return false;
+    if (
+        (!("clientId" in (value as Record<string, any>)) &&
+            !("client_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientId"] === undefined &&
+            (value as Record<string, any>)["client_id"] === undefined)
+    )
+        return false;
+    if (!("resource" in value) || value["resource"] === undefined) return false;
     return true;
 }
 
@@ -61,6 +71,8 @@ export function UserConsentFromJSONTyped(json: any, ignoreDiscriminator: boolean
         user: UserFromJSON(json["user"]),
         application: ApplicationFromJSON(json["application"]),
         permissions: json["permissions"] == null ? undefined : json["permissions"],
+        clientId: json["client_id"],
+        resource: json["resource"],
     };
 }
 
@@ -69,7 +81,7 @@ export function UserConsentToJSON(json: any): UserConsent {
 }
 
 export function UserConsentToJSONTyped(
-    value?: Omit<UserConsent, "pk"> | null,
+    value?: Omit<UserConsent, "pk" | "clientId" | "resource"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

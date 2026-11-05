@@ -45,6 +45,7 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
 
     oidc_logins = (
         OAuth2SessionLogin.objects.filter(
+            OAuth2SessionLogin.registered_client_q(),
             session=auth_session,
             provider__logout_method=OAuth2LogoutMethod.FRONTCHANNEL,
         )
@@ -109,7 +110,9 @@ def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
             login.sub,
             instance.session.session_key,
         )
-        for login in OAuth2SessionLogin.objects.select_related("provider").filter(session=instance)
+        for login in OAuth2SessionLogin.objects.select_related("provider").filter(
+            OAuth2SessionLogin.registered_client_q(), session=instance
+        )
         if login.provider.logout_uri
         and login.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
     ]
