@@ -569,6 +569,19 @@ class TestAuthorize(OAuthTestCase):
         self._create_max_age_provider()
         for max_age in ["-1", "abc"]:
             with self.subTest(max_age=max_age):
+                request = self.factory.get(
+                    "/",
+                    data={
+                        "response_type": "code",
+                        "client_id": "test",
+                        "redirect_uri": "foo://localhost",
+                        "max_age": max_age,
+                    },
+                )
+                with self.assertRaises(AuthorizeError) as cm:
+                    OAuthAuthorizationParams.from_request(request)
+                self.assertEqual(cm.exception.error, "invalid_request")
+                self.assertEqual(cm.exception.cause, "max_age_invalid")
                 self.assertRegex(
                     self._max_age_request(max_age).url, r"^foo://localhost\?error=invalid_request"
                 )
