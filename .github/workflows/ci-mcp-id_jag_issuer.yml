@@ -1,8 +1,8 @@
 ---
 # Acceptance check: authentik as ID-JAG issuer (draft-ietf-oauth-identity-assertion-authz-grant-06)
-# for MCP Enterprise-Managed Authorization. Expected to FAIL until the remaining conformance
-# gaps are corrected (see tests/mcp_conformance_id_jag_issuer/HANDOFF.md). Keep non-required
-# while the implementation and spec baseline are under review.
+# for MCP Enterprise-Managed Authorization. See tests/mcp_conformance_id_jag_issuer/HANDOFF.md
+# for tested revisions and results. Keep non-required while coverage and the spec baseline
+# are under review.
 name: CI - MCP conformance (id-jag-issuer)
 
 on:

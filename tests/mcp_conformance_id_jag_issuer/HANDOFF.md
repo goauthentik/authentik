@@ -2,7 +2,39 @@
 
 I cannot create issues or PRs, but I can help you write the content for them.
 
-## Branch and evidence
+## Current status after merging the issuance fixes (2026-11-06)
+
+- Conformance PR: goauthentik/authentik#27677, branch `t3/id-jag-issuer`, targeting `providers/oauth2/id-jag`.
+- Exact feature base: `93fbedebdd42dd0a6d2f58ed6b4571df4d231145`.
+- Exact tested merge commit: `b7d3a776a5024c836cd90a43baef72213d5d9c8c`, merging the feature base into conformance head `203eb0bc834779210f4b0f493e2290d3969613a2`. Git merged the fetched branches cleanly without manual conflict edits or rewritten history.
+- Fresh local acceptance: **21 PASS / 0 FAIL / 0 ERROR / 0 BLOCKED**, all 21 check IDs unique, report generated **2026-11-06 16:01:48 UTC**. Django acceptance test passed in 63.17 seconds; independent fixture self-check: **16 tests, OK**.
+- Evidence (gitignored): [report](results/merged-b7d3a776/report.md), [JSON](results/merged-b7d3a776/report.json), [JUnit](results/merged-b7d3a776/checks.junit.xml), [fixture decisions](results/merged-b7d3a776/resource_as.events.jsonl). Run log: `/tmp/id-jag-merged-b7d3a776.log`. Scanning these files found no compact JWTs or private-key blocks.
+- The run used `UV_NO_SYNC=1`, the existing virtual environment, and the runner's disposable PostgreSQL container and isolated configuration. It did not use the developer database. These are local results, not evidence of GitHub Actions success.
+- Black, Ruff, shell syntax and whitespace checks passed. Explicit acceptance collection found one test. Strict mypy passed on all five harness Python files. One initial mypy invocation loaded the default local configuration through its plugin; no configuration contents were printed. It was rerun with an explicit isolated `AUTHENTIK_ENV`.
+- The later documentation/comment changes remove obsolete expected-failure wording. Test assertions, fixture behavior, and workflow triggers are unchanged. The PR diff against the feature base contains only tests, CI and documentation.
+
+The original six failures are addressed by the feature branch. Invalid subjects and multiple audiences now return `invalid_request`, and the access-token-as-ID-Token request is rejected. The scope check passes because requested Resource AS scopes are explicitly refused with `invalid_scope`; this is not support for granting `mcp:tools`. Clients must omit nonempty scope requests until an explicit grant policy is implemented.
+
+Coverage still pins draft-06 while MCP EMA references draft-04. Passing these 21 checks is not complete protocol certification: the existing trusted-federation JWT/access-token subject path and other coverage limits below remain review topics.
+
+Reproduce with a new results directory:
+
+```bash
+UV_CACHE_DIR=/tmp/id-jag-uv-cache UV_NO_SYNC=1 \
+  tests/mcp_conformance_id_jag_issuer/run-local.sh
+```
+
+Suggested current PR description:
+
+> Adds a dedicated Actions check for ID-JAG issuance, independent JWT verification/redemption, and protected MCP access, plus negative requests. It follows the existing OpenID conformance setup/results conventions and runs on PRs targeting feature branches. The suite remains outside general test discovery and has a disposable PostgreSQL local runner.
+>
+> On feature commit `93fbedebdd42dd0a6d2f58ed6b4571df4d231145`, local validation passes all 21 acceptance checks and 16 fixture self-checks. Scope requests are explicitly refused with `invalid_scope`. The suite pins draft-06; HANDOFF.md explains draft-04 differences and coverage limits. Hosted Actions results must be assessed separately.
+
+## Historical baseline before the issuance fixes
+
+The following sections preserve the original observations on `dce0a00534`, including the original proposed PR text. Their six failures and publication status describe that earlier snapshot, not the current branch.
+
+## Branch and evidence (historical)
 
 - Working branch: `t3/id-jag-issuer`; nothing pushed, no issue/PR created, no message or comment sent.
 - Target: Jens/BeryJu's [PR #26973](https://github.com/goauthentik/authentik/pull/26973), branch `providers/oauth2/id-jag`.
