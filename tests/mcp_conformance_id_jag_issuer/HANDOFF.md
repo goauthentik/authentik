@@ -2,7 +2,21 @@
 
 I cannot create issues or PRs, but I can help you write the content for them.
 
-## Current status after merging the issuance fixes (2026-11-06)
+## Current stack repair against main (2026-11-06)
+
+- Issuance PR #26973 targets `main`; conformance PR #27677 targets `providers/oauth2/id-jag`.
+- Exact main revision merged: `e26d206e6182741a63e5134b2e43459f5e94799d`.
+- Resolved issuance commit: `66375d040cc97b39e598b8dbfde1ea7f0ad511b2`. Five conflict files were resolved by combining upstream SAML exchange/delegation support with ID-JAG validation, preserving main's admin-only system-agent creation semantics, retaining both agent test sets, and restoring the ID-JAG action column/editor. No tests were weakened.
+- Exact conformance merge commit tested: `f3b3262532816d615d6bd9b40bc483dc48adeb14`. Its production tree matches the issuance commit. The conformance diff against issuance remains test/CI/documentation only; unrestricted PR-base triggers are preserved.
+- Fresh local acceptance at **2026-11-06 16:50:27 UTC**: **21 PASS / 0 FAIL / 0 ERROR / 0 BLOCKED**, 21 unique check IDs. Independent fixture self-check: **16 tests, OK**. [Report](results/stack-f3b3262532/report.md), [JSON](results/stack-f3b3262532/report.json), [JUnit](results/stack-f3b3262532/checks.junit.xml). Log: `/tmp/id-jag-stack-acceptance.log`. No compact JWTs or private-key blocks found in these artifacts or the log.
+- Final regression run: **415 OAuth2/agents tests and 55 subtests passed** in 404.92 seconds, using the synced dependencies. Command: `make test authentik/providers/oauth2 authentik/enterprise/agents` inside `/tmp/id-jag-stack-isolated.sh` with disposable PostgreSQL. Log: `/tmp/id-jag-stack-unit-final.log`. Strict mypy passed on all five conformance Python files.
+- Frontend TypeScript, focused agent-list lint/format checks, Python Black/Ruff and diff whitespace checks against main passed. API/blueprint schemas regenerated from the resolved code with no changes to the merged generated files. Local frontend tools use Node 24.22.2; Python dependencies were synced to main's lockfile before final validation.
+- Django tests and schema generation use dedicated disposable PostgreSQL containers with generated credentials and isolated `AUTHENTIK_ENV` settings. The developer database and `local.env.yml` are not used.
+- Backup refs preserve the previous heads: `backup/id-jag-before-stack-20261106` and `backup/id-jag-conformance-before-stack-20261106`. Both updates preserve history with merge commits.
+
+The scope-policy and draft-baseline limitations below still apply. Local validation is distinct from GitHub Actions status.
+
+## Earlier status after merging the issuance fixes (2026-11-06)
 
 - Conformance PR: goauthentik/authentik#27677, branch `t3/id-jag-issuer`, targeting `providers/oauth2/id-jag`.
 - Exact feature base: `93fbedebdd42dd0a6d2f58ed6b4571df4d231145`.
