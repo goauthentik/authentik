@@ -2,7 +2,16 @@
 
 I cannot create issues or PRs, but I can help you write the content for them.
 
-## Current stack repair against main (2026-11-06)
+## Explicit agent/application relationship fix (2026-11-06)
+
+- Implementation commit: `d1cb2b580d2635fe6eab02e55d0f0a64773116fa` on `providers/oauth2/id-jag` (PR #26973). Conformance merge: `f9032da385882f8249ce477f03273569d8c5beaa` on `t3/id-jag-issuer` (PR #27677).
+- The repository-wide explicit-many-to-many check correctly rejected `Agent.applications`. `AgentApplication` now extends `SimpleThroughModel` and reuses the existing join table and uniqueness constraint. Migration `0003_agent_application` updates migration state without database operations, preserving grants on upgrade and rollback; migration `0002` is unchanged.
+- Regression validation: **102 tests and 23 subtests passed**, including the original failing repository check, existing agent/token-exchange tests, forward/reverse migration preservation, and API assignment updates. Both migration consistency checks reported no changes. All runs used isolated disposable PostgreSQL, without reading local.env.yml.
+- `make gen` passed with no schema or client changes. Black, Ruff and whitespace checks passed. The original structural test and all conformance expectations remain unchanged.
+- Full acceptance on the conformance merge: **21 PASS / 0 FAIL / 0 ERROR / 0 BLOCKED**, with **16 fixture self-checks passed**. Report generated 2026-11-06 18:41:37 UTC. [Report](results/explicit-agent-applications/report.md), [JSON](results/explicit-agent-applications/report.json), [JUnit](results/explicit-agent-applications/checks.junit.xml); log: `/tmp/idjag-through-acceptance.log`.
+- Logs: `/tmp/idjag-through-tests.log`, `/tmp/idjag-through-migration-check.log`, `/tmp/idjag-through-gen.log`. These are local results; new GitHub checks must be evaluated separately.
+
+## Earlier stack repair against main (2026-11-06)
 
 - Issuance PR #26973 targets `main`; conformance PR #27677 targets `providers/oauth2/id-jag`.
 - Exact main revision merged: `e26d206e6182741a63e5134b2e43459f5e94799d`.
