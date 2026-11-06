@@ -4,6 +4,14 @@ GitHub check: **`test-mcp-conformance (id-jag-issuer)`**, from `.github/workflow
 
 This is a live acceptance check for authentik in the **IdP Authorization Server** role of MCP Enterprise-Managed Authorization. authentik issues an Identity Assertion JWT Authorization Grant (ID-JAG) through RFC 8693 token exchange, and a separate Resource Authorization Server redeems it to get an access token for an MCP server. The check is intentionally red on the feature head until the remaining conformance gaps are corrected; issuance and the complete MCP flow already pass. See HANDOFF.md for the exact tested revisions and results.
 
+## GitHub Actions integration
+
+The dedicated workflow follows the `test-openid-conformance` jobs in `CI - Main`: the same runner, pinned checkout action, shared `.github/actions/setup`, coverage-wrapped Django test command, and `.github/actions/test-results` uploader with the Codecov `conformance` flag. It exposes one matrix check, `test-mcp-conformance (id-jag-issuer)`, running the independent fixture self-check and all 21 acceptance checks. Reports and fixture decisions are uploaded as `mcp-conformance-id-jag-issuer`, with the verdict also in the Actions job summary.
+
+Like `CI - Main`, it runs on pushes to `main`, `next`, and `version-*`, and preserves in-progress runs on those branches. It additionally runs on PRs targeting **any** branch, including `providers/oauth2/id-jag`, and supports `workflow_dispatch` once available on the default branch. Keeping it separate avoids broadening all of `CI - Main` to feature-branch PRs or running the acceptance suite twice. It uses only system, Python, and runtime dependencies because its flow requires no browser or web build.
+
+Failures produce a red check alongside other CI checks; they are not marked `continue-on-error`. Adding a workflow does not configure branch protection or make a check required. Keep it non-required while the known conformance gaps and draft baseline are reviewed. GitHub Actions execution and uploads remain unvalidated until a push/PR run actually occurs.
+
 ## What runs
 
 ```
