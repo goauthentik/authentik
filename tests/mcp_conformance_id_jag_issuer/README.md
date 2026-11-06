@@ -29,7 +29,7 @@ POST /mcp initialize, tools/call whoami (Bearer AT) -----------------> 200, iden
 
 * **authentik**: every request goes to production views over real HTTP (Django `StaticLiveServerTestCase`). Nothing in authentik is mocked. Test setup provisions the objects through the ORM: a user, a login flow, two confidential OAuth2 providers/applications, and, when the model supports it, two system agents carrying the ID-JAG trust configuration from goauthentik/authentik#26973.
 * **`resource_as.py`**: the Resource AS and protected MCP resource, both test infrastructure. It uses only the stdlib and `cryptography` primitives. JWS parsing, JWK conversion, signature verification and claim validation are written here, so neither authentik nor PyJWT/jwcrypto/authlib validates authentik's output; `selfcheck_resource_as.py` enforces this with an AST import guard. Signing keys are found from the ID-JAG issuer identifier alone: RFC 8414 path-insertion metadata first, then OpenID Connect Discovery as the fallback that draft-06 §7.1 allows.
-* **`selfcheck_resource_as.py`**: 16 unittest cases that need neither authentik nor a database. A stub IdP signs assertions with `cryptography`, on a separate code path from the verifier. The cases cover:
+* **`selfcheck_resource_as.py`**: 17 unittest cases that need neither authentik nor a database. A stub IdP signs assertions with `cryptography`, on a separate code path from the verifier. The cases cover:
   * the positive controls: RS256, ES256, a single-element `aud` array, the full flow through to an MCP call, and the 401 challenges;
   * the rejection matrix: `typ`, `alg` none/HS256, a foreign key, a tampered payload, an unknown `kid`, `iss`, `aud` (wrong, or a 2-element array), `client_id` binding, missing `sub`/`jti`/`exp`/`iat`, expired, future `iat`, an ungoverned `resource`, `jti` replay, client auth, `grant_type`, and a metadata issuer mismatch.
 
@@ -52,7 +52,9 @@ Artifacts are gitignored. The local runner uses a fresh `results/<UTC timestamp>
 * `resource_as.events.jsonl`: each Resource AS/MCP decision with the failing rule;
 * `resource_as.stderr.log`.
 
-Structured reports redact token, assertion and client-secret response fields. The local runner and CI suppress captured production request logs in pytest failure output/JUnit to avoid leaking credentials. Response bodies show them only as `<redacted len=N>`. The fixture config file holding the Resource AS client secrets lives in a temporary file that is deleted after startup.
+The local fixture binds without reverse DNS lookups, so resolver outages cannot stall startup.
+
+Structured reports redact token, assertion and client-secret response fields. The local runner and CI override the repository full-trace default and suppress local variables and captured production request logs in pytest failure output/JUnit to avoid leaking credentials. Response bodies show them only as `<redacted len=N>`. The fixture config file holding the Resource AS client secrets lives in a temporary file that is deleted after startup.
 
 ## Running
 
@@ -63,7 +65,7 @@ uv run python tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
 tests/mcp_conformance_id_jag_issuer/run-local.sh
 # Or with an already-disposable database (CI), with connection settings explicitly supplied:
 AUTHENTIK_ENV=mcp-idjag-ci AUTHENTIK_SECRET_KEY="$EPHEMERAL_TEST_KEY" \
-  AUTHENTIK_LOG_LEVEL=warning PYTEST_ADDOPTS="--tb=short --show-capture=no -o junit_logging=no" \
+  AUTHENTIK_LOG_LEVEL=warning PYTEST_ADDOPTS="-o addopts= -p authentik.root.test_plugin --junitxml=unittest.xml --tb=short --no-showlocals --show-capture=no -o junit_logging=no" \
   AUTHENTIK_POSTGRESQL__TEST__NAME=test_authentik_mcp_id_jag_issuer \
   uv run manage.py test tests/mcp_conformance_id_jag_issuer/acceptance_id_jag.py
 ```
@@ -81,7 +83,7 @@ None of the files match `python_files` (`tests.py`, `test_*.py`, `*_tests.py`), 
 | RFC 8693 §2.2.1/§2.2.2, RFC 7523 §3, RFC 7521 §5.2, RFC 8414 §3.3, RFC 9728 §3.3, RFC 8725 §3.11, RFC 6749 §5.1/§5.2 | published RFCs | Response/error rules and Resource AS processing |
 | MCP Enterprise-Managed Authorization, stable `2026-07-28` | `modelcontextprotocol/ext-auth@15ca394e00a66434520b9ade26294999295a43ae` `specification/stable/enterprise-managed-authorization/2026-07-28/enterprise-managed-authorization.mdx` | `resource` = MCP server resource, access token audience-restricted to it, client_secret_basic, `authorization_grant_profiles_supported` |
 | Upstream MCP conformance | `modelcontextprotocol/conformance@c37eec888e1c6ff140af79987a40008548b7cc5f` `src/scenarios/client/auth/enterprise-managed-authorization.ts` (sha256 `caec7e9a…0383c2`) | Check-ID analogues and the Resource AS checks it performs: typ, aud with or without trailing slash, client_id continuity, resource = MCP URL, Basic auth |
-| authentik feature | goauthentik/authentik#26973 `providers/oauth2/id-jag` @ `d1cb2b580d2635fe6eab02e55d0f0a64773116fa` | Shape of the provisioning (system `Agent` with `applications`, `id_jag_audience`, `id_jag_client_id`, `id_jag_resources`). No production code is copied or cherry-picked |
+| authentik feature | goauthentik/authentik#26973 `providers/oauth2/id-jag` @ `a49335a4ac8cbc18120d409888117a9bd883417a` | Shape of the provisioning (system `Agent` with `applications`, `id_jag_audience`, `id_jag_client_id`, `id_jag_resources`). No production code is copied or cherry-picked |
 
 **How upstream is used, and how it isn't.** The upstream scenario is a *client* test: it mocks both the IdP and the Resource AS, and its mock AS doesn't even verify the ID-JAG against the IdP's key, because it signs with an ephemeral per-user key. No upstream suite targets an issuer. Running the upstream mock flow would therefore test nothing in authentik, so it is **not run**. Instead, `resource_as.py` re-implements that mock AS's checks in Python against the *real* authentik issuer and adds the draft-06 §4.4.1 rules upstream skips (issuer trust, JWKS signature, aud array cardinality, exp/iat, jti). `checks.CATALOG` records the upstream analogue on each check: `complete-flow-token-exchange` maps to `exchange.id-jag-issued`, and `complete-flow-jwt-bearer` maps to `ras.redeem`.
 

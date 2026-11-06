@@ -2,6 +2,18 @@
 
 I cannot create issues or PRs, but I can help you write the content for them.
 
+## Stack update and OIDC screenshot repair
+
+- The GitHub rebase-stack attempt left both remote heads unchanged and no local rebase in progress. The existing branches were mergeable; the stack was updated through normal merges to retain earlier conflict resolutions.
+- Main base: `95764ad89663f8343c82b13de4fa97c49e8a6b23`. Issuance head: `a49335a4ac8cbc18120d409888117a9bd883417a`. Conformance merge tested: `59c33719d6b2ce396649c220f403faf26debe93b`.
+- The preceding [ID-JAG Actions run](https://github.com/goauthentik/authentik/actions/runs/42273075675) passed. The remaining OpenID RP-initiated conformance failure was an evidence upload rejected with HTTP 400: `File size exceeds the 500KB limit`, rather than an ID-JAG protocol failure.
+- The OpenID harness had labeled Selenium PNG screenshots as JPEG. It now captures actual JPEG data using Chrome's CDP API, lowers quality when necessary, bounds the entire encoded upload to 500,000 bytes, and restores the original window in a `finally` block. Evidence that still exceeds the limit remains an error; protocol assertions and evidence uploads are not skipped. Four regression tests run before each OpenID Actions conformance job.
+- Four screenshot unit tests, Black/Ruff, workflow YAML checks, and a real headless Chrome test passed. The synthetic noisy page reproduced a 1,264,427-byte old PNG payload; the replacement was a valid 285,251-byte JPEG data URL, with window restoration verified. Full hosted OpenID certification remains pending CI; the local browser check specifically validates the upload-size failure mechanism.
+- The separate sidebar e2e assertions are reported by Codecov as failing on main too. They are not part of the screenshot fix. Existing automated review advisories about validation returns and fixture shutdown handling are nonblocking and unchanged.
+- The first fresh local acceptance attempt stopped before protocol checks: reverse DNS in the stdlib HTTP server blocked fixture startup beyond its 30-second deadline (confirmed by stack traces in `socket.getfqdn`). The fixture now binds without reverse DNS, with an additional regression self-check. No protocol timeout or assertion was relaxed.
+- That setup failure also revealed that the repository `--full-trace` default printed ephemeral fixture credentials despite `--tb=short`. Both local and CI commands now override that default, retain the authentik test plugin/JUnit output, and suppress locals/captured logs. The failed local log/JUnit were redacted; the disposable database was removed.
+- Local logs: `/tmp/idjag-screenshot-browser-check.log`, `/tmp/idjag-screenshot-stack-acceptance.log`. Both branches retain backup refs under `backup/id-jag-before-conformance-repair` and `backup/id-jag-tests-before-conformance-repair`.
+
 ## Explicit agent/application relationship fix (2026-11-06)
 
 - Implementation commit: `d1cb2b580d2635fe6eab02e55d0f0a64773116fa` on `providers/oauth2/id-jag` (PR #26973). Conformance merge: `f9032da385882f8249ce477f03273569d8c5beaa` on `t3/id-jag-issuer` (PR #27677).

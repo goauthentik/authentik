@@ -36,6 +36,7 @@ from binascii import Error as BinasciiError
 from dataclasses import dataclass, field
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from socketserver import TCPServer
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qs, unquote_plus, urlsplit, urlunsplit
@@ -383,14 +384,22 @@ def redact_claims(claims: Any) -> Any:
     return claims if len(text) < MAX_CLAIMS_LOG else {"_truncated": text[:MAX_CLAIMS_LOG]}
 
 
+class FixtureHTTPServer(ThreadingHTTPServer):
+    """Bind local test endpoints without depending on reverse DNS availability."""
+
+    def server_bind(self):
+        TCPServer.server_bind(self)
+        self.server_name, self.server_port = self.server_address[:2]
+
+
 class Fixture:
     def __init__(self, cfg: FixtureConfig, fetch=_http_get_json):
         self.cfg = cfg
         self.events: list[dict] = []
         self._events_lock = threading.Lock()
         self.tokens: dict[str, dict] = {}
-        self.as_server = ThreadingHTTPServer((cfg.host, 0), _make_as_handler(self))
-        self.rs_server = ThreadingHTTPServer((cfg.host, 0), _make_rs_handler(self))
+        self.as_server = FixtureHTTPServer((cfg.host, 0), _make_as_handler(self))
+        self.rs_server = FixtureHTTPServer((cfg.host, 0), _make_rs_handler(self))
         self.as_issuer = f"http://{cfg.host}:{self.as_server.server_address[1]}"
         rs_base = f"http://{cfg.host}:{self.rs_server.server_address[1]}"
         self.resource = rs_base + cfg.resource_path

@@ -11,8 +11,9 @@ NAME="authentik-mcp-idjag-pg-$$"
 export AUTHENTIK_ENV="$NAME"
 export AUTHENTIK_SECRET_KEY="$(uv run python -c 'import secrets; print(secrets.token_urlsafe(64))')"
 export AUTHENTIK_LOG_LEVEL=warning
-# Keep production request logs (which can contain credentials) out of failure output/JUnit.
-export PYTEST_ADDOPTS="--tb=short --show-capture=no -o junit_logging=no"
+# Override the repository full-trace default, which prints credential-bearing arguments.
+# Keep production request logs and local variables out of failure output/JUnit.
+export PYTEST_ADDOPTS="-o addopts= -p authentik.root.test_plugin --junitxml=unittest.xml --tb=short --no-showlocals --show-capture=no -o junit_logging=no"
 export MCP_CONFORMANCE_RESULTS_DIR="${MCP_CONFORMANCE_RESULTS_DIR:-$ROOT/tests/mcp_conformance_id_jag_issuer/results/$(date -u +%Y%m%dT%H%M%SZ)-$$}"
 mkdir -p "$MCP_CONFORMANCE_RESULTS_DIR"
 if [[ -e "$MCP_CONFORMANCE_RESULTS_DIR/report.json" ]]; then
