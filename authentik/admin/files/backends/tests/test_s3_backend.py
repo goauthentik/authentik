@@ -114,6 +114,16 @@ class TestS3Backend(FileTestS3BackendMixin, TestCase):
         )
         self.media_s3_backend.delete_file("test.png")
 
+    def test_read_file(self):
+        """Test read_file returns file content from S3"""
+        self.media_s3_backend.save_file("test.png", b"test content")
+        self.assertEqual(self.media_s3_backend.read_file("test.png"), b"test content")
+
+    def test_read_file_nonexistent(self):
+        """Test read_file raises FileNotFoundError for nonexistent file"""
+        with self.assertRaises(FileNotFoundError):
+            self.media_s3_backend.read_file("nonexistent.png")
+
     @CONFIG.patch("storage.s3.secure_urls", True)
     @CONFIG.patch("storage.s3.custom_domain", None)
     def test_file_url_basic(self):

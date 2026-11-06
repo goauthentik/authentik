@@ -106,6 +106,16 @@ class FileBackend(ManageableBackend):
         else:
             return _file_url(name, request)
 
+    def read_file(self, name: str) -> bytes:
+        """Read file from local filesystem."""
+        base_path = self.base_path.resolve()
+        path = (base_path / name).resolve()
+        # File names are validated when they're set, but the content of a file read here
+        # can leave authentik (e.g. as email attachment), so never read outside of storage
+        if not path.is_relative_to(base_path):
+            raise FileNotFoundError(name)
+        return path.read_bytes()
+
     def save_file(self, name: str, content: bytes) -> None:
         """Save file to local filesystem."""
         path = self.base_path / Path(name)

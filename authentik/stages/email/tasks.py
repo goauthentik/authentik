@@ -11,6 +11,8 @@ from dramatiq.actor import actor
 from dramatiq.composition import group
 from structlog.stdlib import get_logger
 
+from authentik.brands.models import Brand
+from authentik.brands.utils import DEFAULT_BRAND
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
@@ -22,7 +24,9 @@ LOGGER = get_logger()
 
 
 def send_mails(
-    stage: EmailStage | AuthenticatorEmailStage | None, *messages: EmailMultiAlternatives
+    stage: EmailStage | AuthenticatorEmailStage | None,
+    *messages: EmailMultiAlternatives,
+    brand: Brand | None = None,
 ):
     """Wrapper to convert EmailMessage to dict and send it from worker
 
@@ -30,6 +34,7 @@ def send_mails(
         stage: Either an EmailStage or AuthenticatorEmailStage instance,
             or nothing to use global settings
         messages: List of email messages to send
+        brand: Brand whose logo is embedded in the emails, or nothing to use the default brand
     Returns:
         Dramatiq group promise for the email sending tasks
     """
@@ -39,8 +44,9 @@ def send_mails(
     if stage:
         stage_class_path = class_to_path(stage.__class__)
         stage_pk = str(stage.pk)
+    brand_pk = str(brand.pk) if brand else None
     for message in messages:
-        tasks.append(send_mail.message(message.__dict__, stage_class_path, stage_pk))
+        tasks.append(send_mail.message(message.__dict__, stage_class_path, stage_pk, brand_pk))
     return group(tasks).run()
 
 
@@ -57,6 +63,7 @@ def send_mail(
     message: dict[Any, Any],
     stage_class_path: str | None = None,
     email_stage_pk: str | None = None,
+    brand_pk: str | None = None,
 ):
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self = CurrentTask.get_task()
@@ -92,7 +99,9 @@ def send_mail(
     # previous message since MIMEImage can't be converted to json)
     body = get_email_body(message_object)
     if "cid:logo" in body:
-        message_object.attach(logo_data())
+        brand = Brand.objects.filter(pk=brand_pk).first() if brand_pk else None
+        brand = brand or Brand.objects.filter(default=True).first() or DEFAULT_BRAND
+        message_object.attach(logo_data(brand))
 
     if (
         message_object.to

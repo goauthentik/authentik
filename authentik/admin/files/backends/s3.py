@@ -243,6 +243,21 @@ class S3Backend(ManageableBackend):
         else:
             return _file_url(name, request)
 
+    def read_file(self, name: str) -> bytes:
+        """Read file from S3."""
+        from botocore.exceptions import ClientError
+
+        try:
+            response = self.client.get_object(
+                Bucket=self.bucket_name,
+                Key=f"{self.base_path}/{name}",
+            )
+        except ClientError as exc:
+            if exc.response["Error"]["Code"] == "NoSuchKey":
+                raise FileNotFoundError(name) from exc
+            raise
+        return response["Body"].read()
+
     def save_file(self, name: str, content: bytes) -> None:
         """Save file to S3."""
         self.client.put_object(

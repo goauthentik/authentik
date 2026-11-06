@@ -102,6 +102,21 @@ class Backend:
         """
         raise NotImplementedError
 
+    def read_file(self, name: str) -> bytes | None:
+        """
+        Read file content.
+
+        Args:
+            name: File path
+
+        Returns:
+            File content, or None if authentik doesn't store the file (for example an external URL)
+
+        Raises:
+            FileNotFoundError: If the file does not exist
+        """
+        raise NotImplementedError
+
     def themed_urls(
         self,
         name: str,

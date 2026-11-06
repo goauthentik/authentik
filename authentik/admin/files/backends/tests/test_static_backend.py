@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from django.test import TestCase
 
 from authentik.admin.files.backends.static import StaticBackend
@@ -73,3 +75,22 @@ class TestStaticBackend(TestCase):
         self.assertIsNone(
             self.backend.themed_urls("/static/authentik/sources/github/../github/light.svg")
         )
+
+    def test_read_file(self):
+        """Test read_file reads from the directory the file is served from"""
+        self.assertEqual(
+            self.backend.read_file("/static/authentik/sources/saml/light.png"),
+            Path("web/authentik/sources/saml/light.png").read_bytes(),
+        )
+
+    def test_read_file_nonexistent(self):
+        """Test read_file raises FileNotFoundError for nonexistent file"""
+        with self.assertRaises(FileNotFoundError):
+            self.backend.read_file("/static/authentik/sources/does_not_exist.png")
+
+    def test_read_file_outside_static(self):
+        """Test read_file doesn't read files outside of the static directories"""
+        with self.assertRaises(FileNotFoundError):
+            self.backend.read_file("/static/authentik/../../pyproject.toml")
+        with self.assertRaises(FileNotFoundError):
+            self.backend.read_file("/static/assets/icons/icon.png")

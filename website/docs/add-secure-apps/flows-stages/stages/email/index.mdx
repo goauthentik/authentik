@@ -103,22 +103,25 @@ data:
         <tr>...
 ```
 
-Then mount it into the worker container from your Helm values:
+Then mount it into the server and worker containers from your Helm values. The server renders the emails that flows and the API send, and lists the templates in the selector. The worker renders notification emails.
 
 ```yaml
-volumes:
-    - name: email-templates
-      configMap:
-          name: authentik-templates
-volumeMounts:
-    - name: email-templates
-      mountPath: /templates
+global:
+    volumes:
+        - name: email-templates
+          configMap:
+              name: authentik-templates
+    volumeMounts:
+        - name: email-templates
+          mountPath: /templates
 ```
 
   </TabItem>
 </Tabs>
 
-If a custom template does not appear in the selector, check the worker logs.
+If a custom template does not appear in the selector, check the server logs.
+
+New template files appear in the selector without a restart. Django caches each template the first time authentik looks it up, and it also remembers templates it didn't find, such as a missing `.txt` file. After you edit a custom template that authentik has already sent, or add a `.txt` file next to it, restart the server and worker containers.
 
 ### Template variables
 
@@ -191,4 +194,23 @@ Each Django `{% ... %}` tag must stay on one line; a tag wrapped across lines wo
     </td>
 </tr>
 {% endblock %}
+```
+
+### Logo:ak-version[2026.11]
+
+The built-in templates show a logo from `cid:logo`, which refers to an image attached to the email. authentik attaches the logo of the brand that matches the domain of the request that sends the email, such as a flow or an API call. Emails sent without a request, such as notification emails, use the default brand's logo.
+
+authentik attaches the brand logo when it is a PNG, JPEG, or GIF file that authentik stores, either an uploaded file or a built-in static asset. Otherwise, authentik attaches its own logo. This applies to:
+
+- SVG logos, including the default brand logo, because many mail clients don't display SVG images.
+- Theme-aware logos that use `%(theme)s`.
+- External URLs.
+
+To use an externally hosted logo, override the `logo_url` block in a custom template. authentik then doesn't attach a logo, and some mail clients only load the image after the recipient allows remote images.
+
+<!-- prettier-ignore -->
+```html
+{% extends "email/base.html" %}
+
+{% block logo_url %}https://authentik.company/static/logo.png{% endblock %}
 ```

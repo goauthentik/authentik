@@ -99,7 +99,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
                 },
             )
 
-            send_mails(stage, message)
+            send_mails(stage, message, brand=self.request.brand)
         except TemplateSyntaxError as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,

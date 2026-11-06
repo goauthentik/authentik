@@ -13,6 +13,11 @@ STATIC_ASSETS_DIRS = [Path(p) for p in ("assets/icons", "assets/images")]
 STATIC_ASSETS_SOURCES_DIR = Path("web/authentik/sources")
 STATIC_FILE_EXTENSIONS = [".svg", ".png", ".jpg", ".jpeg"]
 STATIC_PATH_PREFIX = "/static"
+# Must match src/server/static.rs
+STATIC_SERVED_DIRS = {
+    f"{STATIC_PATH_PREFIX}/dist/": STATIC_ASSETS_BASE_DIR,
+    f"{STATIC_PATH_PREFIX}/authentik/": Path("web/authentik"),
+}
 STATIC_SOURCES_PREFIX = f"{STATIC_PATH_PREFIX}/authentik/sources/"
 
 
@@ -70,6 +75,18 @@ class StaticBackend(Backend):
         if request is None:
             return url
         return request.build_absolute_uri(url)
+
+    def read_file(self, name: str) -> bytes:
+        """Read static file from the directory it is served from."""
+        for prefix, directory in STATIC_SERVED_DIRS.items():
+            if not name.startswith(prefix):
+                continue
+            base_path = directory.resolve()
+            path = (base_path / name.removeprefix(prefix)).resolve()
+            # Static paths skip file name validation, see FileBackend.read_file
+            if path.is_relative_to(base_path):
+                return path.read_bytes()
+        raise FileNotFoundError(name)
 
     def themed_urls(
         self,
