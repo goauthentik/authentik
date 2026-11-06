@@ -59,7 +59,7 @@ dependencies = [
   "opentelemetry-sdk==1.44.0",
   "packaging==26.3",
   "paramiko==5.0.1",
-  "psycopg[c,pool]==3.3.6",
+  "psycopg[c,pool]==3.3.7",
   "pydantic-scim==0.0.8",
   "pydantic==2.14.2",
   "pyjwt==2.15.1",
