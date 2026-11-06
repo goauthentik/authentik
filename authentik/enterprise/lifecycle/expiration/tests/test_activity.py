@@ -371,13 +371,20 @@ class TestActivity(ExpirationTestCase):
             rule._revisit_owned_rows()
         self.assertFalse(UserOffboarding.objects.filter(pk=row.pk).exists())
 
-    def test_lower_ranked_rule_skips_foreign_row_locks(self):
+    def test_lower_ranked_rule_skips_foreign_row_policies_and_locks(self):
         user = _dormant_user(200)
         owner = self._rule()
         row = UserOffboarding.objects.create(user=user, rule=owner, scheduled_at=owner.due_at(user))
         rule = self._rule(inactivity_duration="days=180", warn_before="days=7")
-        with CaptureQueriesContext(connection) as queries:
+        policy = DummyPolicy.objects.create(name=generate_id(), result=True)
+        PolicyBinding.objects.create(target=rule, policy=policy, order=0)
+        with (
+            patch.object(rule, "_apply_policies", wraps=rule._apply_policies) as policies,
+            CaptureQueriesContext(connection) as queries,
+        ):
             rule._tighten_foreign_rows()
+            self.assertEqual(list(rule.preview_pending()), [])
+        policies.assert_not_called()
         self.assertFalse(any("FOR UPDATE" in query["sql"] for query in queries))
         row.refresh_from_db()
         self.assertEqual(row.rule_id, owner.pk)
