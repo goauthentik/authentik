@@ -95,13 +95,18 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         this.formRef.value?.reset();
     };
 
+    public override get canAdvance(): boolean {
+        return !!this.selectedType;
+    }
+
     public override activeCallback = (): void => {
-        this.host.valid = !!this.selectedType;
+        this.host.requestUpdate();
     };
 
     protected override updated(changedProperties: PropertyValues<this>): void {
         if (changedProperties.has("selectedType")) {
             this.#selectDispatch(this.selectedType);
+            this.host?.requestUpdate();
         }
     }
 

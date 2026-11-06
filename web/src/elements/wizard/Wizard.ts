@@ -160,12 +160,6 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     public description: string | null = null;
 
     /**
-     * Whether the wizard is valid and can proceed to the next step.
-     */
-    @property({ type: Boolean })
-    public valid = false;
-
-    /**
      * Actions to display at the end of the wizard.
      */
     private _actions: WizardAction[] = [];
@@ -558,7 +552,8 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
         activeStepIndex,
         lastPage,
     }: StepProgress): SlottedTemplateResult {
-        const { canBack, cancelable, valid, loading, childElementCount } = this;
+        const { canBack, cancelable, loading, childElementCount } = this;
+        const canAdvance = !!this.activeStepElement?.canAdvance;
 
         return guard(
             [
@@ -566,7 +561,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                 lastPage,
                 canBack,
                 cancelable,
-                valid,
+                canAdvance,
                 loading,
                 childElementCount,
             ],
@@ -607,7 +602,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                     html`<button
                         data-test-id="wizard-navigation-next"
                         class="pf-c-button pf-m-primary"
-                        ?disabled=${!valid || loading}
+                        ?disabled=${!canAdvance || loading}
                         type="button"
                         @click=${this.navigateNext}
                     >
