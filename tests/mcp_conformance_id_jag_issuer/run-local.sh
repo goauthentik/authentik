@@ -43,7 +43,7 @@ export AUTHENTIK_POSTGRESQL__TEST__NAME=test_authentik_mcp_id_jag_issuer
 
 echo "== fixture self-check"
 uv run python tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
-echo "== acceptance check (expected to FAIL until the conformance gaps are corrected)"
+echo "== acceptance check"
 status=0
 uv run manage.py test tests/mcp_conformance_id_jag_issuer/acceptance_id_jag.py || status=$?
 echo "== report: $MCP_CONFORMANCE_RESULTS_DIR/report.md"
