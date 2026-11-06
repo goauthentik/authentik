@@ -15,6 +15,7 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.lib.generators import generate_id
+from authentik.lib.models import SimpleThroughModel
 
 USER_PATH_AGENTS = f"{USER_PATH_SYSTEM_PREFIX}/agents"
 
@@ -38,6 +39,7 @@ class Agent(Actor):
         Application,
         blank=True,
         related_name="agents",
+        through="AgentApplication",
         verbose_name=_("Applications"),
         help_text=_("Applications that may use this agent."),
     )
@@ -113,3 +115,19 @@ class Agent(Actor):
 
     def __str__(self):
         return f"Agent {self.username} for {self.parent_id}"
+
+
+class AgentApplication(SimpleThroughModel):
+    """Applications authorized to use an agent, stored in the existing join table."""
+
+    agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_agents_agent_applications"
+        unique_together = (("agent", "application"),)
+        verbose_name = _("Agent Application")
+        verbose_name_plural = _("Agent Applications")
+
+    def __str__(self):
+        return f"AgentApplication for Agent {self.agent_id} and Application {self.application_id}."
