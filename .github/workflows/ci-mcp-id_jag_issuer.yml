@@ -49,7 +49,7 @@ jobs:
       AUTHENTIK_POSTGRESQL__TEST__NAME: test_authentik_mcp_id_jag_issuer
       MCP_CONFORMANCE_RESULTS_DIR: ${{ github.workspace }}/${{ matrix.job.dir }}/results
       AUTHENTIK_LOG_LEVEL: warning
-      PYTEST_ADDOPTS: "--tb=short --show-capture=no -o junit_logging=no"
+      PYTEST_ADDOPTS: "-o addopts= -p authentik.root.test_plugin --junitxml=unittest.xml --tb=short --no-showlocals --show-capture=no -o junit_logging=no"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
