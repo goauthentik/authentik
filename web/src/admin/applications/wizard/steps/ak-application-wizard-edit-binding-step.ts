@@ -21,6 +21,7 @@ import { type NavigableButton, type WizardButton } from "#components/ak-wizard/s
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import { groupSource, policySource, userSource } from "#admin/common/search-sources";
+import { renderDryRunHelp } from "#admin/policies/renderDryRunHelp";
 
 import { Group, Policy, PolicyBinding, User } from "@goauthentik/api";
 
@@ -167,6 +168,12 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                     name="enabled"
                     ?checked=${instance?.enabled ?? true}
                     label=${msg("Enabled")}
+                ></ak-switch-input>
+                <ak-switch-input
+                    name="dryRun"
+                    ?checked=${instance?.dryRun ?? false}
+                    label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                    .help=${renderDryRunHelp()}
                 ></ak-switch-input>
                 <ak-switch-input
                     name="negate"
