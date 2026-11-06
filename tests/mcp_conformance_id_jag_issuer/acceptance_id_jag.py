@@ -245,6 +245,10 @@ class IdJagIssuerAcceptance(StaticLiveServerTestCase):
         self.auth_flow = self._login_flow()
         self.client_a = self._oauth_client("idjag-client-a")
         self.client_b = self._oauth_client("idjag-client-b")
+        # Share the signing key so the wrong-client probe isolates audience validation,
+        # rather than merely presenting a token with an untrusted signature.
+        self.client_b["provider"].signing_key = self.client_a["provider"].signing_key
+        self.client_b["provider"].save(update_fields=["signing_key"])
         self.issuer = self.url_for(
             "authentik_providers_oauth2:provider-root", application_slug=self.client_a["app"].slug
         )
@@ -626,16 +630,21 @@ class IdJagIssuerAcceptance(StaticLiveServerTestCase):
         require(self.client_a["client_id"] in aud_values(claims), "ID token aud mismatch")
         require(claims.get("nonce") == sso["nonce"], "ID token nonce mismatch")
         self.state["sso_sub"] = claims.get("sub")
-        try:
-            self.state["sso_b"] = self.sso(self.client_b)
-        except CheckFailed as exc:
-            self.state["sso_b_error"] = exc.summary
+        self.state["sso_b"] = self.sso(self.client_b)
+        _, other_claims = self.verify_authentik_jwt(self.state["sso_b"]["id_token"])
+        require(
+            aud_values(other_claims) == [self.client_b["client_id"]]
+            and self.client_a["client_id"] != self.client_b["client_id"],
+            "client B ID token does not provide the wrong-audience control",
+        )
         return {
             "summary": "ID token obtained via real login and verified",
             "details": {
                 "id_token_claims": {
                     k: claims.get(k) for k in ("iss", "aud", "sub", "exp", "iat", "jti")
-                }
+                },
+                "wrong_client_control": "client B token signature verified with client A JWKS; "
+                "audience is client B, not client A",
             },
         }
 
