@@ -22,6 +22,7 @@ import unittest
 from base64 import b64encode, urlsafe_b64encode
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from unittest.mock import patch
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -172,6 +173,18 @@ class ResourceASSelfCheck(unittest.TestCase):
     def tearDownClass(cls):
         cls.fx.stop()
         cls.idp.stop()
+
+    def test_fixture_startup_does_not_require_reverse_dns(self):
+        with patch("socket.getfqdn", side_effect=AssertionError("Reverse DNS unavailable")):
+            fixture = resource_as.start_fixture(
+                resource_as.FixtureConfig(idp_issuer=self.idp.issuer, clients={})
+            )
+            try:
+                status, body, _ = _do(Request(fixture.describe()["as_metadata_url"]))
+                self.assertEqual(status, 200)
+                self.assertEqual(body["issuer"], fixture.as_issuer)
+            finally:
+                fixture.stop()
 
     def claims(self, **overrides):
         now = int(time.time())
