@@ -2,7 +2,7 @@
 
 GitHub check: **`test-mcp-conformance (id-jag-issuer)`**, from `.github/workflows/ci-mcp-id_jag_issuer.yml`.
 
-This is a live acceptance check for authentik in the **IdP Authorization Server** role of MCP Enterprise-Managed Authorization. authentik issues an Identity Assertion JWT Authorization Grant (ID-JAG) through RFC 8693 token exchange, and a separate Resource Authorization Server redeems it to get an access token for an MCP server. The check fails until authentik implements ID-JAG issuance.
+This is a live acceptance check for authentik in the **IdP Authorization Server** role of MCP Enterprise-Managed Authorization. authentik issues an Identity Assertion JWT Authorization Grant (ID-JAG) through RFC 8693 token exchange, and a separate Resource Authorization Server redeems it to get an access token for an MCP server. The check is intentionally red on the feature head until the remaining conformance gaps are corrected; issuance and the complete MCP flow already pass. See HANDOFF.md for the exact tested revisions and results.
 
 ## What runs
 
@@ -36,7 +36,7 @@ POST /mcp initialize, tools/call whoami (Bearer AT) -----------------> 200, iden
 
 SHOULD-level and OPTIONAL observations are recorded as `notes` and never change a status. Examples: whether `identity_chaining_requested_token_types_supported` is advertised, `email`/`aud_sub`, `act`, `expires_in`, and `refresh_token`.
 
-Artifacts go to `results/`, which is gitignored; CI can override the location with `MCP_CONFORMANCE_RESULTS_DIR`:
+Artifacts are gitignored. The local runner uses a fresh `results/<UTC timestamp>-<pid>/` directory on each run, and prints its path. `MCP_CONFORMANCE_RESULTS_DIR` can select another fresh directory; the runner refuses to reuse one containing a report. CI uses `results/`:
 
 * `report.json`: per check, the status, summary, details (HTTP status, redacted body, decoded claims), notes, spec refs and the upstream analogue;
 * `report.md`, which also becomes the job summary;
@@ -44,7 +44,7 @@ Artifacts go to `results/`, which is gitignored; CI can override the location wi
 * `resource_as.events.jsonl`: each Resource AS/MCP decision with the failing rule;
 * `resource_as.stderr.log`.
 
-Tokens, assertions and client secrets are never written. Response bodies show them only as `<redacted len=N>`. The fixture config file holding the Resource AS client secrets lives in a temporary file that is deleted after startup.
+Structured reports redact token, assertion and client-secret response fields. The local runner and CI suppress captured production request logs in pytest failure output/JUnit to avoid leaking credentials. Response bodies show them only as `<redacted len=N>`. The fixture config file holding the Resource AS client secrets lives in a temporary file that is deleted after startup.
 
 ## Running
 
@@ -53,18 +53,22 @@ Tokens, assertions and client secrets are never written. Response bodies show th
 uv run python tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
 # Full acceptance against a disposable PostgreSQL container (never your dev DB):
 tests/mcp_conformance_id_jag_issuer/run-local.sh
-# Or with an already-disposable database (CI):
-AUTHENTIK_POSTGRESQL__TEST__NAME=test_authentik_mcp_id_jag_issuer \
+# Or with an already-disposable database (CI), with connection settings explicitly supplied:
+AUTHENTIK_ENV=mcp-idjag-ci AUTHENTIK_SECRET_KEY="$EPHEMERAL_TEST_KEY" \
+  AUTHENTIK_LOG_LEVEL=warning PYTEST_ADDOPTS="--tb=short --show-capture=no -o junit_logging=no" \
+  AUTHENTIK_POSTGRESQL__TEST__NAME=test_authentik_mcp_id_jag_issuer \
   uv run manage.py test tests/mcp_conformance_id_jag_issuer/acceptance_id_jag.py
 ```
 
-None of the files match `python_files` (`tests.py`, `test_*.py`, `*_tests.py`), so `make test` and `manage.py test tests` never collect them. Verified: `pytest --collect-only tests` collects 94 items and none of them are from this directory; only an explicit path collects `IdJagIssuerAcceptance::test_id_jag_issuer`. No public network services are used. Everything binds to localhost, and the runner needs no browser, web build, Go or Rust.
+The local runner selects a unique `AUTHENTIK_ENV` and generates an ephemeral secret key; it does not load `local.env.yml` or need `make gen-dev-config`. It creates and removes its own PostgreSQL container, with every database connection setting supplied explicitly.
+
+None of the files match `python_files` (`tests.py`, `test_*.py`, `*_tests.py`), so `make test` and `manage.py test tests` never collect them. Verified: `pytest --collect-only tests` collects 92 items on the rebased feature head and none of them are from this directory; only an explicit path collects `IdJagIssuerAcceptance::test_id_jag_issuer`. No public network services are used. Everything binds to localhost, and the runner needs no browser, web build, Go or Rust.
 
 ## Provenance
 
 | Source | Pin | Used for |
 | --- | --- | --- |
-| draft-ietf-oauth-identity-assertion-authz-grant **-06** (31 Oct 2026, latest; -07 does not exist) | `https://www.ietf.org/archive/id/draft-ietf-oauth-identity-assertion-authz-grant-06.txt`, sha256 `1699586519ecb5333fb48ee0443f57d56e95f0b745e25b70e925fb85a6efcfc0` | Normative basis for all checks (§3.1, §4.3, §4.3.3, §4.3.4(.3), §4.4.1, §5.1, §7.1/7.2, §9.5/9.6) |
+| draft-ietf-oauth-identity-assertion-authz-grant **-06** (31 Oct 2026; pinned, not a floating latest version) | `https://www.ietf.org/archive/id/draft-ietf-oauth-identity-assertion-authz-grant-06.txt`, sha256 `1699586519ecb5333fb48ee0443f57d56e95f0b745e25b70e925fb85a6efcfc0` | Normative basis for all checks (§3.1, §4.3, §4.3.3, §4.3.4(.3), §4.4.1, §5.1, §7.1/7.2, §9.5/9.6) |
 | draft -04 (21 May 2026) | sha256 `a59c1dffc0b5e59d1bd541276c6948eb9191f3b83685be5810a32e63effb4653` | Comparison only (see below) |
 | RFC 8693 §2.2.1/§2.2.2, RFC 7523 §3, RFC 7521 §5.2, RFC 8414 §3.3, RFC 9728 §3.3, RFC 8725 §3.11, RFC 6749 §5.1/§5.2 | published RFCs | Response/error rules and Resource AS processing |
 | MCP Enterprise-Managed Authorization, stable `2026-07-28` | `modelcontextprotocol/ext-auth@15ca394e00a66434520b9ade26294999295a43ae` `specification/stable/enterprise-managed-authorization/2026-07-28/enterprise-managed-authorization.mdx` | `resource` = MCP server resource, access token audience-restricted to it, client_secret_basic, `authorization_grant_profiles_supported` |
@@ -83,10 +87,12 @@ The MCP EMA stable profile (2026-07-28) links -04; this check pins -06. The diff
 | Multiple `audience` values | not addressed | §4.3.3 MUST `invalid_request` | `invalid_request` |
 | Unknown audience / ungoverned resource | not addressed | §4.3.3 MUST `invalid_target` | `invalid_target` |
 | Client not authorized for a trusted audience | not addressed | §4.3.4.3 profiles `access_denied` (but "any OAuth error code MAY be returned") | `access_denied` **or** `invalid_target` accepted; a mismatch with the profile is recorded as a note |
-| Tokens issued for other purposes as subject | not explicit | §4.3.3 MUST NOT accept access tokens, ID-JAGs or client assertions as identity assertions | enforced |
-| `scope` semantics | "scopes at the Resource Server" | §4.3: Resource AS meaning, not OIDC; §4.3.3 MUST include granted values | `exchange.scope-semantics`: a separate check, so it can't mask the core flow |
+| Tokens issued for other purposes as subject | requires assertion validation; RFC 8693 §2.1 requires validation for the indicated token type | §4.3.3 explicitly MUST NOT accept access tokens, ID-JAGs or client assertions as identity assertions | enforced; the explicit token-purpose rule is a -06 addition |
+| `scope` semantics | §4.3.3 MUST include granted values; §4.3.4 response scope REQUIRED if changed | same requirements, with clearer Resource AS scope namespace wording in §4.3 | common-baseline check; does not require granting `mcp:tools`, only consistent disclosure or `invalid_scope` |
 
-Checks are never relaxed to fit an implementation. Where -06 says "MAY return any code", the check accepts more than one code and says so explicitly.
+The error-code checks follow RFC 8693 §2.2.2's specific `MUST invalid_request` for invalid subject tokens and draft-06 §4.3.4.3's reference to it. Both documents also contain general language permitting other error codes, and -04 gives a contradictory non-normative `invalid_grant` example. The three failures here are error-code interoperability discrepancies: the invalid subjects were rejected, not accepted. For valid subjects denied by target policy, the harness accepts `access_denied` or `invalid_target` and records the profile difference as a note.
+
+Fixture policies are separate from issuer requirements: single-use `jti`, 30 seconds of clock leeway, the supported signing algorithms, and the one-resource/client mapping are local test choices. The `mcp:tools` string is a fixture scope, not a standardized scope that an IdP must grant. Client B shares client A's signing key; its independently verified token is bound to client B, eliminating an untrusted-key confound in the wrong-client probe.
 
 ## Reuse when combining the three MCP branches
 
