@@ -78,8 +78,8 @@ class TestPromptStage(APIFlowTestCase):
         password2_prompt = Prompt.objects.create(
             name=generate_id(),
             field_key="password2_prompt",
-            label="PASSWORD_LABEL",
-            type=FieldTypes.PASSWORD,
+            label="PASSWORD_VIEWABLE",
+            type=FieldTypes.PASSWORD_VIEWABLE,
             required=True,
             placeholder="PASSWORD_PLACEHOLDER",
             initial_value="supersecurepassword",

@@ -27,6 +27,8 @@ pub enum PromptTypeEnum {
     Email,
     #[serde(rename = "password")]
     Password,
+    #[serde(rename = "password_viewable")]
+    PasswordViewable,
     #[serde(rename = "number")]
     Number,
     #[serde(rename = "checkbox")]
@@ -67,6 +69,7 @@ impl std::fmt::Display for PromptTypeEnum {
             Self::Username => write!(f, "username"),
             Self::Email => write!(f, "email"),
             Self::Password => write!(f, "password"),
+            Self::PasswordViewable => write!(f, "password_viewable"),
             Self::Number => write!(f, "number"),
             Self::Checkbox => write!(f, "checkbox"),
             Self::RadioButtonGroup => write!(f, "radio-button-group"),
