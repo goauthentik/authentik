@@ -152,6 +152,14 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             rows = rows.filter(created_at__lte=logged_in_at)
         rows.delete()
 
+    def _row_matches(self, row: UserOffboarding, due_at: datetime) -> bool:
+        return (row.scheduled_at, row.action, row.revoke_sessions, row.revoke_tokens) == (
+            due_at,
+            self.action,
+            self.revoke_sessions,
+            self.revoke_tokens,
+        )
+
     def _update_offboarding(self, row: UserOffboarding, due_at: datetime):
         row.rule = self
         row.scheduled_at = due_at
@@ -315,12 +323,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             row.delete()
             return False, False
         rewarn = due_at < row.scheduled_at or row.action != self.action
-        if (row.scheduled_at, row.action, row.revoke_sessions, row.revoke_tokens) != (
-            due_at,
-            self.action,
-            self.revoke_sessions,
-            self.revoke_tokens,
-        ):
+        if not self._row_matches(row, due_at):
             self._update_offboarding(row, due_at)
         return True, rewarn
 
@@ -338,12 +341,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                     if self.enabled
                     else None
                 )
-                if due_at is not None and (
-                    row.scheduled_at,
-                    row.action,
-                    row.revoke_sessions,
-                    row.revoke_tokens,
-                ) == (due_at, self.action, self.revoke_sessions, self.revoke_tokens):
+                if due_at is not None and self._row_matches(row, due_at):
                     continue
                 # Re-read changed rows under the lock before reconciling them.
                 with transaction.atomic():
@@ -379,12 +377,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 due_at = self._pending_due_at(row, in_scope=row.user_id in eligible)
                 if due_at is None:
                     yield "removed", row, None
-                elif (row.scheduled_at, row.action, row.revoke_sessions, row.revoke_tokens) != (
-                    due_at,
-                    self.action,
-                    self.revoke_sessions,
-                    self.revoke_tokens,
-                ):
+                elif not self._row_matches(row, due_at):
                     yield "updated", row, due_at
         for batch in batched(
             self._foreign_rows()
@@ -394,22 +387,26 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             CHUNK_SIZE,
             strict=False,
         ):
-            eligible = self._eligible_user_ids([row.user_id for row in batch])
-            for row in batch:
-                rank = self.rank(row.user)
-                if rank < self.row_rank(row) and row.user_id in eligible:
+            ranked = [(row, self.rank(row.user)) for row in batch]
+            ranked = [(row, rank) for row, rank in ranked if rank < self.row_rank(row)]
+            if not ranked:
+                continue
+            eligible = self._eligible_user_ids([row.user_id for row, _ in ranked])
+            for row, rank in ranked:
+                if row.user_id in eligible:
                     yield "taken_over", row, rank[0]
 
     def _tighten_foreign_rows(self):
         """Take over other rules' pending rows that this rule outranks."""
         rows = self._foreign_rows().select_related("user", "user__activity")
         for batch in batched(rows.iterator(chunk_size=CHUNK_SIZE), CHUNK_SIZE, strict=False):
-            eligible = self._eligible_user_ids([row.user_id for row in batch])
-            for row in batch:
+            ranked = [(row, self.rank(row.user)) for row in batch]
+            ranked = [(row, rank) for row, rank in ranked if rank < self.row_rank(row)]
+            if not ranked:
+                continue
+            eligible = self._eligible_user_ids([row.user_id for row, _ in ranked])
+            for row, rank in ranked:
                 if row.user_id not in eligible:
-                    continue
-                rank = self.rank(row.user)
-                if rank >= self.row_rank(row):
                     continue
                 with transaction.atomic():
                     locked = (
