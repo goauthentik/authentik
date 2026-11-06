@@ -1,4 +1,4 @@
-import { AkAttributeView } from "./ak-attribute-view.component.js";
+import { AkAttributeView } from "./AttributeView/AttributeView.component";
 
 export { AkAttributeView };
 

@@ -1,11 +1,10 @@
-import "./ak-attribute-view";
-
+import "../ak-attribute-view";
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
 
 import { html } from "lit";
 
 const meta = {
-    title: "Element / Attribute View",
+    title: "Elements / <ak-attribute-view>",
     component: "ak-attribute-view",
     tags: ["autodocs"],
     argTypes: {

@@ -6,14 +6,19 @@ export const styles = css`
         font-family: var(--pf-global--FontFamily--monospace, "monospace");
     }
 
+    pre {
+        font-family: var(--pf-global--FontFamily--monospace, "monospace");
+        margin-left: var(--pf-global--spacer--xl);
+        margin-top: 0;
+    }
+
     .collapsable::before {
-        display: inline-flex;
+        display: grid;
         font-size: var(--pf-global--FontSize--sm);
         content: "▶";
         width: 1.2em;
-        height: 1.2em;
-        align-items: center;
-        justify-content: center;
+        height: 100%;
+        place-items: center;
         transition: var(--pf-global--Transition);
         transform: rotate(90deg);
     }
@@ -26,6 +31,10 @@ export const styles = css`
         display: inline-flex;
         align-items: flex-start;
         color: var(--pf-global--Color--100);
+    }
+
+    [part="tree-item"] {
+        white-space: nowrap;
     }
 
     ul {
@@ -50,9 +59,10 @@ export const styles = css`
         content: "";
         border-left: 1px solid #bee1f4;
         position: absolute;
+        width: 1.2em;
         top: 0.2rem;
         bottom: 0.2rem;
-        left: -0.6;
+        transform: translateX(33.333%);
     }
 
     ul ul:hover::before {

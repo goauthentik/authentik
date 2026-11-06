@@ -1,6 +1,28 @@
 import { css } from "lit";
 
 export const styles = css`
+    [part="toolbar"] {
+        display: flex;
+        flex-direction: row;
+        gap: var(--ak-c-attribute-view__toolbar--Gap);
+    }
+
+    [part="copy-button"] {
+        display: grid;
+        place-items: center;
+    }
+
+    [part="copy-button"] svg {
+        height: 1em;
+        width: fit-content;
+    }
+
+    pre {
+        font-family: var(--pf-global--FontFamily--monospace, "monospace");
+
+        text-wrap: wrap;
+    }
+
     .row {
         display: flex;
         align-items: baseline;
