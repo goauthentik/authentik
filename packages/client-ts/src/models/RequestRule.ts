@@ -10,10 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { NotificationModeEnum } from "./NotificationModeEnum";
-import { NotificationModeEnumFromJSON, NotificationModeEnumToJSON } from "./NotificationModeEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { NotificationModeEnum } from "./NotificationModeEnum.js";
+import {
+    NotificationModeEnumFromJSON,
+    NotificationModeEnumToJSON,
+} from "./NotificationModeEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * Mixin to validate that a valid enterprise license

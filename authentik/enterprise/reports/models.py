@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -64,7 +64,9 @@ class DataExport(SerializerModel):
         self.completed = True
         self.save()
 
-        message = _(f"{model_verbose_name} export generated successfully")
+        message = _("{model_verbose_name} export generated successfully").format(
+            model_verbose_name=str(model_verbose_name)
+        )
         e = Event.new(
             EventAction.EXPORT_READY,
             message=message,
@@ -76,7 +78,7 @@ class DataExport(SerializerModel):
             severity=NotificationSeverity.NOTICE,
             body=message,
             hyperlink=self.file_url,
-            hyperlink_label=_("Download"),
+            hyperlink_label=str(_("Download")),
             user=self.requested_by,
         )
 

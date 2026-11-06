@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { StaticDeviceToken } from "./StaticDeviceToken";
-import { StaticDeviceTokenFromJSON } from "./StaticDeviceToken";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { StaticDeviceToken } from "./StaticDeviceToken.js";
+import { StaticDeviceTokenFromJSON } from "./StaticDeviceToken.js";
 
 /**
  * Serializer for static authenticator devices

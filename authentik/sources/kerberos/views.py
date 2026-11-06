@@ -1,8 +1,8 @@
 """Kerberos source SPNEGO views"""
 
 from base64 import b64decode, b64encode
+from typing import TYPE_CHECKING
 
-import gssapi
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponse
@@ -19,6 +19,9 @@ from authentik.sources.kerberos.models import (
     Krb5ConfContext,
     UserKerberosSourceConnection,
 )
+
+if TYPE_CHECKING:
+    import gssapi
 
 LOGGER = get_logger()
 
@@ -83,6 +86,8 @@ class SPNEGOView(View):
 
     def get_server_ctx(self, key: str) -> gssapi.sec_contexts.SecurityContext | None:
         """Get GSSAPI server context from cache or create it"""
+        import gssapi
+
         server_creds = self.source.get_gssapi_creds()
         if server_creds is None:
             return None
@@ -104,6 +109,8 @@ class SPNEGOView(View):
     # pylint: disable=too-many-return-statements
     def dispatch(self, request, *args, **kwargs) -> HttpResponse:
         """Process SPNEGO request"""
+        import gssapi
+
         self.source: KerberosSource = get_object_or_404(
             KerberosSource,
             slug=kwargs.get("source_slug", ""),

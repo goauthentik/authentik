@@ -12,6 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.providers.saml.api.providers import SAMLMetadataSerializer
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
@@ -62,6 +63,11 @@ class SAMLSourceSerializer(SourceSerializer):
             "signed_assertion",
             "signed_response",
         ]
+        extra_kwargs = {
+            "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "verification_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "encryption_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+        }
 
 
 class SAMLSourceViewSet(UsedByMixin, ModelViewSet):

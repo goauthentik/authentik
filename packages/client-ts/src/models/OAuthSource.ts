@@ -10,28 +10,31 @@
  * Do not edit the class manually.
  */
 
-import type { AuthorizationCodeAuthMethodEnum } from "./AuthorizationCodeAuthMethodEnum";
+import type { AuthorizationCodeAuthMethodEnum } from "./AuthorizationCodeAuthMethodEnum.js";
 import {
     AuthorizationCodeAuthMethodEnumFromJSON,
     AuthorizationCodeAuthMethodEnumToJSON,
-} from "./AuthorizationCodeAuthMethodEnum";
-import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum";
+} from "./AuthorizationCodeAuthMethodEnum.js";
+import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum.js";
 import {
     GroupMatchingModeEnumFromJSON,
     GroupMatchingModeEnumToJSON,
-} from "./GroupMatchingModeEnum";
-import type { PKCEMethodEnum } from "./PKCEMethodEnum";
-import { PKCEMethodEnumFromJSON, PKCEMethodEnumToJSON } from "./PKCEMethodEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { ProviderTypeEnum } from "./ProviderTypeEnum";
-import { ProviderTypeEnumFromJSON, ProviderTypeEnumToJSON } from "./ProviderTypeEnum";
-import type { SourceType } from "./SourceType";
-import { SourceTypeFromJSON } from "./SourceType";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+} from "./GroupMatchingModeEnum.js";
+import type { PKCEMethodEnum } from "./PKCEMethodEnum.js";
+import { PKCEMethodEnumFromJSON, PKCEMethodEnumToJSON } from "./PKCEMethodEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { ProviderTypeEnum } from "./ProviderTypeEnum.js";
+import { ProviderTypeEnumFromJSON, ProviderTypeEnumToJSON } from "./ProviderTypeEnum.js";
+import type { SourceType } from "./SourceType.js";
+import { SourceTypeFromJSON } from "./SourceType.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON } from "./ThemedUrls.js";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum.js";
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from "./UserMatchingModeEnum.js";
 
 /**
  * OAuth Source Serializer

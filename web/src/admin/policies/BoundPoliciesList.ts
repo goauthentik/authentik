@@ -5,8 +5,10 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#admin/users/UserForm";
 import "#components/ak-status-label";
 import "#elements/Tabs";
+import "#elements/Label";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
@@ -23,7 +25,7 @@ import { PolicyBindingForm, PolicyBindingNotice } from "#admin/policies/PolicyBi
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { UserForm } from "#admin/users/UserForm";
 
-import { ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
+import { EventActions, ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
@@ -55,6 +57,12 @@ export function getPolicyUserGroupRow(item: PolicyBinding): SlottedTemplateResul
     return html`${label}`;
 }
 
+export const defaultAllowedTypes = [
+    PolicyBindingCheckTarget.Policy,
+    PolicyBindingCheckTarget.Group,
+    PolicyBindingCheckTarget.User,
+];
+
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends Table<T> {
     public static styles: CSSResult[] = [
@@ -74,11 +82,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     public policyEngineMode: string = "";
 
     @property({ type: Array })
-    public allowedTypes: PolicyBindingCheckTarget[] = [
-        PolicyBindingCheckTarget.Policy,
-        PolicyBindingCheckTarget.Group,
-        PolicyBindingCheckTarget.User,
-    ];
+    public allowedTypes: PolicyBindingCheckTarget[] = defaultAllowedTypes;
 
     @property({ type: Array })
     public typeNotices: PolicyBindingNotice[] = [];
@@ -112,6 +116,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         [msg("Order"), "order"],
         [this.allowedTypesLabel],
         [msg("Enabled"), "enabled"],
+        [msg("Mode", { id: "policies.bindings.mode.label" })],
         [msg("Expiring"), "expires"],
         [msg("Timeout"), "timeout"],
         [msg("Actions"), null, msg("Row Actions")],
@@ -131,6 +136,32 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         }
 
         return null;
+    }
+
+    protected renderDryRunEventsButton(item: PolicyBinding): SlottedTemplateResult {
+        if (!item.dryRun) {
+            return nothing;
+        }
+
+        const bindingUuid = item.pk.replaceAll("-", "");
+
+        // prettier-ignore
+        const akqlQuery =
+            `action = "${EventActions.PolicyExecution}" and context.dry_run = True and context.binding.pk = "${bindingUuid}"`;
+
+        const label = msg("View dry-run results", {
+            id: "policies.bindings.dry-run.view-results.label",
+        });
+
+        return html`<a
+            class="pf-c-button pf-m-plain"
+            aria-label=${label}
+            href=${toAdminInterface("events/log", { q: akqlQuery })}
+        >
+            <pf-tooltip position="top" content=${label}>
+                <i class="fas fa-vial" aria-hidden="true"></i>
+            </pf-tooltip>
+        </a>`;
     }
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
@@ -202,6 +233,13 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`<pre>${item.order}</pre>`,
             html`${getPolicyUserGroupRow(item)}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
+            item.dryRun
+                ? html`<ak-label color="pf-m-blue" icon="fa-vial">
+                      ${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                  </ak-label>`
+                : html`<ak-label icon="fa-shield-alt">
+                      ${msg("Enforced", { id: "policies.bindings.enforced.label" })}
+                  </ak-label>`,
             item.expiring ? Timestamp(item.expires) : "-",
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
@@ -219,6 +257,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     model: ModelEnum.AuthentikPoliciesPolicybinding,
                     objectPk: item.pk,
                 })}
+                ${this.renderDryRunEventsButton(item)}
             </div>`,
         ];
     }

@@ -2,8 +2,7 @@ import { LanguageCookieName, persistLocale, readPersistedLocale } from "#common/
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// `persistLocale` reads the web base path from the global; stub it so the test
-// does not depend on a rendered `window.authentik`.
+// `persistLocale` reads the web base path from the global, so stub it.
 vi.mock("#common/global", () => ({
     globalAK: () => ({ api: { relBase: "/" } }),
 }));

@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Group } from "./Group";
-import { GroupFromJSON } from "./Group";
-import type { SeverityEnum } from "./SeverityEnum";
-import { SeverityEnumFromJSON, SeverityEnumToJSON } from "./SeverityEnum";
+import type { Group } from "./Group.js";
+import { GroupFromJSON } from "./Group.js";
+import type { SeverityEnum } from "./SeverityEnum.js";
+import { SeverityEnumFromJSON, SeverityEnumToJSON } from "./SeverityEnum.js";
 
 /**
  * NotificationRule Serializer

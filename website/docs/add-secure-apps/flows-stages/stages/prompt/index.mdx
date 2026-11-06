@@ -60,7 +60,7 @@ For **Radio Button Group** and **Dropdown**, the placeholder defines the valid c
 
 Some field types also have special behavior:
 
-- **Username** checks for uniqueness.
+- **Username** checks for uniqueness. The check is case-sensitive; to also reject usernames that differ only by case, see [Ensure unique usernames regardless of case](../../../../customize/policies/types/expression/unique_username.mdx).
 - **Password** fields within the same stage must all match.
 - **Hidden** and **Static** use their configured values without user editing.
 - **Radio Button Group** and **Dropdown** only allow values from the defined choice set.

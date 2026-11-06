@@ -96,10 +96,8 @@ class AgentViewSet(
 
     class AgentCreateSerializer(PassiveSerializer):
 
-        # Omitted: an agent for the requesting user (self-service). Explicitly null: a
-        # system agent, which needs the admin permission.
         parent = PrimaryKeyRelatedField(
-            queryset=User.objects.all(), required=False, allow_null=True
+            queryset=User.objects.all(), required=False, default=None, allow_null=True
         )
         label = CharField(required=False, allow_blank=True)
         expiring = BooleanField(required=False, default=False)
@@ -114,7 +112,7 @@ class AgentViewSet(
     @validate(AgentCreateSerializer)
     @enterprise_action
     def create(self, request: Request, body: AgentCreateSerializer) -> Response:
-        parent: User | None = body.validated_data.get("parent", request.user)
+        parent: User | None = body.validated_data.get("parent")
         self_service_perm = request.user.has_perm("authentik_agents.add_agent_self_service")
         admin_perm = request.user.has_perm("authentik_agents.add_agent")
         # Self-service = creating an agent for yourself; provisioning for another user is an

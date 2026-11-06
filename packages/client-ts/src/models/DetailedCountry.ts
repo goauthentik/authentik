@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { CountryCodeEnum } from "./CountryCodeEnum";
-import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum";
+import type { CountryCodeEnum } from "./CountryCodeEnum.js";
+import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum.js";
 
 /**
  * @export
