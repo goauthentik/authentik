@@ -67,7 +67,7 @@ import {
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -165,13 +165,6 @@ export class AdminInterface extends WithLicenseSummary(
     protected drawerListener = (event: AKDrawerChangeEvent) => {
         this.drawer = event.drawer;
         persistDrawerParams(event.drawer);
-    };
-
-    @listen(LOCALE_STATUS_EVENT, { target: window })
-    localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (event.detail.status === "ready") {
-            this.requestUpdate();
-        }
     };
 
     //#endregion

@@ -3,7 +3,6 @@ import { formatLocaleDisplayNames } from "#common/ui/locale/format";
 import { applyLocaleChange } from "#common/ui/locale/persist";
 
 import { AKElement } from "#elements/Base";
-import { listen } from "#elements/decorators/listen";
 import Styles from "#elements/locale/ak-locale-select.css";
 import { LocaleOptions } from "#elements/locale/utils";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
@@ -13,9 +12,9 @@ import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { guard } from "lit-html/directives/guard.js";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
-import { html, PropertyValues } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { customElement } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 @customElement("ak-locale-select")
@@ -27,7 +26,7 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
 
     public static readonly styles = [Styles];
 
-    #previousActiveLanguageTag: TargetLanguageTag | null = null;
+    #selectRef = createRef<HTMLSelectElement>();
 
     //#region Listeners
 
@@ -46,39 +45,6 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
         if (nextActiveLanguageTag === this.activeLanguageTag) return;
 
         applyLocaleChange(nextActiveLanguageTag);
-    };
-
-    @listen(LOCALE_STATUS_EVENT, { target: window })
-    protected localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (!this.ready || event.detail.status !== "ready") {
-            return;
-        }
-
-        const { readyLocale } = event.detail;
-
-        this.requestUpdate(
-            "activeLanguageTag",
-            this.#previousActiveLanguageTag,
-            undefined,
-            true,
-            readyLocale,
-        );
-    };
-
-    /**
-     * An event listener which only reacts to the locale being ready. This is used to delay showing
-     * the select until the locale is loaded, preventing a flash of unlocalized content and avoiding
-     * expensive localization operations during initial render.
-     */
-    protected localeReadyStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (event.detail.status !== "ready") {
-            return;
-        }
-
-        if (!this.ready) {
-            this.ready = true;
-            window.clearTimeout(this.#readyTimeout);
-        }
     };
 
     /**
@@ -101,57 +67,9 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
 
     //#endregion
 
-    //#region Lifecycle
-
-    /**
-     * Indicates whether the locale select is ready to be displayed.
-     *
-     * @remarks
-     *
-     *   This avoids showing the select before the locale is initialized,
-     *   preventing a flash of unlocalized content and avoiding expensive localization
-     *   operations during initial render.
-     */
-    @state()
-    protected ready = false;
-
-    #readyTimeout = -1;
-    #selectRef = createRef<HTMLSelectElement>();
-
-    public override connectedCallback(): void {
-        super.connectedCallback();
-
-        window.addEventListener(LOCALE_STATUS_EVENT, this.localeReadyStatusListener, {
-            once: true,
-            passive: true,
-        });
-    }
-
-    public override disconnectedCallback(): void {
-        super.disconnectedCallback();
-        window.clearTimeout(this.#readyTimeout);
-        window.removeEventListener(LOCALE_STATUS_EVENT, this.localeReadyStatusListener);
-    }
-
-    public override firstUpdated(changed: PropertyValues<this>): void {
-        super.firstUpdated(changed);
-
-        // Fallback to ready if the network is taking too long.
-        this.#readyTimeout = window.setTimeout(() => {
-            this.ready = true;
-            window.removeEventListener(LOCALE_STATUS_EVENT, this.localeReadyStatusListener);
-        }, 250);
-    }
-
-    //#endregion
-
     //#region Render
 
     protected override render() {
-        if (!this.ready) {
-            return null;
-        }
-
         const activeLocaleTag = this.activeLanguageTag;
         const debug = this.can(CapabilitiesEnum.CanDebug);
 
