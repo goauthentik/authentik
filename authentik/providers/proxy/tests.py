@@ -2,6 +2,9 @@
 
 from json import loads
 
+from django.apps import apps
+from django.db.models.signals import post_save
+from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -183,3 +186,52 @@ class ProxyProviderTests(APITestCase):
         #     HTTP_AUTHORIZATION=f"Bearer {outpost.token.key}",
         # )
         # self.assertEqual(res.status_code, 200)
+
+
+class ProxySetDefaultsTests(TestCase):
+    """proxy_set_defaults reconciler tests"""
+
+    def test_proxy_set_defaults_skips_unchanged_providers(self):
+        """Steady-state reconciliation must not save every provider on startup."""
+        provider = ProxyProvider.objects.create(
+            name=generate_id(),
+            mode=ProxyMode.PROXY,
+            authorization_flow=create_test_flow(),
+            invalidation_flow=create_test_flow(),
+            external_host="http://localhost",
+            internal_host="http://localhost",
+        )
+        provider.set_oauth_defaults()
+        provider.save()
+
+        saves: list[int] = []
+
+        def on_save(instance, **_kwargs):
+            saves.append(instance.pk)
+
+        post_save.connect(on_save, sender=ProxyProvider, weak=False)
+        try:
+            apps.get_app_config("authentik_providers_proxy").proxy_set_defaults()
+        finally:
+            post_save.disconnect(on_save, sender=ProxyProvider)
+
+        self.assertEqual(saves, [])
+
+    def test_proxy_set_defaults_corrects_drift(self):
+        provider = ProxyProvider.objects.create(
+            name=generate_id(),
+            mode=ProxyMode.PROXY,
+            authorization_flow=create_test_flow(),
+            invalidation_flow=create_test_flow(),
+            external_host="http://localhost",
+            internal_host="http://localhost",
+        )
+        provider.set_oauth_defaults()
+        provider.save()
+        provider.client_type = ClientType.PUBLIC
+        provider.save(update_fields=["client_type"])
+
+        apps.get_app_config("authentik_providers_proxy").proxy_set_defaults()
+
+        provider.refresh_from_db()
+        self.assertEqual(provider.client_type, ClientType.CONFIDENTIAL)
