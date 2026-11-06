@@ -22,7 +22,13 @@
     margin-top: var(--ak-c-sidebar__item--MarginTop);
 }
 
-[part~="list-item"][aria-expanded="true"] {
+[part="subnav"] {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+[aria-expanded="true"] {
     --ak-c-sidebar__row__toggle-icon--Rotate: var(
         --ak-c-sidebar__row--m-expanded__toggle-icon--Rotate
     );
