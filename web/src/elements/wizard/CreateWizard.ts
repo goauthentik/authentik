@@ -259,7 +259,6 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
 
         if (!selectedType) {
             wizard.steps = nextSteps;
-            wizard.valid = false;
 
             return false;
         }
@@ -273,7 +272,6 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
         nextSteps.splice(idx, 0, ...selectedSteps);
 
         wizard.steps = nextSteps;
-        wizard.valid = true;
 
         return wizard.navigateNext();
     };
