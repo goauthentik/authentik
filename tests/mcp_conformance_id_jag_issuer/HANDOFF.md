@@ -1,87 +1,105 @@
-# HANDOFF: test-mcp-conformance (id-jag-issuer)
+# HANDOFF: ID-JAG issuer acceptance on Jens's branch
 
 I cannot create issues or PRs, but I can help you write the content for them.
 
-## Proposed PR
+## Branch and evidence
 
-**Title:** `tests: add MCP conformance acceptance check for ID-JAG issuance (id-jag-issuer)`
+- Working branch: `t3/id-jag-issuer`; nothing pushed, no issue/PR created, no message or comment sent.
+- Target: Jens/BeryJu's [PR #26973](https://github.com/goauthentik/authentik/pull/26973), branch `providers/oauth2/id-jag`.
+- Exact feature base, verified through GitHub metadata and a fresh fetch: `dce0a00534cb51ebe24d6a8f96ef3bc868006200`.
+- Original tests: `5231141cff0053368e04e5f57d421ee2797701fa` and `f0b65c700b388fa9c384a3084971d8ad46063e7d`, based on `eb3832a8185452152c5cd544635a8413716014ce`.
+- Backup ref: `backup/id-jag-issuer-before-jens-rebase-20261106`, pointing to `f0b65c700b388fa9c384a3084971d8ad46063e7d`.
+- Rebase replayed exactly those two commits, without conflicts, as `951d0780fb` and `38a417be71`; `git range-diff` confirms unchanged patches. Jens's source branch was not altered.
+- Exact test/runner SHA validated: **`416e64113f9741e726a0c65b9eeb36f639b11ee0`**. Later changes only update this handoff, README, and repository guidance; the final branch HEAD is available with `git rev-parse HEAD`.
+- Final live report generated **2026-11-06 13:44:02 UTC**: **15 PASS / 6 FAIL / 0 BLOCKED / 0 ERROR**, all 21 expected check IDs present exactly once. Exit code 1 is intentional.
+- Local evidence (gitignored): [report](results/validated-rebase/report.md), [structured diagnostics](results/validated-rebase/report.json), [JUnit](results/validated-rebase/checks.junit.xml), [Resource AS decisions](results/validated-rebase/resource_as.events.jsonl), [run log](results/validated-rebase-run.log), [artifact audit](results/artifact-audit.json).
 
-**Body:**
+The diff against Jens's exact head contains only tests, their workflow, and documentation. `pull_request:` has no base-branch filter, so a future PR targeting `providers/oauth2/id-jag` triggers the check.
 
-> Adds a standalone acceptance check, `test-mcp-conformance (id-jag-issuer)`, that exercises authentik as the IdP Authorization Server of draft-ietf-oauth-identity-assertion-authz-grant-06 (MCP Enterprise-Managed Authorization):
+## Fresh observed results and interpretation
+
+The complete real flow passes: login and code+PKCE, ID-JAG issuance, independent signature and claim verification using discovered JWKS, client binding at the separate Resource AS, JWT-bearer redemption, and an authenticated MCP `tools/call`. The check does not pass merely because invalid inputs are rejected. All negative cases have a successful issuance prerequisite.
+
+| Check | Observed on the tested feature head | Expected / classification |
+| --- | --- | --- |
+| `negative.access-token-as-subject` | HTTP 200, a new ID-JAG, when the actual SSO `access_token` is submitted with `subject_token_type=id_token` | Must reject the token-purpose mismatch. Explicit draft-06 §4.3.3 prohibition; RFC 8693 §2.1 already requires validation for the indicated token type. Security-relevant token confusion, not a fixture failure. The same end-user/client is used; this does not demonstrate cross-user escalation. |
+| `negative.wrong-client-id-token` | HTTP 400 `invalid_grant` | Expected `invalid_request` under RFC 8693 §2.2.2 and draft-06 §4.3.4.3. Token is rejected; this is an error-code discrepancy. Client B's signature is independently verified using client A's JWKS, and its audience is client B. |
+| `negative.tampered-id-token` | HTTP 400 `invalid_grant` after changing `sub` without re-signing | Expected `invalid_request` on the same basis. Invalid signature is rejected. |
+| `negative.id-jag-as-subject` | HTTP 400 `invalid_grant` for the issued ID-JAG labeled as an ID Token | Expected `invalid_request` on the same basis. This ID-JAG also has the Resource AS audience; this probe does not independently prove a token-type rejection rule. |
+| `negative.multiple-audiences` | HTTP 400 `invalid_target` for two audience parameters | Draft-06 §4.3.3 explicitly requires `invalid_request`. This is a -06-specific expectation; -04 does not define it and generic RFC 8693 allows multiple targets. |
+| `exchange.scope-semantics` | HTTP 200 for requested `mcp:tools`, with neither an ID-JAG `scope` claim nor a response `scope` | Both -04 and -06 §4.3.3/§4.3.4 and RFC 8693 §2.2.1 require consistent granted scopes and disclosure when changed. Granting no scopes is a policy choice; silently changing them is the defect. The harness accepts `invalid_scope` or a consistently disclosed grant/reduction, and does not demand that `mcp:tools` be granted. |
+
+**Common baseline versus draft changes.** The three subject-error checks use the specific RFC 8693 §2.2.2 `MUST invalid_request`, referenced explicitly in -06. RFC 8693 also permits other error codes “as appropriate”; -06 says any OAuth error code MAY be returned, while profiling this specific case. Draft-04 has a contradictory non-normative `invalid_grant` audience-validation example. These are interoperability findings under the suite's stated reading, not three token-acceptance vulnerabilities. The scope disclosure requirement exists in both drafts. The explicit token-purpose prohibition and multiple-audience error rule are additions in -06. This suite therefore must not be presented as an unqualified test of MCP EMA's linked -04 profile.
+
+**Source inspection, without production edits.** `token/token_exchange.py::validate_id_token` validates a provider signature and client audience, then matches `jti` against the stored ID Token associated with an AccessToken. It does not check the submitted token's purpose or exact identity as that stored ID Token, consistent with the observed access-token confusion. Its invalid-subject `invalid_grant` branch is also present in the original `eb3832a818` token-exchange implementation; these error-code findings are not claimed as newly introduced regressions. `resolve_id_jag_audience` returns `invalid_target` for any audience count other than one. `token/base.py::check_scopes` intersects requested scopes with provider ScopeMappings; `views/token.py::create_id_jag_response` omits both an empty scope claim and the response scope. These explain the observations, without requiring a policy to grant an unconfigured scope.
+
+**Fixture policy and informational notes.** Single-use `jti`, 30 seconds of clock leeway, the supported algorithms, test client registrations, and the `mcp:tools` scope are local fixture choices. They are not reported as feature defects. `invalid_target` for a trusted audience denied to this client passes with a note about -06's profiled `access_denied`. Missing `identity_chaining_requested_token_types_supported`, and missing `email`/`aud_sub`, are notes, not failures. Strict RFC 8414 discovery without the trailing slash returns 404; the fixture records its successful trailing-slash lookup.
+
+## Harness corrections
+
+- The original wrong-client probe used a different signing key and could test only signature rejection. Both clients now share a key, with independent verification of client B's token and a different audience before negative probes run. Failure to obtain/verify that token is a setup failure and blocks dependent checks.
+- `run-local.sh` now generates its own ephemeral secret key and chooses a unique `AUTHENTIK_ENV`; it does not load `local.env.yml`. Database host, port, user, password, name, and test name point to its newly created disposable container. Neither the developer database nor its credentials were used.
+- Local runs preserve earlier diagnostics in separate result directories and refuse an explicit directory already containing a report, avoiding stale-report confusion after a failed run.
+- The local runner and workflow suppress captured production request logs in pytest failure output/JUnit. Structured token/secret response fields remain redacted. The artifact audit found no compact JWTs, unredacted structured token/secret fields, or private-key blocks.
+- No production behavior or conformance expectation was changed. The first corrected run at `c9ba499294eb4a53324a46bef7e549f245f3ba39` also produced 15 PASS / 6 FAIL; the final run validates the result-directory correction as well.
+
+## Validation and runnable commands
+
+The final live command was:
+
+```bash
+UV_CACHE_DIR=/tmp/id-jag-uv-cache UV_NO_SYNC=1 \
+  MCP_CONFORMANCE_RESULTS_DIR="$PWD/tests/mcp_conformance_id_jag_issuer/results/validated-rebase" \
+  tests/mcp_conformance_id_jag_issuer/run-local.sh \
+  > tests/mcp_conformance_id_jag_issuer/results/validated-rebase-run.log 2>&1
+```
+
+For a new run, omit `MCP_CONFORMANCE_RESULTS_DIR` to get a fresh timestamped directory, or select another empty directory. The runner also executes the independent self-check. This run used the existing `.venv` without syncing dependencies: Python 3.14.10, Django 5.2.19, pytest 9.2.0. It is local execution, not a lockfile-fresh CI environment.
+
+- Independent `selfcheck_resource_as.py`: **16 tests, OK**, final run 2.228 seconds, before starting the Django acceptance test. Requires loopback socket permissions but no database.
+- Black check, Ruff, strict mypy: passed on all five Python files.
+- Bandit at the repository's `-iii` confidence threshold: passed (lower-confidence findings are excluded, not claimed absent).
+- `bash -n run-local.sh`, `git diff --check`: passed.
+- actionlint 1.7.7: only its outdated unknown `ubuntu-26.04` runner-label diagnostic. Passed when ignoring that exact diagnostic. No workflow syntax/expression finding remains.
+- Collection: general `tests` collects **92** tests, none from this suite; this directory collects **0**; explicit `acceptance_id_jag.py` collects **1**.
+- `make lint-spellcheck`: unavailable locally (`cspell: command not found`; Make also reported the sandboxed default uv-cache lock). No spelling result is claimed; see [log](results/spellcheck.log).
+- Both local acceptance runs used disposable `postgres:16` containers on random loopback ports; cleanup was confirmed. Fresh logs show no `local.env.yml` load.
+- **GitHub Actions has never run this workflow.** Hosted runner setup, artifact upload, and Codecov behavior remain unvalidated. Nothing was pushed.
+
+Reproduce static checks without loading developer configuration:
+
+```bash
+export AUTHENTIK_ENV=idjag-static-check AUTHENTIK_SECRET_KEY=idjag-static-check-only
+export AUTHENTIK_LOG_LEVEL=warning
+uv run python tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
+uv run black --check tests/mcp_conformance_id_jag_issuer
+uv run ruff check tests/mcp_conformance_id_jag_issuer
+uv run mypy --strict tests/mcp_conformance_id_jag_issuer
+uv run bandit -c pyproject.toml -iii -r tests/mcp_conformance_id_jag_issuer
+uv run pytest --collect-only tests -o addopts=''
+uv run pytest --collect-only tests/mcp_conformance_id_jag_issuer -o addopts=''
+uv run pytest --collect-only tests/mcp_conformance_id_jag_issuer/acceptance_id_jag.py -o addopts=''
+bash -n tests/mcp_conformance_id_jag_issuer/run-local.sh
+```
+
+The directory-only collection command exits 5 because zero collected tests is intentional. The static example key is test-only; the live runner overwrites it with a generated value. The primary draft files were downloaded again and their SHA-256 hashes match README.md. Consulted: [-06 §4.3.3](https://www.ietf.org/archive/id/draft-ietf-oauth-identity-assertion-authz-grant-06.txt), §4.3.4 and §4.3.4.3; the corresponding [-04 sections](https://www.ietf.org/archive/id/draft-ietf-oauth-identity-assertion-authz-grant-04.txt); [RFC 8693 §2.1, §2.2.1 and §2.2.2](https://www.rfc-editor.org/rfc/rfc8693.html#section-2.2.2).
+
+## Proposed draft PR
+
+**Target branch:** `providers/oauth2/id-jag` (not `main`).
+
+**Title:** `tests: exercise ID-JAG issuance through independent MCP redemption`
+
+**Description:**
+
+> Adds a live, test-only acceptance check against the ID-JAG issuance branch: real login and code+PKCE, ID-JAG exchange, independent JWKS signature/claim verification and JWT-bearer redemption, then a protected MCP call. The full positive flow passes locally on `dce0a00534cb51ebe24d6a8f96ef3bc868006200`.
 >
-> 1. A real login through the flow executor API, then authorization code + PKCE to get an ID Token.
-> 2. Token exchange `requested_token_type=urn:ietf:params:oauth:token-type:id-jag` at authentik's token endpoint.
-> 3. An independent Resource AS fixture verifies the ID-JAG. It is stdlib + `cryptography` only and discovers keys from authentik's issuer, then redeems the ID-JAG via RFC 7523 jwt-bearer.
-> 4. The resulting access token is used at a protected test MCP resource.
-> 5. Negative cases cover wrong-client and tampered subject tokens, access tokens and ID-JAGs presented as subject tokens, unknown, multiple and unauthorized audiences, an ungoverned resource, and missing client auth.
+> The check intentionally remains red: 15 PASS / 6 FAIL. It exposes access-token-as-ID-Token acceptance, three invalid-subject error-code discrepancies, a multiple-audience error-code mismatch, and silent scope reduction. It pins draft-06; MCP EMA links draft-04. HANDOFF.md separates common scope/error requirements, the -04 error example ambiguity, -06 additions, and fixture policies so these results can guide implementation decisions without overstating -04 conformance failures.
 >
-> The check is test-only and contains no production changes. It is intentionally red on `main` until ID-JAG issuance lands (see goauthentik/authentik#26973), and is meant to be carried onto the feature branch. It must not be made required before then. Test files are not named `test_*.py`, so general test discovery doesn't pick them up. Details, spec provenance and the -04/-06 differences are in `tests/mcp_conformance_id_jag_issuer/README.md`.
->
-> 🤖 Generated with [Claude Code](https://claude.com/claude-code)
+> Validated locally with a disposable PostgreSQL database and 16 passing independent fixture self-checks; Python formatting/lint/type checks and collection checks passed. No GitHub Actions run yet. The workflow runs for PRs targeting feature branches and the suite stays outside general test discovery. No production fixes are included. Keep this draft/check non-required while the implementation and intended spec baseline are reviewed.
 
-## Files
+A draft PR against Jens's branch makes sense as an executable gap report. It should be reviewed with the stated draft baseline and known error-example ambiguity, not presented as six security vulnerabilities or a complete OAuth/MCP certification.
 
-* `.github/workflows/ci-mcp-id_jag_issuer.yml`: `pull_request` (any base branch) + `workflow_dispatch`
-* `tests/mcp_conformance_id_jag_issuer/`:
-  * `acceptance_id_jag.py`: the live authentik harness
-  * `resource_as.py`: the independent Resource AS + MCP resource fixture
-  * `selfcheck_resource_as.py`: fixture controls and rejection matrix
-  * `checks.py`: catalog, strict verdict and report writers
-  * `run-local.sh`: local runner with a disposable Postgres
-  * `README.md`, `HANDOFF.md`, `.gitignore`, `__init__.py`
+## Remaining coverage limits
 
-## Expected current failure (actual result on `main` @ eb3832a818)
-
-The check fails meaningfully: 3 PASS, 2 FAIL, 16 BLOCKED, 0 ERROR.
-
-* `capability.agent-id-jag-config` **FAIL**: "enterprise Agent has no ID-JAG trust configuration (missing fields: applications, id_jag_audience, id_jag_client_id, id_jag_resources)". The fields are detected with `_meta.get_field`, so this is not an ImportError or FieldError.
-* `exchange.id-jag-issued` **FAIL**: authentik answers `HTTP 400 invalid_target` because main rejects the `resource` parameter. The exchange is still sent, so this is authentik's real protocol response.
-* `discovery.mcp-prm`, `discovery.idp-metadata`, `sso.id-token` **PASS**. Real SSO yields an ID Token that the independent verifier accepts against authentik's JWKS, so the harness itself works.
-* Everything downstream, including all negatives, is **BLOCKED**: no positive control means no meaningful negative. The observed response is still recorded for each.
-
-## Actual result against the feature (PR #26973 head dce0a005, scratch worktree, not committed)
-
-The test directory was copied onto a temporary detached worktree of the PR head and run there. That worktree has been removed. Result: 15 PASS, 6 FAIL.
-
-* **PASS:**
-  * `capability.agent-id-jag-config`
-  * discovery ×2 and `sso.id-token`
-  * `exchange.id-jag-issued`: `token_type=N_A`, `issued_token_type=id-jag`, `no-store`
-  * `assertion.jose`: `typ=oauth-id-jag+jwt`, RS256 signature verified independently
-  * `assertion.claims`: `aud` = Resource AS issuer, `client_id` = id at the Resource AS, `resource` exact, `sub` = SSO user, `act.sub` = system agent
-  * `assertion.not-a-bearer-token`
-  * `ras.client-binding`, `ras.redeem`, `mcp.access`
-  * `negative.unknown-audience`, `negative.resource-not-governed`, `negative.client-not-authorized-for-audience` (note: `invalid_target` rather than the -06-profiled `access_denied`), `negative.no-client-auth`
-* **FAIL** (real spec deviations in the PR, not harness problems):
-  1. `negative.access-token-as-subject`: **authentik issued an ID-JAG** when given its own *access token* labeled `subject_token_type=id_token`. draft-06 §4.3.3 says this MUST NOT be accepted. This is the most important finding. A likely cause, not yet confirmed: `validate_id_token` accepts any JWT signed by the provider with `aud=client_id` whose `jti` matches a stored token.
-  2. `negative.wrong-client-id-token`, `negative.tampered-id-token`, `negative.id-jag-as-subject`: `invalid_grant` instead of `invalid_request`. RFC 8693 §2.2.2 requires `invalid_request`, and draft-06 §4.3.4.3 also profiles it. The PR follows the -04 example.
-  3. `negative.multiple-audiences`: `invalid_target` instead of `invalid_request` (draft-06 §4.3.3 MUST).
-  4. `exchange.scope-semantics`: the requested Resource-AS scope `mcp:tools` is silently dropped, because it is clamped to authentik ScopeMappings. The ID-JAG has no `scope` claim and the response has no `scope` (draft-06 §4.3, §4.3.3, §4.3.4).
-* Notes (SHOULD-level, don't fail): `identity_chaining_requested_token_types_supported` is not advertised (§7.1), and neither `email` nor `aud_sub` is present (§3.1).
-
-The PR-head run happened before one last gating tweak: `exchange.id-jag-issued` is no longer gated on provisioning. That only changes BLOCKED versus FAIL labelling on `main`, which the final `run-local.sh` run confirmed above.
-
-## Validation performed
-
-* `selfcheck_resource_as.py`: 16/16 OK.
-* `uv run black --check`, `uv run ruff check`, `uv run mypy --strict`, `uv run bandit -c pyproject.toml -iii` on the directory: clean.
-* actionlint v1.7.7: clean, except for the unknown runner label `ubuntu-26.04`. That label is already used throughout `ci-main.yml` and is simply newer than this actionlint.
-* Collection: `pytest --collect-only tests` collects 94 items and none are from this directory. The directory alone collects 0, and the explicit file collects 1.
-* `make lint-spellcheck` could not run locally (npm `EBADDEVENGINES`, an environment problem); not validated.
-* All database runs used a disposable `postgres:16` container on a random localhost port with a dedicated test DB name. The developer database was never used.
-* Artifacts were grepped for JWTs (`eyJ`) and secrets: there are none. Bodies show `<redacted len=N>`.
-* **Not validated:** the workflow has not run on GitHub Actions (nothing was pushed). Codecov upload behaviour (`./.github/actions/test-results`) is therefore untested.
-
-## Limitations
-
-* Provisioning goes through the ORM, because the agent API requires an enterprise license. Only the protocol endpoints are exercised as production endpoints. Field names follow PR #26973 at dce0a005. If the final model differs, update `check_capability` (one function).
-* The Resource AS and MCP resource are a minimal independent implementation, not the official MCP SDK. Covered: Streamable HTTP JSON responses only, no SSE, client_secret_basic only, opaque access tokens, and single-use `jti` (a fixture policy).
-* Not covered: SAML or refresh-token subjects, DPoP/mTLS-bound ID-JAGs (§9.11), RAR `authorization_details`, multi-tenant `tenant`/`aud_tenant`, and actor_token behaviour (out of scope per -06).
-* The RFC 8414 strict path (no trailing slash) returns 404 on authentik. The fixture finds metadata through the trailing-slash variant, which is recorded in the report.
-
-## Follow-ups
-
-* Report the access-token-as-subject acceptance to the PR #26973 author. It is security-relevant (token confusion).
-* Decide whether to align error codes with RFC 8693 §2.2.2 / draft-06, or to pin the check to -04 semantics. The recommendation is -06, because RFC 8693's MUST applies in either case.
-* When combining the three MCP branches, extract the shared pieces listed in the README section "Reuse when combining the three MCP branches".
+Provisioning uses the ORM because the agent API requires an enterprise license; protocol requests use real production HTTP views. The Resource AS/MCP implementation is independent test infrastructure, not the official MCP SDK. It supports JSON Streamable HTTP, Basic client authentication, and opaque access tokens. SAML/refresh-token subjects, DPoP/mTLS-bound assertions, RAR, multi-tenant claims, and actor-token behavior remain outside this suite. Future shared MCP test infrastructure can reuse the pieces listed in README.md.
