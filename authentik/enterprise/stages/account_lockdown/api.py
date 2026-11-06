@@ -1,6 +1,6 @@
 """Account Lockdown Stage API Views"""
 
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError

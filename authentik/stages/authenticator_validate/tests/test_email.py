@@ -6,7 +6,7 @@ from freezegun import freeze_time
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.email import mask_email
 from authentik.stages.authenticator.oath import TOTP
@@ -16,7 +16,7 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
-class AuthenticatorValidateStageEmailTests(FlowTestCase):
+class AuthenticatorValidateStageEmailTests(APIFlowTestCase):
     """Test validator stage for Email devices"""
 
     def setUp(self) -> None:

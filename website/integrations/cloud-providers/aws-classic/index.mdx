@@ -192,11 +192,11 @@ Repeat these steps for each AWS role that users should be able to assume.
 
 ### Verify the role trust policy
 
-For each IAM role, confirm that the trust policy allows SAML federation from the authentik SAML provider.
+For each IAM role, confirm that the trust policy allows SAML federation from the authentik SAML provider. The `SAML:aud` condition must match the assertion's `Recipient`, which uses the authentik provider's **ACS URL**. It is not the provider's **Audience** value, `urn:amazon:webservices`.
 
 1. Navigate to **IAM** > **Roles** and click the role that you created.
 2. Go to the **Trust relationships** tab and click **Edit trust policy**.
-3. AWS can create a trust policy with a session-specific ACS URL similar to this:
+3. AWS can create a trust policy with a provider-specific ACS URL similar to this:
 
     ```json
     {
@@ -210,7 +210,7 @@ For each IAM role, confirm that the trust policy allows SAML federation from the
                 "Action": "sts:AssumeRoleWithSAML",
                 "Condition": {
                     "StringEquals": {
-                        "SAML:aud": "https://signin.aws.amazon.com/saml/acs/AAAAAA"
+                        "SAML:aud": "https://signin.aws.amazon.com/saml/acs/<idp_id>"
                     }
                 }
             }
@@ -218,7 +218,7 @@ For each IAM role, confirm that the trust policy allows SAML federation from the
     }
     ```
 
-4. Update `SAML:aud` to the generic AWS SAML sign-in URL:
+4. If you use the global endpoint configured in this guide and do not require SAML encryption, set `SAML:aud` to that endpoint:
 
     ```json
     {
@@ -239,6 +239,8 @@ For each IAM role, confirm that the trust policy allows SAML federation from the
         ]
     }
     ```
+
+    If you use a Regional or provider-specific endpoint, instead set `SAML:aud` to that endpoint and configure the same **ACS URL** in authentik. A provider-specific endpoint containing `/saml/acs/<idp_id>` is required when AWS requires SAML encryption. Find the provider ID on the IAM identity provider's detail page. See [AWS SAML assertion requirements](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_saml_assertions.html) for endpoint details.
 
 5. Click **Update policy**.
 

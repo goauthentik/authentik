@@ -7,14 +7,17 @@ from hmac import compare_digest
 from urllib.parse import urlparse
 
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
+from cryptography.hazmat.primitives.asymmetric.types import PublicKeyTypes
 from django.core.cache import cache
 from django.db import transaction
 from jwcrypto.jwk import JWK
 from jwt import PyJWK
 from jwt import decode as jwt_decode
 from jwt import decode_complete as jwt_decode_complete
-from jwt.exceptions import InvalidTokenError, PyJWTError
+from jwt.exceptions import InvalidKeyError, InvalidTokenError, PyJWTError
 from structlog.stdlib import get_logger
+
+from authentik.lib.jwt_mldsa import JWK_KTY_AKP, MLDSA_ALGORITHMS, key_from_jwk
 
 LOGGER = get_logger()
 
@@ -22,8 +25,8 @@ LOGGER = get_logger()
 # DPoP JWT type header value
 DPOP_JWT_TYPE = "dpop+jwt"
 
-# Supported asymmetric key types for DPoP
-DPOP_SUPPORTED_KTYS = {"EC", "RSA"}
+# Supported asymmetric key types for DPoP. AKP (RFC 9964) carries ML-DSA keys.
+DPOP_SUPPORTED_KTYS = {"EC", "RSA", JWK_KTY_AKP}
 
 DPOP_SUPPORTED_EC_CURVES = {"P-256", "P-384", "P-521"}
 
@@ -44,6 +47,8 @@ DPOP_SUPPORTED_ALGS = {
     "PS256",
     "PS384",
     "PS512",
+    # ML-DSA (RFC 9964), post-quantum
+    *MLDSA_ALGORITHMS,
 }
 
 # Required JWK members per RFC 7638, by key type. These are exactly the
@@ -53,6 +58,8 @@ DPOP_SUPPORTED_ALGS = {
 JWK_REQUIRED_CLAIMS = {
     "EC": ("crv", "kty", "x", "y"),
     "RSA": ("e", "kty", "n"),
+    # RFC 9964 Section 5: alg is REQUIRED on AKP keys and is part of the thumbprint
+    JWK_KTY_AKP: ("alg", "kty", "pub"),
 }
 
 # Clock skew tolerance in seconds for `iat` validation
@@ -140,11 +147,11 @@ class DPoPValidator:
             raise DPoPError(f"Invalid DPoP typ header: {header.get('typ')}")
         return header
 
-    def _get_and_validate_jwk(self, header: dict) -> tuple[dict, PyJWK | None]:
+    def _get_and_validate_jwk(self, header: dict) -> tuple[dict, PublicKeyTypes | None]:
         """Extract jwk from header and validate it.
 
-        Returns the raw jwk dict together with the PyJWK already constructed
-        while validating an RSA key (or None for EC), so `_verify_signature`
+        Returns the raw jwk dict together with the public key already loaded
+        while validating an RSA or AKP key (or None for EC), so `_verify_signature`
         can reuse it instead of re-parsing the same key material.
         """
         jwk = header.get("jwk")
@@ -160,15 +167,19 @@ class DPoPValidator:
             raise DPoPError("Missing alg in DPoP header")
         if alg not in DPOP_SUPPORTED_ALGS:
             raise DPoPError(f"Unsupported DPoP algorithm: {alg}")
+        jwk = header.get("jwk") or {}
+        if jwk.get("kty") == JWK_KTY_AKP and jwk.get("alg") != alg:
+            # An AKP key is bound to one algorithm; a proof naming another is malformed
+            raise DPoPError(f"DPoP alg {alg} does not match JWK alg {jwk.get('alg')}")
         return alg
 
     def _verify_signature(
-        self, dpop_proof: str, jwk: dict, alg: str, key: PyJWK | None = None
+        self, dpop_proof: str, jwk: dict, alg: str, key: PublicKeyTypes | None = None
     ) -> dict:
         """Verify the DPoP proof signature and return the payload."""
         try:
-            key = key or PyJWK.from_dict(jwk)
-            return jwt_decode(dpop_proof, key.key, algorithms=[alg], options={"verify_iat": False})
+            key = key or PyJWK.from_dict(jwk).key
+            return jwt_decode(dpop_proof, key, algorithms=[alg], options={"verify_iat": False})
         except (PyJWTError, InvalidTokenError, TypeError, ValueError) as exc:
             raise DPoPError("DPoP proof signature verification failed") from exc
 
@@ -231,31 +242,41 @@ class DPoPValidator:
             if not compare_digest(thumbprint, expected_jkt):
                 raise DPoPError("DPoP proof JWK thumbprint mismatch")
 
-    def _validate_jwk(self, jwk: dict) -> PyJWK | None:
+    def _validate_jwk(self, jwk: dict) -> PublicKeyTypes | None:
         """Ensure the JWK is a public asymmetric key without private material.
 
-        Returns the PyJWK constructed while checking the RSA key size, so
-        `_verify_signature` can reuse it instead of re-parsing the same key.
+        Returns the public key loaded while checking an RSA key's size or an
+        AKP key's algorithm, so `_verify_signature` can reuse it instead of
+        re-parsing the same key.
         """
         kty = jwk.get("kty")
         if kty not in DPOP_SUPPORTED_KTYS:
             raise DPoPError(f"Unsupported JWK kty for DPoP: {kty}")
 
+        # Reject private material before loading anything. `priv` is the AKP private seed.
+        private_fields = {"d", "p", "q", "dp", "dq", "qi", "priv"}
+        if any(field in jwk for field in private_fields):
+            raise DPoPError("DPoP JWK must not contain private key material")
+
         key = None
         if kty == "RSA":
-            key = PyJWK.from_dict(jwk)
-            if isinstance(key.key, RSAPublicKey) and key.key.key_size < DPOP_RSA_MIN_KEY_SIZE:
+            key = PyJWK.from_dict(jwk).key
+            if isinstance(key, RSAPublicKey) and key.key_size < DPOP_RSA_MIN_KEY_SIZE:
                 raise DPoPError("RSA key too small for DPoP (minimum 2048 bits)")
-            if isinstance(key.key, RSAPublicKey) and key.key.key_size > DPOP_RSA_MAX_KEY_SIZE:
+            if isinstance(key, RSAPublicKey) and key.key_size > DPOP_RSA_MAX_KEY_SIZE:
                 raise DPoPError("RSA key too large for DPoP")
         elif kty == "EC":
             crv = jwk.get("crv")
             if crv not in DPOP_SUPPORTED_EC_CURVES:
                 raise DPoPError(f"Unsupported EC curve for DPoP: {crv}")
-
-        private_fields = {"d", "p", "q", "dp", "dq", "qi"}
-        if any(field in jwk for field in private_fields):
-            raise DPoPError("DPoP JWK must not contain private key material")
+        elif kty == JWK_KTY_AKP:
+            if jwk.get("alg") not in MLDSA_ALGORITHMS:
+                raise DPoPError(f"Unsupported AKP algorithm for DPoP: {jwk.get('alg')}")
+            try:
+                key, _ = key_from_jwk(jwk)
+            except InvalidKeyError as exc:
+                # Malformed key, or ML-DSA unavailable in this OpenSSL configuration (FIPS)
+                raise DPoPError(f"Invalid AKP JWK: {exc}") from exc
 
         return key
 

@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { PolicyBehaviorEnum } from "./PolicyBehaviorEnum";
-import { PolicyBehaviorEnumFromJSON } from "./PolicyBehaviorEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { PolicyBehaviorEnum } from "./PolicyBehaviorEnum.js";
+import { PolicyBehaviorEnumFromJSON } from "./PolicyBehaviorEnum.js";
 
 /**
  * Mixin to validate that a valid enterprise license

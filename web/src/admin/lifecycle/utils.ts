@@ -1,6 +1,4 @@
 import "#components/ak-status-label";
-import { MessageFormatter } from "#common/ui/locale/format";
-
 import { PFColor } from "#elements/Label";
 import { LitFC, LitPropertyRecord } from "#elements/types";
 
@@ -75,14 +73,14 @@ export const OffboardingStatus: LitFC<OffboardingStatusProps> = ({ status }) => 
     return html`<ak-status-label ${spread(props)}></ak-status-label>`;
 };
 
-const OffboardingActionLabelRecord: Record<OffboardingActionEnum, MessageFormatter<string>> = {
-    [OffboardingActionEnum.Deactivate]: () => msg("Deactivate"),
-    [OffboardingActionEnum.Delete]: () => msg("Delete"),
-    [OffboardingActionEnum.UnknownDefaultOpenApi]: () => msg("Unknown"),
+const OffboardingActionLabelRecord: Record<OffboardingActionEnum, string> = {
+    [OffboardingActionEnum.Deactivate]: msg("Deactivate"),
+    [OffboardingActionEnum.Delete]: msg("Delete"),
+    [OffboardingActionEnum.UnknownDefaultOpenApi]: msg("Unknown"),
 };
 
 export function offboardingActionLabel(
     action: OffboardingActionEnum = OffboardingActionEnum.UnknownDefaultOpenApi,
 ): string {
-    return OffboardingActionLabelRecord[action]();
+    return OffboardingActionLabelRecord[action];
 }

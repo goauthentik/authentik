@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { ObjectAttributeTypeEnum } from "./ObjectAttributeTypeEnum";
+import type { ObjectAttributeTypeEnum } from "./ObjectAttributeTypeEnum.js";
 import {
     ObjectAttributeTypeEnumFromJSON,
     ObjectAttributeTypeEnumToJSON,
-} from "./ObjectAttributeTypeEnum";
+} from "./ObjectAttributeTypeEnum.js";
 
 /**
  * @export
