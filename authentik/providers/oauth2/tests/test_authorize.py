@@ -1,13 +1,15 @@
 """Test authorize view"""
 
 from datetime import timedelta
+from http import HTTPStatus
 from unittest.mock import MagicMock, patch
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlencode, urlparse
 
 from django.test import RequestFactory
 from django.urls import reverse
 from django.utils import translation
 from django.utils.timezone import now
+from freezegun import freeze_time
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
@@ -517,7 +519,7 @@ class TestAuthorize(OAuthTestCase):
             delta=5,
         )
 
-    def _create_max_age_provider(self) -> str:
+    def _create_reauth_provider(self) -> str:
         """Create a provider with a custom authentication flow, return the flow's slug"""
         auth_flow = create_test_flow()
         FlowStageBinding.objects.create(
@@ -535,19 +537,115 @@ class TestAuthorize(OAuthTestCase):
         return auth_flow.slug
 
     def _max_age_request(self, max_age: str):
+        return self._reauth_request(max_age=max_age)
+
+    def _reauth_request(self, **params):
         return self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
             data={
                 "response_type": "code",
                 "client_id": "test",
                 "redirect_uri": "foo://localhost",
-                "max_age": max_age,
+                **params,
             },
         )
 
+    def test_reauth_logged_out(self):
+        """A forced-login request starting logged out only needs one login."""
+        auth_flow_slug = self._create_reauth_provider()
+        user = create_test_admin_user()
+        for params in [{"prompt": "login"}, {"max_age": "0"}, {"prompt": "login", "max_age": "0"}]:
+            with self.subTest(params=params):
+                self.client.logout()
+                response = self._reauth_request(**params)
+                self.assertIn(auth_flow_slug, response.url)
+                self.client.force_login(user)
+                response = self._reauth_request(**params)
+                self.assertRegex(response.url, r"^foo://localhost\?code=")
+
+    def test_reauth_repeated_requests(self):
+        """Every forced-login transaction requires a new login and fresh auth_time."""
+        auth_flow_slug = self._create_reauth_provider()
+        user = create_test_admin_user()
+        for params in [{"prompt": "login"}, {"max_age": "0"}, {"prompt": "login", "max_age": "0"}]:
+            with self.subTest(params=params), freeze_time(now()) as clock:
+                self.client.logout()
+                self.client.force_login(user)
+                previous_auth_time = now()
+                for _ in range(2):
+                    clock.tick(timedelta(minutes=1))
+                    # Retrying the request cannot substitute for authenticating.
+                    for _ in range(2):
+                        self.assertIn(auth_flow_slug, self._reauth_request(**params).url)
+                    self.client.force_login(user)
+                    response = self._reauth_request(**params)
+                    self.assertRegex(response.url, r"^foo://localhost\?code=")
+                    code = AuthorizationCode.objects.get(
+                        code=parse_qs(urlparse(response.url).query)["code"][0]
+                    )
+                    self.assertEqual(code.auth_time, now())
+                    self.assertGreater(code.auth_time, previous_auth_time)
+                    previous_auth_time = code.auth_time
+
+    def test_reauth_different_request(self):
+        """A pending login for one transaction cannot satisfy a different transaction."""
+        auth_flow_slug = self._create_reauth_provider()
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        self.assertIn(auth_flow_slug, self._reauth_request(prompt="login", state="first").url)
+        self.client.force_login(user)
+        # Before the first callback returns, a different transaction starts.
+        self.assertIn(auth_flow_slug, self._reauth_request(prompt="login", state="second").url)
+        self.client.force_login(user)
+        self.assertRegex(
+            self._reauth_request(prompt="login", state="second").url, r"^foo://localhost\?code="
+        )
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_reauth_default_flow(self):
+        """Complete the real login stages once per authorization, including session rotation."""
+        self._create_reauth_provider()
+        OAuth2Provider.objects.filter(client_id="test").update(authentication_flow=None)
+        user = create_test_admin_user()
+        executor = reverse(
+            "authentik_api:flow-executor", kwargs={"flow_slug": "default-authentication-flow"}
+        )
+        for state in ["first", "second"]:
+            with self.subTest(state=state):
+                response = self._reauth_request(prompt="login", state=state)
+                self.assertIn("/default-authentication-flow/", response.url)
+                query = urlparse(response.url).query
+                next_url = parse_qs(query)["next"][0]
+                exec_url = executor + "?" + urlencode({"query": query})
+                response = self.client.get(exec_url)
+                self.assertEqual(response.json()["component"], "ak-stage-identification")
+                response = self.client.post(
+                    exec_url,
+                    {"component": "ak-stage-identification", "uid_field": user.username},
+                    content_type="application/json",
+                    follow=True,
+                )
+                self.assertEqual(response.json()["component"], "ak-stage-password")
+                response = self.client.post(
+                    exec_url,
+                    {"component": "ak-stage-password", "password": user.username},
+                    content_type="application/json",
+                )
+                # Automatic stages can redirect to the executor more than once;
+                # Django's follow=True mistakes those stage transitions for a loop.
+                for _ in range(4):
+                    if response.status_code != HTTPStatus.FOUND:
+                        break
+                    self.assertTrue(response.url.startswith(executor))
+                    response = self.client.get(response.url)
+                self.assertEqual(response.json()["component"], "xak-flow-redirect")
+                self.assertEqual(response.json()["to"], next_url)
+                response = self.client.get(next_url)
+                self.assertRegex(response.url, r"^foo://localhost\?code=")
+
     def test_max_age_zero(self):
         """max_age=0 forces re-authentication like prompt=login, without looping"""
-        auth_flow_slug = self._create_max_age_provider()
+        auth_flow_slug = self._create_reauth_provider()
         user = create_test_admin_user()
         self.client.force_login(user)
         # An existing session isn't enough, including on retry without a new login
@@ -559,7 +657,7 @@ class TestAuthorize(OAuthTestCase):
 
     def test_max_age_positive(self):
         """Positive max_age only requires re-authentication once exceeded"""
-        auth_flow_slug = self._create_max_age_provider()
+        auth_flow_slug = self._create_reauth_provider()
         self.client.force_login(create_test_admin_user())
         self.assertRegex(self._max_age_request("3600").url, r"^foo://localhost\?code=")
         old_login = Event(action=EventAction.LOGIN, created=now() - timedelta(hours=2))
@@ -571,7 +669,7 @@ class TestAuthorize(OAuthTestCase):
 
     def test_max_age_invalid(self):
         """Negative or non-numeric max_age is rejected"""
-        self._create_max_age_provider()
+        self._create_reauth_provider()
         for max_age in ["-1", "abc"]:
             with self.subTest(max_age=max_age):
                 request = self.factory.get(
