@@ -6,10 +6,8 @@
 name: CI - MCP conformance (id-jag-issuer)
 
 on:
+  # Also run when these tests are moved onto feature-branch PRs.
   pull_request:
-    branches:
-      - main
-      - version-*
   workflow_dispatch:
 
 concurrency:
