@@ -348,6 +348,22 @@ class AgentTests(APITestCase):
         )
         self.assertEqual(res.status_code, 400, res.content)
 
+    def test_update_agent_applications(self):
+        """An explicit through model must keep application assignments writable via the API."""
+        self.client.force_login(create_test_admin_user())
+        agent = Agent.create_for_user(None)
+        applications = [
+            Application.objects.create(name=generate_id(), slug=generate_id()) for _ in range(2)
+        ]
+        url = reverse("authentik_api:agent-detail", kwargs={"pk": agent.pk})
+        for assigned in (applications, applications[1:], []):
+            with self.subTest(application_count=len(assigned)):
+                ids = [str(application.pk) for application in assigned]
+                response = self.client.patch(url, {"applications": ids}, format="json")
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertCountEqual(response.json()["applications"], ids)
+                self.assertCountEqual(agent.applications.all(), assigned)
+
     def test_system_agent(self):
         """Without a parent, an agent is a system agent, which only admins can create"""
         user = create_test_user()
