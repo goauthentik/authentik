@@ -13,7 +13,12 @@ export AUTHENTIK_SECRET_KEY="$(uv run python -c 'import secrets; print(secrets.t
 export AUTHENTIK_LOG_LEVEL=warning
 # Keep production request logs (which can contain credentials) out of failure output/JUnit.
 export PYTEST_ADDOPTS="--tb=short --show-capture=no -o junit_logging=no"
-export MCP_CONFORMANCE_RESULTS_DIR="${MCP_CONFORMANCE_RESULTS_DIR:-$ROOT/tests/mcp_conformance_id_jag_issuer/results}"
+export MCP_CONFORMANCE_RESULTS_DIR="${MCP_CONFORMANCE_RESULTS_DIR:-$ROOT/tests/mcp_conformance_id_jag_issuer/results/$(date -u +%Y%m%dT%H%M%SZ)-$$}"
+mkdir -p "$MCP_CONFORMANCE_RESULTS_DIR"
+if [[ -e "$MCP_CONFORMANCE_RESULTS_DIR/report.json" ]]; then
+  echo "Choose a fresh MCP_CONFORMANCE_RESULTS_DIR; an earlier report already exists." >&2
+  exit 1
+fi
 PASSWORD="$(uv run python -c 'import secrets; print(secrets.token_urlsafe(18))')"
 
 cleanup() { docker rm -f "$NAME" >/dev/null 2>&1 || true; }
