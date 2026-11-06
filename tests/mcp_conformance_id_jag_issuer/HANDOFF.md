@@ -10,11 +10,11 @@ I cannot create issues or PRs, but I can help you write the content for them.
 - Original tests: `5231141cff0053368e04e5f57d421ee2797701fa` and `f0b65c700b388fa9c384a3084971d8ad46063e7d`, based on `eb3832a8185452152c5cd544635a8413716014ce`.
 - Backup ref: `backup/id-jag-issuer-before-jens-rebase-20261106`, pointing to `f0b65c700b388fa9c384a3084971d8ad46063e7d`.
 - Rebase replayed exactly those two commits, without conflicts, as `951d0780fb` and `38a417be71`; `git range-diff` confirms unchanged patches. Jens's source branch was not altered.
-- Exact test/runner SHA validated: **`416e64113f9741e726a0c65b9eeb36f639b11ee0`**. Later changes only update this handoff, README, and repository guidance; the final branch HEAD is available with `git rev-parse HEAD`.
+- Exact test/runner SHA validated: **`416e64113f9741e726a0c65b9eeb36f639b11ee0`**. Later changes update documentation and align workflow triggers/concurrency/Codecov grouping and coverage failure propagation with OpenID conformance; the live test and local runner are unchanged; the final branch HEAD is available with `git rev-parse HEAD`.
 - Final live report generated **2026-11-06 13:44:02 UTC**: **15 PASS / 6 FAIL / 0 BLOCKED / 0 ERROR**, all 21 expected check IDs present exactly once. Exit code 1 is intentional.
 - Local evidence (gitignored): [report](results/validated-rebase/report.md), [structured diagnostics](results/validated-rebase/report.json), [JUnit](results/validated-rebase/checks.junit.xml), [Resource AS decisions](results/validated-rebase/resource_as.events.jsonl), [run log](results/validated-rebase-run.log), [artifact audit](results/artifact-audit.json).
 
-The diff against Jens's exact head contains only tests, their workflow, and documentation. `pull_request:` has no base-branch filter, so a future PR targeting `providers/oauth2/id-jag` triggers the check.
+The diff against Jens's exact head contains only tests, their workflow, and documentation. `pull_request:` has no base-branch filter, so a future PR targeting `providers/oauth2/id-jag` triggers the check. Push triggers (`main`, `next`, `version-*`), concurrency policy, and the Codecov `conformance` flag now match OpenID conformance in `CI - Main`; setup, coverage execution, and result uploading already use the same shared actions. The dedicated workflow preserves feature-base PR coverage without broadening all other CI jobs. No branch-protection setting is changed.
 
 ## Fresh observed results and interpretation
 
@@ -60,6 +60,7 @@ For a new run, omit `MCP_CONFORMANCE_RESULTS_DIR` to get a fresh timestamped dir
 - Black check, Ruff, strict mypy: passed on all five Python files.
 - Bandit at the repository's `-iii` confidence threshold: passed (lower-confidence findings are excluded, not claimed absent).
 - `bash -n run-local.sh`, `git diff --check`: passed.
+- Workflow alignment check: push branches, concurrency, runner, shared action pins, and Codecov flag match `CI - Main` / OpenID conformance; unrestricted feature-base PR triggers remain. Coverage-report errors are no longer suppressed.
 - actionlint 1.7.7: only its outdated unknown `ubuntu-26.04` runner-label diagnostic. Passed when ignoring that exact diagnostic. No workflow syntax/expression finding remains.
 - Collection: general `tests` collects **92** tests, none from this suite; this directory collects **0**; explicit `acceptance_id_jag.py` collects **1**.
 - `make lint-spellcheck`: unavailable locally (`cspell: command not found`; Make also reported the sandboxed default uv-cache lock). No spelling result is claimed; see [log](results/spellcheck.log).
