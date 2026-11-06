@@ -343,6 +343,8 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
             if (!completedStep) return false;
 
             if (lastPage) {
+                this.loading = true;
+
                 const promise = this.finalHandler?.() || Promise.resolve();
 
                 return promise
@@ -556,10 +558,18 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
         activeStepIndex,
         lastPage,
     }: StepProgress): SlottedTemplateResult {
-        const { canBack, cancelable, valid, childElementCount } = this;
+        const { canBack, cancelable, valid, loading, childElementCount } = this;
 
         return guard(
-            [activeStepIndex, lastPage, canBack, cancelable, valid, childElementCount],
+            [
+                activeStepIndex,
+                lastPage,
+                canBack,
+                cancelable,
+                valid,
+                loading,
+                childElementCount,
+            ],
             () => {
                 const customLabel = this.activeStepElement?.formatNextLabel();
 
@@ -597,7 +607,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                     html`<button
                         data-test-id="wizard-navigation-next"
                         class="pf-c-button pf-m-primary"
-                        ?disabled=${!this.valid || this.loading}
+                        ?disabled=${!valid || loading}
                         type="button"
                         @click=${this.navigateNext}
                     >
