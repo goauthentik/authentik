@@ -275,7 +275,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@1544676c07bb3570fcb70166beaa07c4528fd4aa # v1.15.1
+        uses: helm/kind-action@ea822c7bf1874f08e5a491df991c228edffc3376 # v1.15.2
       - name: run integration
         run: |
           uv run coverage run manage.py test tests/integration
@@ -346,7 +346,7 @@ jobs:
           COMPOSE_PROFILES: ${{ matrix.job.profiles }}
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - name: Pin pnpm store directory
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"

@@ -1,5 +1,6 @@
 """Test authorize view"""
 
+from datetime import timedelta
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs, urlparse
 
@@ -515,6 +516,80 @@ class TestAuthorize(OAuthTestCase):
             timedelta_from_string(provider.access_code_validity).total_seconds(),
             delta=5,
         )
+
+    def _create_max_age_provider(self) -> str:
+        """Create a provider with a custom authentication flow, return the flow's slug"""
+        auth_flow = create_test_flow()
+        FlowStageBinding.objects.create(
+            target=auth_flow, stage=DummyStage.objects.create(name=generate_id()), order=10
+        )
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            authentication_flow=auth_flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        return auth_flow.slug
+
+    def _max_age_request(self, max_age: str):
+        return self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "redirect_uri": "foo://localhost",
+                "max_age": max_age,
+            },
+        )
+
+    def test_max_age_zero(self):
+        """max_age=0 forces re-authentication like prompt=login, without looping"""
+        auth_flow_slug = self._create_max_age_provider()
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        # An existing session isn't enough, including on retry without a new login
+        for _ in range(2):
+            self.assertIn(auth_flow_slug, self._max_age_request("0").url)
+        # A new login satisfies the request
+        self.client.force_login(user)
+        self.assertRegex(self._max_age_request("0").url, r"^foo://localhost\?code=")
+
+    def test_max_age_positive(self):
+        """Positive max_age only requires re-authentication once exceeded"""
+        auth_flow_slug = self._create_max_age_provider()
+        self.client.force_login(create_test_admin_user())
+        self.assertRegex(self._max_age_request("3600").url, r"^foo://localhost\?code=")
+        old_login = Event(action=EventAction.LOGIN, created=now() - timedelta(hours=2))
+        with patch(
+            "authentik.providers.oauth2.views.authorize.get_login_event",
+            MagicMock(return_value=old_login),
+        ):
+            self.assertIn(auth_flow_slug, self._max_age_request("3600").url)
+
+    def test_max_age_invalid(self):
+        """Negative or non-numeric max_age is rejected"""
+        self._create_max_age_provider()
+        for max_age in ["-1", "abc"]:
+            with self.subTest(max_age=max_age):
+                request = self.factory.get(
+                    "/",
+                    data={
+                        "response_type": "code",
+                        "client_id": "test",
+                        "redirect_uri": "foo://localhost",
+                        "max_age": max_age,
+                    },
+                )
+                with self.assertRaises(AuthorizeError) as cm:
+                    OAuthAuthorizationParams.from_request(request)
+                self.assertEqual(cm.exception.error, "invalid_request")
+                self.assertEqual(cm.exception.cause, "max_age_invalid")
+                self.assertRegex(
+                    self._max_age_request(max_age).url, r"^foo://localhost\?error=invalid_request"
+                )
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_full_implicit(self):
