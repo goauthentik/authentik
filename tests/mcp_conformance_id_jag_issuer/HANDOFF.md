@@ -22,7 +22,7 @@ I cannot create issues or PRs, but I can help you write the content for them.
 
 ## Files
 
-* `.github/workflows/ci-mcp-id_jag_issuer.yml`: `pull_request` (main, version-*) + `workflow_dispatch`
+* `.github/workflows/ci-mcp-id_jag_issuer.yml`: `pull_request` (any base branch) + `workflow_dispatch`
 * `tests/mcp_conformance_id_jag_issuer/`:
   * `acceptance_id_jag.py`: the live authentik harness
   * `resource_as.py`: the independent Resource AS + MCP resource fixture
