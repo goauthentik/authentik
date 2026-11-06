@@ -29,8 +29,8 @@ import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { toAdminInterface } from "#elements/router/core/interfaces";
+import { setPageDetails } from "#elements/router/meta";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
 
 import { ApplicationCheckAccessForm } from "#admin/applications/ApplicationCheckAccessForm";

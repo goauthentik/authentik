@@ -20,8 +20,8 @@ To create an Entra ID provider in authentik, you must have already [configured E
         - **Client ID**: the Client ID that you copied when [configuring Entra ID](./configure-entra.mdx)
         - **Client Secret**: the secret from Entra ID
         - **Tenant ID**: the Tenant ID from Entra ID
-        - **User deletion action**: determines what authentik will do when a user is deleted from authentik
-        - **Group deletion action**: determines what authentik will do when a group is deleted from authentik
+        - **User deletion action**: controls what happens in Entra ID when a user is deleted from authentik. Defaults to **Delete**. See [Deletion and offboarding](./index.mdx#deletion-and-offboarding) for the available actions and their effects
+        - **Group deletion action**: controls what happens in Entra ID when a group is deleted from authentik. Defaults to **Delete**. See [Deletion and offboarding](./index.mdx#deletion-and-offboarding) for the available actions and their effects
     - Under **User filtering**:
         - **Exclude service accounts**: choose whether to include or exclude service accounts
         - **Group**: select a group and only users within that group will be synced to Entra ID

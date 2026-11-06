@@ -9,7 +9,7 @@ import "#admin/sources/ldap/LDAPSourceUserList";
 import "#admin/sources/ldap/LDAPSourceGroupList";
 import "#admin/events/ObjectChangelog";
 import "#components/sync/SyncStatusCard";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";

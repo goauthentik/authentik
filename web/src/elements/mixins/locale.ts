@@ -38,13 +38,10 @@ export interface LocaleMixin {
      * The current locale language tag.
      *
      * @remarks
-     *
-     *   This may load asynchronously, which Lit will not know about.
-     *   Use {@linkcode LOCALE_STATUS_EVENT} to listen for when the locale
-     *   is ready after setting a new language tag.
+     *   Fixed for the lifetime of the page; switching reloads it.
      * @format BCP 47
      */
-    activeLanguageTag: TargetLanguageTag;
+    readonly activeLanguageTag: TargetLanguageTag;
 }
 
 /**
@@ -81,10 +78,6 @@ export const WithLocale = createMixin<LocaleMixin>(
                 }
 
                 return this[kAKLocale]?.getLocale() as TargetLanguageTag;
-            }
-
-            public set activeLanguageTag(value: TargetLanguageTag) {
-                this[kAKLocale]?.setLocale(value);
             }
         }
 

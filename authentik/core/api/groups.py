@@ -1,11 +1,9 @@
 """Groups API Viewset"""
 
-from json import loads
-
 from django.db.models import Prefetch
 from django.http import Http404
 from django.utils.translation import gettext as _
-from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
+from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from djangoql.schema import BoolField, StrField
 from drf_spectacular.utils import (
@@ -14,7 +12,6 @@ from drf_spectacular.utils import (
     extend_schema,
     extend_schema_field,
 )
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -38,6 +35,7 @@ from authentik.core.models import Group, User
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.filters import ObjectFilter
 from authentik.rbac.models import Role
 
 
@@ -255,11 +253,9 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
             if not has_perm:
                 raise ValidationError(
                     _(
-                        (
-                            "User does not have permission to set "
-                            "superuser status to {superuser_status}."
-                        ).format_map({"superuser_status": superuser})
-                    )
+                        "User does not have permission to set "
+                        "superuser status to {superuser_status}."
+                    ).format(superuser_status=superuser)
                 )
         return superuser
 
@@ -352,13 +348,6 @@ class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
 class GroupFilter(FilterSet):
     """Filter for groups"""
 
-    attributes = CharFilter(
-        field_name="attributes",
-        lookup_expr="",
-        label="Attributes",
-        method="filter_attributes",
-    )
-
     members_by_username = ModelMultipleChoiceFilter(
         field_name="users__username",
         to_field_name="username",
@@ -370,26 +359,9 @@ class GroupFilter(FilterSet):
         distinct=False,
     )
 
-    def filter_attributes(self, queryset, name, value):
-        """Filter attributes by query args"""
-        try:
-            value = loads(value)
-        except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON") from None
-        if not isinstance(value, dict):
-            raise ValidationError(detail="filter: value must be key:value mapping")
-        qs = {}
-        for key, _value in value.items():
-            qs[f"attributes__{key}"] = _value
-        try:
-            _ = len(queryset.filter(**qs))
-            return queryset.filter(**qs)
-        except ValueError:
-            return queryset
-
     class Meta:
         model = Group
-        fields = ["name", "is_superuser", "members_by_pk", "attributes", "members_by_username"]
+        fields = ["name", "is_superuser", "members_by_pk", "members_by_username"]
 
 
 class GroupViewSet(UsedByMixin, ModelViewSet):
@@ -540,13 +512,9 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     def add_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Add user to group"""
         group: Group = self.get_object()
-        user: User = (
-            get_objects_for_user(request.user, "authentik_core.view_user")
-            .filter(
-                pk=body.validated_data.get("pk"),
-            )
-            .first()
-        )
+        user = ObjectFilter.visible_in_list(
+            request, User.objects.filter(pk=body.validated_data.get("pk")), "core/users:list"
+        ).first()
         if not user:
             raise Http404
         if not group.users.filter(pk=user.pk).exists():
@@ -579,13 +547,9 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     def remove_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
         """Remove user from group"""
         group: Group = self.get_object()
-        user: User = (
-            get_objects_for_user(request.user, "authentik_core.view_user")
-            .filter(
-                pk=body.validated_data.get("pk"),
-            )
-            .first()
-        )
+        user = ObjectFilter.visible_in_list(
+            request, User.objects.filter(pk=body.validated_data.get("pk")), "core/users:list"
+        ).first()
         if not user:
             raise Http404
         group.users.remove(user)

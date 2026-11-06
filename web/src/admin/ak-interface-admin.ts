@@ -1,19 +1,13 @@
-import "#elements/banner/BaseURLBanner";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
-import "#elements/sidebar/SidebarItem";
 import "#elements/router/core/RouterView";
 import "#elements/commands/ak-command-palette";
 import "#elements/commands/ak-command-palette-user-modal";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
-import {
-    createAdminSidebarEnterpriseEntries,
-    createAdminSidebarEntries,
-    renderSidebarItems,
-    SidebarEntry,
-} from "./navigation/sidebar.js";
+import "#components/ak-page-navbar";
+import "#admin/sidebar/VersionDetails";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -38,12 +32,15 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import {
+    currentInterfacePath,
     formatInterfacePrefix,
     toAdminInterface,
     toUserInterface,
 } from "#elements/router/core/interfaces";
+import { matchRoute } from "#elements/router/core/matcher";
 import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
 import {
@@ -55,14 +52,34 @@ import {
 
 import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
+import { BreadcrumbController } from "#admin/sidebar/BreadcrumbController";
+import { createAdminSidebarEntries } from "#admin/sidebar/constants";
+import {
+    ExtendedSidebarItem,
+    findCurrentSidebarKey,
+    findCurrentSidebarSectionLabel,
+    resolveSidebarEntries,
+} from "#admin/sidebar/sidebarTools";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
+
+let lastRoutePath: string | null = null;
+let lastRouteName: string | null = null;
+
+function routeNameForPath(path: string): string | null {
+    if (path !== lastRoutePath) {
+        lastRoutePath = path;
+        lastRouteName = matchRoute(path, ROUTES)?.route.name ?? null;
+    }
+
+    return lastRouteName;
+}
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends WithLicenseSummary(
@@ -86,15 +103,16 @@ export class AdminInterface extends WithLicenseSummary(
     @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
 
-    @property({ type: Array })
-    public entries: readonly SidebarEntry[] = createAdminSidebarEntries();
+    public get navigationEntries(): readonly ExtendedSidebarItem[] {
+        const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
 
-    protected get navigationEntries(): readonly SidebarEntry[] {
-        if (!this.can(CapabilitiesEnum.IsEnterprise)) {
-            return this.entries;
-        }
+        const entries = createAdminSidebarEntries(canEnterprise);
 
-        return [...this.entries, ...createAdminSidebarEnterpriseEntries()];
+        return resolveSidebarEntries(entries, {
+            canEnterprise,
+            // Assume licensed until the summary loads so the notice doesn't flash.
+            licensed: !this.licenseSummary || this.hasEnterpriseLicense,
+        });
     }
 
     //#endregion
@@ -103,11 +121,6 @@ export class AdminInterface extends WithLicenseSummary(
 
     public toggleSidebar = () => {
         this.sidebarOpen = !this.sidebarOpen;
-    };
-
-    public synchronizeSidebarEntries = () => {
-        this.logger.debug("Synchronizing sidebar entries with current locale");
-        this.entries = createAdminSidebarEntries();
     };
 
     //#endregion
@@ -124,7 +137,19 @@ export class AdminInterface extends WithLicenseSummary(
     // `popstate` (back/forward) rather than the legacy `ak-route-change` event.
     #routeChangeListener = () => {
         this.sidebarOpen = this.#sidebarMatcher.matches;
+        this.pathname = window.location.pathname;
     };
+
+    private _breadcrumbManager = new BreadcrumbController(this);
+
+    /**
+     * The current `location.pathname`, tracked so the navbar's section follows
+     * the route. Kept raw rather than interface-relative: this element upgrades
+     * before the entrypoint calls `initRouter`, so the prefix is only stripped at
+     * render time.
+     */
+    @state()
+    public pathname = window.location.pathname;
 
     @state()
     protected drawer: DrawerState = readDrawerParams();
@@ -133,13 +158,6 @@ export class AdminInterface extends WithLicenseSummary(
     protected drawerListener = (event: AKDrawerChangeEvent) => {
         this.drawer = event.drawer;
         persistDrawerParams(event.drawer);
-    };
-
-    @listen(LOCALE_STATUS_EVENT, { target: window })
-    localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (event.detail.status === "ready") {
-            this.synchronizeSidebarEntries();
-        }
     };
 
     //#endregion
@@ -167,28 +185,13 @@ export class AdminInterface extends WithLicenseSummary(
                     ),
                 group: msg("Applications"),
             },
-            ...this.navigationEntries.flatMap(([, label, , children]) =>
-                (children ?? []).flatMap(([path, childLabel, attributes]) => {
-                    const enterpriseOnly =
-                        !Array.isArray(attributes) && attributes?.enterprise === true;
-
-                    if (enterpriseOnly && !this.can(CapabilitiesEnum.IsEnterprise)) {
-                        return [];
-                    }
-
+            ...this.navigationEntries.flatMap(({ label, children }: ExtendedSidebarItem) =>
+                (children ?? []).flatMap(({ path, label: childLabel }: ExtendedSidebarItem) => {
                     const command: PaletteCommandDefinitionInit = {
                         namespace: PaletteCommandNamespace.Navigation,
                         label: childLabel,
                         group: label,
-                        action: () => {
-                            navigate(
-                                toAdminInterface(
-                                    enterpriseOnly && !this.hasEnterpriseLicense
-                                        ? "/enterprise/licenses"
-                                        : path!,
-                                ),
-                            );
-                        },
+                        action: () => navigate(path!),
                     };
 
                     return [command];
@@ -270,6 +273,10 @@ export class AdminInterface extends WithLicenseSummary(
             return html`<slot></slot>`;
         }
 
+        const path = currentInterfacePath(this.pathname);
+        const routeName = routeNameForPath(path);
+        const entries = this.navigationEntries;
+
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
             "pf-m-expanded": this.sidebarOpen,
@@ -284,7 +291,9 @@ export class AdminInterface extends WithLicenseSummary(
         };
 
         return html`<div class="pf-c-page">
-                <ak-page-navbar>
+                <ak-page-navbar
+                    .section=${findCurrentSidebarSectionLabel(entries, routeName, this.pathname)}
+                >
                     <button
                         slot="toggle"
                         aria-controls="global-nav"
@@ -300,12 +309,17 @@ export class AdminInterface extends WithLicenseSummary(
 
                     ${this.renderCommandPaletteButton()}
                     <ak-version-banner></ak-version-banner>
-                    <ak-base-url-banner></ak-base-url-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 
-                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                    >${renderSidebarItems(this.navigationEntries)}
+                <ak-sidebar
+                    id="global-nav"
+                    ?hidden=${!this.sidebarOpen}
+                    class="${classMap(sidebarClasses)}"
+                    .entries=${entries}
+                    current=${ifPresent(findCurrentSidebarKey(entries, routeName, path))}
+                >
+                    <ak-version-details slot="footer"></ak-version-details>
                 </ak-sidebar>
 
                 <div class="pf-c-page__drawer">

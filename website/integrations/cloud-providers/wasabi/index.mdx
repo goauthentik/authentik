@@ -1,0 +1,122 @@
+---
+title: Integrate with Wasabi
+sidebar_label: Wasabi
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
+## What is Wasabi?
+
+> Wasabi is an S3-compatible cloud object storage service.
+>
+> -- https://wasabi.com
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info
+Single sign-on is only available for paid Wasabi accounts. The **SSO** settings do not appear on trial accounts.
+:::
+
+## authentik configuration
+
+To support the integration of Wasabi with authentik, you need to create a SAML [property mapping](/docs/add-secure-apps/providers/property-mappings/), an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair), and [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) for the Wasabi SSO roles that users should receive.
+
+### Create a role property mapping
+
+Wasabi reads the user's roles from a SAML attribute named `groups` and matches each value against the name of a Wasabi SSO role.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+3. Select **SAML Provider Property Mapping** as the type and click **Next**.
+4. Configure the property mapping:
+    - **Name**: provide a descriptive name, such as `Wasabi roles`.
+    - **SAML Attribute Name**: `groups`
+    - **Expression**:
+        ```python
+        return [
+            entitlement.name
+            for entitlement in request.user.app_entitlements(provider.application)
+        ]
+        ```
+5. Click **Finish**.
+
+### Create an application and provider
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
+        - Set **ACS URL** to `https://sso.wasabisys.com/login/callback`.
+        - Set **Audience** to `https://sso.wasabisys.com/saml`.
+        - Set **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**:
+            - Set an available **Signing Keypair**, and enable **Sign assertions** and **Sign responses**.
+            - Under **Property mappings**, add the Wasabi roles mapping.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Download metadata file
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
+3. Under **Related objects** > **Metadata**, click **Download**. This downloaded file is your SAML metadata file and is required in the next section.
+
+### Create application entitlements
+
+Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to represent the Wasabi SSO roles that this application should send.
+
+1. In the Admin interface, navigate to **Applications** > **Applications** and open the Wasabi application.
+2. Click the **Application entitlements** tab.
+3. Click **Create**, enter a name for the Wasabi SSO role, such as `wasabi-admins`, and click **Create** again.
+4. Bind the appropriate users or groups to the entitlement.
+5. Repeat these steps for each Wasabi SSO role that authentik should send.
+
+## Wasabi configuration
+
+### Configure the SSO connection
+
+1. Log in to the Wasabi Console as the root user.
+2. Navigate to **Security** > **SSO (Single Sign On)**.
+3. Set **Organization Name** to a unique name for your organization. Users enter this name when they sign in with SSO.
+4. Set **SSO Connection** to **SAML**.
+5. Under **IDP Metadata XML**, upload the metadata file that you downloaded in [Download metadata file](#download-metadata-file).
+6. Click **Save**.
+
+### Create SSO roles
+
+Wasabi grants permissions to federated users through SSO roles. The name of each SSO role must match an application entitlement name in authentik.
+
+1. On the **SSO (Single Sign On)** page, click **Create Role**.
+2. Set **Name** to the name of an application entitlement from authentik, such as `wasabi-admins`, and click **Next**.
+3. Attach the policies that the role should grant, such as `AdministratorAccess`, and click **Create Role**.
+4. Repeat these steps for each application entitlement that should grant access to Wasabi.
+
+:::info
+Wasabi signs in a federated user whose email address matches the Wasabi root user's email address as the root user, rather than with an SSO role.
+:::
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Wasabi, log out of the Wasabi Console. On the login page, click **Sign In with SSO**, then **Sign In With an Organization Name**, and enter the organization name that you configured in Wasabi.
+
+After you are redirected to authentik and successfully authenticate, the Wasabi Console signs you in.
+
+## Resources
+
+- [Wasabi documentation - SSO (Single Sign On)](https://docs.wasabi.com/docs/configuring-the-single-sign-on-sso-feature)
+- [Wasabi documentation - SSO using SAML2 integration with Okta](https://docs.wasabi.com/docs/how-do-i-use-sso-for-wasabi-console-access-using-saml2-integration-with-okta)

@@ -15,13 +15,13 @@ from authentik.endpoints.connectors.agent.models import (
 from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.enterprise.endpoints.connectors.agent.views.apple_authorize import REDIRECT_URI
 from authentik.enterprise.tests import enterprise_test
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import JWTAlgorithms
 
 
-class TestAppleAuthorize(FlowTestCase):
+class TestAppleAuthorize(APIFlowTestCase):
 
     def setUp(self):
         self.apple_sign_key = create_test_cert(PrivateKeyAlg.ECDSA)

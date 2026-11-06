@@ -18,11 +18,9 @@ import {
 
 import { readInterfaceRouteParam } from "#elements/router/utils";
 
-import { ConsoleLogger } from "#logger/browser";
-
 import { CapabilitiesEnum } from "@goauthentik/api";
 
-import { browserTracingIntegration, init, spotlightBrowserIntegration } from "@sentry/browser";
+import { browserTracingIntegration, init } from "@sentry/browser";
 import { type Integration } from "@sentry/core/browser";
 
 const { errorReporting, capabilities } = globalAK().config;
@@ -30,8 +28,6 @@ const { errorReporting, capabilities } = globalAK().config;
 const debug = capabilities.includes(CapabilitiesEnum.CanDebug);
 
 if (isSentryEnabled({ errorReporting, debug, search: window.location.search })) {
-    const logger = ConsoleLogger.prefix("sentry");
-
     const integrations: Integration[] = [
         browserTracingIntegration({
             // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
@@ -40,11 +36,6 @@ if (isSentryEnabled({ errorReporting, debug, search: window.location.search })) 
             traceFetch: false,
         }),
     ];
-
-    if (debug) {
-        logger.debug("Enabled Spotlight");
-        integrations.push(spotlightBrowserIntegration());
-    }
 
     init({
         ...DEFAULT_SENTRY_BROWSER_OPTIONS,

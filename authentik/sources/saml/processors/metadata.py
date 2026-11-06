@@ -1,9 +1,11 @@
 """SAML Service Provider Metadata Processor"""
 
 from django.http import HttpRequest
+from django.urls import reverse
 from lxml.etree import Element, SubElement, tostring  # nosec
 
 from authentik.common.saml.constants import (
+    ENCRYPTION_METHODS_ADVERTISED,
     NS_MAP,
     NS_SAML_METADATA,
     NS_SIGNATURE,
@@ -45,6 +47,11 @@ class MetadataProcessor:
             x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
             x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
             x509_certificate.text = x509_certificate_b64(self.source.encryption_kp.certificate)
+            for algorithm in ENCRYPTION_METHODS_ADVERTISED:
+                encryption_method = SubElement(
+                    key_descriptor, f"{{{NS_SAML_METADATA}}}EncryptionMethod"
+                )
+                encryption_method.attrib["Algorithm"] = algorithm
             return key_descriptor
         return None
 
@@ -79,8 +86,8 @@ class MetadataProcessor:
         assertion_consumer_service.attrib["isDefault"] = "true"
         assertion_consumer_service.attrib["index"] = "0"
         assertion_consumer_service.attrib["Binding"] = SAML_BINDING_POST
-        assertion_consumer_service.attrib["Location"] = self.source.build_full_url(
-            self.http_request
+        assertion_consumer_service.attrib["Location"] = self.http_request.build_absolute_uri(
+            reverse("authentik_sources_saml:acs", kwargs={"source_slug": self.source.slug})
         )
 
         return tostring(entity_descriptor).decode()

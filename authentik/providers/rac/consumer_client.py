@@ -95,7 +95,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
                 token=self.scope["url_route"]["kwargs"]["token"],
                 session__session__session_key=self.scope["session"].session_key,
             )
-            .select_related("endpoint", "provider", "session", "session__user")
+            .select_related("device", "provider", "session", "session__user")
             .first()
         )
         if not self.token:
@@ -103,14 +103,14 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         self.provider = self.token.provider
         params = self.token.get_settings()
         self.logger = get_logger().bind(
-            endpoint=self.token.endpoint.name, user=self.scope["user"].username
+            device=self.token.device.name, user=self.scope["user"].username
         )
         msg = {
             "type": "event.provider.specific",
             "sub_type": "init_connection",
             "dest_channel_id": self.channel_name,
             "params": params,
-            "protocol": self.token.endpoint.protocol,
+            "protocol": self.token.protocol,
         }
         query = QueryDict(self.scope["query_string"].decode())
         for key in ["screen_width", "screen_height", "screen_dpi", "audio"]:

@@ -20,9 +20,8 @@ export interface SentrySetupOptions {
     /**
      * The deployment's error-reporting configuration.
      *
-     * Optional because `Config` types it as required while
-     * `ErrorReportingConfigFromJSON` passes a missing value straight through —
-     * it is absent whenever the server didn't inject `window.authentik`.
+     * Optional because {@linkcode Config} types it as required while
+     * {@linkcode ErrorReportingConfigFromJSON} passes a missing value straight through.
      */
     errorReporting?: ErrorReportingConfig;
     /**
@@ -44,7 +43,7 @@ export interface SentrySetupOptions {
  *
  * The administrator's `errorReporting.enabled` setting decides, in every
  * environment — a deployment that turns error reporting on expects to receive
- * errors. `CanDebug` enables it on its own, which is what activates Spotlight.
+ * errors.
  *
  * Development additionally honors `?disable-sentry`, so a noisy local session
  * can opt out for one load without a rebuild.

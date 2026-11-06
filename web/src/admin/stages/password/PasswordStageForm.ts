@@ -1,32 +1,26 @@
+import "#components/ak-number-input";
 import "#components/ak-text-input";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import { aki } from "#common/api/client";
+
+import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { AKLabel } from "#components/ak-label";
 
-import { RenderFlowOption } from "#admin/flows/utils";
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import {
-    BackendsEnum,
-    Flow,
-    FlowDesignationEnum,
-    FlowsApi,
-    FlowsInstancesListRequest,
-    PasswordStage,
-    StagesApi,
-} from "@goauthentik/api";
+import { BackendsEnum, FlowDesignationEnum, PasswordStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
-export class PasswordStageForm extends BaseStageForm<PasswordStage> {
+export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<PasswordStage>) {
     protected endpoints = {
         load: (stageUuid: string) => aki(StagesApi).stagesPasswordRetrieve({ stageUuid }),
         create: (passwordStageRequest: PasswordStage) =>
@@ -45,6 +39,55 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                 return field === isField;
             }).length > 0
         );
+    }
+
+    protected renderLockoutSettings(): TemplateResult {
+        const readOnly = !this.hasEnterpriseLicense;
+
+        return html`<ak-number-input
+                label=${msg("Failed attempts before lockout", {
+                    id: "password-stage.lockout-threshold.label",
+                })}
+                required
+                name="failedAttemptsBeforeLockout"
+                min=${0}
+                value=${this.instance?.failedAttemptsBeforeLockout ?? 0}
+                ?readonly=${readOnly}
+                help=${
+                    readOnly
+                        ? msg("Password lockout requires an Enterprise license.", {
+                              id: "password-stage.lockout-threshold.enterprise.description",
+                          })
+                        : msg(
+                              "Lock password login after this many consecutive failed attempts, until an administrator unlocks it. LDAP users are exempt while any LDAP source is enabled; Kerberos users are exempt when linked to an enabled source. The corresponding backend must be selected. Set to 0 to never lock.",
+                              { id: "password-stage.lockout-threshold.description" },
+                          )
+                }
+            ></ak-number-input>
+            <ak-text-input
+                label=${msg("Last-attempt warning message", {
+                    id: "password-stage.last-attempt-warning-message.label",
+                })}
+                name="lastAttemptWarningMessage"
+                value=${this.instance?.lastAttemptWarningMessage ?? ""}
+                ?readonly=${readOnly}
+                help=${msg(
+                    "Warning shown when the user has one password attempt remaining. Leave blank to show no warning.",
+                    { id: "password-stage.last-attempt-warning-message.description" },
+                )}
+            ></ak-text-input>
+            <ak-text-input
+                label=${msg("Lockout message", {
+                    id: "password-stage.lockout-message.label",
+                })}
+                name="lockoutMessage"
+                value=${this.instance?.lockoutMessage ?? ""}
+                ?readonly=${readOnly}
+                help=${msg(
+                    "Message shown when the user's password has been locked. Leave blank to show a generic authentication error.",
+                    { id: "password-stage.lockout-message.description" },
+                )}
+            ></ak-text-input>`;
     }
 
     protected override renderForm(): TemplateResult {
@@ -111,46 +154,13 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         required
                         name="configureFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowDesignationEnum.StageConfiguration,
-                                };
-
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-
-                                const flows = await aki(FlowsApi).flowsInstancesList(args);
-
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                let selected = this.instance?.configureFlow === flow.pk;
-
-                                if (
-                                    !this.instance?.pk &&
-                                    !this.instance?.configureFlow &&
-                                    flow.slug === "default-password-change"
-                                ) {
-                                    selected = true;
-                                }
-
-                                return selected;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKFlowSearch({
+                            name: "configureFlow",
+                            flowType: FlowDesignationEnum.StageConfiguration,
+                            value: this.instance?.configureFlow,
+                            blankable: true,
+                            defaultFlowSlug: this.instance?.pk ? null : "default-password-change",
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.",
@@ -170,10 +180,14 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.",
+                                "How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.",
+                                {
+                                    id: "password-stage.failed-attempts-before-cancel.description",
+                                },
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    ${this.renderLockoutSettings()}
                     <ak-switch-input
                         name="allowShowPassword"
                         label="Allow Show Password"

@@ -62,7 +62,7 @@ class MicrosoftEntraGroupClient(
         with transaction.atomic():
             try:
                 response = self._request(self.client.groups.post(microsoft_group))
-            except ObjectExistsSyncException:
+            except ObjectExistsSyncException as exc:
                 # group already exists in microsoft entra, so we can connect them manually
                 # for groups we need to fetch the group from microsoft as we connect on
                 # ID and not group email
@@ -75,11 +75,8 @@ class MicrosoftEntraGroupClient(
                     )
                 )
                 group_data = self._request(self.client.groups.get(request_configuration))
-                if group_data.odata_count < 1 or len(group_data.value) < 1:
-                    self.logger.warning(
-                        "Group which could not be created also does not exist", group=group
-                    )
-                    return
+                if not group_data.value:
+                    raise exc
                 ms_group = group_data.value[0]
                 return MicrosoftEntraProviderGroup.objects.create(
                     provider=self.provider,
@@ -116,12 +113,25 @@ class MicrosoftEntraGroupClient(
         return microsoft_group, created
 
     def create_sync_members(self, obj: Group, microsoft_group: MicrosoftEntraProviderGroup):
-        """Sync all members after a group was created"""
+        """Add members that are missing from the Microsoft group"""
         users = list(obj.users.order_by("id").values_list("id", flat=True))
         connections = MicrosoftEntraProviderUser.objects.filter(
             provider=self.provider, user__pk__in=users
         ).values_list("microsoft_id", flat=True)
-        self._patch(microsoft_group.microsoft_id, Direction.add, connections)
+        if not connections:
+            return
+        # Graph answers adding an existing member with a generic 400, so skip existing members
+        members = self.client.groups.by_group_id(microsoft_group.microsoft_id).members
+        page = self._request(members.get())
+        existing = {member.id for member in page.value}
+        while page.odata_next_link:
+            page = self._request(members.with_url(page.odata_next_link).get())
+            existing.update(member.id for member in page.value)
+        self._patch(
+            microsoft_group.microsoft_id,
+            Direction.add,
+            [connection for connection in connections if connection not in existing],
+        )
 
     def update_group(self, group: Group, action: Direction, users_set: set[int]):
         """Update a groups members"""
@@ -150,6 +160,10 @@ class MicrosoftEntraGroupClient(
                     )
             except ObjectExistsSyncException:
                 pass
+            except NotFoundSyncException:
+                # A user who isn't a member anymore doesn't need to be removed
+                if direction != Direction.remove:
+                    raise
             except TransientSyncException:
                 raise
 

@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import type { UserSelfGroups } from "./UserSelfGroups";
-import { UserSelfGroupsFromJSON } from "./UserSelfGroups";
-import type { UserSelfRoles } from "./UserSelfRoles";
-import { UserSelfRolesFromJSON } from "./UserSelfRoles";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import type { UserSelfGroups } from "./UserSelfGroups.js";
+import { UserSelfGroupsFromJSON } from "./UserSelfGroups.js";
+import type { UserSelfRoles } from "./UserSelfRoles.js";
+import { UserSelfRolesFromJSON } from "./UserSelfRoles.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * User Serializer for information a user can retrieve about themselves

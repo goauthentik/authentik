@@ -57,7 +57,7 @@ export const globalVariables = css`
     }
 
     :host([theme="dark"]) {
-        --pf-c-text-input-group--BackgroundColor: var(--ak-dark-background-light);
+        --pf-c-text-input-group--BackgroundColor: var(--pf-global--BackgroundColor--100);
         --pf-c-text-input-group--Color: var(--ak-dark-foreground);
 
         --pf-c-text-input-group__text--before--BorderColor: var(--ak-dark-background-lighter);

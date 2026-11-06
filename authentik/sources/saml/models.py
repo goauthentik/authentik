@@ -95,12 +95,6 @@ class SAMLSource(Source):
         help_text=_("Also known as Entity ID. Defaults to the Metadata URL."),
     )
 
-    audience_override = models.TextField(
-        blank=True,
-        default="",
-        help_text=_("Audience value this IdP sends for authentik."),
-    )
-
     sso_url = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
         verbose_name=_("SSO URL"),
@@ -132,7 +126,8 @@ class SAMLSource(Source):
         choices=SAMLNameIDPolicy.choices,
         default=SAMLNameIDPolicy.PERSISTENT,
         help_text=_(
-            "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
+            "Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP "
+            "choose the format of the NameID it returns."
         ),
     )
     binding_type = models.CharField(
@@ -263,20 +258,16 @@ class SAMLSource(Source):
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
         if not self.issuer_override:
-            return self.build_full_url(request, view="metadata")
+            return request.build_absolute_uri(
+                reverse("authentik_sources_saml:metadata", kwargs={"source_slug": self.slug})
+            )
         return self.issuer_override
-
-    def build_full_url(self, request: HttpRequest, view: str = "acs") -> str:
-        """Build Full ACS URL to be used in IDP"""
-        return request.build_absolute_uri(
-            reverse(f"authentik_sources_saml:{view}", kwargs={"source_slug": self.slug})
-        )
 
     @property
     def icon_url(self) -> str:
         icon = super().icon_url
         if not icon:
-            return static("authentik/sources/saml.png")
+            return static("authentik/sources/saml/light.png")
         return icon
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
@@ -291,6 +282,7 @@ class SAMLSource(Source):
             ),
             name=self.name,
             icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
+            icon_themed_urls=self.get_icon_themed_urls(request, use_cache=False),
             promoted=self.promoted,
         )
 
@@ -304,6 +296,7 @@ class SAMLSource(Source):
                     kwargs={"source_slug": self.slug},
                 ),
                 "icon_url": self.icon_url,
+                "icon_themed_urls": self.icon_themed_urls,
             }
         )
 
@@ -317,6 +310,8 @@ class SAMLSource(Source):
 
 class SAMLSourcePropertyMapping(PropertyMapping):
     """Map SAML properties to User or Group object attributes"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

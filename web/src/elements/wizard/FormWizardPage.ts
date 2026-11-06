@@ -50,13 +50,11 @@ export class FormWizardPage<S extends WizardPageState = WizardPageState> extends
             throw new TypeError(`${this.slot} does not contain a Form element.`);
         }
 
-        if (!form.reportValidity()) {
-            return false;
-        }
-
         return form
             .submit(new SubmitEvent("submit"))
             .then((responseData) => {
+                if (responseData === false) return false;
+
                 const { slot, host } = this;
 
                 if (!slot) {

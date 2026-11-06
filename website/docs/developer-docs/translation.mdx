@@ -49,18 +49,16 @@ _("New text to be translated.")
 
 Use `gettext` for immediate translation while handling a request. In Django templates, use `{% trans %}` or `{% blocktrans %}` after loading `i18n`. See the [Django translation guide](https://docs.djangoproject.com/en/5.2/topics/i18n/translation/) for placeholders, pluralization, and template examples.
 
-### Register a frontend language
+### Register a language
 
-Adding support for a new frontend language requires source configuration as well as translations:
+`locales.yaml` in the repository root lists every language authentik knows about, along with its frontend tag, backend directory, and Transifex code. To ship a language in the web UI:
 
-1. Add the language tag to `targetLocales` in `web/lit-localize.json`, keeping the existing entries.
-2. Add a matching entry to `LocaleLoaderRecord` in `web/src/common/ui/locale/definitions.ts`. For example, a new `sv-SE` locale needs:
-
-    ```typescript
-    "sv-SE": () => import("#locales/sv-SE"),
-    ```
+1. Set `ship: true` on its row in `locales.yaml`. To add a language that isn't listed, add a row. The `django` value must be Django's form of the tag, for example `sv_SE` for `sv-SE`.
+2. Run `make gen-locales`. This updates `targetLocales` in `web/lit-localize.json`, the `LocaleLoaderRecord` in `web/src/common/ui/locale/definitions.ts`, and the Transifex language mapping in `.github/transifex.yml`.
 
 The locale's catalog uses the same tag, for example `web/xliff/sv-SE.xlf`. The frontend build requires that catalog to exist. For a local preview, generate it with `make web-i18n-extract`, then follow the [frontend preview steps](#frontend-preview). Submit translations through Transifex and leave generated files out of the code PR.
+
+Transifex writes catalogs under its own language codes. `make locales-normalize` moves them to the paths in `locales.yaml`, and a workflow runs it on Transifex pull requests. `make lint-locales` fails when a translation file or a generated list doesn't match `locales.yaml`.
 
 `en` is the source locale. `en-XA` is a generated pseudo-locale for testing the UI and does not need translation.
 

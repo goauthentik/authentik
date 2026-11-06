@@ -7,6 +7,7 @@ from rest_framework.fields import CharField, SerializerMethodField, URLField
 from authentik.common.saml.constants import DEFAULT_ISSUER
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.models import Provider
+from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
 from authentik.enterprise.providers.ws_federation.processors.metadata import MetadataProcessor
@@ -92,6 +93,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "signature_algorithm",
             "signing_kp",
             "encryption_kp",
+            "encryption_algorithm",
             "sign_assertion",
             "sign_logout_request",
             "default_name_id_policy",
@@ -99,7 +101,11 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "url_wsfed",
             "url_issuer",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_write_kwargs,
+            "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "encryption_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+        }
 
 
 class WSFederationProviderViewSet(SAMLProviderViewSet):

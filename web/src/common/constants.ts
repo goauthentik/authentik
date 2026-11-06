@@ -46,9 +46,3 @@ export const EVENT_REFRESH = "ak-refresh";
 export const EVENT_REFRESH_ENTERPRISE = "ak-refresh-enterprise";
 
 //#endregion
-
-//#region LocalStorage
-
-export const LOCALSTORAGE_AUTHENTIK_KEY = "authentik-local-settings";
-
-//#endregion

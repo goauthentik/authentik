@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Metadata } from "./Metadata";
-import { MetadataFromJSON } from "./Metadata";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { Metadata } from "./Metadata.js";
+import { MetadataFromJSON } from "./Metadata.js";
 
 /**
  * @export

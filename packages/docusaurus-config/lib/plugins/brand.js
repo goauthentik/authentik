@@ -29,11 +29,9 @@ const BrandAssets = [
     ["icon.png", "img/icon.png"],
     ["icon.svg", "img/icon.svg"],
     ["social.png", "img/social.png"],
-    // cspell:disable-next-line
-    ["icon_left_brand.svg", "img/icon_left_brand_colour.svg"],
+    ["icon_left_brand.svg", "img/icon_left_brand_color.svg"],
     ["icon_left_brand_white.svg", "img/icon_left_brand.svg"],
-    // cspell:disable-next-line
-    ["icon_top_brand.svg", "img/icon_top_brand_colour.svg"],
+    ["icon_top_brand.svg", "img/icon_top_brand_color.svg"],
     ["icon_top_brand_white.svg", "img/icon_top_brand.svg"],
 ];
 

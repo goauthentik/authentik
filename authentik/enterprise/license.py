@@ -35,7 +35,8 @@ from authentik.enterprise.models import (
     LicenseUsage,
     LicenseUsageStatus,
 )
-from authentik.tenants.utils import get_unique_identifier
+from authentik.root.cache import in_memory_cache
+from authentik.root.install_id import get_install_id
 
 CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
 CACHE_EXPIRY_ENTERPRISE_LICENSE = 12 * 60 * 60  # 12 Hours
@@ -50,7 +51,7 @@ def get_licensing_key() -> Certificate:
 
 def get_license_aud() -> str:
     """Get the JWT audience field"""
-    return f"enterprise.goauthentik.io/license/{get_unique_identifier()}"
+    return f"enterprise.goauthentik.io/license/{get_install_id()}"
 
 
 class LicenseFlags(Enum):
@@ -240,6 +241,8 @@ class LicenseKey:
         return summary
 
     @staticmethod
+    # Checked on every request and audited model save, so don't go to the cache each time
+    @in_memory_cache(key=lambda: None, timeout=30)
     def cached_summary() -> LicenseSummary:
         """Helper method which looks up the last summary"""
         summary = cache.get(CACHE_KEY_ENTERPRISE_LICENSE)

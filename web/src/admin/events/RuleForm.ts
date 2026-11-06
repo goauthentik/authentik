@@ -3,7 +3,6 @@ import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
 import { eventTransportsProvider, eventTransportsSelector } from "./RuleFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -12,11 +11,12 @@ import { severityToLabel } from "#common/labels";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { groupSource } from "#admin/common/search-sources";
+
 import {
-    CoreApi,
-    CoreGroupsListRequest,
     EventsApi,
-    Group,
     NotificationRule,
     PaginatedNotificationTransportList,
     SeverityEnum,
@@ -72,30 +72,14 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 value="${ifDefined(this.instance?.name)}"
             ></ak-text-input>
             <ak-form-element-horizontal label=${msg("Group")} name="destinationGroup">
-                <ak-search-select
-                    placeholder=${msg("Select a group...")}
-                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                        const args: CoreGroupsListRequest = {
-                            ordering: "name",
-                            includeUsers: false,
-                        };
-
-                        if (typeof query !== "undefined") {
-                            args.search = query;
-                        }
-
-                        const groups = await aki(CoreApi).coreGroupsList(args);
-
-                        return groups.results;
-                    }}
-                    .renderElement=${(group: Group) => group.name}
-                    .value=${(group: Group | null) => group?.pk}
-                    .selected=${(group: Group): boolean => {
-                        return group.pk === this.instance?.destinationGroup;
-                    }}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "destinationGroup",
+                    source: groupSource,
+                    placeholder: msg("Select a group..."),
+                    value: this.instance?.destinationGroup,
+                    selectedObject: this.instance?.destinationGroupObj,
+                    blankable: true,
+                })}
                 <p class="pf-c-form__helper-text">
                     ${msg("Select the group of users which the alerts are sent to. ")}
                 </p>

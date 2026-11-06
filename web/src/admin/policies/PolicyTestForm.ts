@@ -1,8 +1,7 @@
 import "#components/ak-status-label";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
@@ -12,21 +11,16 @@ import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
-import {
-    CoreApi,
-    CoreUsersListRequest,
-    PoliciesApi,
-    Policy,
-    PolicyTestRequest,
-    PolicyTestResult,
-    User,
-} from "@goauthentik/api";
+import { userSource } from "#admin/common/search-sources";
+
+import { PoliciesApi, Policy, PolicyTestRequest, PolicyTestResult } from "@goauthentik/api";
 
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-policy-test-form")
@@ -130,35 +124,13 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
 
     protected override renderForm(): SlottedTemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="user">
-                <ak-search-select
-                    placeholder=${msg("Select a user...")}
-                    .fetchObjects=${async (query?: string): Promise<User[]> => {
-                        const args: CoreUsersListRequest = {
-                            ordering: "username",
-                        };
-
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-
-                        const users = await aki(CoreApi).coreUsersList(args);
-
-                        return users.results;
-                    }}
-                    .renderElement=${(user: User): string => {
-                        return user.username;
-                    }}
-                    .renderDescription=${(user: User): TemplateResult => {
-                        return html`${user.name}`;
-                    }}
-                    .value=${(user: User | undefined): number | undefined => {
-                        return user?.pk;
-                    }}
-                    .selected=${(user: User): boolean => {
-                        return this.request?.user.toString() === user.pk.toString();
-                    }}
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "user",
+                    source: userSource,
+                    placeholder: msg("Select a user..."),
+                    value: this.request?.user?.toString(),
+                    blankable: false,
+                })}
             </ak-form-element-horizontal>
 
             <ak-form-element-horizontal name="context">
@@ -170,12 +142,12 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                     },
                     msg("Context"),
                 )}
-                <ak-codemirror
+                <ak-code-editor
                     id="context"
                     mode="yaml"
                     value=${YAML.stringify(this.request?.context ?? {})}
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>

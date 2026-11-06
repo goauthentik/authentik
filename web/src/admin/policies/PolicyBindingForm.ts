@@ -2,7 +2,6 @@ import "#components/ak-switch-input";
 import "#elements/ToggleGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import { aki } from "#common/api/client";
@@ -11,27 +10,21 @@ import {
     PolicyBindingCheckTarget,
     PolicyBindingCheckTargetToLabel,
 } from "#common/policies/utils";
-import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
-import {
-    CoreApi,
-    CoreGroupsListRequest,
-    CoreUsersListRequest,
-    Group,
-    PoliciesAllListRequest,
-    PoliciesApi,
-    Policy,
-    PolicyBinding,
-    User,
-} from "@goauthentik/api";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { groupSource, policySource, userSource } from "#admin/common/search-sources";
+import { renderDryRunHelp } from "#admin/policies/renderDryRunHelp";
+
+import { Group, PoliciesApi, PolicyBinding, User } from "@goauthentik/api";
 
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
@@ -68,12 +61,20 @@ export function cleanBindingForSend(
     return data;
 }
 
+const Styles = css`
+    .ak-c-form--centered-control {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+`;
+
 @customElement("ak-policy-binding-form")
 export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends ModelForm<
     T,
     string
 > {
-    public static styles: CSSResult[] = [...super.styles, PFContent];
+    public static styles: CSSResult[] = [...super.styles, PFContent, Styles];
     public static verboseName = msg("Policy Binding");
     public static verboseNamePlural = msg("Policy Bindings");
 
@@ -105,6 +106,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
 
     @state()
     protected defaultOrder = 0;
+
+    protected supportsDryRun = true;
 
     public override reset(): void {
         super.reset();
@@ -166,22 +169,24 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     renderModeSelector(): TemplateResult {
-        return html` <ak-toggle-group
-            value=${this.policyGroupUser}
-            @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
-                this.policyGroupUser = ev.value;
-            }}
-        >
-            ${Object.values(PolicyBindingCheckTarget).map((ct) => {
-                if (this.allowedTypes.includes(ct)) {
-                    return html`<option value=${ct}>
-                        ${PolicyBindingCheckTargetToLabel(ct)}
-                    </option>`;
-                }
+        return html`<div class="ak-c-form--centered-control">
+            <ak-toggle-group
+                value=${this.policyGroupUser}
+                @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
+                    this.policyGroupUser = ev.value;
+                }}
+            >
+                ${Object.values(PolicyBindingCheckTarget).map((ct) => {
+                    if (this.allowedTypes.includes(ct)) {
+                        return html`<option value=${ct}>
+                            ${PolicyBindingCheckTargetToLabel(ct)}
+                        </option>`;
+                    }
 
-                return nothing;
-            })}
-        </ak-toggle-group>`;
+                    return nothing;
+                })}
+            </ak-toggle-group>
+        </div>`;
     }
 
     protected renderTarget() {
@@ -190,37 +195,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 name="policy"
                 ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.Policy}
             >
-                <ak-search-select
-                    .groupBy=${(items: Policy[]) => {
-                        return groupBy(items, (policy) => policy.verboseNamePlural);
-                    }}
-                    .fetchObjects=${async (query?: string): Promise<Policy[]> => {
-                        const args: PoliciesAllListRequest = {
-                            ordering: "name",
-                        };
-
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-
-                        const policies = await aki(PoliciesApi).policiesAllList(args);
-                        const selectedPolicy = this.instance?.policyObj;
-
-                        if (
-                            selectedPolicy &&
-                            !policies.results.some((policy) => policy.pk === selectedPolicy.pk)
-                        ) {
-                            return [selectedPolicy, ...policies.results];
-                        }
-
-                        return policies.results;
-                    }}
-                    .renderElement=${(policy: Policy) => policy.name}
-                    .value=${(policy: Policy | null) => policy?.pk}
-                    .selected=${(policy: Policy) => policy.pk === this.instance?.policy}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "policy",
+                    source: policySource,
+                    value: this.instance?.policy,
+                    selectedObject: this.instance?.policyObj,
+                    blankable: true,
+                })}
                 ${this.typeNotices
                     .filter(({ type }) => type === PolicyBindingCheckTarget.Policy)
                     .map((msg) => {
@@ -232,37 +213,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 name="group"
                 ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.Group}
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                        const args: CoreGroupsListRequest = {
-                            ordering: "name",
-                            includeUsers: false,
-                        };
-
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-
-                        const groups = await aki(CoreApi).coreGroupsList(args);
-                        const selectedGroup = this.instance?.groupObj;
-
-                        if (
-                            selectedGroup &&
-                            !groups.results.some((group) => group.pk === selectedGroup.pk)
-                        ) {
-                            return [selectedGroup as Group, ...groups.results];
-                        }
-
-                        return groups.results;
-                    }}
-                    .renderElement=${(group: Group): string => {
-                        return group.name;
-                    }}
-                    .value=${(group: Group | null) => String(group?.pk ?? "")}
-                    .selected=${(group: Group) => group.pk === this.instance?.group}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "group",
+                    source: groupSource,
+                    value: this.instance?.group,
+                    selectedObject: this.instance?.groupObj as Group | null | undefined,
+                    blankable: true,
+                })}
                 ${this.typeNotices
                     .filter(({ type }) => type === PolicyBindingCheckTarget.Group)
                     .map((msg) => {
@@ -274,35 +231,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 name="user"
                 ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.User}
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<User[]> => {
-                        const args: CoreUsersListRequest = {
-                            ordering: "username",
-                        };
-
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-
-                        const users = await aki(CoreApi).coreUsersList(args);
-                        const selectedUser = this.instance?.userObj;
-
-                        if (
-                            selectedUser &&
-                            !users.results.some((user) => user.pk === selectedUser.pk)
-                        ) {
-                            return [selectedUser as User, ...users.results];
-                        }
-
-                        return users.results;
-                    }}
-                    .renderElement=${(user: User) => user.username}
-                    .renderDescription=${(user: User) => html`${user.name}`}
-                    .value=${(user: User | null) => user?.pk}
-                    .selected=${(user: User) => user.pk === this.instance?.user}
-                    blankable
-                >
-                </ak-search-select>
+                ${AKSearchSelect({
+                    name: "user",
+                    source: userSource,
+                    value: this.instance?.user?.toString(),
+                    selectedObject: this.instance?.userObj as User | null | undefined,
+                    blankable: true,
+                })}
                 ${this.typeNotices
                     .filter(({ type }) => type === PolicyBindingCheckTarget.User)
                     .map((msg) => {
@@ -326,6 +261,16 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 ?checked=${this.instance?.enabled ?? true}
             >
             </ak-switch-input>
+            ${
+                this.supportsDryRun
+                    ? html`<ak-switch-input
+                          name="dryRun"
+                          label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                          ?checked=${this.instance?.dryRun ?? false}
+                          .help=${renderDryRunHelp()}
+                      ></ak-switch-input>`
+                    : nothing
+            }
             <ak-switch-input
                 name="negate"
                 label=${msg("Negate Result")}

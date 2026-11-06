@@ -1,8 +1,8 @@
+import { CSRFHeaderName, readCSRFToken } from "#common/api/csrf";
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
 import { AKEnterpriseRefreshEvent, AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
 import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
-import { getCookie } from "#common/utils";
 
 import { showMessage } from "#elements/messages/MessageContainer";
 
@@ -16,10 +16,8 @@ import {
     ResponseContext,
 } from "@goauthentik/api";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import { html } from "lit";
 
-export const CSRFHeaderName = "X-authentik-CSRF";
 export const AcceptLanguage = "Accept-Language";
 
 export class LoggingMiddleware implements Middleware {
@@ -52,7 +50,7 @@ export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
         context.init.headers = {
             ...context.init.headers,
-            [CSRFHeaderName]: getCookie("authentik_csrf"),
+            [CSRFHeaderName]: readCSRFToken(),
         };
 
         return Promise.resolve(context);
@@ -74,25 +72,11 @@ export class EventMiddleware implements Middleware {
     }
 }
 
-export class LocaleMiddleware implements Middleware, Disposable {
+export class LocaleMiddleware implements Middleware {
     #locale: string;
 
-    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (event.detail.status !== "ready") {
-            return;
-        }
-
-        this.#locale = formatAcceptLanguageHeader(event.detail.readyLocale);
-    };
-
-    constructor(languageTagHint: Intl.UnicodeBCP47LocaleIdentifier) {
-        this.#locale = formatAcceptLanguageHeader(languageTagHint);
-
-        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
-    }
-
-    [Symbol.dispose]() {
-        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    constructor(languageTag: Intl.UnicodeBCP47LocaleIdentifier) {
+        this.#locale = formatAcceptLanguageHeader(languageTag);
     }
 
     pre(context: RequestContext): Promise<FetchParams | void> {
