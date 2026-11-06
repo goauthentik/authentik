@@ -27,7 +27,12 @@ from typing import TYPE_CHECKING
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.providers.oauth2.models import ClientType, OAuth2Provider, RedirectURI
+from authentik.providers.oauth2.models import (
+    ClientGrantBinding,
+    ClientType,
+    OAuth2Provider,
+    RedirectURI,
+)
 
 if TYPE_CHECKING:
     from authentik.core.models import Application
@@ -41,6 +46,15 @@ class ClientRegistrationKind(StrEnum):
 
     # A registered OAuth2Provider, identified by its own client_id
     LEGACY = "legacy"
+
+
+class ClientAuthMethod(StrEnum):
+    """Token endpoint authentication methods (RFC 7591 section 2) known to core.
+    ``OAuthClientContext.token_endpoint_auth_method`` accepts any string."""
+
+    NONE = "none"
+    CLIENT_SECRET_BASIC = "client_secret_basic"
+    CLIENT_SECRET_POST = "client_secret_post"
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,8 +93,52 @@ class OAuthClientContext:
         return self.registration_kind == ClientRegistrationKind.LEGACY
 
     @property
+    def is_registered_client(self) -> bool:
+        """Whether this is the client registered on the provider itself. Grants issued
+        before grants recorded their client belong to this client only."""
+        return self.is_legacy and self.client_id == self.provider.client_id
+
+    @property
     def is_confidential(self) -> bool:
         return self.client_type == ClientType.CONFIDENTIAL
+
+    @property
+    def token_endpoint_auth_method(self) -> str:
+        """Authentication method selected for this client at the token endpoint.
+
+        Registered confidential clients may send their secret either way; they are
+        recorded with the RFC 7591 default, ``client_secret_basic``."""
+        if self.is_confidential:
+            return ClientAuthMethod.CLIENT_SECRET_BASIC
+        return ClientAuthMethod.NONE
+
+    @property
+    def grant_binding(self) -> ClientGrantBinding:
+        """Client attributes recorded on grants issued to this client. Subclasses which
+        reference a credential managed elsewhere add it as an external binding."""
+        return ClientGrantBinding(
+            client_id=self.client_id,
+            auth_method=self.token_endpoint_auth_method,
+        )
+
+    def matches_grant_binding(self, binding: ClientGrantBinding) -> bool:
+        """Check whether a grant recorded with ``binding`` may be used by this client.
+
+        The exact client identifier and any external binding must always match. The
+        authentication method is compared for every registration kind except legacy:
+        a registered client's authentication requirements follow its provider's current
+        configuration, which is checked on every request, as it always has been."""
+        expected = self.grant_binding
+        if binding.client_id != expected.client_id:
+            return False
+        if (
+            binding.external_binding != expected.external_binding
+            or binding.external_binding_version != expected.external_binding_version
+        ):
+            return False
+        if self.is_legacy:
+            return True
+        return binding.auth_method == expected.auth_method
 
     def check_client_secret(self, client_secret: str) -> bool:
         """Check a shared client secret. Only legacy clients have shared secrets;

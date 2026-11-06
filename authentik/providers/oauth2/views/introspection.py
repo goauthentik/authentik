@@ -2,7 +2,6 @@
 
 from dataclasses import dataclass, field
 
-from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -11,8 +10,8 @@ from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenIntrospectionError
 from authentik.providers.oauth2.id_token import IDToken
-from authentik.providers.oauth2.models import AccessToken, ClientType, OAuth2Provider, RefreshToken
-from authentik.providers.oauth2.utils import TokenResponse, authenticate_provider
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.utils import TokenResponse, authenticate_client, find_client_token
 
 LOGGER = get_logger()
 
@@ -40,26 +39,18 @@ class TokenIntrospectionParams:
     @staticmethod
     def from_request(request: HttpRequest) -> TokenIntrospectionParams:
         """Extract required Parameters from HTTP Request"""
-        raw_token = request.POST.get("token")
-        provider = authenticate_provider(request)
-        if not provider:
+        raw_token = request.POST.get("token", "")
+        client = authenticate_client(request)
+        if not client:
             LOGGER.info("Failed to authenticate introspection request")
             raise TokenIntrospectionError
-        if provider.client_type != ClientType.CONFIDENTIAL:
+        if not client.is_confidential:
             LOGGER.info("Introspection request from public provider, denying.")
             raise TokenIntrospectionError
 
-        query = Q(
-            Q(provider=provider) | Q(provider__jwt_federation_providers__in=[provider]),
-            token=raw_token,
-        )
-
-        access_token = AccessToken.objects.filter(query).first()
-        if access_token:
-            return TokenIntrospectionParams(access_token, access_token.provider)
-        refresh_token = RefreshToken.objects.filter(query).first()
-        if refresh_token:
-            return TokenIntrospectionParams(refresh_token, refresh_token.provider)
+        token = find_client_token(raw_token, client, include_federated=True)
+        if token:
+            return TokenIntrospectionParams(token, token.provider)
         LOGGER.debug("Token does not exist", token=raw_token)
         raise TokenIntrospectionError()
 
@@ -83,7 +74,9 @@ class TokenIntrospectionView(View):
                 response.pop("cnf", None)
             response["active"] = not self.params.token.is_expired and not self.params.token.revoked
             response["scope"] = " ".join(self.params.token.scope)
-            response["client_id"] = self.params.provider.client_id
+            response["client_id"] = self.params.token.bound_client_id
+            if isinstance(self.params.token, AccessToken) and self.params.token.resource:
+                response["aud"] = self.params.token.resource
             return TokenResponse(response)
         except TokenIntrospectionError:
             return TokenResponse({"active": False})

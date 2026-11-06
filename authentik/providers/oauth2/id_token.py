@@ -30,6 +30,20 @@ def hash_session_key(session_key: str) -> str:
     return sha256(session_key.encode("ascii")).hexdigest()
 
 
+def client_audience(provider: OAuth2Provider, token: BaseGrantModel) -> str:
+    """The client a token was issued to: the ID token audience and the access token's
+    authorized party. Grants without a client binding belong to the provider's client."""
+    if token.client_id is not None:
+        return token.client_id
+    return provider.client_id
+
+
+def resource_audience(token: BaseGrantModel) -> str | None:
+    """The resource an access token is restricted to, if the grant carries one. Without
+    one, access tokens keep the client audience they have always had."""
+    return token.resource
+
+
 @dataclass(slots=True)
 class IDToken:
     """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be
@@ -92,7 +106,7 @@ class IDToken:
         )
         id_token.iss = provider.get_issuer(request)
         id_token.jti = generate_id()
-        id_token.aud = provider.client_id
+        id_token.aud = client_audience(provider, token)
         id_token.claims = {}
 
         id_token.sub = id_token._resolve_sub(provider, token.user)
@@ -176,7 +190,14 @@ class IDToken:
         final = self.to_dict()
         # Access tokens remain bearer tokens not DPoP, should not have key-binding cnf
         final.pop("cnf", None)
-        final["azp"] = provider.client_id
+        client_id = client_audience(provider, token)
+        resource = resource_audience(token)
+        if resource is not None:
+            # Restricted to a resource: the resource is the audience, and the client is
+            # identified separately (RFC 8707 section 2, RFC 9068 section 2.2)
+            final["aud"] = resource
+            final["client_id"] = client_id
+        final["azp"] = client_id
         final["uid"] = generate_id()
         final.setdefault("scope", " ".join(token.scope))
         return provider.encode(final)

@@ -20,7 +20,7 @@ class DeviceCodeTokenRequest(TokenRequest):
             .filter(device_code=device_code, provider=self.provider)
             .first()
         )
-        if not code:
+        if not code or not code.is_bound_to(self.client):
             raise TokenError("invalid_grant")
         if code.expires and code.is_expired:
             raise DeviceCodeError("expired_token")

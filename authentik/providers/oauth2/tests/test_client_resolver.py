@@ -1,9 +1,10 @@
 """Test OAuth client resolution: provider selectors, client adapters and resolvers"""
 
 from base64 import b64encode
-from dataclasses import FrozenInstanceError, dataclass, replace
+from dataclasses import FrozenInstanceError, dataclass, make_dataclass, replace
 from pickle import dumps, loads  # nosec
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -11,7 +12,10 @@ from django.urls import reverse
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import GRANT_TYPE_CLIENT_CREDENTIALS, SCOPE_OPENID
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.models import FlowToken
+from authentik.flows.planner import FlowPlan
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.client import (
     ClientAdapter,
@@ -23,19 +27,26 @@ from authentik.providers.oauth2.client import (
     ProviderSelector,
 )
 from authentik.providers.oauth2.models import (
+    AccessToken,
+    AuthorizationCode,
     ClientType,
     GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
     RedirectURIType,
+    ResponseMode,
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.token.authorization_code import AuthorizationCodeTokenRequest
 from authentik.providers.oauth2.token.router import parse_token_request
 from authentik.providers.oauth2.utils import authenticate_client, client_from_request
-from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
+from authentik.providers.oauth2.views.authorize import (
+    PLAN_CONTEXT_PARAMS,
+    OAuthAuthorizationParams,
+    OAuthFulfillmentStage,
+)
 
 HTTPS_CLIENT_ID = "https://client.example.com/oauth/client-metadata.json"
 
@@ -126,6 +137,77 @@ class TestClientContext(OAuthTestCase):
         restored = loads(dumps(client))  # nosec
         self.assertEqual(restored, client)
         self.assertEqual(restored.provider.pk, self.provider.pk)
+
+    def test_legacy_authorization_params_pickle_fulfillment(self):
+        """Pre-client slotted pickles resume code and hybrid fulfillment after an upgrade."""
+        request = self.factory.get("/")
+        request.user = create_test_admin_user()
+        request.session = {"authenticatedsession": None}
+        for grant_type, response_type, response_mode in (
+            (GrantType.AUTHORIZATION_CODE, "code", ResponseMode.QUERY),
+            (GrantType.HYBRID, "code id_token token", ResponseMode.FRAGMENT),
+        ):
+            with self.subTest(grant_type=grant_type):
+                legacy_values = {
+                    "client_id": self.provider.client_id,
+                    "redirect_uri": "http://local.invalid/callback",
+                    "response_type": response_type,
+                    "response_mode": response_mode,
+                    "scope": {SCOPE_OPENID},
+                    "state": "saved-state",
+                    "nonce": "saved-nonce",
+                    "prompt": set(),
+                    "grant_type": grant_type,
+                    "provider": OAuth2Provider.objects.get(pk=self.provider.pk),
+                    "request": None,
+                    "max_age": None,
+                    "code_challenge": None,
+                    "code_challenge_method": None,
+                    "dpop_jkt": None,
+                }
+                legacy_class = make_dataclass(
+                    "OAuthAuthorizationParams",
+                    legacy_values,
+                    slots=True,
+                    module=OAuthAuthorizationParams.__module__,
+                )
+                with patch(
+                    "authentik.providers.oauth2.views.authorize.OAuthAuthorizationParams",
+                    legacy_class,
+                ):
+                    plan = FlowPlan(
+                        flow_pk=self.provider.authorization_flow_id.hex,
+                        context={PLAN_CONTEXT_PARAMS: legacy_class(**legacy_values)},
+                    )
+                    saved_flow = FlowToken.objects.create(
+                        user=request.user,
+                        identifier=generate_id(),
+                        flow_id=self.provider.authorization_flow_id,
+                        _plan=FlowToken.pickle(plan),
+                    )
+                restored = FlowToken.objects.get(pk=saved_flow.pk).plan.context[PLAN_CONTEXT_PARAMS]
+                self.assertIsInstance(restored, OAuthAuthorizationParams)
+                self.assertFalse(hasattr(restored, "client"))
+                stage = OAuthFulfillmentStage(FlowExecutorView())
+                stage.request = request
+                stage.provider = self.provider
+                stage.params = restored
+                uri = urlsplit(stage.create_response_uri())
+                response = parse_qs(
+                    uri.query if response_mode == ResponseMode.QUERY else uri.fragment
+                )
+                self.assertEqual(response["state"], ["saved-state"])
+                code = AuthorizationCode.objects.get(code=response["code"][0])
+                registered = OAuthClientContext.for_provider(self.provider)
+                self.assertTrue(code.is_bound_to(registered))
+                self.assertEqual(code.client_id, self.provider.client_id)
+                self.assertEqual(code.nonce, "saved-nonce")
+                self.assertEqual(code.redirect_uri, legacy_values["redirect_uri"])
+                if grant_type == GrantType.HYBRID:
+                    token = AccessToken.objects.get(token=response["access_token"][0])
+                    self.assertTrue(token.is_bound_to(registered))
+                    self.assertEqual(token.client_id, self.provider.client_id)
+                    self.assertEqual(token.id_token.aud, self.provider.client_id)
 
     def test_check_client_secret(self):
         """Shared secrets are checked against the registered provider"""

@@ -434,7 +434,13 @@ class OAuthAuthorizationParams:
         if self.dpop_jkt:
             code.dpop_jkt = self.dpop_jkt
 
+        code.bind_client(self.bound_client(), redirect_uri=self.redirect_uri)
         return code
+
+    def bound_client(self) -> OAuthClientContext:
+        """Client grants for this request are issued to. Parameters stored in a flow plan
+        before the client was resolved belong to the provider's registered client."""
+        return getattr(self, "client", None) or OAuthClientContext.for_provider(self.provider)
 
 
 class AuthorizationFlowInitView(PolicyAccessView):
@@ -787,6 +793,7 @@ class OAuthFulfillmentStage(StageView):
             auth_time=auth_event.created if auth_event else now,
             session=self.request.session["authenticatedsession"],
         )
+        token.bind_client(self.params.bound_client(), redirect_uri=self.params.redirect_uri)
 
         id_token = IDToken.new(self.provider, token, self.request)
         id_token.nonce = self.params.nonce
