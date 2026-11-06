@@ -126,7 +126,8 @@ export class Sidebar extends AKElement {
                 aria-current=${ifPresent(current ? "page" : undefined)}
                 ><div part="${waypoint ? "icon" : "rail"}">${waypoint ?? nothing}</div>
                 <span part="label"
-                    >${label}${notice ? html`<span part="notice">${notice}</span>` : nothing}</span
+                    ><span part="label-text">${label}</span
+                    >${notice ? html`<span part="notice">${notice}</span>` : nothing}</span
                 >
             </a>
         </li>`;
@@ -139,26 +140,29 @@ export class Sidebar extends AKElement {
         const id = slugify(key);
         const waypoint = mkIcon(icon);
 
-        return html`<li part="list-item list-item-expandable" data-key=${key}>
-            <button
-                id="sidebar-toggle-${id}"
-                type="button"
-                part="button row"
-                data-depth=${depth}
+        return html`<li
+                part="list-item list-item-expandable"
                 aria-expanded=${open ? "true" : "false"}
-                aria-controls="sidebar-subnav-${id}"
-                @click=${() => this.#toggleExpanded(key, !open)}
+                data-key=${key}
             >
-                <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint ?? nothing}</div>
-                <span part="label">${label}</span>
-                <span part="toggle">
-                    <span part="toggle-icon">
-                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                <button
+                    id="sidebar-toggle-${id}"
+                    type="button"
+                    part="button row"
+                    data-depth=${depth}
+                    aria-controls="sidebar-subnav-${id}"
+                    @click=${() => this.#toggleExpanded(key, !open)}
+                >
+                    <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint ?? nothing}</div>
+                    <span part="label">${label}</span>
+                    <span part="toggle">
+                        <span part="toggle-icon">
+                            <i class="fas fa-angle-right" aria-hidden="true"></i>
+                        </span>
                     </span>
-                </span>
-            </button>
-            ${this.renderSubnav(id, open, children, depth)}
-        </li>`;
+                </button>
+            </li>
+            ${open ? children.map((child) => this.renderItem(child, depth + 1)) : nothing} `;
     }
 
     protected renderPathAndChildren(entry: SidebarItemWithBoth, depth = 0) {
@@ -168,32 +172,31 @@ export class Sidebar extends AKElement {
         const id = slugify(key);
         const waypoint = mkIcon(icon);
 
-        return html`<li part="list-item list-item-expandable" data-key=${key}>
-            <button
-                id="sidebar-toggle-${id}"
-                type="button"
-                part="button row"
-                data-depth=${depth}
+        return html`<li
+                part="list-item list-item-expandable"
                 aria-expanded=${open ? "true" : "false"}
-                aria-controls="sidebar-subnav-${id}"
-                @click=${() => this.#toggleExpanded(key, !open)}
+                data-key=${key}
             >
-                <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint ?? nothing}</div>
-                <span part="label">${label}</span>
-                <span part="toggle">
+                <button
+                    id="sidebar-toggle-${id}"
+                    type="button"
+                    part="button row"
+                    data-depth=${depth}
+                >
+                    <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint ?? nothing}</div>
+                    <span part="label">${label}</span>
+                </button>
+                <span
+                    part="toggle"
+                    aria-controls="sidebar-subnav-${id}"
+                    @click=${() => this.#toggleExpanded(key, !open)}
+                >
                     <span part="toggle-icon">
                         <i class="fas fa-angle-right" aria-hidden="true"></i>
                     </span>
                 </span>
-            </button>
-            ${this.renderSubnav(id, open, children, depth)}
-        </li>`;
-    }
-
-    protected renderSubnav(id: string, open: boolean, children: SidebarItem[], depth: number) {
-        return html`<ul id="sidebar-subnav-${id}" part="subnav" ?hidden=${!open}>
-            ${open ? children.map((child) => this.renderItem(child, depth + 1)) : nothing}
-        </ul>`;
+            </li>
+            ${open ? children.map((child) => this.renderItem(child, depth + 1)) : nothing} `;
     }
 
     protected renderItem(entry: SidebarItem, depth = 0): TemplateResult {
