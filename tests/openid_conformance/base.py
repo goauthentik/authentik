@@ -10,6 +10,7 @@ from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.providers.oauth2.models import OAuth2Provider
 from tests.live import SSLLiveMixin
 from tests.openid_conformance.conformance import Conformance
+from tests.openid_conformance.screenshots import capture_screenshot
 from tests.selenium import SeleniumTestCase
 
 
@@ -135,11 +136,8 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
             sleep(0.1)
 
     def get_screenshot(self):
-        """Get a screenshot, but resize the window first so we don't exceed 500kb"""
-        self.driver.set_window_size(800, 600)
-        screenshot = f"data:image/jpeg;base64,{self.driver.get_screenshot_as_base64()}"
-        self.driver.maximize_window()
-        return screenshot
+        """Get screenshot evidence within the conformance suite's upload limit."""
+        return capture_screenshot(self.driver)
 
     def do_browser(self, url):
         """For any specific OpenID Conformance test, execute the operations required"""
