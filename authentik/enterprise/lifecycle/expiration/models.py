@@ -230,11 +230,10 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         qs = self.scope(threshold=self._threshold()).annotate(
             login_activity=Greatest("last_login", "date_joined")
         )
-        qs = qs.exclude(
-            pk__in=UserOffboarding.objects.filter(status=OffboardingStatus.PENDING)
-            .exclude(pk__in=withdrawn)
-            .values("user")
-        )
+        pending = UserOffboarding.objects.filter(
+            user=OuterRef("pk"), status=OffboardingStatus.PENDING
+        ).exclude(pk__in=withdrawn)
+        qs = qs.exclude(models.Exists(pending))
         # Canceled, completed or failed generated rows exempt the user until they
         # log in again.
         terminal = UserOffboarding.objects.filter(
@@ -328,26 +327,39 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
     def _revisit_owned_rows(self):
         rows = UserOffboarding.objects.filter(
             rule=self, status=OffboardingStatus.PENDING
-        ).values_list("pk", "user_id")
+        ).select_related("user", "user__activity")
         for batch in batched(rows.iterator(chunk_size=CHUNK_SIZE), CHUNK_SIZE, strict=False):
             eligible = (
-                self._eligible_user_ids([user_id for _, user_id in batch])
-                if self.enabled
-                else set()
+                self._eligible_user_ids([row.user_id for row in batch]) if self.enabled else set()
             )
-            for row_pk, _user_id in batch:
+            for row in batch:
+                due_at = (
+                    self._pending_due_at(row, in_scope=row.user_id in eligible)
+                    if self.enabled
+                    else None
+                )
+                if due_at is not None and (
+                    row.scheduled_at,
+                    row.action,
+                    row.revoke_sessions,
+                    row.revoke_tokens,
+                ) == (due_at, self.action, self.revoke_sessions, self.revoke_tokens):
+                    continue
+                # Re-read changed rows under the lock before reconciling them.
                 with transaction.atomic():
-                    row = (
+                    locked = (
                         UserOffboarding.objects.select_for_update(of=("self",))
-                        .filter(pk=row_pk, rule=self, status=OffboardingStatus.PENDING)
+                        .filter(pk=row.pk, rule=self, status=OffboardingStatus.PENDING)
                         .select_related("user", "user__activity")
                         .first()
                     )
-                    if row is None:
+                    if locked is None:
                         continue
-                    _, rewarn = self.reconcile_offboarding(row, in_scope=row.user_id in eligible)
+                    _, rewarn = self.reconcile_offboarding(
+                        locked, in_scope=locked.user_id in eligible
+                    )
                 if rewarn:
-                    self._warn(row.user, row)
+                    self._warn(locked.user, locked)
 
     def _foreign_rows(self) -> QuerySet[UserOffboarding]:
         return (
@@ -397,6 +409,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 if row.user_id not in eligible:
                     continue
                 rank = self.rank(row.user)
+                if rank >= self.row_rank(row):
+                    continue
                 with transaction.atomic():
                     locked = (
                         UserOffboarding.objects.select_for_update(of=("self",))
