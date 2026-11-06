@@ -73,7 +73,7 @@ class TokenRequest:
 
         if self.grant_type not in self.provider.grant_types:
             self.logger.warning("Invalid grant_type for provider", grant_type=self.grant_type)
-            raise TokenError("invalid_grant").with_cause("grant_type_not_configured")
+            raise TokenError("unauthorized_client").with_cause("grant_type_not_configured")
 
         # Confidential clients MUST authenticate to the token endpoint per
         # RFC 6749 §2.3.1. The device code grant (RFC 8628 §3.4) and the token

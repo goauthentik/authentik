@@ -243,7 +243,7 @@ class TestTokenDeviceCode(OAuthTestCase):
         self.provider.save()
         res = self.exchange(device_token.device_code)
         self.assertEqual(res.status_code, 400)
-        self.assertEqual(loads(res.content.decode())["error"], "invalid_grant")
+        self.assertEqual(loads(res.content.decode())["error"], "unauthorized_client")
 
     def test_code_wrong_client_secret(self):
         """A mismatched client secret is refused, not just a missing one"""

@@ -30,6 +30,7 @@ from authentik.crypto.validators import (
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
+    GrantType,
     OAuth2Provider,
     RedirectURIMatchingMode,
     RedirectURIType,
@@ -76,6 +77,14 @@ class OAuth2ProviderSerializer(ProviderSerializer):
                     ) from None
         return data
 
+    def validate(self, attrs: dict) -> dict:
+        # Only on create; a serializer field default would also reset the grant types of
+        # existing providers on every full update (PUT) that omits them. This is in validate()
+        # rather than create() as blueprints save new objects through update().
+        if self.instance is None:
+            attrs.setdefault("grant_types", [GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN])
+        return super().validate(attrs)
+
     class Meta:
         model = OAuth2Provider
         fields = ProviderSerializer.Meta.fields + [
@@ -103,6 +112,13 @@ class OAuth2ProviderSerializer(ProviderSerializer):
         secret_fields = ["client_secret"]
         extra_kwargs = {
             **ProviderSerializer.Meta.extra_write_kwargs,
+            "grant_types": {
+                "error_messages": {"empty": _("At least one grant type must be enabled.")},
+                "help_text": _(
+                    "Grant types the client may use. "
+                    "Defaults to authorization_code and refresh_token when omitted on create."
+                ),
+            },
             "signing_key": {"validators": [KeyTypeValidator(*JWT_SIGNING_KEY_TYPES)]},
             "encryption_key": {"validators": [KeyTypeValidator(*JWE_ENCRYPTION_KEY_TYPES)]},
         }

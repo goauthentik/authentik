@@ -62,7 +62,7 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             },
         )
         self.assertEqual(res.status_code, 400)
-        self.assertEqual(res.json()["error"], "invalid_client")
+        self.assertEqual(res.json()["error"], "unauthorized_client")
 
     def test_backchannel_invalid_no_app(self):
         """Test backchannel"""
