@@ -19,6 +19,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Provider
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
@@ -206,5 +207,5 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, methods=["GET"])
     def default_settings(self, request: Request) -> Response:
         """Global default outpost config"""
-        host = self.request.build_absolute_uri("/")
+        host = self.request.build_absolute_uri(CONFIG.get("web.path", "/"))
         return Response({"config": default_outpost_config(host)})
