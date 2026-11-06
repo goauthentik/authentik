@@ -1,3 +1,5 @@
+import { MessageFormatter } from "#common/ui/locale/format";
+
 /**
  * Defines the plural forms for a given locale, and provides a function to select the appropriate
  * form based on a count.
@@ -10,27 +12,27 @@ export interface PluralForms {
      * For example, if only "one" and "other" are provided,
      * then "other" will be used for all counts that don't fall into the "one" category.
      */
-    other: () => string;
+    other: MessageFormatter<string>;
     /**
      * Used for counts that fall into the "one" category for the given locale.
      */
-    one?: () => string;
+    one?: MessageFormatter<string>;
     /**
      * Used for counts that fall into the "two" category for the given locale.
      */
-    two?: () => string;
+    two?: MessageFormatter<string>;
     /**
      * Used for counts that fall into the "few" category for the given locale.
      */
-    few?: () => string;
+    few?: MessageFormatter<string>;
     /**
      * Used for counts that fall into the "many" category for the given locale.
      */
-    many?: () => string;
+    many?: MessageFormatter<string>;
     /**
      * Used for counts that fall into the "zero" category for the given locale.
      */
-    zero?: () => string;
+    zero?: MessageFormatter<string>;
 }
 
 /**
