@@ -77,7 +77,15 @@ class ObjectPermissions(DjangoObjectPermissions):
         if owner_field := getattr(view, "owner_field", None):
             if getattr(obj, owner_field) == request.user:
                 return True
-        return super().has_object_permission(request, view, obj)
+        return super().has_object_permission(request, view, self.as_model(obj, model_cls))
+
+    @staticmethod
+    def as_model(obj: Model, model: type[Model]) -> Model:
+        """Return a subclass instance as the view's model, for permission checks only"""
+        if type(obj) is model or not isinstance(obj, model):
+            return obj
+        # The primary key can differ, e.g. `Flow.flow_uuid` vs `PolicyBindingModel.pbm_uuid`
+        return model(pk=getattr(obj, model._meta.pk.attname))
 
     @staticmethod
     def is_detail_route(view: APIView) -> bool:
