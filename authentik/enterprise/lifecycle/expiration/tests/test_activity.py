@@ -4,6 +4,7 @@ from datetime import timedelta
 from unittest.mock import patch
 
 from django.db import connection
+from django.db.models import QuerySet
 from django.test.utils import CaptureQueriesContext
 from django.utils.timezone import now
 from freezegun import freeze_time
@@ -18,6 +19,7 @@ from authentik.enterprise.lifecycle.expiration.tests.test_expiration import (
 )
 from authentik.enterprise.lifecycle.offboarding.models import (
     OffboardingAction,
+    OffboardingStatus,
     UserOffboarding,
 )
 from authentik.enterprise.lifecycle.offboarding.tasks import execute_offboarding
@@ -310,10 +312,77 @@ class TestActivity(ExpirationTestCase):
                 )
             ]
         )
-        with CaptureQueriesContext(connection) as queries:
+        with (
+            patch("authentik.enterprise.lifecycle.expiration.models.CHUNK_SIZE", 50),
+            CaptureQueriesContext(connection) as queries,
+        ):
             rule._revisit_owned_rows()
-        self.assertLess(len(queries), 180 * 4)
+        self.assertLess(len(queries), 20)
+        self.assertFalse(any("FOR UPDATE" in query["sql"] for query in queries))
         self.assertFalse(any("authentik_events_event" in query["sql"] for query in queries))
+
+    def test_revisit_rechecks_ownership_and_status_before_updating(self):
+        original_lock = QuerySet.select_for_update
+        for change in ("cancel", "takeover"):
+            with self.subTest(change=change):
+                user = _dormant_user()
+                rule = self._rule()
+                other = self._rule()
+                row = UserOffboarding.objects.create(
+                    user=user, rule=rule, scheduled_at=rule.due_at(user)
+                )
+                rule.inactivity_duration = "days=120"
+
+                def change_before_lock(qs, change=change, other=other, row=row, **kwargs):
+                    updates = (
+                        {"status": OffboardingStatus.CANCELED}
+                        if change == "cancel"
+                        else {"rule": other}
+                    )
+                    UserOffboarding.objects.filter(pk=row.pk).update(**updates)
+                    return original_lock(qs, **kwargs)
+
+                with patch.object(
+                    QuerySet, "select_for_update", autospec=True, side_effect=change_before_lock
+                ):
+                    rule._revisit_owned_rows()
+                saved = UserOffboarding.objects.get(pk=row.pk)
+                self.assertEqual(saved.scheduled_at, row.scheduled_at)
+                self.assertEqual(
+                    saved.status,
+                    OffboardingStatus.CANCELED if change == "cancel" else OffboardingStatus.PENDING,
+                )
+                self.assertEqual(saved.rule_id, rule.pk if change == "cancel" else other.pk)
+
+    def test_revisit_reloads_activity_before_updating(self):
+        user = _dormant_user()
+        rule = self._rule()
+        row = UserOffboarding.objects.create(user=user, rule=rule, scheduled_at=rule.due_at(user))
+        rule.inactivity_duration = "days=120"
+        original_lock = QuerySet.select_for_update
+
+        def activity_before_lock(qs, **kwargs):
+            UserActivity.objects.record(user.pk)
+            return original_lock(qs, **kwargs)
+
+        with patch.object(
+            QuerySet, "select_for_update", autospec=True, side_effect=activity_before_lock
+        ):
+            rule._revisit_owned_rows()
+        self.assertFalse(UserOffboarding.objects.filter(pk=row.pk).exists())
+
+    def test_lower_ranked_rule_skips_foreign_row_locks(self):
+        user = _dormant_user(200)
+        owner = self._rule()
+        row = UserOffboarding.objects.create(user=user, rule=owner, scheduled_at=owner.due_at(user))
+        rule = self._rule(inactivity_duration="days=180", warn_before="days=7")
+        with CaptureQueriesContext(connection) as queries:
+            rule._tighten_foreign_rows()
+        self.assertFalse(any("FOR UPDATE" in query["sql"] for query in queries))
+        row.refresh_from_db()
+        self.assertEqual(row.rule_id, owner.pk)
+        self.assertEqual(row.scheduled_at, owner.due_at(user))
+        self.assertFalse(Event.objects.filter(action=EventAction.USER_EXPIRATION_WARNING).exists())
 
     def test_withdrawn_user_can_be_scheduled_again(self):
         user = _dormant_user()

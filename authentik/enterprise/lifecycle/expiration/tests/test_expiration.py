@@ -482,19 +482,23 @@ class TestOverlapAndChange(ExpirationTestCase):
                 if change == "scope":
                     user.groups.remove(group)
 
+                changed = False
+
                 def stale_owned_rows(
                     queryset, *args, change=change, row=row, tight=tight, **kwargs
                 ):
+                    nonlocal changed
                     rows = original_iterator(queryset, *args, **kwargs)
-                    if queryset.model is not UserOffboarding or not queryset._fields:
+                    if queryset.model is not UserOffboarding or changed:
                         return rows
                     # Simulate a change after discovery, before the row lock is taken.
-                    pks = list(rows)
+                    snapshot = list(rows)
+                    changed = True
                     if change == "cancel":
                         row.cancel()
                     else:
                         tight._tighten_foreign_rows()
-                    return iter(pks)
+                    return iter(snapshot)
 
                 with patch.object(QuerySet, "iterator", stale_owned_rows):
                     loose._revisit_owned_rows()
