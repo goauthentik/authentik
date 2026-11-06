@@ -392,17 +392,24 @@ class TokenView(View):
         id_jag.claims["client_id"] = self.params.id_jag_agent.id_jag_client_id
         if self.params.id_jag_resource:
             id_jag.claims["resource"] = self.params.id_jag_resource
-        if self.params.scope:
-            id_jag.claims["scope"] = " ".join(self.params.scope)
+        # Granted Resource Authorization Server scopes, reported in both the claim and the
+        # response (draft-06 §4.3.3/§4.3.4). TokenExchangeTokenRequest.check_scopes
+        # currently refuses any instead of granting them.
+        scope = " ".join(sorted(self.params.scope))
+        if scope:
+            id_jag.claims["scope"] = scope
         # RFC 8693 §4.1 delegation, same mechanism as create_token_exchange_response:
         # `sub` above stays the human subject; `act` records the Actor actually
         # exercising the assertion (the system agent the audience belongs to).
         id_jag.act = {"sub": id_jag._resolve_sub(self.provider, self.params.actor)}
 
-        return {
+        response = {
             "access_token": id_jag.to_jwt(self.provider, jwt_type=JWT_TYPE_ID_JAG),
             "issued_token_type": TOKEN_TYPE_URI_ID_JAG,
             # Per the spec, an ID-JAG is not itself a bearer access token.
             "token_type": "N_A",
             "expires_in": int(validity.total_seconds()),
         }
+        if scope:
+            response["scope"] = scope
+        return response
