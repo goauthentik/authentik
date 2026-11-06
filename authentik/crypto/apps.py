@@ -1,6 +1,7 @@
 """authentik crypto app config"""
 
 from dramatiq.broker import get_broker
+from prometheus_client import Gauge
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.generators import generate_id
@@ -8,6 +9,13 @@ from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
 
 MANAGED_KEY = "goauthentik.io/crypto/jwt-managed"
+
+GAUGE_CERTIFICATE_EXPIRY = Gauge(
+    "authentik_crypto_certificate_expiry_timestamp_seconds",
+    "Certificate expiry of each certificate-key pair as a Unix timestamp, NaN once deleted.",
+    ["name", "kp_uuid"],
+    multiprocess_mode="livemostrecent",
+)
 
 
 class AuthentikCryptoConfig(ManagedAppConfig):
