@@ -1,10 +1,14 @@
+from dataclasses import fields
+from json import loads
+from typing import Any
 from uuid import UUID
 
 from django.http import HttpRequest
-from jwt import PyJWTError, decode
+from jwt import PyJWT, PyJWTError
 
 from authentik.common.oauth.constants import (
     ACTOR_TOKEN_TYPES,
+    JWT_TYPE_DPOP_ID_TOKEN,
     TOKEN_EXCHANGE_TOKEN_TYPES,
     TOKEN_TYPE_URI_ACCESS_TOKEN,
     TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
@@ -14,10 +18,27 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Actor, Application, Token, TokenIntents
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
-from authentik.providers.oauth2.errors import TokenExchangeError
+from authentik.providers.oauth2.errors import TokenError, TokenExchangeError
+from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.providers.oauth2.token.base_fed import FederatedParty, FederatedTokenRequest
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
+
+# `typ` header values an ID token issued by authentik may carry: PyJWT's default `JWT`, or
+# `dpop+id_token` for DPoP-bound ID tokens. Anything else (e.g. `at+jwt` or the ID-JAG type)
+# explicitly identifies another kind of token.
+ID_TOKEN_JWT_TYPES = {"jwt", JWT_TYPE_DPOP_ID_TOKEN}
+_ID_TOKEN_FIELDS = frozenset(f.name for f in fields(IDToken))
+
+
+def issued_id_token_claims(token: AccessToken) -> dict[str, Any]:
+    """Claims of the ID token issued alongside `token`, exactly as they were encoded for
+    the client. The authorization endpoint (implicit/hybrid) stores them pre-flattened
+    (`IDToken.to_dict()`), the token endpoint stores the serialized `IDToken` itself."""
+    raw = loads(token._id_token)
+    if _ID_TOKEN_FIELDS <= raw.keys() and isinstance(raw.get("claims"), dict):
+        return token.id_token.to_dict()
+    return {key: value for key, value in raw.items() if value is not None}
 
 
 class TokenExchangeTokenRequest(FederatedTokenRequest):
@@ -32,8 +53,13 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         agent that this provider's application may use, rather than resolved to another
         authentik provider. An optional `resource` must be allow-listed on that agent."""
         audiences = request.POST.getlist("audience")
-        if len(audiences) != 1:
-            self.logger.warning("ID-JAG request requires exactly one audience")
+        # draft-ietf-oauth-identity-assertion-authz-grant-06 §4.3.3: more than one audience
+        # is a malformed request, not an unknown target.
+        if len(audiences) > 1:
+            self.logger.warning("ID-JAG request must not have more than one audience")
+            raise TokenExchangeError("invalid_request").with_cause("multiple_audiences")
+        if not audiences:
+            self.logger.warning("ID-JAG request requires an audience")
             raise TokenExchangeError("invalid_target").with_cause("audience_required")
         try:
             from authentik.enterprise.agents.models import Agent
@@ -59,12 +85,31 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         self.id_jag_agent = target
         self.id_jag_resource = resources[0] if resources else None
 
+    def check_scopes(self):
+        """For an ID-JAG, `scope` names scopes of the Resource Authorization Server the
+        assertion is for, not this provider's (draft-06 §4.3), so clamping them to this
+        provider's scope mappings would silently grant something else. As nothing configures
+        which of those scopes may be granted, none are: a request for any is refused with
+        invalid_scope rather than silently reduced, and the Resource Authorization Server
+        applies its own scope policy for the assertion."""
+        if not self.is_id_jag_request:
+            return super().check_scopes()
+        if self.scope:
+            self.logger.warning("Scopes are not supported for ID-JAG requests", scope=self.scope)
+            raise TokenExchangeError("invalid_scope").with_cause("id_jag_scope_unsupported")
+
     def validate_id_token(self, id_token: str) -> FederatedParty | None:
-        """An ID token as subject_token (ID-JAG only) must have been issued by this
-        provider to this client, and its session must still be valid."""
+        """An ID token as subject_token (ID-JAG only) must be an ID token this provider
+        issued to this client, and the access token it was issued with must still be valid.
+
+        Access tokens are signed by the same key, carry the same `jti`/`aud` and have no
+        distinguishing `typ`, so a valid signature is not enough to know the token's purpose
+        (draft-06 §4.3.3). The verified claims must therefore be exactly those of the ID
+        token stored for that `jti`, which access tokens (adding `azp`, a random `uid` and
+        `scope`) never are."""
         key, alg = self.provider.jwt_key
         try:
-            claims = decode(
+            decoded = PyJWT().decode_complete(
                 id_token,
                 key if isinstance(key, str) else key.public_key(),
                 algorithms=[alg],
@@ -73,15 +118,26 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             self.logger.warning("failed to verify ID token", exc=exc)
             return None
+        typ = decoded["header"].get("typ")
+        if typ is not None and str(typ).lower() not in ID_TOKEN_JWT_TYPES:
+            self.logger.warning("subject_token is not an ID token", typ=typ)
+            return None
+        claims = decoded["payload"]
         jti = claims.get("jti")
-        if not jti:
+        if not jti or not isinstance(jti, str):
             return None
         # The ID token's jti is stored with the access token it was issued alongside;
-        # ExpiringManager drops expired/revoked ones.
+        # ExpiringManager drops expired ones, deleted ones are gone.
         # ponytail: unindexed text scan of this provider's tokens, index jti if it gets hot
-        for token in AccessToken.objects.filter(provider=self.provider, _id_token__contains=jti):
-            if token.id_token.jti == jti:
-                return FederatedParty(parsed_token=claims, party=self.provider, user=token.user)
+        for token in AccessToken.objects.filter(
+            provider=self.provider, revoked=False, _id_token__contains=jti
+        ):
+            if token.id_token.jti != jti:
+                continue
+            if claims != issued_id_token_claims(token):
+                self.logger.warning("subject_token is not the ID token issued for its jti")
+                return None
+            return FederatedParty(parsed_token=claims, party=self.provider, user=token.user)
         return None
 
     def resolve_audience(self, request: HttpRequest) -> None:
@@ -122,6 +178,27 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             raise TokenExchangeError("invalid_target").with_cause("target_not_federated")
         self.audience_provider = target
 
+    def verify_subject_token(self, subject_token: str, subject_token_type: str) -> FederatedParty:
+        """Verify `subject_token` as the type it is declared to be"""
+        try:
+            if subject_token_type == TOKEN_TYPE_URI_ID_TOKEN:
+                federated_party = self.validate_id_token(subject_token)
+            else:
+                federated_party = self.validate_jwt(subject_token)
+        except TokenError:
+            if not self.is_id_jag_request:
+                raise
+            federated_party = None
+        if not federated_party:
+            # Expiry is enforced by PyJWT during signature verification, so an expired
+            # subject token also lands here.
+            self.logger.warning("No subject token could be verified")
+            # RFC 8693 §2.2.2 (profiled by draft-06 §4.3.4.3 for ID-JAG): a subject token
+            # that fails validation is invalid_request. Other exchanges keep invalid_grant.
+            error = "invalid_request" if self.is_id_jag_request else "invalid_grant"
+            raise TokenExchangeError(error).with_cause("subject_token_not_verified")
+        return federated_party
+
     def parse(self, request: HttpRequest) -> None:
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.1"""
         super().parse(request)
@@ -147,16 +224,7 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
                 "unsupported_requested_token_type"
             )
 
-        if subject_token_type == TOKEN_TYPE_URI_ID_TOKEN:
-            federated_party = self.validate_id_token(subject_token)
-        else:
-            federated_party = self.validate_jwt(subject_token)
-
-        if not federated_party:
-            # Expiry is enforced by PyJWT during signature verification, so an expired
-            # subject token also lands here.
-            self.logger.warning("No subject token could be verified")
-            raise TokenExchangeError("invalid_grant").with_cause("subject_token_not_verified")
+        federated_party = self.verify_subject_token(subject_token, subject_token_type)
 
         app = Application.objects.filter(provider=self.provider).first()
         if not app or not app.provider:
