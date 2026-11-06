@@ -1,18 +1,24 @@
 ---
 # Acceptance check: authentik as ID-JAG issuer (draft-ietf-oauth-identity-assertion-authz-grant-06)
-# for MCP Enterprise-Managed Authorization. Expected to FAIL until authentik implements ID-JAG
-# issuance (see tests/mcp_conformance_id_jag_issuer/HANDOFF.md). Do not make this a required
-# check on main before the feature lands.
+# for MCP Enterprise-Managed Authorization. Expected to FAIL until the remaining conformance
+# gaps are corrected (see tests/mcp_conformance_id_jag_issuer/HANDOFF.md). Keep non-required
+# while the implementation and spec baseline are under review.
 name: CI - MCP conformance (id-jag-issuer)
 
 on:
+  # Match CI - Main's post-merge coverage, including its OpenID conformance jobs.
+  push:
+    branches:
+      - main
+      - next
+      - version-*
   # Also run when these tests are moved onto feature-branch PRs.
   pull_request:
   workflow_dispatch:
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
-  cancel-in-progress: true
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
 
 env:
   POSTGRES_DB: authentik
@@ -81,12 +87,12 @@ jobs:
       - name: Coverage report
         if: ${{ !cancelled() }}
         run: |
-          uv run coverage combine || true
-          uv run coverage xml || true
+          uv run coverage combine
+          uv run coverage xml
       - uses: ./.github/actions/test-results
         if: ${{ !cancelled() }}
         with:
-          flags: mcp-conformance
+          flags: conformance
       - if: ${{ !cancelled() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
