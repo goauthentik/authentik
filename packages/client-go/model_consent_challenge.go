@@ -27,6 +27,9 @@ type ConsentChallenge struct {
 	PendingUser           string                    `json:"pending_user"`
 	PendingUserAvatar     string                    `json:"pending_user_avatar"`
 	HeaderText            *string                   `json:"header_text,omitempty"`
+	ClientId              *string                   `json:"client_id,omitempty"`
+	ClientName            *string                   `json:"client_name,omitempty"`
+	RedirectHost          *string                   `json:"redirect_host,omitempty"`
 	Permissions           []ConsentPermission       `json:"permissions"`
 	AdditionalPermissions []ConsentPermission       `json:"additional_permissions"`
 	Token                 string                    `json:"token"`
@@ -237,6 +240,102 @@ func (o *ConsentChallenge) SetHeaderText(v string) {
 	o.HeaderText = &v
 }
 
+// GetClientId returns the ClientId field value if set, zero value otherwise.
+func (o *ConsentChallenge) GetClientId() string {
+	if o == nil || IsNil(o.ClientId) {
+		var ret string
+		return ret
+	}
+	return *o.ClientId
+}
+
+// GetClientIdOk returns a tuple with the ClientId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConsentChallenge) GetClientIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ClientId) {
+		return nil, false
+	}
+	return o.ClientId, true
+}
+
+// HasClientId returns a boolean if a field has been set.
+func (o *ConsentChallenge) HasClientId() bool {
+	if o != nil && !IsNil(o.ClientId) {
+		return true
+	}
+
+	return false
+}
+
+// SetClientId gets a reference to the given string and assigns it to the ClientId field.
+func (o *ConsentChallenge) SetClientId(v string) {
+	o.ClientId = &v
+}
+
+// GetClientName returns the ClientName field value if set, zero value otherwise.
+func (o *ConsentChallenge) GetClientName() string {
+	if o == nil || IsNil(o.ClientName) {
+		var ret string
+		return ret
+	}
+	return *o.ClientName
+}
+
+// GetClientNameOk returns a tuple with the ClientName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConsentChallenge) GetClientNameOk() (*string, bool) {
+	if o == nil || IsNil(o.ClientName) {
+		return nil, false
+	}
+	return o.ClientName, true
+}
+
+// HasClientName returns a boolean if a field has been set.
+func (o *ConsentChallenge) HasClientName() bool {
+	if o != nil && !IsNil(o.ClientName) {
+		return true
+	}
+
+	return false
+}
+
+// SetClientName gets a reference to the given string and assigns it to the ClientName field.
+func (o *ConsentChallenge) SetClientName(v string) {
+	o.ClientName = &v
+}
+
+// GetRedirectHost returns the RedirectHost field value if set, zero value otherwise.
+func (o *ConsentChallenge) GetRedirectHost() string {
+	if o == nil || IsNil(o.RedirectHost) {
+		var ret string
+		return ret
+	}
+	return *o.RedirectHost
+}
+
+// GetRedirectHostOk returns a tuple with the RedirectHost field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConsentChallenge) GetRedirectHostOk() (*string, bool) {
+	if o == nil || IsNil(o.RedirectHost) {
+		return nil, false
+	}
+	return o.RedirectHost, true
+}
+
+// HasRedirectHost returns a boolean if a field has been set.
+func (o *ConsentChallenge) HasRedirectHost() bool {
+	if o != nil && !IsNil(o.RedirectHost) {
+		return true
+	}
+
+	return false
+}
+
+// SetRedirectHost gets a reference to the given string and assigns it to the RedirectHost field.
+func (o *ConsentChallenge) SetRedirectHost(v string) {
+	o.RedirectHost = &v
+}
+
 // GetPermissions returns the Permissions field value
 func (o *ConsentChallenge) GetPermissions() []ConsentPermission {
 	if o == nil {
@@ -333,6 +432,15 @@ func (o ConsentChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.HeaderText) {
 		toSerialize["header_text"] = o.HeaderText
 	}
+	if !IsNil(o.ClientId) {
+		toSerialize["client_id"] = o.ClientId
+	}
+	if !IsNil(o.ClientName) {
+		toSerialize["client_name"] = o.ClientName
+	}
+	if !IsNil(o.RedirectHost) {
+		toSerialize["redirect_host"] = o.RedirectHost
+	}
 	toSerialize["permissions"] = o.Permissions
 	toSerialize["additional_permissions"] = o.AdditionalPermissions
 	toSerialize["token"] = o.Token
@@ -389,6 +497,9 @@ func (o *ConsentChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "pending_user")
 		delete(additionalProperties, "pending_user_avatar")
 		delete(additionalProperties, "header_text")
+		delete(additionalProperties, "client_id")
+		delete(additionalProperties, "client_name")
+		delete(additionalProperties, "redirect_host")
 		delete(additionalProperties, "permissions")
 		delete(additionalProperties, "additional_permissions")
 		delete(additionalProperties, "token")

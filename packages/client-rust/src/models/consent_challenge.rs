@@ -25,6 +25,12 @@ pub struct ConsentChallenge {
     pub pending_user_avatar: String,
     #[serde(rename = "header_text", skip_serializing_if = "Option::is_none")]
     pub header_text: Option<String>,
+    #[serde(rename = "client_id", skip_serializing_if = "Option::is_none")]
+    pub client_id: Option<String>,
+    #[serde(rename = "client_name", skip_serializing_if = "Option::is_none")]
+    pub client_name: Option<String>,
+    #[serde(rename = "redirect_host", skip_serializing_if = "Option::is_none")]
+    pub redirect_host: Option<String>,
     #[serde(rename = "permissions")]
     pub permissions: Vec<models::ConsentPermission>,
     #[serde(rename = "additional_permissions")]
@@ -49,6 +55,9 @@ impl ConsentChallenge {
             pending_user,
             pending_user_avatar,
             header_text: None,
+            client_id: None,
+            client_name: None,
+            redirect_host: None,
             permissions,
             additional_permissions,
             token,

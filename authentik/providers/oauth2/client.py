@@ -99,6 +99,12 @@ class OAuthClientContext:
         return self.is_legacy and self.client_id == self.provider.client_id
 
     @property
+    def display_name(self) -> str | None:
+        """Name the client presents for itself, shown to users next to its identifier.
+        Registered clients have none; they are presented by their application."""
+        return None
+
+    @property
     def is_confidential(self) -> bool:
         return self.client_type == ClientType.CONFIDENTIAL
 

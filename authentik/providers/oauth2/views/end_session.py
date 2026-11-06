@@ -173,7 +173,9 @@ class EndSessionView(PolicyAccessView):
                     self.provider, request, session_key
                 )
 
+            # Logout is only sent to the provider's registered client
             login = OAuth2SessionLogin.objects.filter(
+                OAuth2SessionLogin.registered_client_q(),
                 session=auth_session,
                 provider=self.provider,
             ).first()

@@ -36,7 +36,17 @@ class UserConsentSerializer(StageSerializer):
 
     class Meta:
         model = UserConsent
-        fields = ["pk", "expires", "expiring", "user", "application", "permissions"]
+        fields = [
+            "pk",
+            "expires",
+            "expiring",
+            "user",
+            "application",
+            "permissions",
+            "client_id",
+            "resource",
+        ]
+        read_only_fields = ["client_id", "resource"]
 
 
 class UserConsentViewSet(
@@ -50,7 +60,7 @@ class UserConsentViewSet(
 
     queryset = UserConsent.objects.including_expired().select_related("user__password_device")
     serializer_class = UserConsentSerializer
-    filterset_fields = ["user", "application"]
+    filterset_fields = ["user", "application", "client_id"]
     ordering = ["application", "expires"]
     search_fields = ["user__username"]
     owner_field = "user"
