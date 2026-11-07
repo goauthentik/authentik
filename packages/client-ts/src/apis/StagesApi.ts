@@ -399,6 +399,10 @@ import {
 import { type SourceStage, SourceStageFromJSON } from "../models/SourceStage.js";
 import { type SourceStageRequest, SourceStageRequestToJSON } from "../models/SourceStageRequest.js";
 import { type Stage, StageFromJSON } from "../models/Stage.js";
+import {
+    type StageDuplicateRequest,
+    StageDuplicateRequestToJSON,
+} from "../models/StageDuplicateRequest.js";
 import { type StageModeEnum } from "../models/StageModeEnum.js";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate.js";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
@@ -505,6 +509,14 @@ export interface StagesAllDestroyRequest {
      * A UUID string identifying this stage.
      */
     stageUuid: string;
+}
+
+export interface StagesAllDuplicateCreateRequest {
+    /**
+     * A UUID string identifying this stage.
+     */
+    stageUuid: string;
+    stageDuplicateRequest: StageDuplicateRequest;
 }
 
 export interface StagesAllListRequest {
@@ -2957,6 +2969,82 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<void> {
         await this.stagesAllDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for stagesAllDuplicateCreate without sending the request
+     */
+    async stagesAllDuplicateCreateRequestOpts(
+        requestParameters: StagesAllDuplicateCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAllDuplicateCreate().',
+            );
+        }
+
+        if (requestParameters["stageDuplicateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "stageDuplicateRequest",
+                'Required parameter "stageDuplicateRequest" was null or undefined when calling stagesAllDuplicateCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/all/{stage_uuid}/duplicate/`;
+        urlPath = urlPath.replace(
+            "{stage_uuid}",
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: StageDuplicateRequestToJSON(requestParameters["stageDuplicateRequest"]),
+        };
+    }
+
+    /**
+     * Copy a stage under a new name. The copy refers to the same objects as the original, such as
+     * prompts, sources and flows, and is not bound to any flow.
+     */
+    async stagesAllDuplicateCreateRaw(
+        requestParameters: StagesAllDuplicateCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Stage>> {
+        const requestOptions = await this.stagesAllDuplicateCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => StageFromJSON(jsonValue));
+    }
+
+    /**
+     * Copy a stage under a new name. The copy refers to the same objects as the original, such as
+     * prompts, sources and flows, and is not bound to any flow.
+     */
+    async stagesAllDuplicateCreate(
+        requestParameters: StagesAllDuplicateCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Stage> {
+        const response = await this.stagesAllDuplicateCreateRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**

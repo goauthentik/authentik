@@ -47,6 +47,19 @@ To create a stage, follow these steps:
 
 After creating the stage, you can use bindings to determine whether the stage runs in a flow.
 
+## Duplicate a stage :ak-version[2026.11]
+
+To create a stage that differs from an existing one in a few settings, duplicate the existing stage and edit the copy:
+
+1. Log in as an admin to authentik, and go to the Admin interface.
+2. In the Admin interface, navigate to **Flows and Stages** > **Stages**.
+3. Click the **Duplicate** icon of the stage that you want to copy. The **Stage Bindings** tab of a flow has the same icon for each bound stage.
+4. Enter a name for the copy, and then click **Duplicate**. The edit form of the copy opens, so that you can change its settings.
+
+The copy has the settings of the original and refers to the same objects, such as prompts, sources, policies, and flows. Those objects are not copied, so a change to a prompt shows in both stages. The copy is not bound to any flow; to use it, [bind it to a flow](#bind-a-stage-to-a-flow).
+
+Duplicating a stage requires the permissions to view that stage and to add stages of its type. Secrets, such as passwords and API keys, are copied only if you also have the permission to change the original stage. Without that permission, the copy has no secrets, and a stage type that requires one, such as the Duo authenticator setup stage, can't be duplicated.
+
 ## Stage bindings
 
 A stage binding connects a stage to a flow. The binding adds that stage as a step in the flow.
