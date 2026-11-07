@@ -35,6 +35,9 @@ export class AkAttributeView extends LitElement {
     @property({ type: String, reflect: true })
     public mode: Mode = "json";
 
+    @property({ type: Boolean, attribute: "hide-copy" })
+    public hideCopy = false;
+
     handleToggle = (ev: ToggleGroupEvent<Mode>) => {
         this.mode = ev.value;
     };
@@ -65,12 +68,12 @@ export class AkAttributeView extends LitElement {
     }
 
     async handleCopy() {
-        const value =
+        const [value, kind] =
             this.mode === "yaml"
-                ? YAML.stringify(this.cleanedValue)
-                : JSON.stringify(this.cleanedValue);
+                ? [YAML.stringify(this.cleanedValue), msg("YAML")]
+                : [JSON.stringify(this.cleanedValue), msg("JSON")];
 
-        const res = await writeToClipboard(value, msg("Attributes"));
+        const res = await writeToClipboard(value, kind);
         console.log(res);
     }
 
@@ -80,6 +83,9 @@ export class AkAttributeView extends LitElement {
         const yaml = () =>
             html`<pre>${YAML.stringify(this.cleanedValue, { blockQuote: "folded" })}</pre>`;
 
+        const label =
+            this.mode === "yaml" ? msg("Copy YAML to clipboard") : msg("Copy JSON to clipboard");
+
         return html`
             <div part="toolbar">
                 <ak-toggle-group compact value=${this.mode} @ak-toggle=${this.handleToggle}>
@@ -87,17 +93,23 @@ export class AkAttributeView extends LitElement {
                     <option value="yaml">${msg("YAML")}</option>
                     <option value="tree">${msg("Tree")}</option>
                 </ak-toggle-group>
-                <button
-                    class="pf-c-button pf-m-plain"
-                    type="button"
-                    part="copy-button"
-                    @click=${() => this.handleCopy()}
-                    aria-label=${msg("Copy attributes to clipboard")}
-                >
-                    <pf-tooltip position="top" content=${msg("Copy attributes to clipboard")}
-                        >${this.copyIcon}
-                    </pf-tooltip>
-                </button>
+                ${
+                    this.hideCopy
+                        ? null
+                        : html`
+                              <button
+                                  class="pf-c-button pf-m-plain"
+                                  type="button"
+                                  part="copy-button"
+                                  @click=${() => this.handleCopy()}
+                                  aria-label=${label}
+                              >
+                                  <pf-tooltip position="top" part="copy-tooltip" content=${label}>
+                                      ${this.copyIcon}
+                                  </pf-tooltip>
+                              </button>
+                          `
+                }
             </div>
             <div part="display">
                 ${match(this.mode)

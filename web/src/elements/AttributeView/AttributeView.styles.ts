@@ -10,10 +10,11 @@ export const styles = css`
     [part="copy-button"] {
         display: grid;
         place-items: center;
+        height: 100%;
     }
 
     [part="copy-button"] svg {
-        height: 1em;
+        height: 1.2em;
         width: fit-content;
     }
 

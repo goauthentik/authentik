@@ -14,34 +14,36 @@ import { customElement, property } from "lit/decorators.js";
  * lots of nested information. Meant to make the expansion rows easier to read.
  */
 
+const Styles = css`
+    :host {
+        display: block;
+    }
+
+    * [hidden] {
+        display: none;
+    }
+`;
+
 @customElement("ak-section-card")
 export class SectionCard extends AKElement {
-    public static styles = [
-        PFCard,
-        css`
-            :host {
-                display: block;
-            }
-        `,
-    ];
+    public static styles = [PFCard, Styles];
 
     protected slots = new SlotController(this, {
         slots: [null, "description"],
     });
 
     @property({ type: String })
-    public label: string | null = null;
+    public label: string = "";
 
     protected override render() {
+        const hideTitle = !this.label || this.label.trim() === "";
+        const hideDesc = !this.slots.hasSlotted("description");
+
         return html`<section class="pf-c-card" aria-labelledby="card-title" part="card">
-            <div class="pf-c-card__header" part="card-header">
+            <div class="pf-c-card__header" part="card-header" ?hidden=${hideTitle}>
                 <h3 class="pf-c-card__title" id="card-title" part="card-title">${this.label}</h3>
             </div>
-            <div
-                class="pf-c-card__body"
-                part="card-description"
-                ?hidden=${!this.slots.hasSlotted("description")}
-            >
+            <div class="pf-c-card__body" part="card-description" ?hidden=${hideDesc}>
                 <slot name="description"></slot>
             </div>
             <div part="card-body">
