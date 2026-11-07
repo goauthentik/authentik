@@ -62,7 +62,11 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
             ("retry_task", _("Retry failed task")),
         ]
         indexes = TaskBase.Meta.indexes + (
-            models.Index(fields=("rel_obj_content_type", "rel_obj_id")),
+            # Lists an object's tasks newest first, and finds a schedule's last task
+            models.Index(fields=("rel_obj_content_type", "rel_obj_id", "mtime")),
+            # The system tasks page counts tasks by status and lists them newest first
+            models.Index(fields=("aggregated_status",)),
+            models.Index(fields=("mtime",)),
         )
         triggers = TaskBase.Meta.triggers + (
             pgtrigger.Trigger(
