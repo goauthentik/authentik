@@ -103,8 +103,24 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 	var users *[]api.User
 	var groups *[]api.Group
+	var visibility *search.Visibility
 
 	errs, errCtx := errgroup.WithContext(req.Context())
+
+	// Identities that can't search only ever see themselves, and they passed the
+	// application access check to bind, so there is nothing to limit.
+	if flags.CanSearch && (needUsers || needGroups) {
+		errs.Go(func() error {
+			vsp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_visibility")
+			defer vsp.Finish()
+			v, err := search.FetchVisibility(vsp.Context(), ds.si.GetAPIClient(), ds.si.GetProviderID(), ds.si.GetLimitSearchToApplicationAccess())
+			if err != nil {
+				return fmt.Errorf("failed to get search visibility: %w", err)
+			}
+			visibility = v
+			return nil
+		})
+	}
 
 	if needUsers {
 		errs.Go(func() error {
@@ -193,6 +209,14 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	err = errs.Wait()
 	if err != nil {
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, err
+	}
+	if users != nil {
+		u := visibility.FilterUsers(*users)
+		users = &u
+	}
+	if groups != nil {
+		g := visibility.FilterGroups(*groups)
+		groups = &g
 	}
 
 	if scope >= 0 && (strings.EqualFold(req.BaseDN, ds.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ds.si.GetBaseUserDN())) {

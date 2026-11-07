@@ -23,6 +23,7 @@ type LDAPServerInstance interface {
 	GetBaseVirtualGroupDN() string
 	GetBaseUserDN() string
 	GetMFASupport() bool
+	GetLimitSearchToApplicationAccess() bool
 
 	GetUserDN(string) string
 	GetGroupDN(string) string
