@@ -1,5 +1,6 @@
 import mimetypes
 from collections.abc import Callable, Generator, Iterator
+from contextvars import ContextVar
 from typing import cast
 
 from django.core.cache import cache
@@ -13,6 +14,9 @@ LOGGER = get_logger()
 
 # Theme variable placeholder for theme-specific files like logo-%(theme)s.png
 THEME_VARIABLE = "%(theme)s"
+
+# Cached URLs that FileManager.prefetch_urls() read in one query, by cache key
+PREFETCHED_URLS = ContextVar[dict[str, str] | None]("authentik_files_prefetched_urls", default=None)
 
 
 def get_content_type(name: str) -> str:
@@ -193,6 +197,12 @@ class ManageableBackend(Backend):
         """
         raise NotImplementedError
 
+    def _cache_key(self, name: str, request: HttpRequest | None) -> str:
+        request_key = "None"
+        if request is not None:
+            request_key = f"{request.build_absolute_uri('/')}"
+        return f"{CACHE_PREFIX}/{self.name}/{self.usage}/{request_key}/{name}"
+
     def _cache_get_or_set(
         self,
         name: str,
@@ -205,9 +215,8 @@ class ManageableBackend(Backend):
         if timeout < timeout_ignore:
             timeout = 0
 
-        request_key = "None"
-        if request is not None:
-            request_key = f"{request.build_absolute_uri('/')}"
-        cache_key = f"{CACHE_PREFIX}/{self.name}/{self.usage}/{request_key}/{name}"
-
+        cache_key = self._cache_key(name, request)
+        prefetched = PREFETCHED_URLS.get()
+        if prefetched is not None and cache_key in prefetched:
+            return prefetched[cache_key]
         return cast(str, cache.get_or_set(cache_key, lambda: default(name, request), timeout))

@@ -1,11 +1,20 @@
-from collections.abc import Generator, Iterator
+from collections.abc import Generator, Iterable, Iterator
+from contextlib import contextmanager
 
+from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
+from django.db import DatabaseError
 from django.http.request import HttpRequest
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.backends.base import ManageableBackend, substitute_theme
+from authentik.admin.files.backends.base import (
+    PREFETCHED_URLS,
+    ManageableBackend,
+    get_valid_themes,
+    has_theme_variable,
+    substitute_theme,
+)
 from authentik.admin.files.backends.file import FileBackend
 from authentik.admin.files.backends.passthrough import PassthroughBackend
 from authentik.admin.files.backends.s3 import S3Backend
@@ -122,6 +131,41 @@ class FileManager:
                 return backend.themed_urls(name, request, use_cache=use_cache)
 
         return None
+
+    @contextmanager
+    def prefetch_urls(self, names: Iterable[str | None]) -> Iterator[None]:
+        """
+        Read the cached URLs of ``names`` and their theme variants with one query, for the
+        ``file_url()`` and ``themed_urls()`` calls made without a request inside this block.
+        Each of those calls otherwise reads the cache with a query of its own, which a list
+        of objects with icons makes once per object.
+
+        A URL that is not cached yet is generated and cached by its own call, as without
+        this block.
+        """
+        keys = []
+        for name in names:
+            if not name:
+                continue
+            variants = [substitute_theme(name, "light")]
+            if has_theme_variable(name):
+                variants += [substitute_theme(name, theme) for theme in get_valid_themes()]
+            for variant in variants:
+                backend = next((b for b in self.backends if b.supports_file(variant)), None)
+                # Only the manageable backends cache their URLs
+                if isinstance(backend, ManageableBackend):
+                    keys.append(backend._cache_key(variant, None))
+        try:
+            prefetched = cache.get_many(keys)
+        except DatabaseError:
+            # cache.get() treats a failing cache as empty; do the same, so each call reads or
+            # generates its own URL
+            prefetched = {}
+        token = PREFETCHED_URLS.set(prefetched)
+        try:
+            yield
+        finally:
+            PREFETCHED_URLS.reset(token)
 
     def _check_manageable(self) -> None:
         if not self.manageable:

@@ -10,6 +10,8 @@ from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.test import APITestCase
 
+from authentik.admin.files.manager import get_file_manager
+from authentik.admin.files.usage import FileUsage
 from authentik.core.models import Application, PropertyMapping, Provider
 from authentik.core.tests.utils import (
     create_test_admin_user,
@@ -359,6 +361,7 @@ class TestApplicationsAPI(APITestCase):
                 slug=generate_id(),
                 provider=provider,
                 meta_launch_url="https://goauthentik.io",
+                meta_icon=f"{generate_id()}{'-%(theme)s' if index % 3 else ''}.svg",
             )
             backchannel = SCIMProvider.objects.create(
                 name=generate_id(), url="https://goauthentik.io", token=generate_id()
@@ -386,12 +389,16 @@ class TestApplicationsAPI(APITestCase):
         return response, captured
 
     def _assert_serialized(self, results: list[dict], apps: list[Application]):
-        """Providers are serialized as their concrete type, with their applications"""
+        """Icons have the URLs the file manager gives them, and providers are serialized as
+        their concrete type, with their applications"""
         by_slug = {app["slug"]: app for app in results}
+        files = get_file_manager(FileUsage.MEDIA)
         for app in apps:
             provider = Provider.objects.get_subclass(pk=app.provider_id)
             backchannel = app.backchannel_providers.get()
             data = by_slug[app.slug]
+            self.assertEqual(data["meta_icon_url"], files.file_url(app.meta_icon))
+            self.assertEqual(data["meta_icon_themed_urls"], files.themed_urls(app.meta_icon))
             self.assertEqual(data["provider_obj"]["component"], provider.component)
             self.assertEqual(data["provider_obj"]["assigned_application_slug"], app.slug)
             self.assertEqual(
