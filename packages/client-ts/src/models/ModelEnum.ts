@@ -183,6 +183,7 @@ export const ModelEnum = {
     AuthentikRequestsRequestrulechildbinding: "authentik_requests.requestrulechildbinding",
     AuthentikRequestsRequestrulebinding: "authentik_requests.requestrulebinding",
     AuthentikRequestsRequestrule: "authentik_requests.requestrule",
+    AuthentikRequestsApplicationtemplate: "authentik_requests.applicationtemplate",
     AuthentikRequestsGrantrequest: "authentik_requests.grantrequest",
     AuthentikStagesAccountLockdownAccountlockdownstage:
         "authentik_stages_account_lockdown.accountlockdownstage",

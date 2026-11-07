@@ -14,6 +14,7 @@ export const initAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/core/providers", msg("Providers"), ["provider-view"]],
         ["/outpost/outposts", msg("Outposts"), ["outpost-view"]],
         ["/requests/rules", msg("Request Rules"), {enterprise:true}],
+        ["/requests/application-templates", msg("Application Templates", { id: "requests.application-template.verbose-name-plural" }), {enterprise:true}],
         ["/requests/access-requests", msg("Access Requests"), {enterprise:true}],]
     ],
     [null, msg("Endpoint Devices"), { key: "endpoint-devices", icon: "fas fa-laptop"  }, [
