@@ -16,8 +16,9 @@
 
 /**
  * @typedef {object} AKReleaseFileMetadata
- * @property {string} name The name of the release file.
- * @property {string} path The relative path to the release file.
+ * @property {string} name The release version, e.g. "2026.11".
+ * @property {string} path The release doc ID: the file path without its extension.
+ * @property {string} [filePath] The release file path, relative to the docs directory.
  */
 
 /**

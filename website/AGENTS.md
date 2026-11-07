@@ -113,6 +113,10 @@ The one rule the linters and spell checker cannot enforce, and the one most ofte
 3. **Do not edit the integrations sidebar** — it is auto-generated from `categories.mjs`.
 4. Run `make integrations` before pushing.
 
+### Release notes
+
+Each release has its own directory, `docs/releases/<year>/v<version>/`. Its `index.mdx` holds only hand-written content (start from `docs/releases/_template.mdx`). Its "Minor changes/fixes" and "API Changes" sections import the generated partials `_changelog.mdx` and `_api-changes.mdx` from the same directory, which `make gen-changelog version=<x.y.z>` and `make gen-diff version=<x.y.z>` write. Don't edit the partials by hand; the spell checker skips them. Patch releases add their `## Fixed in <x.y.z>` section to the same changelog partial.
+
 ## URLs and redirects
 
 File path → URL: drop the `website/<site>` prefix, strip the extension, add a trailing slash (e.g. `website/docs/developer-docs/docs/style-guide.mdx` → `https://docs.goauthentik.io/developer-docs/docs/style-guide/`).

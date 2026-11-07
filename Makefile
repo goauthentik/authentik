@@ -196,31 +196,11 @@ gen-build:  ## Generate schema.yml and blueprints/schema.json from Django model 
 gen-compose:
 	$(UV) run scripts/generate_compose.py
 
-gen-changelog:  ## (Release) generate the changelog based from the commits since the last version
-# These are best-effort guesses based on commit messages
-	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc[0-9]+$$' | tail -1))
-	$(eval current_commit := $(shell git rev-parse HEAD))
-	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
-	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
-	{ grep -Eo 'cherry-pick (#[0-9]+)' merged_to_last || true; } | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
-	grep -vf cherry_picked_to_last merged_to_current | grep -vE '^- (ci:|website)' | sort > changelog.md
-	rm merged_to_current
-	rm merged_to_last
-	rm cherry_picked_to_last
-	pnpm exec oxfmt --write changelog.md
+gen-changelog:  ## (Release) Write commits since the previous release into the release's changelog partial (`version=2026.11.0`)
+	node ./scripts/node/release-changelog.ts changelog --version "$(version)"
 
-gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
-	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc[0-9]+$$' | tail -1))
-	git show ${last_version}:schema.yml > schema-old.yml
-	docker compose -f scripts/compose.yml run --rm --user "${UID}:${GID}" diff \
-		--markdown \
-		/local/diff.md \
-		/local/schema-old.yml \
-		/local/schema.yml
-	rm schema-old.yml
-	$(SED_INPLACE) 's/{/\&#123;/g' diff.md
-	$(SED_INPLACE) 's/}/\&#125;/g' diff.md
-	pnpm exec oxfmt --write diff.md
+gen-diff:  ## (Release) Write the API schema diff against the previous release family into the release's API changes partial (`version=2026.11.0`)
+	node ./scripts/node/release-changelog.ts diff --version "$(version)"
 
 gen-client-go:  ## Build and install the authentik API for Golang
 	$(UV) run make -C "${PWD}/packages/client-go" build
