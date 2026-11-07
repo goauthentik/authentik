@@ -1036,12 +1036,6 @@
 <trans-unit id="s8ff646d0515aab2a">
   <source>Retry task</source>
 </trans-unit>
-<trans-unit id="sac44b0f4dc14c227">
-  <source>Current execution logs</source>
-</trans-unit>
-<trans-unit id="s5e13dff03b580216">
-  <source>Previous executions logs</source>
-</trans-unit>
 <trans-unit id="s9b8dccb514a0e34c">
   <source>Schedule</source>
 </trans-unit>
@@ -5879,10 +5873,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Failed attempts before cancel</source>
   <target>取消前可嘗試的次數</target>
 </trans-unit>
-<trans-unit id="sa9020b93c3bd7235">
-  <source>How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.</source>
-  <target>在取消流程前使用者嘗試的次數。要鎖定使用者請使用名譽政策和 user_write 階段。</target>
-</trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
 </trans-unit>
@@ -6512,11 +6502,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Notification rule(s)</source>
   <target>通知規則</target>
 </trans-unit>
-<trans-unit id="s5795b310ab271d20">
-  <source>These bindings control upon which events this rule triggers.
-Bindings to groups/users are checked against the user of the event.</source>
-  <target>這些附加控制了此規則觸發的事件。附加到群組或使用者的條件會根據事件的使用者來檢查。</target>
-</trans-unit>
 <trans-unit id="s90c3b62194fe8508">
   <source>Outpost Deployment Info</source>
   <target>Outpost 部署資訊</target>
@@ -6972,7 +6957,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>藍圖</target>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+  <source>Apply "<x id="0" equiv-text="${name}"/>" blueprint</source>
 </trans-unit>
 <trans-unit id="sb8f855b49234b81b">
   <source>Apply</source>
@@ -8363,7 +8348,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${formatAPISource()}&lt;/a&#10;                                                &gt;.`}"/></source>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${apiSourceLabel}&lt;/a&#10;                                                &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s3934affe32f6a454">
@@ -10177,7 +10162,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="captcha.provider-link.cap">
   <source>Use the
-                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;`}"/>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${apiSourceLabel}&lt;/a&#10;                                            &gt;`}"/>
                                             to self-host Cap and configure the endpoint.</source>
   <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
 </trans-unit>
@@ -10693,9 +10678,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd700d2a7e8fe68e7">
   <source>Bind existing rule</source>
-</trans-unit>
-<trans-unit id="s84d52a11b0a6dbd2">
-  <source>These bindings control which users/groups can request access to this object.</source>
 </trans-unit>
 <trans-unit id="s3c7ee40c88248316">
   <source>No request rules bound.</source>
@@ -11564,13 +11546,283 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>This security key is already registered on your account. Touch a different key to add it.</source>
 </trans-unit>
 <trans-unit id="sidebar.notice.enterprise-only">
-  <source>Enterprise only</source>
+  <source>Enterprise</source>
 </trans-unit>
 <trans-unit id="array-input.validation.invalid-entry">
   <source>One or more entries are invalid.</source>
 </trans-unit>
 <trans-unit id="array-input.remove.aria-label">
   <source>Remove entry</source>
+</trans-unit>
+<trans-unit id="sa3b6915ea75108da">
+  <source>Custom permissions</source>
+</trans-unit>
+<trans-unit id="s485485e456e22baa">
+  <source>Let custom permission checks override access control decisions made by authentik.</source>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.outpost.description">
+  <source>This provider must be assigned to an outpost before users can access the application.</source>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.view-provider.label">
+  <source>View Provider</source>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.outposts.label">
+  <source>Go to Outposts</source>
+</trans-unit>
+<trans-unit id="s97cc54c7d1813837">
+  <source>OCI manifest</source>
+</trans-unit>
+<trans-unit id="s84eec986af7ea820">
+  <source>These bindings control upon which events this rule triggers.
+                Bindings to groups/users are checked against the user of the event.</source>
+</trans-unit>
+<trans-unit id="policies.bindings.mode.label">
+  <source>Mode</source>
+</trans-unit>
+<trans-unit id="policies.bindings.dry-run.view-results.label">
+  <source>View dry-run results</source>
+</trans-unit>
+<trans-unit id="policies.bindings.enforced.label">
+  <source>Enforced</source>
+</trans-unit>
+<trans-unit id="policies.bindings.dry-run.description">
+  <source>Evaluate this binding without including its result or messages in the final decision.
+            Results are recorded in the <x id="0" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;events/log&quot;)}&quot;&gt;"/>Event Log<x id="1" equiv-text="&lt;/a&gt;"/>.
+            Expression policies can still make network requests, create events, or modify data.</source>
+</trans-unit>
+<trans-unit id="policy-bindings.label">
+  <source>Policy bindings</source>
+</trans-unit>
+<trans-unit id="see7e5431ccf76ccc">
+  <source>Unspecified</source>
+</trans-unit>
+<trans-unit id="s86d385ff812dfced">
+  <source>Custom Permission</source>
+</trans-unit>
+<trans-unit id="s47694f288124407a">
+  <source>Custom Permissions</source>
+</trans-unit>
+<trans-unit id="sbbeccfb40931d00d">
+  <source>Successfully updated custom permission.</source>
+</trans-unit>
+<trans-unit id="s2f7d64e86c256034">
+  <source>Successfully created custom permission.</source>
+</trans-unit>
+<trans-unit id="s149e4dae7751f5a6">
+  <source>Search for a model...</source>
+</trans-unit>
+<trans-unit id="h7caeadd948c6500e">
+  <source>The model the permission applies to. Use
+                            <x id="0" equiv-text="&lt;code&gt;"/>authentik_rbac.systempermission<x id="1" equiv-text="&lt;/code&gt;"/> for permissions about
+                            authentik as a whole. It cannot be changed later.</source>
+</trans-unit>
+<trans-unit id="se74c2ff960282baf">
+  <source>Codename</source>
+</trans-unit>
+<trans-unit id="hfb6ea4f521187709">
+  <source>Starts with <x id="0" equiv-text="&lt;code&gt;"/>custom_<x id="1" equiv-text="&lt;/code&gt;"/>, followed by lowercase letters, digits
+                            and underscores. It cannot be changed later.</source>
+</trans-unit>
+<trans-unit id="sd171577d6e81af69">
+  <source>Search for custom permissions...</source>
+</trans-unit>
+<trans-unit id="s949ee709acee8fde">
+  <source>Create a custom permission to get started.</source>
+</trans-unit>
+<trans-unit id="sb211e62f2c69d795">
+  <source>Define your own permissions on models, assign them to roles, and test them in permission checks.</source>
+</trans-unit>
+<trans-unit id="s8327938fa76b5c7a">
+  <source>Paths started with fields it lacks: <x id="0" equiv-text="${unknownFields.join(&quot;, &quot;)}"/></source>
+</trans-unit>
+<trans-unit id="sb497ab0f5338b526">
+  <source>Permission Check</source>
+</trans-unit>
+<trans-unit id="s166d000a695c1f6f">
+  <source>Permission Checks</source>
+</trans-unit>
+<trans-unit id="sda9f3bb440258a0c">
+  <source>Successfully updated permission check.</source>
+</trans-unit>
+<trans-unit id="s5f84c961b35b071f">
+  <source>Successfully created permission check.</source>
+</trans-unit>
+<trans-unit id="s8465a2caa2d9ea5d">
+  <source>Endpoints</source>
+</trans-unit>
+<trans-unit id="se275ef18f06cf8eb">
+  <source>Bound</source>
+</trans-unit>
+<trans-unit id="sdf9e135bb3078b00">
+  <source>API endpoints this check decides on, like core/users:list. An endpoint can be bound to one check only.</source>
+</trans-unit>
+<trans-unit id="sff5458d09ac165ce">
+  <source>Python code defining permission checks.</source>
+</trans-unit>
+<trans-unit id="s6a146a1e841d3203">
+  <source>See examples in the documentation.</source>
+</trans-unit>
+<trans-unit id="sf3b9adc4507c57bc">
+  <source>Search for permission checks...</source>
+</trans-unit>
+<trans-unit id="sf1355416c3efc50b">
+  <source>Create a permission check to get started.</source>
+</trans-unit>
+<trans-unit id="scaa8455fd5a8fe97">
+  <source>Python code that has the final say on access to API endpoints.</source>
+</trans-unit>
+<trans-unit id="s4c7b85c8ef6f0fc5">
+  <source>No longer exists</source>
+</trans-unit>
+<trans-unit id="s5307a13bc1e6634c">
+  <source>These bindings control which users or groups can request access to this object.</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.label">
+  <source>Show on login page</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.stage.flows.description">
+  <source>Used in: <x id="0" equiv-text="${flows}"/></source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.stage.unbound.description">
+  <source>Not bound to any flow</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.description">
+  <source>Add this source to an Identification stage if you want it displayed on the login page. Otherwise, you can skip this step.</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.empty">
+  <source>No identification stages exist yet.</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-threshold.label">
+  <source>Failed attempts before lockout</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-threshold.enterprise.description">
+  <source>Password lockout requires an Enterprise license.</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-threshold.description">
+  <source>Lock password login after this many consecutive failed attempts, until an administrator unlocks it. LDAP users are exempt while any LDAP source is enabled; Kerberos users are exempt when linked to an enabled source. The corresponding backend must be selected. Set to 0 to never lock.</source>
+</trans-unit>
+<trans-unit id="password-stage.last-attempt-warning-message.label">
+  <source>Last-attempt warning message</source>
+</trans-unit>
+<trans-unit id="password-stage.last-attempt-warning-message.description">
+  <source>Warning shown when the user has one password attempt remaining. Leave blank to show no warning.</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-message.label">
+  <source>Lockout message</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-message.description">
+  <source>Message shown when the user's password has been locked. Leave blank to show a generic authentication error.</source>
+</trans-unit>
+<trans-unit id="password-stage.failed-attempts-before-cancel.description">
+  <source>How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.</source>
+</trans-unit>
+<trans-unit id="stage.list.unbound.label">
+  <source>Not bound to any flow</source>
+</trans-unit>
+<trans-unit id="user.entitlements.empty.label">
+  <source>No application entitlements.</source>
+</trans-unit>
+<trans-unit id="user.entitlements.empty.description">
+  <source>This user has not been granted any application entitlements.</source>
+</trans-unit>
+<trans-unit id="user-required-actions.card.title">
+  <source>Required actions</source>
+</trans-unit>
+<trans-unit id="user-required-actions.card.description">
+  <source>The user must complete these flows in order before they can continue. Changes apply on their next request.</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.label">
+  <source>Unlock password login</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock.label">
+  <source>Lock password login</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.pending">
+  <source>Unlocking password login...</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock.pending">
+  <source>Locking password login...</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.success">
+  <source>Password login unlocked</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock.success">
+  <source>Password login locked</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock-review.label">
+  <source>Review password unlock</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock-review.label">
+  <source>Review password lock</source>
+</trans-unit>
+<trans-unit id="user.display.unknown.label">
+  <source>Unknown user</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock-confirm.description">
+  <source>Allow <x id="0" equiv-text="${displayName}"/> to authenticate with a password again?</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock-confirm.description">
+  <source>Prevent <x id="0" equiv-text="${displayName}"/> from authenticating through password stages, including with app passwords? Existing sessions and passwordless authentication are not affected.</source>
+</trans-unit>
+<trans-unit id="user-required-actions.object.label.one">
+  <source>Required action</source>
+</trans-unit>
+<trans-unit id="user-required-actions.object.label.other">
+  <source>Required actions</source>
+</trans-unit>
+<trans-unit id="user-required-actions.column.flow.label">
+  <source>Flow</source>
+</trans-unit>
+<trans-unit id="user-required-actions.column.slug.label">
+  <source>Slug</source>
+</trans-unit>
+<trans-unit id="user-required-actions.column.actions.label">
+  <source>Actions</source>
+</trans-unit>
+<trans-unit id="user-required-actions.select.placeholder">
+  <source>Select a flow...</source>
+</trans-unit>
+<trans-unit id="user-required-actions.add.label">
+  <source>Add</source>
+</trans-unit>
+<trans-unit id="user-required-actions.remove.label">
+  <source>Remove</source>
+</trans-unit>
+<trans-unit id="events.authenticator-locked.label">
+  <source>Authenticator locked</source>
+</trans-unit>
+<trans-unit id="events.authenticator-unlocked.label">
+  <source>Authenticator unlocked</source>
+</trans-unit>
+<trans-unit id="events.action.required-action-completed.label">
+  <source>Required action completed</source>
+</trans-unit>
+<trans-unit id="policies.bindings.dry-run.label">
+  <source>Dry-run</source>
+</trans-unit>
+<trans-unit id="events.policy-execution.raw-result.label">
+  <source>Raw result</source>
+</trans-unit>
+<trans-unit id="events.policy-execution.cached.label">
+  <source>Cached</source>
+</trans-unit>
+<trans-unit id="page:navbar:breadcrumbs ">
+  <source>breadcrumbs</source>
+</trans-unit>
+<trans-unit id="tasks.execution-logs.current">
+  <source>Current execution logs</source>
+</trans-unit>
+<trans-unit id="tasks.execution-logs.previous">
+  <source>Previous executions logs</source>
+</trans-unit>
+<trans-unit id="s3b8a6245b12fa2ad">
+  <source>Breadcrumbs</source>
+</trans-unit>
+<trans-unit id="crontab.parse-failed">
+  <source>Cron string does not parse.</source>
+</trans-unit>
+<trans-unit id="sidebar.toggle.aria-label">
+  <source>Toggle <x id="0" equiv-text="${label}"/></source>
 </trans-unit>
 </body>
 </file>
