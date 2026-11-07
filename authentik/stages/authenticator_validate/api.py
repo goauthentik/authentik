@@ -37,6 +37,7 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
             "last_auth_threshold",
             "webauthn_user_verification",
             "webauthn_hints",
+            "webauthn_additional_accepted_origins",
             "webauthn_allowed_device_types",
             "webauthn_allowed_device_types_obj",
             "email_otp_throttling_factor",
