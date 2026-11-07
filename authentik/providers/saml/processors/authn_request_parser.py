@@ -33,6 +33,17 @@ class AuthNRequest:
 
     force_authn: bool = False
 
+    # The ACS URL the response is sent to, resolved from the request and validated against the
+    # provider's configured ACS URLs. When unset, the provider's default ACS URL is used.
+    acs_url: str | None = None
+
+
+def get_acs_url(provider: SAMLProvider, auth_n_request: AuthNRequest) -> str:
+    """Get the URL a response for `auth_n_request` should be sent to"""
+    # Requests parsed before `acs_url` existed might be stored in a flow plan,
+    # where the slot is missing, so don't assume it's set.
+    return getattr(auth_n_request, "acs_url", None) or provider.acs_url
+
 
 class AuthNRequestParser:
     """AuthNRequest Parser"""
@@ -54,24 +65,7 @@ class AuthNRequestParser:
             self.logger.warning("SAML request is missing the ID attribute")
             raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
 
-        # http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
-        # `AssertionConsumerServiceURL` can be omitted, and we should fallback to the
-        # default ACS URL
-        if "AssertionConsumerServiceURL" not in root.attrib:
-            request_acs_url = self.provider.acs_url.lower()
-        else:
-            request_acs_url = root.attrib["AssertionConsumerServiceURL"]
-
-        if self.provider.acs_url.lower() != request_acs_url.lower():
-            self.logger.warning(
-                "ACS URL of request doesn't match provider ACS URL",
-                request_acs_url=request_acs_url,
-                provider_acs_url=self.provider.acs_url,
-            )
-            raise CannotHandleAssertion(
-                f"ACS URL of {request_acs_url} doesn't match Provider "
-                f"ACS URL of {self.provider.acs_url}."
-            )
+        acs_url = self._resolve_acs_url(root)
 
         # `ForceAuthn` is an optional attribute. When true, the SP requires the IdP to
         # actively re-authenticate the user instead of relying on an existing session
@@ -79,7 +73,10 @@ class AuthNRequestParser:
         force_authn = root.attrib.get("ForceAuthn", "false").lower() == "true"
 
         auth_n_request = AuthNRequest(
-            id=root.attrib["ID"], relay_state=relay_state, force_authn=force_authn
+            id=root.attrib["ID"],
+            relay_state=relay_state,
+            force_authn=force_authn,
+            acs_url=acs_url,
         )
 
         # Check if AuthnRequest has a NameID Policy object
@@ -91,6 +88,54 @@ class AuthNRequestParser:
             )
 
         return auth_n_request
+
+    def _resolve_acs_url(self, root) -> str:
+        """Resolve the URL to send the response to, and make sure it's configured for the provider.
+
+        `AssertionConsumerServiceURL` and `AssertionConsumerServiceIndex` are optional and
+        mutually exclusive. When neither is set, the default ACS URL is used
+        (SAML 2.0 core 3.4.1 http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)
+        """
+        request_acs_url = root.attrib.get("AssertionConsumerServiceURL")
+        request_acs_index = root.attrib.get("AssertionConsumerServiceIndex")
+        if request_acs_url is not None and request_acs_index is not None:
+            self.logger.warning(
+                "SAML request specifies both AssertionConsumerServiceURL and "
+                "AssertionConsumerServiceIndex"
+            )
+            raise CannotHandleAssertion(
+                "AssertionConsumerServiceURL and AssertionConsumerServiceIndex are mutually "
+                "exclusive."
+            )
+        index = None
+        if request_acs_index is not None:
+            try:
+                index = int(request_acs_index)
+            except ValueError:
+                raise CannotHandleAssertion(
+                    f"Invalid AssertionConsumerServiceIndex {request_acs_index}."
+                ) from None
+        acs_url = self.provider.resolve_acs_url(url=request_acs_url, index=index)
+        if acs_url:
+            return acs_url
+        if request_acs_url is not None:
+            self.logger.warning(
+                "ACS URL of request doesn't match any provider ACS URL",
+                request_acs_url=request_acs_url,
+            )
+            raise CannotHandleAssertion(
+                f"ACS URL of {request_acs_url} doesn't match any ACS URL configured for the "
+                "provider."
+            )
+        if index is not None:
+            self.logger.warning(
+                "ACS index of request doesn't match any provider ACS URL", request_acs_index=index
+            )
+            raise CannotHandleAssertion(
+                f"ACS index {index} doesn't match any ACS URL configured for the provider."
+            )
+        self.logger.warning("Provider has no default ACS URL")
+        raise CannotHandleAssertion("Provider has no default ACS URL configured.")
 
     def parse(self, saml_request: str, relay_state: str | None = None) -> AuthNRequest:
         """Validate and parse raw request with enveloped signautre."""
