@@ -59,6 +59,27 @@ class TestApplicationsAPI(APITestCase):
             f"https://{self.user.username}-test.test.goauthentik.io/{self.user.username}",
         )
 
+    def test_relative_launch_url(self):
+        """Test launch URL as a path relative to the current host"""
+        self.client.force_login(self.user)
+        url = reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug})
+        for launch_url in ["/app/", "/app/%(username)s?a=b#c"]:
+            with self.subTest(launch_url=launch_url):
+                response = self.client.patch(url, {"meta_launch_url": launch_url})
+                self.assertEqual(response.status_code, 200, response.content)
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.get_launch_url(self.user), f"/app/{self.user.username}?a=b#c")
+        for launch_url in [
+            "//example.com/app/",
+            "/\\example.com/app/",
+            "/app /",
+            "app/",
+            "javascript:alert(1)",
+        ]:
+            with self.subTest(launch_url=launch_url):
+                response = self.client.patch(url, {"meta_launch_url": launch_url})
+                self.assertEqual(response.status_code, 400, response.content)
+
     def test_check_access(self):
         """Test check_access operation"""
         self.client.force_login(self.user)
