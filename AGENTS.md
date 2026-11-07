@@ -101,6 +101,8 @@ make rust-test         # Rust tests (cargo nextest)
 make web-test          # Web UI tests (delegates to web/)
 ```
 
+The standalone ID-JAG issuer acceptance suite is intentionally outside general test discovery. Run `tests/mcp_conformance_id_jag_issuer/run-local.sh` for disposable PostgreSQL and isolated settings (no developer database or `local.env.yml`); it prints a fresh results directory. Its dedicated Actions workflow runs on all PR bases and on the same push branches as `CI - Main` (`main`, `next`, `version-*`), using the shared test-results uploader and OpenID conformance's `conformance` flag. See `tests/mcp_conformance_id_jag_issuer/README.md` for the pinned baseline and current conformance results.
+
 ### Lint & format
 
 ```bash

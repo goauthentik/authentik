@@ -1,0 +1,103 @@
+---
+# Acceptance check: authentik as ID-JAG issuer (draft-ietf-oauth-identity-assertion-authz-grant-06)
+# for MCP Enterprise-Managed Authorization. See tests/mcp_conformance_id_jag_issuer/HANDOFF.md
+# for tested revisions and results. Keep non-required while coverage and the spec baseline
+# are under review.
+name: CI - MCP conformance (id-jag-issuer)
+
+on:
+  # Match CI - Main's post-merge coverage, including its OpenID conformance jobs.
+  push:
+    branches:
+      - main
+      - next
+      - version-*
+  # Also run when these tests are moved onto feature-branch PRs.
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
+
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
+permissions:
+  # Needed for checkout
+  contents: read
+  # Needed for codecov OIDC token (./.github/actions/test-results)
+  id-token: write
+
+jobs:
+  test-mcp-conformance:
+    name: test-mcp-conformance (${{ matrix.job.name }})
+    runs-on: ubuntu-26.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - name: id-jag-issuer
+            dir: tests/mcp_conformance_id_jag_issuer
+            acceptance: tests/mcp_conformance_id_jag_issuer/acceptance_id_jag.py
+            selfcheck: tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
+    env:
+      # Disposable runner database; a dedicated test DB name keeps it apart from anything else
+      AUTHENTIK_POSTGRESQL__TEST__NAME: test_authentik_mcp_id_jag_issuer
+      MCP_CONFORMANCE_RESULTS_DIR: ${{ github.workspace }}/${{ matrix.job.dir }}/results
+      AUTHENTIK_LOG_LEVEL: warning
+      PYTEST_ADDOPTS: "-o addopts= -p authentik.root.test_plugin --junitxml=unittest.xml --tb=short --no-showlocals --show-capture=no -o junit_logging=no"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          # No browser, web UI, Go or Rust needed: SSO is driven through the flow executor API
+          dependencies: "system,python,runtime"
+      - name: Fixture self-check (independent of authentik)
+        timeout-minutes: 3
+        run: uv run python ${{ matrix.job.selfcheck }}
+      - name: Run ID-JAG issuer acceptance check
+        timeout-minutes: 12
+        run: |
+          uv run coverage run manage.py test ${{ matrix.job.acceptance }}
+      - name: Verify structured report
+        if: ${{ !cancelled() }}
+        # Fails if the harness crashed before producing a report, or if the verdict is not PASS
+        run: |
+          uv run python - <<'EOF'
+          import json, os, sys
+          path = os.path.join(os.environ["MCP_CONFORMANCE_RESULTS_DIR"], "report.json")
+          if not os.path.exists(path):
+              sys.exit(f"no report at {path}: harness did not complete")
+          report = json.load(open(path))
+          ids = [c["id"] for c in report["checks"]]
+          missing = sorted(set(report["expected_checks"]) - set(ids))
+          print(f"verdict={report['verdict']} executed={len(ids)} missing={missing}")
+          sys.exit(0 if report["verdict"] == "PASS" and not missing and ids else 1)
+          EOF
+      - name: Job summary
+        if: ${{ !cancelled() }}
+        run: |
+          cat "${MCP_CONFORMANCE_RESULTS_DIR}/report.md" >> "$GITHUB_STEP_SUMMARY" || \
+            echo "No report produced." >> "$GITHUB_STEP_SUMMARY"
+      - name: Coverage report
+        if: ${{ !cancelled() }}
+        run: |
+          uv run coverage combine
+          uv run coverage xml
+      - uses: ./.github/actions/test-results
+        if: ${{ !cancelled() }}
+        with:
+          flags: conformance
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: mcp-conformance-${{ matrix.job.name }}
+          path: |
+            ${{ matrix.job.dir }}/results/
+            unittest.xml
+          if-no-files-found: warn
