@@ -27,6 +27,24 @@ export enum TypeCreateWizardPageLayouts {
     grid = "grid",
 }
 
+/**
+ * A choice that binds an existing object instead of creating one.
+ */
+export interface TypeCreateBindOption {
+    label: string;
+    description: string;
+    /**
+     * Sent as the detail of the `ak-type-create-bind` event.
+     */
+    value: string;
+}
+
+export interface TypeCreateBindChoices {
+    label: string;
+    description?: string;
+    options: TypeCreateBindOption[];
+}
+
 @customElement("ak-wizard-page-type-create")
 export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     //#region Properties
@@ -45,6 +63,19 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     @property({ type: String, attribute: "group-description", useDefault: true })
     public groupDescription: string | null = null;
+
+    /**
+     * Choices listed before the types, in the list layout, that bind an existing object
+     * instead of creating one. They share the types' radio group, so the page holds one choice.
+     */
+    @property({ attribute: false, useDefault: true })
+    public bindChoices: TypeCreateBindChoices | null = null;
+
+    /**
+     * The value of the chosen bind option, if one was chosen instead of a type.
+     */
+    @property({ attribute: false, useDefault: true })
+    public selectedBind: string | null = null;
 
     //#endregion
 
@@ -92,20 +123,22 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         super.reset();
 
         this.selectedType = null;
+        this.selectedBind = null;
         this.formRef.value?.reset();
     };
 
     public override activeCallback = (): void => {
-        this.host.valid = !!this.selectedType;
+        this.host.valid = !!this.selectedType || this.selectedBind !== null;
     };
 
     protected override updated(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("selectedType")) {
+        // A type cleared by choosing a bind option is not a choice of its own.
+        if (changedProperties.has("selectedType") && this.selectedType) {
             this.#selectDispatch(this.selectedType);
         }
     }
 
-    #selectDispatch = (type: TypeCreate | null) => {
+    #selectDispatch = (type: TypeCreate) => {
         this.dispatchEvent(
             new CustomEvent("ak-type-create-select", {
                 detail: type,
@@ -114,6 +147,34 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             }),
         );
     };
+
+    /**
+     * Choose a type from the list. A click rather than a change, so that clicking the type
+     * already chosen, as after going Back, moves on again.
+     */
+    #chooseListType(type: TypeCreate): void {
+        this.selectedBind = null;
+
+        // A changed type dispatches from `updated()`; an unchanged one would not.
+        if (this.selectedType === type) {
+            this.#selectDispatch(type);
+        } else {
+            this.selectedType = type;
+        }
+    }
+
+    #chooseBind(value: string): void {
+        this.selectedType = null;
+        this.selectedBind = value;
+
+        this.dispatchEvent(
+            new CustomEvent("ak-type-create-bind", {
+                detail: value,
+                bubbles: true,
+                composed: true,
+            }),
+        );
+    }
 
     //#endregion
 
@@ -231,9 +292,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                     id=${inputID}
                     aria-label=${type.name}
                     aria-describedby=${`${inputID}-description`}
-                    @change=${() => {
-                        this.selectedType = type;
-                    }}
+                    @click=${() => this.#chooseListType(type)}
                     ?disabled=${disabled}
                     .checked=${selected}
                 />
@@ -257,6 +316,43 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 </span>
             </label>`;
         });
+    }
+
+    protected renderBindChoices(): SlottedTemplateResult {
+        if (!this.bindChoices) {
+            return null;
+        }
+
+        const { label, description, options } = this.bindChoices;
+
+        return html`<ak-form-group
+            label=${label}
+            description=${ifPresent(description)}
+            part="group bind"
+            open
+        >
+            ${options.map((option) => {
+                const inputID = `bind-${option.value}`;
+                const selected = this.selectedBind === option.value;
+
+                return html`<label class="pf-c-radio" for=${inputID}>
+                    <input
+                        class="pf-c-radio__input"
+                        type="radio"
+                        name="type"
+                        id=${inputID}
+                        aria-label=${option.label}
+                        aria-describedby=${`${inputID}-description`}
+                        @click=${() => this.#chooseBind(option.value)}
+                        .checked=${selected}
+                    />
+                    <div class="pf-c-radio__label">${option.label}</div>
+                    <span id="${inputID}-description" class="pf-c-radio__description"
+                        >${option.description}</span
+                    >
+                </label>`;
+            })}
+        </ak-form-group>`;
     }
 
     protected renderList(): SlottedTemplateResult {
@@ -286,8 +382,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 role="radiogroup"
                 aria-label=${ifPresent(this.headline)}
             >
-                <slot name="pre-items"></slot>
-                ${content}
+                ${this.renderBindChoices()} ${content}
             </form>`,
         ];
     }
@@ -295,18 +390,21 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     //#endregion
 
     protected override render(): SlottedTemplateResult {
-        const { layout, types, selectedType, activeTheme } = this;
+        const { layout, types, selectedType, bindChoices, selectedBind, activeTheme } = this;
 
-        const content = guard([layout, types, selectedType, activeTheme], () => {
-            switch (layout) {
-                case TypeCreateWizardPageLayouts.grid:
-                    return this.renderGrid();
-                case TypeCreateWizardPageLayouts.list:
-                    return this.renderList();
-                default:
-                    throw new TypeError(`Unknown layout: ${layout}`);
-            }
-        });
+        const content = guard(
+            [layout, types, selectedType, bindChoices, selectedBind, activeTheme],
+            () => {
+                switch (layout) {
+                    case TypeCreateWizardPageLayouts.grid:
+                        return this.renderGrid();
+                    case TypeCreateWizardPageLayouts.list:
+                        return this.renderList();
+                    default:
+                        throw new TypeError(`Unknown layout: ${layout}`);
+                }
+            },
+        );
 
         return content;
     }

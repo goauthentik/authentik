@@ -9,16 +9,17 @@ import "#admin/policies/unique_password/UniquePasswordPolicyForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
-import "#elements/forms/FormGroup";
 import "#admin/policies/PolicyBindingForm";
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
-import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { FormWizardPage } from "#elements/wizard/FormWizardPage";
-import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
+import {
+    TypeCreateBindChoices,
+    TypeCreateWizardPageLayouts,
+} from "#elements/wizard/TypeCreateWizardPage";
 
 import {
     PoliciesApi,
@@ -94,50 +95,34 @@ export class PolicyWizard extends CreateWizard {
         }
     };
 
-    protected override renderCreateBefore(): SlottedTemplateResult {
+    protected override bindChoices(): TypeCreateBindChoices | null {
         if (!this.showBindingPage) {
             return null;
         }
 
-        return html`<ak-form-group
-            slot="pre-items"
-            label=${msg("Bind Existing...")}
-            description=${msg(
+        return {
+            label: msg("Bind Existing..."),
+            description: msg(
                 "Select a type to bind an existing object instead of creating a new one.",
-            )}
-            open
-        >
-            <ak-radio
-                .options=${
-                    [
-                        {
-                            label: msg("Bind a user"),
-                            description: html`${msg("Statically bind an existing user.")}`,
-                            value: PolicyBindingCheckTarget.User,
-                        },
-                        {
-                            label: msg("Bind a group"),
-                            description: html`${msg("Statically bind an existing group.")}`,
-                            value: PolicyBindingCheckTarget.Group,
-                        },
-                        {
-                            label: msg("Bind an existing policy"),
-                            description: html`${msg("Bind an existing policy.")}`,
-                            value: PolicyBindingCheckTarget.Policy,
-                        },
-                    ] satisfies RadioOption<PolicyBindingCheckTarget>[]
-                }
-                @change=${(ev: CustomEvent<RadioChangeEventDetail<PolicyBindingCheckTarget>>) => {
-                    if (!this.wizard) {
-                        return;
-                    }
-
-                    this.wizard.state[initialStep] = ev.detail.value;
-                    this.wizard.navigateNext();
-                }}
-            >
-            </ak-radio>
-        </ak-form-group>`;
+            ),
+            options: [
+                {
+                    label: msg("Bind a user"),
+                    description: msg("Statically bind an existing user."),
+                    value: PolicyBindingCheckTarget.User,
+                },
+                {
+                    label: msg("Bind a group"),
+                    description: msg("Statically bind an existing group."),
+                    value: PolicyBindingCheckTarget.Group,
+                },
+                {
+                    label: msg("Bind an existing policy"),
+                    description: msg("Bind an existing policy."),
+                    value: PolicyBindingCheckTarget.Policy,
+                },
+            ],
+        };
     }
 
     protected renderForms(): SlottedTemplateResult {

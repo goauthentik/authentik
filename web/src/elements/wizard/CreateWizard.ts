@@ -19,6 +19,7 @@ import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 import {
+    TypeCreateBindChoices,
     TypeCreateWizardPage,
     TypeCreateWizardPageLayouts,
 } from "#elements/wizard/TypeCreateWizardPage";
@@ -248,21 +249,17 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
      */
     protected typeSelectListener = ({
         detail: selectedType,
-    }: CustomEvent<TypeCreate | null>): boolean | Promise<boolean> => {
+    }: CustomEvent<TypeCreate>): boolean | Promise<boolean> => {
         this.selectedType = selectedType;
 
         const { wizard } = this;
 
         if (!wizard) return false;
 
+        // A type replaces a bind choice made before going Back.
+        delete wizard.state.initial;
+
         const nextSteps = [...this.initialSteps];
-
-        if (!selectedType) {
-            wizard.steps = nextSteps;
-            wizard.valid = false;
-
-            return false;
-        }
 
         const currentSteps = wizard.steps.slice();
 
@@ -273,6 +270,27 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
         nextSteps.splice(idx, 0, ...selectedSteps);
 
         wizard.steps = nextSteps;
+        wizard.valid = true;
+
+        return wizard.navigateNext();
+    };
+
+    /**
+     * Listener invoked when a bind choice from {@linkcode bindChoices} is selected on the initial
+     * page. The wizard skips the type forms, and keeps the choice's value as the initial page's
+     * state for the steps that follow.
+     */
+    protected bindSelectListener = ({
+        detail: value,
+    }: CustomEvent<string>): boolean | Promise<boolean> => {
+        this.selectedType = null;
+
+        const { wizard } = this;
+
+        if (!wizard) return false;
+
+        wizard.state.initial = value;
+        wizard.steps = [...this.initialSteps];
         wizard.valid = true;
 
         return wizard.navigateNext();
@@ -289,10 +307,10 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
     protected renderInitialPageContent?(): SlottedTemplateResult;
 
     /**
-     * Optional method to render content before the type selection on the initial page,
-     * for example to offer a choice between creation and binding an existing entity.
+     * Optional choices to bind an existing entity instead of creating one, listed before the
+     * types on the initial page.
      */
-    protected renderCreateBefore(): SlottedTemplateResult {
+    protected bindChoices(): TypeCreateBindChoices | null {
         return null;
     }
 
@@ -328,6 +346,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
                 layout=${this.layout}
                 group-label=${ifPresent(this.groupLabel)}
                 group-description=${ifPresent(this.groupDescription)}
+                .bindChoices=${this.bindChoices()}
                 headline=${
                     this.verboseName
                         ? msg(str`Choose ${this.verboseName} Type`, {
@@ -340,8 +359,8 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
                           })
                 }
                 @ak-type-create-select=${this.typeSelectListener}
+                @ak-type-create-bind=${this.bindSelectListener}
             >
-                ${this.renderCreateBefore()}
                 ${guard([initialPageContent], () => {
                     if (!initialPageContent) {
                         return null;
