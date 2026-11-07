@@ -1,5 +1,6 @@
 from typing import cast
 
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
 from django_dramatiq_postgres.models import TaskState
 from django_filters.filters import BaseInFilter, BooleanFilter, MultipleChoiceFilter, UUIDFilter
@@ -31,7 +32,7 @@ from structlog.stdlib import get_logger
 from authentik.core.api.utils import ModelSerializer
 from authentik.events.logs import LogEventSerializer
 from authentik.rbac.decorators import permission_required
-from authentik.tasks.models import Task, TaskStatus
+from authentik.tasks.models import Task, TaskLog, TaskStatus
 
 LOGGER = get_logger()
 
@@ -65,16 +66,21 @@ class TaskSerializer(ModelSerializer):
             "description",
         ]
 
+    def _tasklogs(self, instance: Task, previous: bool) -> list[TaskLog]:
+        # The viewset prefetches tasklogs; filtering them with .filter() would run a
+        # new query for every task in the page, so filter the prefetched list instead.
+        return [log for log in instance.tasklogs.all() if log.previous == previous]
+
     @extend_schema_field(LogEventSerializer(many=True))
     def get_logs(self, instance: Task):
         return cast(ReturnList, LogEventSerializer(instance._messages, many=True).data) + cast(
-            ReturnList, LogEventSerializer(instance.tasklogs.filter(previous=False), many=True).data
+            ReturnList, LogEventSerializer(self._tasklogs(instance, False), many=True).data
         )
 
     @extend_schema_field(LogEventSerializer(many=True))
     def get_previous_logs(self, instance: Task):
         return cast(ReturnList, LogEventSerializer(instance._messages, many=True).data) + cast(
-            ReturnList, LogEventSerializer(instance.tasklogs.filter(previous=True), many=True).data
+            ReturnList, LogEventSerializer(self._tasklogs(instance, True), many=True).data
         )
 
     def get_description(self, instance: Task) -> str | None:
@@ -102,8 +108,27 @@ class TaskFilter(FilterSet):
     aggregated_status = MultipleChoiceFilter(
         choices=TaskStatus.choices,
         field_name="aggregated_status",
+        # A filter on a column of the task itself cannot return a task twice. The default
+        # DISTINCT makes the page count compare every selected column of every task.
+        distinct=False,
     )
     message_id__in = UUIDInFilter(field_name="message_id", lookup_expr="in")
+
+    def filter_queryset(self, queryset):
+        # Postgres cannot tell how many tasks a joined content type matches, and sorts every task
+        # of the object to find the newest. Given the content type's ID, it reads the newest
+        # tasks from the index on (content type, object, mtime).
+        content_type = {}
+        for lookup in ("app_label", "model"):
+            if value := self.form.cleaned_data.pop(f"rel_obj_content_type__{lookup}", None):
+                content_type[lookup] = value
+        if content_type:
+            queryset = queryset.filter(
+                rel_obj_content_type__in=list(
+                    ContentType.objects.filter(**content_type).values_list("pk", flat=True)
+                )
+            )
+        return super().filter_queryset(queryset)
 
     class Meta:
         model = Task

@@ -1,13 +1,16 @@
 """Events API Views"""
 
 from collections import OrderedDict
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
+from json import loads
 
 import django_filters
-from django.db.models import Count, ExpressionWrapper, F, QuerySet
+from django.core.exceptions import EmptyResultSet
+from django.db import connections
+from django.db.models import Count, Func, QuerySet, TextField, Value
 from django.db.models import DateTimeField as DjangoDateTimeField
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
-from django.db.models.functions import TruncHour
+from django.db.models.functions import Cast, Collate
 from django.db.models.query_utils import Q
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -27,12 +30,13 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.search.fields import ChoiceSearchField, JSONSearchField
+from authentik.api.search.fields import ChoiceSearchField, IndexedStrField, JSONSearchField
 from authentik.api.validation import validate
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.db import distinct_values
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 
@@ -110,19 +114,30 @@ class EventsFilter(django_filters.FilterSet):
         lookup_expr="device__pk",
         label="Context Device Primary Key",
     )
-    action = django_filters.CharFilter(
-        field_name="action",
-        lookup_expr="icontains",
-    )
+    action = django_filters.CharFilter(field_name="action", method="filter_action")
     actions = django_filters.MultipleChoiceFilter(
         field_name="action",
         choices=EventAction.choices,
+        # A filter on a column of the event itself cannot return an event twice
+        distinct=False,
     )
     brand_name = django_filters.CharFilter(
         field_name="brand",
         lookup_expr="name",
         label="Brand name",
     )
+
+    def filter_action(self, queryset, name, value):
+        """Match actions containing `value`, ignoring case. A substring match cannot use the
+        action index, so find the few distinct actions that contain `value` and filter on
+        those instead."""
+        value = value.upper()
+        actions = [
+            action
+            for action in distinct_values(Event.objects.all(), "action")
+            if value in action.upper()
+        ]
+        return queryset.filter(action__in=actions)
 
     def filter_username(self, queryset, name, value):
         query = Q(user__username=value) | Q(context__username=value)
@@ -184,7 +199,7 @@ class EventViewSet(
         return [
             ChoiceSearchField(Event, "action"),
             StrField(Event, "event_uuid"),
-            StrField(Event, "app", suggest_options=True),
+            IndexedStrField(Event, "app"),
             StrField(Event, "client_ip"),
             JSONSearchField(
                 Event,
@@ -238,17 +253,42 @@ class EventViewSet(
     def top_per_user(self, request: Request, query: TopPerUserSerializer):
         """Get the top_n events grouped by user count"""
         top_n = query.validated_data.get("top_n")
-        events = (
+        # Counting distinct users per application in one pass makes Postgres sort every
+        # event with its whole context. Instead, count the events of each application and
+        # user pair, then add up the pairs of each application. The pairs carry only the two
+        # keys, compared as C-collated text, so sorting them is far cheaper.
+        pairs = (
             self.filter_queryset(self.get_queryset())
             .exclude(context__authorized_application=None)
-            .annotate(application=KeyTransform("authorized_application", "context"))
-            .annotate(user_pk=KeyTextTransform("pk", "user"))
-            .values("application")
-            .annotate(counted_events=Count("application"))
-            .annotate(unique_users=Count("user_pk", distinct=True))
-            .values("unique_users", "application", "counted_events")
-            .order_by("-counted_events")[:top_n]
+            .values(
+                application=Collate(
+                    Cast(KeyTransform("authorized_application", "context"), TextField()), "C"
+                ),
+                user_pk=Collate(KeyTextTransform("pk", "user"), "C"),
+            )
+            .annotate(events=Count("pk"))
+            .order_by()
         )
+        try:
+            pairs_sql, params = pairs.query.get_compiler(pairs.db).as_sql()
+        except EmptyResultSet:
+            # The filters cannot match anything, such as an action no event has
+            return Response([])
+        with connections[pairs.db].cursor() as cursor:
+            cursor.execute(
+                f"""
+                SELECT application, SUM(events), COUNT(user_pk)
+                FROM ({pairs_sql}) AS pairs
+                GROUP BY application
+                ORDER BY 2 DESC
+                LIMIT %s
+                """,  # nosec: pairs_sql is compiled by Django and its values are in params
+                (*params, top_n),
+            )
+            events = [
+                {"application": loads(application), "counted_events": count, "unique_users": users}
+                for application, count, users in cursor.fetchall()
+            ]
         return Response(EventTopPerUserSerializer(instance=events, many=True).data)
 
     @extend_schema(
@@ -265,15 +305,20 @@ class EventViewSet(
             delta = AGGR_MAX_AGE
         return Response(
             queryset.filter(created__gte=now() - delta)
-            .annotate(hour=TruncHour("created"))
             .annotate(
-                time=ExpressionWrapper(
-                    F("hour") - (F("hour__hour") % 6) * timedelta(hours=1),
+                # Six hour buckets starting at midnight UTC
+                time=Func(
+                    Value(timedelta(hours=6)),
+                    "created",
+                    Value(datetime(2000, 1, 1, tzinfo=UTC)),
+                    function="DATE_BIN",
                     output_field=DjangoDateTimeField(),
                 )
             )
             .values("time", "action")
-            .annotate(count=Count("pk"))
+            # COUNT(*) rather than counting the primary key, which the covering index on
+            # created lacks; Postgres then counts from the index alone.
+            .annotate(count=Count("*"))
             .order_by("time", "action")
         )
 
