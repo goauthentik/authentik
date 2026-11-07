@@ -18,7 +18,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
-from django.db.models import Q, QuerySet, options
+from django.db.models import Prefetch, Q, QuerySet, options
 from django.db.models.functions import Upper
 from django.http import HttpRequest
 from django.utils.functional import cached_property
@@ -738,14 +738,15 @@ class BackchannelProvider(Provider):
 
 class ApplicationQuerySet(QuerySet):
     def with_provider(self) -> QuerySet[Application]:
-        qs = self.select_related("provider")
-        for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
-            qs = qs.select_related(f"provider__{subclass}")
-            # Also prefetch/select through each subclass path to ensure casted instances have access
-            qs = qs.prefetch_related(f"provider__{subclass}__property_mappings")
-            qs = qs.select_related(f"provider__{subclass}__application")
-            qs = qs.select_related(f"provider__{subclass}__backchannel_application")
-        return qs
+        """Load each application's provider as its concrete subclass, so get_provider() needs
+        no query.
+
+        The providers come from a second query rather than a join: selecting every provider
+        subclass, and the applications related to each, through the application query made a
+        statement of about 70 joins that Postgres took over 100ms to plan."""
+        return self.prefetch_related(
+            Prefetch("provider", queryset=Provider.objects.select_subclasses())
+        )
 
 
 class Application(RequestableModel, SerializerModel, PolicyBindingModel):

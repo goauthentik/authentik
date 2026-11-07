@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from copy import copy
 
 from django.core.cache import cache
-from django.db.models import Case, QuerySet
+from django.db.models import Case, Prefetch, QuerySet
 from django.db.models.expressions import When
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
@@ -29,7 +29,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
 from authentik.core.apps import AppAccessWithoutBindings
-from authentik.core.models import Application, User
+from authentik.core.models import Application, Provider, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import ConditionalInheritance
@@ -79,22 +79,16 @@ class ApplicationSerializer(ModelSerializer):
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
-        user = None
-        user_data = None
-
-        if "request" in self.context:
-            user = self.context["request"].user
-
-        # Cache serialized user data to avoid N+1 when formatting launch URLs
-        # for multiple applications. UserSerializer accesses user.groups which
-        # would otherwise trigger a query for each application.
-        if user is not None:
-            if "_cached_user_data" not in self.context:
-                # Prefetch groups to avoid N+1
-                self.context["_cached_user_data"] = UserSerializer(instance=user).data
-            user_data = self.context["_cached_user_data"]
-
-        return app.get_launch_url(user, user_data=user_data)
+        url = app.get_launch_url()
+        # Formatting a URL without placeholders returns it unchanged. Serializing the user
+        # queries their groups, roles and avatar, so it happens only for a URL that needs it,
+        # and once for all applications in the response.
+        if not url or "%" not in url or "request" not in self.context:
+            return url
+        user = self.context["request"].user
+        if "_cached_user_data" not in self.context:
+            self.context["_cached_user_data"] = UserSerializer(instance=user).data
+        return app.get_launch_url(user, user_data=self.context["_cached_user_data"])
 
     def validate_slug(self, slug: str) -> str:
         if slug in Application.reserved_slugs:
@@ -147,10 +141,19 @@ class ApplicationViewSet(
     """Application Viewset"""
 
     queryset = (
-        Application.objects.all()
-        .with_provider()
-        .prefetch_related("policies")
-        .prefetch_related("backchannel_providers")
+        Application.objects.all().with_provider()
+        # ProviderSerializer reads each provider's property mappings, application and
+        # backchannel application
+        .prefetch_related(
+            "provider__property_mappings",
+            "provider__backchannel_application",
+            Prefetch(
+                "backchannel_providers",
+                queryset=Provider.objects.select_related("application").prefetch_related(
+                    "property_mappings"
+                ),
+            ),
+        )
     )
     serializer_class = ApplicationSerializer
     search_fields = [
