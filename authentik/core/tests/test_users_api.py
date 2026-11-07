@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 from json import loads
 
+from bcrypt import gensalt, hashpw
 from django.conf import settings
 from django.contrib.auth.hashers import (
     PBKDF2PasswordHasher,
@@ -365,6 +366,28 @@ class TestUsersAPI(APITestCase):
 
         response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH, override=True)
         self._assert_password_hash_rejected(self.user, password_hash, response)
+
+    def test_set_password_hash_plain_bcrypt(self):
+        """Test plain bcrypt hashes (e.g. from Rails/Devise) are only imported with override."""
+        self.client.force_login(self.admin)
+        password = generate_id()
+        # Devise and others write the `$2a$` prefix, Python's bcrypt defaults to `$2b$`
+        for prefix in (b"2a", b"2b"):
+            with self.subTest(prefix=prefix):
+                user = create_test_user()
+                original_password = user.password
+                bcrypt_hash = hashpw(password.encode(), gensalt(rounds=4, prefix=prefix))
+                password_hash = f"bcrypt${bcrypt_hash.decode()}"
+
+                response = self._set_password_hash(user, password_hash)
+                errors = response.json()["password"]
+                self._assert_password_hash_rejected(
+                    user, original_password, response, errors=errors
+                )
+                self.assertIn("bcrypt not allowed", errors[0])
+
+                response = self._set_password_hash(user, password_hash, override=True)
+                self._assert_password_hash_set(user, password, password_hash, response)
 
     def test_recovery(self):
         """Test user recovery link"""
