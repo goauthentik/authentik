@@ -2,10 +2,12 @@ import "#elements/EmptyState";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { aki } from "#common/api/client";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 
 import { listen } from "#elements/decorators/listen";
 import { Diagram } from "#elements/Diagram/ak-diagram";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { diagramToolbar } from "#admin/flows/FlowDiagramToolbar";
 import { buildFlowGraph, isEditableNode, resolveNodeID } from "#admin/flows/FlowGraph";
@@ -14,8 +16,9 @@ import { DiagramNode, FlowDiagram as FlowDiagramGraph, FlowsApi } from "@goauthe
 
 import { observes } from "@patternfly/pfe-core/decorators/observes.js";
 
-import { css, render } from "lit";
-import { customElement, property, queryAll } from "lit/decorators.js";
+import { msg } from "@lit/localize";
+import { css, html, render } from "lit";
+import { customElement, property, queryAll, state } from "lit/decorators.js";
 
 const EditIconStyles = css`
     .ak-diagram-toolbar > .pf-c-button {
@@ -50,6 +53,9 @@ export class FlowDiagram extends Diagram {
 
     protected nodes: ReadonlyMap<string, DiagramNode> = new Map();
 
+    @state()
+    protected error: APIError | null = null;
+
     @observes("flowSlug")
     protected refresh(): Promise<void> {
         if (!this.flowSlug) {
@@ -61,7 +67,11 @@ export class FlowDiagram extends Diagram {
                 slug: this.flowSlug || "",
             })
             .then((graph) => {
+                this.error = null;
                 this.graph = graph;
+            })
+            .catch(async (error: unknown) => {
+                this.error = await parseAPIResponseError(error);
             });
     }
 
@@ -81,6 +91,22 @@ export class FlowDiagram extends Diagram {
     protected reload = () => {
         this.refresh();
     };
+
+    // A failed refresh keeps the last diagram; the error only replaces the loading placeholder.
+    protected override render(): SlottedTemplateResult {
+        if (this.error && !this.renderedSVG) {
+            return html`<ak-empty-state icon="fa-ban"
+                ><span
+                    >${msg("Failed to load the flow diagram.", {
+                        id: "flow.diagram.load.error",
+                    })}</span
+                >
+                <div slot="body">${pluckErrorDetail(this.error)}</div>
+            </ak-empty-state>`;
+        }
+
+        return super.render();
+    }
 
     @queryAll("g.node[id]")
     svgGroups!: SVGGElement[];

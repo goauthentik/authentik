@@ -15,10 +15,14 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import { aki } from "#common/api/client";
 import { withNext } from "#common/api/config";
 import { isResponseErrorLike } from "#common/errors/network";
+import { AKRefreshEvent } from "#common/events";
 
 import { AKElement } from "#elements/Base";
+import { listen } from "#elements/decorators/listen";
 import { modalInvoker } from "#elements/dialogs";
-import { toFlowInterface } from "#elements/router/core/interfaces";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { toAdminInterface, toFlowInterface } from "#elements/router/core/interfaces";
+import { navigate } from "#elements/router/core/navigation";
 import { setPageDetails } from "#elements/router/meta";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -65,6 +69,30 @@ export class FlowViewPage extends AKElement {
                 this.flow = flow;
             });
     }
+
+    // Refetch by pk, since an edit can change the slug this page was opened with.
+    @listen(AKRefreshEvent)
+    protected refresh = () => {
+        if (!this.flow) return;
+
+        return aki(FlowsApi)
+            .flowsInstancesList({ flowUuid: this.flow.pk })
+            .then(({ results: [flow] }) => {
+                // Deleted elsewhere; leave the page as it is.
+                if (!flow) return;
+
+                if (flow.slug !== this.flowSlug) {
+                    // The router mounts a new page for the new slug. The old URL no longer
+                    // resolves, so keep it out of the history.
+                    navigate(toAdminInterface(`flow/flows/${flow.slug}`), { mode: "replace" });
+
+                    return;
+                }
+
+                this.flow = flow;
+            })
+            .catch(showAPIErrorMessage);
+    };
 
     willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("flowSlug") && this.flowSlug) {
