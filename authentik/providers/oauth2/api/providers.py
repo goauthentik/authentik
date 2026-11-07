@@ -169,6 +169,8 @@ def get_setup_urls(provider: OAuth2Provider, request: Request) -> dict[str, str 
             )
         )
     except Provider.application.RelatedObjectDoesNotExist:
+        # These URLs contain the application's slug, so a provider without an application
+        # has none of them yet; the URLs above work without one.
         pass
     return data
 
