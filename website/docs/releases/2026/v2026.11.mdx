@@ -142,6 +142,20 @@ Password devices are excluded from MFA discovery and validation. Their lock stat
 
 {/* @dominic-r TODO: fill in from #26095–#26103. Old credential field names fail with an error that names the `<field>_ref` replacement; list the affected providers, sources, and stages, and the blueprint and API changes. */}
 
+### `/data/media` is now a directory in the container image {#data-media-directory}
+
+The `/data/media` path is now a regular directory instead of a symlink to `/media`. The `/media` directory has also been removed from the container image, so authentik no longer uses volumes mounted there.
+
+If you still mount a volume at `/media`, move its contents into the `media` directory within your `/data` volume. See the [2025.12 release notes](../2025/v2025.12.mdx#storage-mount-changes) for details.
+
+**Important for Docker and Podman named volumes:**
+
+Previously, when a new, empty named volume was mounted at `/data`, Docker or Podman could copy the `/data/media` symlink into it. This caused uploaded files to be stored in the container's temporary filesystem rather than the persistent volume. As a result, those files could be lost when the container was recreated, including during an upgrade.
+
+New volumes no longer have this problem, but existing named volumes may still contain the old symlink. Bind mounts, such as `./data:/data` in the official Docker Compose file, are not affected.
+
+**Before upgrading**, follow the [media symlink troubleshooting guide](../../troubleshooting/image_upload.mdx#media-symlink) to check whether your volume contains the old symlink and migrate any affected files before they are lost.
+
 ### Source icons are no longer inverted in dark mode
 
 In dark mode, authentik used to invert the colors of every source icon on the login page, in the user settings, and in the Admin interface's **Create** wizards. This turned colored logos into the wrong colors, for example Discord's blue into yellow. Source icons now keep their original colors.
