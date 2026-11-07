@@ -1,15 +1,15 @@
 import "#admin/requests/RequestRuleBindingForm";
 import "#admin/requests/RequestRuleForm";
-import "#elements/forms/FormGroup";
-import "#elements/forms/Radio";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
-import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { FormWizardPage } from "#elements/wizard/FormWizardPage";
-import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
+import {
+    TypeCreateBindChoices,
+    TypeCreateWizardPageLayouts,
+} from "#elements/wizard/TypeCreateWizardPage";
 
 import { RequestRule, RequestRuleBinding, TypeCreate } from "@goauthentik/api";
 
@@ -63,28 +63,17 @@ export class AKRequestRuleWizard extends CreateWizard {
         }
     };
 
-    protected override renderCreateBefore(): SlottedTemplateResult {
-        return html`<ak-form-group slot="pre-items" label=${msg("Existing Request Rule")} open>
-            <ak-radio
-                .options=${
-                    [
-                        {
-                            label: msg("Bind existing rule"),
-                            description: msg("Bind an existing request rule to this object."),
-                            value: true,
-                        },
-                    ] satisfies RadioOption<boolean>[]
-                }
-                @change=${() => {
-                    if (!this.wizard) {
-                        return;
-                    }
-
-                    this.wizard.navigateNext();
-                }}
-            >
-            </ak-radio>
-        </ak-form-group>`;
+    protected override bindChoices(): TypeCreateBindChoices {
+        return {
+            label: msg("Existing Request Rule"),
+            options: [
+                {
+                    label: msg("Bind existing rule"),
+                    description: msg("Bind an existing request rule to this object."),
+                    value: "request-rule",
+                },
+            ],
+        };
     }
 
     protected renderForms(): SlottedTemplateResult {

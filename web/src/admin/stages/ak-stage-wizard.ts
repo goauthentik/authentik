@@ -3,15 +3,16 @@ import "#elements/LicenseNotice";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
-import "#elements/forms/FormGroup";
 import "#admin/flows/StageBindingForm";
 import { aki } from "#common/api/client";
 
-import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { FormWizardPage } from "#elements/wizard/FormWizardPage";
-import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
+import {
+    TypeCreateBindChoices,
+    TypeCreateWizardPageLayouts,
+} from "#elements/wizard/TypeCreateWizardPage";
 
 import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api";
 
@@ -72,32 +73,23 @@ export class AKStageWizard extends CreateWizard {
         }
     };
 
-    protected override renderCreateBefore(): SlottedTemplateResult {
+    protected override bindChoices(): TypeCreateBindChoices | null {
         if (!this.showBindingPage) {
             return null;
         }
 
-        return html`<ak-form-group slot="pre-items" label=${msg("Existing Stage")} open>
-            <ak-radio
-                .options=${
-                    [
-                        {
-                            label: "Bind existing stage",
-                            description: msg("Bind an existing stage to this flow."),
-                            value: true,
-                        },
-                    ] satisfies RadioOption<boolean>[]
-                }
-                @change=${() => {
-                    if (!this.wizard) {
-                        return;
-                    }
-
-                    this.wizard.navigateNext();
-                }}
-            >
-            </ak-radio>
-        </ak-form-group>`;
+        return {
+            label: msg("Existing Stage"),
+            options: [
+                {
+                    label: msg("Bind existing stage", {
+                        id: "stage.wizard.bind-existing.label",
+                    }),
+                    description: msg("Bind an existing stage to this flow."),
+                    value: "stage",
+                },
+            ],
+        };
     }
 
     protected renderForms(): SlottedTemplateResult {
