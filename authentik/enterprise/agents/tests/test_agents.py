@@ -323,6 +323,47 @@ class AgentTests(APITestCase):
         agent.refresh_from_db()
         self.assertIsNone(agent.parent)
 
+    def test_id_jag_system_agent_only(self):
+        """ID-JAG can be configured on system agents, but not on agents with an owner,
+        whose owner could otherwise point it at any audience"""
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        data = {
+            "id_jag_audience": "https://as.example.com",
+            "id_jag_client_id": generate_id(),
+            "id_jag_resources": ["https://as.example.com/mcp"],
+        }
+
+        system = Agent.create_for_user(None)
+        res = self.client.patch(
+            reverse("authentik_api:agent-detail", kwargs={"pk": system.pk}), data, format="json"
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        system.refresh_from_db()
+        self.assertEqual(system.id_jag_audience, "https://as.example.com")
+
+        owned = Agent.create_for_user(create_test_user())
+        res = self.client.patch(
+            reverse("authentik_api:agent-detail", kwargs={"pk": owned.pk}), data, format="json"
+        )
+        self.assertEqual(res.status_code, 400, res.content)
+
+    def test_update_agent_applications(self):
+        """An explicit through model must keep application assignments writable via the API."""
+        self.client.force_login(create_test_admin_user())
+        agent = Agent.create_for_user(None)
+        applications = [
+            Application.objects.create(name=generate_id(), slug=generate_id()) for _ in range(2)
+        ]
+        url = reverse("authentik_api:agent-detail", kwargs={"pk": agent.pk})
+        for assigned in (applications, applications[1:], []):
+            with self.subTest(application_count=len(assigned)):
+                ids = [str(application.pk) for application in assigned]
+                response = self.client.patch(url, {"applications": ids}, format="json")
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertCountEqual(response.json()["applications"], ids)
+                self.assertCountEqual(agent.applications.all(), assigned)
+
     def test_system_agent(self):
         """Without a parent, an agent is a system agent, which only admins can create"""
         user = create_test_user()

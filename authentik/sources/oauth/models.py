@@ -68,7 +68,6 @@ class OAuthSource(NonCreatableType, Source):
     oidc_well_known_url = models.TextField(default="", blank=True)
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
-
     pkce = models.TextField(
         choices=PKCEMethod.choices, default=PKCEMethod.NONE, verbose_name=_("PKCE")
     )

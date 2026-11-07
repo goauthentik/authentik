@@ -464,6 +464,7 @@ jobs:
           pnpm --dir web run build:sfe
       - name: run conformance
         run: |
+          uv run python -m unittest tests.openid_conformance.test_screenshots
           uv run coverage run manage.py test ${{ matrix.job.glob }}
           uv run coverage combine
           uv run coverage xml

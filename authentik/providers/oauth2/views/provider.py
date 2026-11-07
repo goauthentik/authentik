@@ -17,6 +17,7 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_IMPLICIT,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
+    GRANT_TYPE_TOKEN_EXCHANGE,
     PKCE_METHOD_PLAIN,
     PKCE_METHOD_S256,
     SCOPE_OPENID,
@@ -109,6 +110,7 @@ class ProviderInfoView(View):
                 GRANT_TYPE_CLIENT_CREDENTIALS,
                 GRANT_TYPE_PASSWORD,
                 GRANT_TYPE_DEVICE_CODE,
+                GRANT_TYPE_TOKEN_EXCHANGE,
             ],
             "id_token_signing_alg_values_supported": [supported_alg],
             # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes
