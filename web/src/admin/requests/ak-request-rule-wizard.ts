@@ -34,6 +34,9 @@ export class AKRequestRuleWizard extends CreateWizard {
     @property({ type: String, useDefault: true })
     public bindingTarget: string | null = null;
 
+    @property({ type: Boolean, useDefault: true })
+    public entitlements = true;
+
     public override initialSteps = ["initial", "create-binding"];
 
     public static override verboseName = msg("Request Rule");
@@ -95,6 +98,7 @@ export class AKRequestRuleWizard extends CreateWizard {
         >
             <ak-request-rule-binding-form
                 .targetPk=${this.bindingTarget}
+                .entitlements=${this.entitlements}
             ></ak-request-rule-binding-form>
         </ak-wizard-page-form>`;
 

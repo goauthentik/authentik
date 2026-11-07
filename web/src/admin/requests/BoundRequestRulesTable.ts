@@ -27,6 +27,10 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
     @property({ type: String })
     public target: string | null = null;
 
+    /** Whether the target is an application, with entitlements to grant alongside it. */
+    @property({ type: Boolean })
+    public entitlements = true;
+
     public override checkbox = true;
     public override clearOnRefresh = true;
     public override expandable = true;
@@ -77,6 +81,7 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
             class="pf-c-button pf-m-primary"
             ${modalInvoker(AKRequestRuleWizard, {
                 bindingTarget: this.target,
+                entitlements: this.entitlements,
             })}
         >
             ${msg("Create or bind...")}
@@ -107,6 +112,7 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
                 ${IconEditButton(RequestRuleBindingForm, item.uuid, null, {
                     modalProps: {
                         targetPk: this.target || "",
+                        entitlements: this.entitlements,
                     },
                 })}
             </div>`,

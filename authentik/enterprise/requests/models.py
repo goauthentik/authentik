@@ -1,17 +1,21 @@
 from typing import Any
 from uuid import uuid4
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import AttributesMixin, Group, User
+from authentik.core.models import Application, AttributesMixin, Group, User
+from authentik.crypto.models import CertificateKeyPair
+from authentik.enterprise.requests.applications import create_requested_application
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
 from authentik.lib.models import (
     CreatedUpdatedModel,
+    DomainlessFormattedURLValidator,
     ExpiringModel,
     InternallyManagedMixin,
     SerializerModel,
@@ -19,7 +23,8 @@ from authentik.lib.models import (
 )
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.engine import FilterPolicyEngine
-from authentik.policies.models import PolicyBinding, PolicyBindingModel
+from authentik.policies.models import PolicyBinding, PolicyBindingModel, RequestableModel
+from authentik.providers.oauth2.models import ClientType, GrantType, OAuth2Provider, ScopeMapping
 
 
 class RequestNotificationMode(models.TextChoices):
@@ -182,6 +187,56 @@ class RequestRuleNotificationTransport(SimpleThroughModel):
         )
 
 
+def default_template_grant_types() -> list[str]:
+    return [GrantType.AUTHORIZATION_CODE]
+
+
+class ApplicationTemplate(SerializerModel, PolicyBindingModel, RequestableModel):
+    """What an OAuth2/OIDC application created through an application request is configured
+    with, and the choices its requester is limited to. Request rules are bound to a template like
+    to an application: the binding decides who may request, the rule who approves."""
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True)
+    name = models.TextField(unique=True)
+
+    # PROTECT rather than CASCADE: deleting a flow must not silently delete the template, and
+    # with it every pending request against it.
+    authorization_flow = models.ForeignKey(Flow, on_delete=models.PROTECT, related_name="+")
+    invalidation_flow = models.ForeignKey(Flow, on_delete=models.PROTECT, related_name="+")
+    property_mappings = models.ManyToManyField(ScopeMapping, blank=True, related_name="+")
+    signing_key = models.ForeignKey(
+        CertificateKeyPair,
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+        related_name="+",
+    )
+    allowed_grant_types = ArrayField(
+        models.TextField(choices=GrantType.choices), default=default_template_grant_types
+    )
+    application_group = models.TextField(blank=True, default="")
+    bindable_groups = models.ManyToManyField(Group, related_name="+")
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.enterprise.requests.api.application_templates import (
+            ApplicationTemplateSerializer,
+        )
+
+        return ApplicationTemplateSerializer
+
+    @property
+    def requestable_label(self) -> str:
+        return self.name
+
+    def __str__(self):
+        return f"Application Template {self.name}"
+
+    class Meta:
+        verbose_name = _("Application Template")
+        verbose_name_plural = _("Application Templates")
+
+
 class RequestStatus(models.TextChoices):
 
     CREATED = "created"
@@ -328,6 +383,15 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
     def _finalize(
         self, status: RequestStatus, user: User, data: dict[str, Any], request: HttpRequest
     ):
+        requested = RequestedApplication.objects.filter(request=self).first()
+        event_context = {}
+        if status == RequestStatus.APPROVED and requested:
+            # Raises a ValidationError when the template no longer allows what was requested,
+            # which rolls back `record_approval`'s transaction and leaves the request pending.
+            event_context["application"] = create_requested_application(requested)
+            # There is no grant to expire: the request is now the record of who asked for the
+            # application and who approved it, so clean_expired_models must not delete it.
+            self.expiring = False
         self.fulfilled_by = user
         self.fulfiller_data = data
         self.status = status
@@ -351,8 +415,9 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
                 }
                 for approval in self.approvals.select_related("reviewer").order_by("created")
             ],
+            **event_context,
         ).from_http(request, user)
-        if status != RequestStatus.APPROVED:
+        if status != RequestStatus.APPROVED or requested:
             return
         grant_expires = now() + timedelta_from_string(self.requested_expiry)
         # Until now `expires` held the pending-window lapse timer; once approved the
@@ -453,3 +518,49 @@ class GrantRequestApproval(AttributesMixin, CreatedUpdatedModel):
 
     def __str__(self):
         return f"Grant Request Approval {self.uuid}"
+
+
+class RequestedApplication(InternallyManagedMixin, models.Model):
+    """The application an application request asks for, and once approved, the application
+    that was created for it. The request's single target is the `ApplicationTemplate` it was
+    made against."""
+
+    request = models.OneToOneField(
+        GrantRequest,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="requested_application",
+    )
+
+    name = models.TextField()
+    meta_description = models.TextField(blank=True, default="")
+    meta_launch_url = models.TextField(
+        blank=True, default="", validators=[DomainlessFormattedURLValidator()]
+    )
+    client_type = models.TextField(choices=ClientType.choices)
+    redirect_uris = ArrayField(models.TextField(), default=list)
+    grant_types = ArrayField(models.TextField(choices=GrantType.choices))
+    groups = models.ManyToManyField(Group, related_name="+")
+
+    application = models.ForeignKey(
+        Application, on_delete=models.SET_NULL, null=True, default=None, related_name="+"
+    )
+    # Kept apart from `application`: an admin may later point the application at another
+    # provider, whose client secret the requester must not see.
+    provider = models.ForeignKey(
+        OAuth2Provider, on_delete=models.SET_NULL, null=True, default=None, related_name="+"
+    )
+
+    class Meta:
+        verbose_name = _("Requested Application")
+        verbose_name_plural = _("Requested Applications")
+
+    def __str__(self):
+        return f"Requested Application {self.name} for {self.request_id}"
+
+    @property
+    def template(self) -> ApplicationTemplate | None:
+        """The template the request was made against, unless it has been deleted since"""
+        return ApplicationTemplate.objects.filter(
+            policybindingmodel_ptr__in=self.request.targets.all()
+        ).first()

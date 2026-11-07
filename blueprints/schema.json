@@ -1384,6 +1384,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_requests.applicationtemplate"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_requests.applicationtemplate_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_requests.applicationtemplate"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_requests.applicationtemplate"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_requests.grantrequest"
                         },
                         "id": {
@@ -7859,6 +7899,101 @@
                 }
             }
         },
+        "model_authentik_requests.applicationtemplate": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Uuid"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "authorization_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authorization flow"
+                },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow"
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Property mappings"
+                },
+                "signing_key": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Signing key"
+                },
+                "allowed_grant_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "authorization_code",
+                            "implicit",
+                            "hybrid",
+                            "refresh_token",
+                            "client_credentials",
+                            "password",
+                            "urn:ietf:params:oauth:grant-type:device_code",
+                            "urn:ietf:params:oauth:grant-type:token-exchange"
+                        ],
+                        "title": "Allowed grant types"
+                    },
+                    "title": "Allowed grant types"
+                },
+                "application_group": {
+                    "type": "string",
+                    "title": "Application group"
+                },
+                "bindable_groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Bindable groups"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_requests.applicationtemplate_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_applicationtemplate",
+                            "change_applicationtemplate",
+                            "delete_applicationtemplate",
+                            "view_applicationtemplate"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_requests.grantrequest": {
             "type": "object",
             "properties": {
@@ -9550,6 +9685,7 @@
                         "authentik_requests.requestrulechildbinding",
                         "authentik_requests.requestrulebinding",
                         "authentik_requests.requestrule",
+                        "authentik_requests.applicationtemplate",
                         "authentik_requests.grantrequest",
                         "authentik_stages_account_lockdown.accountlockdownstage",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",

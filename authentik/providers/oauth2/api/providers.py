@@ -121,6 +121,58 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
     dcr_registration = CharField(read_only=True, allow_null=True)
 
 
+def get_setup_urls(provider: OAuth2Provider, request: Request) -> dict[str, str | None]:
+    """The URLs a client of `provider` is configured with"""
+    data = {
+        "issuer": provider.get_issuer(request),
+        "authorize": request.build_absolute_uri(
+            reverse(
+                "authentik_providers_oauth2:authorize",
+            )
+        ),
+        "token": request.build_absolute_uri(
+            reverse(
+                "authentik_providers_oauth2:token",
+            )
+        ),
+        "user_info": request.build_absolute_uri(
+            reverse(
+                "authentik_providers_oauth2:userinfo",
+            )
+        ),
+        "provider_info": None,
+        "logout": None,
+    }
+    try:
+        data["provider_info"] = request.build_absolute_uri(
+            reverse(
+                "authentik_providers_oauth2:provider-info",
+                kwargs={"application_slug": provider.application.slug},
+            )
+        )
+        data["logout"] = request.build_absolute_uri(
+            reverse(
+                "authentik_providers_oauth2:end-session",
+                kwargs={"application_slug": provider.application.slug},
+            )
+        )
+        data["jwks"] = request.build_absolute_uri(
+            reverse(
+                "authentik_providers_oauth2:jwks",
+                kwargs={"application_slug": provider.application.slug},
+            )
+        )
+        data["dcr_registration"] = request.build_absolute_uri(
+            reverse(
+                "authentik_providers_oauth2:dynamic-client-registration",
+                kwargs={"application_slug": provider.application.slug},
+            )
+        )
+    except Provider.application.RelatedObjectDoesNotExist:
+        pass
+    return data
+
+
 class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
     """OAuth2Provider Viewset"""
 
@@ -158,54 +210,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
     def setup_urls(self, request: Request, pk: int) -> str:
         """Get Providers setup URLs"""
         provider = get_object_or_404(OAuth2Provider, pk=pk)
-        data = {
-            "issuer": provider.get_issuer(request),
-            "authorize": request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_oauth2:authorize",
-                )
-            ),
-            "token": request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_oauth2:token",
-                )
-            ),
-            "user_info": request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_oauth2:userinfo",
-                )
-            ),
-            "provider_info": None,
-            "logout": None,
-        }
-        try:
-            data["provider_info"] = request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_oauth2:provider-info",
-                    kwargs={"application_slug": provider.application.slug},
-                )
-            )
-            data["logout"] = request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_oauth2:end-session",
-                    kwargs={"application_slug": provider.application.slug},
-                )
-            )
-            data["jwks"] = request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_oauth2:jwks",
-                    kwargs={"application_slug": provider.application.slug},
-                )
-            )
-            data["dcr_registration"] = request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_oauth2:dynamic-client-registration",
-                    kwargs={"application_slug": provider.application.slug},
-                )
-            )
-        except Provider.application.RelatedObjectDoesNotExist:
-            pass
-        return Response(data)
+        return Response(get_setup_urls(provider, request))
 
     @permission_required(
         "authentik_providers_oauth2.view_oauth2provider",

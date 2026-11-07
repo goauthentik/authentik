@@ -1,32 +1,23 @@
 import "#components/ak-status-label";
 import "#elements/EmptyState";
 import "#elements/forms/ConfirmationForm";
+import "#user/requests/ApplicationCredentialsModal";
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
-import { renderTargetSummary } from "#common/requests/utils";
+import { renderRequestSummary, requestStatusLabel } from "#common/requests/utils";
 
+import { renderDialog } from "#elements/dialogs";
 import { WithSession } from "#elements/mixins/session";
 import { RowType, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { ApplicationCredentialsModal } from "#user/requests/ApplicationCredentialsModal";
 
 import { GrantRequest, RequestsApi, RequestStatus } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
-
-function statusLabel(status: RequestStatus): string {
-    switch (status) {
-        case RequestStatus.Approved:
-            return msg("Active");
-        case RequestStatus.Denied:
-            return msg("Denied");
-        case RequestStatus.Revoked:
-            return msg("Revoked");
-        default:
-            return msg("Pending");
-    }
-}
 
 @customElement("ak-my-grant-requests-list")
 export class MyGrantRequestsList extends WithSession(Table<GrantRequest>) {
@@ -45,6 +36,21 @@ export class MyGrantRequestsList extends WithSession(Table<GrantRequest>) {
     ];
 
     protected renderActions(item: GrantRequest): SlottedTemplateResult {
+        if (item.status === RequestStatus.Approved && item.requestedApplication?.application) {
+            return html`<button
+                class="pf-c-button pf-m-secondary"
+                type="button"
+                @click=${() => {
+                    const modal = new ApplicationCredentialsModal();
+                    modal.request = item;
+
+                    return renderDialog(modal);
+                }}
+            >
+                ${msg("Credentials", { id: "requests.application-credentials.open-button.label" })}
+            </button>`;
+        }
+
         if (item.status !== RequestStatus.Created) {
             return nothing;
         }
@@ -69,12 +75,12 @@ export class MyGrantRequestsList extends WithSession(Table<GrantRequest>) {
 
     protected override row(item: GrantRequest): RowType[] {
         return [
-            renderTargetSummary(item.targetObjs ?? []),
+            renderRequestSummary(item),
             Timestamp(item.created),
             html`<ak-status-label
                 .good=${item.isActive}
-                good-label=${statusLabel(item.status)}
-                bad-label=${statusLabel(item.status)}
+                good-label=${requestStatusLabel(item)}
+                bad-label=${requestStatusLabel(item)}
                 type="info"
             ></ak-status-label>`,
             this.renderActions(item),
