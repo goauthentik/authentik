@@ -134,6 +134,38 @@ class TestObjectAttributes(APITestCase):
         self.assertEqual(res.status_code, 400)
         self.assertJSONEqual(res.content, {f"attributes_{attr.key}": ["Value is not unique."]})
 
+    def test_user_attrib_validation_unique_same_user(self):
+        attr = ObjectAttribute.objects.create(
+            object_type=ContentType.objects.get_for_model(User),
+            label="foo",
+            key=generate_id(),
+            type=ObjectAttribute.AttributeType.TEXT,
+            is_unique=True,
+        )
+        self.user.attributes[attr.key] = "foo"
+        self.user.save()
+        res = self.client.patch(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}),
+            data={
+                "name": "Renamed",
+                "attributes": {attr.key: "foo"},
+            },
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.name, "Renamed")
+        self.assertEqual(self.user.attributes[attr.key], "foo")
+
+        other_user = create_test_user()
+        res = self.client.patch(
+            reverse("authentik_api:user-detail", kwargs={"pk": other_user.pk}),
+            data={
+                "attributes": {attr.key: "foo"},
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(res.content, {f"attributes_{attr.key}": ["Value is not unique."]})
+
     def test_user_attrib_validation_regex(self):
         attr = ObjectAttribute.objects.create(
             object_type=ContentType.objects.get_for_model(User),
