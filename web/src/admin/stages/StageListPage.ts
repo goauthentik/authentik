@@ -15,6 +15,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AKStageWizard } from "#admin/stages/ak-stage-wizard";
 import { DuoDeviceImportForm } from "#admin/stages/authenticator_duo/DuoDeviceImportForm";
+import { StageDuplicateButton } from "#admin/stages/StageDuplicateForm";
 
 import { ModelEnum, Stage, StagesApi } from "@goauthentik/api";
 
@@ -105,7 +106,7 @@ export class StageListPage extends TablePage<Stage> {
                       ${msg("Not bound to any flow", { id: "stage.list.unbound.label" })}
                   </ak-label>`,
             html`<div class="ak-c-table__actions">
-                ${IconEditButtonByTagName(item.component, item.pk)}
+                ${IconEditButtonByTagName(item.component, item.pk)} ${StageDuplicateButton(item)}
                 ${IconPermissionButton(item.name, {
                     model: item.metaModelName as ModelEnum,
                     objectPk: item.pk,

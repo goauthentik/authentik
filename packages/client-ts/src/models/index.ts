@@ -838,6 +838,7 @@ export * from "./SourceStage.js";
 export * from "./SourceStageRequest.js";
 export * from "./SourceType.js";
 export * from "./Stage.js";
+export * from "./StageDuplicateRequest.js";
 export * from "./StageModeEnum.js";
 export * from "./StagePrompt.js";
 export * from "./StaticDevice.js";

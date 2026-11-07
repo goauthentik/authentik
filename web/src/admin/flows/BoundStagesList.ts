@@ -14,6 +14,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { StageBindingForm } from "#admin/flows/StageBindingForm";
 import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 import { AKStageWizard } from "#admin/stages/ak-stage-wizard";
+import { StageDuplicateButton } from "#admin/stages/StageDuplicateForm";
 
 import { FlowsApi, FlowStageBinding, ModelEnum } from "@goauthentik/api";
 
@@ -88,6 +89,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             item.stageObj?.verboseName,
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.stageObj.component, item.stageObj.pk)}
+                ${StageDuplicateButton(item.stageObj)}
                 ${IconEditButton(StageBindingForm, item.pk, null, { iconName: "fa-link" })}
                 ${IconPermissionButton(item.stageObj?.name || "", {
                     model: ModelEnum.AuthentikFlowsFlowstagebinding,

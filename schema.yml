@@ -29592,6 +29592,41 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/all/{stage_uuid}/duplicate/:
+    post:
+      operationId: stages_all_duplicate_create
+      description: |-
+        Copy a stage under a new name. The copy refers to the same objects as the original,
+        such as prompts, sources and flows, and is not bound to any flow.
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StageDuplicateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/all/{stage_uuid}/used_by/:
     get:
       operationId: stages_all_used_by_list
@@ -60313,6 +60348,15 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    StageDuplicateRequest:
+      type: object
+      description: Name of the copy a stage is duplicated into
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
     StageModeEnum:
       enum:
       - optional
