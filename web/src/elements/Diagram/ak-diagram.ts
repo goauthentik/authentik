@@ -62,7 +62,9 @@ export class Diagram extends AKElement {
         target: window,
     })
     protected syncDiagramContent = (): void => {
-        if (!this.textContent) return;
+        // Only inline content (`<ak-diagram>graph TD…</ak-diagram>`) is a diagram. Whitespace
+        // between the tags must not replace a diagram that was set as a property.
+        if (!this.textContent.trim()) return;
         this.diagram = this.textContent;
     };
 
