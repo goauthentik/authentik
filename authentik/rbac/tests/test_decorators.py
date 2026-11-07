@@ -7,9 +7,11 @@ from rest_framework.test import APITestCase
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import RequestFactory, create_test_user
+from authentik.core.tests.utils import RequestFactory, create_test_flow, create_test_user
 from authentik.lib.generators import generate_id
+from authentik.policies.models import PolicyBindingModel
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.permissions import ObjectPermissions
 
 
 class MVS(ModelViewSet):
@@ -64,3 +66,14 @@ class TestAPIDecorators(APITestCase):
         request = self.request_factory.get("", user=self.user)
         response = MVS.as_view({"get": "test"})(request, slug=app.slug)
         self.assertEqual(response.status_code, 403)
+
+    def test_as_model(self):
+        """Test as_model"""
+        flow = create_test_flow()
+        self.assertIs(ObjectPermissions.as_model(flow, type(flow)), flow)
+        self.assertIs(ObjectPermissions.as_model(flow, Application), flow)
+        # `Flow` has its own primary key, not the one of `PolicyBindingModel`
+        base = ObjectPermissions.as_model(flow, PolicyBindingModel)
+        self.assertIs(type(base), PolicyBindingModel)
+        self.assertNotEqual(flow.pk, flow.pbm_uuid)
+        self.assertEqual(base.pk, flow.pbm_uuid)
