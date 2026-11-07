@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.rbac.endpoint_checks import EndpointChecks
-from authentik.rbac.permissions import ObjectPermissions
+from authentik.rbac.permissions import ObjectPermissions, permission_for_object
 
 
 @dataclass
@@ -33,9 +33,14 @@ class ActionRequirements:
         if not detail:
             return
         obj = view.get_object()
-        allowed = (not self.obj_perm or request.user.has_perm(self.obj_perm, obj)) and all(
-            permission.allows_object(request, view, obj) for permission in base
-        )
+        # Guardian raises `WrongAppError` for a parent model's permission on a subclass
+        # instance from another app, so check `obj_perm` globally and only its
+        # equivalent on `obj`, see `permission_for_object`
+        allowed = (
+            not self.obj_perm
+            or request.user.has_perm(self.obj_perm)
+            or request.user.has_perm(permission_for_object(self.obj_perm, obj), obj)
+        ) and all(permission.allows_object(request, view, obj) for permission in base)
         if not checks.has_object_permission(obj, allowed):
             view.permission_denied(request)
 
