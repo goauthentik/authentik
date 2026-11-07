@@ -1,0 +1,6 @@
+/* ----------- CSS Custom Properties for AttributesView  --------------------------- */
+
+:root {
+    --ak-c-attribute-view--FontFamily: var(--pf-global--FontFamily--monospace);
+    --ak-c-attribute-view__toolbar--Gap: var(--pf-global--spacer--md);
+}

@@ -1,6 +1,7 @@
 import "#elements/Expand";
 import "#elements/Label";
 import "#elements/Spinner";
+import "#elements/ak-attribute-view";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -17,6 +18,8 @@ import { staticURL } from "#common/urls";
 import { AKElement } from "#elements/Base";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { renderDescriptionList } from "#components/DescriptionList";
 
 import { EventActions, FlowsApi } from "@goauthentik/api";
 
@@ -112,17 +115,6 @@ export class EventInfo extends AKElement {
         `,
     ];
 
-    renderDescriptionGroup([term, description]: FieldLabelTuple) {
-        return html` <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${term}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${description}</div>
-            </dd>
-        </div>`;
-    }
-
     getModelInfo(context: EventModel): TemplateResult {
         if (context === null) {
             return html`<span>-</span>`;
@@ -136,9 +128,7 @@ export class EventInfo extends AKElement {
         ];
 
         return html`<div class="pf-c-card__body">
-            <dl class="pf-c-description-list pf-m-horizontal">
-                ${map(modelFields, this.renderDescriptionGroup)}
-            </dl>
+            ${renderDescriptionList(modelFields, { horizontal: true, compact: true })}
         </div>`;
     }
 
@@ -160,9 +150,7 @@ export class EventInfo extends AKElement {
             ],
         ] satisfies FieldLabelTuple<EventSlotValueType>[];
 
-        return html`<dl class="pf-c-description-list pf-m-horizontal">
-            ${map(emailFields, this.renderDescriptionGroup)}
-        </dl>`;
+        return renderDescriptionList(emailFields, { horizontal: true, compact: true });
     }
 
     renderDefaultResponse(): TemplateResult {
@@ -170,13 +158,13 @@ export class EventInfo extends AKElement {
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("Context")}</div>
                 <div class="pf-c-card__body">
-                    <code>${JSON.stringify(this.event?.context, null, 4)}</code>
+                    <ak-attribute-view .value=${this.event?.context}></ak-attribute-view>
                 </div>
             </div>
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("User")}</div>
                 <div class="pf-c-card__body">
-                    <code>${JSON.stringify(this.event?.user, null, 4)}</code>
+                    <ak-attribute-view .value=${this.event?.user}></ak-attribute-view>
                 </div>
             </div>
         </div>`;
