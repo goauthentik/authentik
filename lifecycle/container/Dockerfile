@@ -47,7 +47,7 @@ RUN pnpm run build && \
     pnpm run build:sfe
 
 # Stage: download Rust toolchain
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:d363011346c52a8db30fb88769af5f81aefd2e506942b44a4d8aa9cb60238003 AS rust-toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:16c391cbc047c1dff6d2c528d675c844e74f658d78530d4c9fef3758b160dbac AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
