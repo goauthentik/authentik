@@ -12,6 +12,7 @@ import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { StageBindingForm } from "#admin/flows/StageBindingForm";
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 import { AKStageWizard } from "#admin/stages/ak-stage-wizard";
 
 import { FlowsApi, FlowStageBinding, ModelEnum } from "@goauthentik/api";
@@ -109,18 +110,11 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     }
 
     protected override renderExpanded(item: FlowStageBinding): SlottedTemplateResult {
-        return html`<div class="pf-c-content">
-            <ak-bound-policies-list
-                .target=${item.policybindingmodelPtrId}
-                .policyEngineMode=${item.policyEngineMode}
-            >
-                <span slot="description"
-                    >${msg(
-                        "These bindings control if this stage will be applied to the flow.",
-                    )}</span
-                >
-            </ak-bound-policies-list>
-        </div>`;
+        return renderBoundPoliciesExpansion({
+            target: item.policybindingmodelPtrId,
+            mode: item.policyEngineMode,
+            description: msg("These bindings control if this stage will be applied to the flow."),
+        });
     }
 
     protected override renderEmpty(): SlottedTemplateResult {

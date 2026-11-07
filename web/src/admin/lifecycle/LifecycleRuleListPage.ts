@@ -1,6 +1,5 @@
 import "#admin/lifecycle/LifecycleRuleForm";
 import "#admin/lifecycle/LifecyclePreviewBanner";
-import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";

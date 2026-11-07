@@ -210,6 +210,23 @@ export class Form<T = Record<string, unknown>, D = T>
      */
     protected send?(data: NonNullable<D>): Promise<unknown>;
 
+    /**
+     * Type-check a field name against the submitted data type.
+     *
+     * Lit doesn't type-check literal attribute values, and the generated API client
+     * silently drops unrecognized properties, so a misnamed field appears to save
+     * but is discarded. Use as `name=${this.field("enabled")}`.
+     *
+     * @remarks
+     *   Names are checked against `D`, which defaults to the model type `T`. Pass the
+     *   form's `*Request` type as `D` before using this helper: model types include
+     *   read-only fields (`pk`, `component`, …) and omit write-only fields such as
+     *   passwords and secrets, which only exist on the request type.
+     */
+    protected field<K extends keyof NonNullable<D> & string>(name: K): K {
+        return name;
+    }
+
     //#region Properties
 
     /**

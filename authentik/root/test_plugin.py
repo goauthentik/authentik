@@ -44,8 +44,10 @@ def pytest_report_header(*_, **__):
     ]
 
 
+@pytest.hookimpl(trylast=True)
 def pytest_runtest_setup(item: Item):
-    """In-memory caches outlive each test's transaction rollback, so start every test empty"""
+    """In-memory caches outlive each test's transaction rollback, so start every test empty.
+    This runs after fixture setup."""
     from authentik.admin.utils import get_system_settings
     from authentik.brands.utils import get_brand_for_request
     from authentik.enterprise.license import LicenseKey

@@ -5,7 +5,11 @@ from uuid import uuid4
 from django.test import SimpleTestCase, TransactionTestCase
 from django.test.utils import CaptureQueriesContext
 from django.utils.timezone import now
-from django_dramatiq_postgres.broker import CONSUMABLE_TASK_STATES, PostgresBroker
+from django_dramatiq_postgres.broker import (
+    CONSUMABLE_TASK_STATES,
+    PENDING_FETCH_LIMIT,
+    PostgresBroker,
+)
 from django_dramatiq_postgres.models import TaskState
 from dramatiq.broker import MessageProxy
 from dramatiq.message import Message
@@ -199,7 +203,7 @@ class TestPostgresConsumer(SimpleTestCase):
         queue_query = query_set.exclude.return_value.filter.return_value
         pending_query = queue_query.filter.return_value
         values_list = pending_query.exclude.return_value.order_by.return_value.values_list
-        values_list.return_value = ["00000000-0000-0000-0000-000000000001"]
+        values_list.return_value.__getitem__.return_value = ["00000000-0000-0000-0000-000000000001"]
 
         pending = consumer._fetch_pending_messages()
 
@@ -209,6 +213,9 @@ class TestPostgresConsumer(SimpleTestCase):
         )
         queue_query.filter.assert_called_once_with(
             state__in=CONSUMABLE_TASK_STATES,
+        )
+        values_list.return_value.__getitem__.assert_called_once_with(
+            slice(None, PENDING_FETCH_LIMIT)
         )
         self.assertEqual(pending, {"00000000-0000-0000-0000-000000000001"})
 

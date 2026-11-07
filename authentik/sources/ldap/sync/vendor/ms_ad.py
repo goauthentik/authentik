@@ -11,6 +11,7 @@ from authentik.core.models import User
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.sources.ldap.models import flatten
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+from authentik.stages.password.models import PasswordDevice
 
 FILETIME_EPOCH = datetime(1601, 1, 1, tzinfo=UTC)
 FILETIME_NEVER = 9223372036854775807
@@ -65,7 +66,7 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
             return
         pwd_last_set: datetime = attributes.get("pwdLastSet", datetime.now())
         pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
-        if created or pwd_last_set >= user.password_change_date:
+        if created or pwd_last_set > user.password_change_date:
             self._task.info(f"'{user.username}': Reset user's password")
             self._logger.debug(
                 "Reset user's password",
@@ -73,8 +74,9 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
                 created=created,
                 pwd_last_set=pwd_last_set,
             )
-            user.set_unusable_password()
-            user.save()
+            # Record the directory's change date, or every later sync resets the password
+            # again, and each new unusable hash ends the user's sessions.
+            PasswordDevice.set_unusable_password(user, password_change_date=pwd_last_set)
 
     @staticmethod
     def account_expired(value: Any) -> bool:

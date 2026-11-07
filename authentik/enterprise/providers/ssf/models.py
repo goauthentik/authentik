@@ -123,7 +123,7 @@ class SSFProvider(TasksModel, BackchannelProvider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/ssf.svg")
+        return static("authentik/sources/ssf/light.svg")
 
     @property
     def component(self) -> str:

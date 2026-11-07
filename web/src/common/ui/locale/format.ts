@@ -141,13 +141,13 @@ export interface FormatLocaleOptionsInit {
  * Pre-defined display names for locales that need special handling.
  * These use minimized IDs or explicit fallbacks.
  */
-const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<TargetLanguageTag, () => string> = new Map([
-    [SourceLanguageTag, () => msg("English", { id: "en" })],
-    [CJKLanguageTag.HanSimplified, () => msg("Chinese (Simplified)", { id: "zh-Hans" })],
-    [CJKLanguageTag.HanTraditional, () => msg("Chinese (Traditional)", { id: "zh-Hant" })],
-    [CJKLanguageTag.Japanese, () => msg("Japanese", { id: "ja-JP" })],
-    [CJKLanguageTag.Korean, () => msg("Korean", { id: "ko-KR" })],
-    [PseudoLanguageTag, () => msg("English (Pseudo-Accents)", { id: "en-XA" })],
+const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<TargetLanguageTag, string> = new Map([
+    [SourceLanguageTag, msg("English", { id: "en" })],
+    [CJKLanguageTag.HanSimplified, msg("Chinese (Simplified)", { id: "zh-Hans" })],
+    [CJKLanguageTag.HanTraditional, msg("Chinese (Traditional)", { id: "zh-Hant" })],
+    [CJKLanguageTag.Japanese, msg("Japanese", { id: "ja-JP" })],
+    [CJKLanguageTag.Korean, msg("Korean", { id: "ko-KR" })],
+    [PseudoLanguageTag, msg("English (Pseudo-Accents)", { id: "en-XA" })],
 ]);
 
 /**
@@ -183,7 +183,7 @@ export function formatLocaleDisplayNames(
                 ? tag // Prefer the display name over region minimization.
                 : getMinimizedLocaleID(tag);
 
-            displayNames.set(tag, formatDisplayName(localeID, specialFallback(), languageNames));
+            displayNames.set(tag, formatDisplayName(localeID, specialFallback, languageNames));
         } else {
             // Standard locales: prefer language-only if not already used
             const locale = safeParseLocale(tag);

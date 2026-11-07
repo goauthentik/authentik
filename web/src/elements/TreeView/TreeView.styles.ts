@@ -30,7 +30,7 @@ export const styles = css`
     [part="tree-key"] {
         display: inline-flex;
         align-items: flex-start;
-        color: var(--pf-global--Color--100);
+        color: var(--ak-c-tree-view__key--Color);
     }
 
     [part="tree-item"] {
@@ -38,7 +38,7 @@ export const styles = css`
     }
 
     ul {
-        color: var(--pf-global--Color--100);
+        color: var(--ak-c-tree-view__list--Color);
         padding: 0;
         clear: both;
     }
@@ -51,22 +51,26 @@ export const styles = css`
 
     li ul > li {
         position: relative;
-        margin-left: 1.2rem;
+        margin-left: var(--ak-c-tree-view__toggle--Width);
         padding-left: 0;
     }
 
     ul ul::before {
         content: "";
-        border-left: 1px solid #bee1f4;
+        border-left: var(--ak-c-tree-view__nested-indicator--Width)
+            var(--ak-c-tree-view__nested-indicator--Style)
+            var(--ak-c-tree-view__nested-indicator--Color);
         position: absolute;
-        width: 1.2em;
+        width: var(--ak-c-tree-view__toggle--Width);
         top: 0.2rem;
         bottom: 0.2rem;
-        transform: translateX(33.333%);
+        transform: translateX(calc(var(--ak-c-tree-view__toggle--Width) / 3.33));
     }
 
     ul ul:hover::before {
-        border-left: 2px solid #bee1f4;
+        --ak-c-tree-view__nested-indicator--Width: var(
+            --ak-c-tree-view__nested-indicator--Width--hover
+        );
     }
 `;
 
