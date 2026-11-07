@@ -203,7 +203,9 @@ class ApplicationTemplate(SerializerModel, PolicyBindingModel, RequestableModel)
     # with it every pending request against it.
     authorization_flow = models.ForeignKey(Flow, on_delete=models.PROTECT, related_name="+")
     invalidation_flow = models.ForeignKey(Flow, on_delete=models.PROTECT, related_name="+")
-    property_mappings = models.ManyToManyField(ScopeMapping, blank=True, related_name="+")
+    property_mappings = models.ManyToManyField(
+        ScopeMapping, blank=True, related_name="+", through="ApplicationTemplatePropertyMapping"
+    )
     signing_key = models.ForeignKey(
         CertificateKeyPair,
         on_delete=models.SET_NULL,
@@ -215,7 +217,9 @@ class ApplicationTemplate(SerializerModel, PolicyBindingModel, RequestableModel)
         models.TextField(choices=GrantType.choices), default=default_template_grant_types
     )
     application_group = models.TextField(blank=True, default="")
-    bindable_groups = models.ManyToManyField(Group, related_name="+")
+    bindable_groups = models.ManyToManyField(
+        Group, related_name="+", through="ApplicationTemplateBindableGroup"
+    )
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -235,6 +239,40 @@ class ApplicationTemplate(SerializerModel, PolicyBindingModel, RequestableModel)
     class Meta:
         verbose_name = _("Application Template")
         verbose_name_plural = _("Application Templates")
+
+
+class ApplicationTemplatePropertyMapping(SimpleThroughModel):
+
+    template = models.ForeignKey(ApplicationTemplate, on_delete=models.CASCADE)
+    property_mapping = models.ForeignKey(ScopeMapping, on_delete=models.CASCADE, related_name="+")
+
+    class Meta:
+        unique_together = (("template", "property_mapping"),)
+        verbose_name = _("Application Template Property Mapping")
+        verbose_name_plural = _("Application Template Property Mappings")
+
+    def __str__(self):
+        return (
+            f"ApplicationTemplatePropertyMapping for Application Template {self.template_id} "
+            f"and Property Mapping {self.property_mapping_id}"
+        )
+
+
+class ApplicationTemplateBindableGroup(SimpleThroughModel):
+
+    template = models.ForeignKey(ApplicationTemplate, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="+")
+
+    class Meta:
+        unique_together = (("template", "group"),)
+        verbose_name = _("Application Template Bindable Group")
+        verbose_name_plural = _("Application Template Bindable Groups")
+
+    def __str__(self):
+        return (
+            f"ApplicationTemplateBindableGroup for Application Template {self.template_id} "
+            f"and Group {self.group_id}"
+        )
 
 
 class RequestStatus(models.TextChoices):
@@ -540,7 +578,7 @@ class RequestedApplication(InternallyManagedMixin, models.Model):
     client_type = models.TextField(choices=ClientType.choices)
     redirect_uris = ArrayField(models.TextField(), default=list)
     grant_types = ArrayField(models.TextField(choices=GrantType.choices))
-    groups = models.ManyToManyField(Group, related_name="+")
+    groups = models.ManyToManyField(Group, related_name="+", through="RequestedApplicationGroup")
 
     application = models.ForeignKey(
         Application, on_delete=models.SET_NULL, null=True, default=None, related_name="+"
@@ -564,3 +602,20 @@ class RequestedApplication(InternallyManagedMixin, models.Model):
         return ApplicationTemplate.objects.filter(
             policybindingmodel_ptr__in=self.request.targets.all()
         ).first()
+
+
+class RequestedApplicationGroup(SimpleThroughModel):
+
+    requested_application = models.ForeignKey(RequestedApplication, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="+")
+
+    class Meta:
+        unique_together = (("requested_application", "group"),)
+        verbose_name = _("Requested Application Group")
+        verbose_name_plural = _("Requested Application Groups")
+
+    def __str__(self):
+        return (
+            f"RequestedApplicationGroup for Requested Application {self.requested_application_id} "
+            f"and Group {self.group_id}"
+        )
