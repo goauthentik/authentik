@@ -56,6 +56,19 @@
     ::part(pagination-bottom) {
         --pf-c-pagination--m-bottom--BackgroundColor: transparent;
     }
+
+    > td:has(> .pf-c-table__expandable-row-content > ak-section-card) {
+        --pf-c-table--cell--PaddingTop: var(--pf-global--spacer--md);
+        --pf-c-table--cell--PaddingRight: 0;
+        --pf-c-table--cell--PaddingBottom: var(--pf-global--spacer--md);
+        --pf-c-table--cell--PaddingLeft: var(--pf-global--spacer--lg);
+    }
+
+    .pf-c-table__expandable-row-content:has(> ak-section-card) {
+        display: flex;
+        flex-direction: column;
+        gap: var(--pf-global--spacer--lg);
+    }
 }
 
 .ak-c-table__actions {

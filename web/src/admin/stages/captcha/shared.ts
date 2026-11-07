@@ -6,25 +6,25 @@ import { msg } from "@lit/localize";
 
 export type CaptchaRequestContentType = "application/x-www-form-urlencoded" | "application/json";
 
-export const CAPTCHA_REQUEST_CONTENT_TYPES = [
+export type CaptchaResponseDefinition = {
+    value: CaptchaRequestContentType;
+    displayName: string;
+};
+
+export const CAPTCHA_REQUEST_CONTENT_TYPES: readonly CaptchaResponseDefinition[] = [
     {
         value: "application/x-www-form-urlencoded",
-        formatDisplayName: () =>
-            msg("Form encoded", {
-                id: "captcha.request-content-type.form",
-            }),
+        displayName: msg("Form encoded", {
+            id: "captcha.request-content-type.form",
+        }),
     },
     {
         value: "application/json",
-        formatDisplayName: () =>
-            msg("JSON", {
-                id: "captcha.request-content-type.json",
-            }),
+        displayName: msg("JSON", {
+            id: "captcha.request-content-type.json",
+        }),
     },
-] as const satisfies {
-    value: CaptchaRequestContentType;
-    formatDisplayName: () => string;
-}[];
+];
 
 export const CaptchaProviderKeys = [
     "recaptcha_v2",
@@ -44,15 +44,15 @@ export interface CaptchaProviderPreset {
      * their own URLs and the vendor is only known once `jsUrl` is filled in.
      */
     vendor: CaptchaVendor | null;
-    formatDisplayName: () => string;
-    formatDescription?: () => string;
+    displayName: string;
+    description?: string;
     jsUrl: string;
     apiUrl: string;
     requestContentType: CaptchaRequestContentType;
     interactive: boolean;
     supportsScore: boolean;
     score?: { min: number; max: number };
-    formatAPISource?: () => string;
+    apiSourceLabel?: string;
     keyURL?: string;
 }
 
@@ -64,119 +64,108 @@ export interface CaptchaProviderPreset {
 export const CAPTCHA_PROVIDERS = {
     recaptcha_v2: {
         vendor: CaptchaVendor.reCAPTCHA,
-        formatDisplayName: () =>
-            msg("Google reCAPTCHA v2", {
-                id: "captcha.providers.recaptcha-v2",
-            }),
+        displayName: msg("Google reCAPTCHA v2", {
+            id: "captcha.providers.recaptcha-v2",
+        }),
         jsUrl: "https://www.recaptcha.net/recaptcha/api.js",
         apiUrl: "https://www.recaptcha.net/recaptcha/api/siteverify",
         requestContentType: "application/x-www-form-urlencoded",
         interactive: true,
         supportsScore: false,
-        formatAPISource: () =>
-            msg("reCAPTCHA admin console", {
-                id: "captcha.providers.recaptcha.admin-console",
-            }),
+        apiSourceLabel: msg("reCAPTCHA admin console", {
+            id: "captcha.providers.recaptcha.admin-console",
+        }),
         keyURL: "https://www.google.com/recaptcha/admin",
     },
     recaptcha_v3: {
         vendor: CaptchaVendor.reCAPTCHA,
-        formatDisplayName: () =>
-            msg("Google reCAPTCHA v3", {
-                id: "captcha.providers.recaptcha-v3",
-            }),
+        displayName: msg("Google reCAPTCHA v3", {
+            id: "captcha.providers.recaptcha-v3",
+        }),
         jsUrl: "https://www.recaptcha.net/recaptcha/api.js",
         apiUrl: "https://www.recaptcha.net/recaptcha/api/siteverify",
         requestContentType: "application/x-www-form-urlencoded",
         interactive: false,
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
-        formatAPISource: () =>
-            msg("reCAPTCHA admin console", {
-                id: "captcha.providers.recaptcha.api-key-source",
-            }),
+        apiSourceLabel: msg("reCAPTCHA admin console", {
+            id: "captcha.providers.recaptcha.api-key-source",
+        }),
         keyURL: "https://www.google.com/recaptcha/admin",
     },
     recaptcha_enterprise: {
         vendor: CaptchaVendor.reCAPTCHA,
-        formatDisplayName: () =>
-            msg("Google reCAPTCHA Enterprise", {
-                id: "captcha.providers.recaptcha-enterprise",
-            }),
+        displayName: msg("Google reCAPTCHA Enterprise", {
+            id: "captcha.providers.recaptcha-enterprise",
+        }),
         jsUrl: "https://www.recaptcha.net/recaptcha/enterprise.js",
         apiUrl: "https://www.recaptcha.net/recaptcha/api/siteverify",
         requestContentType: "application/x-www-form-urlencoded",
         interactive: false,
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
-        formatAPISource: () =>
-            msg("Google Cloud Console", {
-                id: "captcha.providers.recaptcha-enterprise.api-key-source",
-            }),
+        apiSourceLabel: msg("Google Cloud Console", {
+            id: "captcha.providers.recaptcha-enterprise.api-key-source",
+        }),
         keyURL: "https://cloud.google.com/recaptcha-enterprise",
     },
     hcaptcha: {
         vendor: CaptchaVendor.hCaptcha,
-        formatDisplayName: () =>
-            msg("hCaptcha", {
-                id: "captcha.providers.hcaptcha",
-            }),
+        displayName: msg("hCaptcha", {
+            id: "captcha.providers.hcaptcha",
+        }),
         jsUrl: "https://js.hcaptcha.com/1/api.js",
         apiUrl: "https://api.hcaptcha.com/siteverify",
         requestContentType: "application/x-www-form-urlencoded",
         interactive: true,
         supportsScore: true,
         score: { min: 0.0, max: 0.5 },
-        formatAPISource: () =>
-            msg("hCaptcha dashboard", {
-                id: "captcha.providers.hcaptcha.api-key-source",
-            }),
+        apiSourceLabel: msg("hCaptcha dashboard", {
+            id: "captcha.providers.hcaptcha.api-key-source",
+        }),
         keyURL: "https://dashboard.hcaptcha.com",
     },
     turnstile: {
         vendor: CaptchaVendor.turnstile,
-        formatDisplayName: () =>
-            msg("Cloudflare Turnstile", {
-                id: "captcha.providers.turnstile",
-            }),
+        displayName: msg("Cloudflare Turnstile", {
+            id: "captcha.providers.turnstile",
+        }),
         jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
         apiUrl: "https://challenges.cloudflare.com/turnstile/v0/siteverify",
         requestContentType: "application/x-www-form-urlencoded",
         interactive: true,
         supportsScore: false,
-        formatAPISource: () =>
-            msg("Cloudflare dashboard", {
-                id: "captcha.providers.turnstile.api-key-source",
-            }),
+        apiSourceLabel: msg("Cloudflare dashboard", {
+            id: "captcha.providers.turnstile.api-key-source",
+        }),
         keyURL: "https://dash.cloudflare.com",
     },
     cap: {
         vendor: CaptchaVendor.cap,
-        formatDisplayName: () =>
-            msg("Cap", {
-                id: "captcha.providers.cap",
-            }),
-        formatDescription: () =>
-            msg("Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.", {
+        displayName: msg("Cap", {
+            id: "captcha.providers.cap",
+        }),
+        description: msg(
+            "Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.",
+            {
                 id: "captcha.providers.cap.description",
-            }),
+            },
+        ),
         jsUrl: "https://cap.example.com/assets/widget.js",
         apiUrl: "https://cap.example.com/site-key/siteverify",
         requestContentType: "application/json",
         interactive: true,
         supportsScore: false,
-        formatAPISource: () =>
-            msg("Cap documentation", {
-                id: "captcha.providers.cap.setup-guide",
-            }),
+        apiSourceLabel: msg("Cap documentation", {
+            id: "captcha.providers.cap.setup-guide",
+        }),
         keyURL: "https://trycap.dev/guide/",
     },
     custom: {
         vendor: null,
-        formatDisplayName: () =>
-            msg("Custom", {
-                id: "captcha.providers.custom",
-            }),
+        displayName: msg("Custom", {
+            id: "captcha.providers.custom",
+        }),
         jsUrl: "https://www.recaptcha.net/recaptcha/api.js",
         apiUrl: "https://www.recaptcha.net/recaptcha/api/siteverify",
         requestContentType: "application/x-www-form-urlencoded",

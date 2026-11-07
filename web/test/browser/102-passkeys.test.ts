@@ -174,10 +174,9 @@ test.describe("Passkeys", () => {
         });
     });
 
-    test("Retry passkey authentication after another tab replaces the challenge", async ({
+    test("Complete passkey authentication after another tab renders the challenge", async ({
         session,
         form,
-        pointer,
         context,
         page,
     }, testInfo) => {
@@ -191,9 +190,9 @@ test.describe("Passkeys", () => {
 
         let intercepted = false;
 
-        const staleAssertion = await test.step("Hold tab A's first signed assertion", async () => {
-            // Delay delivery, not the authenticator or server response: tab B must replace
-            // the session challenge before the real server validates this signed assertion.
+        const assertion = await test.step("Hold tab A's first signed assertion", async () => {
+            // Delay delivery so tab B renders the stage before the server validates
+            // tab A's signed assertion.
             await page.route(`**${AUTHENTICATION_EXECUTOR}**`, async (route) => {
                 const request = route.request();
                 const body = request.method() === "POST" ? request.postDataJSON() : null;
@@ -216,18 +215,6 @@ test.describe("Passkeys", () => {
                 await route.continue();
             });
 
-            // Wait for the selection notification to finish writing the session before
-            // opening tab B, so it cannot subsequently overwrite tab B's challenge.
-            const selectionSaved = page.waitForResponse((response) => {
-                const request = response.request();
-
-                return (
-                    request.url().includes(AUTHENTICATION_EXECUTOR) &&
-                    request.method() === "POST" &&
-                    Boolean(request.postDataJSON()?.selected_challenge)
-                );
-            });
-
             // Stop at MFA rather than session.login(), which waits for login to finish.
             await form.fill("Username", username);
 
@@ -237,15 +224,14 @@ test.describe("Passkeys", () => {
 
             await session.$passwordField.fill(password);
             await session.$submitButton.click();
-            await selectionSaved;
 
             return heldAssertion.promise;
         });
 
-        const replacementChallenge = await test.step("Replace the challenge in tab B", async () => {
+        await test.step("Render the pending challenge in tab B", async () => {
             const secondTab = await context.newPage();
 
-            // Tab B should generate a challenge, but must not complete authentication.
+            // Tab B should render the challenge, but must not complete authentication.
             await secondTab.route(`**${AUTHENTICATION_EXECUTOR}**`, async (route) => {
                 const request = route.request();
 
@@ -264,16 +250,6 @@ test.describe("Passkeys", () => {
                     response.request().method() === "GET",
             );
 
-            const selectionSaved = secondTab.waitForResponse((response) => {
-                const request = response.request();
-
-                return (
-                    request.url().includes(AUTHENTICATION_EXECUTOR) &&
-                    request.method() === "POST" &&
-                    Boolean(request.postDataJSON()?.selected_challenge)
-                );
-            });
-
             await secondTab.goto(page.url());
 
             const challenge = AuthenticatorValidationChallengeFromJSON(
@@ -281,88 +257,17 @@ test.describe("Passkeys", () => {
             ).deviceChallenges.find((device) => device.deviceClass === DeviceClassesEnum.Webauthn)
                 ?.challenge.challenge;
 
-            await selectionSaved;
             expect(challenge, "Tab B receives a WebAuthn challenge").toEqual(expect.any(String));
 
-            expect(challenge, "Tab B replaces tab A's challenge").not.toBe(
-                staleAssertion.challenge,
-            );
-
-            return challenge;
+            expect(challenge, "Tab B reuses tab A's pending challenge").toBe(assertion.challenge);
         });
 
-        await test.step("Verify the server rejects tab A's stale assertion", async () => {
-            const rejected = page.waitForResponse((response) => {
-                const request = response.request();
-
-                return (
-                    request.url().includes(AUTHENTICATION_EXECUTOR) &&
-                    request.method() === "POST" &&
-                    Boolean(request.postDataJSON()?.webauthn)
-                );
-            });
-
-            await staleAssertion.submit();
-
-            const challenge = AuthenticatorValidationChallengeFromJSON(
-                await (await rejected).json(),
-            );
-
-            expect(
-                challenge.responseErrors?.webauthn,
-                "Server rejects the stale assertion",
-            ).toEqual(
-                expect.arrayContaining([expect.objectContaining({ string: "Assertion failed" })]),
-            );
-
-            await expect(
-                page.getByRole("button", { name: "Retry authentication" }),
-                "Tab A offers retry after the stale assertion is rejected",
-            ).toBeVisible();
-        });
-
-        await test.step("Retry with a fresh challenge and complete authentication", async () => {
-            const refreshed = page.waitForResponse(
-                (response) =>
-                    response.url().includes(AUTHENTICATION_EXECUTOR) &&
-                    response.request().method() === "GET",
-            );
-
-            const assertionSubmitted = page.waitForRequest(
-                (request) =>
-                    request.url().includes(AUTHENTICATION_EXECUTOR) &&
-                    request.method() === "POST" &&
-                    Boolean(request.postDataJSON()?.webauthn),
-            );
-
-            await pointer.click("Retry authentication", "button");
-
-            const challenge = AuthenticatorValidationChallengeFromJSON(
-                await (await refreshed).json(),
-            ).deviceChallenges.find((device) => device.deviceClass === DeviceClassesEnum.Webauthn)
-                ?.challenge.challenge;
-
-            expect(challenge, "Retry fetches a WebAuthn challenge").toEqual(expect.any(String));
-
-            expect(challenge, "Retry replaces tab A's challenge").not.toBe(
-                staleAssertion.challenge,
-            );
-
-            expect(challenge, "Retry replaces tab B's challenge").not.toBe(replacementChallenge);
-
-            const assertion = (await assertionSubmitted).postDataJSON().webauthn;
-
-            const clientData = JSON.parse(
-                Buffer.from(assertion.response.clientDataJSON, "base64url").toString(),
-            );
-
-            expect(clientData.challenge, "Retry signs the freshly fetched challenge").toBe(
-                challenge,
-            );
+        await test.step("Complete authentication with tab A's original assertion", async () => {
+            await assertion.submit();
 
             await expect(
                 page.getByRole("button", { name: "Toggle user navigation menu" }),
-                "Tab A authenticates successfully after retry",
+                "Tab A authenticates successfully with the original assertion",
             ).toBeVisible();
         });
     });
