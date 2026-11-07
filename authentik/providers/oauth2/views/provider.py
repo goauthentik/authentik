@@ -22,9 +22,9 @@ from authentik.common.oauth.constants import (
     SCOPE_OPENID,
 )
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.core.models import Application
 from authentik.providers.oauth2.dpop import DPOP_SUPPORTED_ALGS
 from authentik.providers.oauth2.models import (
+    JWTAlgorithms,
     OAuth2DynamicClientRegistration,
     OAuth2Provider,
     ResponseMode,
@@ -52,7 +52,11 @@ class ProviderInfoView(View):
         )
         if SCOPE_OPENID not in scopes:
             scopes.append(SCOPE_OPENID)
-        _, supported_alg = provider.jwt_key
+        supported_alg = (
+            JWTAlgorithms.from_public_key(provider.signing_key.public_key)
+            if provider.signing_key
+            else JWTAlgorithms.HS256
+        )
         config = {
             "issuer": provider.get_issuer(self.request),
             "authorization_endpoint": self.request.build_absolute_uri(
@@ -164,11 +168,12 @@ class ProviderInfoView(View):
             "amr",
             "nonce",
         ]
+        user = get_anonymous_user()
         for scope in ScopeMapping.objects.filter(provider=provider).order_by("scope_name"):
             value = None
             try:
                 value = scope.evaluate(
-                    user=get_anonymous_user(),
+                    user=user,
                     request=self.request,
                     provider=provider,
                 )
@@ -189,9 +194,11 @@ class ProviderInfoView(View):
         self, request: HttpRequest, application_slug: str, *args: Any, **kwargs: Any
     ) -> HttpResponse:
         # Since this view only supports get, we can statically set the CORS headers
-        application = get_object_or_404(Application, slug=application_slug)
         self.provider: OAuth2Provider = get_object_or_404(
-            OAuth2Provider, pk=application.provider_id
+            # Not dynamic client registration: its join and the LIMIT get() adds take Postgres
+            # longer to plan than a separate query takes to run
+            OAuth2Provider.objects.select_related("application", "signing_key", "encryption_key"),
+            application__slug=application_slug,
         )
         response = super().dispatch(request, *args, **kwargs)
         cors_allow(request, response, self.provider.redirect_uris)

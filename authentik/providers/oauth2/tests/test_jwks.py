@@ -3,12 +3,14 @@
 import base64
 import json
 from unittest import skipIf
+from unittest.mock import patch
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.backends.openssl.backend import backend
 from cryptography.x509 import load_der_x509_certificate
 from django.urls.base import reverse
 from jwt import PyJWKSet, decode
+from jwt.algorithms import RSAAlgorithm
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
@@ -64,6 +66,32 @@ class TestJWKS(OAuthTestCase):
         PyJWKSet.from_dict(body)
         key = body["keys"][0]
         load_der_x509_certificate(base64.b64decode(key["x5c"][0]), default_backend()).public_key()
+
+    def test_private_key_not_loaded(self):
+        """Test keys are published without loading the private keys, whose validation is slow
+        for RSA keys"""
+        signing_key = create_test_cert()
+        encryption_key = create_test_cert()
+        provider = OAuth2Provider.objects.create(
+            name="test",
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=signing_key,
+            encryption_key=encryption_key,
+        )
+        app = Application.objects.create(name="test", slug="test", provider=provider)
+        with patch("authentik.crypto.models._load_private_key", side_effect=AssertionError):
+            response = self.client.get(
+                reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
+            )
+        keys = json.loads(response.content.decode())["keys"]
+        self.assertEqual([key["alg"] for key in keys], ["RS256", "RSA-OAEP-256"])
+        for key, keypair in zip(keys, [signing_key, encryption_key], strict=True):
+            self.assertEqual(
+                RSAAlgorithm.from_jwk(key).public_numbers(),
+                keypair.private_key.public_key().public_numbers(),
+            )
 
     def test_hs256(self):
         """Test JWKS request with HS256"""

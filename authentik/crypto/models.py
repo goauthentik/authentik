@@ -51,6 +51,22 @@ def _load_private_key(key_data: str) -> PrivateKeyTypes:
     )
 
 
+def _load_public_key(key_data: str) -> PublicKeyTypes:
+    """Load the public key of a normalized PEM private key.
+
+    Loading an RSA private key normally checks its private components, including that both
+    primes are prime, which takes tens of milliseconds for a 3072-bit key and more for a 4096-bit
+    one. That check protects signing, and every path that stores a key already ran it. The public
+    key is only the modulus and exponent, so this skips the check and returns nothing that can
+    sign."""
+    return load_pem_private_key(
+        key_data.encode("utf-8"),
+        password=None,
+        backend=default_backend(),
+        unsafe_skip_rsa_key_validation=True,
+    ).public_key()
+
+
 def format_cert(raw_pam: str) -> str:
     """Format a PEM certificate that is either missing its header/footer or is in a single line"""
     return "\n".join([PEM_HEADER, *wrap(raw_pam.replace("\n", ""), 64), PEM_FOOTER])
@@ -183,9 +199,13 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
     @property
     def public_key(self) -> PublicKeyTypes | None:
-        """Get public key of the private key"""
-        if not self._public_key:
-            self._public_key = self.private_key.public_key()
+        """Get public key of the private key, without loading the private key for signing"""
+        if not self._public_key and self.key_data != "":
+            try:
+                self._public_key = _load_public_key(self._normalized_key_data)
+            except (ValueError, InternalError, UnsupportedAlgorithm) as exc:
+                LOGGER.warning("Failed to load public key", exc=exc)
+                return None
         return self._public_key
 
     @property
@@ -195,9 +215,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         """Get python cryptography PrivateKey instance"""
         if not self._private_key and self.key_data != "":
             try:
-                self._private_key = _load_private_key(
-                    "\n".join(x.strip() for x in self.key_data.split("\n"))
-                )
+                self._private_key = _load_private_key(self._normalized_key_data)
             except (ValueError, InternalError, UnsupportedAlgorithm) as exc:
                 # InternalError/UnsupportedAlgorithm: OpenSSL has no implementation for the key's
                 # algorithm in the current configuration (e.g. ML-DSA under a FIPS provider that
@@ -205,6 +223,10 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 LOGGER.warning("Failed to load private key", exc=exc)
                 return None
         return self._private_key
+
+    @property
+    def _normalized_key_data(self) -> str:
+        return "\n".join(x.strip() for x in self.key_data.split("\n"))
 
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name}"
