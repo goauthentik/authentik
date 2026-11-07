@@ -1,0 +1,18 @@
+version: 1
+entries:
+    - identifiers:
+          name: "%(id)s-missing"
+          slug: "%(id)s-missing"
+      model: authentik_flows.flow
+      state: absent
+      attrs:
+          designation: stage_configuration
+          title: "%(id)s-missing"
+    - identifiers:
+          name: "%(id)s"
+          slug: "%(id)s"
+      model: authentik_flows.flow
+      state: created
+      attrs:
+          designation: stage_configuration
+          title: "%(id)s"
