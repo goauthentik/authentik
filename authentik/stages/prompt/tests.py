@@ -10,7 +10,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
@@ -22,7 +22,7 @@ from authentik.stages.prompt.stage import (
 )
 
 
-class TestPromptStage(FlowTestCase):
+class TestPromptStage(APIFlowTestCase):
     """Prompt tests"""
 
     def setUp(self):
@@ -352,6 +352,27 @@ class TestPromptStage(FlowTestCase):
         self.assertEqual(challenge_response.validated_data["hidden_prompt"], "hidden")
         self.assertNotEqual(challenge_response.validated_data["static_prompt"], "foo")
         self.assertEqual(challenge_response.validated_data["alert_prompt"], "alert content")
+
+    def test_read_only_blank_value(self):
+        """Test that an optional read-only field accepts an empty value"""
+        prompt = Prompt.objects.create(
+            name=generate_id(),
+            field_key="read_only_prompt",
+            label="READ_ONLY_LABEL",
+            type=FieldTypes.TEXT_READ_ONLY,
+            required=False,
+            initial_value="",
+        )
+        self.stage.fields.add(prompt)
+        self.assertEqual(prompt.field("").default, "")
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        data = {**self.prompt_data, prompt.field_key: ""}
+        challenge_response = PromptChallengeResponse(
+            None, stage_instance=self.stage, plan=plan, data=data, stage=self.stage_view
+        )
+
+        self.assertTrue(challenge_response.is_valid(), challenge_response.errors)
+        self.assertEqual(challenge_response.validated_data[prompt.field_key], "")
 
     def test_prompt_placeholder(self):
         """Test placeholder and expression"""

@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Application } from "./Application";
-import { ApplicationFromJSON, ApplicationToJSON } from "./Application";
-import type { User } from "./User";
-import { UserFromJSON, UserToJSON } from "./User";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { Application } from "./Application.js";
+import { ApplicationFromJSON, ApplicationToJSON } from "./Application.js";
+import type { User } from "./User.js";
+import { UserFromJSON, UserToJSON } from "./User.js";
 
 /**
  * UserConsent Serializer

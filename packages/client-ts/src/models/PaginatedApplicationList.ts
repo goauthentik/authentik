@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Application } from "./Application";
-import { ApplicationFromJSON, ApplicationToJSON } from "./Application";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Application } from "./Application.js";
+import { ApplicationFromJSON, ApplicationToJSON } from "./Application.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

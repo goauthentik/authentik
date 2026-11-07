@@ -126,7 +126,8 @@ class SAMLSource(Source):
         choices=SAMLNameIDPolicy.choices,
         default=SAMLNameIDPolicy.PERSISTENT,
         help_text=_(
-            "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
+            "Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP "
+            "choose the format of the NameID it returns."
         ),
     )
     binding_type = models.CharField(
@@ -266,7 +267,7 @@ class SAMLSource(Source):
     def icon_url(self) -> str:
         icon = super().icon_url
         if not icon:
-            return static("authentik/sources/saml.png")
+            return static("authentik/sources/saml/light.png")
         return icon
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
@@ -281,6 +282,7 @@ class SAMLSource(Source):
             ),
             name=self.name,
             icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
+            icon_themed_urls=self.get_icon_themed_urls(request, use_cache=False),
             promoted=self.promoted,
         )
 
@@ -294,6 +296,7 @@ class SAMLSource(Source):
                     kwargs={"source_slug": self.slug},
                 ),
                 "icon_url": self.icon_url,
+                "icon_themed_urls": self.icon_themed_urls,
             }
         )
 
@@ -307,6 +310,8 @@ class SAMLSource(Source):
 
 class SAMLSourcePropertyMapping(PropertyMapping):
     """Map SAML properties to User or Group object attributes"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

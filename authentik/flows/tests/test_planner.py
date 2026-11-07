@@ -1,5 +1,6 @@
 """flow planner tests"""
 
+from pickle import dumps, loads  # nosec
 from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 from django.core.cache import cache
@@ -179,6 +180,18 @@ class TestFlowPlanner(TestCase):
         planner.plan(request)
         self.assertEqual(CACHE_MOCK.set.call_count, 1)  # Ensure nothing is written to cache
         self.assertEqual(CACHE_MOCK.get.call_count, 2)  # Get is called twice
+
+    def test_planner_stage_cached_on_binding(self):
+        """Test that the plan carries subclassed stages, so the executor doesn't re-query them"""
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage = DummyStage.objects.create(name=generate_id())
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=0)
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        plan = loads(dumps(FlowPlanner(flow).plan(request)))  # nosec
+        with self.assertNumQueries(0):
+            self.assertIsInstance(plan.bindings[0].stage, DummyStage)
 
     def test_planner_default_context(self):
         """Test planner with default_context"""

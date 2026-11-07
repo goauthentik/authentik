@@ -55,6 +55,7 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
+from authentik.lib.jwt_mldsa import MLDSAAlgorithm, MLDSAKey
 from authentik.lib.models import (
     DomainlessURLValidator,
     ExpiringModel,
@@ -62,6 +63,7 @@ from authentik.lib.models import (
     SerializerModel,
     SimpleThroughModel,
 )
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.policies.models import PolicyBindingModel
 from authentik.sources.oauth.models import OAuthSource
@@ -168,9 +170,14 @@ class JWTAlgorithms(models.TextChoices):
     ES384 = "ES384", _("ES384 (Asymmetric Encryption)")
     ES512 = "ES512", _("ES512 (Asymmetric Encryption)")
     EDDSA = "EdDSA", _("EdDSA (Asymmetric Encryption)")
+    MLDSA44 = "ML-DSA-44", _("ML-DSA-44 (Post-quantum, Asymmetric Encryption)")
+    MLDSA65 = "ML-DSA-65", _("ML-DSA-65 (Post-quantum, Asymmetric Encryption)")
+    MLDSA87 = "ML-DSA-87", _("ML-DSA-87 (Post-quantum, Asymmetric Encryption)")
 
     @classmethod
     def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
+        if isinstance(private_key, MLDSAKey):
+            return cls(MLDSAAlgorithm.algorithm_for_key(private_key))
         if isinstance(private_key, RSAPrivateKey):
             return cls.RS256
         if isinstance(private_key, EllipticCurvePrivateKey):
@@ -188,6 +195,8 @@ class JWTAlgorithms(models.TextChoices):
 
 class ScopeMapping(PropertyMapping):
     """Map an OAuth Scope to users properties"""
+
+    expression_allowed_types = [dict]
 
     scope_name = models.TextField(help_text=_("Scope used by the client"))
     description = models.TextField(
@@ -432,7 +441,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/openidconnect.svg")
+        return static("authentik/sources/openidconnect/light.svg")
 
     @property
     def component(self) -> str:
@@ -447,6 +456,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
+    @active_tracer().instrument()
     def encode(self, payload: dict[str, Any], jwt_type: str | None = None) -> str:
         """Represent the ID Token as a JSON Web Token (JWT).
 

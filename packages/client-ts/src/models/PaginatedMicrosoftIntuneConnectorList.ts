@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { MicrosoftIntuneConnector } from "./MicrosoftIntuneConnector";
+import type { MicrosoftIntuneConnector } from "./MicrosoftIntuneConnector.js";
 import {
     MicrosoftIntuneConnectorFromJSON,
     MicrosoftIntuneConnectorToJSON,
-} from "./MicrosoftIntuneConnector";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./MicrosoftIntuneConnector.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

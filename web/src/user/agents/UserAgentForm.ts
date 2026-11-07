@@ -5,6 +5,7 @@ import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
 import { ModalForm } from "#elements/forms/ModalForm";
+import { WithSession } from "#elements/mixins/session";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AgentCreated, AgentCreateRequest, AgentsApi } from "@goauthentik/api";
@@ -15,7 +16,7 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-user-agent-form")
-export class UserAgentForm extends Form<AgentCreateRequest> {
+export class UserAgentForm extends WithSession(Form<AgentCreateRequest>) {
     public static override verboseName = msg("Agent", { id: "agent.verbose-name.label" });
     public static override verboseNamePlural = msg("Agents", {
         id: "agent.verbose-name-plural.label",
@@ -32,10 +33,10 @@ export class UserAgentForm extends Form<AgentCreateRequest> {
     }
 
     async send(data: AgentCreateRequest): Promise<AgentCreated> {
-        // Self-service creation: `parent` and expiry are set by the server (owned by the
-        // requesting user, always expiring).
+        // Self-service creation: the agent is owned by the requesting user, and expiry is set
+        // by the server (always expiring). Without a parent, it would be a system agent.
         const result = await aki(AgentsApi).agentsAgentsCreate({
-            agentCreateRequest: data,
+            agentCreateRequest: { ...data, parent: this.currentUser?.pk },
         });
 
         this.result = result;

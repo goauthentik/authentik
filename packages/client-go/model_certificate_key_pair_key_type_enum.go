@@ -26,6 +26,9 @@ const (
 	CERTIFICATEKEYPAIRKEYTYPEENUM_DSA     CertificateKeyPairKeyTypeEnum = "dsa"
 	CERTIFICATEKEYPAIRKEYTYPEENUM_ED25519 CertificateKeyPairKeyTypeEnum = "ed25519"
 	CERTIFICATEKEYPAIRKEYTYPEENUM_ED448   CertificateKeyPairKeyTypeEnum = "ed448"
+	CERTIFICATEKEYPAIRKEYTYPEENUM_MLDSA44 CertificateKeyPairKeyTypeEnum = "mldsa44"
+	CERTIFICATEKEYPAIRKEYTYPEENUM_MLDSA65 CertificateKeyPairKeyTypeEnum = "mldsa65"
+	CERTIFICATEKEYPAIRKEYTYPEENUM_MLDSA87 CertificateKeyPairKeyTypeEnum = "mldsa87"
 )
 
 // All allowed values of CertificateKeyPairKeyTypeEnum enum
@@ -35,6 +38,9 @@ var AllowedCertificateKeyPairKeyTypeEnumEnumValues = []CertificateKeyPairKeyType
 	"dsa",
 	"ed25519",
 	"ed448",
+	"mldsa44",
+	"mldsa65",
+	"mldsa87",
 }
 
 func (v *CertificateKeyPairKeyTypeEnum) UnmarshalJSON(src []byte) error {

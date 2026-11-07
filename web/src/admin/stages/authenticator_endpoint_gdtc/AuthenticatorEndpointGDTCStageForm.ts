@@ -1,5 +1,5 @@
 import "#components/ak-text-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -64,10 +64,10 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                         required
                         name="credentials"
                     >
-                        <ak-codemirror
+                        <ak-code-editor
                             mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
-                        ></ak-codemirror>
+                        ></ak-code-editor>
                         <p class="pf-c-form__helper-text">
                             ${msg("Google Cloud credentials file.")}
                         </p>

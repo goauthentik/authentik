@@ -5,6 +5,8 @@ import "#components/ak-text-input";
 import "#elements/ToggleGroup";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
+import PFAlignment from "@patternfly/patternfly/utilities/Alignment/alignment.css";
+
 import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
@@ -19,6 +21,7 @@ import { type NavigableButton, type WizardButton } from "#components/ak-wizard/s
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import { groupSource, policySource, userSource } from "#admin/common/search-sources";
+import { renderDryRunHelp } from "#admin/policies/renderDryRunHelp";
 
 import { Group, Policy, PolicyBinding, User } from "@goauthentik/api";
 
@@ -31,6 +34,8 @@ import { customElement, query, state } from "lit/decorators.js";
  */
 @customElement("ak-application-wizard-edit-binding-step")
 export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<PolicyBinding> {
+    static styles = [...super.styles, PFAlignment];
+
     label = msg("Edit Binding");
 
     hide = true;
@@ -139,7 +144,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
             </h3>
             <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
                 <div class="pf-c-card pf-m-selectable pf-m-selected">
-                    <div class="pf-c-card__body">
+                    <div class="pf-c-card__body pf-u-text-align-center">
                         <ak-toggle-group
                             value=${this.policyGroupUser}
                             @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
@@ -163,6 +168,12 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                     name="enabled"
                     ?checked=${instance?.enabled ?? true}
                     label=${msg("Enabled")}
+                ></ak-switch-input>
+                <ak-switch-input
+                    name="dryRun"
+                    ?checked=${instance?.dryRun ?? false}
+                    label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                    .help=${renderDryRunHelp()}
                 ></ak-switch-input>
                 <ak-switch-input
                     name="negate"

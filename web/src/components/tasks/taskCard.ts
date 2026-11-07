@@ -3,6 +3,7 @@
  */
 
 import "#components/tasks/TaskList";
+import "#elements/cards/SectionCard";
 import { ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -11,14 +12,11 @@ import { html } from "lit";
 export function taskCard(model: ModelEnum, objId: string | number | undefined) {
     const [appLabel, modelName] = model.split(".");
 
-    return html`<div class="pf-c-card">
-        <div class="pf-c-card__header">
-            <div class="pf-c-card__title">${msg("Tasks")}</div>
-        </div>
+    return html`<ak-section-card label=${msg("Tasks")}>
         <ak-task-list
             .relObjAppLabel=${appLabel}
             .relObjModel=${modelName}
             .relObjId=${objId}
         ></ak-task-list>
-    </div>`;
+    </ak-section-card>`;
 }

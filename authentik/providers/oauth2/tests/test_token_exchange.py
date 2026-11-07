@@ -45,6 +45,7 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
+from authentik.providers.oauth2.token.token_exchange import MAX_ACT_DEPTH
 
 SCOPES = f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}"
 
@@ -107,6 +108,7 @@ class TestTokenExchange(OAuthTestCase):
         user: User,
         expires_in: timedelta = timedelta(hours=2),
         provider: OAuth2Provider | None = None,
+        **claims,
     ) -> str:
         """Issue an access token from the federated provider, usable as a subject token"""
         provider = provider or self.other_provider
@@ -114,6 +116,7 @@ class TestTokenExchange(OAuthTestCase):
             {
                 "sub": "foo",
                 "exp": datetime.now() + expires_in,
+                **claims,
             }
         )
         AccessToken.objects.create(
@@ -124,7 +127,7 @@ class TestTokenExchange(OAuthTestCase):
         )
         return token
 
-    def _assert_exchange_event(self, actor: Actor | None):
+    def _assert_exchange_event(self, actor: Actor | None) -> Event:
         """The exchange's login event is attributed to the actor when one was supplied
         (recorded as an agent acting on behalf of the subject), else to the subject"""
         event = (
@@ -136,13 +139,14 @@ class TestTokenExchange(OAuthTestCase):
         if actor is None:
             self.assertEqual(event.user["username"], self.user.username)
             self.assertNotIn("on_behalf_of", event.user)
-            return
+            return event
         self.assertEqual(event.user["username"], actor.username)
         self.assertTrue(event.user["is_agent"])
         if actor.parent_id is None:
             self.assertNotIn("on_behalf_of", event.user)
-            return
+            return event
         self.assertEqual(event.user["on_behalf_of"]["username"], self.user.username)
+        return event
 
     def test_missing_subject_token(self):
         """test request without a subject token"""
@@ -743,6 +747,62 @@ class TestTokenExchange(OAuthTestCase):
         access_token = AccessToken.objects.get(token=body["access_token"])
         self.assertEqual(access_token.actor_id, actor.pk)
         self._assert_exchange_event(actor)
+
+    def _exchange_with_prior_act(self, prior_act, actor: Actor | None = None) -> HttpResponse:
+        """Exchange a subject token carrying `prior_act`, optionally with an actor_token"""
+        data = {
+            "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+            "scope": SCOPES,
+            "client_id": self.provider.client_id,
+            "client_secret": self.provider.client_secret,
+            "subject_token": self.create_subject_token(self.user, act=prior_act),
+            "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+        }
+        if actor:
+            data["actor_token"] = self._actor_token_jwt(actor)
+            data["actor_token_type"] = TOKEN_TYPE_URI_JWT
+        return self.client.post(reverse("authentik_providers_oauth2:token"), data)
+
+    def test_actor_token_nested_actors(self):
+        """test RFC 8693 §4.1 nested delegation: when the subject_token already carries an
+        `act` claim, the issued token's `act` is the new actor, with the prior delegation
+        chain nested inside it"""
+        prior_act = {"sub": generate_id(), "act": {"sub": generate_id(), "iss": "foo"}}
+        actor = Actor.for_user(self.user, ActorPolicyInheritance.NONE)
+
+        response = self._exchange_with_prior_act(prior_act, actor)
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content.decode())
+
+        jwt = self._decode(body["access_token"])
+        self.assertEqual(jwt["act"], {"sub": actor.uid, "act": prior_act})
+        event = self._assert_exchange_event(actor)
+        self.assertEqual(event.context["auth_method_args"]["act"], prior_act)
+
+    def test_prior_act_kept_without_actor(self):
+        """test that a subject_token's delegation chain is not dropped when no new
+        actor_token is presented, and that non-delegation claims are stripped"""
+        response = self._exchange_with_prior_act({"sub": "agent", "exp": 0})
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content.decode())
+
+        jwt = self._decode(body["access_token"])
+        self.assertEqual(jwt["act"], {"sub": "agent"})
+        event = self._assert_exchange_event(None)
+        self.assertEqual(event.context["auth_method_args"]["act"], {"sub": "agent"})
+
+    def test_prior_act_invalid(self):
+        """test that a malformed or overly deep `act` chain in the subject_token is
+        rejected"""
+        too_deep = {"sub": "agent"}
+        for _ in range(MAX_ACT_DEPTH):
+            too_deep = {"sub": "agent", "act": too_deep}
+        for prior_act in ["agent", {"iss": "foo"}, {"sub": 1}, {"sub": "a", "act": []}, too_deep]:
+            with self.subTest(prior_act=prior_act):
+                response = self._exchange_with_prior_act(prior_act)
+                self.assertEqual(response.status_code, 400, response.content)
+                body = loads(response.content.decode())
+                self.assertEqual(body["error"], "invalid_grant")
 
     def test_actor_token_jwt_from_self_with_audience(self):
         """test that an actor_token issued by the requesting provider itself is accepted

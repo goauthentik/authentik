@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.templatetags.static import static
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -155,7 +155,7 @@ class RACProvider(OutpostModel, Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/rac.svg")
+        return static("authentik/sources/rac/light.svg")
 
     @property
     def component(self) -> str:
@@ -174,6 +174,8 @@ class RACProvider(OutpostModel, Provider):
 
 class RACPropertyMapping(PropertyMapping):
     """Configure settings for remote access to devices."""
+
+    expression_allowed_types = [dict]
 
     static_settings = models.JSONField(default=dict)
 

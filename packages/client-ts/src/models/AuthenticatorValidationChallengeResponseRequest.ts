@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceChallengeRequest } from "./DeviceChallengeRequest";
+import type { DeviceChallengeRequest } from "./DeviceChallengeRequest.js";
 import {
     DeviceChallengeRequestFromJSON,
     DeviceChallengeRequestToJSON,
-} from "./DeviceChallengeRequest";
+} from "./DeviceChallengeRequest.js";
 
 /**
  * Challenge used for Code-based and WebAuthn authenticators

@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { DataExport } from "./DataExport";
-import { DataExportFromJSON, DataExportToJSON } from "./DataExport";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { DataExport } from "./DataExport.js";
+import { DataExportFromJSON, DataExportToJSON } from "./DataExport.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export
