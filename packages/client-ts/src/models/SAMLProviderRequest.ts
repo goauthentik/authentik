@@ -120,6 +120,12 @@ export interface SAMLProviderRequest {
     signLogoutRequest?: boolean;
     signLogoutResponse?: boolean;
     /**
+     * When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is
+     * ignored and an existing session is used. When disabled, ForceAuthn requires the user to
+     * re-authenticate.
+     */
+    ignoreForceAuthn?: boolean;
+    /**
      * This determines how authentik sends the response back to the Service Provider.
      */
     spBinding?: SAMLBindingsEnum;
@@ -261,6 +267,8 @@ export function SAMLProviderRequestFromJSONTyped(
             json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
         signLogoutResponse:
             json["sign_logout_response"] == null ? undefined : json["sign_logout_response"],
+        ignoreForceAuthn:
+            json["ignore_force_authn"] == null ? undefined : json["ignore_force_authn"],
         spBinding:
             json["sp_binding"] == null ? undefined : SAMLBindingsEnumFromJSON(json["sp_binding"]),
         slsBinding:
@@ -317,6 +325,7 @@ export function SAMLProviderRequestToJSONTyped(
         sign_response: value["signResponse"],
         sign_logout_request: value["signLogoutRequest"],
         sign_logout_response: value["signLogoutResponse"],
+        ignore_force_authn: value["ignoreForceAuthn"],
         sp_binding: SAMLBindingsEnumToJSON(value["spBinding"]),
         sls_binding: SAMLBindingsEnumToJSON(value["slsBinding"]),
         logout_method: SAMLLogoutMethodsToJSON(value["logoutMethod"]),

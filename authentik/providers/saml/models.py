@@ -266,6 +266,15 @@ class SAMLProvider(Provider):
     sign_logout_request = models.BooleanField(default=False)
     sign_logout_response = models.BooleanField(default=False)
 
+    ignore_force_authn = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, the ForceAuthn attribute set by the Service Provider on an "
+            "AuthnRequest is ignored and an existing session is used. When disabled, "
+            "ForceAuthn requires the user to re-authenticate."
+        ),
+    )
+
     jwt_federation_providers = models.ManyToManyField(
         "authentik_providers_oauth2.OAuth2Provider",
         blank=True,
