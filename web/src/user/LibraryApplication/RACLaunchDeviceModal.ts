@@ -52,7 +52,13 @@ export class RACLaunchDeviceLaunch extends Table<RACDevice> {
             provider: this.app?.provider || 0,
         });
 
-        if (devices.pagination.count === 1 && devices.results[0].protocols.length === 1) {
+        // Only skip the picker when the application has a single device at all, not when
+        // a search narrowed the list down to one
+        if (
+            !this.search &&
+            devices.pagination.count === 1 &&
+            devices.results[0].protocols.length === 1
+        ) {
             this.rowClickListener(devices.results[0]);
 
             if (this.parentElement instanceof AKModal) {

@@ -12,6 +12,7 @@ from django_dramatiq_postgres.middleware import (
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
+from prometheus_client import CollectorRegistry
 from psycopg.errors import Error
 from structlog.stdlib import get_logger
 
@@ -164,6 +165,14 @@ class MetricsMiddleware(BaseMetricsMiddleware):
     @property
     def forks(self) -> list[Callable[[], None]]:
         return []
+
+    @property
+    def registry(self) -> CollectorRegistry | None:
+        # Tests create a new broker (and middleware) per test, which would otherwise
+        # register duplicate collectors in the global registry
+        if settings.TEST:
+            return None
+        return super().registry
 
     def before_worker_boot(self, broker: Broker, worker: Any) -> None:
         if settings.TEST:

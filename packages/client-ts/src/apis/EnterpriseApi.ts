@@ -10,21 +10,21 @@
  * Do not edit the class manually.
  */
 
-import { type InstallID, InstallIDFromJSON } from "../models/InstallID";
-import { type License, LicenseFromJSON } from "../models/License";
-import { type LicenseRequest, LicenseRequestToJSON } from "../models/LicenseRequest";
-import { type LicenseSummary, LicenseSummaryFromJSON } from "../models/LicenseSummary";
-import { type LicenseUserCounts, LicenseUserCountsFromJSON } from "../models/LicenseUserCounts";
+import { type InstallID, InstallIDFromJSON } from "../models/InstallID.js";
+import { type License, LicenseFromJSON } from "../models/License.js";
+import { type LicenseRequest, LicenseRequestToJSON } from "../models/LicenseRequest.js";
+import { type LicenseSummary, LicenseSummaryFromJSON } from "../models/LicenseSummary.js";
+import { type LicenseUserCounts, LicenseUserCountsFromJSON } from "../models/LicenseUserCounts.js";
 import {
     type PaginatedLicenseList,
     PaginatedLicenseListFromJSON,
-} from "../models/PaginatedLicenseList";
+} from "../models/PaginatedLicenseList.js";
 import {
     type PatchedLicenseRequest,
     PatchedLicenseRequestToJSON,
-} from "../models/PatchedLicenseRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/PatchedLicenseRequest.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface EnterpriseLicenseCreateRequest {
     licenseRequest: LicenseRequest;

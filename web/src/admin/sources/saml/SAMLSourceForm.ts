@@ -14,6 +14,7 @@ import { aki } from "#common/api/client";
 import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
 
 import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { XMLSigningKeyTypes } from "#admin/common/certificate-key-types";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -281,7 +282,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Signing keypair")} name="signingKp">
-                        ${AKCertificateSearch({ name: "signingKp", value: this.instance?.signingKp })}
+                        ${AKCertificateSearch({ name: "signingKp", value: this.instance?.signingKp, allowedKeyTypes: XMLSigningKeyTypes })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Keypair which is used to sign outgoing requests. Leave empty to disable signing.",
@@ -308,7 +309,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         label=${msg("Verification Certificate")}
                         name="verificationKp"
                     >
-                        ${AKCertificateSearch({ name: "verificationKp", value: this.instance?.verificationKp, noKey: true, onChange: this.setHasSigningCert })}
+                        ${AKCertificateSearch({ name: "verificationKp", value: this.instance?.verificationKp, noKey: true, allowedKeyTypes: XMLSigningKeyTypes, onChange: this.setHasSigningCert })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
@@ -399,6 +400,15 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                                 }
                             >
                                 ${msg("Transient")}
+                            </option>
+                            <option
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified
+                                }
+                            >
+                                ${msg("Unspecified")}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
@@ -496,7 +506,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         label=${msg("Encryption Certificate")}
                         name="encryptionKp"
                     >
-                        ${AKCertificateSearch({ name: "encryptionKp", value: this.instance?.encryptionKp })}
+                        ${AKCertificateSearch({ name: "encryptionKp", value: this.instance?.encryptionKp, allowedKeyTypes: XMLSigningKeyTypes })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, encrypted assertions will be decrypted using this keypair.",

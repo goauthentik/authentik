@@ -10,22 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceGroup } from "./DeviceGroup";
-import { DeviceGroupFromJSON, DeviceGroupToJSON } from "./DeviceGroup";
-import type { DeviceUser } from "./DeviceUser";
-import { DeviceUserFromJSON, DeviceUserToJSON } from "./DeviceUser";
-import type { Disk } from "./Disk";
-import { DiskFromJSON, DiskToJSON } from "./Disk";
-import type { Hardware } from "./Hardware";
-import { HardwareFromJSON, HardwareToJSON } from "./Hardware";
-import type { Network } from "./Network";
-import { NetworkFromJSON, NetworkToJSON } from "./Network";
-import type { OperatingSystem } from "./OperatingSystem";
-import { OperatingSystemFromJSON, OperatingSystemToJSON } from "./OperatingSystem";
-import type { Process } from "./Process";
-import { ProcessFromJSON, ProcessToJSON } from "./Process";
-import type { Software } from "./Software";
-import { SoftwareFromJSON, SoftwareToJSON } from "./Software";
+import type { DeviceGroup } from "./DeviceGroup.js";
+import { DeviceGroupFromJSON, DeviceGroupToJSON } from "./DeviceGroup.js";
+import type { DeviceUser } from "./DeviceUser.js";
+import { DeviceUserFromJSON, DeviceUserToJSON } from "./DeviceUser.js";
+import type { Disk } from "./Disk.js";
+import { DiskFromJSON, DiskToJSON } from "./Disk.js";
+import type { Hardware } from "./Hardware.js";
+import { HardwareFromJSON, HardwareToJSON } from "./Hardware.js";
+import type { Network } from "./Network.js";
+import { NetworkFromJSON, NetworkToJSON } from "./Network.js";
+import type { OperatingSystem } from "./OperatingSystem.js";
+import { OperatingSystemFromJSON, OperatingSystemToJSON } from "./OperatingSystem.js";
+import type { Process } from "./Process.js";
+import { ProcessFromJSON, ProcessToJSON } from "./Process.js";
+import type { Software } from "./Software.js";
+import { SoftwareFromJSON, SoftwareToJSON } from "./Software.js";
 
 /**
  * @export

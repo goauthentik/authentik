@@ -10,14 +10,14 @@
  * Do not edit the class manually.
  */
 
-import type { CurrentBrandFlags } from "./CurrentBrandFlags";
-import { CurrentBrandFlagsFromJSON, CurrentBrandFlagsToJSON } from "./CurrentBrandFlags";
-import type { FooterLink } from "./FooterLink";
-import { FooterLinkFromJSON } from "./FooterLink";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
-import type { UiThemeEnum } from "./UiThemeEnum";
-import { UiThemeEnumFromJSON } from "./UiThemeEnum";
+import type { CurrentBrandFlags } from "./CurrentBrandFlags.js";
+import { CurrentBrandFlagsFromJSON, CurrentBrandFlagsToJSON } from "./CurrentBrandFlags.js";
+import type { FooterLink } from "./FooterLink.js";
+import { FooterLinkFromJSON } from "./FooterLink.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON } from "./ThemedUrls.js";
+import type { UiThemeEnum } from "./UiThemeEnum.js";
+import { UiThemeEnumFromJSON } from "./UiThemeEnum.js";
 
 /**
  * Partial brand information for styling

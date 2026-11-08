@@ -35,6 +35,7 @@ export interface RouteLike {
     readonly name: string;
     render(params: RouteParameterRecord): TemplateResult;
     resolve(params: RouteParameterRecord): Promise<SlottedTemplateResult>;
+    test(pathname: string): boolean;
 }
 
 export class Route<P extends RouteParameterRecord = RouteParameterRecord> implements RouteLike {
@@ -61,6 +62,13 @@ export class Route<P extends RouteParameterRecord = RouteParameterRecord> implem
         this.pattern = new URLPattern(init);
         this.name = name ?? init.pathname ?? "";
         this.#render = render;
+    }
+
+    /**
+     * Returns true if the path passed in matches
+     */
+    test(pathname: string) {
+        return this.pattern.test({ pathname });
     }
 
     /**

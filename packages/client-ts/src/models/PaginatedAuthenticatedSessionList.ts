@@ -10,10 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticatedSession } from "./AuthenticatedSession";
-import { AuthenticatedSessionFromJSON, AuthenticatedSessionToJSON } from "./AuthenticatedSession";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { AuthenticatedSession } from "./AuthenticatedSession.js";
+import {
+    AuthenticatedSessionFromJSON,
+    AuthenticatedSessionToJSON,
+} from "./AuthenticatedSession.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

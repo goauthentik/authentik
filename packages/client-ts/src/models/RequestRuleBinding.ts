@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { RelatedTarget } from "./RelatedTarget";
-import { RelatedTargetFromJSON } from "./RelatedTarget";
-import type { RequestRule } from "./RequestRule";
-import { RequestRuleFromJSON } from "./RequestRule";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { RelatedTarget } from "./RelatedTarget.js";
+import { RelatedTargetFromJSON } from "./RelatedTarget.js";
+import type { RequestRule } from "./RequestRule.js";
+import { RequestRuleFromJSON } from "./RequestRule.js";
 
 /**
  * Mixin to validate that a valid enterprise license
