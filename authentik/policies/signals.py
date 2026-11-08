@@ -27,7 +27,7 @@ def monitoring_set_policies(sender, **kwargs):
 @receiver(post_save, sender=Group)
 @receiver(post_save, sender=User)
 @receiver(pre_delete, sender=PolicyBinding)
-def invalidate_policy_cache(sender, instance, update_fields=None, **_):
+def invalidate_policy_cache(sender, instance, update_fields=None, created=False, **_):
     """Invalidate Policy cache when a policy or binding is updated.
 
     Skips when the save touched only ``last_login`` — Django's auth flow runs
@@ -35,8 +35,19 @@ def invalidate_policy_cache(sender, instance, update_fields=None, **_):
     the broad invalidation below would otherwise issue a full-table cache
     scan on every login. ``last_login`` doesn't affect policy evaluation or
     application access, so there's nothing to invalidate.
+
+    User creation is skipped for the same reason: a brand-new user has no
+    cached entries yet, and creating a user cannot change any other user's
+    application access. Other User saves only invalidate that user's own
+    application-list entries — a broad ``app_access/*`` scan and delete makes
+    every user save O(cached users) and, with the postgres-backed cache,
+    concurrent saves issue overlapping multi-row ``DELETE``s in arbitrary
+    order, which deadlocks the cache table.
     """
     if sender == User and update_fields and set(update_fields) <= {"last_login"}:
+        return
+
+    if sender == User and created:
         return
 
     if sender in (Policy, PolicyBinding):
@@ -49,5 +60,12 @@ def invalidate_policy_cache(sender, instance, update_fields=None, **_):
             cache.delete_many(keys)
         LOGGER.debug("Invalidating policy cache", instance=instance, keys=total)
     # Also delete user application cache
-    keys = cache.keys(user_app_cache_key("*")) or []
+    if sender == User:
+        # Only the saved user's own entries. Match the exact key and its
+        # sub-keys separately so that user 7's pattern can't match user 70.
+        prefix = user_app_cache_key(instance.pk)
+        keys = [prefix]
+        keys.extend(cache.keys(f"{prefix}/*") or [])
+    else:
+        keys = cache.keys(user_app_cache_key("*")) or []
     cache.delete_many(keys)
