@@ -299,7 +299,7 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
                     provider.verification_kp,
                 )
         except CannotHandleAssertion as exc:
-            LOGGER.warning("Failed to verify SAML LogoutResponse", exc=str(exc))
+            LOGGER.warning("Failed to verify SAML LogoutResponse", exc=exc, detail=exc.detail)
             return redirect("authentik_core:root-redirect")
 
         redirect_url = _get_redirect_url(request, relay_state)
@@ -372,7 +372,7 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
                     "/samlp:LogoutResponse/ds:Signature",
                 )
         except CannotHandleAssertion as exc:
-            LOGGER.warning("Failed to verify SAML LogoutResponse", exc=str(exc))
+            LOGGER.warning("Failed to verify SAML LogoutResponse", exc=exc, detail=exc.detail)
             return redirect("authentik_core:root-redirect")
 
         redirect_url = _get_redirect_url(request, relay_state)
