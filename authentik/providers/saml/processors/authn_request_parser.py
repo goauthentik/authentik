@@ -15,7 +15,6 @@ from authentik.common.saml.constants import (
 from authentik.common.saml.exceptions import (
     ERROR_ACS_URL_MISMATCH,
     ERROR_CANNOT_DECODE_REQUEST,
-    ERROR_FAILED_TO_VERIFY,
     CannotHandleAssertion,
 )
 from authentik.common.saml.parsers.verify import (
@@ -50,7 +49,15 @@ class AuthNRequestParser:
         self.logger = get_logger().bind(provider=self.provider)
 
     def _parse_xml(self, decoded_xml: str | bytes, relay_state: str | None) -> AuthNRequest:
-        root = ElementTree.fromstring(decoded_xml)
+        try:
+            root = ElementTree.fromstring(decoded_xml)
+        except (ParseError, ValueError) as exc:
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from exc
+        # `ID` is a required attribute of every SAML request (SAML 2.0 core §3.2.1)
+        if "ID" not in root.attrib:
+            raise CannotHandleAssertion(
+                ERROR_CANNOT_DECODE_REQUEST, detail="Request is missing the ID attribute"
+            )
 
         # http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
         # `AssertionConsumerServiceURL` can be omitted, and we should fallback to the
@@ -130,10 +137,7 @@ class AuthNRequestParser:
         verify_detached_signature(
             "SAMLRequest", saml_request, relay_state, signature, sig_alg, verifier
         )
-        try:
-            return self._parse_xml(decoded_xml, relay_state)
-        except ParseError as exc:
-            raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=exc) from exc
+        return self._parse_xml(decoded_xml, relay_state)
 
     def idp_initiated(self) -> AuthNRequest:
         """Create IdP Initiated AuthNRequest"""

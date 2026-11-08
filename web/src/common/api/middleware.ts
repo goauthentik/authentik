@@ -16,7 +16,6 @@ import {
     ResponseContext,
 } from "@goauthentik/api";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import { html } from "lit";
 
 export const AcceptLanguage = "Accept-Language";
@@ -73,25 +72,11 @@ export class EventMiddleware implements Middleware {
     }
 }
 
-export class LocaleMiddleware implements Middleware, Disposable {
+export class LocaleMiddleware implements Middleware {
     #locale: string;
 
-    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (event.detail.status !== "ready") {
-            return;
-        }
-
-        this.#locale = formatAcceptLanguageHeader(event.detail.readyLocale);
-    };
-
-    constructor(languageTagHint: Intl.UnicodeBCP47LocaleIdentifier) {
-        this.#locale = formatAcceptLanguageHeader(languageTagHint);
-
-        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
-    }
-
-    [Symbol.dispose]() {
-        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    constructor(languageTag: Intl.UnicodeBCP47LocaleIdentifier) {
+        this.#locale = formatAcceptLanguageHeader(languageTag);
     }
 
     pre(context: RequestContext): Promise<FetchParams | void> {

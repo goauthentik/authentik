@@ -25,7 +25,7 @@ body {
         background-image: none;
         z-index: -1;
 
-        @media (min-width: 35rem) and (min-height: 17.5rem) {
+        @media (width > 36.25rem) and (height > 27.5rem) {
             background-image: var(--ak-global--background-image, none);
         }
     }

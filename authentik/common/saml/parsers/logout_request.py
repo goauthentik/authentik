@@ -2,6 +2,7 @@
 
 from base64 import b64decode
 from dataclasses import dataclass
+from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml import ElementTree
 
@@ -31,7 +32,15 @@ class LogoutRequestParser:
     """LogoutRequest Parser"""
 
     def _parse_xml(self, decoded_xml: str | bytes, relay_state: str | None = None) -> LogoutRequest:
-        root = ElementTree.fromstring(decoded_xml)
+        try:
+            root = ElementTree.fromstring(decoded_xml)
+        except (ParseError, ValueError) as exc:
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from exc
+        # `ID` is a required attribute of every SAML request (SAML 2.0 core §3.2.1)
+        if "ID" not in root.attrib:
+            raise CannotHandleAssertion(
+                ERROR_CANNOT_DECODE_REQUEST, detail="Request is missing the ID attribute"
+            )
         request = LogoutRequest(
             id=root.attrib["ID"],
         )

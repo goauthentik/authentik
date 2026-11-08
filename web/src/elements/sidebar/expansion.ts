@@ -5,6 +5,8 @@
 import { StorageAccessor } from "#common/storage/accessor";
 import type { PersistenceKey } from "#common/storage/shared";
 
+const STORAGE_KEY = "ak:sidebar:expansion" satisfies PersistenceKey;
+
 /**
  * Expansion keyed by {@linkcode SidebarItem.key}. A missing entry means "never
  * toggled", which leaves the entry's declared default in place — distinct from
@@ -12,20 +14,18 @@ import type { PersistenceKey } from "#common/storage/shared";
  */
 export type SidebarExpansionState = Record<string, boolean>;
 
-const STORAGE_KEY = "ak:sidebar:expansion" satisfies PersistenceKey;
-
 type StorageAccessorType = StorageAccessor<typeof STORAGE_KEY>;
 
 let accessor: StorageAccessorType | null = null;
 
-function retrieveStorageAccessor(): StorageAccessorType {
+function getAccessor(): StorageAccessorType {
     return (accessor ??= StorageAccessor.session(STORAGE_KEY));
 }
 
 /**
  * Attempt to parse a stored value into a usable sidebar expansion state.
  */
-export function parseSidebarExpansionState(value: unknown): SidebarExpansionState {
+export function parseState(value: unknown): SidebarExpansionState {
     if (!value || typeof value !== "object" || Array.isArray(value)) return {};
 
     return Object.fromEntries(
@@ -36,32 +36,13 @@ export function parseSidebarExpansionState(value: unknown): SidebarExpansionStat
 /**
  * Read the whole expansion record.
  */
-export function readSidebarExpansionState(): SidebarExpansionState {
-    return parseSidebarExpansionState(retrieveStorageAccessor().readJSON<SidebarExpansionState>());
+export function readState(): SidebarExpansionState {
+    return parseState(getAccessor().readJSON<SidebarExpansionState>());
 }
 
 /**
- * The persisted expansion for a single key, or `null` when it has never been toggled.
+ * Write the whole expansion record.
  */
-export function readSidebarExpansion(key: string): boolean | null {
-    const expanded = readSidebarExpansionState()[key];
-
-    return typeof expanded === "boolean" ? expanded : null;
-}
-
-/**
- * Record an explicit toggle.
- */
-export function writeSidebarExpansion(key: string, expanded: boolean): boolean {
-    return retrieveStorageAccessor().writeJSON({
-        ...readSidebarExpansionState(),
-        [key]: expanded,
-    });
-}
-
-/**
- * Forget every recorded toggle.
- */
-export function clearSidebarExpansionState(): boolean {
-    return retrieveStorageAccessor().delete();
+export function writeState(state: SidebarExpansionState): boolean {
+    return getAccessor().writeJSON(state);
 }

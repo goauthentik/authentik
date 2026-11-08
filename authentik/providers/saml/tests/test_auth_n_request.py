@@ -44,6 +44,7 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
+from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
@@ -821,3 +822,33 @@ class TestAuthNRequest(TestCase):
         self.assertNotIn("evil.example.com", str(ctx.exception))
         self.assertIn("https://evil.example.com/acs", ctx.exception.detail)
         self.assertIn(self.provider.acs_url, ctx.exception.detail)
+
+    def test_malformed_unsigned(self):
+        """Test that malformed requests to a provider without a verification certificate are
+        rejected with a handled error instead of a server error"""
+        self.provider.verification_kp = None
+        self.provider.save()
+        missing_id = (
+            '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z" '
+            'AssertionConsumerServiceURL="http://testserver/source/saml/provider/acs/"/>'
+        )
+        parser = AuthNRequestParser(self.provider)
+        for payload in ("this is not xml", missing_id):
+            with self.subTest(payload=payload, binding="post"):
+                with self.assertRaisesMessage(
+                    CannotHandleAssertion, str(ERROR_CANNOT_DECODE_REQUEST)
+                ):
+                    parser.parse(b64encode(payload.encode()).decode())
+            with self.subTest(payload=payload, binding="redirect"):
+                with self.assertRaisesMessage(
+                    CannotHandleAssertion, str(ERROR_CANNOT_DECODE_REQUEST)
+                ):
+                    parser.parse_detached(deflate_and_base64_encode(payload), None)
+
+        for binding, method in (("post", parser.parse), ("redirect", parser.parse_detached)):
+            with self.subTest(payload="not base64", binding=binding):
+                with self.assertRaisesMessage(
+                    CannotHandleAssertion, str(ERROR_CANNOT_DECODE_REQUEST)
+                ):
+                    method("%%%not-base64%%%", None)
