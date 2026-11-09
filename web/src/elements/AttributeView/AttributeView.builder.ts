@@ -9,6 +9,7 @@ export type AttributeViewProps = ElementRest & {
     value: unknown;
     mode?: "json" | "yaml" | "tree";
     hideCopy?: boolean;
+    showCount?: boolean;
 };
 
 /**
@@ -19,7 +20,7 @@ export type AttributeViewProps = ElementRest & {
  * @see {@link AkAttributeView} - The underlying web component
  */
 export function akAttributeView(options: AttributeViewProps) {
-    const { value, mode, hideCopy, ...rest } = options;
+    const { value, mode, hideCopy, showCount, ...rest } = options;
 
     return html`
         <ak-attribute-view
@@ -27,6 +28,7 @@ export function akAttributeView(options: AttributeViewProps) {
             .value=${value}
             mode=${ifDefined(mode)}
             ?hide-copy=${hideCopy}
+            ?show-count=${showCount}
         ></ak-attribute-view>
     `;
 }

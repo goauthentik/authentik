@@ -32,6 +32,8 @@ const PJsonKey = P.union(P.string, P.number, P.symbol);
  *
  * @attr {string} mode - Display format: "json" (default), "yaml" or "tree".
  * @attr {boolean} hide-copy - Hides the copy-to-clipboard button
+ * @attr {boolean} show-count - In tree mode, shows how many keys or items each collapsed summary
+ *   hides
  *
  * @csspart toolbar - The row holding the format toggle and the copy button
  * @csspart copy-button - The copy-to-clipboard button
@@ -52,6 +54,9 @@ export class AkAttributeView extends AKElement {
 
     @property({ type: Boolean, attribute: "hide-copy" })
     public hideCopy = false;
+
+    @property({ type: Boolean, attribute: "show-count" })
+    public showCount = false;
 
     handleToggle = (ev: ToggleGroupEvent<Mode>) => {
         this.mode = ev.value;
@@ -151,7 +156,7 @@ export class AkAttributeView extends AKElement {
                         "tree",
                         () =>
                             html`<ak-structured-view
-                                show-count
+                                ?show-count=${this.showCount}
                                 .value=${this.cleanedValue}
                             ></ak-structured-view>`,
                     )

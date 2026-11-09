@@ -15,6 +15,10 @@ const meta = {
             control: { type: "select" },
             options: ["json", "yaml", "tree"],
         },
+        showCount: {
+            control: "boolean",
+            description: "In tree mode, show how many keys or items each summary hides",
+        },
     },
 } satisfies Meta;
 
@@ -26,10 +30,12 @@ const Template: Story = {
     args: {
         value: {},
         mode: "json",
+        showCount: false,
     },
     render: (args) => {
         return html` <ak-attribute-view
             mode=${args.mode}
+            ?show-count=${args.showCount}
             .value=${args.value}
         ></ak-attribute-view>`;
     },
@@ -58,6 +64,8 @@ const simpleMessage = {
 };
 
 export const Simple: Story = story({ value: simpleMessage });
+
+export const TreeWithCounts: Story = story({ value: simpleMessage, mode: "tree", showCount: true });
 
 const longMessage = {
     exception: [

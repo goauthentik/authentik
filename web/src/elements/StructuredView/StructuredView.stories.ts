@@ -26,11 +26,16 @@ A "pretty" view of structured JSON data.  Does summary/disclosure of objects in 
             control: { type: "number", min: 1 },
             description: "Max number of entries shown in a summary (`summary-maxcount`)",
         },
+        showCount: {
+            control: "boolean",
+            description: "Show how many keys or items each collapsed summary hides (`show-count`)",
+        },
     },
     args: {
         value: {},
         summaryMaxLength: 15,
         summaryMaxCount: 3,
+        showCount: false,
     },
     render: (args) => akStructuredView(args),
 } satisfies Meta<StructuredViewProps>;
@@ -123,6 +128,22 @@ export const TightSummaries: Story = {
         summaryMaxCount: 1,
         value: {
             user: { username: "akadmin", email: "admin@example.com", is_active: true },
+        },
+    },
+};
+
+export const WithCounts: Story = {
+    args: {
+        showCount: true,
+        value: {
+            user: { username: "akadmin", email: "admin@example.com", is_active: true, pk: 7 },
+            groups: ["admins"],
+            bindings: [
+                { order: 0, policy: "require-mfa" },
+                { order: 10, policy: "office-hours" },
+            ],
+            attributes: {},
+            sources: [],
         },
     },
 };

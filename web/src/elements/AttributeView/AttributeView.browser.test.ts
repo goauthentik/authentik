@@ -30,6 +30,9 @@ const display = (element: AkAttributeView) =>
 const copyButton = (element: AkAttributeView) =>
     element.renderRoot.querySelector<HTMLButtonElement>('[part="copy-button"]');
 
+const tree = (element: AkAttributeView) =>
+    display(element).querySelector<StructuredView>("ak-structured-view")!;
+
 async function treeValue(element: AkAttributeView) {
     const tree = display(element).querySelector<StructuredView>("ak-structured-view")!;
     await tree.updateComplete;
@@ -117,6 +120,35 @@ describe("ak-attribute-view: modes", () => {
     });
 });
 
+describe("ak-attribute-view: show-count", () => {
+    it("leaves counts off in the tree by default", async () => {
+        const element = await mount({ nested: { a: "1" } }, "tree");
+
+        expect(tree(element).showCount).toBe(false);
+    });
+
+    it("passes show-count to the tree", async () => {
+        const element = await mountTemplate(
+            html`<ak-attribute-view
+                mode="tree"
+                show-count
+                .value=${{ nested: { a: "1" } }}
+            ></ak-attribute-view>`,
+        );
+
+        expect(tree(element).showCount).toBe(true);
+    });
+
+    it("updates the tree when show-count changes", async () => {
+        const element = await mount({ nested: { a: "1" } }, "tree");
+
+        element.toggleAttribute("show-count", true);
+        await element.updateComplete;
+
+        expect(tree(element).showCount).toBe(true);
+    });
+});
+
 describe("ak-attribute-view: value cleaning", () => {
     it("unescapes literal \\n sequences and escaped single quotes in strings", async () => {
         const element = await mount({ trace: "first\\nsecond", quote: "it\\'s" }, "tree");
@@ -200,16 +232,17 @@ describe("ak-attribute-view: copy", () => {
 });
 
 describe("akAttributeView builder", () => {
-    it("passes value, mode and hideCopy through to the element", async () => {
+    it("passes value, mode, hideCopy and showCount through to the element", async () => {
         const value = { a: "1" };
 
         const element = await mountTemplate(
-            akAttributeView({ value, mode: "yaml", hideCopy: true, id: "built" }),
+            akAttributeView({ value, mode: "yaml", hideCopy: true, showCount: true, id: "built" }),
         );
 
         expect(element.value).toBe(value);
         expect(element.mode).toBe("yaml");
         expect(element.hideCopy).toBe(true);
+        expect(element.showCount).toBe(true);
         expect(element.id).toBe("built");
     });
 
@@ -218,5 +251,6 @@ describe("akAttributeView builder", () => {
 
         expect(element.mode).toBe("json");
         expect(element.hideCopy).toBe(false);
+        expect(element.showCount).toBe(false);
     });
 });

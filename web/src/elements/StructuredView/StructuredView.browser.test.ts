@@ -266,6 +266,45 @@ describe("ak-structured-view: accessibility", () => {
     });
 });
 
+describe("ak-structured-view: show-count", () => {
+    const countOf = (element: StructuredView, path: string) =>
+        item(element, path)?.querySelector(':scope > details > summary [part="keycount"]') ?? null;
+
+    const mountCounted = (value: JsonValue) =>
+        mountTemplate(html`<ak-structured-view show-count .value=${value}></ak-structured-view>`);
+
+    it("hides counts by default", async () => {
+        const element = await mount({ nested: { a: "1", b: "2" } });
+
+        expect(countOf(element, "nested")).toBeNull();
+    });
+
+    it.each([
+        [{ a: "1" }, "(1 key)"],
+        [{ a: "1", b: "2", c: "3", d: "4" }, "(4 keys)"],
+        [["a"], "(1 item)"],
+        [["a", "b"], "(2 items)"],
+    ])("counts every entry of %j, including ones the summary hides", async (nested, expected) => {
+        const element = await mountCounted({ nested });
+
+        expect(normalize(countOf(element, "nested")?.textContent)).toBe(expected);
+    });
+
+    it.each([[{}], [[]]])("omits the count for the empty container %j", async (nested) => {
+        const element = await mountCounted({ nested });
+
+        expect(countOf(element, "nested")).toBeNull();
+    });
+
+    it("drops the count with the summary once a branch is opened", async () => {
+        const element = await mountCounted({ nested: { a: "1" } });
+
+        await toggle(element, "nested");
+
+        expect(countOf(element, "nested")).toBeNull();
+    });
+});
+
 describe("akStructuredView builder", () => {
     it("passes the value as a property and the summary limits as attributes", async () => {
         const value = { nested: { a: "1" } };
@@ -285,5 +324,15 @@ describe("akStructuredView builder", () => {
 
         expect(element.length).toBe(15);
         expect(element.count).toBe(3);
+        expect(element.showCount).toBe(false);
+    });
+
+    it("sets show-count from showCount", async () => {
+        const element = await mountTemplate(
+            akStructuredView({ value: { nested: { a: "1" } }, showCount: true }),
+        );
+
+        expect(element.showCount).toBe(true);
+        expect(element.hasAttribute("show-count")).toBe(true);
     });
 });

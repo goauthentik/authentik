@@ -30,7 +30,7 @@ export function akStructuredView(options: StructuredViewProps) {
             .value=${value}
             summary-maxlength=${ifDefined(summaryMaxLength)}
             summary-maxcount=${ifDefined(summaryMaxCount)}
-            ?showCount=${Boolean(showCount)}
+            ?show-count=${showCount}
         ></ak-structured-view>
     `;
 }
