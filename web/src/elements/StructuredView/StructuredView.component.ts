@@ -114,6 +114,7 @@ export class StructuredView extends LitElement {
 
         const summary = entries.map(([key, value], index) => {
             const label = isArray ? nothing : html`<span part="summary-key">${key}:</span> `;
+
             return html`${label}${getSummary(value)}${index < count - 1 ? ", " : ""}`;
         });
 
@@ -141,6 +142,7 @@ export class StructuredView extends LitElement {
 
         const hasContent = count > this.count ? "…" : nothing;
         const counted = keyMesg === "" ? "" : html` ${keyMesg}`;
+
         return isArray
             ? html`[ ${summary}${hasContent} ]${counted}`
             : html`{ ${summary}${hasContent} }${counted}`;
