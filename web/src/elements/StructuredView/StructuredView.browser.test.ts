@@ -231,6 +231,67 @@ describe("ak-structured-view: summaries", () => {
     });
 });
 
+describe("ak-structured-view: summary spacing", () => {
+    /**
+     * Mount in a plain monospace font with the word-spacing token set, so widths divide into
+     * whole characters.
+     */
+    const mountSpaced = (value: JsonValue) =>
+        mountTemplate(html`<ak-structured-view
+            style="font-family: monospace; --ak-c-structured-view__summary--WordSpacing: -0.5ch"
+            .value=${value}
+        ></ak-structured-view>`);
+
+    const widthInCh = (element: StructuredView, selector: string) => {
+        const target = element.renderRoot.querySelector<HTMLElement>(selector)!;
+        const probe = target.appendChild(document.createElement("span"));
+        probe.style.cssText = "position: absolute; width: 1ch";
+        const ch = probe.getBoundingClientRect().width;
+        probe.remove();
+
+        return target.getBoundingClientRect().width / ch;
+    };
+
+    function selectedText(node: Node) {
+        const selection = getSelection()!;
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        const text = selection.toString();
+        selection.removeAllRanges();
+
+        return text;
+    }
+
+    it("narrows the spaces between summary tokens", async () => {
+        const element = await mountSpaced({ nested: { a: 1 } });
+
+        // "{ a: 1 }" is 8 characters, 3 of them spaces narrowed to 0.5ch each.
+        expect(widthInCh(element, '[part="summary"]')).toBeCloseTo(6.5, 1);
+    });
+
+    it("keeps normal spacing inside summarized keys and strings", async () => {
+        const element = await mountSpaced({ nested: { "first name": "a b" } });
+
+        expect(widthInCh(element, '[part="summary-key"]')).toBeCloseTo("first name:".length, 1);
+        expect(widthInCh(element, '[part="summary-string"]')).toBeCloseTo('"a b"'.length, 1);
+    });
+
+    it("copies a summary with ordinary spaces", async () => {
+        const element = await mountSpaced({ nested: { a: 1, b: "two" } });
+        const target = element.renderRoot.querySelector('[part="summary"]')!;
+
+        expect(selectedText(target)).toBe('{ a: 1, b: "two" }');
+    });
+
+    it("copies a leaf row with a space after the key", async () => {
+        const element = await mountSpaced({ name: "alice" });
+
+        expect(selectedText(item(element, "name")!).trim()).toBe("name: alice");
+    });
+});
+
 describe("ak-structured-view: accessibility", () => {
     it("does not give the host an ARIA role", async () => {
         const element = await mount({ a: "1" });

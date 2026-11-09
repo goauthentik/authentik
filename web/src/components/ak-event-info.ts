@@ -157,13 +157,13 @@ export class EventInfo extends AKElement {
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("Context")}</div>
                 <div class="pf-c-card__body">
-                    <ak-attribute-view .value=${this.event?.context}></ak-attribute-view>
+                    <ak-attribute-view show-count .value=${this.event?.context}></ak-attribute-view>
                 </div>
             </div>
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("User")}</div>
                 <div class="pf-c-card__body">
-                    <ak-attribute-view .value=${this.event?.user}></ak-attribute-view>
+                    <ak-attribute-view show-count .value=${this.event?.user}></ak-attribute-view>
                 </div>
             </div>
         </div>`;

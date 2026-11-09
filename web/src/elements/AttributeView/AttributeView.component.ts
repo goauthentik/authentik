@@ -25,8 +25,9 @@ type Mode = (typeof MODES)[number];
 const PJsonKey = P.union(P.string, P.number, P.symbol);
 
 /**
- * @element ak-attribute-view @summary Provides different views of structured data, switchable
- * between JSON, YAML and ak-structured-view.
+ * @element ak-attribute-view
+ * @summary Provides different views of structured data, switchable between JSON, YAML and
+ *   ak-structured-view.
  *
  * Set the value to display with the `value` property; it has no attribute.
  *

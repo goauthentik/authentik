@@ -27,10 +27,8 @@ const isJsonObject = (v: unknown): v is JsonObject =>
 const isJsonIndexable = (v: unknown): v is JsonIndexable => isJsonArray(v) || isJsonObject(v);
 const PStringable = P.union(P.string, P.number, P.boolean, P.nullish);
 const PIndexable = P.union(P.when(isJsonArray), P.when(isJsonObject));
-const noNulls = (n: unknown) => n !== null;
 const cleanerJson = (s: string) => JSON.stringify(s).replace(/^"/m, "").replace(/"$/m, "");
 const cleanerYaml = (value: string) => YAML.stringify(value).replace(/^>- *\n*/, "");
-const HS = " ";
 
 /**
  * @element ak-structured-view
@@ -48,6 +46,9 @@ const HS = " ";
  * @csspart tree-key - An entry's key: a `<span>` for scalars, the `<summary>` for objects and
  *   arrays
  * @csspart summary - The preview of a collapsed object or array
+ * @csspart summary-key - A key inside a summary entry
+ * @csspart summary-string - A (possibly truncated) string inside a summary entry
+ * @csspart keycount - The number of keys or items a summary hides (with `show-count`)
  * @csspart oneline-string - A string without line breaks
  * @csspart multiline-string - A string with line breaks, shown preformatted
  *
@@ -85,19 +86,20 @@ export class StructuredView extends LitElement {
         // Note that `P.string` comes before `stringable` to ensure that overlong strings are
         // truncated correctly.
 
-        const stringSummary = (s: string) =>
-            html`"${s.substring(0, this.length)}${s.length > this.length ? "…" : ""}"`;
+        const stringSummary = (s: string) => {
+            const shown = s.length > this.length ? `${s.substring(0, this.length)}…` : s;
+
+            return html`<span part="summary-string">"${shown}"</span>`;
+        };
 
         // prettier-ignore
         const getSummary = (node: unknown) =>
             match(node)
-                .with(P.array(), (node) => node.length === 0 ? html`[${HS}]` : html`[${HS}…${HS}]`)
+                .with(P.array(), (node) => node.length === 0 ? "[ ]" : "[ … ]")
                 .with(P.string,  (node) => stringSummary(node))
                 .with(PStringable, (node) => JSON.stringify(node))
                 .when(isJsonObject,
-                    () => Object.keys(node as JsonObject).length === 0
-                        ? html`{${HS}}`
-                        : html`{${HS}…${HS}}`,
+                    () => Object.keys(node as JsonObject).length === 0 ? "{ }" : "{ … }",
                 )
                 .otherwise(
                     () => html`<em>${msg("Unknown JSON type", {
@@ -110,16 +112,10 @@ export class StructuredView extends LitElement {
         const entries = allEntries.slice(0, this.count);
         const count = allEntries.length;
 
-        const summary = [
-            ...entries.map(([key, value], index) =>
-                [
-                    !isArray ? html`${key}:${HS}` : null,
-                    getSummary(value),
-                    index < count - 1 ? html`,${HS}` : null,
-                ].filter(noNulls),
-            ),
-            count > this.count ? "…" : null,
-        ].filter(noNulls);
+        const summary = entries.map(([key, value], index) => {
+            const label = isArray ? nothing : html`<span part="summary-key">${key}:</span> `;
+            return html`${label}${getSummary(value)}${index < count - 1 ? ", " : ""}`;
+        });
 
         const keySummaryState = {
             plural: count > 1,
@@ -128,19 +124,26 @@ export class StructuredView extends LitElement {
 
         const wr = (c: string) => html`<span part="keycount">(${c})</span>`;
 
+        // prettier-ignore
         const keyMesg =
             this.showCount && count > 0
                 ? match(keySummaryState)
-                      .with({ array: true, plural: false }, () => wr(msg(str`${count} item`)))
-                      .with({ array: true, plural: true }, () => wr(msg(str`${count} items`)))
-                      .with({ array: false, plural: false }, () => wr(msg(str`${count} key`)))
-                      .with({ array: false, plural: true }, () => wr(msg(str`${count} keys`)))
+                      .with({ array: true, plural: false }, () =>
+                          wr(msg(str`${count} item`, { id: "data-view.summary.item-count.one" })))
+                      .with({ array: true, plural: true }, () =>
+                          wr(msg(str`${count} items`, { id: "data-view.summary.item-count.other" })))
+                      .with({ array: false, plural: false }, () =>
+                          wr(msg(str`${count} key`, { id: "data-view.summary.key-count.one" })))
+                      .with({ array: false, plural: true }, () =>
+                          wr(msg(str`${count} keys`, { id: "data-view.summary.key-count.other" })))
                       .exhaustive()
                 : "";
 
+        const hasContent = count > this.count ? "…" : nothing;
+        const counted = keyMesg === "" ? "" : html` ${keyMesg}`;
         return isArray
-            ? html`[${HS}${summary}${HS}]${HS}${keyMesg}`
-            : html`{${HS}${summary}${HS}}${HS}${keyMesg}`;
+            ? html`[ ${summary}${hasContent} ]${counted}`
+            : html`{ ${summary}${hasContent} }${counted}`;
     }
 
     renderIndexable(ob: JsonObject | JsonArray, path: string): TemplateResult {
@@ -150,8 +153,7 @@ export class StructuredView extends LitElement {
 
                 if (!isJsonIndexable(value)) {
                     return html`<li part="tree-item" data-path=${nodePath}>
-                        <span part="tree-key">${key}:${HS}</span
-                        >${this.renderValue(value, nodePath)}
+                        <span part="tree-key">${key}:</span> ${this.renderValue(value, nodePath)}
                     </li>`;
                 }
 
@@ -160,7 +162,7 @@ export class StructuredView extends LitElement {
                 return html`<li part="tree-item" data-path=${nodePath}>
                     <details ?open=${open} @toggle=${(ev: Event) => this.handleToggle(value, ev)}>
                         <summary part="tree-key">
-                            ${key}:${HS}${open ? nothing : this.renderSummary(value)}
+                            ${key}:${open ? nothing : this.renderSummary(value)}
                         </summary>
                         ${open ? this.renderValue(value, nodePath) : nothing}
                     </details>

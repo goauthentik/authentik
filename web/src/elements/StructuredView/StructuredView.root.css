@@ -1,5 +1,6 @@
 :root {
     --ak-c-structured-view--FontFamily: var(--pf-global--FontFamily--monospace);
+    --ak-c-structured-view__summary--WordSpacing: -0.5ch;
     --ak-c-structured-view__toggle--Width: var(--pf-global--spacer--lg);
     --ak-c-structured-view__key--Color: inherit;
     --ak-c-structured-view__list--Color: inherit;

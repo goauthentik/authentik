@@ -53,6 +53,19 @@ export const styles = css`
         color: var(--ak-c-structured-view__key--Color);
     }
 
+    [part="summary"] {
+        /* A flex item of <summary>, so a space character before it would collapse. */
+        margin-inline-start: 1ch;
+        word-spacing: var(--ak-c-structured-view__summary--WordSpacing);
+    }
+
+    /* Narrow the punctuation spacing only; keys, strings and the count keep their own. */
+    [part="summary-key"],
+    [part="summary-string"],
+    [part="keycount"] {
+        word-spacing: normal;
+    }
+
     [part="tree-item"] {
         white-space: nowrap;
     }
