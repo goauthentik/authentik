@@ -1,5 +1,8 @@
+import { akAttributeView, type AttributeViewProps } from "./AttributeView/AttributeView.builder";
 import { AkAttributeView } from "./AttributeView/AttributeView.component";
-export { AkAttributeView };
+
+export { akAttributeView, AkAttributeView };
+export type { AttributeViewProps };
 
 window.customElements.define("ak-attribute-view", AkAttributeView);
 

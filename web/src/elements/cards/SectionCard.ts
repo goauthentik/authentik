@@ -6,6 +6,7 @@ import { SlotController } from "@patternfly/pfe-core/controllers/slot-controller
 
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 /**
  * @element ak-section-card
@@ -39,7 +40,11 @@ export class SectionCard extends AKElement {
         const hideTitle = !this.label || this.label.trim() === "";
         const hideDesc = !this.slots.hasSlotted("description");
 
-        return html`<section class="pf-c-card" aria-labelledby="card-title" part="card">
+        return html`<section
+            class="pf-c-card"
+            aria-labelledby=${ifDefined(hideTitle ? undefined : "card-title")}
+            part="card"
+        >
             <div class="pf-c-card__header" part="card-header" ?hidden=${hideTitle}>
                 <h3 class="pf-c-card__title" id="card-title" part="card-title">${this.label}</h3>
             </div>

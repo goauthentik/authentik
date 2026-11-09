@@ -2,6 +2,7 @@ import "#admin/events/EventMap";
 import "#admin/events/EventVolumeChart";
 import "#admin/reports/ExportButton";
 import "#components/ak-event-info";
+import "#elements/Label";
 import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -23,7 +24,7 @@ import { EventGeo, renderEventUser } from "#admin/events/utils";
 import { Event, EventsApi, EventsEventsExportCreateRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-event-list")
@@ -104,7 +105,18 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
 
     row(item: EventWithContext): SlottedTemplateResult[] {
         return [
-            html`<div>${actionToLabel(item.action)}</div>
+            html`<div>
+                    ${actionToLabel(item.action)}
+                    ${
+                        item.context.dry_run === true
+                            ? html`<ak-label color="pf-m-blue" icon="fa-vial">
+                                  ${msg("Dry-run", {
+                                      id: "policies.bindings.dry-run.label",
+                                  })}
+                              </ak-label>`
+                            : nothing
+                    }
+                </div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
             Timestamp(item.created),

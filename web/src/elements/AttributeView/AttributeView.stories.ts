@@ -13,7 +13,7 @@ const meta = {
         value: { control: "object" },
         mode: {
             control: { type: "select" },
-            options: ["json", "yaml"],
+            options: ["json", "yaml", "tree"],
         },
     },
 } satisfies Meta;

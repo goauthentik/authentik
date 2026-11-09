@@ -86,7 +86,7 @@ export class TreeView extends LitElement {
         // correctly.
 
         const stringSummary = (s: string) =>
-            html`"${s.substring(0, length)}${s.length > this.length ? "…" : ""}"`;
+            html`"${s.substring(0, this.length)}${s.length > this.length ? "…" : ""}"`;
 
         // prettier-ignore
         const getSummary = (node: unknown) =>
@@ -102,18 +102,18 @@ export class TreeView extends LitElement {
                 .otherwise(() => html`<em>Unknown JSON type</em>`);
 
         const isArray = Array.isArray(node);
-        const allKeys = Object.keys(node);
-        const keys = allKeys.slice(0, this.count);
+        const allEntries = Object.entries(node);
+        const entries = allEntries.slice(0, this.count);
 
         const summary = [
-            ...keys.map((key, index) =>
+            ...entries.map(([key, value], index) =>
                 [
                     !isArray ? html`${key}:${HS}` : null,
-                    getSummary(node),
-                    index <= allKeys.length ? html`,${HS}` : null,
+                    getSummary(value),
+                    index < allEntries.length - 1 ? html`,${HS}` : null,
                 ].filter(noNulls),
             ),
-            allKeys.length > this.count ? "…" : null,
+            allEntries.length > this.count ? "…" : null,
         ].filter(noNulls);
 
         return isArray ? html`[${HS}${summary}${HS}]` : html`{${HS}${summary}${HS}}`;
@@ -171,7 +171,7 @@ export class TreeView extends LitElement {
         // prettier-ignore
         return match<unknown>(value)
             .with(P.string, (v) => this.renderString(v, path))
-            .with(PStringable, (v) => html`"${JSON.stringify(v).replace(/^"/, "").replace(/"$/, "")}"`)
+            .with(PStringable, (v) => String(v))
             .with(PIndexable, (v: JsonArray | JsonObject) => this.renderIndexable(v, path))
             .otherwise(() => html`<em>${msg("Unrepresentable")}</em>`);
     }

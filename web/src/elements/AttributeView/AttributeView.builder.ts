@@ -1,13 +1,13 @@
 import { type ElementRest } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 
 import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export type AttributeViewProps = ElementRest & {
     value: unknown;
-    mode?: string;
+    mode?: "json" | "yaml" | "tree";
     hideCopy?: boolean;
 };
 
@@ -16,7 +16,7 @@ export type AttributeViewProps = ElementRest & {
  *   element
  * @summary Helper function to create a AttributeView component programmatically
  *
- * @see {@link AttributeView} - The underlying web component
+ * @see {@link AkAttributeView} - The underlying web component
  */
 export function akAttributeView(options: AttributeViewProps) {
     const { value, mode, hideCopy, ...rest } = options;
@@ -26,7 +26,7 @@ export function akAttributeView(options: AttributeViewProps) {
             ${spread(rest)}
             .value=${value}
             mode=${ifDefined(mode)}
-            ?hideCopy=${hideCopy}
+            ?hide-copy=${hideCopy}
         ></ak-attribute-view>
     `;
 }
