@@ -21,7 +21,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import FlowStageBinding
+from authentik.flows.models import Flow, FlowAuthenticationRequirement, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
@@ -41,6 +41,15 @@ from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD
+
+# Every way a client can force a login. The last one is the workaround clients used
+# while prompt=login on its own was broken (#18507).
+FORCED_LOGIN_PARAMS = [
+    {"prompt": "login"},
+    {"max_age": "0"},
+    {"prompt": "login", "max_age": "0"},
+    {"prompt": "login", "max_age": "30"},
+]
 
 
 class TestAuthorize(OAuthTestCase):
@@ -554,20 +563,27 @@ class TestAuthorize(OAuthTestCase):
         """A forced-login request starting logged out only needs one login."""
         auth_flow_slug = self._create_reauth_provider()
         user = create_test_admin_user()
-        for params in [{"prompt": "login"}, {"max_age": "0"}, {"prompt": "login", "max_age": "0"}]:
-            with self.subTest(params=params):
-                self.client.logout()
-                response = self._reauth_request(**params)
-                self.assertIn(auth_flow_slug, response.url)
-                self.client.force_login(user)
-                response = self._reauth_request(**params)
-                self.assertRegex(response.url, r"^foo://localhost\?code=")
+        # A second redirect would reach the authentication flow as an authenticated user,
+        # which a flow that requires an unauthenticated user answers with a 404.
+        for requirement in [
+            FlowAuthenticationRequirement.NONE,
+            FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        ]:
+            Flow.objects.filter(slug=auth_flow_slug).update(authentication=requirement)
+            for params in FORCED_LOGIN_PARAMS:
+                with self.subTest(requirement=requirement, params=params):
+                    self.client.logout()
+                    response = self._reauth_request(**params)
+                    self.assertIn(auth_flow_slug, response.url)
+                    self.client.force_login(user)
+                    response = self._reauth_request(**params)
+                    self.assertRegex(response.url, r"^foo://localhost\?code=")
 
     def test_reauth_repeated_requests(self):
         """Every forced-login transaction requires a new login and fresh auth_time."""
         auth_flow_slug = self._create_reauth_provider()
         user = create_test_admin_user()
-        for params in [{"prompt": "login"}, {"max_age": "0"}, {"prompt": "login", "max_age": "0"}]:
+        for params in FORCED_LOGIN_PARAMS:
             with self.subTest(params=params), freeze_time(now()) as clock:
                 self.client.logout()
                 self.client.force_login(user)
@@ -586,6 +602,24 @@ class TestAuthorize(OAuthTestCase):
                     self.assertEqual(code.auth_time, now())
                     self.assertGreater(code.auth_time, previous_auth_time)
                     previous_auth_time = code.auth_time
+
+    def test_reauth_switch_user(self):
+        """Signing in as a different user completes the forced login."""
+        auth_flow_slug = self._create_reauth_provider()
+        for params in FORCED_LOGIN_PARAMS:
+            with self.subTest(params=params):
+                first, second = create_test_admin_user(), create_test_admin_user()
+                self.client.logout()
+                self.client.force_login(first)
+                self.assertIn(auth_flow_slug, self._reauth_request(**params).url)
+                # The pending login must survive the session rotation on login.
+                self.client.force_login(second)
+                response = self._reauth_request(**params)
+                self.assertRegex(response.url, r"^foo://localhost\?code=")
+                code = AuthorizationCode.objects.get(
+                    code=parse_qs(urlparse(response.url).query)["code"][0]
+                )
+                self.assertEqual(code.user, second)
 
     def test_reauth_different_request(self):
         """A pending login for one transaction cannot satisfy a different transaction."""
@@ -612,7 +646,13 @@ class TestAuthorize(OAuthTestCase):
         )
         for state in ["first", "second"]:
             with self.subTest(state=state):
-                response = self._reauth_request(prompt="login", state=state)
+                # The request from the original report, encoded the way browsers send it.
+                response = self.client.get(
+                    reverse("authentik_providers_oauth2:authorize")
+                    + "?client_id=test&scope=openid%20email&response_type=code"
+                    + f"&redirect_uri=foo%3A%2F%2Flocalhost&state={state}&prompt=login"
+                    + f"&code_challenge={generate_id(43)}&code_challenge_method=S256"
+                )
                 self.assertIn("/default-authentication-flow/", response.url)
                 query = urlparse(response.url).query
                 next_url = parse_qs(query)["next"][0]
