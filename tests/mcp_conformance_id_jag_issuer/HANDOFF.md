@@ -2,6 +2,20 @@
 
 I cannot create issues or PRs, but I can help you write the content for them.
 
+## Linear stack rebase (2026-11-08)
+
+- Main base: `5d2488a26ea869c8abc033f6be8272fb898ec949`.
+- Rebased issuance head: `cc1d0e78a70fea7e04c1528c0641ed6befad7d78`; acceptance-tested conformance head: `dfa5504eb6b65d062d1826d056980dbe13d6e998`.
+- The implementation and prior conflict resolutions are consolidated in `85cbcaf1ec`, followed by the existing OpenID screenshot fix. The issuance tree exactly matches the preserved feature tree integrated with current main. Both branches now have linear history above main; all eleven conformance commits replayed with identical patches (`git range-diff`). Its diff against issuance is test/CI/documentation only.
+- Backups: `backup/id-jag-before-rebase-20261108` (`a49335a4ac8cbc18120d409888117a9bd883417a`) and `backup/id-jag-tests-before-rebase-20261108` (`13965fb70004e08922b9426b6e3534dcb110908c`). These retain the full original history.
+- Fresh local acceptance: **21 PASS / 0 FAIL / 0 ERROR / 0 BLOCKED**, with **17 fixture self-checks passed**. [Report](results/rebase-20261108/report.md), [JSON](results/rebase-20261108/report.json), [JUnit](results/rebase-20261108/checks.junit.xml). Disposable PostgreSQL and isolated settings only; no developer database or local.env.yml.
+- Regression validation: **417 OAuth2/agent tests passed** in 228.31 seconds via `make test authentik/providers/oauth2 authentik/enterprise/agents`. `makemigrations --check --dry-run` found no changes. Strict mypy passed on the exchange/token views and conformance suite; Black/Ruff, workflow trigger assertions, shell syntax, and whitespace checks passed. Frontend `npm run build:types --prefix web` passed using Node 24.22.2.
+- `make migrate` and `make gen-build` passed against the disposable schema-check database, producing no generated-file changes; all four screenshot regression tests passed.
+- Acceptance and regression diagnostics contain no compact JWTs or private-key blocks. Schema validation uses `make migrate` for authentik system tables before `make gen-build`, in another disposable database. Initial schema attempts against an unmigrated database and bare Django migration setup were harness setup failures, not feature failures.
+- Logs: `/tmp/idjag-rebase-20261108-acceptance.log`, `/tmp/idjag-rebase-20261108-regression.log`, `/tmp/idjag-rebase-20261108-types.log`, `/tmp/idjag-rebase-20261108-mypy.log`, `/tmp/idjag-rebase-20261108-schema-final.log`.
+- Before this rebase, hosted OpenID and ID-JAG conformance and Codecov checks passed on both PRs. The two failing sidebar browser tests also failed on main according to Codecov; the three new upstream commits do not change that sidebar implementation. This rebase does not claim to fix those unrelated UI failures. New hosted checks must be evaluated on the rebased heads.
+- Reproduce acceptance: `UV_NO_SYNC=1 UV_CACHE_DIR=/tmp/id-jag-uv-cache tests/mcp_conformance_id_jag_issuer/run-local.sh`.
+
 ## Stack update and OIDC screenshot repair
 
 - The GitHub rebase-stack attempt left both remote heads unchanged and no local rebase in progress. The existing branches were mergeable; the stack was updated through normal merges to retain earlier conflict resolutions.
