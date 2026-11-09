@@ -36,6 +36,7 @@ from authentik.crypto.models import (
     KeyType,
     _load_certificate,
     _load_private_key,
+    _load_public_key,
     generate_key_id,
     generate_key_id_legacy,
 )
@@ -96,6 +97,24 @@ class TestCrypto(APITestCase):
             self.assertEqual(loader.call_count, 1)
             self.assertIsNot(first.private_key, other_keypair.private_key)
             self.assertEqual(loader.call_count, 2)
+
+    def test_model_public_key_cached_across_instances(self):
+        """Test model public key is cached across model instances and loaded without the RSA key
+        check"""
+        keypair = create_test_cert()
+        _load_public_key.cache_clear()
+        self.addCleanup(_load_public_key.cache_clear)
+
+        with patch(
+            "authentik.crypto.models.load_pem_private_key",
+            wraps=cryptography_load_pem_private_key,
+        ) as loader:
+            first = CertificateKeyPair.objects.get(pk=keypair.pk)
+            second = CertificateKeyPair.objects.get(pk=keypair.pk)
+
+            self.assertIs(first.public_key, second.public_key)
+            self.assertEqual(loader.call_count, 1)
+            self.assertTrue(loader.call_args.kwargs["unsafe_skip_rsa_key_validation"])
 
     def test_serializer(self):
         """Test API Validation"""

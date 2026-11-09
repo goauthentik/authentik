@@ -7,6 +7,8 @@ from unittest.mock import patch
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.backends.openssl.backend import backend
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateNumbers
+from cryptography.hazmat.primitives.serialization import Encoding, NoEncryption, PrivateFormat
 from cryptography.x509 import load_der_x509_certificate
 from django.urls.base import reverse
 from jwt import PyJWKSet, decode
@@ -92,6 +94,46 @@ class TestJWKS(OAuthTestCase):
                 RSAAlgorithm.from_jwk(key).public_numbers(),
                 keypair.private_key.public_key().public_numbers(),
             )
+
+    def test_invalid_rsa_key(self):
+        """Test an RSA key that fails validation is still published but can't sign"""
+        signing_key = create_test_cert()
+        numbers = signing_key.private_key.private_numbers()
+        # A wrong CRT coefficient fails OpenSSL's RSA key check; the API would reject this key, so
+        # store it directly
+        invalid = RSAPrivateNumbers(
+            numbers.p,
+            numbers.q,
+            numbers.d,
+            numbers.dmp1,
+            numbers.dmq1,
+            (numbers.iqmp + 1) % numbers.p,
+            numbers.public_numbers,
+        )
+        signing_key.key_data = (
+            invalid.private_key(unsafe_skip_rsa_key_validation=True)
+            .private_bytes(Encoding.PEM, PrivateFormat.PKCS8, NoEncryption())
+            .decode()
+        )
+        signing_key.save()
+        signing_key = CertificateKeyPair.objects.get(pk=signing_key.pk)
+        self.assertIsNone(signing_key.private_key)
+        self.assertEqual(signing_key.public_key.public_numbers(), numbers.public_numbers)
+
+        provider = OAuth2Provider.objects.create(
+            name="test",
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=signing_key,
+        )
+        app = Application.objects.create(name="test", slug="test", provider=provider)
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
+        )
+        [key] = json.loads(response.content.decode())["keys"]
+        self.assertEqual(key["alg"], "RS256")
+        self.assertEqual(RSAAlgorithm.from_jwk(key).public_numbers(), numbers.public_numbers)
 
     def test_hs256(self):
         """Test JWKS request with HS256"""

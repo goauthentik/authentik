@@ -24,7 +24,6 @@ from authentik.common.oauth.constants import (
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.providers.oauth2.dpop import DPOP_SUPPORTED_ALGS
 from authentik.providers.oauth2.models import (
-    JWTAlgorithms,
     OAuth2DynamicClientRegistration,
     OAuth2Provider,
     ResponseMode,
@@ -52,11 +51,6 @@ class ProviderInfoView(View):
         )
         if SCOPE_OPENID not in scopes:
             scopes.append(SCOPE_OPENID)
-        supported_alg = (
-            JWTAlgorithms.from_public_key(provider.signing_key.public_key)
-            if provider.signing_key
-            else JWTAlgorithms.HS256
-        )
         config = {
             "issuer": provider.get_issuer(self.request),
             "authorization_endpoint": self.request.build_absolute_uri(
@@ -114,7 +108,7 @@ class ProviderInfoView(View):
                 GRANT_TYPE_PASSWORD,
                 GRANT_TYPE_DEVICE_CODE,
             ],
-            "id_token_signing_alg_values_supported": [supported_alg],
+            "id_token_signing_alg_values_supported": [provider.jwt_alg],
             # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes
             "subject_types_supported": ["public"],
             "token_endpoint_auth_methods_supported": [
@@ -130,7 +124,7 @@ class ProviderInfoView(View):
             "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
             "dpop_signing_alg_values_supported": sorted(DPOP_SUPPORTED_ALGS),
         }
-        if provider.encryption_key:
+        if provider.encryption_key_id:
             config["id_token_encryption_alg_values_supported"] = ["RSA-OAEP-256"]
             config["id_token_encryption_enc_values_supported"] = ["A256CBC-HS512"]
         try:
@@ -197,7 +191,7 @@ class ProviderInfoView(View):
         self.provider: OAuth2Provider = get_object_or_404(
             # Not dynamic client registration: its join and the LIMIT get() adds take Postgres
             # longer to plan than a separate query takes to run
-            OAuth2Provider.objects.select_related("application", "signing_key", "encryption_key"),
+            OAuth2Provider.objects.select_related("application", "signing_key"),
             application__slug=application_slug,
         )
         response = super().dispatch(request, *args, **kwargs)

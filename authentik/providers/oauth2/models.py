@@ -375,6 +375,13 @@ class OAuth2Provider(WebfingerProvider, Provider):
         private_key = key.private_key
         return private_key, JWTAlgorithms.from_private_key(private_key)
 
+    @cached_property
+    def jwt_alg(self) -> str:
+        """Get the signing algorithm without loading the private key for signing"""
+        if not self.signing_key:
+            return JWTAlgorithms.HS256
+        return JWTAlgorithms.from_public_key(self.signing_key.public_key)
+
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""
         if self.issuer_mode == IssuerMode.GLOBAL:
