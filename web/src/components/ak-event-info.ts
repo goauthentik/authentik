@@ -23,6 +23,8 @@ import { renderDescriptionList } from "#components/DescriptionList";
 
 import { EventActions, FlowsApi } from "@goauthentik/api";
 
+import { match, P } from "ts-pattern";
+
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -192,57 +194,36 @@ export class EventInfo extends AKElement {
             return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
         }
 
-        switch (this.event?.action) {
-            case EventActions.ModelCreated:
-            case EventActions.ModelUpdated:
-            case EventActions.ModelDeleted:
-                return this.renderModelChanged();
+        const EventModelChanged = P.union(
+            EventActions.ModelCreated,
+            EventActions.ModelUpdated,
+            EventActions.ModelDeleted,
+        );
 
-            case EventActions.AuthorizeApplication:
-                return this.renderAuthorizeApplication();
+        const EventConfigurationWarning = P.union(
+            EventActions.ConfigurationWarning,
+            EventActions.ConfigurationError,
+        );
 
-            case EventActions.EmailSent:
-                return this.renderEmailSent();
-
-            case EventActions.SecretView:
-                return this.renderSecretView();
-
-            case EventActions.SystemException:
-                return this.renderSystemException();
-
-            case EventActions.PropertyMappingException:
-                return this.renderPropertyMappingException();
-
-            case EventActions.PolicyException:
-                return this.renderPolicyException();
-
-            case EventActions.PolicyExecution:
-                return this.renderPolicyExecution();
-
-            case EventActions.ConfigurationWarning:
-            case EventActions.ConfigurationError:
-                return this.renderConfigurationEvent();
-
-            case EventActions.UpdateAvailable:
-                return this.renderUpdateAvailable();
-
+        // prettier-ignore
+        return match(this.event?.action)
+            .with(EventModelChanged, () => this.renderModelChanged())
+            .with(EventActions.AuthorizeApplication, () => this.renderAuthorizeApplication())
+            .with(EventActions.EmailSent, () => this.renderEmailSent())
+            .with(EventActions.SecretView, () => this.renderSecretView())
+            .with(EventActions.SystemException, () => this.renderSystemException())
+            .with(EventActions.PropertyMappingException, () => this.renderPropertyMappingException())
+            .with(EventActions.PolicyException, () => this.renderPolicyException())
+            .with(EventActions.PolicyExecution, () => this.renderPolicyExecution())
+            .with(EventConfigurationWarning, () => this.renderConfigurationEvent())
+            .with(EventActions.UpdateAvailable, () => this.renderUpdateAvailable())
             // Action types which typically don't record any extra context.
             // If context is not empty, we fall to the default response.
-            case EventActions.Login:
-                return this.renderLogin();
-
-            case EventActions.LoginFailed:
-                return this.renderLoginFailed();
-
-            case EventActions.Logout:
-                return this.renderLogout();
-
-            case EventActions.SystemTaskException:
-                return this.renderSystemTaskException();
-
-            default:
-                return this.renderDefaultResponse();
-        }
+            .with(EventActions.Login, () => this.renderLogin())
+            .with(EventActions.LoginFailed, () => this.renderLoginFailed())
+            .with(EventActions.Logout, () => this.renderLogout())
+            .with(EventActions.SystemTaskException, () => this.renderSystemTaskException())
+            .otherwise(() => this.renderDefaultResponse());
     }
 
     renderModelChanged() {
