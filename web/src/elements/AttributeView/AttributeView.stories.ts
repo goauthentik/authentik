@@ -233,3 +233,5 @@ const longMessage = {
 };
 
 export const Long: Story = story({ value: longMessage });
+
+export const LongWithCounts: Story = story({ value: longMessage, mode: "tree", showCount: true });
