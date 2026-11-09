@@ -8,7 +8,7 @@ import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { html, LitElement, type TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 
 // string, number, object, array, true, false, null
@@ -36,6 +36,7 @@ const PIndexable = P.union(P.when(isJsonArray), P.when(isJsonObject));
 const noNulls = (n: unknown) => n !== null;
 const cleanerJson = (s: string) => JSON.stringify(s).replace(/^"/m, "").replace(/"$/m, "");
 const cleanerYaml = (value: string) => YAML.stringify(value).replace(/^>- *\n*/, "");
+const HS = " ";
 
 export class TreeView extends LitElement {
     static readonly styles = [Styles];
@@ -85,18 +86,18 @@ export class TreeView extends LitElement {
         // correctly.
 
         const stringSummary = (s: string) =>
-            html`"${s.substring(0, length)}${s.length > this.length ? "..." : ""}"`;
+            html`"${s.substring(0, length)}${s.length > this.length ? "…" : ""}"`;
 
         // prettier-ignore
         const getSummary = (node: unknown) =>
             match(node)
-                .with(P.array(), (node) => node.length === 0 ? html`[&nbsp;]` : html`[&nbsp;...&nbsp;]`)
+                .with(P.array(), (node) => node.length === 0 ? html`[${HS}]` : html`[${HS}…${HS}]`)
                 .with(P.string,  (node) => stringSummary(node))
                 .with(PStringable, (node) => JSON.stringify(node))
                 .when(isJsonObject,
                     () => Object.keys(node as JsonObject).length === 0
-                        ? html`{&nbsp;}`
-                        : html`{&nbsp;...&nbsp;}`,
+                        ? html`{${HS}}`
+                        : html`{${HS}…${HS}}`,
                 )
                 .otherwise(() => html`<em>Unknown JSON type</em>`);
 
@@ -107,15 +108,15 @@ export class TreeView extends LitElement {
         const summary = [
             ...keys.map((key, index) =>
                 [
-                    !isArray ? html`${key}:&nbsp;` : null,
+                    !isArray ? html`${key}:${HS}` : null,
                     getSummary(node),
-                    index <= allKeys.length ? html`,&nbsp;` : null,
+                    index <= allKeys.length ? html`,${HS}` : null,
                 ].filter(noNulls),
             ),
-            allKeys.length > this.count ? "..." : null,
+            allKeys.length > this.count ? "…" : null,
         ].filter(noNulls);
 
-        return isArray ? html`[&nbsp;${summary}&nbsp;]` : html`{&nbsp;${summary}&nbsp;}`;
+        return isArray ? html`[${HS}${summary}${HS}]` : html`{${HS}${summary}${HS}}`;
     }
 
     renderIndexable(ob: JsonObject | JsonArray, path: string): TemplateResult {
@@ -141,7 +142,7 @@ export class TreeView extends LitElement {
                             class=${classes}
                             @click=${scalar ? null : this.handleClick}
                         >
-                            ${key}:&nbsp;
+                            ${key}:${HS}
                             ${when(Boolean(isJsonIndexable(value) && !expanded), () =>
                                 this.renderSummary(value as JsonIndexable),
                             )}
@@ -159,6 +160,7 @@ export class TreeView extends LitElement {
 
     renderString(value: string, path = "") {
         const width = getWidthInCh(this);
+
         // prettier-ignore
         return value.includes("\n") || value.length > width
             ? html`<pre part="multiline-string">${cleanerYaml(value)}</pre>`

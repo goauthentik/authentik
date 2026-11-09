@@ -1,4 +1,6 @@
 import "../ak-attribute-view";
+import type { AttributeViewProps } from "./AttributeView.builder";
+
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
 
 import { html } from "lit";
@@ -37,7 +39,7 @@ export const Default: Story = {
     ...Template,
 };
 
-const story = (args: AttributesProps = {}, value?: unknown): Story => ({
+const story = (args: AttributeViewProps, value?: unknown): Story => ({
     ...Template,
     ...(value ? { value } : {}),
     args: {

@@ -26,7 +26,6 @@ import { EventActions, FlowsApi } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { map } from "lit/directives/map.js";
 import { until } from "lit/directives/until.js";
 
 // TODO: Settle these types. It's too hard to make sense of what we're expecting here.
