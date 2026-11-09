@@ -3,6 +3,7 @@ package ldap
 import (
 	"net"
 	"time"
+	"fmt"
 
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
@@ -78,4 +79,55 @@ func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchRes
 		},
 		Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess,
 	}, nil
+}
+
+// fully escapes the bytes in string using the "\00" style escape sequence
+// as documented https://learn.microsoft.com/en-us/windows/win32/ad/creating-a-query-filter
+func escapeString(s string) string {
+	b := []byte(s)
+	r := ""
+	for i := range b {
+		r += fmt.Sprintf("\\%02x", b[i])
+	}
+	return r
+}
+
+func (ls *LDAPServer) Compare(boundDN string, req ldap.CompareRequest, conn net.Conn) (ldap.LDAPResultCode, error) {
+	// search for entry referred to by req.DN
+	searchReq := ldap.NewSearchRequest(req.DN, ldap.ScopeBaseObject, ldap.DerefAlways, 0, 0, true, "(objectClass=*)", []string{}, []ldap.Control{})
+	searchResult, err := ls.Search(boundDN, *searchReq, conn)
+	if err != nil {
+		return searchResult.ResultCode, err
+	}
+	if len(searchResult.Entries) != 1 {
+		return ldap.LDAPResultNoSuchObject, nil
+	}
+
+	// transform assertions into a filter string
+	// TODO: Create the ber.Packet directly, instead of relying so heavily on ldap.CompileFilter?
+	searchFilter := "(&"
+	for _, ava := range req.AVA {
+		searchFilter += "("
+		searchFilter += escapeString(ava.AttributeDesc)
+		searchFilter += "="
+		searchFilter += escapeString(ava.AssertionValue)
+		searchFilter += ")"
+	}
+	searchFilter += ")"
+
+	// compile & apply filter
+	compiledFilter, err := ldap.CompileFilter(searchFilter)
+	if err != nil {
+		return ldap.LDAPResultOperationsError, err
+	}
+	equal, resultCode := ldap.ServerApplyFilter(compiledFilter, searchResult.Entries[0])
+	if resultCode != ldap.LDAPResultSuccess {
+		return resultCode, nil
+	}
+
+	if equal {
+		return ldap.LDAPResultCompareTrue, nil
+	}
+
+	return ldap.LDAPResultCompareFalse, nil
 }
