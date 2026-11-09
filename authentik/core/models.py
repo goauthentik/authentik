@@ -2,6 +2,7 @@
 
 import re
 import traceback
+from collections.abc import Callable
 from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
@@ -743,10 +744,15 @@ class ApplicationQuerySet(QuerySet):
 
         The providers come from a second query rather than a join: selecting every provider
         subclass, and the applications related to each, through the application query made a
-        statement of about 70 joins that Postgres took over 100ms to plan."""
-        return self.prefetch_related(
-            Prefetch("provider", queryset=Provider.objects.select_subclasses())
-        )
+        statement of about 70 joins that Postgres took over 100ms to plan.
+
+        The provider is prefetched before any other lookup, so lookups through it such as
+        `provider__property_mappings` work on the concrete providers whether they were added
+        before or after, and calling this again adds nothing."""
+        provider = Prefetch("provider", queryset=Provider.objects.select_subclasses())
+        # Prefetches are equal when they prefetch to the same attribute
+        lookups = [lookup for lookup in self._prefetch_related_lookups if lookup != provider]
+        return self.prefetch_related(None).prefetch_related(provider, *lookups)
 
 
 class Application(RequestableModel, SerializerModel, PolicyBindingModel):
@@ -808,12 +814,15 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).themed_urls(self.meta_icon)
 
-    def get_launch_url(self, user: User | None = None, user_data: dict | None = None) -> str | None:
+    def get_launch_url(
+        self, user: User | None = None, user_data: Callable[[], dict] | None = None
+    ) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider.
 
         Args:
-            user: User instance for formatting the URL
-            user_data: Pre-serialized user data to avoid re-serialization (performance optimization)
+            user: User whose data fills the URL's `%(name)s` placeholders
+            user_data: Returns `user` serialized, for a caller that formats many URLs for the
+                same user. Called only for a URL with placeholders.
         """
         from authentik.core.api.users import UserSerializer
 
@@ -822,16 +831,18 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
             url = self.meta_launch_url
         elif provider := self.get_provider():
             url = provider.launch_url
-        if user and url:
-            try:
-                # Use pre-serialized data if available, otherwise serialize now
-                if user_data is None:
-                    user_data = UserSerializer(instance=user).data
-                return url % user_data
-            except Exception as exc:  # noqa
-                LOGGER.warning("Failed to format launch url", exc=exc)
-                return url
-        return url
+        # Serializing the user queries their groups, roles and avatar, so it happens only for a
+        # URL with placeholders
+        if not user or not url or "%(" not in url:
+            return url
+        # Escape every `%` that is neither a placeholder nor `%%`, such as percent-encoding, so
+        # it is kept as is instead of being filled with the whole user
+        template = re.sub(r"(%%|%\()|%", lambda match: match.group(1) or "%%", url)
+        try:
+            return template % (user_data() if user_data else UserSerializer(instance=user).data)
+        except Exception as exc:  # noqa
+            LOGGER.warning("Failed to format launch url", exc=exc)
+            return url
 
     def get_provider(self) -> Provider | None:
         """Get casted provider instance. Needs Application queryset with_provider"""
