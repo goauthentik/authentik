@@ -121,7 +121,7 @@ dev = [
   "types-docker==7.2.0.20261006",
   "types-jwcrypto==1.6.1.20260928",
   "types-ldap3==2.9.13.20260827",
-  "types-requests==2.33.0.20261006",
+  "types-requests==2.33.0.20261030",
   "types-zxcvbn==4.5.0.20260518",
 ]
 
