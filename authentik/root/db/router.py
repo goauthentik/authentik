@@ -31,6 +31,16 @@ class FailoverRouter:
         # entire consistent point-in-time view that a transaction provides).
         if connections[DEFAULT_DB_ALIAS].in_atomic_block:
             return DEFAULT_DB_ALIAS
+        # Read an instance's related objects (a prefetch, a related object, refresh_from_db)
+        # from the database the instance came from. Replicas lag by different amounts, so another
+        # one may not have the related rows yet, and an instance that was saved should see its
+        # own writes.
+        instance = hints.get("instance")
+        if instance is not None and (
+            instance._state.db == DEFAULT_DB_ALIAS
+            or instance._state.db in self.read_replica_aliases
+        ):
+            return instance._state.db
         return choice(self.read_replica_aliases)  # nosec
 
     def db_for_write(self, model, **hints):
