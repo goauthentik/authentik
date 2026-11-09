@@ -1,5 +1,6 @@
 """authentik access helper classes"""
 
+from hashlib import sha256
 from typing import Any
 
 from django.contrib import messages
@@ -11,6 +12,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, Provider, User
+from authentik.events.signals import get_login_event
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import (
@@ -29,6 +31,8 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
+
+SESSION_KEY_FORCED_LOGIN = "authentik/policies/forced_login"
 
 
 class RequestValidationError(TracingIgnoredException):
@@ -153,3 +157,42 @@ class PolicyAccessView(AccessMixin, View):
             for message in result.messages:
                 messages.error(self.request, message)
         return result
+
+
+class ForcedLoginAccessView(PolicyAccessView):
+    """Access view for requests that can require a new login regardless of an existing
+    session, such as OAuth2 `prompt=login` and SAML `ForceAuthn`. One new login completes
+    a request, and cannot complete any other request."""
+
+    def get_forced_login_key(self) -> str:
+        """Identify this request, so that a login for one request cannot complete another."""
+        return self.request.get_full_path()
+
+    def _forced_login_key_digest(self) -> str:
+        return sha256(self.get_forced_login_key().encode()).hexdigest()
+
+    def handle_no_permission(self) -> HttpResponse:
+        # Record the current login before every authentication redirect, including the
+        # initial redirect for an anonymous user in dispatch().
+        login_event = get_login_event(self.request)
+        response = super().handle_no_permission()
+        self.request.session[SESSION_KEY_FORCED_LOGIN] = {
+            "request": self._forced_login_key_digest(),
+            "login_uid": str(login_event.pk) if login_event else None,
+        }
+        return response
+
+    def check_forced_login(self, required: bool) -> HttpResponse | None:
+        """Redirect to authentication if `required` and the user hasn't logged in again for
+        this request yet, otherwise return None to let the request proceed."""
+        if required:
+            pending = self.request.session.get(SESSION_KEY_FORCED_LOGIN, {})
+            login_event = get_login_event(self.request)
+            login_uid = str(login_event.pk) if login_event else None
+            # No login started for this request, or no new login happened since.
+            same_request = pending.get("request") == self._forced_login_key_digest()
+            if not same_request or login_uid == pending.get("login_uid"):
+                return self.handle_no_permission()
+        # A completed login must not satisfy later requests.
+        self.request.session.pop(SESSION_KEY_FORCED_LOGIN, None)
+        return None
