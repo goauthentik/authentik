@@ -1,19 +1,17 @@
-import "../ak-tree-view";
-import { akTreeView, type TreeViewProps } from "../ak-tree-view";
+import "../ak-structured-view";
+import { akStructuredView, type StructuredViewProps } from "../ak-structured-view";
 
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
 
 const meta = {
-    title: "Elements / <ak-tree-view>",
-    component: "ak-tree-view",
+    title: "Elements / <ak-structured-view>",
+    component: "ak-structured-view",
     tags: ["autodocs"],
     parameters: {
         docs: {
             description: {
                 component: `
-A collapsible, read-only view of a JSON value. Objects and arrays start collapsed and show a short
-summary; click a key to expand it. Strings that contain newlines, or that are wider than the
-component, are shown as preformatted blocks.
+A "pretty" view of structured JSON data.  Does summary/disclosure of objects in a progressive scheme, so large attribute collection objects can be reviewed without having to face a massive vall of text.  Strings with newlines and strings that won't fit in the horizontal viewport are shown is preformat blocks with overflow.
                 `,
             },
         },
@@ -22,11 +20,11 @@ component, are shown as preformatted blocks.
         value: { control: "object" },
         summaryMaxLength: {
             control: { type: "number", min: 1 },
-            description: "Longest string shown in a collapsed summary (`summary-maxlength`)",
+            description: "Max length of a string shown in a summary (`summary-maxlength`)",
         },
         summaryMaxCount: {
             control: { type: "number", min: 1 },
-            description: "Most entries shown in a collapsed summary (`summary-maxcount`)",
+            description: "Max number of entries shown in a summary (`summary-maxcount`)",
         },
     },
     args: {
@@ -34,12 +32,12 @@ component, are shown as preformatted blocks.
         summaryMaxLength: 15,
         summaryMaxCount: 3,
     },
-    render: (args) => akTreeView(args),
-} satisfies Meta<TreeViewProps>;
+    render: (args) => akStructuredView(args),
+} satisfies Meta<StructuredViewProps>;
 
 export default meta;
 
-type Story = StoryObj<TreeViewProps>;
+type Story = StoryObj<StructuredViewProps>;
 
 export const Default: Story = {
     args: {
@@ -47,7 +45,7 @@ export const Default: Story = {
             model: {
                 pk: "02c2e030162d4140ab53a63fc84085c9",
                 app: "authentik_core",
-                name: "Admirable Commercial Razzmatazz RAC App (a2fdd5)",
+                name: "Those Meddling Kids RAC App (a2fdd5)",
                 model_name: "application",
             },
             http_request: {

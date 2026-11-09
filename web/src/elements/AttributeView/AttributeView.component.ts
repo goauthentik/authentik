@@ -1,17 +1,21 @@
 import "#elements/ToggleGroup";
 import Styles from "./AttributeView.styles";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "../ak-tree-view";
+import "../ak-structured-view";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 import { writeToClipboard } from "#common/clipboard";
 
+import { AKElement } from "#elements/Base";
+import type { JsonValue } from "#elements/StructuredView/StructuredView.component";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { match, P } from "ts-pattern";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { html, LitElement, type PropertyValues } from "lit";
+import { html, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 const MODES = ["json", "yaml", "tree"] as const;
@@ -20,16 +24,25 @@ type Mode = (typeof MODES)[number];
 
 const PJsonKey = P.union(P.string, P.number, P.symbol);
 
-type JsonScalar = string | number | boolean | null;
-
-type JsonObject = { [key: string]: JsonValue };
-
-type JsonArray = JsonValue[];
-
-export type JsonValue = JsonScalar | JsonObject | JsonArray;
-
-export class AkAttributeView extends LitElement {
-    static readonly styles = [Styles];
+/**
+ * @element ak-attribute-view @summary Provides different views of structured data, switchable
+ * between JSON, YAML and ak-structured-view.
+ *
+ * Set the value to display with the `value` property; it has no attribute.
+ *
+ * @attr {string} mode - Display format: "json" (default), "yaml" or "tree".
+ * @attr {boolean} hide-copy - Hides the copy-to-clipboard button
+ *
+ * @csspart toolbar - The row holding the format toggle and the copy button
+ * @csspart copy-button - The copy-to-clipboard button
+ * @csspart copy-tooltip - The tooltip wrapping the copy button's icon
+ * @csspart display - The container for the rendered JSON, YAML or tree
+ *
+ * See the `AttributeView.root.css` file in this folder for the CSS Custom Properties that
+ * control the appearance of this component.
+ */
+export class AkAttributeView extends AKElement {
+    static readonly styles = [PFButton, Styles];
 
     @property({ attribute: false })
     public value: unknown;
@@ -75,15 +88,17 @@ export class AkAttributeView extends LitElement {
         return cleanObject(this.value);
     }
 
-    async handleCopy() {
+    // Copy what the server sent; the unescaping in `cleanedValue` is for display only.
+    handleCopy() {
         const [value, kind] =
             this.mode === "yaml"
-                ? [YAML.stringify(this.cleanedValue), msg("YAML")]
-                : [JSON.stringify(this.cleanedValue), msg("JSON")];
+                ? [YAML.stringify(this.value), msg("YAML", { id: "data-view.format.yaml.label" })]
+                : [
+                      JSON.stringify(this.value, null, 2),
+                      msg("JSON", { id: "data-view.format.json.label" }),
+                  ];
 
-        const res = await writeToClipboard(value, kind);
-
-        console.log(res);
+        return writeToClipboard(value, kind);
     }
 
     render() {
@@ -93,14 +108,22 @@ export class AkAttributeView extends LitElement {
             html`<pre>${YAML.stringify(this.cleanedValue, { blockQuote: "folded" })}</pre>`;
 
         const label =
-            this.mode === "yaml" ? msg("Copy YAML to clipboard") : msg("Copy JSON to clipboard");
+            this.mode === "yaml"
+                ? msg("Copy YAML to clipboard", { id: "data-view.copy.yaml.label" })
+                : msg("Copy JSON to clipboard", { id: "data-view.copy.json.label" });
 
         return html`
             <div part="toolbar">
                 <ak-toggle-group compact value=${this.mode} @ak-toggle=${this.handleToggle}>
-                    <option value="json">${msg("JSON")}</option>
-                    <option value="yaml">${msg("YAML")}</option>
-                    <option value="tree">${msg("Tree")}</option>
+                    <option value="json">
+                        ${msg("JSON", { id: "data-view.format.json.label" })}
+                    </option>
+                    <option value="yaml">
+                        ${msg("YAML", { id: "data-view.format.yaml.label" })}
+                    </option>
+                    <option value="tree">
+                        ${msg("Tree", { id: "data-view.format.tree.label" })}
+                    </option>
                 </ak-toggle-group>
                 ${
                     this.hideCopy
@@ -126,7 +149,11 @@ export class AkAttributeView extends LitElement {
                     .with("yaml", yaml)
                     .with(
                         "tree",
-                        () => html`<ak-tree-view .value=${this.cleanedValue}></ak-tree-view>`,
+                        () =>
+                            html`<ak-structured-view
+                                show-count
+                                .value=${this.cleanedValue}
+                            ></ak-structured-view>`,
                     )
                     .exhaustive()}
             </div>

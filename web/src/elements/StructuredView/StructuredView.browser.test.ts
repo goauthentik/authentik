@@ -1,40 +1,54 @@
-import "#elements/ak-tree-view";
-import { akTreeView, type TreeView } from "#elements/ak-tree-view";
-import type { JsonValue } from "#elements/TreeView/TreeView.component";
+import "#elements/ak-structured-view";
+import { akStructuredView, type StructuredView } from "#elements/ak-structured-view";
+import type { JsonValue } from "#elements/StructuredView/StructuredView.component";
 
 import { afterEach, describe, expect, it } from "vitest";
+import { userEvent } from "vitest/browser";
 
 import { html, render, type TemplateResult } from "lit";
 
 const mounted = new Set<HTMLElement>();
 
-async function mountTemplate(template: TemplateResult): Promise<TreeView> {
+async function mountTemplate(template: TemplateResult): Promise<StructuredView> {
     const container = document.body.appendChild(document.createElement("div"));
     mounted.add(container);
     render(template, container);
 
-    const element = container.querySelector("ak-tree-view")!;
+    const element = container.querySelector("ak-structured-view")!;
     await element.updateComplete;
 
     return element;
 }
 
 const mount = (value: JsonValue) =>
-    mountTemplate(html`<ak-tree-view .value=${value}></ak-tree-view>`);
+    mountTemplate(html`<ak-structured-view .value=${value}></ak-structured-view>`);
 
 const normalize = (s: string | null | undefined) => (s ?? "").replace(/\s+/g, " ").trim();
 
-const item = (element: TreeView, path: string) =>
+const item = (element: StructuredView, path: string) =>
     element.renderRoot.querySelector<HTMLElement>(`[part="tree-item"][data-path="${path}"]`);
 
-const key = (element: TreeView, path: string) =>
-    item(element, path)?.querySelector<HTMLElement>(':scope > [part="tree-key"]') ?? null;
+const branch = (element: StructuredView, path: string) =>
+    item(element, path)?.querySelector<HTMLDetailsElement>(":scope > details") ?? null;
 
-const summary = (element: TreeView, path: string) =>
+const key = (element: StructuredView, path: string) =>
+    item(element, path)?.querySelector<HTMLElement>(
+        ':scope > [part="tree-key"], :scope > details > [part="tree-key"]',
+    ) ?? null;
+
+const summary = (element: StructuredView, path: string) =>
     normalize(key(element, path)?.querySelector('[part="summary"]')?.textContent);
 
-async function toggle(element: TreeView, path: string) {
+/**
+ * Click a branch's summary. `<details>` dispatches `toggle` asynchronously, so wait for it.
+ */
+async function toggle(element: StructuredView, path: string) {
+    const toggled = new Promise((resolve) =>
+        branch(element, path)!.addEventListener("toggle", resolve, { once: true }),
+    );
+
     key(element, path)!.click();
+    await toggled;
     await element.updateComplete;
 }
 
@@ -43,7 +57,7 @@ afterEach(() => {
     mounted.clear();
 });
 
-describe("ak-tree-view: rendering", () => {
+describe("ak-structured-view: rendering", () => {
     it("renders a root string as a single line", async () => {
         const element = await mount("hello");
         const line = element.renderRoot.querySelector('[part="oneline-string"]');
@@ -68,6 +82,32 @@ describe("ak-tree-view: rendering", () => {
         expect(pre?.textContent).toContain("line two");
     });
 
+    it("wraps long single-line strings instead of overflowing", async () => {
+        const long = "x".repeat(400);
+
+        const element = await mountTemplate(
+            html`<ak-structured-view style="width: 200px" .value=${{ long }}></ak-structured-view>`,
+        );
+
+        const line = item(element, "long")?.querySelector<HTMLElement>('[part="oneline-string"]');
+
+        expect(line).not.toBeNull();
+        expect(line!.getClientRects().length).toBeGreaterThan(1);
+        expect(element.scrollWidth).toBeLessThanOrEqual(element.clientWidth);
+    });
+
+    it("wraps long lines inside multiline strings instead of overflowing", async () => {
+        const element = await mountTemplate(
+            html`<ak-structured-view
+                style="width: 200px"
+                .value=${{ trace: `short\n${"y".repeat(400)}` }}
+            ></ak-structured-view>`,
+        );
+
+        expect(item(element, "trace")?.querySelector('[part="multiline-string"]')).not.toBeNull();
+        expect(element.scrollWidth).toBeLessThanOrEqual(element.clientWidth);
+    });
+
     it("re-renders when the value is replaced", async () => {
         const element = await mount({ a: "1" });
         element.value = { b: "2" };
@@ -86,11 +126,11 @@ describe("ak-tree-view: rendering", () => {
     });
 });
 
-describe("ak-tree-view: expansion", () => {
+describe("ak-structured-view: expansion", () => {
     it("starts with branches collapsed", async () => {
         const element = await mount({ nested: { a: "1" } });
 
-        expect(item(element, "nested")?.getAttribute("aria-expanded")).toBe("false");
+        expect(branch(element, "nested")?.open).toBe(false);
         expect(item(element, "nested.a")).toBeNull();
     });
 
@@ -98,11 +138,11 @@ describe("ak-tree-view: expansion", () => {
         const element = await mount({ nested: { a: "1" } });
 
         await toggle(element, "nested");
-        expect(item(element, "nested")?.getAttribute("aria-expanded")).toBe("true");
+        expect(branch(element, "nested")?.open).toBe(true);
         expect(item(element, "nested.a")).not.toBeNull();
 
         await toggle(element, "nested");
-        expect(item(element, "nested")?.getAttribute("aria-expanded")).toBe("false");
+        expect(branch(element, "nested")?.open).toBe(false);
         expect(item(element, "nested.a")).toBeNull();
     });
 
@@ -115,6 +155,16 @@ describe("ak-tree-view: expansion", () => {
         expect(item(element, "right.b")).toBeNull();
     });
 
+    it("starts collapsed again when the value is replaced", async () => {
+        const element = await mount({ nested: { a: "1" } });
+
+        await toggle(element, "nested");
+        element.value = { nested: { a: "2" } };
+        await element.updateComplete;
+
+        expect(branch(element, "nested")?.open).toBe(false);
+    });
+
     it("uses array indices as paths", async () => {
         const element = await mount({ list: [{ id: "x" }, { id: "y" }] });
 
@@ -125,9 +175,7 @@ describe("ak-tree-view: expansion", () => {
         expect(normalize(item(element, "list.1.id")?.textContent)).toBe("id: y");
     });
 
-    // Defect: paths are joined with ".", so a key that itself contains "." shares state with a
-    // nested path of the same spelling.
-    it.fails("keeps a dotted key separate from a nested path of the same spelling", async () => {
+    it("keeps a dotted key separate from a nested path of the same spelling", async () => {
         const element = await mount({ "a.b": { x: "1" }, "a": { b: { y: "2" } } });
 
         await toggle(element, "a");
@@ -137,7 +185,7 @@ describe("ak-tree-view: expansion", () => {
     });
 });
 
-describe("ak-tree-view: summaries", () => {
+describe("ak-structured-view: summaries", () => {
     it("shows a summary only while a branch is collapsed", async () => {
         const element = await mount({ nested: { a: "1" } });
 
@@ -149,10 +197,10 @@ describe("ak-tree-view: summaries", () => {
 
     it("marks an object with more keys than summary-maxcount as truncated", async () => {
         const element = await mountTemplate(
-            html`<ak-tree-view
+            html`<ak-structured-view
                 summary-maxcount="1"
                 .value=${{ nested: { a: "1", b: "2" } }}
-            ></ak-tree-view>`,
+            ></ak-structured-view>`,
         );
 
         expect(summary(element, "nested")).toContain("…");
@@ -173,53 +221,57 @@ describe("ak-tree-view: summaries", () => {
 
     it("truncates long strings to summary-maxlength", async () => {
         const element = await mountTemplate(
-            html`<ak-tree-view
+            html`<ak-structured-view
                 summary-maxlength="5"
                 .value=${{ nested: { s: "abcdefghij" } }}
-            ></ak-tree-view>`,
+            ></ak-structured-view>`,
         );
 
         expect(summary(element, "nested")).toContain('"abcde…"');
     });
 });
 
-describe("ak-tree-view: accessibility", () => {
-    // Defect: the host is given `role="node"`, which is not an ARIA role.
-    it.fails("exposes the tree role on the host", async () => {
+describe("ak-structured-view: accessibility", () => {
+    it("does not give the host an ARIA role", async () => {
         const element = await mount({ a: "1" });
 
-        expect(element.getAttribute("role")).toBe("tree");
+        expect(element.hasAttribute("role")).toBe(false);
     });
 
-    // Defect: leaf items are rendered with `aria-expanded="false"`, which announces them as
-    // collapsed branches.
-    it.fails("omits aria-expanded from leaf items", async () => {
+    it("renders branches as native disclosure widgets", async () => {
+        const element = await mount({ nested: { a: "1" } });
+
+        expect(key(element, "nested")?.localName).toBe("summary");
+    });
+
+    it("omits disclosure semantics from leaf items", async () => {
         const element = await mount({ leaf: "1" });
 
-        expect(item(element, "leaf")?.hasAttribute("aria-expanded")).toBe(false);
+        expect(branch(element, "leaf")).toBeNull();
+        expect(item(element, "leaf")?.querySelector("[aria-expanded]")).toBeNull();
     });
 
-    // Defect: the toggle is a click handler on a <span>; it is not focusable and has no keyboard
-    // handling.
-    it.fails("expands a branch from the keyboard", async () => {
+    it("expands and collapses a branch from the keyboard", async () => {
         const element = await mount({ nested: { a: "1" } });
         const target = key(element, "nested")!;
 
-        expect(target.tabIndex).toBeGreaterThanOrEqual(0);
+        target.focus();
+        expect(element.shadowRoot!.activeElement).toBe(target);
 
-        target.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
-        await element.updateComplete;
+        await userEvent.keyboard("{Enter}");
+        await expect.poll(() => item(element, "nested.a")).not.toBeNull();
 
-        expect(item(element, "nested.a")).not.toBeNull();
+        await userEvent.keyboard("[Space]");
+        await expect.poll(() => item(element, "nested.a")).toBeNull();
     });
 });
 
-describe("akTreeView builder", () => {
+describe("akStructuredView builder", () => {
     it("passes the value as a property and the summary limits as attributes", async () => {
         const value = { nested: { a: "1" } };
 
         const element = await mountTemplate(
-            akTreeView({ value, summaryMaxLength: 7, summaryMaxCount: 2, id: "built" }),
+            akStructuredView({ value, summaryMaxLength: 7, summaryMaxCount: 2, id: "built" }),
         );
 
         expect(element.value).toBe(value);
@@ -229,7 +281,7 @@ describe("akTreeView builder", () => {
     });
 
     it("keeps the component defaults when limits are omitted", async () => {
-        const element = await mountTemplate(akTreeView({ value: {} }));
+        const element = await mountTemplate(akStructuredView({ value: {} }));
 
         expect(element.length).toBe(15);
         expect(element.count).toBe(3);

@@ -1,7 +1,7 @@
 import "#elements/ak-attribute-view";
 import "#elements/messages/MessageContainer";
 import { akAttributeView, type AkAttributeView } from "#elements/ak-attribute-view";
-import type { TreeView } from "#elements/ak-tree-view";
+import type { StructuredView } from "#elements/ak-structured-view";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 import YAML from "yaml";
@@ -31,7 +31,7 @@ const copyButton = (element: AkAttributeView) =>
     element.renderRoot.querySelector<HTMLButtonElement>('[part="copy-button"]');
 
 async function treeValue(element: AkAttributeView) {
-    const tree = display(element).querySelector<TreeView>("ak-tree-view")!;
+    const tree = display(element).querySelector<StructuredView>("ak-structured-view")!;
     await tree.updateComplete;
 
     return tree.value;
@@ -84,7 +84,7 @@ describe("ak-attribute-view: modes", () => {
         expect(YAML.parse(display(element).querySelector("pre")!.textContent!)).toEqual(value);
     });
 
-    it("renders an ak-tree-view in tree mode", async () => {
+    it("renders an ak-structured-view in tree mode", async () => {
         const element = await mount(value, "tree");
 
         expect(display(element).querySelector("pre")).toBeNull();
@@ -146,7 +146,7 @@ describe("ak-attribute-view: copy", () => {
 
         copyButton(element)!.click();
 
-        await expect.poll(lastWrite).toBe(JSON.stringify({ a: "1" }));
+        await expect.poll(lastWrite).toBe(JSON.stringify({ a: "1" }, null, 2));
     });
 
     it("copies the value as YAML in yaml mode", async () => {
@@ -156,6 +156,32 @@ describe("ak-attribute-view: copy", () => {
         copyButton(element)!.click();
 
         await expect.poll(lastWrite).toBe(YAML.stringify({ a: "1" }));
+    });
+
+    it.each(["json", "yaml"])(
+        "copies the original value, not the display-cleaned one, in %s mode",
+        async (mode) => {
+            const value = { pattern: "^a\\nb$", quote: "it\\'s" };
+            const element = await mount(value, mode);
+            const lastWrite = stubClipboard(element);
+
+            copyButton(element)!.click();
+
+            await expect
+                .poll(lastWrite)
+                .toBe(mode === "yaml" ? YAML.stringify(value) : JSON.stringify(value, null, 2));
+
+            // The display still shows the cleaned value.
+            expect(element.cleanedValue).toEqual({ pattern: "^a\nb$", quote: "it's" });
+        },
+    );
+
+    it("styles the copy button as a PatternFly plain button", async () => {
+        const element = await mount({});
+        const style = getComputedStyle(copyButton(element)!);
+
+        // Without the PatternFly button sheet, the user agent's 2px button border survives.
+        expect(style.borderTopWidth).toBe("0px");
     });
 
     it("labels the copy button for the active format", async () => {
