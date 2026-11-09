@@ -1,6 +1,6 @@
 """authentik SAML IDP Views"""
 
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
@@ -11,7 +11,6 @@ from structlog.stdlib import get_logger
 from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
-from authentik.events.signals import get_login_event
 from authentik.flows.apps import ContinuousLogin
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
@@ -19,7 +18,7 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, 
 from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.views import bad_request_message
-from authentik.policies.views import PolicyAccessView
+from authentik.policies.views import ForcedLoginAccessView
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import (
     AuthNRequest,
@@ -40,10 +39,8 @@ from authentik.stages.consent.stage import (
 
 LOGGER = get_logger()
 
-SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/saml/last_login_uid"
 
-
-class SAMLSSOView(PolicyAccessView):
+class SAMLSSOView(ForcedLoginAccessView):
     """SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
 
@@ -99,10 +96,10 @@ class SAMLSSOView(PolicyAccessView):
         auth_n_request: AuthNRequest | None = self.plan_context.get(
             PLAN_CONTEXT_SAML_AUTH_N_REQUEST
         )
-        if auth_n_request and auth_n_request.force_authn:
-            reauth_response = self.check_force_authn(request)
-            if reauth_response:
-                return reauth_response
+        if response := self.check_forced_login(
+            auth_n_request is not None and auth_n_request.force_authn
+        ):
+            return response
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
@@ -137,24 +134,6 @@ class SAMLSSOView(PolicyAccessView):
         override .dispatch easily because PolicyAccessView's dispatch"""
         return self.get(request, application_slug)
 
-    def check_force_authn(self, request: HttpRequest) -> HttpResponse | None:
-        """Trigger re-authentication when the AuthnRequest carries ForceAuthn. Returns a
-        redirect into the authentication flow if re-auth is still required, otherwise
-        None to let the SSO flow proceed."""
-        login_event = get_login_event(request)
-        login_uid = str(login_event.pk) if login_event else None
-        # Re-authenticate if it hasn't happened yet: either we have no record of a forced
-        # login for this session, or the session's login event still matches the one we
-        # saw before redirecting to the authentication flow. Once the user re-logs in, a
-        # new login event is created, the UID changes, and we stop forcing re-auth.
-        if (
-            SESSION_KEY_LAST_LOGIN_UID not in request.session
-            or login_uid == request.session[SESSION_KEY_LAST_LOGIN_UID]
-        ):
-            request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
-            return self.handle_no_permission()
-        return None
-
 
 class SAMLSSOBindingRedirectView(SAMLSSOView):
     """SAML Handler for SSO/Redirect bindings, which are sent via GET"""
@@ -186,6 +165,21 @@ class SAMLSSOBindingRedirectView(SAMLSSOView):
 class SAMLSSOBindingPOSTView(SAMLSSOView):
     """SAML Handler for SSO/POST bindings"""
 
+    saml_payload: QueryDict | None = None
+
+    def get_forced_login_key(self) -> str:
+        # All POST binding requests share a URL, so tell them apart by their SAML request.
+        payload = self.saml_payload if self.saml_payload is not None else self.request.POST
+        return f"{super().get_forced_login_key()}\n{payload.get(REQUEST_KEY_SAML_REQUEST, '')}"
+
+    def handle_no_permission(self) -> HttpResponse:
+        response = super().handle_no_permission()
+        # PolicyAccessView only keeps the body of POST requests. When a payload restored from
+        # the session needs another login, keep it for the request after that login.
+        if self.saml_payload is not None and self.request.method != "POST":
+            self.request.session[SESSION_KEY_POST] = self.saml_payload
+        return response
+
     def check_saml_request(self) -> HttpRequest | None:
         """Handle POST bindings"""
         payload = self.request.POST
@@ -194,6 +188,7 @@ class SAMLSSOBindingPOSTView(SAMLSSOView):
         # (user gets redirected and POST body is 'lost')
         if SESSION_KEY_POST in self.request.session:
             payload = self.request.session.pop(SESSION_KEY_POST)
+        self.saml_payload = payload
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("SAML payload missing")
             return bad_request_message(self.request, _("The SAML request payload is missing."))
