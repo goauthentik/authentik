@@ -8,7 +8,9 @@ from authentik.core.tests.utils import (
     create_test_brand,
     create_test_user,
 )
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.flows.models import Flow, FlowAuthenticationRequirement, FlowDesignation
+from authentik.flows.planner import PLAN_CONTEXT_IS_REAUTHENTICATION
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.policies.views import (
@@ -114,3 +116,31 @@ class TestPolicyViews(TestCase):
         res = TestView.as_view()(req)
         self.assertEqual(res.status_code, 302)
         self.assertEqual(res.url, "/if/flow/default-authentication-flow/?next=%2F")
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_pav_authenticated_login_again(self):
+        """Test policy access view requiring an authenticated user to log in again, with an
+        authentication flow that requires an unauthenticated user"""
+        provider = Provider.objects.create(
+            name=generate_id(),
+        )
+        app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        flow = Flow.objects.get(slug="default-authentication-flow")
+        flow.authentication = FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        flow.save()
+
+        class TestView(PolicyAccessView):
+            def resolve_provider_application(self):
+                self.provider = provider
+                self.application = app
+
+            def get(self, *args, **kwargs):
+                return self.handle_no_permission()
+
+        req = self.factory.get("/")
+        req.user = self.user
+        req.brand = create_test_brand(flow_authentication=flow)
+        res = TestView.as_view()(req)
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res.url, "/if/flow/default-authentication-flow/?next=%2F")
+        self.assertTrue(req.session[SESSION_KEY_PLAN].context[PLAN_CONTEXT_IS_REAUTHENTICATION])
