@@ -1,4 +1,5 @@
 from copy import copy
+from datetime import timedelta
 from uuid import UUID
 
 from django.utils.translation import gettext as _
@@ -70,7 +71,14 @@ class UserExpirationRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
             raise ValidationError(_("Internal service accounts cannot be expired."))
         return value
 
+    def validate_inactivity_duration(self, value: str) -> str:
+        if timedelta_from_string(value) <= timedelta():
+            raise ValidationError(_("Inactivity duration must be positive."))
+        return value
+
     def validate_warn_before(self, value: str | None) -> str | None:
+        if value and timedelta_from_string(value) <= timedelta():
+            raise ValidationError(_("Warning period must be positive."))
         return value or None
 
     def validate(self, attrs: dict) -> dict:
