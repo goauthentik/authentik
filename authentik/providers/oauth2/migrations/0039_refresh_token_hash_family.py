@@ -83,13 +83,6 @@ class Migration(migrations.Migration):
             name="rotated_at",
             field=models.DateTimeField(default=None, null=True),
         ),
-        # Access tokens are short-lived, existing ones are not backfilled and expire without a
-        # family
-        migrations.AddField(
-            model_name="accesstoken",
-            name="family",
-            field=models.UUIDField(db_index=True, default=None, null=True),
-        ),
         migrations.RunSQL(BACKFILL, reverse_sql=migrations.RunSQL.noop),
         # Create indexes after the backfill, which is faster than updating them row by row
         migrations.AlterField(

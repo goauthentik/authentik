@@ -671,11 +671,18 @@ class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGr
     _id_token = models.TextField()
     # Family of the refresh token issued alongside this token, so the access tokens are revoked
     # together with the refresh tokens when reuse is detected
-    family = models.UUIDField(null=True, default=None, db_index=True)
+    family = models.UUIDField(null=True, default=None)
 
     class Meta:
         indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["token"]),
+            # Most access tokens have no family (no refresh token was issued), so only index the
+            # ones that do. This keeps the index small and cheap to maintain on insert
+            models.Index(
+                fields=["family"],
+                name="authentik_p_at_family_idx",
+                condition=Q(family__isnull=False),
+            ),
         ]
         verbose_name = _("OAuth2 Access Token")
         verbose_name_plural = _("OAuth2 Access Tokens")
