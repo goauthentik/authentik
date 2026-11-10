@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("authentik_flows", "0013_auto_20200924_1605"),
+        ("authentik_flows", "0012_auto_20200908_1542_squashed_0017_auto_20210329_1334"),
         ("authentik_stages_authenticator_static", "0001_initial"),
     ]
 
