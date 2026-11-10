@@ -176,7 +176,6 @@ class OAuthAuthorizationParams:
         self,
         error: str,
         description: str | None = None,
-        provider: OAuth2Provider | None = None,
     ) -> AuthorizeError:
         """Error returned to the client at its redirect URI, using the response mode it
         requested and identifying the provider's issuer when enabled (RFC 9207)"""
@@ -187,7 +186,7 @@ class OAuthAuthorizationParams:
             state=self.state,
             response_mode=self.response_mode,
             description=description,
-            provider=provider or self.provider,
+            provider=self.provider,
         )
 
     def resolve_grant_type(self) -> str | None:
@@ -631,11 +630,6 @@ class OAuthFulfillmentStage(StageView):
         self.executor.stage_ok()
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
 
-    def authorize_error(self, error: str) -> AuthorizeError:
-        """Error returned to the client, using the provider's current settings rather than
-        those stored in the flow plan"""
-        return self.params.authorize_error(error, provider=self.provider)
-
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Wrapper when this stage gets hit with a post request"""
         return self.get(request, *args, **kwargs)
@@ -648,10 +642,13 @@ class OAuthFulfillmentStage(StageView):
         self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(PLAN_CONTEXT_PARAMS)
         self.application: Application = self.executor.plan.context.pop(PLAN_CONTEXT_APPLICATION)
         self.provider = get_object_or_404(OAuth2Provider, pk=self.application.provider_id)
+        # Use the provider's current settings rather than those stored in the flow plan, so that
+        # codes, responses and errors all agree
+        self.params.provider = self.provider
         try:
             # At this point we don't need to check permissions anymore
             if {PROMPT_NONE, PROMPT_CONSENT}.issubset(self.params.prompt):
-                raise self.authorize_error("consent_required")
+                raise self.params.authorize_error("consent_required")
             Event.new(
                 EventAction.AUTHORIZE_APPLICATION,
                 authorized_application=self.application,
@@ -732,7 +729,7 @@ class OAuthFulfillmentStage(StageView):
             raise OAuth2Error()
         except OAuth2Error as error:
             LOGGER.warning("Error when trying to create response uri", error=error)
-            raise self.authorize_error("server_error") from None
+            raise self.params.authorize_error("server_error") from None
 
     def create_implicit_response(self, code: AuthorizationCode | None) -> dict:
         """Create implicit response's URL Fragment dictionary"""

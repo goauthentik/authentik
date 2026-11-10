@@ -344,7 +344,9 @@ class TestAuthorizationResponseIssuer(OAuthTestCase):
 
     def test_error_without_provider(self):
         """Errors that aren't attributed to a provider don't include `iss`"""
-        error = AuthorizeError(REDIRECT_URI, "invalid_request", GrantType.AUTHORIZATION_CODE, None)
+        error = AuthorizeError(
+            REDIRECT_URI, "invalid_request", GrantType.AUTHORIZATION_CODE, None, provider=None
+        )
         self.assertNotIn(
             "iss", parse_qs(urlsplit(error.get_response(self.factory.get("/")).url).query)
         )

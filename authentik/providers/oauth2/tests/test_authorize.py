@@ -127,6 +127,7 @@ class TestAuthorize(OAuthTestCase):
                     state,
                     response_mode=response_mode,
                     description=description,
+                    provider=None,
                 )
                 response = error.get_response(self.factory.get("/"))
                 self.assertEqual(response.status_code, 302)
@@ -161,6 +162,7 @@ class TestAuthorize(OAuthTestCase):
                         GrantType.AUTHORIZATION_CODE,
                         state,
                         response_mode=response_mode,
+                        provider=None,
                     )
                     uri = urlparse(error.get_response(self.factory.get("/")).url)
                     params = parse_qs(

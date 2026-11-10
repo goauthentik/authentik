@@ -163,7 +163,8 @@ class AuthorizeError(OAuth2Error):
         state: str | None,
         response_mode: str | None = None,
         description: str | None = None,
-        provider: OAuth2Provider | None = None,
+        *,
+        provider: OAuth2Provider | None,
     ):
         super().__init__()
         self.error = error
@@ -175,7 +176,8 @@ class AuthorizeError(OAuth2Error):
         self.grant_type = grant_type
         self.state = state
         self.response_mode = response_mode
-        # Provider whose issuer identifies the authorization server in the response (RFC 9207)
+        # Provider whose issuer identifies the authorization server in the response (RFC 9207).
+        # Required so that no client-facing error can leave out the issuer by accident.
         self.provider = provider
 
     def create_params(self, request: HttpRequest) -> dict[str, str]:
