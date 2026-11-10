@@ -61,7 +61,7 @@ dependencies = [
   "paramiko==5.0.1",
   "psycopg[c,pool]==3.3.8",
   "pydantic-scim==0.0.8",
-  "pydantic==2.14.2",
+  "pydantic==2.14.3",
   "pyjwt==2.15.1",
   "pyrad==2.6.0",
   "pyroscope-io==1.4.0",
