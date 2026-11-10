@@ -99,7 +99,7 @@ dev = [
   "daphne==4.2.3",
   "debugpy==1.8.22",
   "django-stubs[compatible-mypy]==6.1.2",
-  "djangorestframework-stubs[compatible-mypy]==3.18.1",
+  "djangorestframework-stubs[compatible-mypy]==3.18.2",
   "drf-jsonschema-serializer==3.0.0",
   "freezegun==1.5.5",
   "importlib-metadata==10.1.0",
