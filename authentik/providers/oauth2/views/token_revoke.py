@@ -38,22 +38,23 @@ class TokenRevocationParams:
         if not provider:
             raise TokenRevocationError("invalid_client")
         # By default clients can only revoke their own tokens
-        query = Q(provider=provider, token=raw_token)
+        provider_query = Q(provider=provider)
         if provider.client_type == ClientType.CONFIDENTIAL:
             provider = authenticate_provider(request)
             if not provider:
                 raise TokenRevocationError("invalid_client")
             # If the request is authenticated by a confidential provider, it can also
             # revoke federated tokens
-            query = Q(
-                Q(provider=provider) | Q(provider__jwt_federation_providers__in=[provider]),
-                token=raw_token,
+            provider_query = Q(provider=provider) | Q(
+                provider__jwt_federation_providers__in=[provider]
             )
 
-        access_token = AccessToken.objects.filter(query).first()
+        access_token = AccessToken.objects.filter(provider_query, token=raw_token).first()
         if access_token:
             return TokenRevocationParams(access_token, provider)
-        refresh_token = RefreshToken.objects.filter(query).first()
+        refresh_token = RefreshToken.objects.filter(
+            provider_query, RefreshToken.token_query(raw_token)
+        ).first()
         if refresh_token:
             return TokenRevocationParams(refresh_token, provider)
         LOGGER.debug("Token does not exist", token=raw_token)

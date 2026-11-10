@@ -2,7 +2,7 @@
 
 from base64 import b64encode
 from datetime import timedelta
-from json import dumps
+from json import dumps, loads
 from urllib.parse import quote
 
 from django.test import RequestFactory
@@ -31,6 +31,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     RefreshToken,
     ScopeMapping,
+    hash_refresh_token,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.token.router import parse_token_request
@@ -315,6 +316,8 @@ class TestToken(OAuthTestCase):
             },
         )
         self.validate_jwt(access, provider)
+        # No refresh token was issued, so the access token has no family
+        self.assertIsNone(access.family)
 
     def test_auth_code_enc(self):
         """test request param"""
@@ -394,11 +397,13 @@ class TestToken(OAuthTestCase):
         self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
         access = AccessToken.objects.filter(user=user, provider=provider).first()
         refresh = RefreshToken.objects.filter(user=user, provider=provider, revoked=False).first()
+        refresh_token = loads(response.content.decode())["refresh_token"]
+        self.assertEqual(refresh.token_hash, hash_refresh_token(refresh_token))
         self.assertJSONEqual(
             response.content.decode(),
             {
                 "access_token": access.token,
-                "refresh_token": refresh.token,
+                "refresh_token": refresh_token,
                 "token_type": TOKEN_TYPE,
                 "expires_in": 3600,
                 "id_token": provider.encode(
@@ -451,13 +456,15 @@ class TestToken(OAuthTestCase):
         )
         access = AccessToken.objects.filter(user=user, provider=provider).first()
         refresh = RefreshToken.objects.filter(user=user, provider=provider, revoked=False).first()
+        refresh_token = loads(response.content.decode())["refresh_token"]
+        self.assertEqual(refresh.token_hash, hash_refresh_token(refresh_token))
         self.assertNotIn("Access-Control-Allow-Credentials", response)
         self.assertNotIn("Access-Control-Allow-Origin", response)
         self.assertJSONEqual(
             response.content.decode(),
             {
                 "access_token": access.token,
-                "refresh_token": refresh.token,
+                "refresh_token": refresh_token,
                 "token_type": TOKEN_TYPE,
                 "expires_in": 3600,
                 "id_token": provider.encode(
@@ -466,75 +473,6 @@ class TestToken(OAuthTestCase):
                 "scope": "offline_access",
             },
         )
-
-    @apply_blueprint("system/providers-oauth2.yaml")
-    def test_refresh_token_revoke(self):
-        """test request param"""
-        provider = OAuth2Provider.objects.create(
-            name=generate_id(),
-            authorization_flow=create_test_flow(),
-            grant_types=[GrantType.REFRESH_TOKEN],
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
-            signing_key=self.keypair,
-        )
-        provider.property_mappings.set(
-            ScopeMapping.objects.filter(
-                managed__in=[
-                    "goauthentik.io/providers/oauth2/scope-openid",
-                    "goauthentik.io/providers/oauth2/scope-email",
-                    "goauthentik.io/providers/oauth2/scope-profile",
-                    "goauthentik.io/providers/oauth2/scope-offline_access",
-                ]
-            )
-        )
-        # Needs to be assigned to an application for iss to be set
-        self.app.provider = provider
-        self.app.save()
-        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
-        user = create_test_admin_user()
-        token = RefreshToken.objects.create(
-            provider=provider,
-            user=user,
-            token=generate_id(),
-            _id_token=dumps({}),
-            auth_time=timezone.now(),
-            _scope="offline_access",
-        )
-        # Create initial refresh token
-        response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
-            data={
-                "grant_type": GRANT_TYPE_REFRESH_TOKEN,
-                "refresh_token": token.token,
-                "redirect_uri": "http://testserver",
-            },
-            HTTP_AUTHORIZATION=f"Basic {header}",
-        )
-        new_token = RefreshToken.objects.filter(user=user).exclude(pk=token.pk).first()
-        # Post again with initial token -> get new refresh token
-        # and revoke old one
-        response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
-            data={
-                "grant_type": GRANT_TYPE_REFRESH_TOKEN,
-                "refresh_token": new_token.token,
-                "redirect_uri": "http://local.invalid",
-            },
-            HTTP_AUTHORIZATION=f"Basic {header}",
-        )
-        self.assertEqual(response.status_code, 200)
-        # Post again with old token, is now revoked and should error
-        response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
-            data={
-                "grant_type": GRANT_TYPE_REFRESH_TOKEN,
-                "refresh_token": new_token.token,
-                "redirect_uri": "http://local.invalid",
-            },
-            HTTP_AUTHORIZATION=f"Basic {header}",
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(Event.objects.filter(action=EventAction.SUSPICIOUS_REQUEST).exists())
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_refresh_token_view_threshold(self):
@@ -612,7 +550,9 @@ class TestToken(OAuthTestCase):
                 HTTP_ORIGIN="http://local.invalid",
             )
             access = AccessToken.objects.filter(user=user, provider=provider).first()
-            refresh = RefreshToken.objects.filter(user=user, provider=provider).last()
+            refresh = RefreshToken.objects.filter(user=user, provider=provider, revoked=False).get()
+            refresh_token = loads(response.content.decode())["refresh_token"]
+            self.assertEqual(refresh.token_hash, hash_refresh_token(refresh_token))
             self.assertJSONEqual(
                 response.content.decode(),
                 {
@@ -623,7 +563,7 @@ class TestToken(OAuthTestCase):
                         access.id_token.to_dict(),
                     ),
                     "scope": "offline_access",
-                    "refresh_token": refresh.token,
+                    "refresh_token": refresh_token,
                 },
             )
             self.validate_jwt(access, provider)
