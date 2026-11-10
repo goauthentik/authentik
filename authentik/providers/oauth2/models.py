@@ -3,6 +3,7 @@
 import base64
 import binascii
 import json
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from functools import cached_property
 from hashlib import sha256
@@ -361,6 +362,17 @@ class OAuth2Provider(WebfingerProvider, Provider):
     jwt_federation_providers = models.ManyToManyField(
         "OAuth2Provider", blank=True, default=None, through="OAuth2ProviderJWTFederationProvider"
     )
+    allowed_resources = ArrayField(
+        models.TextField(),
+        default=list,
+        db_default=[],
+        blank=True,
+        help_text=_(
+            "Resources (RFC 8707) clients may request access tokens for. Access tokens "
+            "requested for a resource use it as their audience. When empty, the resource "
+            "parameter is ignored."
+        ),
+    )
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
@@ -571,6 +583,21 @@ class OAuth2ProviderJWTFederationProvider(SimpleThroughModel):
         )
 
 
+# Upper bound for resources stored on grants
+GRANT_RESOURCE_MAX_LENGTH = 2048
+
+
+def join_resources(resources: Iterable[str]) -> str | None:
+    """Store the resources (RFC 8707) a grant is restricted to. Resources are URIs, which
+    never contain spaces, so they are stored space-separated, like scopes."""
+    return " ".join(resources) or None
+
+
+def split_resources(value: str | None) -> tuple[str, ...]:
+    """Resources stored with `join_resources()`"""
+    return tuple(value.split()) if value else ()
+
+
 @dataclass(frozen=True, slots=True)
 class ClientGrantBinding:
     """Client attributes recorded on a grant, and compared when the grant is used"""
@@ -601,11 +628,19 @@ class ClientBoundModel(HashedClientIDModel):
         default=None,
         verbose_name=_("Client authentication method"),
     )
+    # Resources the grant is restricted to (RFC 8707), space-separated, see
+    # `join_resources()`. Access tokens restricted to resources use them as their audience.
+    resource = models.CharField(
+        max_length=GRANT_RESOURCE_MAX_LENGTH,
+        null=True,
+        default=None,
+        verbose_name=_("Resource"),
+    )
 
     class Meta:
         abstract = True
 
-    def bind_client(self, client: OAuthClientContext) -> None:
+    def bind_client(self, client: OAuthClientContext, *, resource: str | None = None) -> None:
         """Record the client this grant is issued to"""
         if self.provider_id is None:
             self.provider = client.provider  # type: ignore[attr-defined]
@@ -615,6 +650,12 @@ class ClientBoundModel(HashedClientIDModel):
         self.client_id = binding.client_id
         self.client_id_hash = hash_client_id(binding.client_id)
         self.client_auth_method = binding.auth_method
+        self.resource = resource
+
+    @property
+    def resources(self) -> tuple[str, ...]:
+        """Resources the grant is restricted to, empty when it is not restricted"""
+        return split_resources(self.resource)
 
     @property
     def is_client_bound(self) -> bool:
@@ -735,8 +776,14 @@ class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, 
     def __str__(self):
         return f"Authorization code for {self.provider_id} for user {self.user_id}"
 
-    def bind_client(self, client: OAuthClientContext, *, redirect_uri: str | None = None) -> None:
-        super().bind_client(client)
+    def bind_client(
+        self,
+        client: OAuthClientContext,
+        *,
+        resource: str | None = None,
+        redirect_uri: str | None = None,
+    ) -> None:
+        super().bind_client(client, resource=resource)
         self.redirect_uri = redirect_uri
 
     @property

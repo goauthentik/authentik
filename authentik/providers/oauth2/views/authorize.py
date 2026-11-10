@@ -68,6 +68,12 @@ from authentik.providers.oauth2.models import (
     ResponseMode,
     ResponseTypes,
     ScopeMapping,
+    join_resources,
+)
+from authentik.providers.oauth2.resources import (
+    RESOURCE_PARAM,
+    ResourceIndicatorError,
+    resolve_resources,
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 from authentik.providers.oauth2.views.userinfo import UserInfoView
@@ -138,6 +144,9 @@ class OAuthAuthorizationParams:
     # Resolved client making the request. Params pickled into a flow plan before this
     # field existed have no `client` slot; `__setstate__` defaults it to None.
     client: OAuthClientContext | None = None
+    # Resources (RFC 8707) the grant is restricted to, see `check_resources()`. Declared
+    # after `client` for the same reason.
+    resources: tuple[str, ...] = ()
 
     github_compat: InitVar[bool] = False
     raw_max_age: InitVar[str | None] = None
@@ -181,7 +190,7 @@ class OAuthAuthorizationParams:
         dpop_jkt = query_dict.get("dpop_jkt")
         client_id = query_dict.get("client_id", "")
         resolver = resolver or OAuthClientResolver.legacy()
-        return OAuthAuthorizationParams(
+        params = OAuthAuthorizationParams(
             client_id=client_id,
             client=resolver.resolve(request, client_id),
             redirect_uri=redirect_uri,
@@ -199,6 +208,9 @@ class OAuthAuthorizationParams:
             github_compat=github_compat,
             raw_max_age=query_dict.get("max_age"),
         )
+        # Checked last, so that malformed requests are refused for their other errors first
+        params.check_resources(query_dict.getlist(RESOURCE_PARAM))
+        return params
 
     def __post_init__(self, github_compat=False, raw_max_age=None):
         if not self.client:
@@ -467,6 +479,24 @@ class OAuthAuthorizationParams:
                 response_mode=self.response_mode,
             ).with_cause("max_age_invalid")
 
+    def check_resources(self, requested: list[str]):
+        """Resource indicators (RFC 8707) the grant is restricted to"""
+        try:
+            self.resources = resolve_resources(self.bound_client(), requested)
+        except ResourceIndicatorError as exc:
+            raise AuthorizeError(
+                redirect_uri=self.redirect_uri,
+                error="invalid_target",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
+            ).with_cause(exc.cause) from None
+
+    def resource_binding(self) -> str | None:
+        """Resources to record on grants. Parameters stored in a flow plan before resources
+        were parsed have none."""
+        return join_resources(getattr(self, "resources", ()))
+
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""
         auth_event = get_login_event(request)
@@ -491,7 +521,9 @@ class OAuthAuthorizationParams:
         if self.dpop_jkt:
             code.dpop_jkt = self.dpop_jkt
 
-        code.bind_client(self.bound_client(), redirect_uri=self.redirect_uri)
+        code.bind_client(
+            self.bound_client(), redirect_uri=self.redirect_uri, resource=self.resource_binding()
+        )
         return code
 
     def bound_client(self) -> OAuthClientContext:
@@ -572,6 +604,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         request.context["oauth_max_age"] = self.params.max_age
         request.context["oauth_redirect_uri"] = self.params.redirect_uri
         request.context["oauth_response_type"] = self.params.response_type
+        request.context["oauth_resources"] = list(self.params.resources)
         return request
 
     def dispatch_with_language(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -862,7 +895,7 @@ class OAuthFulfillmentStage(StageView):
             auth_time=auth_event.created if auth_event else now,
             session=self.request.session["authenticatedsession"],
         )
-        token.bind_client(self.params.bound_client())
+        token.bind_client(self.params.bound_client(), resource=self.params.resource_binding())
 
         id_token = IDToken.new(self.provider, token, self.request)
         id_token.nonce = self.params.nonce

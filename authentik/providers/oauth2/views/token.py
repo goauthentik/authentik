@@ -36,9 +36,11 @@ from authentik.providers.oauth2.errors import (
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
+    BaseGrantModel,
     OAuth2Provider,
     OAuth2SessionLogin,
     RefreshToken,
+    join_resources,
 )
 from authentik.providers.oauth2.token.base import TokenRequest
 from authentik.providers.oauth2.token.router import parse_token_request
@@ -124,6 +126,19 @@ class TokenView(View):
         if self.params.dpop_jwk is not None:
             id_token.cnf = {"jwk": self.params.dpop_jwk}
 
+    def _bind_from(
+        self, grant: BaseGrantModel, source: BaseGrantModel, *, narrowed: bool = False
+    ) -> None:
+        """Bind a grant issued from `source` to the requesting client, keeping the
+        resources `source` was authorized for. `source` has been checked to be bound to
+        the requesting client while parsing the request.
+
+        Access tokens are `narrowed` to the resources resolved for the request, which are
+        those of `source` unless the client requested fewer. Refresh tokens keep all of the
+        resources of `source`."""
+        resource = join_resources(self.params.resources) if narrowed else source.resource
+        grant.bind_client(self.client, resource=resource)
+
     def create_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
         now = timezone.now()
@@ -137,7 +152,7 @@ class TokenView(View):
             auth_time=self.params.authorization_code.auth_time,
             session=self.params.authorization_code.session,
         )
-        access_token.bind_client(self.client)
+        self._bind_from(access_token, self.params.authorization_code, narrowed=True)
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -171,7 +186,7 @@ class TokenView(View):
                 session=self.params.authorization_code.session,
                 dpop_jkt=self.params.authorization_code.dpop_jkt,
             )
-            refresh_token.bind_client(self.client)
+            self._bind_from(refresh_token, self.params.authorization_code)
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
@@ -206,7 +221,7 @@ class TokenView(View):
             auth_time=self.params.refresh_token.auth_time,
             session=self.params.refresh_token.session,
         )
-        access_token.bind_client(self.client)
+        self._bind_from(access_token, self.params.refresh_token, narrowed=True)
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -243,7 +258,7 @@ class TokenView(View):
                 session=self.params.refresh_token.session,
                 dpop_jkt=self.params.refresh_token.dpop_jkt,
             )
-            refresh_token.bind_client(self.client)
+            self._bind_from(refresh_token, self.params.refresh_token)
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
@@ -273,7 +288,7 @@ class TokenView(View):
             scope=self.params.scope,
             auth_time=now,
         )
-        access_token.bind_client(self.client)
+        access_token.bind_client(self.client, resource=join_resources(self.params.resources))
         access_token.id_token = IDToken.new(
             self.provider,
             access_token,
@@ -305,7 +320,7 @@ class TokenView(View):
             auth_time=auth_event.created if auth_event else now,
             session=self.params.device_code.session,
         )
-        access_token.bind_client(self.client)
+        access_token.bind_client(self.client, resource=join_resources(self.params.resources))
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -337,7 +352,7 @@ class TokenView(View):
                 auth_time=auth_event.created if auth_event else now,
                 dpop_jkt=self.params.device_code.dpop_jkt,
             )
-            refresh_token.bind_client(self.client)
+            refresh_token.bind_client(self.client, resource=self.params.device_code.resource)
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
@@ -390,7 +405,8 @@ class TokenView(View):
         # A token issued on another provider (`audience`) is issued as that provider's
         # registered client, as it always has been
         access_token.bind_client(
-            self.client if provider == self.provider else OAuthClientContext.for_provider(provider)
+            self.client if provider == self.provider else OAuthClientContext.for_provider(provider),
+            resource=join_resources(self.params.resources),
         )
         access_token.id_token = IDToken.new(
             provider,
