@@ -110,20 +110,20 @@ export class ObjectReviewIteration extends Table<Review> {
         // The group list is a plain list of names, so the group wording depends on how many there
         // are, not on a CLDR category.
         const label = plural(minReviewers, {
-            one: () =>
+            one: (formattedCount) =>
                 reviewerGroups.length === 1
-                    ? msg(str`At least ${minReviewers} user from this group: ${groupList}.`, {
+                    ? msg(str`At least ${formattedCount} user from this group: ${groupList}.`, {
                           id: "lifecycle.review.min-reviewers.single-group.one",
                       })
-                    : msg(str`At least ${minReviewers} user from these groups: ${groupList}.`, {
+                    : msg(str`At least ${formattedCount} user from these groups: ${groupList}.`, {
                           id: "lifecycle.review.min-reviewers.multiple-groups.one",
                       }),
-            other: () =>
+            other: (formattedCount) =>
                 reviewerGroups.length === 1
-                    ? msg(str`At least ${minReviewers} users from this group: ${groupList}.`, {
+                    ? msg(str`At least ${formattedCount} users from this group: ${groupList}.`, {
                           id: "lifecycle.review.min-reviewers.single-group.other",
                       })
-                    : msg(str`At least ${minReviewers} users from these groups: ${groupList}.`, {
+                    : msg(str`At least ${formattedCount} users from these groups: ${groupList}.`, {
                           id: "lifecycle.review.min-reviewers.multiple-groups.other",
                       }),
         });

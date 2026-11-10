@@ -46,12 +46,12 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
         return {
             level: MessageLevel.success,
             message: plural(count, {
-                one: () =>
-                    msg(str`Successfully added user to ${count} role.`, {
+                one: (formattedCount) =>
+                    msg(str`Successfully added user to ${formattedCount} role.`, {
                         id: "roles.add-user.success.one",
                     }),
-                other: () =>
-                    msg(str`Successfully added user to ${count} roles.`, {
+                other: (formattedCount) =>
+                    msg(str`Successfully added user to ${formattedCount} roles.`, {
                         id: "roles.add-user.success.other",
                     }),
             }),

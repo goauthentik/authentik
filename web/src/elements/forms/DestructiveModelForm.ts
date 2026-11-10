@@ -87,17 +87,17 @@ export class DestructiveModelForm<T extends object = object> extends ModelForm<T
                           desc: "No objects use this entity.",
                       })
                     : plural(usedByList.length, {
-                          one: () =>
+                          one: (formattedCount) =>
                               msg(
-                                  str`${verboseName} is associated with ${usedByList.length} object.`,
+                                  str`${verboseName} is associated with ${formattedCount} object.`,
                                   {
                                       id: "used-by.count.one",
                                       desc: "The first placeholder is the entity type, the second the number of objects using it.",
                                   },
                               ),
-                          other: () =>
+                          other: (formattedCount) =>
                               msg(
-                                  str`${verboseName} is associated with ${usedByList.length} objects.`,
+                                  str`${verboseName} is associated with ${formattedCount} objects.`,
                                   {
                                       id: "used-by.count.other",
                                       desc: "The first placeholder is the entity type, the second the number of objects using it.",

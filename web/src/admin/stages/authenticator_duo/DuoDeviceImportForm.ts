@@ -106,14 +106,20 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                                 showMessage({
                                     level: MessageLevel.info,
                                     message: plural(res.count, {
-                                        one: () =>
-                                            msg(str`Successfully imported ${res.count} device.`, {
-                                                id: "stages.duo.import.success.one",
-                                            }),
-                                        other: () =>
-                                            msg(str`Successfully imported ${res.count} devices.`, {
-                                                id: "stages.duo.import.success.other",
-                                            }),
+                                        one: (formattedCount) =>
+                                            msg(
+                                                str`Successfully imported ${formattedCount} device.`,
+                                                {
+                                                    id: "stages.duo.import.success.one",
+                                                },
+                                            ),
+                                        other: (formattedCount) =>
+                                            msg(
+                                                str`Successfully imported ${formattedCount} devices.`,
+                                                {
+                                                    id: "stages.duo.import.success.other",
+                                                },
+                                            ),
                                     }),
                                 });
 

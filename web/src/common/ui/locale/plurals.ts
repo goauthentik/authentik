@@ -1,52 +1,43 @@
 import { MessageFormatter } from "#common/ui/locale/format";
 
 /**
- * Defines the plural forms for a given locale, and provides a function to select the appropriate
- * form based on a count.
- *
- * Every form must interpolate the count. A CLDR category is not a number: in Russian, "one" also
- * covers 21 and 31, and in French it covers 0. A form that spells out "one item" is wrong in those
- * locales.
- *
- * Categories are CLDR plural categories, not literal numbers. English never selects "zero"; when
- * zero needs its own wording, check for it before calling {@linkcode plural}.
- *
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules MDN} for more information on plural categories and rules.
+ * Formats one plural variant. Receives the count, formatted for the active locale.
  */
-export interface PluralForms {
-    /**
-     * The "other" form is required as a fallback for categories that may not be provided.
-     * For example, if only "one" and "other" are provided,
-     * then "other" will be used for all counts that don't fall into the "one" category.
-     */
-    other: MessageFormatter<string>;
-    /**
-     * Used for counts that fall into the "one" category for the given locale.
-     */
-    one?: MessageFormatter<string>;
-    /**
-     * Used for counts that fall into the "two" category for the given locale.
-     */
-    two?: MessageFormatter<string>;
-    /**
-     * Used for counts that fall into the "few" category for the given locale.
-     */
-    few?: MessageFormatter<string>;
-    /**
-     * Used for counts that fall into the "many" category for the given locale.
-     */
-    many?: MessageFormatter<string>;
-    /**
-     * Used for counts that fall into the "zero" category for the given locale.
-     */
-    zero?: MessageFormatter<string>;
-}
+export type PluralFormatter = MessageFormatter<string, [count: string]>;
 
 /**
- * Cache of {@linkcode Intl.PluralRules} instances, keyed by locale argument. The empty string key is
- * used for the default locale.
+ * The variants of a pluralized message, modeled on the variants of an MF2
+ * `.match {$count :number}` message.
+ *
+ * Numeric keys match a count exactly and take priority over categories, like MF2's `0 {{…}}`.
+ *
+ * The other keys are CLDR plural categories, not literal numbers. In Russian, "one" also covers 21
+ * and 31, and in French it covers 0, so every category form must interpolate the count.
+ *
+ * @see {@link https://github.com/unicode-org/message-format-wg/blob/main/spec/functions/number.md MF2 :number}
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules MDN}
  */
-const PluralRulesCache = new Map<Intl.LocalesArgument, Intl.PluralRules>();
+export type PluralForms = {
+    /**
+     * Required fallback for any count no other key matches, like MF2's `*` variant.
+     */
+    other: PluralFormatter;
+} & Partial<Record<Exclude<Intl.LDMLPluralRule, "other">, PluralFormatter>> & {
+        [exact: number]: PluralFormatter;
+    };
+
+/**
+ * Options for {@linkcode plural}, named as in {@linkcode Intl.PluralRules}.
+ *
+ * Digit options affect both the formatted count and the selected category, as in MF2, where
+ * "1.0" selects "other" in English.
+ */
+export interface PluralOptions extends Intl.PluralRulesOptions {
+    /**
+     * The locale to select and format with. Defaults to the active translation's locale.
+     */
+    locale?: Intl.LocalesArgument;
+}
 
 /**
  * The active translation's locale, read from the document's `lang` attribute, which the locale
@@ -67,38 +58,54 @@ function documentLocale(): string | undefined {
     }
 }
 
+const PluralRulesCache = new Map<string, Intl.PluralRules>();
+const NumberFormatCache = new Map<string, Intl.NumberFormat>();
+
 /**
- * Get an {@linkcode Intl.PluralRules} instance for the given locale, using a cache to avoid
- * unnecessary allocations.
- *
- * @param locale The locale to get plural rules for, or undefined to use the active locale.
- *
- * @returns An {@linkcode Intl.PluralRules} instance for the given locale.
+ * Get a cached Intl formatter for the given locale and options.
  */
-function getPluralRules(locale?: Intl.LocalesArgument): Intl.PluralRules {
-    locale ??= documentLocale();
+function cached<T>(
+    cache: Map<string, T>,
+    locale: Intl.LocalesArgument,
+    options: Intl.PluralRulesOptions,
+    create: () => T,
+): T {
+    const key = JSON.stringify([String(locale ?? ""), options]);
+    let instance = cache.get(key);
 
-    const key = locale ?? "";
-    let pr = PluralRulesCache.get(key);
-
-    if (!pr) {
-        pr = new Intl.PluralRules(locale);
-        PluralRulesCache.set(key, pr);
+    if (!instance) {
+        instance = create();
+        cache.set(key, instance);
     }
 
-    return pr;
+    return instance;
 }
 
 /**
- * Get the appropriate plural form for a given count and set of forms.
+ * Select and format the variant of a pluralized message for a count, like an MF2
+ * `.match {$count :number}` message.
  *
- * @param count The count to get the plural form for.
- * @param forms The forms to use for each plural category.
- * @param locale The locale to use for determining the plural category, or undefined to use the
- *   active locale.
+ * An exact numeric key wins over the count's plural category, and "other" is the fallback.
+ *
+ * @param count The count to select by.
+ * @param forms The message variants.
+ * @param options Locale and {@linkcode Intl.PluralRules} options.
  */
-export function plural(count: number, forms: PluralForms, locale?: Intl.LocalesArgument): string {
-    const category = getPluralRules(locale).select(count);
+export function plural(count: number, forms: PluralForms, options: PluralOptions = {}): string {
+    const { locale: explicitLocale, ...ruleOptions } = options;
+    const locale = explicitLocale ?? documentLocale();
 
-    return (forms[category] ?? forms.other)();
+    const rules = cached(PluralRulesCache, locale, ruleOptions, () => {
+        return new Intl.PluralRules(locale, ruleOptions);
+    });
+
+    const { type: _type, ...numberOptions } = ruleOptions;
+
+    const numberFormat = cached(NumberFormatCache, locale, numberOptions, () => {
+        return new Intl.NumberFormat(locale, numberOptions);
+    });
+
+    const formatter = forms[count] ?? forms[rules.select(count)] ?? forms.other;
+
+    return formatter(numberFormat.format(count));
 }

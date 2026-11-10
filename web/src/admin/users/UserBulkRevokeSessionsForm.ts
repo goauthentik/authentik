@@ -122,20 +122,21 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
         const userCount = this.users.length;
 
         const users = plural(userCount, {
-            one: () => msg(str`${userCount} user`, { id: "users.revoke-sessions.user-count.one" }),
-            other: () =>
-                msg(str`${userCount} users`, { id: "users.revoke-sessions.user-count.other" }),
+            one: (formattedCount) =>
+                msg(str`${formattedCount} user`, { id: "users.revoke-sessions.user-count.one" }),
+            other: (formattedCount) =>
+                msg(str`${formattedCount} users`, { id: "users.revoke-sessions.user-count.other" }),
         });
 
         showMessage({
             message: plural(revokedCount, {
-                one: () =>
-                    msg(str`Successfully revoked ${revokedCount} session for ${users}.`, {
+                one: (formattedCount) =>
+                    msg(str`Successfully revoked ${formattedCount} session for ${users}.`, {
                         id: "users.revoke-sessions.success.one",
                         desc: "The second placeholder is a pluralized user count, such as '3 users'.",
                     }),
-                other: () =>
-                    msg(str`Successfully revoked ${revokedCount} sessions for ${users}.`, {
+                other: (formattedCount) =>
+                    msg(str`Successfully revoked ${formattedCount} sessions for ${users}.`, {
                         id: "users.revoke-sessions.success.other",
                         desc: "The second placeholder is a pluralized user count, such as '3 users'.",
                     }),
@@ -161,14 +162,14 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
                 <form class="pf-c-form pf-m-horizontal">
                     <p class="pf-c-title">
                         ${plural(this.users.length, {
-                            one: () =>
+                            one: (formattedCount) =>
                                 msg(
-                                    str`Are you sure you want to revoke all sessions for ${this.users.length} user?`,
+                                    str`Are you sure you want to revoke all sessions for ${formattedCount} user?`,
                                     { id: "users.revoke-sessions.confirmation.one" },
                                 ),
-                            other: () =>
+                            other: (formattedCount) =>
                                 msg(
-                                    str`Are you sure you want to revoke all sessions for ${this.users.length} users?`,
+                                    str`Are you sure you want to revoke all sessions for ${formattedCount} users?`,
                                     { id: "users.revoke-sessions.confirmation.other" },
                                 ),
                         })}

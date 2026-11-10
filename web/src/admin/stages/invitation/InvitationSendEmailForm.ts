@@ -91,14 +91,14 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
 
             showMessage({
                 message: plural(addresses.length, {
-                    one: () =>
+                    one: (formattedCount) =>
                         msg(
-                            str`Invitation email queued for sending to ${addresses.length} recipient. Check the System Tasks for more information.`,
+                            str`Invitation email queued for sending to ${formattedCount} recipient. Check the System Tasks for more information.`,
                             { id: "invitations.send-email.success.one" },
                         ),
-                    other: () =>
+                    other: (formattedCount) =>
                         msg(
-                            str`Invitation emails queued for sending to ${addresses.length} recipients. Check the System Tasks for more information.`,
+                            str`Invitation emails queued for sending to ${formattedCount} recipients. Check the System Tasks for more information.`,
                             { id: "invitations.send-email.success.other" },
                         ),
                 }),

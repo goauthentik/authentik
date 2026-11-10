@@ -130,12 +130,12 @@ export class OutpostViewPage extends AKElement {
             return html`<div class="pf-c-progress pf-m-inside">
                 <div class="pf-c-progress__description">
                     ${plural(totalCount, {
-                        one: () =>
-                            msg(str`${healthyCount}/${totalCount} instance is healthy.`, {
+                        one: (formattedCount) =>
+                            msg(str`${healthyCount}/${formattedCount} instance is healthy.`, {
                                 id: "outposts.health.summary.one",
                             }),
-                        other: () =>
-                            msg(str`${healthyCount}/${totalCount} instances are healthy.`, {
+                        other: (formattedCount) =>
+                            msg(str`${healthyCount}/${formattedCount} instances are healthy.`, {
                                 id: "outposts.health.summary.other",
                             }),
                     })}

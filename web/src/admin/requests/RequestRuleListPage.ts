@@ -80,12 +80,12 @@ export class RequestRuleListPage extends TablePage<RequestRule> {
         return [
             item.name,
             plural(item.targets.length, {
-                one: () =>
-                    msg(str`${item.targets.length} object`, {
+                one: (formattedCount) =>
+                    msg(str`${formattedCount} object`, {
                         id: "request-rules.target-count.label.one",
                     }),
-                other: () =>
-                    msg(str`${item.targets.length} objects`, {
+                other: (formattedCount) =>
+                    msg(str`${formattedCount} objects`, {
                         id: "request-rules.target-count.label.other",
                     }),
             }),

@@ -73,12 +73,12 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
         return {
             level: MessageLevel.success,
             message: plural(count, {
-                one: () =>
-                    msg(str`Successfully added ${count} user.`, {
+                one: (formattedCount) =>
+                    msg(str`Successfully added ${formattedCount} user.`, {
                         id: "users.add-related.success.one",
                     }),
-                other: () =>
-                    msg(str`Successfully added ${count} users.`, {
+                other: (formattedCount) =>
+                    msg(str`Successfully added ${formattedCount} users.`, {
                         id: "users.add-related.success.other",
                     }),
             }),

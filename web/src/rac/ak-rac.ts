@@ -236,12 +236,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
             const attempts = this.connectionAttempt;
 
             this.reconnectingMessage = plural(attempts, {
-                one: () =>
-                    msg(str`Connection failed after ${attempts} attempt.`, {
+                one: (formattedCount) =>
+                    msg(str`Connection failed after ${formattedCount} attempt.`, {
                         id: "rac.connection.failed.one",
                     }),
-                other: () =>
-                    msg(str`Connection failed after ${attempts} attempts.`, {
+                other: (formattedCount) =>
+                    msg(str`Connection failed after ${formattedCount} attempts.`, {
                         id: "rac.connection.failed.other",
                     }),
             });
@@ -254,12 +254,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
         const seconds = Math.max(1, delay / 1000);
 
         this.reconnectingMessage = plural(seconds, {
-            one: () =>
-                msg(str`Re-connecting in ${seconds} second.`, {
+            one: (formattedCount) =>
+                msg(str`Re-connecting in ${formattedCount} second.`, {
                     id: "rac.connection.reconnecting.one",
                 }),
-            other: () =>
-                msg(str`Re-connecting in ${seconds} seconds.`, {
+            other: (formattedCount) =>
+                msg(str`Re-connecting in ${formattedCount} seconds.`, {
                     id: "rac.connection.reconnecting.other",
                 }),
         });

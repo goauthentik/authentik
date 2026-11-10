@@ -204,13 +204,13 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                         </h2>
                         <span aria-live="polite" aria-atomic="true">
                             ${plural(unreadCount, {
-                                one: () =>
-                                    msg(str`${unreadCount} unread`, {
+                                one: (formattedCount) =>
+                                    msg(str`${formattedCount} unread`, {
                                         id: "notifications.unread-count.label.one",
                                         desc: "Indicates the number of unread notifications in the notification drawer",
                                     }),
-                                other: () =>
-                                    msg(str`${unreadCount} unread`, {
+                                other: (formattedCount) =>
+                                    msg(str`${formattedCount} unread`, {
                                         id: "notifications.unread-count.label.other",
                                         desc: "Indicates the number of unread notifications in the notification drawer",
                                     }),

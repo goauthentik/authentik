@@ -538,23 +538,23 @@ export class LibraryPage extends WithSession(AKElement) {
                 // considers the update significant enough to read on each change,
                 // rather than the on just the first render.
                 message = plural(count, {
-                    one: () =>
-                        msg(str`${count} application found for "${query}"`, {
+                    one: (formattedCount) =>
+                        msg(str`${formattedCount} application found for "${query}"`, {
                             id: "user.library.application-count.search-result.one",
                         }),
-                    other: () =>
-                        msg(str`${count} applications found for "${query}"`, {
+                    other: (formattedCount) =>
+                        msg(str`${formattedCount} applications found for "${query}"`, {
                             id: "user.library.application-count.search-result.other",
                         }),
                 });
             } else {
                 message = plural(count, {
-                    one: () =>
-                        msg(str`${count} application available`, {
+                    one: (formattedCount) =>
+                        msg(str`${formattedCount} application available`, {
                             id: "user.library.application-count.available.one",
                         }),
-                    other: () =>
-                        msg(str`${count} applications available`, {
+                    other: (formattedCount) =>
+                        msg(str`${formattedCount} applications available`, {
                             id: "user.library.application-count.available.other",
                         }),
                 });

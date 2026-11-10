@@ -42,12 +42,12 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
         return {
             level: MessageLevel.success,
             message: plural(count, {
-                one: () =>
-                    msg(str`Successfully added user to ${count} group.`, {
+                one: (formattedCount) =>
+                    msg(str`Successfully added user to ${formattedCount} group.`, {
                         id: "groups.add-user.success.one",
                     }),
-                other: () =>
-                    msg(str`Successfully added user to ${count} groups.`, {
+                other: (formattedCount) =>
+                    msg(str`Successfully added user to ${formattedCount} groups.`, {
                         id: "groups.add-user.success.other",
                     }),
             }),

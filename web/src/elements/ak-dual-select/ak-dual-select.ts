@@ -313,35 +313,35 @@ export class AkDualSelect extends AKElement {
         const availableStatus =
             availableCount > 0
                 ? plural(availableCount, {
-                      one: () =>
-                          msg(str`${availableCount} item marked to add.`, {
+                      one: (formattedCount) =>
+                          msg(str`${formattedCount} item marked to add.`, {
                               id: "dual-select.status.marked-to-add.one",
                           }),
-                      other: () =>
-                          msg(str`${availableCount} items marked to add.`, {
+                      other: (formattedCount) =>
+                          msg(str`${formattedCount} items marked to add.`, {
                               id: "dual-select.status.marked-to-add.other",
                           }),
                   })
                 : "&nbsp;";
 
         const selectedTotalStatus = plural(selectedTotal, {
-            one: () =>
-                msg(str`${selectedTotal} item selected.`, {
+            one: (formattedCount) =>
+                msg(str`${formattedCount} item selected.`, {
                     id: "dual-select.status.selected.one",
                 }),
-            other: () =>
-                msg(str`${selectedTotal} items selected.`, {
+            other: (formattedCount) =>
+                msg(str`${formattedCount} items selected.`, {
                     id: "dual-select.status.selected.other",
                 }),
         });
 
         const selectedCountStatus = plural(selectedCount, {
-            one: () =>
-                msg(str`${selectedCount} item marked to remove.`, {
+            one: (formattedCount) =>
+                msg(str`${formattedCount} item marked to remove.`, {
                     id: "dual-select.status.marked-to-remove.one",
                 }),
-            other: () =>
-                msg(str`${selectedCount} items marked to remove.`, {
+            other: (formattedCount) =>
+                msg(str`${formattedCount} items marked to remove.`, {
                     id: "dual-select.status.marked-to-remove.other",
                 }),
         });

@@ -37,43 +37,45 @@ const BulkActionMessageRecord: Record<BulkAction, BulkActionMessages> = {
     delete: {
         heading: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Delete ${count} ${noun}`, { id: "bulk-action.delete.heading.one" }),
-                other: () =>
-                    msg(str`Delete ${count} ${nounPlural}`, {
+                one: (formattedCount) =>
+                    msg(str`Delete ${formattedCount} ${noun}`, {
+                        id: "bulk-action.delete.heading.one",
+                    }),
+                other: (formattedCount) =>
+                    msg(str`Delete ${formattedCount} ${nounPlural}`, {
                         id: "bulk-action.delete.heading.other",
                     }),
             }),
         confirmation: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Are you sure you want to delete ${count} ${noun}?`, {
+                one: (formattedCount) =>
+                    msg(str`Are you sure you want to delete ${formattedCount} ${noun}?`, {
                         id: "bulk-action.delete.confirmation.one",
                     }),
-                other: () =>
-                    msg(str`Are you sure you want to delete ${count} ${nounPlural}?`, {
+                other: (formattedCount) =>
+                    msg(str`Are you sure you want to delete ${formattedCount} ${nounPlural}?`, {
                         id: "bulk-action.delete.confirmation.other",
                     }),
             }),
         success: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Successfully deleted ${count} ${noun}.`, {
+                one: (formattedCount) =>
+                    msg(str`Successfully deleted ${formattedCount} ${noun}.`, {
                         id: "bulk-action.delete.success.one",
                     }),
-                other: () =>
-                    msg(str`Successfully deleted ${count} ${nounPlural}.`, {
+                other: (formattedCount) =>
+                    msg(str`Successfully deleted ${formattedCount} ${nounPlural}.`, {
                         id: "bulk-action.delete.success.other",
                     }),
             }),
         error: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Failed to delete ${count} ${noun}.`, {
+                one: (formattedCount) =>
+                    msg(str`Failed to delete ${formattedCount} ${noun}.`, {
                         id: "bulk-action.delete.error.one",
                     }),
-                other: () =>
-                    msg(str`Failed to delete ${count} ${nounPlural}.`, {
+                other: (formattedCount) =>
+                    msg(str`Failed to delete ${formattedCount} ${nounPlural}.`, {
                         id: "bulk-action.delete.error.other",
                     }),
             }),
@@ -82,43 +84,45 @@ const BulkActionMessageRecord: Record<BulkAction, BulkActionMessages> = {
     remove: {
         heading: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Remove ${count} ${noun}`, { id: "bulk-action.remove.heading.one" }),
-                other: () =>
-                    msg(str`Remove ${count} ${nounPlural}`, {
+                one: (formattedCount) =>
+                    msg(str`Remove ${formattedCount} ${noun}`, {
+                        id: "bulk-action.remove.heading.one",
+                    }),
+                other: (formattedCount) =>
+                    msg(str`Remove ${formattedCount} ${nounPlural}`, {
                         id: "bulk-action.remove.heading.other",
                     }),
             }),
         confirmation: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Are you sure you want to remove ${count} ${noun}?`, {
+                one: (formattedCount) =>
+                    msg(str`Are you sure you want to remove ${formattedCount} ${noun}?`, {
                         id: "bulk-action.remove.confirmation.one",
                     }),
-                other: () =>
-                    msg(str`Are you sure you want to remove ${count} ${nounPlural}?`, {
+                other: (formattedCount) =>
+                    msg(str`Are you sure you want to remove ${formattedCount} ${nounPlural}?`, {
                         id: "bulk-action.remove.confirmation.other",
                     }),
             }),
         success: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Successfully removed ${count} ${noun}.`, {
+                one: (formattedCount) =>
+                    msg(str`Successfully removed ${formattedCount} ${noun}.`, {
                         id: "bulk-action.remove.success.one",
                     }),
-                other: () =>
-                    msg(str`Successfully removed ${count} ${nounPlural}.`, {
+                other: (formattedCount) =>
+                    msg(str`Successfully removed ${formattedCount} ${nounPlural}.`, {
                         id: "bulk-action.remove.success.other",
                     }),
             }),
         error: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Failed to remove ${count} ${noun}.`, {
+                one: (formattedCount) =>
+                    msg(str`Failed to remove ${formattedCount} ${noun}.`, {
                         id: "bulk-action.remove.error.one",
                     }),
-                other: () =>
-                    msg(str`Failed to remove ${count} ${nounPlural}.`, {
+                other: (formattedCount) =>
+                    msg(str`Failed to remove ${formattedCount} ${nounPlural}.`, {
                         id: "bulk-action.remove.error.other",
                     }),
             }),
@@ -127,43 +131,45 @@ const BulkActionMessageRecord: Record<BulkAction, BulkActionMessages> = {
     cancel: {
         heading: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Cancel ${count} ${noun}`, { id: "bulk-action.cancel.heading.one" }),
-                other: () =>
-                    msg(str`Cancel ${count} ${nounPlural}`, {
+                one: (formattedCount) =>
+                    msg(str`Cancel ${formattedCount} ${noun}`, {
+                        id: "bulk-action.cancel.heading.one",
+                    }),
+                other: (formattedCount) =>
+                    msg(str`Cancel ${formattedCount} ${nounPlural}`, {
                         id: "bulk-action.cancel.heading.other",
                     }),
             }),
         confirmation: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Are you sure you want to cancel ${count} ${noun}?`, {
+                one: (formattedCount) =>
+                    msg(str`Are you sure you want to cancel ${formattedCount} ${noun}?`, {
                         id: "bulk-action.cancel.confirmation.one",
                     }),
-                other: () =>
-                    msg(str`Are you sure you want to cancel ${count} ${nounPlural}?`, {
+                other: (formattedCount) =>
+                    msg(str`Are you sure you want to cancel ${formattedCount} ${nounPlural}?`, {
                         id: "bulk-action.cancel.confirmation.other",
                     }),
             }),
         success: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Successfully canceled ${count} ${noun}.`, {
+                one: (formattedCount) =>
+                    msg(str`Successfully canceled ${formattedCount} ${noun}.`, {
                         id: "bulk-action.cancel.success.one",
                     }),
-                other: () =>
-                    msg(str`Successfully canceled ${count} ${nounPlural}.`, {
+                other: (formattedCount) =>
+                    msg(str`Successfully canceled ${formattedCount} ${nounPlural}.`, {
                         id: "bulk-action.cancel.success.other",
                     }),
             }),
         error: (count, noun, nounPlural) =>
             plural(count, {
-                one: () =>
-                    msg(str`Failed to cancel ${count} ${noun}.`, {
+                one: (formattedCount) =>
+                    msg(str`Failed to cancel ${formattedCount} ${noun}.`, {
                         id: "bulk-action.cancel.error.one",
                     }),
-                other: () =>
-                    msg(str`Failed to cancel ${count} ${nounPlural}.`, {
+                other: (formattedCount) =>
+                    msg(str`Failed to cancel ${formattedCount} ${nounPlural}.`, {
                         id: "bulk-action.cancel.error.other",
                     }),
             }),

@@ -1140,16 +1140,16 @@ export abstract class Table<T extends object, D = T>
                 name="select-all"
                 type="checkbox"
                 aria-label=${plural(selectedCount, {
-                    one: () =>
+                    one: (formattedCount) =>
                         msg(
-                            str`Select all rows on page (${selectedCount} of ${pageItemCount} selected)`,
+                            str`Select all rows on page (${formattedCount} of ${pageItemCount} selected)`,
                             {
                                 id: "table.select-all.aria-label.one",
                             },
                         ),
-                    other: () =>
+                    other: (formattedCount) =>
                         msg(
-                            str`Select all rows on page (${selectedCount} of ${pageItemCount} selected)`,
+                            str`Select all rows on page (${formattedCount} of ${pageItemCount} selected)`,
                             {
                                 id: "table.select-all.aria-label.other",
                             },

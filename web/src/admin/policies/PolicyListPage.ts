@@ -71,12 +71,12 @@ export class PolicyListPage extends TablePage<Policy> {
                     (item.boundTo || 0) > 0
                         ? html`<ak-label color=${PFColor.Green} compact>
                               ${plural(item.boundTo, {
-                                  one: () =>
-                                      msg(str`Assigned to ${item.boundTo} object.`, {
+                                  one: (formattedCount) =>
+                                      msg(str`Assigned to ${formattedCount} object.`, {
                                           id: "policies.bound-to.label.one",
                                       }),
-                                  other: () =>
-                                      msg(str`Assigned to ${item.boundTo} objects.`, {
+                                  other: (formattedCount) =>
+                                      msg(str`Assigned to ${formattedCount} objects.`, {
                                           id: "policies.bound-to.label.other",
                                       }),
                               })}
