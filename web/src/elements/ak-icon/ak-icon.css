@@ -1,0 +1,85 @@
+:host {
+    --icon--Width: var(--pf-v5-c-icon--Width, 1em);
+    --icon--Height: var(--pf-v5-c-icon--Height, 1em);
+    --icon--m-sm--Width: var(--pf-v5-c-icon--m-sm--Width, 0.75rem);
+    --icon--m-sm--Height: var(--pf-v5-c-icon--m-sm--Height, 0.75rem);
+    --icon--m-md--Width: var(--pf-v5-c-icon--m-md--Width, 1rem);
+    --icon--m-md--Height: var(--pf-v5-c-icon--m-md--Height, 1rem);
+    --icon--m-lg--Width: var(--pf-v5-c-icon--m-lg--Width, 1.5rem);
+    --icon--m-lg--Height: var(--pf-v5-c-icon--m-lg--Height, 1.5rem);
+    --icon--m-xl--Width: var(--pf-v5-c-icon--m-xl--Width, 3.375rem);
+    --icon--m-xl--Height: var(--pf-v5-c-icon--m-xl--Height, 3.375rem);
+    --icon--m-inline--Width: var(--pf-v5-c-icon--m-inline--Width, 1em);
+    --icon--m-inline--Height: var(--pf-v5-c-icon--m-inline--Height, 1em);
+    --icon__content--svg--VerticalAlign: var(--pf-v5-c-icon__content--svg--VerticalAlign, -0.125em);
+    --icon__content--Color: var(--pf-v5-c-icon__content--Color, initial);
+    --icon__content--m-danger--Color: var(--pf-v5-c-icon__content--m-danger--Color, #c9190b);
+    --icon__content--m-warning--Color: var(--pf-v5-c-icon__content--m-warning--Color, #f0ab00);
+    --icon__content--m-success--Color: var(--pf-v5-c-icon__content--m-success--Color, #3e8635);
+    --icon__content--m-info--Color: var(--pf-v5-c-icon__content--m-info--Color, #2b9af3);
+    --icon__content--m-custom--Color: var(--pf-v5-c-icon__content--m-custom--Color, #73c5c5);
+    --icon--m-inline__content--Color: var(--pf-v5-c-icon--m-inline__content--Color, initial);
+    --icon__content--FontSize: var(--pf-v5-c-icon__content--FontSize, 1em);
+    --icon--m-sm__content--FontSize: var(--pf-v5-c-icon--m-sm__content--FontSize, 0.75rem);
+    --icon--m-md__content--FontSize: var(--pf-v5-c-icon--m-md__content--FontSize, 1rem);
+    --icon--m-lg__content--FontSize: var(--pf-v5-c-icon--m-lg__content--FontSize, 1.5rem);
+    --icon--m-xl__content--FontSize: var(--pf-v5-c-icon--m-xl__content--FontSize, 3.375rem);
+    --icon--m-inline__content--FontSize: var(--pf-v5-c-icon--m-inline__content--FontSize, 1em);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--icon--Width);
+    height: var(--icon--Height);
+    --icon--m-inline__content--Opacity: var(--pf-v5-c-icon--m-inline__content--Opacity, inherit);
+}
+
+:host([variant="danger"]) {
+    --icon__content--Color: var(--icon__content--m-danger--Color);
+}
+
+:host([variant="warning"]) {
+    --icon__content--Color: var(--icon__content--m-warning--Color);
+}
+
+:host([variant="success"]) {
+    --icon__content--Color: var(--icon__content--m-success--Color);
+}
+
+:host([variant="info"]) {
+    --icon__content--Color: var(--icon__content--m-info--Color);
+}
+
+:host([variant="custom"]) {
+    --icon__content--Color: var(--icon__content--m-custom--Color);
+}
+
+[part="content"] {
+    font-size: var(--icon__content--FontSize);
+    color: var(--icon__content--Color, inherit);
+    opacity: var(--icon__content--Opacity, 1);
+}
+
+:host([size="sm"]) {
+    --icon--Width: var(--icon--m-sm--Width);
+    --icon--Height: var(--icon--m-sm--Height);
+    --icon__content--FontSize: var(--icon--m-sm__content--FontSize);
+}
+
+:host([size="md"]) {
+    --icon--Width: var(--icon--m-md--Width);
+    --icon--Height: var(--icon--m-md--Height);
+    --icon__content--FontSize: var(--icon--m-md__content--FontSize);
+}
+
+:host([size="lg"]) {
+    --icon--Width: var(--icon--m-lg--Width);
+    --icon--Height: var(--icon--m-lg--Height);
+    --icon__content--FontSize: var(--icon--m-lg__content--FontSize);
+}
+
+:host([size="xl"]) {
+    --icon--Width: var(--icon--m-xl--Width);
+    --icon--Height: var(--icon--m-xl--Height);
+    --icon__content--FontSize: var(--icon--m-xl__content--FontSize);
+}

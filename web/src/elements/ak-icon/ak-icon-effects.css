@@ -1,0 +1,307 @@
+/* prettier-ignore */
+@keyframes fa-beat {
+    0%, 90% { transform: scale(1); }
+    45%     { transform: scale(var(--fa-beat-scale, 1.25)); }
+}
+
+@keyframes fa-bounce {
+    0% {
+        transform: scale(1, 1) translateY(0);
+    }
+
+    10% {
+        transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9))
+            translateY(0);
+    }
+
+    30% {
+        transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1))
+            translateY(var(--fa-bounce-height, -0.5em));
+    }
+
+    50% {
+        transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95))
+            translateY(0);
+    }
+
+    57% {
+        transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+    }
+
+    64% {
+        transform: scale(1, 1) translateY(0);
+    }
+
+    100% {
+        transform: scale(1, 1) translateY(0);
+    }
+}
+
+/* prettier-ignore */
+@keyframes fa-fade {
+    50% { opacity: var(--fa-fade-opacity, 0.4); }
+}
+
+/* prettier-ignore */
+@keyframes fa-beat-fade {
+    0%, 100% {
+        opacity: var(--fa-beat-fade-opacity, 0.4);
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(var(--fa-beat-fade-scale, 1.125));
+    }
+}
+
+@keyframes fa-flip {
+    50% {
+        transform: rotate3d(
+            var(--fa-flip-x, 0),
+            var(--fa-flip-y, 1),
+            var(--fa-flip-z, 0),
+            var(--fa-flip-angle, -180deg)
+        );
+    }
+}
+
+@keyframes fa-flip-vertical {
+    50% {
+        transform: rotate3d(
+            var(--fa-flip-x, 1),
+            var(--fa-flip-y, 0),
+            var(--fa-flip-z, 0),
+            var(--fa-flip-angle, -180deg)
+        );
+    }
+}
+
+/* prettier-ignore */
+@keyframes fa-shake {
+    0%        { transform: rotate(-15deg); }
+    4%        { transform: rotate(15deg); }
+    8%, 24%   { transform: rotate(-18deg); }
+    12%,28%   { transform: rotate(18deg); }
+    16%       { transform: rotate(-22deg); }
+    20%       { transform: rotate(22deg); }
+    32%       { transform: rotate(-12deg); }
+    36%       { transform: rotate(12deg); }
+    40%, 100% { transform: rotate(0deg); }
+
+}
+
+/* prettier-ignore */
+@keyframes fa-spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+:host([effect~="beat"]) [part="icon"] {
+    animation-name: fa-beat;
+    animation-delay: var(--fa-animation-delay, 0s);
+    animation-direction: var(--fa-animation-direction, normal);
+    animation-duration: var(--fa-animation-duration, 1s);
+    animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+    animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+:host([effect~="bounce"]) [part="icon"] {
+    animation-name: fa-bounce;
+    animation-delay: var(--fa-animation-delay, 0s);
+    animation-direction: var(--fa-animation-direction, normal);
+    animation-duration: var(--fa-animation-duration, 1s);
+    animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+    animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.28, 0.84, 0.42, 1));
+}
+
+:host([effect~="fade"]) [part="icon"] {
+    animation-name: fa-fade;
+    animation-delay: var(--fa-animation-delay, 0s);
+    animation-direction: var(--fa-animation-direction, normal);
+    animation-duration: var(--fa-animation-duration, 1s);
+    animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+    animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+}
+
+:host([effect~="beat-fade"]) [part="icon"] {
+    animation-name: fa-beat-fade;
+    animation-delay: var(--fa-animation-delay, 0s);
+    animation-direction: var(--fa-animation-direction, normal);
+    animation-duration: var(--fa-animation-duration, 1s);
+    animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+    animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+}
+
+:host([effect~="flip"]) [part="icon"] {
+    animation-name: fa-flip;
+    animation-delay: var(--fa-animation-delay, 0s);
+    animation-direction: var(--fa-animation-direction, normal);
+    animation-duration: var(--fa-animation-duration, 1s);
+    animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+    animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+:host([effect~="flip-down"]) [part="icon"] {
+    animation-name: fa-flip-vertical;
+    animation-delay: var(--fa-animation-delay, 0s);
+    animation-direction: var(--fa-animation-direction, normal);
+    animation-duration: var(--fa-animation-duration, 1s);
+    animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+    animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+:host([effect~="shake"]) [part="icon"] {
+    animation-name: fa-shake;
+    animation-delay: var(--fa-animation-delay, 0s);
+    animation-direction: var(--fa-animation-direction, normal);
+    animation-duration: var(--fa-animation-duration, 1s);
+    animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+    animation-timing-function: var(--fa-animation-timing, linear);
+}
+
+:host([effect~="spin"]) [part="icon"] {
+    animation-name: fa-spin;
+    animation-delay: var(--fa-animation-delay, 0s);
+    animation-direction: var(--fa-animation-direction, normal);
+    animation-duration: var(--fa-animation-duration, 2s);
+    animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+    animation-timing-function: var(--fa-animation-timing, linear);
+}
+
+:host([effect~="rotate-90"]) [part="content"] {
+    transform: rotate(90deg);
+}
+
+:host([effect~="rotate-180"]) [part="content"] {
+    transform: rotate(180deg);
+}
+
+:host([effect~="rotate-270"]) [part="content"] {
+    transform: rotate(270deg);
+}
+
+:host([effect~="flip-horizontal"]) [part="content"] {
+    transform: scale(-1, 1);
+}
+
+:host([effect~="flip-vertical"]) [part="content"] {
+    transform: scale(1, -1);
+}
+
+:host([effect~="flip-both"]) [part="content"],
+:host([effect~="flip-horizontal"][effect~="flip-vertical"]) [part="content"] {
+    transform: scale(-1, -1);
+}
+
+:host([effect~="rotate-by"]) [part="content"] {
+    transform: rotate(var(--fa-rotate-angle, 0));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :host([effect="beat"]) [part="icon"],
+    :host([effect="bounce"]) [part="icon"],
+    :host([effect="fade"]) [part="icon"],
+    :host([effect="beat-fade"]) [part="icon"],
+    :host([effect="flip"]) [part="icon"],
+    :host([effect="pulse"]) [part="icon"],
+    :host([effect="shake"]) [part="icon"],
+    :host([effect="spin"]) [part="icon"],
+    :host([effect="spin-pulse"]) {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+:host {
+    --pf-v5-c-icon--m-1x--Width: var(--pf-v5-global--icon--FontSize--1x, 1rem);
+    --pf-v5-c-icon--m-1x--Height: var(--pf-v5-global--icon--FontSize--1x, 1rem);
+    --pf-v5-c-icon--m-1x__content--FontSize: var(--pf-v5-global--icon--FontSize--1x, 1rem);
+    --pf-v5-c-icon--m-2x--Width: var(--pf-v5-global--icon--FontSize--2x, 2rem);
+    --pf-v5-c-icon--m-2x--Height: var(--pf-v5-global--icon--FontSize--2x, 2rem);
+    --pf-v5-c-icon--m-2x__content--FontSize: var(--pf-v5-global--icon--FontSize--2x, 2rem);
+    --pf-v5-c-icon--m-3x--Width: var(--pf-v5-global--icon--FontSize--3x, 3rem);
+    --pf-v5-c-icon--m-3x--Height: var(--pf-v5-global--icon--FontSize--3x, 3rem);
+    --pf-v5-c-icon--m-3x__content--FontSize: var(--pf-v5-global--icon--FontSize--3x, 3rem);
+    --pf-v5-c-icon--m-4x--Width: var(--pf-v5-global--icon--FontSize--4x, 4rem);
+    --pf-v5-c-icon--m-4x--Height: var(--pf-v5-global--icon--FontSize--4x, 4rem);
+    --pf-v5-c-icon--m-4x__content--FontSize: var(--pf-v5-global--icon--FontSize--4x, 4rem);
+    --pf-v5-c-icon--m-5x--Width: var(--pf-v5-global--icon--FontSize--5x, 5rem);
+    --pf-v5-c-icon--m-5x--Height: var(--pf-v5-global--icon--FontSize--5x, 5rem);
+    --pf-v5-c-icon--m-5x__content--FontSize: var(--pf-v5-global--icon--FontSize--5x, 5rem);
+    --pf-v5-c-icon--m-6x--Width: var(--pf-v5-global--icon--FontSize--6x, 6rem);
+    --pf-v5-c-icon--m-6x--Height: var(--pf-v5-global--icon--FontSize--6x, 6rem);
+    --pf-v5-c-icon--m-6x__content--FontSize: var(--pf-v5-global--icon--FontSize--6x, 6rem);
+    --pf-v5-c-icon--m-7x--Width: var(--pf-v5-global--icon--FontSize--7x, 7rem);
+    --pf-v5-c-icon--m-7x--Height: var(--pf-v5-global--icon--FontSize--7x, 7rem);
+    --pf-v5-c-icon--m-7x__content--FontSize: var(--pf-v5-global--icon--FontSize--7x, 7rem);
+    --pf-v5-c-icon--m-8x--Width: var(--pf-v5-global--icon--FontSize--8x, 8rem);
+    --pf-v5-c-icon--m-8x--Height: var(--pf-v5-global--icon--FontSize--8x, 8rem);
+    --pf-v5-c-icon--m-8x__content--FontSize: var(--pf-v5-global--icon--FontSize--8x, 8rem);
+    --pf-v5-c-icon--m-9x--Width: var(--pf-v5-global--icon--FontSize--9x, 9rem);
+    --pf-v5-c-icon--m-9x--Height: var(--pf-v5-global--icon--FontSize--9x, 9rem);
+    --pf-v5-c-icon--m-9x__content--FontSize: var(--pf-v5-global--icon--FontSize--9x, 9rem);
+    --pf-v5-c-icon--m-10x--Width: var(--pf-v5-global--icon--FontSize--10x, 10rem);
+    --pf-v5-c-icon--m-10x--Height: var(--pf-v5-global--icon--FontSize--10x, 10rem);
+    --pf-v5-c-icon--m-10x__content--FontSize: var(--pf-v5-global--icon--FontSize--10x, 10rem);
+}
+
+:host([size="1x"]) {
+    --pf-v5-c-icon--Width: var(--pf-v5-c-icon--m-1x--Width);
+    --pf-v5-c-icon--Height: var(--pf-v5-c-icon--m-1x--Height);
+    --pf-v5-c-icon__content--FontSize: var(--pf-v5-c-icon--m-1x__content--FontSize);
+}
+
+:host([size="2x"]) {
+    --pf-v5-c-icon--Width: var(--pf-v5-c-icon--m-2x--Width);
+    --pf-v5-c-icon--Height: var(--pf-v5-c-icon--m-2x--Height);
+    --pf-v5-c-icon__content--FontSize: var(--pf-v5-c-icon--m-2x__content--FontSize);
+}
+
+:host([size="3x"]) {
+    --pf-v5-c-icon--Width: var(--pf-v5-c-icon--m-3x--Width);
+    --pf-v5-c-icon--Height: var(--pf-v5-c-icon--m-3x--Height);
+    --pf-v5-c-icon__content--FontSize: var(--pf-v5-c-icon--m-3x__content--FontSize);
+}
+
+:host([size="4x"]) {
+    --pf-v5-c-icon--Width: var(--pf-v5-c-icon--m-4x--Width);
+    --pf-v5-c-icon--Height: var(--pf-v5-c-icon--m-4x--Height);
+    --pf-v5-c-icon__content--FontSize: var(--pf-v5-c-icon--m-4x__content--FontSize);
+}
+
+:host([size="5x"]) {
+    --pf-v5-c-icon--Width: var(--pf-v5-c-icon--m-5x--Width);
+    --pf-v5-c-icon--Height: var(--pf-v5-c-icon--m-5x--Height);
+    --pf-v5-c-icon__content--FontSize: var(--pf-v5-c-icon--m-5x__content--FontSize);
+}
+
+:host([size="6x"]) {
+    --pf-v5-c-icon--Width: var(--pf-v5-c-icon--m-6x--Width);
+    --pf-v5-c-icon--Height: var(--pf-v5-c-icon--m-6x--Height);
+    --pf-v5-c-icon__content--FontSize: var(--pf-v5-c-icon--m-6x__content--FontSize);
+}
+
+:host([size="7x"]) {
+    --pf-v5-c-icon--Width: var(--pf-v5-c-icon--m-7x--Width);
+    --pf-v5-c-icon--Height: var(--pf-v5-c-icon--m-7x--Height);
+    --pf-v5-c-icon__content--FontSize: var(--pf-v5-c-icon--m-7x__content--FontSize);
+}
+
+:host([size="8x"]) {
+    --pf-v5-c-icon--Width: var(--pf-v5-c-icon--m-8x--Width);
+    --pf-v5-c-icon--Height: var(--pf-v5-c-icon--m-8x--Height);
+    --pf-v5-c-icon__content--FontSize: var(--pf-v5-c-icon--m-8x__content--FontSize);
+}
+
+:host([size="9x"]) {
+    --pf-v5-c-icon--Width: var(--pf-v5-c-icon--m-9x--Width);
+    --pf-v5-c-icon--Height: var(--pf-v5-c-icon--m-9x--Height);
+    --pf-v5-c-icon__content--FontSize: var(--pf-v5-c-icon--m-9x__content--FontSize);
+}
+
+:host([size="10x"]) {
+    --pf-v5-c-icon--Width: var(--pf-v5-c-icon--m-10x--Width);
+    --pf-v5-c-icon--Height: var(--pf-v5-c-icon--m-10x--Height);
+    --pf-v5-c-icon__content--FontSize: var(--pf-v5-c-icon--m-10x__content--FontSize);
+}

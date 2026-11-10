@@ -1,0 +1,14 @@
+import: icon.css
+base: .pf-v5-c-icon
+host:
+    :host:
+        $from: $base
+        $exclude: /^--/
+        # Patternfly references but does not provide this.
+        --icon--m-inline__content--Opacity: var(--pf-v5-c-icon--m-inline__content--Opacity, inherit)
+    :host([variant="\1"]):
+        $from: /__content\.pf-m-(danger|warning|success|info|custom)/
+    '[part="content"]':
+        $from: /__content/
+    :host([size="\1"]):
+        $from: /\.pf-m-(sm|md|lg|xl)/

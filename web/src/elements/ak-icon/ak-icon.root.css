@@ -1,0 +1,28 @@
+:root {
+    --pf-v5-c-icon--Width: 1em;
+    --pf-v5-c-icon--Height: 1em;
+    --pf-v5-c-icon--m-sm--Width: var(--pf-v5-global--icon--FontSize--sm);
+    --pf-v5-c-icon--m-sm--Height: var(--pf-v5-global--icon--FontSize--sm);
+    --pf-v5-c-icon--m-md--Width: var(--pf-v5-global--icon--FontSize--md);
+    --pf-v5-c-icon--m-md--Height: var(--pf-v5-global--icon--FontSize--md);
+    --pf-v5-c-icon--m-lg--Width: var(--pf-v5-global--icon--FontSize--lg);
+    --pf-v5-c-icon--m-lg--Height: var(--pf-v5-global--icon--FontSize--lg);
+    --pf-v5-c-icon--m-xl--Width: var(--pf-v5-global--icon--FontSize--xl);
+    --pf-v5-c-icon--m-xl--Height: var(--pf-v5-global--icon--FontSize--xl);
+    --pf-v5-c-icon--m-inline--Width: 1em;
+    --pf-v5-c-icon--m-inline--Height: 1em;
+    --pf-v5-c-icon__content--svg--VerticalAlign: -0.125em;
+    --pf-v5-c-icon__content--Color: initial;
+    --pf-v5-c-icon__content--m-danger--Color: var(--pf-v5-global--danger-color--100);
+    --pf-v5-c-icon__content--m-warning--Color: var(--pf-v5-global--warning-color--100);
+    --pf-v5-c-icon__content--m-success--Color: var(--pf-v5-global--success-color--100);
+    --pf-v5-c-icon__content--m-info--Color: var(--pf-v5-global--info-color--100);
+    --pf-v5-c-icon__content--m-custom--Color: var(--pf-v5-global--custom-color--100);
+    --pf-v5-c-icon--m-inline__content--Color: initial;
+    --pf-v5-c-icon__content--FontSize: 1em;
+    --pf-v5-c-icon--m-sm__content--FontSize: var(--pf-v5-global--icon--FontSize--sm);
+    --pf-v5-c-icon--m-md__content--FontSize: var(--pf-v5-global--icon--FontSize--md);
+    --pf-v5-c-icon--m-lg__content--FontSize: var(--pf-v5-global--icon--FontSize--lg);
+    --pf-v5-c-icon--m-xl__content--FontSize: var(--pf-v5-global--icon--FontSize--xl);
+    --pf-v5-c-icon--m-inline__content--FontSize: 1em;
+}
