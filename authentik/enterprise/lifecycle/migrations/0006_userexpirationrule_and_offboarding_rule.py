@@ -143,10 +143,15 @@ class Migration(migrations.Migration):
                 to="authentik_lifecycle.userexpirationrule",
             ),
         ),
+        migrations.AddField(
+            model_name="useroffboarding",
+            name="generated",
+            field=models.BooleanField(default=False),
+        ),
         migrations.AddIndex(
             model_name="useroffboarding",
             index=models.Index(
-                condition=models.Q(("rule__isnull", False)),
+                condition=models.Q(("generated", True)),
                 fields=["user", "executed_at"],
                 name="generated_offboarding_idx",
             ),
