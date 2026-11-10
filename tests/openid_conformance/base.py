@@ -135,11 +135,18 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
             sleep(0.1)
 
     def get_screenshot(self):
-        """Get a screenshot, but resize the window first so we don't exceed 500kb"""
+        """Get a JPEG screenshot, since the conformance suite rejects images over 500kb"""
+        # Selenium only captures PNG, which can exceed the limit depending on the page.
+        self.driver.command_executor.add_command(
+            "executeCdpCommand", "POST", "/session/$sessionId/goog/cdp/execute"
+        )
         self.driver.set_window_size(800, 600)
-        screenshot = f"data:image/jpeg;base64,{self.driver.get_screenshot_as_base64()}"
+        result = self.driver.execute(
+            "executeCdpCommand",
+            {"cmd": "Page.captureScreenshot", "params": {"format": "jpeg", "quality": 80}},
+        )
         self.driver.maximize_window()
-        return screenshot
+        return f"data:image/jpeg;base64,{result['value']['data']}"
 
     def do_browser(self, url):
         """For any specific OpenID Conformance test, execute the operations required"""
