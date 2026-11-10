@@ -24,7 +24,10 @@ from authentik.enterprise.lifecycle.offboarding.models import (
     OffboardingStatus,
     UserOffboarding,
 )
-from authentik.enterprise.lifecycle.offboarding.tasks import execute_offboarding
+from authentik.enterprise.lifecycle.offboarding.tasks import (
+    execute_due_offboardings,
+    execute_offboarding,
+)
 from authentik.enterprise.tests import enterprise_test
 from authentik.events.models import Event, EventAction, Notification
 from authentik.lib.generators import generate_id
@@ -91,6 +94,17 @@ class TestSelection(ExpirationTestCase):
         _backdate(anonymous, last_login=None, date_joined=timedelta(days=100))
         self.assertEqual(rule.apply(), 0)
         self.assertIsNone(_pending(anonymous))
+
+    def test_user_active_since_candidate_snapshot_is_skipped(self):
+        rule = self._rule()
+        user = _dormant_user()
+        stale = list(rule.candidates())
+        self.assertEqual(stale, [user])
+        User.objects.filter(pk=user.pk).update(last_login=now())
+        with patch.object(UserExpirationRule, "candidates") as candidates:
+            candidates.return_value.iterator.return_value = iter(stale)
+            self.assertEqual(rule.apply(), 0)
+        self.assertIsNone(_pending(user))
 
     def test_never_logged_in_counts_from_date_joined(self):
         rule = self._rule()
@@ -1004,6 +1018,14 @@ class TestExecution(ExpirationTestCase):
             with patch(APPLY_RULE) as send:
                 apply_expiration_rules.send()
             send.assert_not_called()
+            with patch(
+                "authentik.enterprise.lifecycle.offboarding.tasks"
+                ".execute_offboarding.send_with_options"
+            ) as execute:
+                execute_due_offboardings.send()
+            self.assertEqual(
+                [call.kwargs["args"] for call in execute.call_args_list], [(str(manual.pk),)]
+            )
             execute_offboarding(str(row.pk))
             execute_offboarding(str(manual.pk))
         row.refresh_from_db()
@@ -1157,6 +1179,17 @@ class TestAPI(ExpirationTestCase):
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["users"][0]["username"], user.username)
         self.assertEqual(rule.apply(), 1)
+
+    def test_preview_requires_view_user(self):
+        rule = self._rule()
+        _dormant_user()
+        viewer = create_test_user()
+        viewer.assign_perms_to_managed_role("authentik_lifecycle.view_userexpirationrule")
+        self.client.force_login(viewer)
+        url = reverse("authentik_api:userexpirationrule-preview", kwargs={"pk": rule.pk})
+        self.assertEqual(self.client.get(url).status_code, 403)
+        viewer.assign_perms_to_managed_role("authentik_core.view_user")
+        self.assertEqual(self.client.get(url).status_code, 200)
 
     def test_offboarding_exposes_rule(self):
         rule = self._rule()

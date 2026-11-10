@@ -431,22 +431,32 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             return 0
         self._tighten_foreign_rows()
         created = 0
-        for user in self.candidates().iterator(chunk_size=CHUNK_SIZE):
-            try:
-                with transaction.atomic():
-                    offboarding = UserOffboarding.objects.create(
-                        user=user,
-                        rule=self,
-                        scheduled_at=self.due_at(user),
-                        action=self.action,
-                        revoke_sessions=self.revoke_sessions,
-                        revoke_tokens=self.revoke_tokens,
-                    )
-            except IntegrityError:
-                # Another offboarding was scheduled since selection.
-                continue
-            self._warn(user, offboarding)
-            created += 1
+        candidates = self.candidates().iterator(chunk_size=CHUNK_SIZE)
+        for batch in batched(candidates, CHUNK_SIZE, strict=False):
+            # Activity may have changed since candidates were selected.
+            still_inactive = set(
+                self.scope(threshold=self._threshold())
+                .filter(pk__in=[user.pk for user in batch])
+                .values_list("pk", flat=True)
+            )
+            for user in batch:
+                if user.pk not in still_inactive:
+                    continue
+                try:
+                    with transaction.atomic():
+                        offboarding = UserOffboarding.objects.create(
+                            user=user,
+                            rule=self,
+                            scheduled_at=self.due_at(user),
+                            action=self.action,
+                            revoke_sessions=self.revoke_sessions,
+                            revoke_tokens=self.revoke_tokens,
+                        )
+                except IntegrityError:
+                    # Another offboarding was scheduled since selection.
+                    continue
+                self._warn(user, offboarding)
+                created += 1
         LOGGER.info("Applied user expiration rule", rule=self.name, created=created)
         return created
 

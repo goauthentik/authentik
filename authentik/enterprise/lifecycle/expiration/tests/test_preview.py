@@ -245,7 +245,7 @@ class TestPreview(ExpirationTestCase):
                 self.rule.refresh_from_db()
                 self.assertFalse(self.rule.enabled)
 
-    def test_view_permission_is_sufficient_for_get_and_post(self):
+    def test_view_permissions_are_sufficient_for_get_and_post(self):
         self._user()
         for object_permission in (False, True):
             with self.subTest(object_permission=object_permission):
@@ -254,6 +254,7 @@ class TestPreview(ExpirationTestCase):
                     "authentik_lifecycle.view_userexpirationrule",
                     obj=self.rule if object_permission else None,
                 )
+                viewer.assign_perms_to_managed_role("authentik_core.view_user")
                 self.client.force_login(viewer)
                 self.assertFalse(viewer.has_perm("authentik_lifecycle.add_userexpirationrule"))
                 self.assertFalse(
@@ -305,8 +306,8 @@ class TestPreview(ExpirationTestCase):
         self.rule.save()
         viewer = create_test_user()
         viewer.assign_perms_to_managed_role("authentik_lifecycle.view_userexpirationrule")
+        viewer.assign_perms_to_managed_role("authentik_core.view_user")
         self.client.force_login(viewer)
-        self.assertFalse(viewer.has_perm("authentik_core.view_user"))
         self.assertFalse(viewer.has_perm("authentik_core.view_group"))
 
         response = self.client.get(

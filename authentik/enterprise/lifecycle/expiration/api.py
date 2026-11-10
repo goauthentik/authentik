@@ -148,7 +148,9 @@ class UserExpirationRuleViewSet(UsedByMixin, ModelViewSet):
         request=UserExpirationRuleSerializer,
         responses={200: UserExpirationRulePreviewSerializer},
     )
-    @permission_required("authentik_lifecycle.view_userexpirationrule")
+    @permission_required(
+        "authentik_lifecycle.view_userexpirationrule", ["authentik_core.view_user"]
+    )
     @action(
         detail=True,
         methods=["GET", "POST"],
