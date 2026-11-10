@@ -60,9 +60,8 @@ const renderDiff = (diff: DiffRecord | undefined | null) =>
           </div>`
         : null;
 
-export function renderModelChanged(event: EventWithContext) {
-    return html`
-        <div class="pf-l-split">
+export const renderModelChanged = (event: EventWithContext) =>
+    html` <div class="pf-l-split">
             <div class="pf-l-split__item pf-m-fill">
                 <div class="pf-c-card__title">${msg("Affected model:")}</div>
                 <div class="pf-c-card__body">
@@ -72,6 +71,4 @@ export function renderModelChanged(event: EventWithContext) {
             ${renderDiff(event.context?.diff as unknown as DiffRecord | null | undefined)}
         </div>
         <br />
-        <ak-expand>${renderDefault(event)}</ak-expand>
-    `;
-}
+        <ak-expand>${renderDefault(event)}</ak-expand>`;

@@ -36,8 +36,8 @@ export const renderPolicyRequest = (context: EventContext) =>
             </div>
         </div>`;
 
-export function renderPolicyException(event: EventWithContext) {
-    return html`<div class="pf-l-flex">
+export const renderPolicyException = (event: EventWithContext) =>
+    html`<div class="pf-l-flex">
             ${renderPolicyRequest(event.context as EventContext)}
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("Exception")}</div>
@@ -47,4 +47,3 @@ export function renderPolicyException(event: EventWithContext) {
             </div>
         </div>
         <ak-expand>${renderDefault(event)}</ak-expand>`;
-}

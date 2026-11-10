@@ -63,8 +63,8 @@ function buildGitHubIssueUrl(context: EventContext): string {
         .trim();
 }
 
-export function renderSystemException(event: EventWithContext) {
-    return html`<div class="pf-l-flex">
+export const renderSystemException = (event: EventWithContext) =>
+    html`<div class="pf-l-flex">
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("Exception")}</div>
                 <div class="pf-c-card__title">
@@ -82,4 +82,3 @@ export function renderSystemException(event: EventWithContext) {
             </div>
         </div>
         <ak-expand>${renderDefault(event)}</ak-expand>`;
-}

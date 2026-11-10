@@ -12,8 +12,8 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { until } from "lit/directives/until.js";
 
-export function renderAuthorizeApplication(event: EventWithContext) {
-    return html`<div class="pf-l-flex">
+export const renderAuthorizeApplication = (event: EventWithContext) =>
+    html`<div class="pf-l-flex">
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("Authorized application:")}</div>
                 <div class="pf-c-card__body">
@@ -44,4 +44,3 @@ export function renderAuthorizeApplication(event: EventWithContext) {
             </div>
         </div>
         <ak-expand>${renderDefault(event)}</ak-expand>`;
-}
