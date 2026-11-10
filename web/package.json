@@ -121,7 +121,7 @@
             "command": "lit-analyzer src"
         },
         "build:types": {
-            "command": "tsc -p .",
+            "command": "tsc -p tsconfig.unit.json",
             "dependencies": [
                 "build-locales"
             ]
