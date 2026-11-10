@@ -38,7 +38,7 @@ Activity is stored independently of audit events, so event retention does not af
 8. Leave **Exclude superusers** enabled unless you want to include members of superuser groups.
 9. Leave **Enabled** off, then click **Create**. The rule does not schedule users for offboarding until you enable it.
 10. Optionally bind policies to the rule. Expand the rule's row to manage its policy bindings. The rule expires only users who pass the bound policies, so you can exempt users based on attributes or other criteria.
-11. Click **Preview** to see how many users the first run would schedule for offboarding.
+11. Click **Preview** to see how many users the first run would schedule for offboarding. Users who have already exceeded the inactivity duration are offboarded shortly after you enable the rule, [without a warning period](#how-rules-run).
 12. Edit the rule, turn on **Enabled**, and click **Update**. For **Delete** rules, confirm with **Save delete rule**. The rule runs immediately and every hour thereafter.
 
 ## Preview changes to a rule
@@ -54,6 +54,8 @@ Delete rules require confirmation when you enable them, expand their scope, or c
 Enabled rules run every hour. When a user reaches the inactivity threshold, the rule schedules an offboarding for the time of their last activity plus the configured inactivity duration. Like a [manually scheduled offboarding](./user-offboarding.mdx), it appears under **Events** > **Offboardings**. You can cancel it, and the offboarding is retried after a failure. The user's overview page shows **Cancel Expiration** and the rule that scheduled the offboarding.
 
 If you configure a **Warning period**, the rule creates the offboarding that long before it is due, generates a **User Expiration Warning** event, and delivers the warning through the selected notification transports. If you select no transports, the warning appears as an in-app notification. Without a warning period, the rule creates the offboarding when it is due and runs it within five minutes.
+
+The warning period does not apply to users who have already been inactive for longer than the inactivity duration when you enable a rule. Their offboarding is due immediately, so it runs within five minutes of the first run, at the same time the warning is sent. Use **Preview** before you enable a rule to see which users the first run would schedule.
 
 A login before the scheduled time removes the pending offboarding and resets the inactivity clock. Before execution, a final check confirms that the rule still applies and that the user has reached the inactivity threshold. These checks prevent offboarding if the rule is disabled, the user's group membership changes, or the user logs in. Increasing the inactivity duration also postpones execution, even if the task is already queued.
 
