@@ -68,7 +68,7 @@ class TestUserActivity(TestCase):
             event.save()
         UserActivity.objects.record(users[0].pk)
         current = UserActivity.objects.get(user=users[0]).last_activity_at
-        migration = import_module("authentik.core.migrations.0068_backfill_useractivity")
+        migration = import_module("authentik.core.migrations.0070_backfill_useractivity")
         with connection.cursor() as cursor:
             cursor.execute(migration.Migration.operations[0].sql)
         self.assertEqual(UserActivity.objects.get(user=users[0]).last_activity_at, current)

@@ -70,14 +70,14 @@ pub fn install() -> Result<LogFilterHandle> {
                     .with_writer(std::io::stderr)
                     .with_filter(filter_layer),
             )
-            .with(::sentry::integrations::tracing::layer())
+            .with(::sentry::integrations::tracing::SpanLayer::new())
             .init();
     } else {
         tracing_subscriber::registry()
             .with(ErrorLayer::default())
             .with(console_layer)
             .with(json::layer().with_filter(filter_layer))
-            .with(::sentry::integrations::tracing::layer())
+            .with(::sentry::integrations::tracing::SpanLayer::new())
             .init();
     }
 

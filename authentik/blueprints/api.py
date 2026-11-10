@@ -227,7 +227,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         try:
             importer = Importer.from_string(string_contents, context)
         except EntryInvalidError as exc:
-            raise ValidationError(_("Invalid blueprint file: {exc}".format(exc=str(exc)))) from None
+            raise ValidationError(_("Invalid blueprint file: {exc}").format(exc=str(exc))) from None
 
         check_blueprint_perms(importer.blueprint, self.request.user)
         return importer

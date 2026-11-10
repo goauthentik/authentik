@@ -1,3 +1,4 @@
+import "#admin/sidebar/Bookmarks/Bookmark";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
@@ -8,6 +9,7 @@ import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#components/ak-page-navbar";
 import "#admin/sidebar/VersionDetails";
+import "#admin/sidebar/BreadcrumbWrapper";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -52,22 +54,24 @@ import {
 
 import Styles from "#admin/ak-interface-admin.css";
 import { DEFAULT_PATH, ROUTES } from "#admin/Routes";
+import { BookmarkController } from "#admin/sidebar/Bookmarks/BookmarkController";
+import { bookmarksToSidebar } from "#admin/sidebar/Bookmarks/bookmarkToSidebar";
+import { BreadcrumbController } from "#admin/sidebar/BreadcrumbController";
 import { createAdminSidebarEntries } from "#admin/sidebar/constants";
 import {
     ExtendedSidebarItem,
     findCurrentSidebarKey,
-    findSidebarSectionByRoute,
+    findCurrentSidebarSectionLabel,
     resolveSidebarEntries,
 } from "#admin/sidebar/sidebarTools";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
-
 let lastRoutePath: string | null = null;
 let lastRouteName: string | null = null;
 
@@ -102,16 +106,18 @@ export class AdminInterface extends WithLicenseSummary(
     @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
 
-    protected get navigationEntries(): readonly ExtendedSidebarItem[] {
+    public get navigationEntries(): readonly ExtendedSidebarItem[] {
         const canEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
 
         const entries = createAdminSidebarEntries(canEnterprise);
 
-        return resolveSidebarEntries(entries, {
+        const result = resolveSidebarEntries(entries, {
             canEnterprise,
             // Assume licensed until the summary loads so the notice doesn't flash.
             licensed: !this.licenseSummary || this.hasEnterpriseLicense,
         });
+
+        return bookmarksToSidebar(result, this.bookmarkManager.bookmarks ?? []);
     }
 
     //#endregion
@@ -139,6 +145,10 @@ export class AdminInterface extends WithLicenseSummary(
         this.pathname = window.location.pathname;
     };
 
+    private _breadcrumbManager = new BreadcrumbController(this);
+
+    private bookmarkManager = new BookmarkController(this);
+
     /**
      * The current `location.pathname`, tracked so the navbar's section follows
      * the route. Kept raw rather than interface-relative: this element upgrades
@@ -146,7 +156,7 @@ export class AdminInterface extends WithLicenseSummary(
      * render time.
      */
     @state()
-    protected pathname = window.location.pathname;
+    public pathname = window.location.pathname;
 
     @state()
     protected drawer: DrawerState = readDrawerParams();
@@ -155,13 +165,6 @@ export class AdminInterface extends WithLicenseSummary(
     protected drawerListener = (event: AKDrawerChangeEvent) => {
         this.drawer = event.drawer;
         persistDrawerParams(event.drawer);
-    };
-
-    @listen(LOCALE_STATUS_EVENT, { target: window })
-    localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (event.detail.status === "ready") {
-            this.requestUpdate();
-        }
     };
 
     //#endregion
@@ -295,7 +298,9 @@ export class AdminInterface extends WithLicenseSummary(
         };
 
         return html`<div class="pf-c-page">
-                <ak-page-navbar .section=${findSidebarSectionByRoute(entries, routeName)}>
+                <ak-page-navbar
+                    .section=${findCurrentSidebarSectionLabel(entries, routeName, this.pathname)}
+                >
                     <button
                         slot="toggle"
                         aria-controls="global-nav"
@@ -312,6 +317,8 @@ export class AdminInterface extends WithLicenseSummary(
                     ${this.renderCommandPaletteButton()}
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
+                    <ak-ui-bookmark slot="bookmark"></ak-ui-bookmark>
+                    <ak-ui-breadcrumbs slot="breadcrumbs"></ak-ui-breadcrumbs>
                 </ak-page-navbar>
 
                 <ak-sidebar
@@ -319,7 +326,7 @@ export class AdminInterface extends WithLicenseSummary(
                     ?hidden=${!this.sidebarOpen}
                     class="${classMap(sidebarClasses)}"
                     .entries=${entries}
-                    current=${ifPresent(findCurrentSidebarKey(entries, path, routeName))}
+                    current=${ifPresent(findCurrentSidebarKey(entries, routeName, path))}
                 >
                     <ak-version-details slot="footer"></ak-version-details>
                 </ak-sidebar>

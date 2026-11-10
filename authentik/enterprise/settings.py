@@ -6,6 +6,7 @@ INSTALLED_APPS = [
     "authentik.enterprise.endpoints.connectors.agent",
     "authentik.enterprise.endpoints.connectors.fleet",
     "authentik.enterprise.endpoints.connectors.google_chrome",
+    "authentik.enterprise.endpoints.connectors.microsoft_intune",
     "authentik.enterprise.lifecycle",
     "authentik.enterprise.policies.unique_password",
     "authentik.enterprise.providers.google_workspace",
@@ -22,4 +23,7 @@ INSTALLED_APPS = [
     "authentik.enterprise.stages.source",
 ]
 
-MIDDLEWARE = ["authentik.enterprise.middleware.EnterpriseMiddleware"]
+MIDDLEWARE = [
+    "authentik.enterprise.middleware.EnterpriseMiddleware",
+    "authentik.enterprise.required_actions.middleware.RequiredActionsMiddleware",
+]

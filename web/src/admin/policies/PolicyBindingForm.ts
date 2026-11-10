@@ -17,13 +17,14 @@ import { ToggleGroupEvent } from "#elements/ToggleGroup";
 import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import { groupSource, policySource, userSource } from "#admin/common/search-sources";
+import { renderDryRunHelp } from "#admin/policies/renderDryRunHelp";
 
 import { Group, PoliciesApi, PolicyBinding, User } from "@goauthentik/api";
 
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
@@ -60,12 +61,20 @@ export function cleanBindingForSend(
     return data;
 }
 
+const Styles = css`
+    .ak-c-form--centered-control {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+`;
+
 @customElement("ak-policy-binding-form")
 export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends ModelForm<
     T,
     string
 > {
-    public static styles: CSSResult[] = [...super.styles, PFContent];
+    public static styles: CSSResult[] = [...super.styles, PFContent, Styles];
     public static verboseName = msg("Policy Binding");
     public static verboseNamePlural = msg("Policy Bindings");
 
@@ -97,6 +106,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
 
     @state()
     protected defaultOrder = 0;
+
+    protected supportsDryRun = true;
 
     public override reset(): void {
         super.reset();
@@ -158,22 +169,24 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     renderModeSelector(): TemplateResult {
-        return html` <ak-toggle-group
-            value=${this.policyGroupUser}
-            @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
-                this.policyGroupUser = ev.value;
-            }}
-        >
-            ${Object.values(PolicyBindingCheckTarget).map((ct) => {
-                if (this.allowedTypes.includes(ct)) {
-                    return html`<option value=${ct}>
-                        ${PolicyBindingCheckTargetToLabel(ct)}
-                    </option>`;
-                }
+        return html`<div class="ak-c-form--centered-control">
+            <ak-toggle-group
+                value=${this.policyGroupUser}
+                @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
+                    this.policyGroupUser = ev.value;
+                }}
+            >
+                ${Object.values(PolicyBindingCheckTarget).map((ct) => {
+                    if (this.allowedTypes.includes(ct)) {
+                        return html`<option value=${ct}>
+                            ${PolicyBindingCheckTargetToLabel(ct)}
+                        </option>`;
+                    }
 
-                return nothing;
-            })}
-        </ak-toggle-group>`;
+                    return nothing;
+                })}
+            </ak-toggle-group>
+        </div>`;
     }
 
     protected renderTarget() {
@@ -248,6 +261,16 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 ?checked=${this.instance?.enabled ?? true}
             >
             </ak-switch-input>
+            ${
+                this.supportsDryRun
+                    ? html`<ak-switch-input
+                          name="dryRun"
+                          label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                          ?checked=${this.instance?.dryRun ?? false}
+                          .help=${renderDryRunHelp()}
+                      ></ak-switch-input>`
+                    : nothing
+            }
             <ak-switch-input
                 name="negate"
                 label=${msg("Negate Result")}

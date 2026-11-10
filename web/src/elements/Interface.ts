@@ -45,12 +45,12 @@ export abstract class Interface extends AKElement {
 
         this.logger = ConsoleLogger.prefix(this.localName);
 
-        const { config, brand, locale } = globalAK();
+        const { config, brand } = globalAK();
 
         createUIThemeEffect(applyDocumentTheme);
         applyScrollbarClass(this.ownerDocument);
 
-        this.addController(new LocaleContextController(this, locale));
+        this.addController(new LocaleContextController(this));
         this.addController(new ConfigContextController(this, config), AuthentikConfigContext);
         this.addController(new BrandingContextController(this, brand), BrandingContext);
         this.addController(new ModalOrchestrationController());
