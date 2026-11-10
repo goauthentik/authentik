@@ -164,19 +164,31 @@ class OAuthAuthorizationParams:
             self.resolve_routing_from_request_object()
             self.grant_type = self.resolve_grant_type()
             self.set_default_response_mode()
-            raise AuthorizeError(
-                self.redirect_uri,
-                error="request_not_supported",
-                grant_type=self.grant_type or "",
-                state=self.state,
-                response_mode=self.response_mode,
-            )
+            raise self.authorize_error("request_not_supported")
         self.check_grant()
         self.check_scope(github_compat)
         self.check_dpop_jkt()
         self.check_nonce()
         self.check_code_challenge()
         self.check_max_age(raw_max_age)
+
+    def authorize_error(
+        self,
+        error: str,
+        description: str | None = None,
+        provider: OAuth2Provider | None = None,
+    ) -> AuthorizeError:
+        """Error returned to the client at its redirect URI, using the response mode it
+        requested and identifying the provider's issuer when enabled (RFC 9207)"""
+        return AuthorizeError(
+            self.redirect_uri,
+            error,
+            grant_type=self.grant_type or "",
+            state=self.state,
+            response_mode=self.response_mode,
+            description=description,
+            provider=provider or self.provider,
+        )
 
     def resolve_grant_type(self) -> str | None:
         """Map the response_type to the grant_type/flow it implies, without validation."""
@@ -223,23 +235,11 @@ class OAuthAuthorizationParams:
         # Grant type validation.
         if not self.grant_type:
             LOGGER.warning("Invalid response type", type=self.response_type)
-            raise AuthorizeError(
-                redirect_uri=self.redirect_uri,
-                error="unsupported_response_type",
-                grant_type="",
-                state=self.state,
-                response_mode=self.response_mode,
-            )
+            raise self.authorize_error("unsupported_response_type")
 
         if self.grant_type not in self.provider.grant_types:
             LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
-            raise AuthorizeError(
-                redirect_uri=self.redirect_uri,
-                error="invalid_request",
-                grant_type=self.grant_type,
-                state=self.state,
-                response_mode=self.response_mode,
-            )
+            raise self.authorize_error("invalid_request")
 
         self.set_default_response_mode()
 
@@ -305,13 +305,7 @@ class OAuthAuthorizationParams:
             or self.response_type in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
         ):
             LOGGER.warning("Missing 'openid' scope.")
-            raise AuthorizeError(
-                redirect_uri=self.redirect_uri,
-                error="invalid_scope",
-                grant_type=self.grant_type,
-                state=self.state,
-                response_mode=self.response_mode,
-            ).with_cause("scope_openid_missing")
+            raise self.authorize_error("invalid_scope").with_cause("scope_openid_missing")
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
             # Don't explicitly request consent with offline_access, as the spec allows for
@@ -330,34 +324,22 @@ class OAuthAuthorizationParams:
                 self.scope.remove(SCOPE_OFFLINE_ACCESS)
         # Key binding requires dpop_jkt at authorization time
         if SCOPE_BOUND_KEY in self.scope and not self.dpop_jkt:
-            raise AuthorizeError(
-                self.redirect_uri,
-                error="invalid_request",
-                grant_type=self.grant_type,
-                state=self.state,
-                response_mode=self.response_mode,
+            raise self.authorize_error(
+                "invalid_request",
                 description="dpop_jkt is required when bound_key scope is requested",
             )
         # dpop_jkt should only be set if requesting the key binding scope
         if SCOPE_BOUND_KEY not in self.scope and self.dpop_jkt:
-            raise AuthorizeError(
-                self.redirect_uri,
-                error="invalid_request",
-                grant_type=self.grant_type,
-                state=self.state,
-                response_mode=self.response_mode,
+            raise self.authorize_error(
+                "invalid_request",
                 description="dpop_jkt is set when bound_key scope is not requested",
             )
 
     def check_dpop_jkt(self):
         """Validate dpop_jkt format if provided."""
         if self.dpop_jkt and not is_valid_jkt(self.dpop_jkt):
-            raise AuthorizeError(
-                self.redirect_uri,
-                error="invalid_request",
-                grant_type=self.grant_type,
-                state=self.state,
-                response_mode=self.response_mode,
+            raise self.authorize_error(
+                "invalid_request",
                 description="dpop_jkt must be a base64url-encoded SHA-256 JWK thumbprint",
             )
 
@@ -378,13 +360,7 @@ class OAuthAuthorizationParams:
             return
         if not self.nonce:
             LOGGER.warning("Missing nonce for OpenID Request")
-            raise AuthorizeError(
-                redirect_uri=self.redirect_uri,
-                error="invalid_request",
-                grant_type=self.grant_type,
-                state=self.state,
-                response_mode=self.response_mode,
-            ).with_cause("nonce_missing")
+            raise self.authorize_error("invalid_request").with_cause("nonce_missing")
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""
@@ -392,12 +368,8 @@ class OAuthAuthorizationParams:
             PKCE_METHOD_PLAIN,
             PKCE_METHOD_S256,
         ]:
-            raise AuthorizeError(
-                redirect_uri=self.redirect_uri,
-                error="invalid_request",
-                grant_type=self.grant_type,
-                state=self.state,
-                response_mode=self.response_mode,
+            raise self.authorize_error(
+                "invalid_request",
                 description=f"Unsupported challenge method {self.code_challenge_method}",
             )
 
@@ -410,13 +382,7 @@ class OAuthAuthorizationParams:
         except ValueError:
             self.max_age = None
         if self.max_age is None or self.max_age < 0:
-            raise AuthorizeError(
-                redirect_uri=self.redirect_uri,
-                error="invalid_request",
-                grant_type=self.grant_type,
-                state=self.state,
-                response_mode=self.response_mode,
-            ).with_cause("max_age_invalid")
+            raise self.authorize_error("invalid_request").with_cause("max_age_invalid")
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""
@@ -475,13 +441,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
             raise Http404 from None
         if PROMPT_NONE in self.params.prompt and not self.request.user.is_authenticated:
             # When "prompt" is set to "none" but the user is not logged in, show an error message
-            error = AuthorizeError(
-                self.params.redirect_uri,
-                "login_required",
-                self.params.grant_type,
-                self.params.state,
-                self.params.response_mode,
-            )
+            error = self.params.authorize_error("login_required")
             raise RequestValidationError(error.get_response(self.request))
 
     def resolve_provider_application(self):
@@ -671,6 +631,11 @@ class OAuthFulfillmentStage(StageView):
         self.executor.stage_ok()
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
 
+    def authorize_error(self, error: str) -> AuthorizeError:
+        """Error returned to the client, using the provider's current settings rather than
+        those stored in the flow plan"""
+        return self.params.authorize_error(error, provider=self.provider)
+
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Wrapper when this stage gets hit with a post request"""
         return self.get(request, *args, **kwargs)
@@ -686,13 +651,7 @@ class OAuthFulfillmentStage(StageView):
         try:
             # At this point we don't need to check permissions anymore
             if {PROMPT_NONE, PROMPT_CONSENT}.issubset(self.params.prompt):
-                raise AuthorizeError(
-                    self.params.redirect_uri,
-                    "consent_required",
-                    self.params.grant_type,
-                    self.params.state,
-                    self.params.response_mode,
-                )
+                raise self.authorize_error("consent_required")
             Event.new(
                 EventAction.AUTHORIZE_APPLICATION,
                 authorized_application=self.application,
@@ -724,11 +683,16 @@ class OAuthFulfillmentStage(StageView):
                 code = self.params.create_code(self.request)
                 code.save()
 
+            # RFC 9207: identify the issuer in every response mode
+            issuer = self.provider.get_authorization_response_issuer(self.request)
+
             if self.params.response_mode == ResponseMode.QUERY:
                 query_params = parse_qs(uri.query)
                 query_params["code"] = code.code
                 if self.params.state is not None:
                     query_params["state"] = self.params.state
+                if issuer:
+                    query_params["iss"] = issuer
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
@@ -741,6 +705,8 @@ class OAuthFulfillmentStage(StageView):
                         query_fragment["state"] = self.params.state
                 else:
                     query_fragment = self.create_implicit_response(code)
+                if issuer:
+                    query_fragment["iss"] = issuer
 
                 uri = uri._replace(
                     fragment=uri.fragment + urlencode(query_fragment, doseq=True),
@@ -756,6 +722,8 @@ class OAuthFulfillmentStage(StageView):
                         post_params["state"] = self.params.state
                 else:
                     post_params = self.create_implicit_response(code)
+                if issuer:
+                    post_params["iss"] = issuer
 
                 uri = uri._replace(query=urlencode(post_params, doseq=True))
 
@@ -764,13 +732,7 @@ class OAuthFulfillmentStage(StageView):
             raise OAuth2Error()
         except OAuth2Error as error:
             LOGGER.warning("Error when trying to create response uri", error=error)
-            raise AuthorizeError(
-                self.params.redirect_uri,
-                "server_error",
-                self.params.grant_type,
-                self.params.state,
-                self.params.response_mode,
-            ) from None
+            raise self.authorize_error("server_error") from None
 
     def create_implicit_response(self, code: AuthorizationCode | None) -> dict:
         """Create implicit response's URL Fragment dictionary"""

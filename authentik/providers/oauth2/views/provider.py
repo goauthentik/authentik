@@ -125,6 +125,10 @@ class ProviderInfoView(View):
             "claims_parameter_supported": False,
             "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
             "dpop_signing_alg_values_supported": sorted(DPOP_SUPPORTED_ALGS),
+            # https://www.rfc-editor.org/rfc/rfc9207.html#section-3
+            "authorization_response_iss_parameter_supported": (
+                provider.include_issuer_in_authorization_response
+            ),
         }
         if provider.encryption_key:
             config["id_token_encryption_alg_values_supported"] = ["RSA-OAEP-256"]

@@ -509,7 +509,7 @@ class TestAuthorize(OAuthTestCase):
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
         self.assertEqual(
             response.url,
-            f"foo://localhost?code={code.code}&state={state}",
+            f"foo://localhost?code={code.code}&state={state}&{self.iss_param(provider)}",
         )
         self.assertAlmostEqual(
             code.expires.timestamp() - now().timestamp(),
@@ -651,6 +651,7 @@ class TestAuthorize(OAuthTestCase):
                     f"http://localhost#id_token={provider.encode(token.id_token.to_dict())}"
                     f"&token_type={TOKEN_TYPE}"
                     f"&expires_in={int(expires)}&state={state}"
+                    f"&{self.iss_param(provider)}"
                 ),
             )
             jwt = self.validate_jwt(token, provider)
@@ -768,7 +769,7 @@ class TestAuthorize(OAuthTestCase):
             code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
             self.assertEqual(
                 response.url,
-                f"http://localhost#code={code.code}&state={state}",
+                f"http://localhost#code={code.code}&state={state}&{self.iss_param(provider)}",
             )
             self.assertAlmostEqual(
                 code.expires.timestamp() - now().timestamp(),
@@ -830,6 +831,7 @@ class TestAuthorize(OAuthTestCase):
                     "token_type": TOKEN_TYPE,
                     "expires_in": "3600",
                     "state": state,
+                    "iss": self.issuer(provider),
                 },
             },
         )
@@ -875,6 +877,7 @@ class TestAuthorize(OAuthTestCase):
                 "attrs": {
                     "code": code.code,
                     "state": state,
+                    "iss": self.issuer(provider),
                 },
             },
         )
@@ -1215,7 +1218,7 @@ class TestAuthorize(OAuthTestCase):
         self.assertEqual(code.dpop_jkt, dpop_jkt)
         self.assertEqual(
             response.url,
-            f"foo://localhost?code={code.code}&state={state}",
+            f"foo://localhost?code={code.code}&state={state}&{self.iss_param(provider)}",
         )
 
     def test_dpop_jkt_without_bound_key_rejected(self):
