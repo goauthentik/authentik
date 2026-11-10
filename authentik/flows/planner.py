@@ -49,6 +49,7 @@ PLAN_CONTEXT_POST = "goauthentik.io/http/post"
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
 PLAN_CONTEXT_IS_REDIRECTED = "is_redirected"
+PLAN_CONTEXT_IS_REAUTHENTICATION = "is_reauthentication"
 PLAN_CONTEXT_REDIRECT_STAGE_TARGET = "redirect_stage_target"
 CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_flows")
 CACHE_PREFIX = "goauthentik.io/flows/planner/"
@@ -220,6 +221,8 @@ class FlowPlanner:
             and request.user.is_authenticated
             # Allow re-authenticating the current user (e.g. via a source for prompt=login)
             and context.get(PLAN_CONTEXT_PENDING_USER) != request.user
+            # Allow logging in again when a provider requires it (e.g. OAuth2 prompt=login)
+            and not context.get(PLAN_CONTEXT_IS_REAUTHENTICATION)
         ):
             raise FlowNonApplicableException()
         if (
