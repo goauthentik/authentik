@@ -28,10 +28,7 @@ export interface WSMessageSessionAuthenticated {
     message_type: WSMessageType.SessionAuthenticated;
 }
 
-export type WSMessage =
-    | WSMessageNotification
-    | WSMessageRefresh
-    | WSMessageSessionAuthenticated;
+export type WSMessage = WSMessageNotification | WSMessageRefresh | WSMessageSessionAuthenticated;
 
 //#endregion
 

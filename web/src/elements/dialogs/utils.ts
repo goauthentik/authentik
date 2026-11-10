@@ -7,8 +7,8 @@ import "#elements/dialogs/ak-modal";
 import { AKRefreshEvent } from "#common/events";
 
 import { DialogInit } from "#elements/dialogs/shared";
-import { RouteChangeEvent } from "#elements/router/events";
 import { findMessageContainer } from "#elements/messages/MessageContainer";
+import { RouteChangeEvent } from "#elements/router/events";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { html, render } from "lit";
