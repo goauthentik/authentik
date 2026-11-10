@@ -58,6 +58,8 @@ class UserOffboarding(SerializerModel):
         default=0, help_text=_("Number of times execution has been attempted and failed.")
     )
     # Set when a user expiration rule generated this row; `created_by` stays null.
+    # Unlike `rule`, it survives the rule being deleted.
+    generated = models.BooleanField(default=False)
     rule = models.ForeignKey(
         "authentik_lifecycle.UserExpirationRule",
         on_delete=models.SET_NULL,
@@ -88,7 +90,7 @@ class UserOffboarding(SerializerModel):
             # The expiration sweeper looks up the latest generated row per user.
             models.Index(
                 fields=["user", "executed_at"],
-                condition=Q(rule__isnull=False),
+                condition=Q(generated=True),
                 name="generated_offboarding_idx",
             ),
         ]
@@ -101,6 +103,11 @@ class UserOffboarding(SerializerModel):
 
     def __str__(self):
         return f"User offboarding for user {self.user_id} ({self.action}) at {self.scheduled_at}"
+
+    def save(self, *args, **kwargs):
+        if self.rule_id is not None:
+            self.generated = True
+        super().save(*args, **kwargs)
 
     def cancel(self) -> bool:
         """Cancel iff still pending; returns whether it was cancelled.

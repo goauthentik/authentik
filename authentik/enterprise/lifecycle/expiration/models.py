@@ -251,7 +251,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         # log in again.
         terminal = UserOffboarding.objects.filter(
             user=OuterRef("pk"),
-            rule__isnull=False,
+            generated=True,
             status__in=[
                 OffboardingStatus.COMPLETED,
                 OffboardingStatus.CANCELED,

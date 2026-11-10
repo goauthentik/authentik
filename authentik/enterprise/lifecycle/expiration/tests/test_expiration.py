@@ -221,6 +221,15 @@ class TestSelection(ExpirationTestCase):
             canceled.refresh_from_db()
             self.assertEqual(canceled.status, OffboardingStatus.CANCELED)
 
+    def test_cancel_exemption_survives_rule_delete(self):
+        rule = self._rule()
+        user = _dormant_user()
+        rule.apply()
+        _pending(user).cancel()
+        rule.delete()
+        self.assertEqual(self._rule().apply(), 0)
+        self.assertIsNone(_pending(user))
+
     def test_reactivated_user_not_re_expired(self):
         rule = self._rule()
         user = _dormant_user()
