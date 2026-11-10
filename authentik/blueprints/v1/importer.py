@@ -443,6 +443,7 @@ class Importer:
                 self._apply_permissions(instance, entry)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Model | None = serializer.instance
+                entry._state = BlueprintEntryState(instance)
                 if instance and instance.pk:
                     instance.delete()
                     self.logger.debug("Deleted model", mode=instance)
