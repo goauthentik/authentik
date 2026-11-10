@@ -1,4 +1,5 @@
 import { pageBounds, paginatedBounds } from "./bounds";
+
 import type { Pagination } from "@goauthentik/api";
 
 import { describe, expect, it } from "vitest";
