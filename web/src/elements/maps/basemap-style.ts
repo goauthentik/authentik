@@ -76,7 +76,7 @@ function resolveFlavor(options: BuildStyleOptions): Flavor {
 export function resolveTileURL(template: string): string {
     if (/^https?:\/\//i.test(template)) return template;
 
-    if (typeof window !== "undefined" && window.location) {
+    if (typeof window !== "undefined") {
         return new URL(template, window.location.href).toString();
     }
 

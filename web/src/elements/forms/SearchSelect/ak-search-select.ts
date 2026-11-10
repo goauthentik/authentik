@@ -729,7 +729,7 @@ export class SearchSelect<T = unknown>
                 "ak-m-action": option.kind === "action",
             })}
             aria-selected=${selected ? "true" : "false"}
-            aria-disabled=${ifPresent(option.disabled ? "true" : null)}
+            aria-disabled=${ifPresent(option.disabled, "true")}
             aria-describedby=${ifPresent(descriptionID)}
             @click=${() => this.#activate(option)}
         >
