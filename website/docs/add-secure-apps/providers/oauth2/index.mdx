@@ -148,6 +148,24 @@ Confidential clients authenticate to the token endpoint using a client ID and cl
 
 The authorization code can be used only once and expires after a short period.
 
+##### PKCE
+
+[PKCE (RFC 7636)](https://datatracker.ietf.org/doc/html/rfc7636) binds an authorization code to the client that requested it, so that a code intercepted on its way to the client can't be redeemed by anyone else. This matters most for public clients, such as mobile, desktop, and single-page applications, which have no client secret. Clients can always use PKCE. The provider's **PKCE** setting controls which clients must use it:
+
+- **Required for public clients**: public clients must send a code challenge. This is the default for new providers.
+- **Required for all clients**: every client must send a code challenge.
+- **Optional**: clients may omit PKCE.
+
+**Allow plain PKCE** controls whether the `plain` code challenge method is accepted. When it is disabled, which is the default for new providers, clients must use `S256`, and the provider's discovery document advertises only `S256` in `code_challenge_methods_supported`.
+
+An authorization request that omits a required code challenge, or uses a method the provider does not allow, is returned to the client with an `invalid_request` error. The token endpoint also refuses to redeem an authorization code that doesn't meet the provider's current PKCE settings.
+
+PKCE applies only to flows that issue an authorization code (authorization code and hybrid). The implicit flow is not affected.
+
+:::info
+Providers that existed before these settings were introduced keep their previous behavior after upgrading: PKCE is optional and `plain` is allowed. To protect public clients, change these settings after confirming that your clients send an `S256` code challenge.
+:::
+
 To receive a refresh token, the client must request the `offline_access` scope, and the provider must include the `offline_access` scope mapping.
 
 :::info

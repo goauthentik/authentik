@@ -36,6 +36,7 @@ import {
     MatchingModeEnum,
     OAuth2Provider,
     OAuth2ProviderLogoutMethodEnum,
+    PkceModeEnum,
     RedirectURI,
     RedirectURITypeEnum,
     SubModeEnum,
@@ -60,6 +61,35 @@ export const clientTypeOptions: RadioOption<ClientTypeEnum>[] = [
         value: ClientTypeEnum.Public,
         description: html`${msg(
             "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE. ",
+        )}`,
+    },
+];
+
+export const pkceModeOptions: RadioOption<PkceModeEnum>[] = [
+    {
+        label: msg("Required for public clients", {
+            id: "providers.oauth2.pkce-mode.required-public.label",
+        }),
+        value: PkceModeEnum.RequiredPublic,
+        default: true,
+        description: html`${msg(
+            "Public clients must send a code challenge. Confidential clients may use PKCE.",
+            { id: "providers.oauth2.pkce-mode.required-public.description" },
+        )}`,
+    },
+    {
+        label: msg("Required for all clients", { id: "providers.oauth2.pkce-mode.required.label" }),
+        value: PkceModeEnum.Required,
+        description: html`${msg("Every client must send a code challenge.", {
+            id: "providers.oauth2.pkce-mode.required.description",
+        })}`,
+    },
+    {
+        label: msg("Optional", { id: "providers.oauth2.pkce-mode.optional.label" }),
+        value: PkceModeEnum.Optional,
+        description: html`${msg(
+            "Clients may omit PKCE. Not recommended for public clients, as anyone who intercepts their authorization code can redeem it.",
+            { id: "providers.oauth2.pkce-mode.optional.description" },
         )}`,
     },
 ];
@@ -250,6 +280,27 @@ export function renderForm({
                         ${msg("Grant types this provider may use.")}
                     </p>
                 </ak-form-element-horizontal>
+                <ak-radio-input
+                    name="pkceMode"
+                    label=${msg("PKCE", { id: "providers.oauth2.pkce-mode.label" })}
+                    required
+                    .options=${pkceModeOptions}
+                    .value=${provider.pkceMode}
+                    help=${msg(
+                        "Which clients must use PKCE (RFC 7636) to obtain an authorization code.",
+                        { id: "providers.oauth2.pkce-mode.help" },
+                    )}
+                >
+                </ak-radio-input>
+                <ak-switch-input
+                    name="pkceAllowPlain"
+                    label=${msg("Allow plain PKCE", { id: "providers.oauth2.pkce-allow-plain.label" })}
+                    ?checked=${provider.pkceAllowPlain ?? false}
+                    help=${msg(
+                        "Accept the plain code challenge method. When disabled, clients must use S256.",
+                        { id: "providers.oauth2.pkce-allow-plain.help" },
+                    )}
+                ></ak-switch-input>
                 <ak-form-element-horizontal
                     label=${msg("Redirect URIs/Origins (RegEx)")}
                     name="redirectUris"

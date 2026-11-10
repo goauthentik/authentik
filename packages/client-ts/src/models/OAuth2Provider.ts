@@ -21,6 +21,8 @@ import {
     OAuth2ProviderLogoutMethodEnumFromJSON,
     OAuth2ProviderLogoutMethodEnumToJSON,
 } from "./OAuth2ProviderLogoutMethodEnum.js";
+import type { PkceModeEnum } from "./PkceModeEnum.js";
+import { PkceModeEnumFromJSON, PkceModeEnumToJSON } from "./PkceModeEnum.js";
 import type { RedirectURI } from "./RedirectURI.js";
 import { RedirectURIFromJSON, RedirectURIToJSON } from "./RedirectURI.js";
 import type { SubModeEnum } from "./SubModeEnum.js";
@@ -87,6 +89,15 @@ export interface OAuth2Provider {
      */
     clientType?: ClientTypeEnum;
     grantTypes?: Array<GrantTypeEnum>;
+    /**
+     * Which clients must use PKCE (RFC 7636) to obtain an authorization code. Clients may always
+     * use PKCE.
+     */
+    pkceMode?: PkceModeEnum;
+    /**
+     * Accept the plain code challenge method. When disabled, clients must use S256.
+     */
+    pkceAllowPlain?: boolean;
     clientId?: string;
     clientSecret?: string;
     /**
@@ -257,6 +268,8 @@ export function OAuth2ProviderFromJSONTyped(
             json["grant_types"] == null
                 ? undefined
                 : (json["grant_types"] as Array<any>).map(GrantTypeEnumFromJSON),
+        pkceMode: json["pkce_mode"] == null ? undefined : PkceModeEnumFromJSON(json["pkce_mode"]),
+        pkceAllowPlain: json["pkce_allow_plain"] == null ? undefined : json["pkce_allow_plain"],
         clientId: json["client_id"] == null ? undefined : json["client_id"],
         clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
         accessCodeValidity:
@@ -333,6 +346,8 @@ export function OAuth2ProviderToJSONTyped(
             value["grantTypes"] == null
                 ? undefined
                 : (value["grantTypes"] as Array<any>).map(GrantTypeEnumToJSON),
+        pkce_mode: PkceModeEnumToJSON(value["pkceMode"]),
+        pkce_allow_plain: value["pkceAllowPlain"],
         client_id: value["clientId"],
         client_secret: value["clientSecret"],
         access_code_validity: value["accessCodeValidity"],
