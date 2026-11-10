@@ -5,6 +5,8 @@ import { EventContext, EventModel, EventWithContext } from "#common/events";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 
+// Broken out and exported because the exact same block was duplicated in renderPolicyExecution.
+//
 export const renderPolicyRequest = (context: EventContext) =>
     html`<div class="pf-l-flex__item">
             <div class="pf-c-card__title">${msg("Binding")}</div>
