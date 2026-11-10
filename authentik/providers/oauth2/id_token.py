@@ -38,6 +38,18 @@ def client_audience(provider: OAuth2Provider, token: BaseGrantModel) -> str:
     return provider.client_id
 
 
+def resource_audience(token: BaseGrantModel) -> str | list[str] | None:
+    """The resources an access token is restricted to, if the grant carries any: a single
+    resource as a string, several as a list (RFC 7519 section 4.1.3). Without any, access
+    tokens keep the client audience they have always had."""
+    resources = token.resources
+    if not resources:
+        return None
+    if len(resources) == 1:
+        return resources[0]
+    return list(resources)
+
+
 @dataclass(slots=True)
 class IDToken:
     """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be
@@ -185,6 +197,12 @@ class IDToken:
         # Access tokens remain bearer tokens not DPoP, should not have key-binding cnf
         final.pop("cnf", None)
         client_id = client_audience(provider, token)
+        resource = resource_audience(token)
+        if resource is not None:
+            # Restricted to a resource: the resource is the audience, and the client is
+            # identified separately (RFC 8707 section 2, RFC 9068 section 2.2)
+            final["aud"] = resource
+            final["client_id"] = client_id
         final["azp"] = client_id
         final["uid"] = generate_id()
         final.setdefault("scope", " ".join(token.scope))

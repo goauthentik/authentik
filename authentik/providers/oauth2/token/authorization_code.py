@@ -68,3 +68,5 @@ class AuthorizationCodeTokenRequest(TokenRequest):
                 raw_code=raw_code,
                 flow_name="authorization code",
             )
+
+        self.resolve_resources(request, self.authorization_code.resources)

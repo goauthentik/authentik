@@ -35,6 +35,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIType,
     ScopeMapping,
 )
+from authentik.providers.oauth2.resources import validate_resource_indicator
 from authentik.providers.oauth2.utils import is_all_vschar
 from authentik.rbac.decorators import permission_required
 
@@ -76,6 +77,17 @@ class OAuth2ProviderSerializer(ProviderSerializer):
                     ) from None
         return data
 
+    def validate_allowed_resources(self, data: list[str]) -> list[str]:
+        resources: dict[str, None] = {}
+        for resource in data:
+            try:
+                resources[validate_resource_indicator(resource)] = None
+            except ValueError as exc:
+                raise ValidationError(
+                    _("Invalid resource {resource}: {reason}").format(resource=resource, reason=exc)
+                ) from None
+        return list(resources)
+
     class Meta:
         model = OAuth2Provider
         fields = ProviderSerializer.Meta.fields + [
@@ -99,6 +111,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "issuer_mode",
             "jwt_federation_sources",
             "jwt_federation_providers",
+            "allowed_resources",
         ]
         secret_fields = ["client_secret"]
         extra_kwargs = {
