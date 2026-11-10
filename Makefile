@@ -389,6 +389,9 @@ ci-lint-bandit: ci--meta-debug
 ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run python -m manage makemigrations --check
 
+ci-lint-migrations: ci--meta-debug  ## Lint migrations added since MIGRATIONS_BASE (default: origin/main)
+	$(UV) run python -m manage lintmigrations --project-root-path . --sql-analyser postgresql --git-commit-id $(or $(MIGRATIONS_BASE),origin/main)
+
 ci-lint-cargo-deny: ci--meta-debug
 	$(CARGO) deny --config "${PWD}/.cargo/deny.toml" --locked --workspace check
 

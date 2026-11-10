@@ -123,6 +123,26 @@ jobs:
           done
       - name: run job
         run: make ci-lint-${{ matrix.job }}
+  lint-migrations:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          fetch-depth: 0
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: python,runtime
+      - name: Create required files
+        run: |
+          mkdir -p web/dist/standalone/loading
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
+      - id: prev-stable
+        uses: ./.github/actions/prev-stable
+      - name: run job
+        run: make ci-lint-migrations MIGRATIONS_BASE=${{ steps.prev-stable.outputs.tag }}
   test-gen:
     runs-on: ubuntu-26.04
     steps:
@@ -173,6 +193,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           fetch-depth: 0
+      - id: prev-stable
+        uses: ./.github/actions/prev-stable
       - name: checkout stable
         run: |
           set -e -o pipefail
@@ -183,16 +205,7 @@ jobs:
           mkdir -p ../packages
           cp -R packages/logger-js ../packages/logger-js
 
-          # Previous stable tag
-          prev_stable=$(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
-          # Current version family based on
-          current_version_family=$(cat internal/constants/VERSION | grep -vE -- 'rc[0-9]+$' || true)
-          if [[ -n $current_version_family ]]; then
-              prev_stable="version/${current_version_family}"
-          fi
-
-          echo "::notice::Checking out ${prev_stable} as stable version..."
-          git checkout ${prev_stable}
+          git checkout ${{ steps.prev-stable.outputs.tag }}
 
           rm -rf .github/ scripts/ packages/logger-js/
           mv ../.github ../scripts .
@@ -637,6 +650,7 @@ jobs:
     needs:
       - build
       - lint
+      - lint-migrations
       - test-gen
       - test-migrations
       - test-migrations-from-stable
