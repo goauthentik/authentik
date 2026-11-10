@@ -46631,6 +46631,13 @@ components:
           type: array
           items:
             type: integer
+        allowed_resources:
+          type: array
+          items:
+            type: string
+          description: Resources (RFC 8707) clients may request access tokens for.
+            Access tokens requested for a resource use it as their audience. When
+            empty, the resource parameter is ignored.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -46761,6 +46768,14 @@ components:
           type: array
           items:
             type: integer
+        allowed_resources:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Resources (RFC 8707) clients may request access tokens for.
+            Access tokens requested for a resource use it as their audience. When
+            empty, the resource parameter is ignored.
       required:
       - authorization_flow
       - invalidation_flow
@@ -52767,6 +52782,14 @@ components:
           type: array
           items:
             type: integer
+        allowed_resources:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Resources (RFC 8707) clients may request access tokens for.
+            Access tokens requested for a resource use it as their audience. When
+            empty, the resource parameter is ignored.
     PatchedOAuthSourcePropertyMappingRequest:
       type: object
       description: OAuthSourcePropertyMapping Serializer

@@ -17,7 +17,18 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.client import OAuthClientContext, OAuthClientResolver
 from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import DeviceCodeError
-from authentik.providers.oauth2.models import DeviceToken, GrantType, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    DeviceToken,
+    GrantType,
+    OAuth2Provider,
+    ScopeMapping,
+    join_resources,
+)
+from authentik.providers.oauth2.resources import (
+    RESOURCE_PARAM,
+    OAuthResourceResolver,
+    ResourceIndicatorError,
+)
 from authentik.providers.oauth2.utils import TokenResponse, extract_client_auth
 from authentik.providers.oauth2.views.device_init import QS_KEY_CODE
 
@@ -33,10 +44,15 @@ class DeviceView(View):
     provider: OAuth2Provider
     scopes: set[str] = []
     dpop_jkt: str | None = None
+    resources: tuple[str, ...] = ()
 
     def get_client_resolver(self) -> OAuthClientResolver:
         """Resolver used to find the client (and its provider) for this request"""
         return OAuthClientResolver.legacy()
+
+    def get_resource_resolver(self) -> OAuthResourceResolver:
+        """Resolver deciding which resources (RFC 8707) tokens may be issued for"""
+        return OAuthResourceResolver()
 
     def parse_request(self):
         """Parse incoming request"""
@@ -78,6 +94,14 @@ class DeviceView(View):
         if SCOPE_BOUND_KEY not in self.scopes and self.dpop_jkt:
             raise DeviceCodeError("dpop_jkt_not_allowed")
 
+        # Resources (RFC 8707) the device code is restricted to
+        try:
+            self.resources = self.get_resource_resolver().resolve(
+                self.request, self.client, self.request.POST.getlist(RESOURCE_PARAM)
+            )
+        except ResourceIndicatorError as exc:
+            raise DeviceCodeError("invalid_target").with_cause(exc.cause) from None
+
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         throttle = AnonRateThrottle()
         throttle.rate = CONFIG.get("throttle.providers.oauth2.device", "20/hour")
@@ -99,7 +123,7 @@ class DeviceView(View):
             _scope=" ".join(self.scopes),
             dpop_jkt=self.dpop_jkt,
         )
-        token.bind_client(self.client)
+        token.bind_client(self.client, resource=join_resources(self.resources))
         token.save()
         device_url = self.request.build_absolute_uri(
             reverse("authentik_providers_oauth2_root:device-login")

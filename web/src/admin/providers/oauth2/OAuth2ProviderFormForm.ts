@@ -12,6 +12,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
+import "#admin/providers/oauth2/OAuth2ProviderResource";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
@@ -442,6 +443,32 @@ export function renderForm({
                     help=${msg("Configure how the issuer field of the ID Token should be filled.")}
                 >
                 </ak-radio-input>
+                <ak-form-element-horizontal
+                    label=${msg("Allowed resources", {
+                        id: "provider.oauth2.allowed-resources.label",
+                    })}
+                    name="allowedResources"
+                >
+                    <ak-array-input
+                        .items=${provider.allowedResources ?? []}
+                        .newItem=${() => ""}
+                        .row=${(resource: string, idx: number) => {
+                            return html`<ak-provider-oauth2-resource
+                                .resource=${resource}
+                                name="oauth2-allowed-resource"
+                                style="width: 100%"
+                                input-id="allowed-resource-${idx}"
+                            ></ak-provider-oauth2-resource>`;
+                        }}
+                    >
+                    </ak-array-input>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Resources (RFC 8707) clients may request access tokens for, as absolute URIs, for example the URL of an MCP server. Access tokens requested for a resource use it as their audience. When empty, the resource parameter is ignored.",
+                            { id: "provider.oauth2.allowed-resources.description" },
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
             </div>
         </ak-form-group>
 

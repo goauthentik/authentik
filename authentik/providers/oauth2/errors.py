@@ -148,6 +148,11 @@ class AuthorizeError(OAuth2Error):
         "registration_not_supported": (
             "The provider does not support use of the registration parameter"
         ),
+        # https://datatracker.ietf.org/doc/html/rfc8707#section-2
+        "invalid_target": (
+            "The requested resource is invalid, unknown, or malformed, or the authorization "
+            "server is unwilling to issue a token for it"
+        ),
     }
 
     def __init__(
@@ -249,6 +254,12 @@ class TokenError(OAuth2Error):
             "The requested scope is invalid, unknown, malformed, or exceeds the scope "
             "granted by the resource owner"
         ),
+        # https://datatracker.ietf.org/doc/html/rfc8707#section-2
+        # https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.2
+        "invalid_target": (
+            "The authorization server is unable to issue a token for the target service "
+            "indicated by the 'resource' or 'audience' parameter"
+        ),
     }
 
     def __init__(self, error: str):
@@ -263,13 +274,6 @@ class TokenExchangeError(TokenError):
     See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.2
     Can also use codes from TokenError
     """
-
-    errors = TokenError.errors | {
-        "invalid_target": (
-            "The authorization server is unable to issue a token for the target service "
-            "indicated by the 'resource' or 'audience' parameter"
-        ),
-    }
 
     def __init__(self, error: str):
         super().__init__(error)

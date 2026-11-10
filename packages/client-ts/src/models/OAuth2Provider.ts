@@ -138,6 +138,11 @@ export interface OAuth2Provider {
     issuerMode?: IssuerModeEnum;
     jwtFederationSources?: Array<string>;
     jwtFederationProviders?: Array<number>;
+    /**
+     * Resources (RFC 8707) clients may request access tokens for. Access tokens requested for a
+     * resource use it as their audience. When empty, the resource parameter is ignored.
+     */
+    allowedResources?: Array<string>;
 }
 
 /**
@@ -296,6 +301,7 @@ export function OAuth2ProviderFromJSONTyped(
             json["jwt_federation_sources"] == null ? undefined : json["jwt_federation_sources"],
         jwtFederationProviders:
             json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
+        allowedResources: json["allowed_resources"] == null ? undefined : json["allowed_resources"],
     };
 }
 
@@ -349,5 +355,6 @@ export function OAuth2ProviderToJSONTyped(
         issuer_mode: IssuerModeEnumToJSON(value["issuerMode"]),
         jwt_federation_sources: value["jwtFederationSources"],
         jwt_federation_providers: value["jwtFederationProviders"],
+        allowed_resources: value["allowedResources"],
     };
 }

@@ -29,6 +29,11 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     ScopeMapping,
 )
+from authentik.providers.oauth2.resources import (
+    RESOURCE_PARAM,
+    OAuthResourceResolver,
+    ResourceIndicatorError,
+)
 from authentik.providers.oauth2.utils import is_all_vschar, pkce_s256_challenge
 
 
@@ -44,17 +49,27 @@ class TokenRequest:
     dpop_proof: str | None = None
     dpop_jwk: dict | None = None
 
+    # Resources (RFC 8707) requested, and those the issued access token is restricted to
+    requested_resources: list[str]
+    resources: tuple[str, ...] = ()
+
     provider: OAuth2Provider
     client: OAuthClientContext
     audience_provider: OAuth2Provider | None = None
     logger: BoundLogger
 
-    def __init__(self, client: OAuthClientContext, client_secret: str):
+    def __init__(
+        self,
+        client: OAuthClientContext,
+        client_secret: str,
+        resource_resolver: OAuthResourceResolver | None = None,
+    ):
         self.client = client
         self.provider = client.provider
         self.logger = get_logger().bind(provider=self.provider.name)
         self.client_id = client.client_id
         self.client_secret = client_secret
+        self.resource_resolver = resource_resolver or OAuthResourceResolver()
 
     @property
     def token_provider(self) -> OAuth2Provider:
@@ -71,6 +86,8 @@ class TokenRequest:
         self.dpop_proof = request.headers.get("DPoP")
         # Token exchange parameter.
         self.requested_token_type = request.POST.get("requested_token_type")
+        # Resource indicators (RFC 8707), which may be repeated
+        self.requested_resources = request.POST.getlist(RESOURCE_PARAM)
 
         if self.grant_type not in self.client.grant_types:
             self.logger.warning("Invalid grant_type for provider", grant_type=self.grant_type)
@@ -102,6 +119,17 @@ class TokenRequest:
     def resolve_audience(self, request: HttpRequest) -> None:
         """Resolve the provider the issued token is for. Only token exchange supports
         targeting a provider other than the client's own."""
+
+    def resolve_resources(self, request: HttpRequest, granted: tuple[str, ...] = ()) -> None:
+        """Restrict the issued access token to the requested resources, which may only
+        narrow the resources of the grant used, if it is restricted to any. Called once
+        the grant has been verified, so that resources aren't checked for invalid grants."""
+        try:
+            self.resources = self.resource_resolver.resolve(
+                request, self.client, self.requested_resources, granted
+            )
+        except ResourceIndicatorError as exc:
+            raise TokenError("invalid_target").with_cause(exc.cause) from None
 
     def check_scopes(self):
         allowed_scope_names = set(

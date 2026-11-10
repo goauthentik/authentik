@@ -31,6 +31,11 @@ class ClientCredentialsTokenRequest(FederatedTokenRequest):
 
     def parse(self, request: HttpRequest) -> None:
         super().parse(request)
+        self.parse_credentials(request)
+        # Checked once the client is authenticated, so that resources aren't probed
+        self.resolve_resources(request)
+
+    def parse_credentials(self, request: HttpRequest) -> None:
         # client_credentials flow with client assertion
         if request.POST.get(CLIENT_ASSERTION_TYPE, "") != "":
             return self.post_init_client_credentials_jwt(request)

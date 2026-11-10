@@ -57,3 +57,7 @@ class RefreshTokenTokenRequest(TokenRequest):
                 self.refresh_token.dpop_jkt,
                 flow_name="refresh token",
             )
+
+        # The access token may be narrowed to some of the grant's resources; the refresh
+        # token issued alongside keeps all of them (RFC 8707 section 2.2)
+        self.resolve_resources(request, self.refresh_token.resources)

@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenIntrospectionError
-from authentik.providers.oauth2.id_token import IDToken
+from authentik.providers.oauth2.id_token import IDToken, resource_audience
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import TokenResponse, authenticate_client, find_client_token
 
@@ -75,8 +75,9 @@ class TokenIntrospectionView(View):
             response["active"] = not self.params.token.is_expired and not self.params.token.revoked
             response["scope"] = " ".join(self.params.token.scope)
             response["client_id"] = self.params.token.bound_client_id
-            if isinstance(self.params.token, AccessToken) and self.params.token.resource:
-                response["aud"] = self.params.token.resource
+            audience = resource_audience(self.params.token)
+            if isinstance(self.params.token, AccessToken) and audience is not None:
+                response["aud"] = audience
             return TokenResponse(response)
         except TokenIntrospectionError:
             return TokenResponse({"active": False})

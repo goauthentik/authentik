@@ -3,6 +3,7 @@
 import base64
 import binascii
 import json
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from functools import cached_property
 from hashlib import sha256
@@ -362,6 +363,16 @@ class OAuth2Provider(WebfingerProvider, Provider):
     jwt_federation_providers = models.ManyToManyField(
         "OAuth2Provider", blank=True, default=None, through="OAuth2ProviderJWTFederationProvider"
     )
+    allowed_resources = ArrayField(
+        models.TextField(),
+        default=list,
+        blank=True,
+        help_text=_(
+            "Resources (RFC 8707) clients may request access tokens for. Access tokens "
+            "requested for a resource use it as their audience. When empty, the resource "
+            "parameter is ignored."
+        ),
+    )
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
@@ -571,6 +582,17 @@ GRANT_CLIENT_ID_MAX_LENGTH = 2048
 GRANT_RESOURCE_MAX_LENGTH = 2048
 
 
+def join_resources(resources: Iterable[str]) -> str | None:
+    """Store the resources (RFC 8707) a grant is restricted to. Resources are URIs, which
+    never contain spaces, so they are stored space-separated, like scopes."""
+    return " ".join(resources) or None
+
+
+def split_resources(value: str | None) -> tuple[str, ...]:
+    """Resources stored with `join_resources()`"""
+    return tuple(value.split()) if value else ()
+
+
 def hash_client_id(client_id: str) -> str:
     """Fixed-length digest of a client identifier, used to index grants by client.
     The digest only narrows a lookup; the full client identifier must still be compared."""
@@ -615,7 +637,8 @@ class ClientBoundModel(models.Model):
         default=None,
         verbose_name=_("Client authentication method"),
     )
-    # Resource the grant is restricted to (RFC 8707), used as the access token audience
+    # Resources the grant is restricted to (RFC 8707), space-separated, see
+    # `join_resources()`. Access tokens restricted to resources use them as their audience.
     resource = models.CharField(
         max_length=GRANT_RESOURCE_MAX_LENGTH,
         null=True,
@@ -648,6 +671,11 @@ class ClientBoundModel(models.Model):
         self.external_binding = binding.external_binding
         self.external_binding_version = binding.external_binding_version
         self.resource = resource
+
+    @property
+    def resources(self) -> tuple[str, ...]:
+        """Resources the grant is restricted to, empty when it is not restricted"""
+        return split_resources(self.resource)
 
     @property
     def is_client_bound(self) -> bool:

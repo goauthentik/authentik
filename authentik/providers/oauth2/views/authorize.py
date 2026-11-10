@@ -68,6 +68,12 @@ from authentik.providers.oauth2.models import (
     ResponseMode,
     ResponseTypes,
     ScopeMapping,
+    join_resources,
+)
+from authentik.providers.oauth2.resources import (
+    RESOURCE_PARAM,
+    OAuthResourceResolver,
+    ResourceIndicatorError,
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 from authentik.providers.oauth2.views.userinfo import UserInfoView
@@ -116,6 +122,9 @@ class OAuthAuthorizationParams:
     # Resolved client making the request. Declared last so that params pickled into a
     # flow plan before this field existed still restore the remaining fields correctly.
     client: OAuthClientContext | None = None
+    # Resources (RFC 8707) the grant is restricted to, see `check_resources()`. Declared
+    # after `client` for the same reason.
+    resources: tuple[str, ...] = ()
 
     github_compat: InitVar[bool] = False
 
@@ -124,6 +133,7 @@ class OAuthAuthorizationParams:
         request: HttpRequest,
         github_compat=False,
         resolver: OAuthClientResolver | None = None,
+        resource_resolver: OAuthResourceResolver | None = None,
     ) -> OAuthAuthorizationParams:
         """
         Get all the params used by the Authorization Code Flow
@@ -146,7 +156,7 @@ class OAuthAuthorizationParams:
         dpop_jkt = query_dict.get("dpop_jkt")
         client_id = query_dict.get("client_id", "")
         resolver = resolver or OAuthClientResolver.legacy()
-        return OAuthAuthorizationParams(
+        params = OAuthAuthorizationParams(
             client_id=client_id,
             client=resolver.resolve(request, client_id),
             redirect_uri=redirect_uri,
@@ -164,6 +174,14 @@ class OAuthAuthorizationParams:
             dpop_jkt=dpop_jkt,
             github_compat=github_compat,
         )
+        # Checked last, as resources may depend on the request, and so that malformed
+        # requests are refused for their other errors first
+        params.check_resources(
+            request,
+            resource_resolver or OAuthResourceResolver(),
+            query_dict.getlist(RESOURCE_PARAM),
+        )
+        return params
 
     def __post_init__(self, github_compat=False):
         if not self.client:
@@ -414,6 +432,26 @@ class OAuthAuthorizationParams:
                 description=f"Unsupported challenge method {self.code_challenge_method}",
             )
 
+    def check_resources(
+        self, request: HttpRequest, resolver: OAuthResourceResolver, requested: list[str]
+    ):
+        """Resource indicators (RFC 8707) the grant is restricted to"""
+        try:
+            self.resources = resolver.resolve(request, self.bound_client(), requested)
+        except ResourceIndicatorError as exc:
+            raise AuthorizeError(
+                redirect_uri=self.redirect_uri,
+                error="invalid_target",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
+            ).with_cause(exc.cause) from None
+
+    def resource_binding(self) -> str | None:
+        """Resources to record on grants. Parameters stored in a flow plan before resources
+        were parsed have none."""
+        return join_resources(getattr(self, "resources", ()))
+
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""
         auth_event = get_login_event(request)
@@ -438,7 +476,9 @@ class OAuthAuthorizationParams:
         if self.dpop_jkt:
             code.dpop_jkt = self.dpop_jkt
 
-        code.bind_client(self.bound_client(), redirect_uri=self.redirect_uri)
+        code.bind_client(
+            self.bound_client(), redirect_uri=self.redirect_uri, resource=self.resource_binding()
+        )
         return code
 
     def bound_client(self) -> OAuthClientContext:
@@ -484,6 +524,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.request,
                 github_compat=self.github_compat,
                 resolver=self.get_client_resolver(),
+                resource_resolver=self.get_resource_resolver(),
             )
         except AuthorizeError as error:
             LOGGER.warning(error.description, redirect_uri=error.redirect_uri, cause=error.cause)
@@ -510,6 +551,10 @@ class AuthorizationFlowInitView(PolicyAccessView):
         """Resolver used to find the client (and its provider) for this request"""
         return OAuthClientResolver.legacy()
 
+    def get_resource_resolver(self) -> OAuthResourceResolver:
+        """Resolver deciding which resources (RFC 8707) tokens may be issued for"""
+        return OAuthResourceResolver()
+
     def resolve_provider_application(self):
         # The client was resolved while parsing the request in `pre_permission_check`
         if not self.params.client:
@@ -532,6 +577,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         request.context["oauth_max_age"] = self.params.max_age
         request.context["oauth_redirect_uri"] = self.params.redirect_uri
         request.context["oauth_response_type"] = self.params.response_type
+        request.context["oauth_resources"] = list(self.params.resources)
         return request
 
     def dispatch_with_language(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -820,7 +866,11 @@ class OAuthFulfillmentStage(StageView):
             auth_time=auth_event.created if auth_event else now,
             session=self.request.session["authenticatedsession"],
         )
-        token.bind_client(self.params.bound_client(), redirect_uri=self.params.redirect_uri)
+        token.bind_client(
+            self.params.bound_client(),
+            redirect_uri=self.params.redirect_uri,
+            resource=self.params.resource_binding(),
+        )
 
         id_token = IDToken.new(self.provider, token, self.request)
         id_token.nonce = self.params.nonce

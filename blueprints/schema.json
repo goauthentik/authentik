@@ -10702,6 +10702,16 @@
                         "type": "integer"
                     },
                     "title": "Jwt federation providers"
+                },
+                "allowed_resources": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Allowed resources"
+                    },
+                    "title": "Allowed resources",
+                    "description": "Resources (RFC 8707) clients may request access tokens for. Access tokens requested for a resource use it as their audience. When empty, the resource parameter is ignored."
                 }
             },
             "required": []

@@ -40,7 +40,9 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     OAuth2SessionLogin,
     RefreshToken,
+    join_resources,
 )
+from authentik.providers.oauth2.resources import OAuthResourceResolver
 from authentik.providers.oauth2.token.base import TokenRequest
 from authentik.providers.oauth2.token.router import parse_token_request
 from authentik.providers.oauth2.utils import (
@@ -67,6 +69,10 @@ class TokenView(View):
         """Resolver used to find the client (and its provider) for this request"""
         return OAuthClientResolver.legacy(self.provider_class)
 
+    def get_resource_resolver(self) -> OAuthResourceResolver:
+        """Resolver deciding which resources (RFC 8707) tokens may be issued for"""
+        return OAuthResourceResolver()
+
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
         cors_allow(self.request, response, self.provider.redirect_uris if self.provider else [])
@@ -87,7 +93,9 @@ class TokenView(View):
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
                 self.provider = self.client.provider
-                self.params = parse_token_request(request, self.client, client_secret)
+                self.params = parse_token_request(
+                    request, self.client, client_secret, self.get_resource_resolver()
+                )
                 CTX_AUTH_VIA.set("oauth_client_secret")
 
             with active_tracer().start_span(
@@ -125,11 +133,18 @@ class TokenView(View):
         if self.params.dpop_jwk is not None:
             id_token.cnf = {"jwk": self.params.dpop_jwk}
 
-    def _bind_from(self, grant: BaseGrantModel, source: BaseGrantModel) -> None:
+    def _bind_from(
+        self, grant: BaseGrantModel, source: BaseGrantModel, *, narrowed: bool = False
+    ) -> None:
         """Bind a grant issued from `source` to the requesting client, keeping the
-        redirect URI and resource `source` was authorized for. `source` has been checked
-        to be bound to the requesting client while parsing the request."""
-        grant.bind_client(self.client, redirect_uri=source.redirect_uri, resource=source.resource)
+        redirect URI `source` was authorized for. `source` has been checked to be bound to
+        the requesting client while parsing the request.
+
+        Access tokens are `narrowed` to the resources resolved for the request, which are
+        those of `source` unless the client requested fewer. Refresh tokens keep all of the
+        resources of `source`."""
+        resource = join_resources(self.params.resources) if narrowed else source.resource
+        grant.bind_client(self.client, redirect_uri=source.redirect_uri, resource=resource)
 
     def create_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
@@ -144,7 +159,7 @@ class TokenView(View):
             auth_time=self.params.authorization_code.auth_time,
             session=self.params.authorization_code.session,
         )
-        self._bind_from(access_token, self.params.authorization_code)
+        self._bind_from(access_token, self.params.authorization_code, narrowed=True)
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -213,7 +228,7 @@ class TokenView(View):
             auth_time=self.params.refresh_token.auth_time,
             session=self.params.refresh_token.session,
         )
-        self._bind_from(access_token, self.params.refresh_token)
+        self._bind_from(access_token, self.params.refresh_token, narrowed=True)
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -284,7 +299,7 @@ class TokenView(View):
             scope=self.params.scope,
             auth_time=now,
         )
-        access_token.bind_client(self.client)
+        access_token.bind_client(self.client, resource=join_resources(self.params.resources))
         access_token.id_token = IDToken.new(
             self.provider,
             access_token,
@@ -316,7 +331,7 @@ class TokenView(View):
             auth_time=auth_event.created if auth_event else now,
             session=self.params.device_code.session,
         )
-        access_token.bind_client(self.client, resource=self.params.device_code.resource)
+        access_token.bind_client(self.client, resource=join_resources(self.params.resources))
         access_id_token = IDToken.new(
             self.provider,
             access_token,

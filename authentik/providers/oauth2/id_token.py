@@ -38,10 +38,16 @@ def client_audience(provider: OAuth2Provider, token: BaseGrantModel) -> str:
     return provider.client_id
 
 
-def resource_audience(token: BaseGrantModel) -> str | None:
-    """The resource an access token is restricted to, if the grant carries one. Without
-    one, access tokens keep the client audience they have always had."""
-    return token.resource
+def resource_audience(token: BaseGrantModel) -> str | list[str] | None:
+    """The resources an access token is restricted to, if the grant carries any: a single
+    resource as a string, several as a list (RFC 7519 section 4.1.3). Without any, access
+    tokens keep the client audience they have always had."""
+    resources = token.resources
+    if not resources:
+        return None
+    if len(resources) == 1:
+        return resources[0]
+    return list(resources)
 
 
 @dataclass(slots=True)

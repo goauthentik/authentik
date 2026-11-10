@@ -13,6 +13,7 @@ from authentik.common.oauth.constants import (
 )
 from authentik.providers.oauth2.client import OAuthClientContext
 from authentik.providers.oauth2.errors import TokenError
+from authentik.providers.oauth2.resources import OAuthResourceResolver
 from authentik.providers.oauth2.token.authorization_code import AuthorizationCodeTokenRequest
 from authentik.providers.oauth2.token.base import TokenRequest
 from authentik.providers.oauth2.token.client_credentials import ClientCredentialsTokenRequest
@@ -40,11 +41,14 @@ def route_token_request(grant_type: str) -> type[TokenRequest]:
 
 
 def parse_token_request(
-    request: HttpRequest, client: OAuthClientContext, client_secret: str
+    request: HttpRequest,
+    client: OAuthClientContext,
+    client_secret: str,
+    resource_resolver: OAuthResourceResolver | None = None,
 ) -> TokenRequest:
     grant_type = request.POST.get("grant_type", "")
     req_type = route_token_request(grant_type)
     LOGGER.debug("routing to token request", token_request_type=req_type)
-    req = req_type(client, client_secret)
+    req = req_type(client, client_secret, resource_resolver)
     req.parse(request)
     return req
