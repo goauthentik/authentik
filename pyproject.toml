@@ -118,7 +118,7 @@ dev = [
   "selenium==4.52.0",
   "types-channels==4.3.0.20260518",
   "types-defusedxml==0.7.0.20260504",
-  "types-docker==7.2.0.20261006",
+  "types-docker==7.2.0.20261102",
   "types-jwcrypto==1.6.1.20260928",
   "types-ldap3==2.9.13.20260827",
   "types-requests==2.33.0.20261030",

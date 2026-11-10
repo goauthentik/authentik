@@ -518,7 +518,7 @@ dev = [
     { name = "selenium", specifier = "==4.52.0" },
     { name = "types-channels", specifier = "==4.3.0.20260518" },
     { name = "types-defusedxml", specifier = "==0.7.0.20260504" },
-    { name = "types-docker", specifier = "==7.2.0.20261006" },
+    { name = "types-docker", specifier = "==7.2.0.20261102" },
     { name = "types-jwcrypto", specifier = "==1.6.1.20260928" },
     { name = "types-ldap3", specifier = "==2.9.13.20260827" },
     { name = "types-requests", specifier = "==2.33.0.20261030" },
@@ -4004,15 +4004,15 @@ wheels = [
 
 [[package]]
 name = "types-docker"
-version = "7.2.0.20261006"
+version = "7.2.0.20261102"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "types-requests" },
+    { name = "requests" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/81/bd/7c46cbb3190622accb6c6aed717083712b0531c6e8ec5f753b7b95cdebe6/types_docker-7.2.0.20261006.tar.gz", hash = "sha256:bd2fc6c302bce7c0caeb06b6e60f7738085fc15f7f5be540b917f6dd33b36619", size = 37408, upload-time = "2026-10-06T08:16:13.843Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fa/67/8d93779ea6562cc34c264dbbf98019958e6c788ba631a126401cab2b4613/types_docker-7.2.0.20261102.tar.gz", hash = "sha256:af141295dfc2760f2452fed89988ecfd86e2a66411206eb7c190aadc41d10e12", size = 37461, upload-time = "2026-11-02T08:32:04.415Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/67/2f16e88c38b6d873d0d417f81a12af119998ede025f99b1422fb157ad288/types_docker-7.2.0.20261006-py3-none-any.whl", hash = "sha256:866041971a378a226edd095a4a55d3924e51d9d15faea5beeeef256f86f2320d", size = 51408, upload-time = "2026-10-06T08:16:12.831Z" },
+    { url = "https://files.pythonhosted.org/packages/bb/f5/28cee3a471bf9ead6d2cefc2c9b27c6ac8dc19bd8c8077731487101b9457/types_docker-7.2.0.20261102-py3-none-any.whl", hash = "sha256:a5fda816dfc909be4a65892c87983ca007e461cb6fb46aba6481547304de0ebe", size = 51418, upload-time = "2026-11-02T08:32:02.96Z" },
 ]
 
 [[package]]
