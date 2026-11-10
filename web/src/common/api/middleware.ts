@@ -66,7 +66,7 @@ export class EventMiddleware implements Middleware {
             status: context.response.status,
         };
 
-        window.dispatchEvent(new AKRequestPostEvent(requestInfo));
+        dispatchEvent(new AKRequestPostEvent(requestInfo));
 
         return Promise.resolve(context.response);
     }
@@ -104,19 +104,19 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
 
     public clearAfterIdle = () => {
         clearTimeout(this.#timeoutId);
-        this.#timeoutId = window.setTimeout(this.clear, 1000);
+        this.#timeoutId = setTimeout(this.clear, 1000);
     };
 
     constructor(protected readonly maxRequests: number = 10) {
-        window.addEventListener("hashchange", this.clear, { passive: true });
-        window.addEventListener(AKRefreshEvent.eventName, this.clear, { passive: true });
-        window.addEventListener(AKEnterpriseRefreshEvent.eventName, this.clear, { passive: true });
+        addEventListener("hashchange", this.clear, { passive: true });
+        addEventListener(AKRefreshEvent.eventName, this.clear, { passive: true });
+        addEventListener(AKEnterpriseRefreshEvent.eventName, this.clear, { passive: true });
 
-        window.addEventListener("click", this.clearAfterIdle, { passive: true });
+        addEventListener("click", this.clearAfterIdle, { passive: true });
     }
 
     public [Symbol.dispose]() {
-        window.removeEventListener("hashchange", this.clear);
+        removeEventListener("hashchange", this.clear);
     }
 
     public async pre(context: RequestContext): Promise<FetchParams | void> {

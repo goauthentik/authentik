@@ -8,10 +8,7 @@
  * @param href The URL to extend, absolute or relative to the current origin.
  * @param next Where to return afterwards. Defaults to the current page.
  */
-export function withNext(
-    href: string,
-    next: string = window.location.pathname + window.location.search,
-): string {
+export function withNext(href: string, next: string = window.location.pathname + window.location.search): string {
     const url = new URL(href, window.location.origin);
 
     url.searchParams.set("next", next);

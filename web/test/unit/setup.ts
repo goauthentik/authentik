@@ -12,5 +12,8 @@ for (const [name, value] of Object.entries(shim)) {
 
 // The shim's window has no location, which code reading the URL expects.
 if (typeof window !== "undefined" && !("location" in window)) {
-    Object.defineProperty(window, "location", { value: new URL("http://localhost/") });
+    Object.defineProperty(window, "location", {
+        value: new URL("http://localhost/"),
+        configurable: true,
+    });
 }

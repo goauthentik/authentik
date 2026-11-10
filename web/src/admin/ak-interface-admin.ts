@@ -176,7 +176,7 @@ export class AdminInterface extends WithLicenseSummary(
 
         WebsocketClient.connect();
 
-        this.#sidebarMatcher = window.matchMedia("(width > 1210px)");
+        this.#sidebarMatcher = matchMedia("(width > 1210px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
 
