@@ -123,7 +123,7 @@ export class Sidebar extends AKElement {
                 part="row ${current ? "current" : ""}"
                 href=${path!}
                 data-depth=${depth}
-                aria-current=${ifPresent(current ? "page" : undefined)}
+                aria-current=${ifPresent(current, "page")}
                 ><div part="${waypoint ? "icon" : "rail"}">${waypoint ?? nothing}</div>
                 <span part="label"
                     ><span part="label-text">${label}</span
@@ -175,8 +175,8 @@ export class Sidebar extends AKElement {
                 <a
                     id="sidebar-nav-link-${id}"
                     part="link"
-                    href=${path}
-                    aria-current=${ifPresent(current ? "page" : undefined)}
+                    href=${ifPresent(path)}
+                    aria-current=${ifPresent(current, "page")}
                     ><div part="${waypoint ? "icon" : "rail"}">${waypoint ?? nothing}</div>
                     <span part="label"><span part="label-text">${label}</span></span>
                 </a>

@@ -1,6 +1,7 @@
-import "#admin/rbac/ak-rbac-role-object-permission-form";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#elements/table/ak-table-filter-select";
+import "#admin/rbac/ak-rbac-role-object-permission-form";
 import "#admin/rbac/ak-rbac-model-permissions-list";
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
