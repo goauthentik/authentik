@@ -82,6 +82,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "authorization_flow",
             "client_type",
             "grant_types",
+            "pkce_mode",
+            "pkce_allow_plain",
             "client_id",
             "client_secret",
             "access_code_validity",

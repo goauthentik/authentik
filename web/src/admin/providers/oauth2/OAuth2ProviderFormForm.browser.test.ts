@@ -1,4 +1,8 @@
+import type { Radio } from "#elements/forms/Radio";
 import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
+
+import type { AkRadioInput } from "#components/ak-radio-input";
+import type { AkSwitchInput } from "#components/ak-switch-input";
 
 import { renderForm } from "#admin/providers/oauth2/OAuth2ProviderFormForm";
 
@@ -6,6 +10,7 @@ import {
     type CertificateKeyPair,
     CertificateKeyPairKeyTypeEnum,
     type OAuth2Provider,
+    PkceModeEnum,
 } from "@goauthentik/api";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -122,5 +127,58 @@ describe("OAuth2 provider signing key", () => {
         expect(inputValue(element)).toBe(certificate.name);
         expect(element.toJSON()).toBe(certificate.pk);
         expect(new FormData(element.closest("form")!).get("signingKey")).toBe(certificate.pk);
+    });
+});
+
+async function mountPKCEFields(provider: Partial<OAuth2Provider>) {
+    const container = document.createElement("div");
+
+    render(
+        renderForm({
+            provider,
+            showLogoutMethod: false,
+            showLogoutMethodCallback: () => undefined,
+        }),
+        container,
+    );
+
+    const mode = container.querySelector<AkRadioInput<PkceModeEnum>>(
+        'ak-radio-input[name="pkceMode"]',
+    )!;
+
+    const allowPlain = container.querySelector<AkSwitchInput>(
+        'ak-switch-input[name="pkceAllowPlain"]',
+    )!;
+
+    // Connect only the PKCE fields so unrelated form fields do not fetch data.
+    const form = document.body.appendChild(document.createElement("form"));
+    mounted.add(form);
+    form.append(mode, allowPlain);
+    await mode.updateComplete;
+    await allowPlain.updateComplete;
+
+    const radio = mode.renderRoot.querySelector<Radio<PkceModeEnum>>("ak-radio")!;
+    await radio.updateComplete;
+
+    return { radio, allowPlain };
+}
+
+describe("OAuth2 provider PKCE", () => {
+    it("requires S256 PKCE from public clients for a new provider", async () => {
+        const { radio, allowPlain } = await mountPKCEFields({});
+
+        expect(radio.value).toBe(PkceModeEnum.RequiredPublic);
+        expect(allowPlain.checked).toBe(false);
+    });
+
+    it("keeps an existing provider's PKCE settings", async () => {
+        const { radio, allowPlain } = await mountPKCEFields({
+            pk: 1,
+            pkceMode: PkceModeEnum.Optional,
+            pkceAllowPlain: true,
+        });
+
+        expect(radio.value).toBe(PkceModeEnum.Optional);
+        expect(allowPlain.checked).toBe(true);
     });
 });

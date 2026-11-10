@@ -697,6 +697,7 @@ export * from "./PermissionAssignRequest.js";
 export * from "./PermissionAssignResult.js";
 export * from "./PermissionCheck.js";
 export * from "./PermissionCheckRequest.js";
+export * from "./PkceModeEnum.js";
 export * from "./PlexAuthenticationChallenge.js";
 export * from "./PlexAuthenticationChallengeResponseRequest.js";
 export * from "./PlexSource.js";

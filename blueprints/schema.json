@@ -10680,6 +10680,21 @@
                     },
                     "title": "Grant types"
                 },
+                "pkce_mode": {
+                    "type": "string",
+                    "enum": [
+                        "optional",
+                        "required_public",
+                        "required"
+                    ],
+                    "title": "PKCE",
+                    "description": "Which clients must use PKCE (RFC 7636) to obtain an authorization code. Clients may always use PKCE."
+                },
+                "pkce_allow_plain": {
+                    "type": "boolean",
+                    "title": "Allow plain PKCE",
+                    "description": "Accept the plain code challenge method. When disabled, clients must use S256."
+                },
                 "client_id": {
                     "type": "string",
                     "maxLength": 255,

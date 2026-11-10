@@ -45,6 +45,8 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
     GRANT_TYPE_TOKEN_EXCHANGE,
+    PKCE_METHOD_PLAIN,
+    PKCE_METHOD_S256,
     SubModes,
 )
 from authentik.core.models import (
@@ -112,6 +114,14 @@ class ResponseMode(models.TextChoices):
     QUERY = "query"
     FRAGMENT = "fragment"
     FORM_POST = "form_post"
+
+
+class PKCEMode(models.TextChoices):
+    """Which clients must use PKCE (RFC 7636) with the authorization code flow"""
+
+    OPTIONAL = "optional", _("Optional")
+    REQUIRED_PUBLIC = "required_public", _("Required for public clients")
+    REQUIRED = "required", _("Required for all clients")
 
 
 class IssuerMode(models.TextChoices):
@@ -239,6 +249,24 @@ class OAuth2Provider(WebfingerProvider, Provider):
         ),
     )
     grant_types = ArrayField(models.TextField(choices=GrantType.choices), default=list)
+    # Existing providers are migrated to `optional` and `True`, which keeps their
+    # behavior; providers created afterwards get the stricter defaults below.
+    pkce_mode = models.TextField(
+        choices=PKCEMode.choices,
+        default=PKCEMode.REQUIRED_PUBLIC,
+        verbose_name=_("PKCE"),
+        help_text=_(
+            "Which clients must use PKCE (RFC 7636) to obtain an authorization code. "
+            "Clients may always use PKCE."
+        ),
+    )
+    pkce_allow_plain = models.BooleanField(
+        default=False,
+        verbose_name=_("Allow plain PKCE"),
+        help_text=_(
+            "Accept the plain code challenge method. When disabled, clients must use S256."
+        ),
+    )
     client_id = models.CharField(
         max_length=255,
         unique=True,
@@ -370,6 +398,22 @@ class OAuth2Provider(WebfingerProvider, Provider):
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
         return private_key, JWTAlgorithms.from_private_key(private_key)
+
+    @property
+    def pkce_required(self) -> bool:
+        """Whether an authorization code may only be issued with a PKCE code challenge"""
+        if self.pkce_mode == PKCEMode.REQUIRED:
+            return True
+        return self.pkce_mode == PKCEMode.REQUIRED_PUBLIC and (
+            self.client_type == ClientType.PUBLIC
+        )
+
+    @property
+    def pkce_methods(self) -> list[str]:
+        """Code challenge methods this provider accepts, in the order they are advertised"""
+        if self.pkce_allow_plain:
+            return [PKCE_METHOD_PLAIN, PKCE_METHOD_S256]
+        return [PKCE_METHOD_S256]
 
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""

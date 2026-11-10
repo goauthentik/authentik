@@ -17,8 +17,6 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_IMPLICIT,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
-    PKCE_METHOD_PLAIN,
-    PKCE_METHOD_S256,
     SCOPE_OPENID,
 )
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
@@ -123,7 +121,7 @@ class ProviderInfoView(View):
             "request_parameter_supported": False,
             "claims_supported": self.get_claims_cached(provider),
             "claims_parameter_supported": False,
-            "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
+            "code_challenge_methods_supported": provider.pkce_methods,
             "dpop_signing_alg_values_supported": sorted(DPOP_SUPPORTED_ALGS),
         }
         if provider.encryption_key:
