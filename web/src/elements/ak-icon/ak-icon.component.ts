@@ -1,100 +1,76 @@
-import effects from "./ak-icon-effects.css";
-import styles from "./ak-icon.css";
-import { ALIASES } from "./aliases.js";
-import faicons from "./fontawesome/fontawesome.css";
-import pficons from "./pficons/pficons.css";
-
-import { html, LitElement } from "lit";
+import { css, LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
-const iconFamilies = ["fa", "fas", "fab", "pf"] as const;
-type IconFamily = (typeof iconFamilies)[number];
+/** Token names are dotted kebab-case, e.g. `status.success` or `action.close`. */
+const TOKEN_PATTERN = /^[a-z0-9]+(?:[.-][a-z0-9]+)*$/;
 
 /**
+ * The icon is a CSS mask filled with `currentColor` and sized at `1em`, so it takes its color and
+ * size from the surrounding text. The `name` token selects the CSS Custom Property
+ * `--ak-icon-<name>`, with dots replaced by dashes. See `ak-icon.root.css` for the catalog. An
+ * unknown or invalid name renders `--ak-icon-unknown`.
+ * Without a `label` the icon is decorative and hidden from assistive technology. With a `label`
+ * it is exposed as an image with that accessible name.
+ *
  * @element ak-icon
  *
- * @summary Icon component that understands Patterfly and FontAwesome icon names.
+ * @summary A single-color icon drawn from the CSS icon catalog.
  *
- * @description
- * Displays icons from the Fontawesome and Patternfly font-based icon libraries.  Has an
- * aggressive alias system that prioritizes "fas" and "pf-icon" names where there were no
- * conflicts; for example, you can provide "birthday-cake" to the `icon` attribute and it
- * will find and display `fas fa-birthday-cake`.
- *
- *
- * @attr {string} icon - Icon name or alias (e.g., "user", "search", "fa-home")
- * @attr {"fa"|"fas"|"fab"|"pf"} family - Icon family prefix. When provided with icon, creates
- * explicit family/icon pair
- * @attr {string} fallback - Fallback icon used when resolution fails (default: "fa fa-bug")
- * @attr {"sm"|"md"|"lg"|"xl"} size - Size variant affecting width, height, and font-size
- * @attr {"danger"|"warning"|"success"|"info"|"custom"} variant - Semantic color variant
- * @attr {"beat"|"bounce"|"fade"|"beat-fade"|"flip"|"shake"|"spin"} effect - Animation effect
- * (respects prefers-reduced-motion)
- * @attr {"rotate-90"|"rotate-180"|"rotate-270"|"flip-horizontal"|"flip-vertical"|"flip-both"|"rotate-by"}
- * effect - Transform effect
- *
- * @csspart content - The content wrapper element
- * @csspart icon - The icon element (i tag)
- *
- * @cssprop --pf-v5-c-icon--Width - Icon container width
- * @cssprop --pf-v5-c-icon--Height - Icon container height
- * @cssprop --pf-v5-c-icon__content--Color - Icon color
- * @cssprop --pf-v5-c-icon__content--FontSize - Icon font size
- * @cssprop --pf-v5-c-icon__content--Opacity - Icon opacity
- * @cssprop --fa-animation-delay - Animation delay for effects
- * @cssprop --fa-animation-duration - Animation duration for effects
- * @cssprop --fa-animation-iteration-count - Animation iteration count for effects
- * @cssprop --fa-animation-timing - Animation timing function for effects
- * @cssprop --fa-rotate-angle - Custom rotation angle for rotate-by effect
- * @cssprop --fa-beat-scale - Scale factor for beat effect
- * @cssprop --fa-bounce-height - Bounce height for bounce effect
- * @cssprop --fa-fade-opacity - Opacity for fade effect
- * @cssprop --fa-flip-x - X-axis flip coordinate for flip effect
- * @cssprop --fa-flip-y - Y-axis flip coordinate for flip effect
- * @cssprop --fa-flip-z - Z-axis flip coordinate for flip effect
- * @cssprop --fa-flip-angle - Flip angle for flip effect
+ * @attr {string} name - Icon token, e.g. "status.success"
+ * @attr {string} label - Accessible name; omit for decorative icons
  */
 export class Icon extends LitElement {
-    static override readonly styles = [styles, effects, faicons, pficons];
-
-    @property()
-    public icon?: string;
-
-    @property()
-    public family?: IconFamily;
-
-    @property()
-    public fallback = "fa fa-bug";
-
-    #iconClass: string = this.fallback;
-
-    #deriveIconClass() {
-        if (this.family && this.icon) {
-            this.#iconClass = `${this.family} ${this.icon}`;
-            return;
+    static override readonly styles = css`
+        :host {
+            display: inline-block;
+            flex-shrink: 0;
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.125em;
+            background-color: currentColor;
+            mask: var(--ak-icon-image, var(--ak-icon-unknown)) center / contain no-repeat;
         }
 
-        if (this.icon && !this.family) {
-            const icon = ALIASES.get(this.icon);
-            if (icon) {
-                this.#iconClass = icon;
-                return;
+        @media (forced-colors: active) {
+            :host {
+                background-color: CanvasText;
             }
-            if (this.icon.includes(" ")) {
-                this.#iconClass = this.icon;
-                return;
+        }
+    `;
+
+    @property({ reflect: true })
+    public name?: string;
+
+    @property()
+    public label?: string;
+
+    public override willUpdate(changed: PropertyValues<this>) {
+        if (changed.has("name")) {
+            if (this.name && TOKEN_PATTERN.test(this.name)) {
+                const token = this.name.replaceAll(".", "-");
+                this.style.setProperty("--ak-icon-image", `var(--ak-icon-${token})`);
+            } else {
+                // Clear it, or an invalid value would leave the previous icon showing.
+                this.style.removeProperty("--ak-icon-image");
             }
         }
 
-        console.warn("Was unable to determine requested icon.");
-        this.#iconClass = this.fallback;
+        // An unset label is never "changed", so the first update must apply the decorative default.
+        if (changed.has("label") || !this.hasUpdated) {
+            if (this.label) {
+                this.setAttribute("role", "img");
+                this.setAttribute("aria-label", this.label);
+                this.removeAttribute("aria-hidden");
+            } else {
+                this.removeAttribute("role");
+                this.removeAttribute("aria-label");
+                this.setAttribute("aria-hidden", "true");
+            }
+        }
     }
 
-    public override willUpdate() {
-        this.#deriveIconClass();
-    }
-
-    public override render() {
-        return html`<div part="content"><i part="icon" class="${this.#iconClass}"></i></div>`;
+    // The host element is the icon; there is nothing to render inside it.
+    protected override render() {
+        return null;
     }
 }

@@ -1,28 +1,52 @@
+/* ----------- Icon catalog for AK-ICON  ---------------------------------- */
+
+/*
+ * Each token is a CSS Custom Property holding a single-color SVG image. `<ak-icon name="status.success">`
+ * paints `--ak-icon-status-success` as a mask filled with `currentColor`, so the icon takes its color
+ * and size from the surrounding text.
+ *
+ * A brand replaces an icon by redefining the property in its custom CSS:
+ *
+ *     :root { --ak-icon-status-success: url("https://example.com/icons/ok.svg"); }
+ *
+ * Icons served from another origin need CORS headers; mask images are fetched in CORS mode.
+ *
+ * Glyphs: Font Awesome Free 7.3.1 by @fontawesome, https://fontawesome.com, CC BY 4.0.
+ * shortcut: inlined as data URIs to sidestep the asset pipeline; move to static files when the
+ * catalog grows past a few dozen icons.
+ */
+
 :root {
-    --pf-v5-c-icon--Width: 1em;
-    --pf-v5-c-icon--Height: 1em;
-    --pf-v5-c-icon--m-sm--Width: var(--pf-v5-global--icon--FontSize--sm);
-    --pf-v5-c-icon--m-sm--Height: var(--pf-v5-global--icon--FontSize--sm);
-    --pf-v5-c-icon--m-md--Width: var(--pf-v5-global--icon--FontSize--md);
-    --pf-v5-c-icon--m-md--Height: var(--pf-v5-global--icon--FontSize--md);
-    --pf-v5-c-icon--m-lg--Width: var(--pf-v5-global--icon--FontSize--lg);
-    --pf-v5-c-icon--m-lg--Height: var(--pf-v5-global--icon--FontSize--lg);
-    --pf-v5-c-icon--m-xl--Width: var(--pf-v5-global--icon--FontSize--xl);
-    --pf-v5-c-icon--m-xl--Height: var(--pf-v5-global--icon--FontSize--xl);
-    --pf-v5-c-icon--m-inline--Width: 1em;
-    --pf-v5-c-icon--m-inline--Height: 1em;
-    --pf-v5-c-icon__content--svg--VerticalAlign: -0.125em;
-    --pf-v5-c-icon__content--Color: initial;
-    --pf-v5-c-icon__content--m-danger--Color: var(--pf-v5-global--danger-color--100);
-    --pf-v5-c-icon__content--m-warning--Color: var(--pf-v5-global--warning-color--100);
-    --pf-v5-c-icon__content--m-success--Color: var(--pf-v5-global--success-color--100);
-    --pf-v5-c-icon__content--m-info--Color: var(--pf-v5-global--info-color--100);
-    --pf-v5-c-icon__content--m-custom--Color: var(--pf-v5-global--custom-color--100);
-    --pf-v5-c-icon--m-inline__content--Color: initial;
-    --pf-v5-c-icon__content--FontSize: 1em;
-    --pf-v5-c-icon--m-sm__content--FontSize: var(--pf-v5-global--icon--FontSize--sm);
-    --pf-v5-c-icon--m-md__content--FontSize: var(--pf-v5-global--icon--FontSize--md);
-    --pf-v5-c-icon--m-lg__content--FontSize: var(--pf-v5-global--icon--FontSize--lg);
-    --pf-v5-c-icon--m-xl__content--FontSize: var(--pf-v5-global--icon--FontSize--xl);
-    --pf-v5-c-icon--m-inline__content--FontSize: 1em;
+    /* Shown when a token is not defined. */
+    --ak-icon-unknown: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1 1h14v14H1ZM3 3v10h10V3Z'/%3E%3C/svg%3E");
+
+    /* fa-solid circle-check */
+    --ak-icon-status-success: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='currentColor' d='M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.8 7.5 18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 5.4-25.7-5.3-33.5z'/%3E%3C/svg%3E");
+
+    /* fa-solid triangle-exclamation */
+    --ak-icon-status-warning: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='currentColor' d='M256 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.1 480 472 480L40 480c-14.1 0-27.2-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21zm0 352a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm0-192c-18.2 0-32.7 15.5-31.4 33.7l7.4 104c.9 12.5 11.4 22.3 23.9 22.3 12.6 0 23-9.7 23.9-22.3l7.4-104c1.3-18.2-13.1-33.7-31.4-33.7z'/%3E%3C/svg%3E");
+
+    /* fa-solid circle-xmark */
+    --ak-icon-status-danger: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='currentColor' d='M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM167 167c9.4-9.4 24.6-9.4 33.9 0l55 55 55-55c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-55 55 55 55c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-55-55-55 55c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l55-55-55-55c-9.4-9.4-9.4-24.6 0-33.9z'/%3E%3C/svg%3E");
+
+    /* fa-solid circle-info */
+    --ak-icon-status-info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='currentColor' d='M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM224 160a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm-8 64l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z'/%3E%3C/svg%3E");
+
+    /* fa-solid circle-question */
+    --ak-icon-status-help: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='currentColor' d='M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-336c-17.7 0-32 14.3-32 32 0 13.3-10.7 24-24 24s-24-10.7-24-24c0-44.2 35.8-80 80-80s80 35.8 80 80c0 47.2-36 67.2-56 74.5l0 3.8c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-8.1c0-20.5 14.8-35.2 30.1-40.2 6.4-2.1 13.2-5.5 18.2-10.3 4.3-4.2 7.7-10 7.7-19.6 0-17.7-14.3-32-32-32zM224 368a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z'/%3E%3C/svg%3E");
+
+    /* fa-solid xmark */
+    --ak-icon-action-close: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath fill='currentColor' d='M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z'/%3E%3C/svg%3E");
+
+    /* fa-solid eye */
+    --ak-icon-action-show: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='currentColor' d='M288 32c-80.8 0-145.5 36.8-192.6 80.6-46.8 43.5-78.1 95.4-93 131.1-3.3 7.9-3.3 16.7 0 24.6 14.9 35.7 46.2 87.7 93 131.1 47.1 43.7 111.8 80.6 192.6 80.6s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1 3.3-7.9 3.3-16.7 0-24.6-14.9-35.7-46.2-87.7-93-131.1-47.1-43.7-111.8-80.6-192.6-80.6zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64-11.5 0-22.3-3-31.7-8.4-1 10.9-.1 22.1 2.9 33.2 13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-12.2-45.7-55.5-74.8-101.1-70.8 5.3 9.3 8.4 20.1 8.4 31.7z'/%3E%3C/svg%3E");
+
+    /* fa-solid eye-slash */
+    --ak-icon-action-hide: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath fill='currentColor' d='M41-24.9c-9.4-9.4-24.6-9.4-33.9 0S-2.3-.3 7 9.1l528 528c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-96.4-96.4c2.7-2.4 5.4-4.8 8-7.2 46.8-43.5 78.1-95.4 93-131.1 3.3-7.9 3.3-16.7 0-24.6-14.9-35.7-46.2-87.7-93-131.1-47.1-43.7-111.8-80.6-192.6-80.6-56.8 0-105.6 18.2-146 44.2L41-24.9zM204.5 138.7c23.5-16.8 52.4-26.7 83.5-26.7 79.5 0 144 64.5 144 144 0 31.1-9.9 59.9-26.7 83.5l-34.7-34.7c12.7-21.4 17-47.7 10.1-73.7-13.7-51.2-66.4-81.6-117.6-67.9-8.6 2.3-16.7 5.7-24 10l-34.7-34.7zM325.3 395.1c-11.9 3.2-24.4 4.9-37.3 4.9-79.5 0-144-64.5-144-144 0-12.9 1.7-25.4 4.9-37.3L69.4 139.2c-32.6 36.8-55 75.8-66.9 104.5-3.3 7.9-3.3 16.7 0 24.6 14.9 35.7 46.2 87.7 93 131.1 47.1 43.7 111.8 80.6 192.6 80.6 37.3 0 71.2-7.9 101.5-20.6l-64.2-64.2z'/%3E%3C/svg%3E");
+
+    /* fa-solid user */
+    --ak-icon-object-user: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='currentColor' d='M224 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zm-29.7 56C95.8 304 16 383.8 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0z'/%3E%3C/svg%3E");
+
+    /* fa-solid key */
+    --ak-icon-object-key: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='currentColor' d='M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0 160 78.8 160 176c0 18.7 2.9 36.8 8.3 53.7L7 391c-4.5 4.5-7 10.6-7 17l0 80c0 13.3 10.7 24 24 24l80 0c13.3 0 24-10.7 24-24l0-40 40 0c13.3 0 24-10.7 24-24l0-40 40 0c6.4 0 12.5-2.5 17-7l33.3-33.3c16.9 5.4 35 8.3 53.7 8.3zM376 96a40 40 0 1 1 0 80 40 40 0 1 1 0-80z'/%3E%3C/svg%3E");
 }

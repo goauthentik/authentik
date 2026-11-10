@@ -34,6 +34,7 @@
 @import "#elements/Breadcrumbs_impl/Breadcrumbs.root.css" layer(components);
 @import "#elements/Crontab_impl/Crontab.root.css" layer(components);
 @import "#elements/Divider_impl/Divider.root.css" layer(components);
+@import "#elements/ak-icon/ak-icon.root.css" layer(components);
 @import "#elements/AttributeView/AttributeView.root.css" layer(components);
 @import "#elements/StructuredView/StructuredView.root.css" layer(components);
 @import "#elements/Paginator_impl/Paginator.root.css" layer(components);
