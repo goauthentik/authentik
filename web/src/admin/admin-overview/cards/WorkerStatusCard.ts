@@ -2,6 +2,8 @@ import { aki } from "#common/api/client";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
+import { P4Disposition } from "#styles/patternfly/constants";
+
 import { TasksApi, Worker } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -22,19 +24,19 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-times-circle pf-m-danger",
                 message: html`${msg("No workers connected. Background tasks will not run.")}`,
-                tone: "danger",
+                tone: P4Disposition.Danger,
             });
         } else if (value.filter((w) => !w.versionMatching).length > 0) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-times-circle pf-m-danger",
                 message: html`${msg("Worker with incorrect version connected.")}`,
-                tone: "danger",
+                tone: P4Disposition.Danger,
             });
         }
 
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
-            tone: "success",
+            tone: P4Disposition.Success,
         });
     }
 

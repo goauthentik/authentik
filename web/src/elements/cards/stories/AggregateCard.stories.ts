@@ -38,19 +38,21 @@ import "#elements/cards/AggregateCard";
         label: { control: "text" },
         headerLink: { control: "text" },
         subtext: { control: "text" },
+        tone: { control: "text" },
     },
 };
 
 export default metadata;
 
-export const DefaultStory: StoryObj = {
+export const DefaultStory: StoryObj<IAggregateCard> = {
     args: {
         icon: null,
         label: "Default",
         headerLink: null,
         subtext: null,
+        tone: null,
     },
-    render: ({ icon, label, headerLink, subtext }: IAggregateCard) => {
+    render: ({ icon, label, headerLink, subtext, tone }: IAggregateCard) => {
         return html`
             <style>
                 ak-aggregate-card {
@@ -64,6 +66,7 @@ export const DefaultStory: StoryObj = {
                 headerLink=${ifPresent(headerLink)}
                 subtext=${ifPresent(subtext)}
                 icon=${ifPresent(icon)}
+                tone=${ifPresent(tone)}
             >
                 <p>
                     Form without content style without meaning quick-win, for that is a good problem

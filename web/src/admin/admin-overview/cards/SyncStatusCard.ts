@@ -1,30 +1,16 @@
-import "#elements/forms/ConfirmationForm";
 import { aki } from "#common/api/client";
+import { plural } from "#common/ui/locale/plurals";
 
-import { AKChart } from "#elements/charts/Chart";
-import { actionToColor } from "#elements/charts/EventChart";
 import { PaginatedResponse } from "#elements/table/Table";
 
-import {
-    EventActions,
-    ProvidersApi,
-    SourcesApi,
-    SyncStatus,
-    TaskAggregatedStatusEnum,
-} from "@goauthentik/api";
+import { StatusGroup, StatusRollupCard } from "#admin/admin-overview/cards/StatusRollupCard";
 
-import { ChartData, ChartOptions } from "chart.js";
+import { ProvidersApi, SourcesApi, SyncStatus, TaskAggregatedStatusEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
-export interface SummarizedSyncStatus {
-    healthy: number;
-    failed: number;
-    unsynced: number;
-    total: number;
-    label: string;
-}
+type SyncState = "synced" | "syncing" | "overdue" | "failed";
 
 const emptyResponse = {
     pagination: {
@@ -39,44 +25,52 @@ const emptyResponse = {
     results: [],
 };
 
-@customElement("ak-admin-status-chart-sync")
-export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
-    public override ariaLabel = msg("Synchronization status chart");
+@customElement("ak-admin-status-card-sync")
+export class SyncStatusCard extends StatusRollupCard<SyncState> {
+    public override icon = "fa fa-sync-alt";
+    public override label = msg("Sync status");
+    public override tooltip = msg("Integrations synced in the last 12 hours.");
 
-    getChartType(): string {
-        return "doughnut";
-    }
+    protected kinds = {
+        synced: {
+            label: msg("Synced", { id: "admin-overview.sync.legend.synced" }),
+            color: "var(--pf-global--success-color--100)",
+        },
+        syncing: {
+            label: msg("Syncing", { id: "admin-overview.sync.legend.syncing" }),
+            color: "var(--pf-global--primary-color--100)",
+        },
+        overdue: {
+            label: msg("Overdue", { id: "admin-overview.sync.legend.overdue" }),
+            color: "var(--pf-global--warning-color--100)",
+        },
+        failed: {
+            label: msg("Failed", { id: "admin-overview.sync.legend.failed" }),
+            color: "var(--pf-global--danger-color--100)",
+        },
+    };
+    protected okKinds: SyncState[] = ["synced", "syncing"];
+    protected emptyMessage = msg("Nothing configured to sync.");
 
-    getOptions(): ChartOptions {
-        return {
-            plugins: {
-                legend: {
-                    display: false,
-                },
-            },
-            maintainAspectRatio: false,
-        };
+    protected summary(total: number) {
+        return msg(str`of ${total} synced on schedule`, { id: "admin-overview.sync.summary" });
     }
 
     async fetchStatus<T>(
         listObjects: () => Promise<PaginatedResponse<T>>,
         fetchSyncStatus: (element: T) => Promise<SyncStatus>,
         label: string,
-    ): Promise<SummarizedSyncStatus> {
+    ): Promise<StatusGroup<SyncState>> {
         const objects = await listObjects().catch(() => {
             return emptyResponse;
         });
 
-        const metrics: { [key: string]: number } = {
-            healthy: 0,
-            failed: 0,
-            unsynced: 0,
-        };
+        const counts: Record<SyncState, number> = { synced: 0, syncing: 0, overdue: 0, failed: 0 };
 
         await Promise.all(
             objects.results.map(async (element) => {
                 // Each source should have 3 successful tasks, so the worst task overwrites
-                let objectKey = "healthy";
+                let state: SyncState = "synced";
 
                 try {
                     const status = await fetchSyncStatus(element);
@@ -90,32 +84,38 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                         status.lastSyncStatus === TaskAggregatedStatusEnum.Rejected ||
                         status.lastSyncStatus === TaskAggregatedStatusEnum.Warning
                     ) {
-                        objectKey = "failed";
+                        state = "failed";
+                    } else if (status.isRunning) {
+                        state = "syncing";
                     } else if (
                         !status.lastSuccessfulSync ||
                         now - status.lastSuccessfulSync.getTime() > maxDelta
                     ) {
-                        objectKey = "unsynced";
+                        state = "overdue";
                     }
                 } catch {
-                    objectKey = "unsynced";
+                    state = "overdue";
                 }
 
-                metrics[objectKey] += 1;
+                counts[state] += 1;
             }),
         );
 
+        const total = objects.results.length;
+
         return {
-            healthy: metrics.healthy,
-            failed: metrics.failed,
-            unsynced: objects.pagination.count === 0 ? 1 : metrics.unsynced,
-            total: objects.pagination.count,
             label,
+            detail: plural(total, {
+                one: () => msg("1 integration", { id: "admin-overview.sync.count.one" }),
+                other: () =>
+                    msg(str`${total} integrations`, { id: "admin-overview.sync.count.other" }),
+            }),
+            counts,
         };
     }
 
-    async apiRequest(): Promise<SummarizedSyncStatus[]> {
-        const statuses = [
+    async getPrimaryValue(): Promise<StatusGroup<SyncState>[]> {
+        return [
             await this.fetchStatus(
                 () => {
                     return aki(ProvidersApi).providersScimList();
@@ -172,33 +172,11 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 msg("Kerberos Source"),
             ),
         ];
-
-        this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();
-
-        return statuses;
-    }
-
-    getChartData(data: SummarizedSyncStatus[]): ChartData {
-        return {
-            labels: [msg("Healthy"), msg("Failed"), msg("Unsynced / N/A")],
-            datasets: data.map((d) => {
-                return {
-                    backgroundColor: [
-                        actionToColor(EventActions.Login),
-                        actionToColor(EventActions.SuspiciousRequest),
-                        actionToColor(EventActions.AuthorizeApplication),
-                    ],
-                    spanGaps: true,
-                    data: [d.healthy, d.failed, d.unsynced],
-                    label: d.label,
-                };
-            }),
-        };
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-admin-status-chart-sync": SyncStatusChart;
+        "ak-admin-status-card-sync": SyncStatusCard;
     }
 }
