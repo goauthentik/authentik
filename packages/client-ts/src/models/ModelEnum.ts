@@ -172,6 +172,8 @@ export const ModelEnum = {
         "authentik_providers_google_workspace.googleworkspaceprovider",
     AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovidermapping:
         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
+    AuthentikProvidersMcpMcpgatewayprovider: "authentik_providers_mcp.mcpgatewayprovider",
+    AuthentikProvidersMcpMcpbackend: "authentik_providers_mcp.mcpbackend",
     AuthentikProvidersMicrosoftEntraMicrosoftentraprovider:
         "authentik_providers_microsoft_entra.microsoftentraprovider",
     AuthentikProvidersMicrosoftEntraMicrosoftentraprovidermapping:

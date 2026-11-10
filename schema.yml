@@ -18550,6 +18550,391 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /providers/mcp/:
+    get:
+      operationId: providers_mcp_list
+      description: MCPGatewayProvider Viewset
+      parameters:
+      - in: query
+        name: application__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: name__iexact
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMCPGatewayProviderList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: providers_mcp_create
+      description: MCPGatewayProvider Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPGatewayProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPGatewayProvider'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/mcp/{id}/:
+    get:
+      operationId: providers_mcp_retrieve
+      description: MCPGatewayProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this MCP Gateway Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPGatewayProvider'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: providers_mcp_update
+      description: MCPGatewayProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this MCP Gateway Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPGatewayProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPGatewayProvider'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: providers_mcp_partial_update
+      description: MCPGatewayProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this MCP Gateway Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMCPGatewayProviderRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPGatewayProvider'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: providers_mcp_destroy
+      description: MCPGatewayProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this MCP Gateway Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/mcp/{id}/used_by/:
+    get:
+      operationId: providers_mcp_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this MCP Gateway Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/mcp_backends/:
+    get:
+      operationId: providers_mcp_backends_list
+      description: MCPBackend Viewset
+      parameters:
+      - in: query
+        name: gateway
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMCPBackendList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: providers_mcp_backends_create
+      description: MCPBackend Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPBackendRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPBackend'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/mcp_backends/{pbm_uuid}/:
+    get:
+      operationId: providers_mcp_backends_retrieve
+      description: MCPBackend Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this MCP Backend.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPBackend'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: providers_mcp_backends_update
+      description: MCPBackend Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this MCP Backend.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MCPBackendRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPBackend'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: providers_mcp_backends_partial_update
+      description: MCPBackend Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this MCP Backend.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMCPBackendRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPBackend'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: providers_mcp_backends_destroy
+      description: MCPBackend Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this MCP Backend.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/mcp_backends/{pbm_uuid}/used_by/:
+    get:
+      operationId: providers_mcp_backends_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this MCP Backend.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /providers/microsoft_entra/:
     get:
       operationId: providers_microsoft_entra_list
@@ -36590,6 +36975,7 @@ components:
       - authentik.enterprise.lifecycle
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
+      - authentik.enterprise.providers.mcp
       - authentik.enterprise.providers.microsoft_entra
       - authentik.enterprise.providers.radius
       - authentik.enterprise.providers.scim
@@ -41267,6 +41653,7 @@ components:
       - access_request_approved
       - access_request_denied
       - access_request_revoked
+      - mcp_tool_call
       - custom_
       type: string
     EventMatcherPolicy:
@@ -45621,6 +46008,128 @@ components:
           nullable: true
       required:
       - url
+    MCPBackend:
+      type: object
+      description: MCPBackend Serializer
+      properties:
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        gateway:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+          description: Prefix for this backend's tools, as `<slug>__<tool>`.
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        url:
+          type: string
+          description: Streamable HTTP endpoint of the MCP server.
+        token_application:
+          type: string
+          format: uuid
+          nullable: true
+          description: Application with an OAuth2 provider used to issue a short-lived
+            access token for the user on every call to this backend. Users must also
+            have access to this application to use this backend's tools.
+        token_validity:
+          type: string
+          description: Validity of access tokens issued for this backend.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - gateway
+      - name
+      - pbm_uuid
+      - slug
+      - url
+    MCPBackendRequest:
+      type: object
+      description: MCPBackend Serializer
+      properties:
+        gateway:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+        slug:
+          type: string
+          minLength: 1
+          description: Prefix for this backend's tools, as `<slug>__<tool>`.
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        url:
+          type: string
+          minLength: 1
+          description: Streamable HTTP endpoint of the MCP server.
+        token_application:
+          type: string
+          format: uuid
+          nullable: true
+          description: Application with an OAuth2 provider used to issue a short-lived
+            access token for the user on every call to this backend. Users must also
+            have access to this application to use this backend's tools.
+        token_validity:
+          type: string
+          minLength: 1
+          description: Validity of access tokens issued for this backend.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - gateway
+      - name
+      - slug
+      - url
+    MCPGatewayProvider:
+      type: object
+      description: MCPGatewayProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        url:
+          type: string
+          nullable: true
+          readOnly: true
+      required:
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - url
+      - verbose_name
+      - verbose_name_plural
+    MCPGatewayProviderRequest:
+      type: object
+      description: MCPGatewayProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
     MDMConfigRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -46174,6 +46683,8 @@ components:
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
+      - authentik_providers_mcp.mcpgatewayprovider
+      - authentik_providers_mcp.mcpbackend
       - authentik_providers_microsoft_entra.microsoftentraprovider
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
       - authentik_providers_ssf.ssfprovider
@@ -48934,6 +49445,36 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LifecycleRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedMCPBackendList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MCPBackend'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedMCPGatewayProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MCPGatewayProvider'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -52706,6 +53247,45 @@ components:
           description: Select which transports should be used to notify the reviewers.
             If none are selected, the notification will only be shown in the authentik
             UI.
+    PatchedMCPBackendRequest:
+      type: object
+      description: MCPBackend Serializer
+      properties:
+        gateway:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+        slug:
+          type: string
+          minLength: 1
+          description: Prefix for this backend's tools, as `<slug>__<tool>`.
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        url:
+          type: string
+          minLength: 1
+          description: Streamable HTTP endpoint of the MCP server.
+        token_application:
+          type: string
+          format: uuid
+          nullable: true
+          description: Application with an OAuth2 provider used to issue a short-lived
+            access token for the user on every call to this backend. Users must also
+            have access to this application to use this backend's tools.
+        token_validity:
+          type: string
+          minLength: 1
+          description: Validity of access tokens issued for this backend.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+    PatchedMCPGatewayProviderRequest:
+      type: object
+      description: MCPGatewayProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
     PatchedMicrosoftEntraProviderMappingRequest:
       type: object
       description: MicrosoftEntraProviderMapping Serializer
@@ -56125,6 +56705,7 @@ components:
       enum:
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_ldap.ldapprovider
+      - authentik_providers_mcp.mcpgatewayprovider
       - authentik_providers_microsoft_entra.microsoftentraprovider
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
@@ -63081,6 +63662,7 @@ components:
       oneOf:
       - $ref: '#/components/schemas/GoogleWorkspaceProviderRequest'
       - $ref: '#/components/schemas/LDAPProviderRequest'
+      - $ref: '#/components/schemas/MCPGatewayProviderRequest'
       - $ref: '#/components/schemas/MicrosoftEntraProviderRequest'
       - $ref: '#/components/schemas/OAuth2ProviderRequest'
       - $ref: '#/components/schemas/ProxyProviderRequest'
@@ -63095,6 +63677,7 @@ components:
         mapping:
           authentik_providers_google_workspace.googleworkspaceprovider: '#/components/schemas/GoogleWorkspaceProviderRequest'
           authentik_providers_ldap.ldapprovider: '#/components/schemas/LDAPProviderRequest'
+          authentik_providers_mcp.mcpgatewayprovider: '#/components/schemas/MCPGatewayProviderRequest'
           authentik_providers_microsoft_entra.microsoftentraprovider: '#/components/schemas/MicrosoftEntraProviderRequest'
           authentik_providers_oauth2.oauth2provider: '#/components/schemas/OAuth2ProviderRequest'
           authentik_providers_proxy.proxyprovider: '#/components/schemas/ProxyProviderRequest'

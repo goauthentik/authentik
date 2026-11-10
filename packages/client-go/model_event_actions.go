@@ -61,6 +61,7 @@ const (
 	EVENTACTIONS_ACCESS_REQUEST_APPROVED    EventActions = "access_request_approved"
 	EVENTACTIONS_ACCESS_REQUEST_DENIED      EventActions = "access_request_denied"
 	EVENTACTIONS_ACCESS_REQUEST_REVOKED     EventActions = "access_request_revoked"
+	EVENTACTIONS_MCP_TOOL_CALL              EventActions = "mcp_tool_call"
 	EVENTACTIONS_CUSTOM                     EventActions = "custom_"
 )
 
@@ -106,6 +107,7 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"access_request_approved",
 	"access_request_denied",
 	"access_request_revoked",
+	"mcp_tool_call",
 	"custom_",
 }
 

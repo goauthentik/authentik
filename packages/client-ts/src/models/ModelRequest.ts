@@ -20,6 +20,11 @@ import {
     LDAPProviderRequestFromJSONTyped,
     LDAPProviderRequestToJSON,
 } from "./LDAPProviderRequest.js";
+import type { MCPGatewayProviderRequest } from "./MCPGatewayProviderRequest.js";
+import {
+    MCPGatewayProviderRequestFromJSONTyped,
+    MCPGatewayProviderRequestToJSON,
+} from "./MCPGatewayProviderRequest.js";
 import type { MicrosoftEntraProviderRequest } from "./MicrosoftEntraProviderRequest.js";
 import {
     MicrosoftEntraProviderRequestFromJSONTyped,
@@ -69,6 +74,7 @@ export type ModelRequest =
           providerModel: "authentik_providers_google_workspace.googleworkspaceprovider";
       } & GoogleWorkspaceProviderRequest)
     | ({ providerModel: "authentik_providers_ldap.ldapprovider" } & LDAPProviderRequest)
+    | ({ providerModel: "authentik_providers_mcp.mcpgatewayprovider" } & MCPGatewayProviderRequest)
     | ({
           providerModel: "authentik_providers_microsoft_entra.microsoftentraprovider";
       } & MicrosoftEntraProviderRequest)
@@ -99,6 +105,10 @@ export function ModelRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         case "authentik_providers_ldap.ldapprovider":
             return Object.assign({}, LDAPProviderRequestFromJSONTyped(json, true), {
                 providerModel: "authentik_providers_ldap.ldapprovider",
+            } as const);
+        case "authentik_providers_mcp.mcpgatewayprovider":
+            return Object.assign({}, MCPGatewayProviderRequestFromJSONTyped(json, true), {
+                providerModel: "authentik_providers_mcp.mcpgatewayprovider",
             } as const);
         case "authentik_providers_microsoft_entra.microsoftentraprovider":
             return Object.assign({}, MicrosoftEntraProviderRequestFromJSONTyped(json, true), {
@@ -160,6 +170,10 @@ export function ModelRequestToJSONTyped(
         case "authentik_providers_ldap.ldapprovider":
             return Object.assign({}, LDAPProviderRequestToJSON(value), {
                 provider_model: "authentik_providers_ldap.ldapprovider",
+            } as const);
+        case "authentik_providers_mcp.mcpgatewayprovider":
+            return Object.assign({}, MCPGatewayProviderRequestToJSON(value), {
+                provider_model: "authentik_providers_mcp.mcpgatewayprovider",
             } as const);
         case "authentik_providers_microsoft_entra.microsoftentraprovider":
             return Object.assign({}, MicrosoftEntraProviderRequestToJSON(value), {

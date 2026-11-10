@@ -154,6 +154,8 @@ class EventAction(models.TextChoices):
     ACCESS_REQUEST_DENIED = "access_request_denied"
     ACCESS_REQUEST_REVOKED = "access_request_revoked"
 
+    MCP_TOOL_CALL = "mcp_tool_call"
+
     CUSTOM_PREFIX = "custom_"
 
 

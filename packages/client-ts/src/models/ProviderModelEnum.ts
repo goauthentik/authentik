@@ -17,6 +17,7 @@ export const ProviderModelEnum = {
     AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider:
         "authentik_providers_google_workspace.googleworkspaceprovider",
     AuthentikProvidersLdapLdapprovider: "authentik_providers_ldap.ldapprovider",
+    AuthentikProvidersMcpMcpgatewayprovider: "authentik_providers_mcp.mcpgatewayprovider",
     AuthentikProvidersMicrosoftEntraMicrosoftentraprovider:
         "authentik_providers_microsoft_entra.microsoftentraprovider",
     AuthentikProvidersOauth2Oauth2provider: "authentik_providers_oauth2.oauth2provider",

@@ -7,6 +7,7 @@ import "#admin/providers/rac/RACProviderViewPage";
 import "#admin/providers/radius/RadiusProviderViewPage";
 import "#admin/providers/saml/SAMLProviderViewPage";
 import "#admin/providers/scim/SCIMProviderViewPage";
+import "#admin/providers/mcp/MCPGatewayProviderViewPage";
 import "#admin/providers/ssf/SSFProviderViewPage";
 import "#admin/providers/wsfed/WSFederationProviderViewPage";
 import "#elements/EmptyState";
@@ -83,6 +84,10 @@ export class ProviderViewPage extends AKElement {
                 return html`<ak-provider-microsoft-entra-view
                     ${spread(props)}
                 ></ak-provider-microsoft-entra-view>`;
+            case "ak-provider-mcp-gateway-form":
+                return html`<ak-provider-mcp-gateway-view
+                    ${spread(props)}
+                ></ak-provider-mcp-gateway-view>`;
             case "ak-provider-ssf-form":
                 return html`<ak-provider-ssf-view ${spread(props)}></ak-provider-ssf-view>`;
             case "ak-provider-wsfed-form":

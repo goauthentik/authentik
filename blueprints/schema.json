@@ -1224,6 +1224,86 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_providers_mcp.mcpbackend"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_providers_mcp.mcpbackend_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_providers_mcp.mcpbackend"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_providers_mcp.mcpbackend"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_providers_mcp.mcpgatewayprovider"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_providers_mcp.mcpgatewayprovider_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_providers_mcp.mcpgatewayprovider"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_providers_mcp.mcpgatewayprovider"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_providers_microsoft_entra.microsoftentraprovider"
                         },
                         "id": {
@@ -7521,6 +7601,118 @@
                 }
             }
         },
+        "model_authentik_providers_mcp.mcpbackend": {
+            "type": "object",
+            "properties": {
+                "gateway": {
+                    "type": "integer",
+                    "title": "Gateway"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "slug": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1,
+                    "pattern": "^[-a-zA-Z0-9_]+$",
+                    "title": "Slug",
+                    "description": "Prefix for this backend's tools, as `<slug>__<tool>`."
+                },
+                "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Url",
+                    "description": "Streamable HTTP endpoint of the MCP server."
+                },
+                "token_application": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Token application",
+                    "description": "Application with an OAuth2 provider used to issue a short-lived access token for the user on every call to this backend. Users must also have access to this application to use this backend's tools."
+                },
+                "token_validity": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Token validity",
+                    "description": "Validity of access tokens issued for this backend."
+                },
+                "policy_engine_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "any"
+                    ],
+                    "title": "Policy engine mode"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_mcp.mcpbackend_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_mcpbackend",
+                            "change_mcpbackend",
+                            "delete_mcpbackend",
+                            "view_mcpbackend"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_providers_mcp.mcpgatewayprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_mcp.mcpgatewayprovider_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_mcpgatewayprovider",
+                            "change_mcpgatewayprovider",
+                            "delete_mcpgatewayprovider",
+                            "view_mcpgatewayprovider"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_providers_microsoft_entra.microsoftentraprovider": {
             "type": "object",
             "properties": {
@@ -8523,6 +8715,7 @@
                         "access_request_approved",
                         "access_request_denied",
                         "access_request_revoked",
+                        "mcp_tool_call",
                         "custom_"
                     ],
                     "title": "Action"
@@ -8653,6 +8846,7 @@
                                 "access_request_approved",
                                 "access_request_denied",
                                 "access_request_revoked",
+                                "mcp_tool_call",
                                 "custom_"
                             ],
                             "title": "Action"
@@ -9421,6 +9615,7 @@
                         "access_request_approved",
                         "access_request_denied",
                         "access_request_revoked",
+                        "mcp_tool_call",
                         "custom_"
                     ],
                     "title": "Action",
@@ -9514,6 +9709,7 @@
                         "authentik.enterprise.lifecycle",
                         "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
+                        "authentik.enterprise.providers.mcp",
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.radius",
                         "authentik.enterprise.providers.scim",
@@ -9655,6 +9851,8 @@
                         "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
+                        "authentik_providers_mcp.mcpgatewayprovider",
+                        "authentik_providers_mcp.mcpbackend",
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
                         "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
                         "authentik_providers_ssf.ssfprovider",

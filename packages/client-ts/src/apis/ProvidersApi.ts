@@ -44,6 +44,16 @@ import {
     type LDAPProviderRequest,
     LDAPProviderRequestToJSON,
 } from "../models/LDAPProviderRequest.js";
+import { type MCPBackend, MCPBackendFromJSON } from "../models/MCPBackend.js";
+import { type MCPBackendRequest, MCPBackendRequestToJSON } from "../models/MCPBackendRequest.js";
+import {
+    type MCPGatewayProvider,
+    MCPGatewayProviderFromJSON,
+} from "../models/MCPGatewayProvider.js";
+import {
+    type MCPGatewayProviderRequest,
+    MCPGatewayProviderRequestToJSON,
+} from "../models/MCPGatewayProviderRequest.js";
 import {
     type MicrosoftEntraProvider,
     MicrosoftEntraProviderFromJSON,
@@ -101,6 +111,14 @@ import {
     type PaginatedLDAPProviderList,
     PaginatedLDAPProviderListFromJSON,
 } from "../models/PaginatedLDAPProviderList.js";
+import {
+    type PaginatedMCPBackendList,
+    PaginatedMCPBackendListFromJSON,
+} from "../models/PaginatedMCPBackendList.js";
+import {
+    type PaginatedMCPGatewayProviderList,
+    PaginatedMCPGatewayProviderListFromJSON,
+} from "../models/PaginatedMCPGatewayProviderList.js";
 import {
     type PaginatedMicrosoftEntraProviderGroupList,
     PaginatedMicrosoftEntraProviderGroupListFromJSON,
@@ -169,6 +187,14 @@ import {
     type PatchedLDAPProviderRequest,
     PatchedLDAPProviderRequestToJSON,
 } from "../models/PatchedLDAPProviderRequest.js";
+import {
+    type PatchedMCPBackendRequest,
+    PatchedMCPBackendRequestToJSON,
+} from "../models/PatchedMCPBackendRequest.js";
+import {
+    type PatchedMCPGatewayProviderRequest,
+    PatchedMCPGatewayProviderRequestToJSON,
+} from "../models/PatchedMCPGatewayProviderRequest.js";
 import {
     type PatchedMicrosoftEntraProviderRequest,
     PatchedMicrosoftEntraProviderRequestToJSON,
@@ -554,6 +580,129 @@ export interface ProvidersLdapUpdateRequest {
 export interface ProvidersLdapUsedByListRequest {
     /**
      * A unique integer value identifying this LDAP Provider.
+     */
+    id: number;
+}
+
+export interface ProvidersMcpBackendsCreateRequest {
+    mCPBackendRequest: MCPBackendRequest;
+}
+
+export interface ProvidersMcpBackendsDestroyRequest {
+    /**
+     * A UUID string identifying this MCP Backend.
+     */
+    pbmUuid: string;
+}
+
+export interface ProvidersMcpBackendsListRequest {
+    gateway?: number;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface ProvidersMcpBackendsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this MCP Backend.
+     */
+    pbmUuid: string;
+    patchedMCPBackendRequest?: PatchedMCPBackendRequest;
+}
+
+export interface ProvidersMcpBackendsRetrieveRequest {
+    /**
+     * A UUID string identifying this MCP Backend.
+     */
+    pbmUuid: string;
+}
+
+export interface ProvidersMcpBackendsUpdateRequest {
+    /**
+     * A UUID string identifying this MCP Backend.
+     */
+    pbmUuid: string;
+    mCPBackendRequest: MCPBackendRequest;
+}
+
+export interface ProvidersMcpBackendsUsedByListRequest {
+    /**
+     * A UUID string identifying this MCP Backend.
+     */
+    pbmUuid: string;
+}
+
+export interface ProvidersMcpCreateRequest {
+    mCPGatewayProviderRequest: MCPGatewayProviderRequest;
+}
+
+export interface ProvidersMcpDestroyRequest {
+    /**
+     * A unique integer value identifying this MCP Gateway Provider.
+     */
+    id: number;
+}
+
+export interface ProvidersMcpListRequest {
+    applicationIsnull?: boolean;
+    nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface ProvidersMcpPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this MCP Gateway Provider.
+     */
+    id: number;
+    patchedMCPGatewayProviderRequest?: PatchedMCPGatewayProviderRequest;
+}
+
+export interface ProvidersMcpRetrieveRequest {
+    /**
+     * A unique integer value identifying this MCP Gateway Provider.
+     */
+    id: number;
+}
+
+export interface ProvidersMcpUpdateRequest {
+    /**
+     * A unique integer value identifying this MCP Gateway Provider.
+     */
+    id: number;
+    mCPGatewayProviderRequest: MCPGatewayProviderRequest;
+}
+
+export interface ProvidersMcpUsedByListRequest {
+    /**
+     * A unique integer value identifying this MCP Gateway Provider.
      */
     id: number;
 }
@@ -3698,6 +3847,957 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.providersLdapUsedByListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpBackendsCreate without sending the request
+     */
+    async providersMcpBackendsCreateRequestOpts(
+        requestParameters: ProvidersMcpBackendsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["mCPBackendRequest"] == null) {
+            throw new runtime.RequiredError(
+                "mCPBackendRequest",
+                'Required parameter "mCPBackendRequest" was null or undefined when calling providersMcpBackendsCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/providers/mcp_backends/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: MCPBackendRequestToJSON(requestParameters["mCPBackendRequest"]),
+        };
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsCreateRaw(
+        requestParameters: ProvidersMcpBackendsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MCPBackend>> {
+        const requestOptions = await this.providersMcpBackendsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MCPBackendFromJSON(jsonValue));
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsCreate(
+        requestParameters: ProvidersMcpBackendsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MCPBackend> {
+        const response = await this.providersMcpBackendsCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpBackendsDestroy without sending the request
+     */
+    async providersMcpBackendsDestroyRequestOpts(
+        requestParameters: ProvidersMcpBackendsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling providersMcpBackendsDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/mcp_backends/{pbm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pbm_uuid}",
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsDestroyRaw(
+        requestParameters: ProvidersMcpBackendsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.providersMcpBackendsDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsDestroy(
+        requestParameters: ProvidersMcpBackendsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.providersMcpBackendsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for providersMcpBackendsList without sending the request
+     */
+    async providersMcpBackendsListRequestOpts(
+        requestParameters: ProvidersMcpBackendsListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["gateway"] != null) {
+            queryParameters["gateway"] = requestParameters["gateway"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/providers/mcp_backends/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsListRaw(
+        requestParameters: ProvidersMcpBackendsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedMCPBackendList>> {
+        const requestOptions = await this.providersMcpBackendsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedMCPBackendListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsList(
+        requestParameters: ProvidersMcpBackendsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedMCPBackendList> {
+        const response = await this.providersMcpBackendsListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpBackendsPartialUpdate without sending the request
+     */
+    async providersMcpBackendsPartialUpdateRequestOpts(
+        requestParameters: ProvidersMcpBackendsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling providersMcpBackendsPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/mcp_backends/{pbm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pbm_uuid}",
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedMCPBackendRequestToJSON(requestParameters["patchedMCPBackendRequest"]),
+        };
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsPartialUpdateRaw(
+        requestParameters: ProvidersMcpBackendsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MCPBackend>> {
+        const requestOptions =
+            await this.providersMcpBackendsPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MCPBackendFromJSON(jsonValue));
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsPartialUpdate(
+        requestParameters: ProvidersMcpBackendsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MCPBackend> {
+        const response = await this.providersMcpBackendsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpBackendsRetrieve without sending the request
+     */
+    async providersMcpBackendsRetrieveRequestOpts(
+        requestParameters: ProvidersMcpBackendsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling providersMcpBackendsRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/mcp_backends/{pbm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pbm_uuid}",
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsRetrieveRaw(
+        requestParameters: ProvidersMcpBackendsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MCPBackend>> {
+        const requestOptions =
+            await this.providersMcpBackendsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MCPBackendFromJSON(jsonValue));
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsRetrieve(
+        requestParameters: ProvidersMcpBackendsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MCPBackend> {
+        const response = await this.providersMcpBackendsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpBackendsUpdate without sending the request
+     */
+    async providersMcpBackendsUpdateRequestOpts(
+        requestParameters: ProvidersMcpBackendsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling providersMcpBackendsUpdate().',
+            );
+        }
+
+        if (requestParameters["mCPBackendRequest"] == null) {
+            throw new runtime.RequiredError(
+                "mCPBackendRequest",
+                'Required parameter "mCPBackendRequest" was null or undefined when calling providersMcpBackendsUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/mcp_backends/{pbm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pbm_uuid}",
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: MCPBackendRequestToJSON(requestParameters["mCPBackendRequest"]),
+        };
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsUpdateRaw(
+        requestParameters: ProvidersMcpBackendsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MCPBackend>> {
+        const requestOptions = await this.providersMcpBackendsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MCPBackendFromJSON(jsonValue));
+    }
+
+    /**
+     * MCPBackend Viewset
+     */
+    async providersMcpBackendsUpdate(
+        requestParameters: ProvidersMcpBackendsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MCPBackend> {
+        const response = await this.providersMcpBackendsUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpBackendsUsedByList without sending the request
+     */
+    async providersMcpBackendsUsedByListRequestOpts(
+        requestParameters: ProvidersMcpBackendsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling providersMcpBackendsUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/mcp_backends/{pbm_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            "{pbm_uuid}",
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async providersMcpBackendsUsedByListRaw(
+        requestParameters: ProvidersMcpBackendsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.providersMcpBackendsUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async providersMcpBackendsUsedByList(
+        requestParameters: ProvidersMcpBackendsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.providersMcpBackendsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpCreate without sending the request
+     */
+    async providersMcpCreateRequestOpts(
+        requestParameters: ProvidersMcpCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["mCPGatewayProviderRequest"] == null) {
+            throw new runtime.RequiredError(
+                "mCPGatewayProviderRequest",
+                'Required parameter "mCPGatewayProviderRequest" was null or undefined when calling providersMcpCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/providers/mcp/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: MCPGatewayProviderRequestToJSON(requestParameters["mCPGatewayProviderRequest"]),
+        };
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpCreateRaw(
+        requestParameters: ProvidersMcpCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MCPGatewayProvider>> {
+        const requestOptions = await this.providersMcpCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MCPGatewayProviderFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpCreate(
+        requestParameters: ProvidersMcpCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MCPGatewayProvider> {
+        const response = await this.providersMcpCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpDestroy without sending the request
+     */
+    async providersMcpDestroyRequestOpts(
+        requestParameters: ProvidersMcpDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMcpDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/mcp/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpDestroyRaw(
+        requestParameters: ProvidersMcpDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.providersMcpDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpDestroy(
+        requestParameters: ProvidersMcpDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.providersMcpDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for providersMcpList without sending the request
+     */
+    async providersMcpListRequestOpts(
+        requestParameters: ProvidersMcpListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["applicationIsnull"] != null) {
+            queryParameters["application__isnull"] = requestParameters["applicationIsnull"];
+        }
+
+        if (requestParameters["nameIexact"] != null) {
+            queryParameters["name__iexact"] = requestParameters["nameIexact"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/providers/mcp/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpListRaw(
+        requestParameters: ProvidersMcpListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedMCPGatewayProviderList>> {
+        const requestOptions = await this.providersMcpListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedMCPGatewayProviderListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpList(
+        requestParameters: ProvidersMcpListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedMCPGatewayProviderList> {
+        const response = await this.providersMcpListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpPartialUpdate without sending the request
+     */
+    async providersMcpPartialUpdateRequestOpts(
+        requestParameters: ProvidersMcpPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMcpPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/mcp/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedMCPGatewayProviderRequestToJSON(
+                requestParameters["patchedMCPGatewayProviderRequest"],
+            ),
+        };
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpPartialUpdateRaw(
+        requestParameters: ProvidersMcpPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MCPGatewayProvider>> {
+        const requestOptions = await this.providersMcpPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MCPGatewayProviderFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpPartialUpdate(
+        requestParameters: ProvidersMcpPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MCPGatewayProvider> {
+        const response = await this.providersMcpPartialUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpRetrieve without sending the request
+     */
+    async providersMcpRetrieveRequestOpts(
+        requestParameters: ProvidersMcpRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMcpRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/mcp/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpRetrieveRaw(
+        requestParameters: ProvidersMcpRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MCPGatewayProvider>> {
+        const requestOptions = await this.providersMcpRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MCPGatewayProviderFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpRetrieve(
+        requestParameters: ProvidersMcpRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MCPGatewayProvider> {
+        const response = await this.providersMcpRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpUpdate without sending the request
+     */
+    async providersMcpUpdateRequestOpts(
+        requestParameters: ProvidersMcpUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMcpUpdate().',
+            );
+        }
+
+        if (requestParameters["mCPGatewayProviderRequest"] == null) {
+            throw new runtime.RequiredError(
+                "mCPGatewayProviderRequest",
+                'Required parameter "mCPGatewayProviderRequest" was null or undefined when calling providersMcpUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/mcp/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: MCPGatewayProviderRequestToJSON(requestParameters["mCPGatewayProviderRequest"]),
+        };
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpUpdateRaw(
+        requestParameters: ProvidersMcpUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MCPGatewayProvider>> {
+        const requestOptions = await this.providersMcpUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MCPGatewayProviderFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MCPGatewayProvider Viewset
+     */
+    async providersMcpUpdate(
+        requestParameters: ProvidersMcpUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MCPGatewayProvider> {
+        const response = await this.providersMcpUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersMcpUsedByList without sending the request
+     */
+    async providersMcpUsedByListRequestOpts(
+        requestParameters: ProvidersMcpUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling providersMcpUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/mcp/{id}/used_by/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async providersMcpUsedByListRaw(
+        requestParameters: ProvidersMcpUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.providersMcpUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async providersMcpUsedByList(
+        requestParameters: ProvidersMcpUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.providersMcpUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

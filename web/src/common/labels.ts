@@ -77,6 +77,7 @@ export const EventActionLabelRecord: Record<EventActions, string> = {
     [EventActions.AccessRequestApproved]: msg("Access request approved"),
     [EventActions.AccessRequestDenied]: msg("Access request denied"),
     [EventActions.AccessRequestRevoked]: msg("Access request revoked"),
+    [EventActions.McpToolCall]: msg("MCP tool call", { id: "events.action.mcp-tool-call.label" }),
     [EventActions.RequiredActionCompleted]: msg("Required action completed", {
         id: "events.action.required-action-completed.label",
     }),

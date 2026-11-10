@@ -93,6 +93,8 @@ pub enum EventActions {
     AccessRequestDenied,
     #[serde(rename = "access_request_revoked")]
     AccessRequestRevoked,
+    #[serde(rename = "mcp_tool_call")]
+    McpToolCall,
     #[serde(rename = "custom_")]
     Custom,
 }
@@ -140,6 +142,7 @@ impl std::fmt::Display for EventActions {
             Self::AccessRequestApproved => write!(f, "access_request_approved"),
             Self::AccessRequestDenied => write!(f, "access_request_denied"),
             Self::AccessRequestRevoked => write!(f, "access_request_revoked"),
+            Self::McpToolCall => write!(f, "mcp_tool_call"),
             Self::Custom => write!(f, "custom_"),
         }
     }

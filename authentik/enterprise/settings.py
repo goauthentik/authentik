@@ -10,6 +10,7 @@ INSTALLED_APPS = [
     "authentik.enterprise.lifecycle",
     "authentik.enterprise.policies.unique_password",
     "authentik.enterprise.providers.google_workspace",
+    "authentik.enterprise.providers.mcp",
     "authentik.enterprise.providers.microsoft_entra",
     "authentik.enterprise.providers.radius",
     "authentik.enterprise.providers.scim",

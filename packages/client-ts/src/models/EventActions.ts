@@ -54,6 +54,7 @@ export const EventActions = {
     AccessRequestApproved: "access_request_approved",
     AccessRequestDenied: "access_request_denied",
     AccessRequestRevoked: "access_request_revoked",
+    McpToolCall: "mcp_tool_call",
     Custom: "custom_",
     UnknownDefaultOpenApi: "11184809",
 } as const;
