@@ -66,7 +66,7 @@ export class EventMiddleware implements Middleware {
             status: context.response.status,
         };
 
-        dispatchEvent(new AKRequestPostEvent(requestInfo));
+        window.dispatchEvent(new AKRequestPostEvent(requestInfo));
 
         return Promise.resolve(context.response);
     }
@@ -100,23 +100,29 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
         this.#warnings.clear();
     };
 
-    #timeoutId = -1;
+    #timeoutID = -1;
 
     public clearAfterIdle = () => {
-        clearTimeout(this.#timeoutId);
-        this.#timeoutId = setTimeout(this.clear, 1000);
+        clearTimeout(this.#timeoutID);
+        this.#timeoutID = setTimeout(this.clear, 1000);
     };
 
     constructor(protected readonly maxRequests: number = 10) {
-        addEventListener("hashchange", this.clear, { passive: true });
-        addEventListener(AKRefreshEvent.eventName, this.clear, { passive: true });
-        addEventListener(AKEnterpriseRefreshEvent.eventName, this.clear, { passive: true });
+        window.addEventListener("hashchange", this.clear, { passive: true });
 
-        addEventListener("click", this.clearAfterIdle, { passive: true });
+        window.addEventListener(AKRefreshEvent.eventName, this.clear, { passive: true });
+        window.addEventListener(AKEnterpriseRefreshEvent.eventName, this.clear, { passive: true });
+
+        window.addEventListener("click", this.clearAfterIdle, { passive: true });
     }
 
     public [Symbol.dispose]() {
-        removeEventListener("hashchange", this.clear);
+        window.removeEventListener("hashchange", this.clear);
+
+        window.removeEventListener(AKRefreshEvent.eventName, this.clear);
+        window.removeEventListener(AKEnterpriseRefreshEvent.eventName, this.clear);
+
+        window.removeEventListener("click", this.clearAfterIdle);
     }
 
     public async pre(context: RequestContext): Promise<FetchParams | void> {
