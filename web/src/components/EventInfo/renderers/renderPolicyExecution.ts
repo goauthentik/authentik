@@ -27,7 +27,7 @@ export function renderPolicyExecution(event: EventWithContext) {
               </li>`
             : nothing;
 
-    const cached = dryRun
+    const cached = event.context.dry_run
         ? html`<li>
               ${msg("Cached", {
                   id: "events.policy-execution.cached.label",
