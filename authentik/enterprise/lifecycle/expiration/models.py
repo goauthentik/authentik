@@ -10,7 +10,8 @@ from django.db import IntegrityError, models, transaction
 from django.db.models import OuterRef, Prefetch, Q, QuerySet
 from django.db.models.functions import Greatest
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
@@ -191,7 +192,11 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         """Users this rule applies to, before policies. With `threshold`, only users
         inactive since then."""
         types = [t for t in self.user_types if t != UserTypes.INTERNAL_SERVICE_ACCOUNT]
-        qs = User.objects.select_related("activity").filter(is_active=True, type__in=types)
+        qs = (
+            User.objects.exclude_anonymous()
+            .select_related("activity")
+            .filter(is_active=True, type__in=types)
+        )
         if user is not None:
             qs = qs.filter(pk=user.pk)
         if self.group_id:
@@ -265,7 +270,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
 
         event = Event.new(
             EventAction.USER_EXPIRATION_WARNING,
-            message=_(
+            message=gettext(
                 "User %(username)s will be offboarded (%(action)s) on %(scheduled_at)s "
                 "due to inactivity"
             )

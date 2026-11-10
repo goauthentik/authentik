@@ -9,6 +9,7 @@ from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils.timezone import now
 from freezegun import freeze_time
+from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User, UserTypes
@@ -83,6 +84,13 @@ class TestSelection(ExpirationTestCase):
         self.assertEqual(pending.scheduled_at, dormant.last_login + timedelta(days=90))
         self.assertIsNone(pending.created_by)
         self.assertIsNone(_pending(active))
+
+    def test_anonymous_user_never_selected(self):
+        rule = self._rule(action=OffboardingAction.DELETE)
+        anonymous = get_anonymous_user()
+        _backdate(anonymous, last_login=None, date_joined=timedelta(days=100))
+        self.assertEqual(rule.apply(), 0)
+        self.assertIsNone(_pending(anonymous))
 
     def test_never_logged_in_counts_from_date_joined(self):
         rule = self._rule()
@@ -1115,6 +1123,20 @@ class TestAPI(ExpirationTestCase):
             {"name": generate_id(), "inactivity_duration": "soon"},
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_non_positive_durations_rejected(self):
+        for field, value in (
+            ("inactivity_duration", "days=0"),
+            ("inactivity_duration", "days=-1"),
+            ("warn_before", "days=-1"),
+        ):
+            with self.subTest(field=field, value=value):
+                response = self.client.post(
+                    reverse("authentik_api:userexpirationrule-list"),
+                    {"name": generate_id(), field: value},
+                )
+                self.assertEqual(response.status_code, 400)
+                self.assertIn(field, response.data)
 
     def test_internal_service_account_type_rejected(self):
         response = self.client.post(
