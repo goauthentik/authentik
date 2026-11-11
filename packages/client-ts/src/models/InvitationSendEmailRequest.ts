@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,25 +12,14 @@
 
 /**
  * Serializer for sending invitation emails
+ *
  * @export
  * @interface InvitationSendEmailRequest
  */
 export interface InvitationSendEmailRequest {
-    /**
-     *
-     */
     emailAddresses: Array<any>;
-    /**
-     *
-     */
     ccAddresses?: Array<any>;
-    /**
-     *
-     */
     bccAddresses?: Array<any>;
-    /**
-     *
-     */
     template?: string;
 }
 

@@ -84,8 +84,8 @@ test.describe("User switching", () => {
 
             await form.setFormGroup("Default flows", true, dialog);
 
-            const $flowSearch = dialog.getByRole("textbox", { name: "User switch flow" });
-            const configuredFlow = await $flowSearch.inputValue();
+            const { combobox } = await form.findSearchSelect("User switch flow", dialog);
+            const configuredFlow = await combobox.inputValue();
 
             if (USER_SWITCH_FLOW.test(configuredFlow)) {
                 // An earlier run already pointed the brand at the switch flow. Leaving
@@ -99,6 +99,27 @@ test.describe("User switching", () => {
             }
 
             await expect(dialog, "Edit modal closes").toBeHidden({ timeout: 15_000 });
+
+            // Brands are cached per server process (`cache.timeout_brands`), and saving
+            // only clears the cache of the process that handled the save. Requests are
+            // spread across processes, so wait for a run of consistent responses.
+            await test.step("Wait for every server process to see the switch flow", async () => {
+                let consecutive = 0;
+
+                await expect
+                    .poll(
+                        async () => {
+                            const response = await page.request.get("/api/v3/core/brands/current/");
+                            const { flow_user_switch } = await response.json();
+
+                            consecutive = flow_user_switch ? consecutive + 1 : 0;
+
+                            return consecutive;
+                        },
+                        { timeout: 60_000, intervals: [500] },
+                    )
+                    .toBeGreaterThanOrEqual(10);
+            });
 
             await context.close();
         },
@@ -141,7 +162,10 @@ test.describe("User switching", () => {
         await test.step("Create the secondary account", async () => {
             const dialog = page.getByRole("dialog", { name: "New User Wizard" });
 
-            await page.getByRole("button", { name: "New User" }).click();
+            await page
+                .locator('[part="toolbar-secondary"]')
+                .getByRole("button", { name: "New User" })
+                .click();
 
             await expect(dialog, "Create dialog opens").toBeVisible();
 
@@ -221,7 +245,9 @@ test.describe("User switching", () => {
                 adminEntry,
                 "Administrator is listed and marked as the current account",
             ).toBeDisabled();
+
             await expect(switcher.$addUser, "Add another user is offered").toBeVisible();
+
             await expect(
                 adminInterfaceLink,
                 "Admin interface link is available to the administrator",
@@ -250,10 +276,12 @@ test.describe("User switching", () => {
                 secondaryEntry,
                 "Secondary account is marked as the current account",
             ).toBeDisabled();
+
             await expect(
                 adminEntry,
                 "Administrator remains selectable as a switch target",
             ).toBeEnabled();
+
             await expect(
                 adminInterfaceLink,
                 "Admin interface link is hidden for the non-superuser account",
@@ -269,6 +297,7 @@ test.describe("User switching", () => {
                 session.$passwordStage,
                 "Switching opens on the password stage, identification having been skipped",
             ).toBeVisible({ timeout: 15_000 });
+
             await expect(
                 session.$identificationStage,
                 "Identification is not asked again for a known switch target",
@@ -284,10 +313,12 @@ test.describe("User switching", () => {
                 adminEntry,
                 "Administrator is marked as the current account",
             ).toBeDisabled();
+
             await expect(
                 secondaryEntry,
                 "Secondary account remains selectable as a switch target",
             ).toBeEnabled();
+
             await expect(
                 adminInterfaceLink,
                 "Admin interface link is available again",
@@ -307,6 +338,7 @@ test.describe("User switching", () => {
                 switcher.entry(ADMIN_ENTRY_NAME),
                 "Administrator is marked as the current account",
             ).toBeDisabled();
+
             await expect(switcher.$addUser, "Add another user is offered").toBeVisible();
         });
     });

@@ -1,5 +1,4 @@
 import "#elements/ExpansionToggle";
-
 import Styles from "./Expand.styles";
 
 import { AKElement } from "#elements/Base";
@@ -63,5 +62,6 @@ export interface ExpandProps {
 
 export function akExpand(properties: ExpandProps, content: SlottedTemplateResult = nothing) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+
     return html`<ak-expand ${spread(properties as Spread)}>${message}</ak-expand>`;
 }

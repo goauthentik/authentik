@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-
+import { parseDateTime } from "../runtime.js";
 /**
  * Serializer for authenticator devices
+ *
  * @export
  * @interface Device
  */
@@ -32,33 +30,15 @@ export interface Device {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get type of device
      */
     readonly type: string;
-    /**
-     *
-     */
     confirmed: boolean;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     readonly lastUsed: Date | null;
     /**
      * Get extra description

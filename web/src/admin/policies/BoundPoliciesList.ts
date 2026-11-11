@@ -5,16 +5,17 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#admin/users/UserForm";
 import "#components/ak-status-label";
 import "#elements/Tabs";
+import "#elements/Label";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
 import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { toAdminInterface } from "#elements/router/core/interfaces";
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
@@ -24,7 +25,7 @@ import { PolicyBindingForm, PolicyBindingNotice } from "#admin/policies/PolicyBi
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { UserForm } from "#admin/users/UserForm";
 
-import { ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
+import { EventActions, ModelEnum, PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
@@ -38,22 +39,39 @@ export function getPolicyUserGroupRowLabel(item: PolicyBinding): string {
     } else if (item.user) {
         return msg(str`User ${item.userObj?.name || item.userObj?.username}`);
     }
+
     return msg("-");
 }
 
 export function getPolicyUserGroupRow(item: PolicyBinding): SlottedTemplateResult {
     const label = getPolicyUserGroupRowLabel(item);
+
     if (item.user) {
         return html` <a href=${toAdminInterface(`identity/users/${item.user}`)}> ${label} </a> `;
     }
+
     if (item.group) {
         return html` <a href=${toAdminInterface(`identity/groups/${item.group}`)}> ${label} </a> `;
     }
+
     return html`${label}`;
 }
 
+export const defaultAllowedTypes = [
+    PolicyBindingCheckTarget.Policy,
+    PolicyBindingCheckTarget.Group,
+    PolicyBindingCheckTarget.User,
+];
+
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends Table<T> {
+    public static override verboseName = msg("Policy binding", {
+        id: "policy-bindings.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Policy bindings", {
+        id: "policy-bindings.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [
         ...super.styles,
         css`
@@ -71,11 +89,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     public policyEngineMode: string = "";
 
     @property({ type: Array })
-    public allowedTypes: PolicyBindingCheckTarget[] = [
-        PolicyBindingCheckTarget.Policy,
-        PolicyBindingCheckTarget.Group,
-        PolicyBindingCheckTarget.User,
-    ];
+    public allowedTypes: PolicyBindingCheckTarget[] = defaultAllowedTypes;
 
     @property({ type: Array })
     public typeNotices: PolicyBindingNotice[] = [];
@@ -109,6 +123,8 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         [msg("Order"), "order"],
         [this.allowedTypesLabel],
         [msg("Enabled"), "enabled"],
+        [msg("Mode", { id: "policies.bindings.mode.label" })],
+        [msg("Expiring"), "expires"],
         [msg("Timeout"), "timeout"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
@@ -129,12 +145,38 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         return null;
     }
 
+    protected renderDryRunEventsButton(item: PolicyBinding): SlottedTemplateResult {
+        if (!item.dryRun) {
+            return nothing;
+        }
+
+        const bindingUuid = item.pk.replaceAll("-", "");
+
+        // prettier-ignore
+        const akqlQuery =
+            `action = "${EventActions.PolicyExecution}" and context.dry_run = True and context.binding.pk = "${bindingUuid}"`;
+
+        const label = msg("View dry-run results", {
+            id: "policies.bindings.dry-run.view-results.label",
+        });
+
+        return html`<a
+            class="pf-c-button pf-m-plain"
+            aria-label=${label}
+            href=${toAdminInterface("events/log", { q: akqlQuery })}
+        >
+            <pf-tooltip position="top" content=${label}>
+                <i class="fas fa-vial" aria-hidden="true"></i>
+            </pf-tooltip>
+        </a>`;
+    }
+
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-spinner-button .callAction=${this.refreshListener} class="pf-m-secondary">
                 ${msg("Refresh")}</ak-spinner-button
             ><ak-forms-delete-bulk
-                object-label=${msg("Policy binding(s)")}
                 .objects=${this.selectedElements}
                 .metadata=${(item: PolicyBinding) => {
                     return [
@@ -178,6 +220,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                 ${msg("Bind existing group/user")}
             </button>`;
         }
+
         return html`<button
             class="pf-c-button pf-m-primary"
             type="button"
@@ -196,6 +239,14 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`<pre>${item.order}</pre>`,
             html`${getPolicyUserGroupRow(item)}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
+            item.dryRun
+                ? html`<ak-label color="pf-m-blue" icon="fa-vial">
+                      ${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                  </ak-label>`
+                : html`<ak-label icon="fa-shield-alt">
+                      ${msg("Enforced", { id: "policies.bindings.enforced.label" })}
+                  </ak-label>`,
+            item.expiring ? Timestamp(item.expires) : "-",
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
                 ${this.getObjectEditButton(item)}
@@ -212,6 +263,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     model: ModelEnum.AuthentikPoliciesPolicybinding,
                     objectPk: item.pk,
                 })}
+                ${this.renderDryRunEventsButton(item)}
             </div>`,
         ];
     }
@@ -237,14 +289,18 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         const policyEngineMode = policyEngineModes.find(
             (pem) => pem.value === this.policyEngineMode,
         );
+
         if (policyEngineMode === undefined) {
             return nothing;
         }
-        return html`${this.findSlotted("description")
-                ? html`<p class="policy-desc">
-                      <slot name="description"></slot>
-                  </p>`
-                : nothing}
+
+        return html`${
+                this.findSlotted("description")
+                    ? html`<p class="policy-desc">
+                          <slot name="description"></slot>
+                      </p>`
+                    : nothing
+            }
             <p class="policy-desc">
                 ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
                 ${policyEngineMode.description}

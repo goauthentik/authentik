@@ -2,11 +2,12 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#elements/Crontab";
 import "#components/tasks/ScheduleForm";
-import "#components/tasks/TaskList";
 import "#components/tasks/TaskStatus";
 import "#elements/table/ak-table-filter-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -15,13 +16,13 @@ import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { taskCard } from "#components/tasks/taskCard";
+
 import { ModelEnum, Schedule, TasksApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-schedule-list")
 export class ScheduleList extends Table<Schedule> {
@@ -56,6 +57,7 @@ export class ScheduleList extends Table<Schedule> {
                 : this.showOnlyStandalone
                   ? true
                   : undefined;
+
         return aki(TasksApi).tasksSchedulesList({
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
@@ -81,6 +83,7 @@ export class ScheduleList extends Table<Schedule> {
         if (this.relObjId !== undefined) {
             return nothing;
         }
+
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <ak-table-filter-select
@@ -104,7 +107,7 @@ export class ScheduleList extends Table<Schedule> {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
-            html`${item.crontab}`,
+            html`<ak-crontab cron=${item.crontab}></ak-crontab>`,
             html` ${item.paused ? html`${msg("Paused")}` : Timestamp(item.nextRun)} `,
             html`<ak-task-status .status=${item.lastTaskStatus}></ak-task-status>`,
             html`<ak-action-button
@@ -142,14 +145,7 @@ export class ScheduleList extends Table<Schedule> {
     }
 
     renderExpanded(item: Schedule): TemplateResult {
-        const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
-        return html`<div class="pf-c-content">
-            <ak-task-list
-                .relObjAppLabel=${appLabel}
-                .relObjModel=${modelName}
-                .relObjId="${item.id}"
-            ></ak-task-list>
-        </div>`;
+        return taskCard(ModelEnum.AuthentikTasksSchedulesSchedule, item.id);
     }
 }
 

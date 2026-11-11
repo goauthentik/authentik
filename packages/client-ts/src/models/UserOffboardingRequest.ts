@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,31 +10,26 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { OffboardingActionEnum } from "./OffboardingActionEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { OffboardingActionEnum } from "./OffboardingActionEnum.js";
 import {
     OffboardingActionEnumFromJSON,
     OffboardingActionEnumToJSON,
-} from "./OffboardingActionEnum";
+} from "./OffboardingActionEnum.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface UserOffboardingRequest
  */
 export interface UserOffboardingRequest {
-    /**
-     *
-     */
     user: number;
     /**
      * Absolute time at which the offboarding action is executed.
      */
     scheduledAt: Date;
-    /**
-     *
-     */
     action?: OffboardingActionEnum;
     /**
      * Revoke all of the user's sessions when offboarding.

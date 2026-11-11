@@ -1,7 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/sources/ldap/LDAPSourceGroupForm";
-
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
@@ -26,8 +25,12 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("LDAP Group(s)")}
+            verbose-name=${msg("LDAP Group", { id: "ldap.groups.verbose-name.label" })}
+            verbose-name-plural=${msg("LDAP Groups", {
+                id: "ldap.groups.verbose-name-plural.label",
+            })}
             .objects=${this.selectedElements}
             .delete=${(item: GroupLDAPSourceConnection) => {
                 return aki(SourcesApi).sourcesGroupConnectionsLdapDestroy({

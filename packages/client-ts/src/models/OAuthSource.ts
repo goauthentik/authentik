@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,38 +10,39 @@
  * Do not edit the class manually.
  */
 
-import type { AuthorizationCodeAuthMethodEnum } from "./AuthorizationCodeAuthMethodEnum";
+import type { AuthorizationCodeAuthMethodEnum } from "./AuthorizationCodeAuthMethodEnum.js";
 import {
     AuthorizationCodeAuthMethodEnumFromJSON,
     AuthorizationCodeAuthMethodEnumToJSON,
-} from "./AuthorizationCodeAuthMethodEnum";
-import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum";
+} from "./AuthorizationCodeAuthMethodEnum.js";
+import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum.js";
 import {
     GroupMatchingModeEnumFromJSON,
     GroupMatchingModeEnumToJSON,
-} from "./GroupMatchingModeEnum";
-import type { PKCEMethodEnum } from "./PKCEMethodEnum";
-import { PKCEMethodEnumFromJSON, PKCEMethodEnumToJSON } from "./PKCEMethodEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { ProviderTypeEnum } from "./ProviderTypeEnum";
-import { ProviderTypeEnumFromJSON, ProviderTypeEnumToJSON } from "./ProviderTypeEnum";
-import type { SourceType } from "./SourceType";
-import { SourceTypeFromJSON } from "./SourceType";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+} from "./GroupMatchingModeEnum.js";
+import type { PKCEMethodEnum } from "./PKCEMethodEnum.js";
+import { PKCEMethodEnumFromJSON, PKCEMethodEnumToJSON } from "./PKCEMethodEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { ProviderTypeEnum } from "./ProviderTypeEnum.js";
+import { ProviderTypeEnumFromJSON, ProviderTypeEnumToJSON } from "./ProviderTypeEnum.js";
+import type { SourceType } from "./SourceType.js";
+import { SourceTypeFromJSON } from "./SourceType.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON } from "./ThemedUrls.js";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum.js";
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from "./UserMatchingModeEnum.js";
 
 /**
  * OAuth Source Serializer
+ *
  * @export
  * @interface OAuthSource
  */
 export interface OAuthSource {
-    /**
-     *
-     */
     readonly pk: string;
     /**
      * Source's display Name.
@@ -53,12 +52,10 @@ export interface OAuthSource {
      * Internal source name, used in URLs.
      */
     slug: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
@@ -69,13 +66,7 @@ export interface OAuthSource {
      * Flow to use when enrolling new users.
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -93,41 +84,25 @@ export interface OAuthSource {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     readonly managed: string | null;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     icon?: string;
-    /**
-     *
-     */
     readonly iconUrl: string | null;
-    /**
-     *
-     */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
      * How the source determines if an existing group should be used or a new group created.
      */
     groupMatchingMode?: GroupMatchingModeEnum;
-    /**
-     *
-     */
     providerType: ProviderTypeEnum;
     /**
      * URL used to request the initial token. This URL is only required for OAuth 1.
@@ -145,37 +120,16 @@ export interface OAuthSource {
      * URL used by authentik to get user information.
      */
     profileUrl?: string | null;
-    /**
-     *
-     */
     pkce?: PKCEMethodEnum;
-    /**
-     *
-     */
     consumerKey: string;
     /**
      * Get OAuth Callback URL
      */
     readonly callbackUrl: string;
-    /**
-     *
-     */
     additionalScopes?: string;
-    /**
-     *
-     */
     readonly type: SourceType;
-    /**
-     *
-     */
     oidcWellKnownUrl?: string;
-    /**
-     *
-     */
     oidcJwksUrl?: string;
-    /**
-     *
-     */
     oidcJwks?: { [key: string]: any };
     /**
      * How to perform authentication during an authorization_code token request flow

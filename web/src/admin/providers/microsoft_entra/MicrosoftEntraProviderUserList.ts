@@ -1,7 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
-
 import { aki } from "#common/api/client";
 import { formatUserDisplayName } from "#common/users";
 
@@ -52,8 +51,14 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Microsoft Entra User(s)")}
+            verbose-name=${msg("Microsoft Entra User", {
+                id: "microsoft-entra.users.verbose-name.label",
+            })}
+            verbose-name-plural=${msg("Microsoft Entra Users", {
+                id: "microsoft-entra.users.verbose-name-plural.label",
+            })}
             .objects=${this.selectedElements}
             .delete=${(item: MicrosoftEntraProviderUser) => {
                 return aki(ProvidersApi).providersMicrosoftEntraUsersDestroy({

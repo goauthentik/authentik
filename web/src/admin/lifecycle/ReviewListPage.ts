@@ -1,4 +1,3 @@
-import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
@@ -8,7 +7,6 @@ import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import { getRouterConfig } from "#elements/router/core/config";

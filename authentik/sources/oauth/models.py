@@ -63,7 +63,7 @@ class OAuthSource(NonCreatableType, Source):
         default="", blank=True, verbose_name=_("Additional Scopes")
     )
     consumer_key = models.TextField()
-    consumer_secret = models.TextField()
+    consumer_secret = models.TextField(blank=True, default="")
 
     oidc_well_known_url = models.TextField(default="", blank=True)
     oidc_jwks_url = models.TextField(default="", blank=True)
@@ -133,6 +133,7 @@ class OAuthSource(NonCreatableType, Source):
             name=self.name,
             challenge=provider.login_challenge(self, request),
             icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
+            icon_themed_urls=self.get_icon_themed_urls(request, use_cache=False),
             promoted=self.promoted,
         )
 
@@ -146,6 +147,7 @@ class OAuthSource(NonCreatableType, Source):
                     kwargs={"source_slug": self.slug},
                 ),
                 "icon_url": self.icon_url,
+                "icon_themed_urls": self.icon_themed_urls,
             }
         )
 
@@ -303,6 +305,8 @@ class WeChatOAuthSource(CreatableType, OAuthSource):
 
 class OAuthSourcePropertyMapping(PropertyMapping):
     """Map OAuth properties to User or Group object attributes"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

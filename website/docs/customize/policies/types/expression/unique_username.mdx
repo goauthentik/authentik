@@ -1,0 +1,39 @@
+---
+title: Ensure unique usernames regardless of case
+tags:
+    - policy
+    - expression
+    - username
+---
+
+By default, authentik compares usernames case-sensitively when checking whether a username is already taken, so `user1` and `User1` can exist as two separate users. The [Identification stage](../../../../add-secure-apps/flows-stages/stages/identification/index.mdx) matches identifiers case-insensitively by default, so when both users exist, entering either username finds only one of them.
+
+To reject a username that differs from an existing one only by case, use an [expression policy](./index.mdx) during enrollment or profile-edit flows.
+
+Bind the policy before the [User write stage](../../../../add-secure-apps/flows-stages/stages/user_write/index.mdx), or attach it directly to the [Prompt stage](../../../../add-secure-apps/flows-stages/stages/prompt/index.mdx) that collects the username.
+
+The policy only runs in the flows you bind it to. It does not apply to users that administrators create in the Admin interface or through the API, or to users that sources create or synchronize outside of a flow.
+
+## Example expression
+
+In this example, `username` must match the field key from your prompt stage. The `pending_user` exclusion lets the same policy work for updates as well as new users.
+
+```python
+# Ensure this matches the *Field Key* value of the prompt
+field_name = "username"
+username = request.context["prompt_data"][field_name]
+pending_user = request.context.get("pending_user")
+
+from authentik.core.models import User
+query = User.objects.filter(username__iexact=username)
+if pending_user:
+    query = query.exclude(pk=pending_user.pk)
+elif request.user and request.user.is_authenticated:
+    query = query.exclude(pk=request.user.pk)
+
+if query.exists():
+    ak_message("Username is already taken")
+    return False
+
+return True
+```

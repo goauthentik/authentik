@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,25 +12,22 @@
 
 /**
  * ApplicationEntitlement Serializer
+ *
  * @export
  * @interface ApplicationEntitlement
  */
 export interface ApplicationEntitlement {
-    /**
-     *
-     */
     readonly pbmUuid: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     app: string;
     /**
-     *
+     * Application's display Name.
      */
+    readonly appName: string;
+    /**
+     * Internal application name, used in URLs.
+     */
+    readonly appSlug: string;
     attributes?: { [key: string]: any };
 }
 
@@ -49,6 +44,20 @@ export function instanceOfApplicationEntitlement(value: object): value is Applic
         return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("app" in value) || value["app"] === undefined) return false;
+    if (
+        (!("appName" in (value as Record<string, any>)) &&
+            !("app_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appName"] === undefined &&
+            (value as Record<string, any>)["app_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("appSlug" in (value as Record<string, any>)) &&
+            !("app_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appSlug"] === undefined &&
+            (value as Record<string, any>)["app_slug"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -67,6 +76,8 @@ export function ApplicationEntitlementFromJSONTyped(
         pbmUuid: json["pbm_uuid"],
         name: json["name"],
         app: json["app"],
+        appName: json["app_name"],
+        appSlug: json["app_slug"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
@@ -76,7 +87,7 @@ export function ApplicationEntitlementToJSON(json: any): ApplicationEntitlement 
 }
 
 export function ApplicationEntitlementToJSONTyped(
-    value?: Omit<ApplicationEntitlement, "pbmUuid"> | null,
+    value?: Omit<ApplicationEntitlement, "pbmUuid" | "appName" | "appSlug"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

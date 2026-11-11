@@ -2,6 +2,9 @@ import "#admin/rbac/ak-rbac-role-object-permission-table";
 import "#admin/roles/ak-role-assigned-global-permissions-table";
 import "#admin/roles/ak-role-assigned-object-permissions-table";
 import "#elements/Tabs";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { AKElement } from "#elements/Base";
 import { ifPresent } from "#elements/utils/attributes";
@@ -11,10 +14,6 @@ import { ModelEnum } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-rbac-object-permission-page")
 export class ObjectPermissionPage extends AKElement {

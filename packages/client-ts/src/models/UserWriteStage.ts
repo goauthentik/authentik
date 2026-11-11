@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,26 +10,24 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { UserCreationModeEnum } from "./UserCreationModeEnum";
-import { UserCreationModeEnumFromJSON, UserCreationModeEnumToJSON } from "./UserCreationModeEnum";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { UserCreationModeEnum } from "./UserCreationModeEnum.js";
+import {
+    UserCreationModeEnumFromJSON,
+    UserCreationModeEnumToJSON,
+} from "./UserCreationModeEnum.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * UserWriteStage Serializer
+ *
  * @export
  * @interface UserWriteStage
  */
 export interface UserWriteStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -49,13 +45,7 @@ export interface UserWriteStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     userCreationMode?: UserCreationModeEnum;
     /**
      * When set, newly created users are inactive and cannot login.
@@ -65,13 +55,7 @@ export interface UserWriteStage {
      * Optionally add newly created users to this group.
      */
     createUsersGroup?: string | null;
-    /**
-     *
-     */
     userType?: UserTypeEnum;
-    /**
-     *
-     */
     userPathTemplate?: string;
 }
 

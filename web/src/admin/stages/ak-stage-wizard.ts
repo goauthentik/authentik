@@ -5,7 +5,6 @@ import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 import "#elements/forms/FormGroup";
 import "#admin/flows/StageBindingForm";
-
 import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
@@ -63,9 +62,12 @@ export class AKStageWizard extends CreateWizard {
 
         if (!bindingForm) return;
 
-        if (context.host.state[createSlot]) {
+        const stage = context.host.state[createSlot] as Stage | undefined;
+
+        if (stage) {
             bindingForm.instance = {
-                stage: (context.host.state[createSlot] as Stage).pk,
+                stage: stage.pk,
+                stageObj: stage,
             } as FlowStageBinding;
         }
     };
@@ -77,13 +79,15 @@ export class AKStageWizard extends CreateWizard {
 
         return html`<ak-form-group slot="pre-items" label=${msg("Existing Stage")} open>
             <ak-radio
-                .options=${[
-                    {
-                        label: "Bind existing stage",
-                        description: msg("Bind an existing stage to this flow."),
-                        value: true,
-                    },
-                ] satisfies RadioOption<boolean>[]}
+                .options=${
+                    [
+                        {
+                            label: "Bind existing stage",
+                            description: msg("Bind an existing stage to this flow."),
+                            value: true,
+                        },
+                    ] satisfies RadioOption<boolean>[]
+                }
                 @change=${() => {
                     if (!this.wizard) {
                         return;

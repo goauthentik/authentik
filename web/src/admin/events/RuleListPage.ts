@@ -3,14 +3,12 @@
  */
 
 import "#admin/events/RuleForm";
-import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { severityToLabel } from "#common/labels";
 
@@ -23,6 +21,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { taskCard } from "#components/tasks/taskCard";
 
 import { RuleForm } from "#admin/events/RuleForm";
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 
 import { EventsApi, ModelEnum, NotificationRule } from "@goauthentik/api";
 
@@ -34,6 +33,13 @@ const NOTIFICATION_MODEL = ModelEnum.AuthentikEventsNotificationrule;
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
+    public static override verboseName = msg("Notification rule", {
+        id: "notification-rules.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Notification rules", {
+        id: "notification-rules.verbose-name-plural.label",
+    });
+
     public override expandable = true;
     public override checkbox = true;
     public override clearOnRefresh = true;
@@ -65,8 +71,8 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Notification rule(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationRule) => {
                 return aki(EventsApi).eventsRulesUsedByList({
@@ -87,15 +93,19 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     protected override row(item: NotificationRule): SlottedTemplateResult[] {
         const enabled = !!item.destinationGroupObj || item.destinationEventUser;
+
         return [
             html`<ak-status-label ?good=${enabled}></ak-status-label>`,
             html`${item.name}`,
             html`${severityToLabel(item.severity)}`,
-            html`${item.destinationGroupObj
-                ? html`<a href=${toAdminInterface(`identity/groups/${item.destinationGroupObj.pk}`)}
-                      >${item.destinationGroupObj.name}</a
-                  >`
-                : msg("-")}`,
+            html`${
+                item.destinationGroupObj
+                    ? html`<a
+                          href=${toAdminInterface(`identity/groups/${item.destinationGroupObj.pk}`)}
+                          >${item.destinationGroupObj.name}</a
+                      >`
+                    : msg("-")
+            }`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(RuleForm, item.pk, item.name)}
 
@@ -112,15 +122,16 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return ModalInvokerButton(RuleForm);
     }
 
-    protected override renderExpanded(item: NotificationRule): TemplateResult {
-        return html`<p>
-                ${msg(
-                    `These bindings control upon which events this rule triggers.
-Bindings to groups/users are checked against the user of the event.`,
-                )}
-            </p>
-            <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
-            ${taskCard(NOTIFICATION_MODEL, item.pk)}`;
+    protected override renderExpanded(item: NotificationRule) {
+        const boundPolicies = renderBoundPoliciesExpansion({
+            target: item.pk,
+            description: msg(
+                `These bindings control upon which events this rule triggers.
+                Bindings to groups/users are checked against the user of the event.`,
+            ),
+        });
+
+        return [boundPolicies, taskCard(NOTIFICATION_MODEL, item.pk)];
     }
 }
 

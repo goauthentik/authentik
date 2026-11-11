@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,104 +10,42 @@
  * Do not edit the class manually.
  */
 
-import type { CurrentBrandFlags } from "./CurrentBrandFlags";
-import { CurrentBrandFlagsFromJSON, CurrentBrandFlagsToJSON } from "./CurrentBrandFlags";
-import type { FooterLink } from "./FooterLink";
-import { FooterLinkFromJSON } from "./FooterLink";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
-import type { UiThemeEnum } from "./UiThemeEnum";
-import { UiThemeEnumFromJSON } from "./UiThemeEnum";
+import type { CurrentBrandFlags } from "./CurrentBrandFlags.js";
+import { CurrentBrandFlagsFromJSON, CurrentBrandFlagsToJSON } from "./CurrentBrandFlags.js";
+import type { FooterLink } from "./FooterLink.js";
+import { FooterLinkFromJSON } from "./FooterLink.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON } from "./ThemedUrls.js";
+import type { UiThemeEnum } from "./UiThemeEnum.js";
+import { UiThemeEnumFromJSON } from "./UiThemeEnum.js";
 
 /**
  * Partial brand information for styling
+ *
  * @export
  * @interface CurrentBrand
  */
 export interface CurrentBrand {
-    /**
-     *
-     */
     matchedDomain: string;
-    /**
-     *
-     */
     brandingTitle: string;
-    /**
-     *
-     */
     brandingLogo: string;
-    /**
-     *
-     */
     readonly brandingLogoThemedUrls: ThemedUrls | null;
-    /**
-     *
-     */
     brandingFavicon: string;
-    /**
-     *
-     */
     readonly brandingFaviconThemedUrls: ThemedUrls | null;
-    /**
-     *
-     */
     brandingCustomCss: string;
-    /**
-     *
-     */
     brandingMapTiles: string;
-    /**
-     *
-     */
     readonly uiFooterLinks: Array<FooterLink>;
-    /**
-     *
-     */
     readonly uiTheme: UiThemeEnum;
-    /**
-     *
-     */
     flowAuthentication?: string;
-    /**
-     *
-     */
     flowUserSwitch?: string;
-    /**
-     *
-     */
     flowInvalidation?: string;
-    /**
-     *
-     */
     flowRecovery?: string;
-    /**
-     *
-     */
     flowUnenrollment?: string;
-    /**
-     *
-     */
     flowUserSettings?: string;
-    /**
-     *
-     */
     flowDeviceCode?: string;
-    /**
-     *
-     */
     flowLockdown?: string;
-    /**
-     *
-     */
     flowRequest?: string;
-    /**
-     *
-     */
     readonly defaultLocale: string;
-    /**
-     *
-     */
     flags: CurrentBrandFlags;
 }
 

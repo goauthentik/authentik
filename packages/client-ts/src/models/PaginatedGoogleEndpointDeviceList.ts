@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { GoogleEndpointDevice } from "./GoogleEndpointDevice";
-import { GoogleEndpointDeviceFromJSON, GoogleEndpointDeviceToJSON } from "./GoogleEndpointDevice";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { GoogleEndpointDevice } from "./GoogleEndpointDevice.js";
+import {
+    GoogleEndpointDeviceFromJSON,
+    GoogleEndpointDeviceToJSON,
+} from "./GoogleEndpointDevice.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedGoogleEndpointDeviceList
  */
 export interface PaginatedGoogleEndpointDeviceList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<GoogleEndpointDevice>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

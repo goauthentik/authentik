@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { InitialPermissions } from "./InitialPermissions";
-import { InitialPermissionsFromJSON, InitialPermissionsToJSON } from "./InitialPermissions";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { InitialPermissions } from "./InitialPermissions.js";
+import { InitialPermissionsFromJSON, InitialPermissionsToJSON } from "./InitialPermissions.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedInitialPermissionsList
  */
 export interface PaginatedInitialPermissionsList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<InitialPermissions>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

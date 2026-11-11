@@ -13,7 +13,9 @@ export class UserSwitcherFixture extends PageFixture {
 
     public $switcher = this.page.locator("ak-user-switcher");
 
-    public $toggle = this.$switcher.getByRole("button", { name: "Switch user" });
+    public $toggle = this.$switcher.getByRole("button", {
+        name: "Toggle user navigation menu",
+    });
 
     public $addUser = this.$switcher.getByRole("menuitem", { name: "Add another user" });
 
@@ -26,11 +28,13 @@ export class UserSwitcherFixture extends PageFixture {
     /**
      * The menu entry for a single account.
      *
-     * Entries are labelled with the account's display name and email, so an email
-     * pattern identifies one unambiguously under any `UserDisplay` setting.
+     * Matched on rendered text rather than accessible name: each entry carries an
+     * `aria-label` of `Switch to user "<display name>"`, which overrides the name and omits
+     * the email. The email is still rendered as the entry's description, so filtering on
+     * text identifies one unambiguously under any `UserDisplay` setting.
      */
     public entry = (pattern: string | RegExp): Locator =>
-        this.$switcher.getByRole("menuitem", { name: pattern });
+        this.$switcher.getByRole("menuitem").filter({ hasText: pattern });
 
     //#endregion
 

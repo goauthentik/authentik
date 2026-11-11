@@ -25,6 +25,7 @@ export class CommandError extends Error {
 
 /**
  * @param positionals
+ *
  * @returns The resolved current working directory for the script
  */
 export function parseCWD(positionals: string[]): string {

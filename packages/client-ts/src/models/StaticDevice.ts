@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,13 +10,14 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { StaticDeviceToken } from "./StaticDeviceToken";
-import { StaticDeviceTokenFromJSON } from "./StaticDeviceToken";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { StaticDeviceToken } from "./StaticDeviceToken.js";
+import { StaticDeviceTokenFromJSON } from "./StaticDeviceToken.js";
 
 /**
  * Serializer for static authenticator devices
+ *
  * @export
  * @interface StaticDevice
  */
@@ -27,17 +26,8 @@ export interface StaticDevice {
      * The human-readable name of this device.
      */
     name: string;
-    /**
-     *
-     */
     readonly tokenSet: Array<StaticDeviceToken>;
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     readonly user: PartialUser;
 }
 

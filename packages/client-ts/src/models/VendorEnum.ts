@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,7 +11,6 @@
  */
 
 /**
- *
  * @export
  */
 export const VendorEnum = {
@@ -21,6 +18,7 @@ export const VendorEnum = {
     GoauthentikIoPlatform: "goauthentik.io/platform",
     FleetdmCom: "fleetdm.com",
     ChromeGoogleCom: "chrome.google.com",
+    IntuneMicrosoftCom: "intune.microsoft.com",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type VendorEnum = (typeof VendorEnum)[keyof typeof VendorEnum];

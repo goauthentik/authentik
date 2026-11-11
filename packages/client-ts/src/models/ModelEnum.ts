@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,11 +11,9 @@
  */
 
 /**
- *
  * @export
  */
 export const ModelEnum = {
-    AuthentikTenantsDomain: "authentik_tenants.domain",
     AuthentikCoreGroup: "authentik_core.group",
     AuthentikCoreUser: "authentik_core.user",
     AuthentikCoreApplication: "authentik_core.application",
@@ -62,7 +58,6 @@ export const ModelEnum = {
         "authentik_providers_oauth2.oauth2dynamicclientregistration",
     AuthentikProvidersProxyProxyprovider: "authentik_providers_proxy.proxyprovider",
     AuthentikProvidersRacRacprovider: "authentik_providers_rac.racprovider",
-    AuthentikProvidersRacEndpoint: "authentik_providers_rac.endpoint",
     AuthentikProvidersRacRacpropertymapping: "authentik_providers_rac.racpropertymapping",
     AuthentikProvidersRadiusRadiusprovider: "authentik_providers_radius.radiusprovider",
     AuthentikProvidersRadiusRadiusproviderpropertymapping:
@@ -73,6 +68,8 @@ export const ModelEnum = {
     AuthentikProvidersScimScimmapping: "authentik_providers_scim.scimmapping",
     AuthentikRbacRole: "authentik_rbac.role",
     AuthentikRbacInitialpermissions: "authentik_rbac.initialpermissions",
+    AuthentikRbacCustompermission: "authentik_rbac.custompermission",
+    AuthentikRbacPermissioncheck: "authentik_rbac.permissioncheck",
     AuthentikSourcesKerberosKerberossource: "authentik_sources_kerberos.kerberossource",
     AuthentikSourcesKerberosKerberossourcepropertymapping:
         "authentik_sources_kerberos.kerberossourcepropertymapping",
@@ -163,6 +160,8 @@ export const ModelEnum = {
         "authentik_endpoints_connectors_fleet.fleetconnector",
     AuthentikEndpointsConnectorsGoogleChromeGooglechromeconnector:
         "authentik_endpoints_connectors_google_chrome.googlechromeconnector",
+    AuthentikEndpointsConnectorsMicrosoftIntuneMicrosoftintuneconnector:
+        "authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector",
     AuthentikLifecycleLifecyclerule: "authentik_lifecycle.lifecyclerule",
     AuthentikLifecycleLifecycleiteration: "authentik_lifecycle.lifecycleiteration",
     AuthentikLifecycleReview: "authentik_lifecycle.review",

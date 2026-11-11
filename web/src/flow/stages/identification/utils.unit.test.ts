@@ -7,9 +7,11 @@ describe("createOrListFormatter", () => {
         expect(createOrListFormatter("en-US").format(["Email", "Username"])).toBe(
             "Email or Username",
         );
+
         expect(createOrListFormatter("cs-CZ").format(["E-mail", "Uživatelské jméno"])).toBe(
             "E-mail nebo Uživatelské jméno",
         );
+
         expect(createOrListFormatter("de-DE").format(["E-Mail", "Anmeldename"])).toBe(
             "E-Mail oder Anmeldename",
         );

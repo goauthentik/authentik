@@ -3,9 +3,15 @@ import "#components/ak-textarea-input";
 import "#elements/forms/ModalForm";
 import "#elements/timestamp/ak-timestamp";
 import "#admin/lifecycle/ObjectReviewForm";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
+import { plural } from "#common/ui/locale/plurals";
 
 import { ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -21,12 +27,6 @@ import { match, P } from "ts-pattern";
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-object-review-iteration")
 export class ObjectReviewIteration extends Table<Review> {
@@ -107,14 +107,26 @@ export class ObjectReviewIteration extends Table<Review> {
 
         const groupList = reviewerGroups.map((g) => g.name).join(", ");
 
-        const label =
-            minReviewers === 1
-                ? reviewerGroups.length === 1
-                    ? msg(str`At least ${minReviewers} user from this group: ${groupList}.`)
-                    : msg(str`At least ${minReviewers} user from these groups: ${groupList}.`)
-                : reviewerGroups.length === 1
-                  ? msg(str`At least ${minReviewers} users from this group: ${groupList}.`)
-                  : msg(str`At least ${minReviewers} users from these groups: ${groupList}.`);
+        // The group list is a plain list of names, so the group wording depends on how many there
+        // are, not on a CLDR category.
+        const label = plural(minReviewers, {
+            one: (formattedCount) =>
+                reviewerGroups.length === 1
+                    ? msg(str`At least ${formattedCount} user from this group: ${groupList}.`, {
+                          id: "lifecycle.review.min-reviewers.single-group.one",
+                      })
+                    : msg(str`At least ${formattedCount} user from these groups: ${groupList}.`, {
+                          id: "lifecycle.review.min-reviewers.multiple-groups.one",
+                      }),
+            other: (formattedCount) =>
+                reviewerGroups.length === 1
+                    ? msg(str`At least ${formattedCount} users from this group: ${groupList}.`, {
+                          id: "lifecycle.review.min-reviewers.single-group.other",
+                      })
+                    : msg(str`At least ${formattedCount} users from these groups: ${groupList}.`, {
+                          id: "lifecycle.review.min-reviewers.multiple-groups.other",
+                      }),
+        });
 
         result.push(html` <div>${label}</div>`);
 
@@ -130,7 +142,7 @@ export class ObjectReviewIteration extends Table<Review> {
                 <div class="pf-c-description-list__text">
                     <ak-timestamp
                         .timestamp=${this.iteration?.openedOn}
-                        .elapsed=${false}
+                        hide-elapsed
                         dateonly
                         datetime
                     ></ak-timestamp>
@@ -148,7 +160,7 @@ export class ObjectReviewIteration extends Table<Review> {
                 <div class="pf-c-description-list__text">
                     <ak-timestamp
                         .timestamp=${this.iteration?.gracePeriodEnd}
-                        .elapsed=${false}
+                        hide-elapsed
                         dateonly
                         datetime
                     ></ak-timestamp>
@@ -166,7 +178,7 @@ export class ObjectReviewIteration extends Table<Review> {
                 <div class="pf-c-description-list__text">
                     <ak-timestamp
                         .timestamp=${this.iteration?.nextReviewDate}
-                        .elapsed=${false}
+                        hide-elapsed
                         dateonly
                         datetime
                     ></ak-timestamp>

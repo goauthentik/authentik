@@ -1,6 +1,6 @@
 """LDAP Source tests"""
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock, patch
 
 from django.db.models import Q
@@ -9,7 +9,13 @@ from ldap3.core.exceptions import LDAPInvalidFilterError
 from ldap3.utils.conv import escape_filter_chars
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Group, Session, User
+from authentik.core.models import (
+    Group,
+    Session,
+    SourceGroupMatchingModes,
+    SourceUserMatchingModes,
+    User,
+)
 from authentik.core.tests.utils import create_test_admin_user, create_test_session
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
@@ -29,6 +35,7 @@ from authentik.sources.ldap.sync.membership import (
 )
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
+from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_page
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_freeipa import mock_freeipa_connection
@@ -39,6 +46,7 @@ from authentik.sources.ldap.tests.mock_slapd import (
     user_in_slapd_cn,
     user_in_slapd_uid,
 )
+from authentik.stages.password.models import PasswordDevice
 from authentik.tasks.models import Task
 
 LDAP_PASSWORD = generate_key()
@@ -238,6 +246,25 @@ class LDAPSyncTests(TestCase):
             self.assertTrue(User.objects.filter(username="user0_sn").exists())
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
 
+    def test_sync_users_openldap_link_existing(self):
+        """Test that linking to an existing user persists the source connection"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.user_matching_mode = SourceUserMatchingModes.USERNAME_LINK
+        self.source.save()
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+            )
+        )
+        existing = User.objects.create(username="user0_sn")
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            UserLDAPSynchronizer(self.source, Task()).sync_full()
+        self.assertTrue(
+            UserLDAPSourceConnection.objects.filter(source=self.source, user=existing).exists()
+        )
+
     def test_sync_users_freeipa_ish(self):
         """Test user sync (FreeIPA-ish), mainly testing vendor quirks"""
         self.source.object_uniqueness_field = "uid"
@@ -374,6 +401,25 @@ class LDAPSyncTests(TestCase):
             group = Group.objects.filter(name="group1")
             self.assertTrue(group.exists())
 
+    def test_sync_groups_openldap_link_existing(self):
+        """Test that linking to an existing group persists the source connection"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.group_matching_mode = SourceGroupMatchingModes.NAME_LINK
+        self.source.save()
+        self.source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/openldap-cn"
+            )
+        )
+        existing = Group.objects.create(name="group1")
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            GroupLDAPSynchronizer(self.source, Task()).sync_full()
+        self.assertTrue(
+            GroupLDAPSourceConnection.objects.filter(source=self.source, group=existing).exists()
+        )
+
     def test_sync_groups_openldap_posix_group(self):
         """Test posix group sync"""
         self.source.object_uniqueness_field = "cn"
@@ -453,8 +499,7 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_freeipa_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user = User.objects.create(username=generate_id())
-            user.set_password("test-password")
-            user.save()
+            PasswordDevice.set_password(user, "test-password")
 
             freeipa_sync = FreeIPA(self.source, Task())
             freeipa_sync.check_pwd_last_set(
@@ -465,6 +510,34 @@ class LDAPSyncTests(TestCase):
 
             user.refresh_from_db()
             self.assertFalse(user.has_usable_password())
+
+    def test_sync_users_password_reset_once(self):
+        """Test a directory password change resets the password once, not on every sync"""
+        for syncer, attribute, mock in (
+            (MicrosoftActiveDirectory, "pwdLastSet", mock_ad_connection()),
+            (FreeIPA, "krbLastPwdChange", mock_freeipa_connection(LDAP_PASSWORD)),
+        ):
+            with (
+                self.subTest(syncer=syncer.name()),
+                patch(
+                    "authentik.sources.ldap.models.LDAPSource.connection",
+                    MagicMock(return_value=mock),
+                ),
+            ):
+                user = User.objects.create(username=generate_id())
+                PasswordDevice.set_password(user, generate_id())
+                # FreeIPA stores whole seconds
+                changed_at = (datetime.now(UTC) + timedelta(seconds=1)).replace(microsecond=0)
+                vendor_sync = syncer(self.source, Task())
+
+                vendor_sync.sync({attribute: changed_at}, User.objects.get(pk=user.pk), False)
+                user = User.objects.get(pk=user.pk)
+                self.assertFalse(user.has_usable_password())
+                self.assertEqual(user.password_change_date, changed_at)
+                session_hash = user.get_session_auth_hash()
+
+                vendor_sync.sync({attribute: changed_at}, User.objects.get(pk=user.pk), False)
+                self.assertEqual(User.objects.get(pk=user.pk).get_session_auth_hash(), session_hash)
 
     def test_sync_group_hierarchy_ad(self):
         """Test group hierarchy sync"""

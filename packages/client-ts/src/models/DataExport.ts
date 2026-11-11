@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,46 +10,26 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { ContentType } from "./ContentType";
-import { ContentTypeFromJSON } from "./ContentType";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import { parseDateTime } from "../runtime.js";
+import type { ContentType } from "./ContentType.js";
+import { ContentTypeFromJSON } from "./ContentType.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
+ *
  * @export
  * @interface DataExport
  */
 export interface DataExport {
-    /**
-     *
-     */
     readonly id: string;
-    /**
-     *
-     */
     readonly requestedBy: PartialUser;
-    /**
-     *
-     */
     readonly requestedOn: Date;
-    /**
-     *
-     */
     readonly contentType: ContentType;
-    /**
-     *
-     */
     queryParams: { [key: string]: any };
-    /**
-     *
-     */
     readonly fileUrl: string;
-    /**
-     *
-     */
     readonly completed: boolean;
 }
 

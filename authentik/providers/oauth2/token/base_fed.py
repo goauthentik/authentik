@@ -4,7 +4,7 @@ from typing import Any
 from django.db.models import Q
 from django.http import HttpRequest
 from django.utils import timezone
-from jwt import PyJWK, PyJWT, PyJWTError, decode
+from jwt import PyJWT, PyJWTError, decode
 
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
@@ -17,12 +17,14 @@ from authentik.core.models import (
 )
 from authentik.core.sources.mapper import SourceMapper
 from authentik.events.middleware import audit_ignore
+from authentik.lib.jwt_mldsa import key_from_jwk
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2Provider,
 )
 from authentik.providers.oauth2.token.base import TokenRequest
+from authentik.providers.saml.models import SAMLProvider
 from authentik.sources.oauth.models import OAuthSource
 
 
@@ -51,7 +53,11 @@ class FederatedTokenRequest(TokenRequest):
     # response builders, so it must exist on every request type.
     user: User | None = None
     actor: Actor | None = None
+    # RFC 8693 §4.1 delegation chain carried by the subject_token's own `act` claim
+    prior_act: dict | None = None
     requested_token_type: str | None = None
+    # Token exchange for a SAML Response: the SAML provider issuing it
+    saml_provider: SAMLProvider | None = None
 
     def validate_jwt(self, assertion: str) -> FederatedParty | None:
         if party := self.validate_jwt_from_source(assertion):
@@ -88,7 +94,7 @@ class FederatedTokenRequest(TokenRequest):
                     continue
                 self.logger.debug("verifying JWT with key", source=source.slug, key=key.get("kid"))
                 try:
-                    parsed_key = PyJWK.from_dict(key).key
+                    parsed_key, _ = key_from_jwk(key)
                     token = decode(
                         assertion,
                         parsed_key,
@@ -113,9 +119,10 @@ class FederatedTokenRequest(TokenRequest):
     def validate_jwt_from_provider(self, assertion: str) -> FederatedParty | None:
         token = provider = resolved_user = _key = None
         providers = Q(provider__in=self.provider.jwt_federation_providers.all())
-        if self.audience_provider:
+        if self.audience_provider or self.saml_provider:
             # For token exchange with actor, the given token may likely be a token
-            # of the provider this request is for
+            # of the provider this request is for. A targeted provider has opted into
+            # the requesting provider, so its own tokens are accepted too.
             providers |= Q(provider=self.provider)
         federated_token = AccessToken.objects.filter(providers, token=assertion).first()
         if federated_token:

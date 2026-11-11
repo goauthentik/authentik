@@ -359,7 +359,6 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 type ApiCoreGroupsListRequest struct {
 	ctx                   context.Context
 	ApiService            *CoreAPIService
-	attributes            *string
 	includeChildren       *bool
 	includeInheritedRoles *bool
 	includeParents        *bool
@@ -372,12 +371,6 @@ type ApiCoreGroupsListRequest struct {
 	page                  *int32
 	pageSize              *int32
 	search                *string
-}
-
-// Attributes
-func (r ApiCoreGroupsListRequest) Attributes(attributes string) ApiCoreGroupsListRequest {
-	r.attributes = &attributes
-	return r
 }
 
 func (r ApiCoreGroupsListRequest) IncludeChildren(includeChildren bool) ApiCoreGroupsListRequest {
@@ -486,9 +479,6 @@ func (a *CoreAPIService) CoreGroupsListExecute(r ApiCoreGroupsListRequest) (*Pag
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.attributes != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "attributes", r.attributes, "form", "")
-	}
 	if r.includeChildren != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_children", r.includeChildren, "form", "")
 	} else {
@@ -635,7 +625,6 @@ func (a *CoreAPIService) CoreGroupsListExecute(r ApiCoreGroupsListRequest) (*Pag
 type ApiCoreUsersListRequest struct {
 	ctx             context.Context
 	ApiService      *CoreAPIService
-	attributes      *string
 	dateJoined      *time.Time
 	dateJoinedGt    *time.Time
 	dateJoinedLt    *time.Time
@@ -665,12 +654,6 @@ type ApiCoreUsersListRequest struct {
 	type_           *[]UserTypeEnum
 	username        *string
 	uuid            *string
-}
-
-// Attributes
-func (r ApiCoreUsersListRequest) Attributes(attributes string) ApiCoreUsersListRequest {
-	r.attributes = &attributes
-	return r
 }
 
 func (r ApiCoreUsersListRequest) DateJoined(dateJoined time.Time) ApiCoreUsersListRequest {
@@ -863,9 +846,6 @@ func (a *CoreAPIService) CoreUsersListExecute(r ApiCoreUsersListRequest) (*Pagin
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.attributes != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "attributes", r.attributes, "form", "")
-	}
 	if r.dateJoined != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "date_joined", r.dateJoined, "form", "")
 	}

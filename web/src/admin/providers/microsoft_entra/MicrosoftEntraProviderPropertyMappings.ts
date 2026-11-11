@@ -13,6 +13,7 @@ export async function microsoftEntraPropertyMappingsProvider(page = 1, search = 
         search: search.trim(),
         page,
     });
+
     return {
         pagination: propertyMappings.pagination,
         options: propertyMappings.results.map((scope) => [scope.pk, scope.name, scope.name, scope]),
@@ -24,6 +25,7 @@ export function makeMicrosoftEntraPropertyMappingsSelector(
     defaultSelection: string,
 ) {
     const localMappings = instanceMappings ? new Set<string | number>(instanceMappings) : undefined;
+
     return localMappings
         ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
         : ([_0, _1, _2, scope]: DualSelectPair<ScopeMapping>) =>

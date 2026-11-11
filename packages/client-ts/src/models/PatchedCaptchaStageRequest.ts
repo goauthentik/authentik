@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,21 +10,19 @@
  * Do not edit the class manually.
  */
 
-import type { RequestContentTypeEnum } from "./RequestContentTypeEnum";
+import type { RequestContentTypeEnum } from "./RequestContentTypeEnum.js";
 import {
     RequestContentTypeEnumFromJSON,
     RequestContentTypeEnumToJSON,
-} from "./RequestContentTypeEnum";
+} from "./RequestContentTypeEnum.js";
 
 /**
  * CaptchaStage Serializer
+ *
  * @export
  * @interface PatchedCaptchaStageRequest
  */
 export interface PatchedCaptchaStageRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * Public key, acquired your captcha Provider.
@@ -36,32 +32,16 @@ export interface PatchedCaptchaStageRequest {
      * Private key, acquired your captcha Provider.
      */
     privateKey?: string;
-    /**
-     *
-     */
     jsUrl?: string;
-    /**
-     *
-     */
     apiUrl?: string;
-    /**
-     *
-     */
     requestContentType?: RequestContentTypeEnum;
-    /**
-     *
-     */
     interactive?: boolean;
-    /**
-     *
-     */
     scoreMinThreshold?: number;
-    /**
-     *
-     */
     scoreMaxThreshold?: number;
     /**
-     * When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions
+     * When enabled and the received captcha score is outside of the given threshold, the stage will
+     * show an error message. When not enabled, the flow will continue, but the data from the
+     * captcha will be available in the context for policy decisions
      */
     errorOnInvalidScore?: boolean;
 }

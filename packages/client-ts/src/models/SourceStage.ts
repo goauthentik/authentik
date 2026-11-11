@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,27 +10,22 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum.js";
 import {
     ResumeOnMatchFailuresEnumFromJSON,
     ResumeOnMatchFailuresEnumToJSON,
-} from "./ResumeOnMatchFailuresEnum";
+} from "./ResumeOnMatchFailuresEnum.js";
 
 /**
  * SourceStage Serializer
+ *
  * @export
  * @interface SourceStage
  */
 export interface SourceStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -50,16 +43,11 @@ export interface SourceStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     source: string;
     /**
-     * Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)
+     * Amount of time a user can take to return from the source to continue the flow (Format:
+     * hours=-1;minutes=-2;seconds=-3)
      */
     resumeTimeout?: string;
     /**

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { License } from "./License";
-import { LicenseFromJSON, LicenseToJSON } from "./License";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { License } from "./License.js";
+import { LicenseFromJSON, LicenseToJSON } from "./License.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedLicenseList
  */
 export interface PaginatedLicenseList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<License>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

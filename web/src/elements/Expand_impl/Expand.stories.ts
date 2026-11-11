@@ -3,7 +3,6 @@
  */
 
 import "../Expand";
-
 import { type ExpandProps } from "../Expand";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
@@ -78,7 +77,7 @@ export const DefaultStory: Story = {
                     <p>Μήτ᾽ ἔμοι μέλι μήτε μέλισσα</p>
                     <p>"Neither the bee nor the honey for me." - Sappho, 600 BC</p>
                 </div>
-            </ak-expand>`
+            </ak-expand>`,
         ),
 };
 

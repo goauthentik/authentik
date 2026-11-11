@@ -1,5 +1,6 @@
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 
@@ -11,8 +12,6 @@ import { CoreApi, Group } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-user-group-table")
 export class UserGroupTable extends Table<Group> {
@@ -60,7 +59,8 @@ export class UserGroupTable extends Table<Group> {
 
         return html`<div class="pf-c-banner pf-m-warning">
                 ${msg(
-                    "Warning: Adding the user to the selected group(s) will give them superuser permissions.",
+                    "Warning: Adding the user to the selected groups will give them superuser permissions.",
+                    { id: "users.add-to-groups.superuser.warning" },
                 )}
             </div>
             ${super.render()}`;

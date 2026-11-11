@@ -6,8 +6,9 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
+import { APIMessage, MessageLevel } from "#common/messages";
+import { plural } from "#common/ui/locale/plurals";
 
 import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
@@ -39,14 +40,29 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
     @state()
     protected rolesToAdd: Role[] = [];
 
-    getSuccessMessage(): string {
-        return msg("Successfully added user to role(s).");
+    protected override formatAPISuccessMessage(data: { roles: string[] }): APIMessage {
+        const count = data.roles.length;
+
+        return {
+            level: MessageLevel.success,
+            message: plural(count, {
+                one: (formattedCount) =>
+                    msg(str`Successfully added user to ${formattedCount} role.`, {
+                        id: "roles.add-user.success.one",
+                    }),
+                other: (formattedCount) =>
+                    msg(str`Successfully added user to ${formattedCount} roles.`, {
+                        id: "roles.add-user.success.other",
+                    }),
+            }),
+        };
     }
 
-    async send(data: { roles: string[] }): Promise<unknown> {
+    async send(data: { roles: string[] }): Promise<{ roles: string[] }> {
         await Promise.all(
             data.roles.map((role) => {
                 if (!this.user) return Promise.resolve();
+
                 return this.#api.rbacRolesAddUserCreate({
                     uuid: role,
                     userAccountSerializerForRoleRequest: {
@@ -55,6 +71,7 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
                 });
             }),
         );
+
         return data;
     }
 
@@ -114,6 +131,11 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
 
 @customElement("ak-related-role-table")
 export class RelatedRoleTable extends Table<Role> {
+    public static override verboseName = msg("Role", { id: "roles.verbose-name.label" });
+    public static override verboseNamePlural = msg("Roles", {
+        id: "roles.verbose-name-plural.label",
+    });
+
     #api = aki(RbacApi);
 
     checkbox = true;
@@ -134,6 +156,7 @@ export class RelatedRoleTable extends Table<Role> {
 
     willUpdate(changedProperties: PropertyValues<this>) {
         super.willUpdate(changedProperties);
+
         if (changedProperties.has("showInherited")) {
             // Disable checkboxes in showInherited mode (view-only)
             this.checkbox = !this.showInherited;
@@ -163,6 +186,7 @@ export class RelatedRoleTable extends Table<Role> {
         if (this.showInherited) {
             return [[msg("Name"), "name"]];
         }
+
         return [
             [msg("Name"), "name"],
             [msg("Actions"), null, msg("Row Actions")],
@@ -182,17 +206,18 @@ export class RelatedRoleTable extends Table<Role> {
         if (this.showInherited) {
             return nothing;
         }
+
         const disabled = !this.selectedElements.length;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Role(s)")}
-            submit-label=${msg("Remove from Role(s)")}
+            action="remove"
             action-subtext=${msg(
                 str`Are you sure you want to remove user ${this.targetUser?.username} from the following roles?`,
             )}
-            button-label=${msg("Remove")}
             .objects=${this.selectedElements}
             .delete=${(item: Role) => {
                 if (!this.targetUser) return;
+
                 return this.#api.rbacRolesRemoveUserCreate({
                     uuid: item.pk,
                     userAccountSerializerForRoleRequest: {
@@ -228,19 +253,23 @@ export class RelatedRoleTable extends Table<Role> {
 
     protected row(item: Role): SlottedTemplateResult[] {
         const inherited = this.showInherited && this.isInherited(item);
+
         const inheritedTooltip = this.targetGroup
             ? msg("Inherited from parent group")
             : msg("Inherited from group");
+
         const nameCell = html`<a href=${toAdminInterface(`identity/roles/${item.pk}`)}
                 >${item.name}</a
             >
-            ${inherited
-                ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
-                      <span class="pf-c-label pf-m-outline pf-m-cyan">
-                          <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
-                      </span>
-                  </pf-tooltip>`
-                : nothing}`;
+            ${
+                inherited
+                    ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
+                          <span class="pf-c-label pf-m-outline pf-m-cyan">
+                              <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
+                          </span>
+                      </pf-tooltip>`
+                    : nothing
+            }`;
 
         // Hide actions in showInherited mode (view-only)
         if (this.showInherited) {

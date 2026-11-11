@@ -1,5 +1,4 @@
 import "#elements/forms/DeleteBulkForm";
-
 import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -26,9 +25,11 @@ export class UserReputationList extends Table<Reputation> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         const identifiers = [this.targetUsername];
+
         if (this.targetEmail !== undefined) {
             identifiers.push(this.targetEmail);
         }
+
         return aki(PoliciesApi).policiesReputationScoresList({
             ...(await this.defaultEndpointConfig()),
             identifierIn: identifiers,
@@ -52,8 +53,8 @@ export class UserReputationList extends Table<Reputation> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Reputation score(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
                 return aki(PoliciesApi).policiesReputationScoresUsedByList({
@@ -75,9 +76,11 @@ export class UserReputationList extends Table<Reputation> {
     row(item: Reputation): SlottedTemplateResult[] {
         return [
             html`${item.identifier}`,
-            html`${item.ipGeoData?.country
-                ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
-                : nothing}
+            html`${
+                item.ipGeoData?.country
+                    ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
+                    : nothing
+            }
             ${item.ip}`,
             html`${item.score}`,
             Timestamp(item.updated),

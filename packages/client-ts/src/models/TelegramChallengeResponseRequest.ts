@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,41 +12,18 @@
 
 /**
  * Base class for all challenge responses
+ *
  * @export
  * @interface TelegramChallengeResponseRequest
  */
 export interface TelegramChallengeResponseRequest {
-    /**
-     *
-     */
     id: number;
-    /**
-     *
-     */
     firstName?: string;
-    /**
-     *
-     */
     lastName?: string;
-    /**
-     *
-     */
     username?: string;
-    /**
-     *
-     */
     photoUrl?: string;
-    /**
-     *
-     */
     authDate: number;
-    /**
-     *
-     */
     hash: string;
-    /**
-     *
-     */
     component?: string;
 }
 

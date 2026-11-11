@@ -9,6 +9,8 @@ import "#elements/user/UserConsentList";
 import "#elements/user/UserReputationList";
 import "#elements/user/sources/SourceSettings";
 import "./UserDevicesTable.js";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { AKElement } from "#elements/Base";
 import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
@@ -20,9 +22,6 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-credentials-tab")
 export class UserCredentialsTab extends WithLazyTabs(WithLicenseSummary(AKElement)) {
@@ -73,26 +72,28 @@ export class UserCredentialsTab extends WithLazyTabs(WithLicenseSummary(AKElemen
                     </div>`,
                 )}
             </div>
-            ${this.hasEnterpriseLicense
-                ? html`<div
-                      role="tabpanel"
-                      tabindex="0"
-                      slot="page-agents"
-                      id="page-agents"
-                      aria-label=${msg("Agents")}
-                      class="pf-c-page__main-section pf-m-no-padding-mobile"
-                      @activate=${() => this.activateTab("page-agents")}
-                  >
-                      ${this.renderWhenActive(
-                          "page-agents",
-                          html`<div class="pf-c-card">
-                              <ak-admin-user-agent-list
-                                  .user=${this.user}
-                              ></ak-admin-user-agent-list>
-                          </div>`,
-                      )}
-                  </div>`
-                : nothing}
+            ${
+                this.hasEnterpriseLicense
+                    ? html`<div
+                          role="tabpanel"
+                          tabindex="0"
+                          slot="page-agents"
+                          id="page-agents"
+                          aria-label=${msg("Agents")}
+                          class="pf-c-page__main-section pf-m-no-padding-mobile"
+                          @activate=${() => this.activateTab("page-agents")}
+                      >
+                          ${this.renderWhenActive(
+                              "page-agents",
+                              html`<div class="pf-c-card">
+                                  <ak-admin-user-agent-list
+                                      .user=${this.user}
+                                  ></ak-admin-user-agent-list>
+                              </div>`,
+                          )}
+                      </div>`
+                    : nothing
+            }
             <div
                 role="tabpanel"
                 tabindex="0"

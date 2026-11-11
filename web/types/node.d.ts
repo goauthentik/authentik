@@ -18,6 +18,29 @@ declare module "module" {
     }
 }
 
+declare module "timers" {
+    /**
+     * Mirrors the private helper of the same purpose in `@types/node`.
+     */
+    type OptionalVoidArgs<TArgs extends any[]> = [void] extends TArgs ? Partial<TArgs> : TArgs;
+
+    global {
+        // `@types/node` is always in the program, and its timers return `Timeout`.
+        // Browser code stores timer IDs as numbers, so prefer the DOM return type.
+        function setTimeout<TArgs extends any[]>(
+            callback: (...args: TArgs) => void,
+            delay?: number,
+            ...args: OptionalVoidArgs<TArgs>
+        ): number;
+
+        function setInterval<TArgs extends any[]>(
+            callback: (...args: TArgs) => void,
+            delay?: number,
+            ...args: OptionalVoidArgs<TArgs>
+        ): number;
+    }
+}
+
 declare module "process" {
     import { Level } from "pino";
 
@@ -52,9 +75,9 @@ declare module "process" {
                 readonly AK_TEST_RUNNER_PAGE_URL?: string;
 
                 /**
+                 * @deprecated
                  * @todo Determine where this is used and if it is needed,
                  * give it a better name.
-                 * @deprecated
                  */
                 readonly AK_API_BASE_PATH?: string;
             }

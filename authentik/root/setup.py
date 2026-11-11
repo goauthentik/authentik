@@ -6,6 +6,7 @@ from defusedxml import defuse_stdlib
 from xmlsec import base64_default_line_size
 
 from authentik.lib.config import CONFIG
+from authentik.lib.jwt_mldsa import register_mldsa_algorithms
 
 
 def setup():
@@ -21,6 +22,7 @@ def setup():
 
     defuse_stdlib()
     base64_default_line_size(size=8192)
+    register_mldsa_algorithms()
 
     if CONFIG.get_bool("compliance.fips.enabled", False):
         backend._enable_fips()

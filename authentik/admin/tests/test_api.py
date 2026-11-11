@@ -1,11 +1,14 @@
 """test admin api"""
 
 from json import loads
+from unittest.mock import MagicMock, patch
 
+from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
 
 from authentik import authentik_version
+from authentik.admin.api.system import SystemInfoSerializer
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Group, User
 from authentik.lib.generators import generate_id
@@ -44,3 +47,23 @@ class TestAdminAPI(TestCase):
         """Test system API"""
         response = self.client.get(reverse("authentik_api:admin_system"))
         self.assertEqual(response.status_code, 200)
+
+    def test_system_postgresql(self):
+        """Test system API reports the JIT setting and TLS status of the database connection"""
+        with connection.cursor() as cursor:
+            cursor.execute("SET jit = off")
+        response = self.client.get(reverse("authentik_api:admin_system"))
+        self.assertEqual(response.status_code, 200)
+        postgresql = loads(response.content)["postgresql"]
+        self.assertEqual(postgresql["jit"], "off")
+        self.assertEqual(postgresql["jit_source"], "session")
+        self.assertTrue(postgresql["version"])
+        self.assertEqual(postgresql["ssl"], connection.connection.pgconn.ssl_in_use)
+        self.assertEqual(postgresql["ssl_version"] is not None, postgresql["ssl"])
+
+    def test_system_postgresql_no_row(self):
+        """Test system API returns null PostgreSQL info when the query returns no row"""
+        mock_connection = MagicMock()
+        mock_connection.cursor.return_value.__enter__.return_value.fetchone.return_value = None
+        with patch("authentik.admin.api.system.connection", mock_connection):
+            self.assertIsNone(SystemInfoSerializer().get_postgresql(None))

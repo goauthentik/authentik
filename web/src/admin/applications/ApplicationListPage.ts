@@ -7,6 +7,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/dialogs/ak-modal";
 import "#admin/applications/ApplicationForm";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { aki } from "#common/api/client";
 
@@ -28,15 +29,18 @@ import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 import MDApplication from "~docs/add-secure-apps/applications/index.mdx";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
-export const applicationListStyle = css``;
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
+    public static override verboseName = msg("Application", {
+        id: "applications.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Applications", {
+        id: "applications.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [
         // ---
         ...TablePage.styles,
@@ -65,7 +69,6 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return aki(CoreApi).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
-            superuserFullList: true,
         });
     }
 
@@ -103,8 +106,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
                 return aki(CoreApi).coreApplicationsUsedByList({
@@ -145,18 +148,20 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(ApplicationForm, item.slug)}
-                ${item.launchUrl
-                    ? html`<a
-                          href=${item.launchUrl}
-                          target="_blank"
-                          class="pf-c-button pf-m-plain"
-                          aria-label=${msg(str`Open "${item.name}"`)}
-                      >
-                          <pf-tooltip position="top" content=${msg("Open")}>
-                              <i class="fas fa-share-square" aria-hidden="true"></i>
-                          </pf-tooltip>
-                      </a>`
-                    : nothing}
+                ${
+                    item.launchUrl
+                        ? html`<a
+                              href=${item.launchUrl}
+                              target="_blank"
+                              class="pf-c-button pf-m-plain"
+                              aria-label=${msg(str`Open "${item.name}"`)}
+                          >
+                              <pf-tooltip position="top" content=${msg("Open")}>
+                                  <i class="fas fa-share-square" aria-hidden="true"></i>
+                              </pf-tooltip>
+                          </a>`
+                        : nothing
+                }
             </div>`,
         ];
     }

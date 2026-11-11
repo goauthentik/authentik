@@ -1,7 +1,6 @@
 import "#components/ak-text-input";
-import "#elements/CodeMirror/ak-codemirror";
+import "#elements/CodeEditor/ak-code-editor";
 import "#components/ak-radio-input";
-
 import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
@@ -14,11 +13,11 @@ import {
     RequestStatus,
 } from "@goauthentik/api";
 
+import { ifDefined } from "lit-html/directives/if-defined.js";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { html } from "lit-html";
-import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-access-request-fulfill-form")
@@ -64,7 +63,7 @@ export class AccessRequestFulfillForm extends Form<PatchedGrantRequestFulfillReq
                 <pre>${JSON.stringify(this.request?.requesterData, null, 4)}</pre>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Note")} name="data">
-                <ak-codemirror mode="yaml" value="${YAML.stringify({})}"> </ak-codemirror>
+                <ak-code-editor mode="yaml" value="${YAML.stringify({})}"> </ak-code-editor>
             </ak-form-element-horizontal>
         `;
     }

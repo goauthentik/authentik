@@ -1,5 +1,4 @@
 import "#elements/Diagram/ak-diagram";
-
 import { Diagram } from "#elements/Diagram/ak-diagram";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -14,6 +13,9 @@ function mount<T extends HTMLElement>(element: T): T {
 
     return element;
 }
+
+// Mermaid's first render can take over a second under full-suite load.
+const waitForRender = { timeout: 5000 } as const;
 
 afterEach(() => {
     mounted.forEach((container) => container.remove());
@@ -44,17 +46,21 @@ describe("ak-diagram", () => {
 
         element.diagram = 'graph TD\nn0["Alpha"]\nn1["Beta"]\nn0 --> n1';
 
-        await vi.waitFor(() => expect(element.observed).toStrictEqual(["svg"]));
+        await vi.waitFor(() => expect(element.observed).toStrictEqual(["svg"]), waitForRender);
     });
 
     it("invokes diagramUpdated again when the diagram changes", async () => {
         const element = mount(new TestDiagram());
 
         element.diagram = 'graph TD\nn0["Alpha"]';
-        await vi.waitFor(() => expect(element.observed).toHaveLength(1));
+        await vi.waitFor(() => expect(element.observed).toHaveLength(1), waitForRender);
 
         element.diagram = 'graph TD\nn0["Alpha"]\nn1["Beta"]\nn0 --> n1';
-        await vi.waitFor(() => expect(element.observed).toStrictEqual(["svg", "svg"]));
+
+        await vi.waitFor(
+            () => expect(element.observed).toStrictEqual(["svg", "svg"]),
+            waitForRender,
+        );
     });
 
     it("invokes diagramUpdatedCallback on a function after the SVG is rendered", async () => {
@@ -66,10 +72,10 @@ describe("ak-diagram", () => {
         };
 
         element.diagram = 'graph TD\nn0["Alpha"]';
-        await vi.waitFor(() => expect(observed).toHaveLength(1));
+        await vi.waitFor(() => expect(observed).toHaveLength(1), waitForRender);
 
         element.diagram = 'graph TD\nn0["Alpha"]\nn1["Beta"]\nn0 --> n1';
-        await vi.waitFor(() => expect(observed).toStrictEqual(["svg", "svg"]));
+        await vi.waitFor(() => expect(observed).toStrictEqual(["svg", "svg"]), waitForRender);
     });
 
     it("invokes diagramUpdatedCallback on a method after the SVG is rendered", async () => {
@@ -78,9 +84,13 @@ describe("ak-diagram", () => {
         element.diagramUpdatedCallback = callback.invoke;
 
         element.diagram = 'graph TD\nn0["Alpha"]';
-        await vi.waitFor(() => expect(callback.observed).toHaveLength(1));
+        await vi.waitFor(() => expect(callback.observed).toHaveLength(1), waitForRender);
 
         element.diagram = 'graph TD\nn0["Alpha"]\nn1["Beta"]\nn0 --> n1';
-        await vi.waitFor(() => expect(callback.observed).toStrictEqual(["svg", "svg"]));
+
+        await vi.waitFor(
+            () => expect(callback.observed).toStrictEqual(["svg", "svg"]),
+            waitForRender,
+        );
     });
 });

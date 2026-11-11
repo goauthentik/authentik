@@ -6,12 +6,12 @@ import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { formatIntentLabel } from "#common/labels";
 
 import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconTokenEditButton } from "#elements/buttons/IconTokenEditButton";
+import { ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -28,6 +28,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
+    public static override verboseName = msg("Token", { id: "tokens.verbose-name.label" });
+    public static override verboseNamePlural = msg("Tokens", {
+        id: "tokens.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
     public override pageTitle = msg("Tokens");
     public override pageDescription = msg(
@@ -59,8 +64,8 @@ export class TokenListPage extends TablePage<Token> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Token) => {
                 return [{ key: msg("Identifier"), value: item.identifier }];
@@ -89,9 +94,11 @@ export class TokenListPage extends TablePage<Token> {
     protected override row(item: Token): SlottedTemplateResult[] {
         return [
             html`<div>${item.identifier}</div>
-                ${item.managed
-                    ? html`<small>${msg("Token is managed by authentik.")}</small>`
-                    : nothing}`,
+                ${
+                    item.managed
+                        ? html`<small>${msg("Token is managed by authentik.")}</small>`
+                        : nothing
+                }`,
             html`<a href=${toAdminInterface(`identity/users/${item.userObj?.pk}`)}
                 >${item.userObj?.username}</a
             >`,
@@ -99,16 +106,7 @@ export class TokenListPage extends TablePage<Token> {
             Timestamp(item.expires && item.expiring ? item.expires : null),
             html`${formatIntentLabel(item.intent ?? IntentEnum.Api)}`,
             html`<div class="ak-c-table__actions">
-                ${!item.managed
-                    ? IconEditButton(TokenForm, item.identifier, item.identifier)
-                    : html`<button class="pf-c-button pf-m-plain" disabled type="button">
-                          <pf-tooltip
-                              position="top"
-                              content=${msg("Editing is disabled for managed tokens")}
-                          >
-                              <i class="fas fa-edit" aria-hidden="true"></i>
-                          </pf-tooltip>
-                      </button>`}
+                ${IconTokenEditButton(item)}
                 ${IconPermissionButton(item.identifier, {
                     model: ModelEnum.AuthentikCoreToken,
                     objectPk: item.pk,

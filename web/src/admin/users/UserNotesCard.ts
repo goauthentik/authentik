@@ -1,13 +1,12 @@
 import "#elements/ak-mdx/ak-mdx";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 @customElement("ak-user-notes-card")
 export class UserNotesCard extends AKElement {
@@ -31,9 +30,11 @@ export class UserNotesCard extends AKElement {
         return html`
             <div class="pf-c-card__title">${msg("Notes")}</div>
             <div class="pf-c-card__body">
-                ${notes
-                    ? html`<ak-mdx .content=${notes}></ak-mdx>`
-                    : html`<p class="ak-user-notes-empty">${msg("No notes.")}</p>`}
+                ${
+                    notes
+                        ? html`<ak-mdx .content=${notes}></ak-mdx>`
+                        : html`<p class="ak-user-notes-empty">${msg("No notes.")}</p>`
+                }
             </div>
         `;
     }

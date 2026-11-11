@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,20 +12,19 @@
 
 /**
  * DockerServiceConnection Serializer
+ *
  * @export
  * @interface PatchedDockerServiceConnectionRequest
  */
 export interface PatchedDockerServiceConnectionRequest {
-    /**
-     *
-     */
     name?: string;
     /**
      * If enabled, use the local connection. Required Docker socket/Kubernetes Integration
      */
     local?: boolean;
     /**
-     * Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
+     * Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or
+     * 'https://<hostname>:2376' when connecting to a remote system.
      */
     url?: string;
     /**

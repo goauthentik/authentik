@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,32 +10,33 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { ServiceBindMethodEnum } from "./ServiceBindMethodEnum";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { ServiceBindMethodEnum } from "./ServiceBindMethodEnum.js";
 import {
     ServiceBindMethodEnumFromJSON,
     ServiceBindMethodEnumToJSON,
-} from "./ServiceBindMethodEnum";
-import type { SyncOutgoingTriggerModeEnum } from "./SyncOutgoingTriggerModeEnum";
+} from "./ServiceBindMethodEnum.js";
+import type { SyncOutgoingTriggerModeEnum } from "./SyncOutgoingTriggerModeEnum.js";
 import {
     SyncOutgoingTriggerModeEnumFromJSON,
     SyncOutgoingTriggerModeEnumToJSON,
-} from "./SyncOutgoingTriggerModeEnum";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+} from "./SyncOutgoingTriggerModeEnum.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON } from "./ThemedUrls.js";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum.js";
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from "./UserMatchingModeEnum.js";
 
 /**
  * LDAP Source Serializer
+ *
  * @export
  * @interface LDAPSource
  */
 export interface LDAPSource {
-    /**
-     *
-     */
     readonly pk: string;
     /**
      * Source's display Name.
@@ -47,12 +46,10 @@ export interface LDAPSource {
      * Internal source name, used in URLs.
      */
     slug: string;
-    /**
-     *
-     */
     enabled?: boolean;
     /**
-     * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
+     * When enabled, this source will be displayed as a prominent button on the login page, instead
+     * of a small icon.
      */
     promoted?: boolean;
     /**
@@ -63,13 +60,7 @@ export interface LDAPSource {
      * Flow to use when enrolling new users.
      */
     enrollmentFlow?: string | null;
-    /**
-     *
-     */
     userPropertyMappings?: Array<string>;
-    /**
-     *
-     */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
@@ -87,37 +78,21 @@ export interface LDAPSource {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
-     * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
+     * Objects that are managed by authentik. These objects are created and updated automatically.
+     * This flag only indicates that an object can be overwritten by migrations. You can still
+     * modify the objects via the API, but expect changes to be overwritten in a later update.
      */
     readonly managed: string | null;
-    /**
-     *
-     */
     userPathTemplate?: string;
-    /**
-     *
-     */
     icon?: string;
-    /**
-     *
-     */
     readonly iconUrl: string;
-    /**
-     *
-     */
     readonly iconThemedUrls: ThemedUrls | null;
-    /**
-     *
-     */
     serverUri: string;
     /**
      * Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair.
@@ -127,25 +102,13 @@ export interface LDAPSource {
      * Client certificate to authenticate against the LDAP Server's Certificate.
      */
     clientCertificate?: string | null;
-    /**
-     *
-     */
     bindCn?: string;
     /**
      * Authentication method used for LDAP synchronization and writeback.
      */
     serviceBindMethod?: ServiceBindMethodEnum;
-    /**
-     *
-     */
     startTls?: boolean;
-    /**
-     *
-     */
     sni?: boolean;
-    /**
-     *
-     */
     baseDn: string;
     /**
      * Prepended to Base DN for User-queries.
@@ -179,32 +142,26 @@ export interface LDAPSource {
      * Update internal authentik password when login succeeds with LDAP
      */
     passwordLoginUpdateInternalPassword?: boolean;
-    /**
-     *
-     */
     syncUsers?: boolean;
     /**
-     * When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.
+     * When a user changes their password, sync it back to LDAP. This can only be enabled on a
+     * single LDAP source.
      */
     syncUsersPassword?: boolean;
-    /**
-     *
-     */
     syncGroups?: boolean;
-    /**
-     *
-     */
     syncParentGroup?: string | null;
     /**
      * Get cached source connectivity
      */
     readonly connectivity: { [key: string]: { [key: string]: string } } | null;
     /**
-     * Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
+     * Lookup group membership based on a user attribute instead of a group attribute. This allows
+     * nested group resolution on systems like FreeIPA and Active Directory
      */
     lookupGroupsFromUser?: boolean;
     /**
-     * Delete authentik users and groups which were previously supplied by this source, but are now missing from it.
+     * Delete authentik users and groups which were previously supplied by this source, but are now
+     * missing from it.
      */
     deleteNotFoundObjects?: boolean;
     /**

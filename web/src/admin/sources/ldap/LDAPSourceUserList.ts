@@ -1,7 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/sources/ldap/LDAPSourceUserForm";
-
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
@@ -26,8 +25,12 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("LDAP User(s)")}
+            verbose-name=${msg("LDAP User", { id: "ldap.users.verbose-name.label" })}
+            verbose-name-plural=${msg("LDAP Users", {
+                id: "ldap.users.verbose-name-plural.label",
+            })}
             .objects=${this.selectedElements}
             .delete=${(item: UserLDAPSourceConnection) => {
                 return aki(SourcesApi).sourcesUserConnectionsLdapDestroy({

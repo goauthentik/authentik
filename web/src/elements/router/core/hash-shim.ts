@@ -1,13 +1,12 @@
 /**
+ * @remarks
+ *   REMOVAL TARGET: delete this file two releases after the admin
+ *   interface ships on path routing (final step of the client-side routing
+ *   rollout).
  * @file Legacy hash-route redirect shim (temporary).
- *
- * Translates legacy `#/path;<params>` URLs — both the JSON-blob encoding and
- * the `URLSearchParams` encoding — into path-based URLs, and applies the
- * translation via `history.replaceState` at boot.
- *
- * @remarks REMOVAL TARGET: delete this file two releases after the admin
- * interface ships on path routing (final step of the client-side routing
- * rollout).
+ *   Translates legacy `#/path;<params>` URLs — both the JSON-blob encoding and
+ *   the `URLSearchParams` encoding — into path-based URLs, and applies the
+ *   translation via `history.replaceState` at boot.
  */
 
 import { getRouterConfig } from "#elements/router/core/config";
@@ -17,6 +16,7 @@ import {
     type RouteParameterRecord,
     searchParamsToRecord,
 } from "#elements/router/core/parameters";
+import { stripLeadingSlash } from "#elements/router/core/paths";
 
 /**
  * Separator between the legacy hash path and its serialized parameters.
@@ -71,8 +71,9 @@ function decodeLegacyParams(serialized: string | undefined): RouteParameterRecor
  *
  * @param hash The `location.hash` value (including the leading `#`).
  * @param scope The deployment base and target interface.
+ *
  * @returns The translated path + search string, or `null` when `hash` is not a
- * legacy route (does not begin with `#/`).
+ *   legacy route (does not begin with `#/`).
  */
 export function translateHashRoute(hash: string, scope: HashRouteScope): string | null {
     if (!hash.startsWith("#/")) return null;
@@ -83,7 +84,7 @@ export function translateHashRoute(hash: string, scope: HashRouteScope): string 
     const rawPath = separatorIndex === -1 ? withoutHash : withoutHash.slice(0, separatorIndex);
     const rawParams = separatorIndex === -1 ? undefined : withoutHash.slice(separatorIndex + 1);
 
-    const segment = rawPath.replace(/^\/+/, "");
+    const segment = stripLeadingSlash(rawPath);
     const params = decodeLegacyParams(rawParams);
     const search = recordToSearchParams(params).toString();
 
@@ -95,10 +96,11 @@ export function translateHashRoute(hash: string, scope: HashRouteScope): string 
 /**
  * Apply the hash-route redirect at boot, if the current URL is a legacy route.
  *
+ * @remarks
+ *   REMOVAL TARGET: delete with {@linkcode translateHashRoute}.
  * @param target The window whose location/history to read and rewrite.
- * @returns `true` when a redirect was applied.
  *
- * @remarks REMOVAL TARGET: delete with {@linkcode translateHashRoute}.
+ * @returns `true` when a redirect was applied.
  */
 export function applyHashRedirect(target: Window = window): boolean {
     const translated = translateHashRoute(target.location.hash, getRouterConfig());

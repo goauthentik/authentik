@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,99 +10,55 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { Role } from "./Role";
-import { RoleFromJSON } from "./Role";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { PartialGroup } from "./PartialGroup.js";
+import { PartialGroupFromJSON } from "./PartialGroup.js";
+import type { Role } from "./Role.js";
+import { RoleFromJSON } from "./Role.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * User Serializer
+ *
  * @export
  * @interface User
  */
 export interface User {
-    /**
-     *
-     */
     readonly pk: number;
-    /**
-     *
-     */
     username: string;
     /**
      * User's display name.
      */
     name: string;
     /**
-     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+     * Designates whether this user should be treated as active. Unselect this instead of deleting
+     * accounts.
      */
     isActive?: boolean;
-    /**
-     *
-     */
     lastLogin?: Date | null;
-    /**
-     *
-     */
     readonly dateJoined: Date;
-    /**
-     *
-     */
     readonly isSuperuser: boolean;
-    /**
-     *
-     */
     groups?: Array<string>;
-    /**
-     *
-     */
     readonly groupsObj: Array<PartialGroup> | null;
-    /**
-     *
-     */
     roles?: Array<string>;
-    /**
-     *
-     */
     readonly rolesObj: Array<Role> | null;
-    /**
-     *
-     */
     email?: string;
     /**
      * User's avatar, either a http/https URL or a data URI
      */
     readonly avatar: string;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     readonly uid: string;
-    /**
-     *
-     */
     path?: string;
-    /**
-     *
-     */
     type?: UserTypeEnum;
-    /**
-     *
-     */
     readonly uuid: string;
-    /**
-     *
-     */
     readonly passwordChangeDate: Date;
     /**
-     *
+     * Whether the user's password currently refuses authentication.
      */
+    readonly passwordLocked: boolean;
+    readonly passwordDevice: number | null;
     readonly lastUpdated: Date;
 }
 
@@ -151,6 +105,20 @@ export function instanceOfUser(value: object): value is User {
             !("password_change_date" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["passwordChangeDate"] === undefined &&
             (value as Record<string, any>)["password_change_date"] === undefined)
+    )
+        return false;
+    if (
+        (!("passwordLocked" in (value as Record<string, any>)) &&
+            !("password_locked" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["passwordLocked"] === undefined &&
+            (value as Record<string, any>)["password_locked"] === undefined)
+    )
+        return false;
+    if (
+        (!("passwordDevice" in (value as Record<string, any>)) &&
+            !("password_device" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["passwordDevice"] === undefined &&
+            (value as Record<string, any>)["password_device"] === undefined)
     )
         return false;
     if (
@@ -204,6 +172,8 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
             json["password_change_date"] == null
                 ? json["password_change_date"]
                 : parseDateTime(json["password_change_date"]),
+        passwordLocked: json["password_locked"],
+        passwordDevice: json["password_device"],
         lastUpdated:
             json["last_updated"] == null
                 ? json["last_updated"]
@@ -227,6 +197,8 @@ export function UserToJSONTyped(
         | "uid"
         | "uuid"
         | "passwordChangeDate"
+        | "passwordLocked"
+        | "passwordDevice"
         | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,

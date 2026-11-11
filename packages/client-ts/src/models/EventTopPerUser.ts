@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,21 +12,13 @@
 
 /**
  * Response object of Event's top_per_user
+ *
  * @export
  * @interface EventTopPerUser
  */
 export interface EventTopPerUser {
-    /**
-     *
-     */
     application: { [key: string]: any };
-    /**
-     *
-     */
     countedEvents: number;
-    /**
-     *
-     */
     uniqueUsers: number;
 }
 

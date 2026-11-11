@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,17 +12,12 @@
 
 /**
  * Generic API Error
+ *
  * @export
  * @interface GenericError
  */
 export interface GenericError {
-    /**
-     *
-     */
     detail: string;
-    /**
-     *
-     */
     code?: string;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,18 +12,13 @@
 
 /**
  * Validation Error
+ *
  * @export
  * @interface ValidationError
  */
 export interface ValidationError {
     [key: string]: any | any;
-    /**
-     *
-     */
     nonFieldErrors?: Array<string>;
-    /**
-     *
-     */
     code?: string;
 }
 

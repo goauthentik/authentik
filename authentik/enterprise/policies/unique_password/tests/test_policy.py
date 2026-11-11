@@ -1,5 +1,8 @@
 """Unique Password Policy tests"""
 
+from unittest import skipIf
+
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.contrib.auth.hashers import make_password
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
@@ -67,6 +70,7 @@ class TestUniquePasswordPolicy(TestCase):
         result: PolicyResult = self.policy.passes(request)
         self.assertFalse(result.passing)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no scrypt")
     def test_fails_if_identical_password_with_different_hash_algos(self):
         UserPasswordHistory.create_for_user(
             self.user, make_password("hunter2", "somesalt", "scrypt")

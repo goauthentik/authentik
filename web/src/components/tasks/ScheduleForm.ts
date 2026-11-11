@@ -3,7 +3,6 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -27,6 +26,7 @@ export class ScheduleForm extends ModelForm<Schedule, string> {
         if (!this.instance) {
             return "";
         }
+
         return msg("Successfully updated schedule.");
     }
 

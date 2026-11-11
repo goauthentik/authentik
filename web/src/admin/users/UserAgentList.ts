@@ -1,6 +1,5 @@
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { formatElapsedTime } from "#common/temporal";
 
@@ -15,6 +14,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-admin-user-agent-list")
 export class AdminUserAgentList extends Table<Agent> {
+    public static override verboseName = msg("Agent", { id: "agent.verbose-name.label" });
+    public static override verboseNamePlural = msg("Agents", {
+        id: "agent.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override checkbox = true;
@@ -47,8 +51,8 @@ export class AdminUserAgentList extends Table<Agent> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Agent(s)", { id: "agent.delete.object-label" })}
             .objects=${this.selectedElements}
             .metadata=${(item: Agent) => [
                 {
@@ -77,7 +81,6 @@ export class AdminUserAgentList extends Table<Agent> {
                   </pf-tooltip>`
                 : html`${msg("-", { id: "agent.expires.never" })}`,
             html`<ak-forms-delete-bulk
-                object-label=${msg("Agent", { id: "agent.delete.object-label-single" })}
                 .objects=${[item]}
                 .delete=${(agent: Agent) =>
                     aki(AgentsApi).agentsAgentsDestroy({

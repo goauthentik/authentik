@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,24 +10,19 @@
  * Do not edit the class manually.
  */
 
-import type { ConsentModeEnum } from "./ConsentModeEnum";
-import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { ConsentModeEnum } from "./ConsentModeEnum.js";
+import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnum.js";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
 
 /**
  * ConsentStage Serializer
+ *
  * @export
  * @interface ConsentStage
  */
 export interface ConsentStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -47,13 +40,7 @@ export interface ConsentStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
-    /**
-     *
-     */
     mode?: ConsentModeEnum;
     /**
      * Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).

@@ -3,6 +3,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/ak-status-label";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
 
@@ -18,8 +19,6 @@ import { CoreApi, ObjectAttribute, ObjectAttributeTypeEnum } from "@goauthentik/
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 export function formatObjectAttributeType(type?: ObjectAttributeTypeEnum): string {
     if (!type) return "";
@@ -38,6 +37,13 @@ export function formatObjectAttributeType(type?: ObjectAttributeTypeEnum): strin
 
 @customElement("ak-object-attribute-list")
 export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
+    public static override verboseName = msg("Object Attribute", {
+        id: "object-attributes.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Object Attributes", {
+        id: "object-attributes.verbose-name-plural.label",
+    });
+
     static styles = [...super.styles, PFBanner];
     protected override searchEnabled = true;
     protected override rowLabel(item: ObjectAttribute): string | null {
@@ -76,7 +82,6 @@ export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Object Attribute(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: ObjectAttribute) => {
                 return [

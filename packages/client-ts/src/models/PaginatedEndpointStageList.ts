@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { EndpointStage } from "./EndpointStage";
-import { EndpointStageFromJSON, EndpointStageToJSON } from "./EndpointStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { EndpointStage } from "./EndpointStage.js";
+import { EndpointStageFromJSON, EndpointStageToJSON } from "./EndpointStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
- *
  * @export
  * @interface PaginatedEndpointStageList
  */
 export interface PaginatedEndpointStageList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<EndpointStage>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

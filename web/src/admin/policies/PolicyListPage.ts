@@ -12,8 +12,8 @@ import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
+import { plural } from "#common/ui/locale/plurals";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
@@ -33,6 +33,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
+    public static override verboseName = msg("Policy", { id: "policies.verbose-name.label" });
+    public static override verboseNamePlural = msg("Policies", {
+        id: "policies.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override pageTitle = msg("Policies");
@@ -62,13 +67,24 @@ export class PolicyListPage extends TablePage<Policy> {
     protected override row(item: Policy): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
-                ${(item.boundTo || 0) > 0
-                    ? html`<ak-label color=${PFColor.Green} compact>
-                          ${msg(str`Assigned to ${item.boundTo} object(s).`)}
-                      </ak-label>`
-                    : html`<ak-label color=${PFColor.Orange} compact>
-                          ${msg("Warning: Policy is not assigned.")}
-                      </ak-label>`}`,
+                ${
+                    (item.boundTo || 0) > 0
+                        ? html`<ak-label color=${PFColor.Green} compact>
+                              ${plural(item.boundTo, {
+                                  one: (formattedCount) =>
+                                      msg(str`Assigned to ${formattedCount} object.`, {
+                                          id: "policies.bound-to.label.one",
+                                      }),
+                                  other: (formattedCount) =>
+                                      msg(str`Assigned to ${formattedCount} objects.`, {
+                                          id: "policies.bound-to.label.other",
+                                      }),
+                              })}
+                          </ak-label>`
+                        : html`<ak-label color=${PFColor.Orange} compact>
+                              ${msg("Warning: Policy is not assigned.")}
+                          </ak-label>`
+                }`,
             html`${item.verboseName}`,
             Timestamp(item.lastUpdated),
             html`<div class="ak-c-table__actions">
@@ -98,8 +114,8 @@ export class PolicyListPage extends TablePage<Policy> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Policy / Policies")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Policy) => {
                 return aki(PoliciesApi).policiesAllUsedByList({

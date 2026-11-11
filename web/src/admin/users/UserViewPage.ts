@@ -6,6 +6,9 @@ import "#admin/users/UserOverviewTab";
 import "#admin/users/UserRolesTab";
 import "#admin/events/UserEvents";
 import "#elements/Tabs";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { aki } from "#common/api/client";
 import { AKRefreshEvent } from "#common/events";
@@ -17,11 +20,9 @@ import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
-import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithLocale } from "#elements/mixins/locale";
 import { WithSession } from "#elements/mixins/session";
-
-import { setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails } from "#elements/router/meta";
 
 import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 
@@ -29,13 +30,9 @@ import { msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-
 @customElement("ak-user-view")
 export class UserViewPage extends WithLazyTabs(
-    WithLicenseSummary(WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))))),
+    WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement)))),
 ) {
     #api = aki(CoreApi);
 
@@ -109,7 +106,6 @@ export class UserViewPage extends WithLazyTabs(
                         .user=${this.user}
                         .currentUserPk=${this.currentUser?.pk}
                         .canImpersonate=${this.can(CapabilitiesEnum.CanImpersonate)}
-                        .hasEnterpriseLicense=${this.hasEnterpriseLicense}
                         .brandHasRecoveryFlow=${!!this.brand.flowRecovery}
                     ></ak-user-overview-tab>
                 </div>
@@ -179,7 +175,6 @@ export class UserViewPage extends WithLazyTabs(
                     slot="page-applications"
                     id="page-applications"
                     aria-label=${msg("Applications")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     @activate=${() => this.activateTab("page-applications")}
                 >
                     ${this.renderWhenActive(

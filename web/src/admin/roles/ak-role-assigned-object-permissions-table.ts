@@ -1,6 +1,5 @@
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
@@ -15,6 +14,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-role-assigned-object-permissions-table")
 export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPermission> {
+    public static override verboseName = msg("Permission", {
+        id: "permissions.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Permissions", {
+        id: "permissions.verbose-name-plural.label",
+    });
+
     @property({ type: String, attribute: "role-uuid" })
     public roleUUID: string | null = null;
 
@@ -47,8 +53,8 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: ExtraRoleObjectPermission) => {
                 return [
@@ -77,16 +83,18 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,
-            html`${item.objectDescription
-                ? html`${item.objectDescription}`
-                : html`<pf-tooltip
-                      position="top"
-                      content=${msg(
-                          "Role doesn't have view permission so description cannot be retrieved.",
-                      )}
-                  >
-                      <pre>${item.objectPk}</pre>
-                  </pf-tooltip>`}`,
+            html`${
+                item.objectDescription
+                    ? html`${item.objectDescription}`
+                    : html`<pf-tooltip
+                          position="top"
+                          content=${msg(
+                              "Role doesn't have view permission so description cannot be retrieved.",
+                          )}
+                      >
+                          <pre>${item.objectPk}</pre>
+                      </pf-tooltip>`
+            }`,
             html`<i class="fas fa-check pf-m-success" aria-hidden="true"></i>`,
         ];
     }

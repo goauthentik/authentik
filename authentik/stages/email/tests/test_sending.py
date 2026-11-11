@@ -13,13 +13,13 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.email.models import EmailStage
 
 
-class TestEmailStageSending(FlowTestCase):
+class TestEmailStageSending(APIFlowTestCase):
     """Email tests"""
 
     def setUp(self):

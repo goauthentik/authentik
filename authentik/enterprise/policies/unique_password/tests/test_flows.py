@@ -9,12 +9,12 @@ from authentik.enterprise.policies.unique_password.models import (
     UserPasswordHistory,
 )
 from authentik.flows.models import FlowDesignation, FlowStageBinding
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 
 
-class TestUniquePasswordPolicyFlow(FlowTestCase):
+class TestUniquePasswordPolicyFlow(APIFlowTestCase):
     """Test Unique Password Policy in a flow"""
 
     REUSED_PASSWORD = "hunter1"  # nosec B105

@@ -18,7 +18,7 @@ import type {
 export interface HexworldStyleOptions {
     archiveURL: string;
     theme?: BasemapTheme;
-    glyphsURL?: string;
+    glyphsURL: string;
     attribution?: string;
     /**
      * Highest zoom at which the archive carries hex and border geometry.
@@ -100,6 +100,7 @@ export const BAND_FADE_WINDOW = 0.9;
  */
 export function bandFadeOpacity(base: number): ExpressionSpecification {
     const [coarse, mid, detail] = HEX_BANDS;
+
     const opacity = (r3: number, r4: number, r5: number): ExpressionSpecification => [
         "match",
         ["get", "res"],
@@ -127,12 +128,12 @@ export function bandFadeOpacity(base: number): ExpressionSpecification {
     ];
 }
 
-const DEFAULT_GLYPHS = "/static/dist/assets/maps/fonts/{fontstack}/{range}.pbf";
 const TEXT_FIELD: ExpressionSpecification = ["coalesce", ["get", "name:en"], ["get", "name"]];
 const FONT = ["Noto Sans Regular"];
 
 export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecification {
     const palette = PALETTES[options.theme ?? "light"];
+
     const eventPaint: ExpressionSpecification = [
         "interpolate",
         ["linear"],
@@ -231,7 +232,7 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
         version: 8,
         projection: { type: "globe" },
         sky: buildSky(options.theme ?? "light"),
-        glyphs: options.glyphsURL ?? DEFAULT_GLYPHS,
+        glyphs: options.glyphsURL,
         sources: {
             hexworld: {
                 type: "vector",

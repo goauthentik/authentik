@@ -11,7 +11,6 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName } from "#elements/dialogs";
@@ -40,6 +39,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
+    public static override verboseName = msg("Outpost integration", {
+        id: "outpost-integrations.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Outpost integrations", {
+        id: "outpost-integrations.verbose-name-plural.label",
+    });
+
     public pageTitle = msg("Outpost integrations");
     public pageDescription = msg(
         "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
@@ -59,6 +65,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         const connections = await aki(OutpostsApi).outpostsServiceConnectionsAllList(
             await this.defaultEndpointConfig(),
         );
+
         await Promise.all(
             connections.results.map((connection) => {
                 return aki(OutpostsApi)
@@ -70,6 +77,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                     });
             }),
         );
+
         return connections;
     }
 
@@ -89,13 +97,18 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     row(item: ServiceConnection): SlottedTemplateResult[] {
         const itemState = this.state[item.pk];
+
         return [
             item.name,
             item.verboseName,
             html`<ak-status-label type="info" ?good=${item.local}></ak-status-label>`,
-            html`${itemState?.healthy
-                ? html`<ak-label color=${PFColor.Green}>${ifDefined(itemState.version)}</ak-label>`
-                : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,
+            html`${
+                itemState?.healthy
+                    ? html`<ak-label color=${PFColor.Green}
+                          >${ifDefined(itemState.version)}</ak-label
+                      >`
+                    : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`
+            }`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.component, item.pk, item.verboseName)}
                 ${IconPermissionButton(item.name, {
@@ -115,8 +128,8 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Outpost integration(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ServiceConnection) => {
                 return aki(OutpostsApi).outpostsServiceConnectionsAllUsedByList({

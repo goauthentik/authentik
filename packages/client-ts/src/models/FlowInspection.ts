@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,26 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { FlowInspectorPlan } from "./FlowInspectorPlan";
-import { FlowInspectorPlanFromJSON, FlowInspectorPlanToJSON } from "./FlowInspectorPlan";
+import type { FlowInspectorPlan } from "./FlowInspectorPlan.js";
+import { FlowInspectorPlanFromJSON, FlowInspectorPlanToJSON } from "./FlowInspectorPlan.js";
 
 /**
  * Serializer for inspect endpoint
+ *
  * @export
  * @interface FlowInspection
  */
 export interface FlowInspection {
-    /**
-     *
-     */
     plans: Array<FlowInspectorPlan>;
-    /**
-     *
-     */
     currentPlan?: FlowInspectorPlan;
-    /**
-     *
-     */
     isCompleted: boolean;
 }
 

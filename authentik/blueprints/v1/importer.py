@@ -323,7 +323,7 @@ class Importer:
             model_instance = model()
             # pk needs to be set on the model instance otherwise a new one will be generated
             if "pk" in updated_identifiers:
-                model_instance.pk = updated_identifiers["pk"]
+                model_instance.pk = model._meta.pk.to_python(updated_identifiers["pk"])
             serializer.instance = model_instance
         return serializer
 

@@ -4,7 +4,6 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
@@ -26,6 +25,11 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
+    public static override verboseName = msg("Outpost", { id: "outposts.verbose-name.label" });
+    public static override verboseNamePlural = msg("Outposts", {
+        id: "outposts.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override searchPlaceholder = msg(
@@ -78,6 +82,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         if (item.providers.length < 1) {
             return html`-`;
         }
+
         return html`<ul>
             ${item.providersObj?.map((p) => {
                 return html`<li>
@@ -91,15 +96,17 @@ export class OutpostListPage extends TablePage<Outpost> {
         return [
             html`<a href=${toAdminInterface(`outpost/outposts/${item.pk}`)}
                 ><div>${item.name}</div>
-                ${(item.config.authentik_host ?? "") === ""
-                    ? html`<ak-label color=${PFColor.Orange} compact>
-                          ${msg(
-                              "Warning: authentik Domain is not configured, authentication will not work.",
-                          )}
-                      </ak-label>`
-                    : html`<ak-label color=${PFColor.Green} compact>
-                          ${msg(str`Logging in via ${item.config.authentik_host}.`)}
-                      </ak-label>`}</a
+                ${
+                    (item.config.authentik_host ?? "") === ""
+                        ? html`<ak-label color=${PFColor.Orange} compact>
+                              ${msg(
+                                  "Warning: authentik Domain is not configured, authentication will not work.",
+                              )}
+                          </ak-label>`
+                        : html`<ak-label color=${PFColor.Green} compact>
+                              ${msg(str`Logging in via ${item.config.authentik_host}.`)}
+                          </ak-label>`
+                }</a
             >`,
             html`${outpostTypeToLabel(item.type)}`,
             this.renderItemProviders(item),
@@ -121,7 +128,6 @@ export class OutpostListPage extends TablePage<Outpost> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Outpost(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Outpost) => {
                 return aki(OutpostsApi).outpostsInstancesUsedByList({

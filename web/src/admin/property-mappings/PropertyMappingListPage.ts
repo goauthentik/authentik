@@ -20,7 +20,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/table/ak-table-filter-select";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
@@ -42,6 +41,13 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
+    public static override verboseName = msg("Property Mapping", {
+        id: "property-mappings.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Property Mappings", {
+        id: "property-mappings.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
     public override pageTitle = msg("Property Mappings");
     public override pageDescription = msg(
@@ -73,8 +79,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Property Mapping(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: PropertyMapping) => {
                 return aki(PropertymappingsApi).propertymappingsAllUsedByList({
@@ -145,6 +151,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                         this.hideManaged = ev.detail.value;
                         this.page = 1;
                         this.fetch();
+
                         updateSearchParams({
                             hideManaged: this.hideManaged,
                         });

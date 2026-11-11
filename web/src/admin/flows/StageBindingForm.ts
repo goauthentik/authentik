@@ -1,16 +1,18 @@
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
@@ -19,13 +21,22 @@ import {
     FlowStageBinding,
     InvalidResponseActionEnum,
     Stage,
-    StagesAllListRequest,
     StagesApi,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+
+const stageSource: SearchSelectSource<Stage> = {
+    fetchObjects: (query) =>
+        aki(StagesApi)
+            .stagesAllList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (stage) => stage.pk,
+    labelOf: (stage) => stage.name,
+    groupBy: (stages) => groupBy(stages, (stage) => stage.verboseNamePlural),
+};
 
 function createInvalidResponseOptions(): RadioOption<InvalidResponseActionEnum>[] {
     return [
@@ -63,6 +74,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         const binding = await aki(FlowsApi).flowsBindingsRetrieve({
             fsbUuid: pk,
         });
+
         return binding;
     }
 
@@ -82,6 +94,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
+
         return msg("Successfully created binding.");
     }
 
@@ -92,9 +105,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 patchedFlowStageBindingRequest: data,
             });
         }
+
         if (this.targetPk) {
             data.target = this.targetPk;
         }
+
         return aki(FlowsApi).flowsBindingsCreate({
             flowStageBindingRequest: data,
         });
@@ -104,13 +119,17 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.pk) {
             return this.instance.order;
         }
+
         const bindings = await aki(FlowsApi).flowsBindingsList({
             target: this.targetPk || "",
         });
+
         const orders = bindings.results.map((binding) => binding.order);
+
         if (orders.length < 1) {
             return 0;
         }
+
         return Math.max(...orders) + 1;
     }
 
@@ -118,52 +137,45 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.target || this.targetPk) {
             return nothing;
         }
+
         return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
-            <ak-flow-search
-                flowType=${FlowDesignationEnum.Authorization}
-                .currentFlow=${this.instance?.target}
-                required
-            ></ak-flow-search>
+            ${AKFlowSearch({ name: "target", flowType: FlowDesignationEnum.Authorization, value: this.instance?.target, required: true })}
         </ak-form-element-horizontal>`;
     }
 
     protected override renderForm(): SlottedTemplateResult {
         return html`${this.renderTarget()}
-            <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
-                <ak-search-select
-                    placeholder=${msg("Select a stage...")}
-                    .fetchObjects=${async (query?: string): Promise<Stage[]> => {
-                        const args: StagesAllListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const stages = await aki(StagesApi).stagesAllList(args);
-                        const selectedStage = this.instance?.stageObj;
-                        if (
-                            selectedStage &&
-                            !stages.results.some((stage) => stage.pk === selectedStage.pk)
-                        ) {
-                            return [selectedStage, ...stages.results];
-                        }
-                        return stages.results;
-                    }}
-                    .groupBy=${(items: Stage[]) => {
-                        return groupBy(items, (stage) => stage.verboseNamePlural);
-                    }}
-                    .renderElement=${(stage: Stage): string => {
-                        return stage.name;
-                    }}
-                    .value=${(stage: Stage | null) => stage?.pk}
-                    .selected=${(stage: Stage): boolean => {
-                        return stage.pk === this.instance?.stage;
-                    }}
-                >
-                </ak-search-select>
+            <ak-form-element-horizontal required name="stage">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        required: true,
+                    },
+                    msg("Stage"),
+                )}
+                ${AKSearchSelect({
+                    name: "stage",
+                    source: stageSource,
+                    label: msg("Stage"),
+                    placeholder: msg("Select a stage..."),
+                    value: this.instance?.stage,
+                    selectedObject: this.instance?.stageObj,
+                    blankable: false,
+                })}
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} required name="order">
+            <ak-form-element-horizontal required name="order">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "stage-binding-order",
+                        required: true,
+                    },
+                    msg("Order"),
+                )}
                 <input
+                    id="stage-binding-order"
                     type="number"
                     value="${this.instance?.order ?? this.defaultOrder}"
                     class="pf-c-form-control"

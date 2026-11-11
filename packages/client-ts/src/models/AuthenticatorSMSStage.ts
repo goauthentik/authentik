@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,26 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { AuthTypeEnum } from "./AuthTypeEnum";
-import { AuthTypeEnumFromJSON, AuthTypeEnumToJSON } from "./AuthTypeEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { ProviderEnum } from "./ProviderEnum";
-import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
+import type { AuthTypeEnum } from "./AuthTypeEnum.js";
+import { AuthTypeEnumFromJSON, AuthTypeEnumToJSON } from "./AuthTypeEnum.js";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { ProviderEnum } from "./ProviderEnum.js";
+import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum.js";
 
 /**
  * AuthenticatorSMSStage Serializer
+ *
  * @export
  * @interface AuthenticatorSMSStage
  */
 export interface AuthenticatorSMSStage {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Get object type so that we know how to edit the object
@@ -49,36 +42,21 @@ export interface AuthenticatorSMSStage {
      * Return internal model name
      */
     readonly metaModelName: string;
-    /**
-     *
-     */
     readonly flowSet: Array<FlowSet>;
     /**
-     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
+     * Flow used by an authenticated user to configure this Stage. If empty, user will not be able
+     * to configure this stage.
      */
     configureFlow?: string | null;
-    /**
-     *
-     */
     friendlyName?: string;
-    /**
-     *
-     */
     provider: ProviderEnum;
-    /**
-     *
-     */
     fromNumber: string;
-    /**
-     *
-     */
     accountSid: string;
-    /**
-     *
-     */
     authType?: AuthTypeEnum;
     /**
-     * When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
+     * When enabled, the Phone number is only used during enrollment to verify the users
+     * authenticity. Only a hash of the phone number is saved to ensure it is not reused in the
+     * future.
      */
     verifyOnly?: boolean;
     /**

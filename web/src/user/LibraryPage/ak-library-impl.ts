@@ -2,14 +2,26 @@ import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "./ak-library-application-empty-list.js";
-
 import Styles from "./ak-library-impl.css";
 import AKLibraryApplicationListStyles from "./ApplicationList.css";
 import { AKLibraryApplicationList } from "./ApplicationList.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 import { ViewMode } from "./types.js";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import { StorageAccessor } from "#common/storage";
+import { StorageAccessor } from "#common/storage/accessor";
+import type { PersistenceKey } from "#common/storage/shared";
+import { plural } from "#common/ui/locale/plurals";
 import { groupBy } from "#common/utils";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
@@ -33,18 +45,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { createRef } from "lit/directives/ref.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
-
 function createViewToggleContent(
     viewMode: ViewMode,
 ): [label: string, template: SlottedTemplateResult] {
@@ -67,6 +67,7 @@ function createViewToggleContent(
             </svg>`,
         ];
     }
+
     return [
         msg("Switch to grid view", {
             id: "user.library.view-toggle.to-grid",
@@ -93,13 +94,16 @@ function createViewToggleContent(
  * apps: a list of the applications available to the user.
  *
  * Aggregates two functions:
- *   - Display the list of applications available to the user
- *   - Filter that list using the search bar
  *
+ * - Display the list of applications available to the user
+ * - Filter that list using the search bar
  */
 @customElement("ak-library-impl")
 export class LibraryPage extends WithSession(AKElement) {
-    static readonly ViewModeStorage = StorageAccessor.local("library-view-mode");
+    // TODO: Remove the migration in 2027.2 or later. See #27036
+    static readonly ViewModeStorage = StorageAccessor.local("ak:library:view_mode").migrateFrom(
+        "library-view-mode" as PersistenceKey,
+    );
 
     /**
      * Maximum number of items to show in the datalist for search suggestions.
@@ -109,7 +113,7 @@ export class LibraryPage extends WithSession(AKElement) {
      * Whether to enable the datalist for search suggestions.
      *
      * @remarks
-     * Disabled on Firefox due to performance issues between renders.
+     *   Disabled on Firefox due to performance issues between renders.
      */
     static DataListEnabled = !isFirefox();
 
@@ -143,7 +147,7 @@ export class LibraryPage extends WithSession(AKElement) {
     #applications: Application[] = [];
 
     /**
-     * The *complete* list of applications for this user. Not paginated.
+     * The _complete_ list of applications for this user. Not paginated.
      *
      * @attr
      */
@@ -239,7 +243,8 @@ export class LibraryPage extends WithSession(AKElement) {
 
     constructor() {
         super();
-        this.#gridModeMatcher = window.matchMedia("(width > 768px)");
+        this.#gridModeMatcher = matchMedia("(width > 768px)");
+
         this.#gridModeMatcher.addEventListener("change", this.#gridModeMediaQueryListener, {
             passive: true,
         });
@@ -341,6 +346,7 @@ export class LibraryPage extends WithSession(AKElement) {
 
         if (this.renderRoot instanceof ShadowRoot) {
             const focusedElement = this.renderRoot.activeElement;
+
             if (isInteractiveElement(focusedElement)) {
                 focusedElement.click();
             }
@@ -349,6 +355,7 @@ export class LibraryPage extends WithSession(AKElement) {
 
     #visibilityListener = () => {
         if (document.visibilityState !== "visible") return;
+
         if (!this.visible) return;
 
         this.focus();
@@ -368,6 +375,7 @@ export class LibraryPage extends WithSession(AKElement) {
     protected synchronizeViewModeWithMediaQuery(matches = this.#gridModeMatcher.matches) {
         if (!matches) {
             this.viewMode = ViewMode.List;
+
             return;
         }
 
@@ -388,6 +396,7 @@ export class LibraryPage extends WithSession(AKElement) {
             ([groupLabelA, groupAppsA], [groupLabelB, groupAppsB]) => {
                 if (selectedApp) {
                     if (groupAppsA.includes(selectedApp)) return -1;
+
                     if (groupAppsB.includes(selectedApp)) return 1;
                 }
 
@@ -464,15 +473,17 @@ export class LibraryPage extends WithSession(AKElement) {
                 ${this.renderDataList(showDataList)}
 
                 <span id="search-action-hint" class="sr-only">
-                    ${this.selectedApp
-                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
-                              id: "user.library.search.enter-to-open-hint",
-                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
-                          })
-                        : msg("Type to filter applications", {
-                              id: "user.library.search.type-to-filter-hint",
-                              desc: "Screen reader hint to inform the user they can filter the application list by typing",
-                          })}
+                    ${
+                        this.selectedApp
+                            ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                                  id: "user.library.search.enter-to-open-hint",
+                                  desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                              })
+                            : msg("Type to filter applications", {
+                                  id: "user.library.search.type-to-filter-hint",
+                                  desc: "Screen reader hint to inform the user they can filter the application list by typing",
+                              })
+                    }
                 </span>
             </form>
         </search>`;
@@ -526,23 +537,27 @@ export class LibraryPage extends WithSession(AKElement) {
                 // We must present the count within the label to ensure that the screen reader
                 // considers the update significant enough to read on each change,
                 // rather than the on just the first render.
-                message =
-                    count === 1
-                        ? msg(str`${count} application found for "${query}"`, {
-                              id: "user.library.application-count-singular-with-query",
-                          })
-                        : msg(str`${count} applications found for "${query}"`, {
-                              id: "user.library.application-count-plural-with-query",
-                          });
+                message = plural(count, {
+                    one: (formattedCount) =>
+                        msg(str`${formattedCount} application found for "${query}"`, {
+                            id: "user.library.application-count.search-result.one",
+                        }),
+                    other: (formattedCount) =>
+                        msg(str`${formattedCount} applications found for "${query}"`, {
+                            id: "user.library.application-count.search-result.other",
+                        }),
+                });
             } else {
-                message =
-                    count === 1
-                        ? msg(str`${count} application available`, {
-                              id: "user.library.application-count-singular",
-                          })
-                        : msg(str`${count} applications available`, {
-                              id: "user.library.application-count-plural",
-                          });
+                message = plural(count, {
+                    one: (formattedCount) =>
+                        msg(str`${formattedCount} application available`, {
+                            id: "user.library.application-count.available.one",
+                        }),
+                    other: (formattedCount) =>
+                        msg(str`${formattedCount} applications available`, {
+                            id: "user.library.application-count.available.other",
+                        }),
+                });
             }
 
             return html`<output
@@ -553,12 +568,14 @@ export class LibraryPage extends WithSession(AKElement) {
             >
                 <p>${message}</p>
                 <p>
-                    ${this.selectedApp
-                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
-                              id: "user.library.application-count.enter-to-open-hint",
-                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
-                          })
-                        : nothing}
+                    ${
+                        this.selectedApp
+                            ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                                  id: "user.library.application-count.enter-to-open-hint",
+                                  desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                              })
+                            : nothing
+                    }
                 </p>
             </output>`;
         });

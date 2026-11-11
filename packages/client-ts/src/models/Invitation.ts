@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,37 +10,23 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Flow } from "./Flow";
-import { FlowFromJSON } from "./Flow";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { Flow } from "./Flow.js";
+import { FlowFromJSON } from "./Flow.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Invitation Serializer
+ *
  * @export
  * @interface Invitation
  */
 export interface Invitation {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     fixedData?: { [key: string]: any };
-    /**
-     *
-     */
     readonly createdBy: PartialUser;
     /**
      * When enabled, the invitation will be deleted after usage.
@@ -52,9 +36,6 @@ export interface Invitation {
      * When set, only the configured flow can use this invitation.
      */
     flow?: string | null;
-    /**
-     *
-     */
     readonly flowObj: Flow;
 }
 

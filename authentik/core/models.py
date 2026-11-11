@@ -9,8 +9,9 @@ from typing import Any, Self
 from uuid import uuid4
 
 import pgtrigger
+from asgiref.sync import sync_to_async
 from deepmerge import always_merger
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import UNUSABLE_PASSWORD_PREFIX
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
@@ -18,6 +19,7 @@ from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
+from django.db.models.functions import Upper
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -32,9 +34,12 @@ from rest_framework.fields import BooleanField, CharField, IntegerField, ListFie
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.backends.static import static_url_name
 from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
+from authentik.admin.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
+from authentik.admin.utils import get_system_settings
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -53,8 +58,7 @@ from authentik.lib.utils.inheritance import get_deepest_child
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 from authentik.rbac.models import Role
-from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
-from authentik.tenants.utils import get_current_tenant, get_unique_identifier
+from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 USERNAME_MAX_LENGTH = 150
@@ -94,10 +98,10 @@ def managed_role_name(user_or_group: models.Model):
 
 def default_token_duration() -> datetime:
     """Default duration a Token is valid"""
-    current_tenant = get_current_tenant()
+    settings = get_system_settings()
     token_duration = (
-        current_tenant.default_token_duration
-        if hasattr(current_tenant, "default_token_duration")
+        settings.default_token_duration
+        if hasattr(settings, "default_token_duration")
         else DEFAULT_TOKEN_DURATION
     )
     return now() + timedelta_from_string(token_duration)
@@ -105,10 +109,10 @@ def default_token_duration() -> datetime:
 
 def default_token_key() -> str:
     """Default token key"""
-    current_tenant = get_current_tenant()
+    settings = get_system_settings()
     token_length = (
-        current_tenant.default_token_length
-        if hasattr(current_tenant, "default_token_length")
+        settings.default_token_length
+        if hasattr(settings, "default_token_length")
         else DEFAULT_TOKEN_LENGTH
     )
     # We use generate_id since the chars in the key should be easy
@@ -129,6 +133,9 @@ class UserTypes(models.TextChoices):
     # Special user type for internally managed and created service
     # accounts, such as outpost users
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
+
+
+SERVICE_ACCOUNT_TYPES = (UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT)
 
 
 class AttributesMixin(models.Model):
@@ -345,17 +352,30 @@ class UserQuerySet(models.QuerySet):
         """Exclude anonymous user"""
         return self.exclude(**{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME})
 
+    def filter_agents(self) -> Self:
+        """Include only agent users."""
+        from authentik.enterprise.agents.models import AgentUserQuerySet
 
-class UserManager(DjangoUserManager):
+        return AgentUserQuerySet.filter_agents(self)
+
+    def exclude_agents(self) -> Self:
+        """Exclude agent users."""
+        from authentik.enterprise.agents.models import AgentUserQuerySet
+
+        return AgentUserQuerySet.exclude_agents(self)
+
+
+class UserManager(DjangoUserManager.from_queryset(UserQuerySet)):
     """User manager that doesn't assign is_superuser and is_staff"""
-
-    def get_queryset(self):
-        """Create special user queryset"""
-        return UserQuerySet(self.model, using=self._db)
 
     def create_user(self, username, email=None, password=None, **extra_fields):
         """User manager that doesn't assign is_superuser and is_staff"""
-        return self._create_user(username, email, password, **extra_fields)
+        from authentik.stages.password.models import PasswordDevice
+
+        user = self.create(username=username, email=self.normalize_email(email), **extra_fields)
+        if password is not None:
+            PasswordDevice.set_password(user, password, signal=False)
+        return user
 
     def exclude_anonymous(self) -> QuerySet:
         """Exclude anonymous user"""
@@ -379,7 +399,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     roles = models.ManyToManyField(
         "authentik_rbac.Role", related_name="users", blank=True, through="UserRole"
     )
-    password_change_date = models.DateTimeField(auto_now_add=True)
 
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -396,13 +415,13 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         ]
         indexes = [
             models.Index(fields=["last_login"]),
-            models.Index(fields=["password_change_date"]),
             models.Index(fields=["uuid"]),
             models.Index(fields=["path"]),
             models.Index(fields=["type"]),
             models.Index(fields=["date_joined"]),
             models.Index(fields=["last_updated"]),
             models.Index(fields=["username", "is_active", "type"]),
+            models.Index(Upper("email"), name="%(app_label)s_%(class)s_email_idx"),
         ]
 
     def __str__(self):
@@ -484,9 +503,13 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def app_entitlements(self, app: Application | None) -> QuerySet[ApplicationEntitlement]:
         """Get all entitlements this user has for `app`."""
         if not app:
-            return []
+            return ApplicationEntitlement.objects.none()
+        return self.all_app_entitlements().filter(app=app)
+
+    def all_app_entitlements(self) -> QuerySet[ApplicationEntitlement]:
+        """Get all entitlements this user is assigned, regardless of access to the application."""
         all_groups = self.all_groups()
-        qs = app.applicationentitlement_set.filter(
+        return ApplicationEntitlement.objects.filter(
             Q(
                 Q(bindings__user=self) | Q(bindings__group__in=all_groups),
                 bindings__negate=False,
@@ -498,7 +521,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             ),
             bindings__enabled=True,
         ).order_by("name")
-        return qs
 
     def app_entitlements_attributes(self, app: Application | None) -> dict:
         """Get a dictionary containing all merged attributes from app entitlements for `app`."""
@@ -559,54 +581,38 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         )
         return self.groups
 
-    def set_password(self, raw_password, signal=True, sender=None, request=None):
-        if self.pk and signal:
-            from authentik.core.signals import password_changed
+    # Passwords are written through authentik.stages.password.models.PasswordDevice.
+    # These read-only properties keep `user.password` and `user.password_change_date`
+    # working in expressions, Django's session hash and the user API.
+    @property
+    def password(self) -> str:
+        device = getattr(self, "password_device", None)
+        return device.password if device else UNUSABLE_PASSWORD_PREFIX
 
-            if not sender:
-                sender = self
-            password_changed.send(sender=sender, user=self, password=raw_password, request=request)
-        self.password_change_date = now()
-        return super().set_password(raw_password)
-
-    def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
-        """Set password directly from a pre-hashed value.
-
-        Unlike set_password(), this does not hash the input again. The provided value
-        must already be validated by the caller, and it is stored directly on the user.
-
-        Because no raw password is available, downstream password sync integrations
-        such as LDAP and Kerberos cannot be updated from this code path.
-        """
-        if self.pk and signal:
-            from authentik.core.signals import password_hash_changed
-
-            if not sender:
-                sender = self
-            password_hash_changed.send(sender=sender, user=self, request=request)
-        self.password = password_hash
-        self.password_change_date = now()
+    @property
+    def password_change_date(self) -> datetime:
+        device = getattr(self, "password_device", None)
+        return device.password_change_date if device else self.date_joined
 
     def check_password(self, raw_password: str) -> bool:
-        """
-        Return a boolean of whether the raw_password was correct. Handles
-        hashing formats behind the scenes.
+        # Django's version writes `password` when it upgrades an outdated hash.
+        device = getattr(self, "password_device", None)
+        return device.check_password(raw_password) if device else False
 
-        Slightly changed version which doesn't send a signal for such internal hash upgrades
-        """
+    async def acheck_password(self, raw_password: str) -> bool:
+        return await sync_to_async(self.check_password)(raw_password)
 
-        def setter(raw_password):
-            self.set_password(raw_password, signal=False)
-            # Password hash upgrades shouldn't be considered password changes.
-            self._password = None
-            self.save(update_fields=["password"])
+    # Django's password writes would assign the read-only `password`; fail loudly instead.
+    def set_password(self, raw_password):
+        raise NotImplementedError("Use PasswordDevice.set_password()")
 
-        return check_password(raw_password, self.password, setter)
+    def set_unusable_password(self):
+        raise NotImplementedError("Use PasswordDevice.set_unusable_password()")
 
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
-        return sha256(f"{self.id}-{get_unique_identifier()}".encode("ascii")).hexdigest()
+        return sha256(f"{self.id}-{get_install_id()}".encode("ascii")).hexdigest()
 
     def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
@@ -624,6 +630,13 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
         return get_avatar(self)
+
+
+def get_init_anonymous_user(user_model: type[User]) -> User:
+    """Build guardian's anonymous user, which has no password device and so no password.
+
+    guardian's default calls `set_unusable_password()`, which needs a writable `password`."""
+    return user_model(username=settings.ANONYMOUS_USER_NAME)
 
 
 class Provider(SerializerModel):
@@ -788,7 +801,7 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
 
     @property
     def get_meta_icon_themed_urls(self) -> dict[str, str] | None:
-        """Get themed URLs for meta_icon if it contains %(theme)s"""
+        """Get themed URLs for meta_icon if it contains %(theme)s or is a built-in source icon"""
         if not self.meta_icon:
             return None
 
@@ -1023,9 +1036,10 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         request=None,
         use_cache: bool = True,
     ) -> dict[str, str] | None:
-        """Get themed URLs for icon if it contains %(theme)s."""
+        """Get themed URLs for the icon if it contains %(theme)s or is a built-in source icon."""
         if not self.icon:
-            return None
+            # Subclasses fall back to a built-in default icon, relative like their icon_url
+            return get_file_manager(FileUsage.MEDIA).themed_urls(static_url_name(self.icon_url))
         return get_file_manager(FileUsage.MEDIA).themed_urls(
             self.icon,
             request,
@@ -1241,6 +1255,9 @@ class PropertyMapping(SerializerModel, ManagedModel):
 
     objects = InheritanceManager()
 
+    # Types the expression may return (besides None); empty allows any type
+    expression_allowed_types: list[type] = []
+
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
@@ -1251,11 +1268,20 @@ class PropertyMapping(SerializerModel, ManagedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
+    def evaluate(
+        self,
+        user: User | None,
+        request: HttpRequest | None,
+        globals: dict[str, Any] | None = None,
+        **kwargs,
+    ) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         from authentik.core.expression.evaluator import PropertyMappingEvaluator
 
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
+        evaluator.allowed_types = self.expression_allowed_types
+        if globals:
+            evaluator._globals.update(globals)
         try:
             return evaluator.evaluate(self.expression)
         except ControlFlowException as exc:
@@ -1537,7 +1563,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
     # https://github.com/goauthentik/authentik/issues/24250
     is_array = models.BooleanField(default=False)
 
-    def run_validation(self, value: Any) -> None:
+    def run_validation(self, value: Any, instance: models.Model | None = None) -> None:
         err_key = f"attributes_{self.key}"
 
         if self.is_required and value is None:
@@ -1547,7 +1573,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
         field_kwargs = {}
 
-        match (self.type):
+        match self.type:
             case self.AttributeType.TEXT:
                 field_cls = CharField
                 field_kwargs["allow_blank"] = True
@@ -1579,7 +1605,11 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
         if not self.is_array and self.is_unique:
             model: type[models.Model] = self.object_type.model_class()
             lookup_key = f"attributes__{self.key.replace('.', '__')}"
-            if model.objects.filter(**{lookup_key: value}).exists():
+            existing = model.objects.filter(**{lookup_key: value})
+            # The row being saved already has this value; uniqueness is against other objects.
+            if instance is not None and isinstance(instance, model) and instance.pk is not None:
+                existing = existing.exclude(pk=instance.pk)
+            if existing.exists():
                 raise ValidationError({err_key: _("Value is not unique.")})
 
     @property
@@ -1666,6 +1696,4 @@ class Actor(ExpiringModel, User):
             type=UserTypes.SERVICE_ACCOUNT,
             **kwargs,
         )
-        actor.set_unusable_password()
-        actor.save()
         return actor

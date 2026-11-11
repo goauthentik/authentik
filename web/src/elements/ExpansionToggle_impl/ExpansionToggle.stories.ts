@@ -3,7 +3,6 @@
  */
 
 import "../ExpansionToggle";
-
 import { akExpansionToggle, type ExpansionToggleProps } from "../ExpansionToggle";
 
 import { Meta, StoryObj } from "@storybook/web-components";
@@ -64,6 +63,7 @@ const REPORT_ID = "expansion-toggle-report";
 
 const report = (ev: ToggleEvent) => {
     const pad = document.getElementById(REPORT_ID);
+
     if (pad) pad.textContent = `newState: ${ev.newState}`;
 };
 

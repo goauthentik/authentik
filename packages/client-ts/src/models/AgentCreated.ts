@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,22 +10,17 @@
  * Do not edit the class manually.
  */
 
-import type { Agent } from "./Agent";
-import { AgentFromJSON } from "./Agent";
+import type { Agent } from "./Agent.js";
+import { AgentFromJSON } from "./Agent.js";
 
 /**
  * Response returned once when an agent is created, carrying the one-time API token.
+ *
  * @export
  * @interface AgentCreated
  */
 export interface AgentCreated {
-    /**
-     *
-     */
     readonly agent: Agent;
-    /**
-     *
-     */
     readonly token: string;
 }
 

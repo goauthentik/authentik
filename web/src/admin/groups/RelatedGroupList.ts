@@ -4,8 +4,9 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
+import { APIMessage, MessageLevel } from "#common/messages";
+import { plural } from "#common/ui/locale/plurals";
 
 import { modalInvoker, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
@@ -35,11 +36,25 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     @state()
     public groupsToAdd: Group[] = [];
 
-    public override getSuccessMessage(): string {
-        return msg("Successfully added user to group(s).");
+    protected override formatAPISuccessMessage(data: { groups: string[] }): APIMessage {
+        const count = data.groups.length;
+
+        return {
+            level: MessageLevel.success,
+            message: plural(count, {
+                one: (formattedCount) =>
+                    msg(str`Successfully added user to ${formattedCount} group.`, {
+                        id: "groups.add-user.success.one",
+                    }),
+                other: (formattedCount) =>
+                    msg(str`Successfully added user to ${formattedCount} groups.`, {
+                        id: "groups.add-user.success.other",
+                    }),
+            }),
+        };
     }
 
-    protected async send(data: { groups: string[] }): Promise<unknown> {
+    protected async send(data: { groups: string[] }): Promise<{ groups: string[] }> {
         await Promise.all(
             data.groups.map((group) => {
                 return aki(CoreApi).coreGroupsAddUserCreate({
@@ -106,6 +121,11 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
 
 @customElement("ak-group-related-list")
 export class RelatedGroupList extends Table<Group> {
+    public static override verboseName = msg("Group", { id: "groups.verbose-name.label" });
+    public static override verboseNamePlural = msg("Groups", {
+        id: "groups.verbose-name-plural.label",
+    });
+
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
@@ -132,16 +152,16 @@ export class RelatedGroupList extends Table<Group> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Group(s)")}
-            submit-label=${msg("Remove from Group(s)")}
+            action="remove"
             action-subtext=${msg(
                 str`Are you sure you want to remove user ${this.targetUser?.username} from the following groups?`,
             )}
-            button-label=${msg("Remove")}
             .objects=${this.selectedElements}
             .delete=${(item: Group) => {
                 if (!this.targetUser) return;
+
                 return aki(CoreApi).coreGroupsRemoveUserCreate({
                     groupUuid: item.pk,
                     userAccountRequest: {
@@ -173,14 +193,16 @@ export class RelatedGroupList extends Table<Group> {
 
     renderToolbar(): TemplateResult {
         return html`
-            ${this.targetUser
-                ? html`<button
-                      class="pf-c-button pf-m-primary"
-                      ${modalInvoker(RelatedGroupAdd, { user: this.targetUser })}
-                  >
-                      ${msg("Add to existing group")}
-                  </button>`
-                : nothing}
+            ${
+                this.targetUser
+                    ? html`<button
+                          class="pf-c-button pf-m-primary"
+                          ${modalInvoker(RelatedGroupAdd, { user: this.targetUser })}
+                      >
+                          ${msg("Add to existing group")}
+                      </button>`
+                    : nothing
+            }
             <button class="pf-c-button pf-m-secondary" ${modalInvoker(GroupForm)}>
                 ${msg("Add new group")}
             </button>

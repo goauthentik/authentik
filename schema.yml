@@ -2067,6 +2067,50 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /authenticators/password/{id}/lock/:
+    post:
+      operationId: authenticators_password_lock_create
+      description: Prevent a password authenticator from authenticating.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Password Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully locked authenticator
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /authenticators/password/{id}/unlock/:
+    post:
+      operationId: authenticators_password_unlock_create
+      description: Allow a locked password authenticator to authenticate again.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Password Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully unlocked authenticator
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /authenticators/sms/:
     get:
       operationId: authenticators_sms_list
@@ -2721,6 +2765,12 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: for_user
+        schema:
+          type: integer
+        description: Entitlements assigned to this user, directly or through a group,
+          regardless of the user's access to the application.
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -2922,6 +2972,12 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: for_user
+        schema:
+          type: integer
+        description: Entitlements assigned to this user, directly or through a group,
+          regardless of the user's access to the application.
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -2950,12 +3006,8 @@ paths:
   /core/applications/:
     get:
       operationId: core_applications_list
-      description: Custom list method that checks Policy based access instead of guardian
+      description: Application Viewset
       parameters:
-      - in: query
-        name: for_user
-        schema:
-          type: integer
       - in: query
         name: group
         schema:
@@ -2973,10 +3025,6 @@ paths:
         schema:
           type: string
       - $ref: '#/components/parameters/QueryName'
-      - in: query
-        name: only_with_launch_url
-        schema:
-          type: boolean
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -2985,10 +3033,6 @@ paths:
         name: slug
         schema:
           type: string
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
       tags:
       - core
       security:
@@ -3189,6 +3233,60 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/applications/@accessible/:
+    get:
+      operationId: core_applications_accessible_list
+      description: List applications the user passes policies for, regardless of RBAC
+        permissions
+      parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
+      - in: query
+        name: group
+        schema:
+          type: string
+      - in: query
+        name: meta_description
+        schema:
+          type: string
+      - in: query
+        name: meta_launch_url
+        schema:
+          type: string
+      - in: query
+        name: meta_publisher
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - in: query
+        name: only_with_launch_url
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: slug
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApplicationList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -3680,11 +3778,6 @@ paths:
       operationId: core_groups_list
       description: Group Viewset
       parameters:
-      - in: query
-        name: attributes
-        schema:
-          type: string
-        description: Attributes
       - in: query
         name: include_children
         schema:
@@ -4574,11 +4667,6 @@ paths:
       description: User Viewset
       parameters:
       - in: query
-        name: attributes
-        schema:
-          type: string
-        description: Attributes
-      - in: query
         name: date_joined
         schema:
           type: string
@@ -5091,11 +5179,6 @@ paths:
         You can poll that URL until `completed=true`, at which point the `file_url` property will
         contain a URL to download
       parameters:
-      - in: query
-        name: attributes
-        schema:
-          type: string
-        description: Attributes
       - in: query
         name: date_joined
         schema:
@@ -5641,6 +5724,32 @@ paths:
           description: ''
         '400':
           description: Bad request
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /debug/log/:
+    post:
+      operationId: debug_log_create
+      description: |-
+        Debug-only endpoint to allow frontend to log messages, usable
+        when browser develooper-tools aren't available.
+
+        Never available in production.
+      tags:
+      - debug
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServerLogRequest'
+        required: true
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '201':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/connectors/:
@@ -6434,6 +6543,23 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/agents/psso/register/device/:
+    get:
+      operationId: endpoints_agents_psso_register_device_retrieve
+      tags:
+      - endpoints
+      security:
+      - authentik_device_auth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentPSSODeviceState'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
     post:
       operationId: endpoints_agents_psso_register_device_create
       tags:
@@ -6453,6 +6579,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/AgentPSSODeviceRegistrationResponse'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_agents_psso_register_device_destroy
+      description: |-
+        Clear this device's Platform SSO registration, used when the configuration
+        profile is removed from the device. The device stays enrolled otherwise.
+      tags:
+      - endpoints
+      security:
+      - authentik_device_auth: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -7053,6 +7195,31 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_devices_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /endpoints/devices/{device_uuid}/:
     get:
       operationId: endpoints_devices_retrieve
@@ -7598,6 +7765,196 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/microsoft_intune/connectors/:
+    get:
+      operationId: endpoints_microsoft_intune_connectors_list
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMicrosoftIntuneConnectorList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_microsoft_intune_connectors_create
+      description: MicrosoftIntuneConnector Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MicrosoftIntuneConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/microsoft_intune/connectors/{connector_uuid}/:
+    get:
+      operationId: endpoints_microsoft_intune_connectors_retrieve
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_microsoft_intune_connectors_update
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MicrosoftIntuneConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_microsoft_intune_connectors_partial_update
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMicrosoftIntuneConnectorRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_microsoft_intune_connectors_destroy
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/microsoft_intune/connectors/{connector_uuid}/used_by/:
+    get:
+      operationId: endpoints_microsoft_intune_connectors_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/:
     get:
       operationId: enterprise_license_list
@@ -7788,25 +8145,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /enterprise/license/forecast/:
-    get:
-      operationId: enterprise_license_forecast_retrieve
-      description: Forecast how many users will be required in a year
-      tags:
-      - enterprise
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LicenseForecast'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/install_id/:
     get:
       operationId: enterprise_license_install_id_retrieve
@@ -7846,6 +8184,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LicenseSummary'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /enterprise/license/user_counts/:
+    get:
+      operationId: enterprise_license_user_counts_retrieve
+      description: |-
+        Get active user totals and counts for relative or absolute date ranges.
+
+        At least one positive relative count step or a complete absolute range is required.
+        Relative and absolute ranges may be combined. Range starts are inclusive and ends are
+        exclusive. Counts include currently active, non-anonymous accounts.
+      parameters:
+      - in: query
+        name: count_steps
+        schema:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          maxItems: 20
+        description: Positive relative periods, such as 'days=30' or 'weeks=3;days=2'.
+      - in: query
+        name: end
+        schema:
+          type: string
+          format: date-time
+        description: Exclusive end of an absolute range; must be provided with start.
+      - in: query
+        name: start
+        schema:
+          type: string
+          format: date-time
+        description: Inclusive start of an absolute range; must be provided with end.
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseUserCounts'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -10969,6 +11353,29 @@ paths:
                 items:
                   $ref: '#/components/schemas/OutpostHealth'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /outposts/instances/{uuid}/rebuild_permissions/:
+    post:
+      operationId: outposts_instances_rebuild_permissions_create
+      description: Delete and recreate all permissions of the outpost's service account
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Permissions rebuilt
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -19843,6 +20250,14 @@ paths:
         schema:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
       - in: query
+        name: encryption_algorithm
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: |+
+            Block cipher used to encrypt the assertion.
+
+      - in: query
         name: encryption_kp
         schema:
           type: string
@@ -19860,6 +20275,14 @@ paths:
         name: issuer_override
         schema:
           type: string
+      - in: query
+        name: jwt_federation_providers
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - in: query
         name: logout_method
         schema:
@@ -21002,6 +21425,14 @@ paths:
         schema:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
       - in: query
+        name: encryption_algorithm
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: |+
+            Block cipher used to encrypt the assertion.
+
+      - in: query
         name: encryption_kp
         schema:
           type: string
@@ -21019,6 +21450,14 @@ paths:
         name: issuer_override
         schema:
           type: string
+      - in: query
+        name: jwt_federation_providers
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       - in: query
         name: logout_method
         schema:
@@ -21362,7 +21801,7 @@ paths:
       description: ConnectionToken Viewset
       parameters:
       - in: query
-        name: endpoint
+        name: device
         schema:
           type: string
           format: uuid
@@ -21534,12 +21973,11 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /rac/endpoints/:
+  /rac/devices/:
     get:
-      operationId: rac_endpoints_list
-      description: List accessible endpoints
+      operationId: rac_devices_list
+      description: List devices accessible through a RAC provider
       parameters:
-      - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -21547,11 +21985,8 @@ paths:
         name: provider
         schema:
           type: integer
+        required: true
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
       tags:
       - rac
       security:
@@ -21561,22 +21996,50 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedEndpointList'
+                $ref: '#/components/schemas/PaginatedRACDeviceList'
           description: ''
         '400':
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: rac_endpoints_create
-      description: Endpoint Viewset
+  /rbac/custom_permissions/:
+    get:
+      operationId: rbac_custom_permissions_list
+      description: Custom permissions
+      parameters:
+      - in: query
+        name: codename
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
-      - rac
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCustomPermissionList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: rbac_custom_permissions_create
+      description: Custom permissions
+      tags:
+      - rbac
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EndpointRequest'
+              $ref: '#/components/schemas/CustomPermissionRequest'
         required: true
       security:
       - authentik: []
@@ -21585,26 +22048,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Endpoint'
+                $ref: '#/components/schemas/CustomPermission'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /rac/endpoints/{pbm_uuid}/:
+  /rbac/custom_permissions/{id}/:
     get:
-      operationId: rac_endpoints_retrieve
-      description: Endpoint Viewset
+      operationId: rbac_custom_permissions_retrieve
+      description: Custom permissions
       parameters:
       - in: path
-        name: pbm_uuid
+        name: id
         schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
+          type: integer
+        description: A unique integer value identifying this Custom permission.
         required: true
       tags:
-      - rac
+      - rbac
       security:
       - authentik: []
       responses:
@@ -21612,30 +22074,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Endpoint'
+                $ref: '#/components/schemas/CustomPermission'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
     put:
-      operationId: rac_endpoints_update
-      description: Endpoint Viewset
+      operationId: rbac_custom_permissions_update
+      description: Custom permissions
       parameters:
       - in: path
-        name: pbm_uuid
+        name: id
         schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
+          type: integer
+        description: A unique integer value identifying this Custom permission.
         required: true
       tags:
-      - rac
+      - rbac
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EndpointRequest'
+              $ref: '#/components/schemas/CustomPermissionRequest'
         required: true
       security:
       - authentik: []
@@ -21644,30 +22105,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Endpoint'
+                $ref: '#/components/schemas/CustomPermission'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
-      operationId: rac_endpoints_partial_update
-      description: Endpoint Viewset
+      operationId: rbac_custom_permissions_partial_update
+      description: Custom permissions
       parameters:
       - in: path
-        name: pbm_uuid
+        name: id
         schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
+          type: integer
+        description: A unique integer value identifying this Custom permission.
         required: true
       tags:
-      - rac
+      - rbac
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedEndpointRequest'
+              $ref: '#/components/schemas/PatchedCustomPermissionRequest'
       security:
       - authentik: []
       responses:
@@ -21675,25 +22135,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Endpoint'
+                $ref: '#/components/schemas/CustomPermission'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
-      operationId: rac_endpoints_destroy
-      description: Endpoint Viewset
+      operationId: rbac_custom_permissions_destroy
+      description: Custom permissions
       parameters:
       - in: path
-        name: pbm_uuid
+        name: id
         schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
+          type: integer
+        description: A unique integer value identifying this Custom permission.
         required: true
       tags:
-      - rac
+      - rbac
       security:
       - authentik: []
       responses:
@@ -21703,20 +22162,11 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /rac/endpoints/{pbm_uuid}/used_by/:
+  /rbac/endpoints/:
     get:
-      operationId: rac_endpoints_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
+      operationId: rbac_endpoints_list
       tags:
-      - rac
+      - rbac
       security:
       - authentik: []
       responses:
@@ -21726,7 +22176,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UsedBy'
+                  $ref: '#/components/schemas/Endpoint'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -21899,6 +22349,202 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Initial Permissions.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/permission_checks/:
+    get:
+      operationId: rbac_permission_checks_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPermissionCheckList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: rbac_permission_checks_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionCheckRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionCheck'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/permission_checks/{check_uuid}/:
+    get:
+      operationId: rbac_permission_checks_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: check_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Permission check.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionCheck'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: rbac_permission_checks_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: check_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Permission check.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionCheckRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionCheck'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: rbac_permission_checks_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: check_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Permission check.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPermissionCheckRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionCheck'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: rbac_permission_checks_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: check_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Permission check.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/permission_checks/{check_uuid}/used_by/:
+    get:
+      operationId: rbac_permission_checks_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: check_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Permission check.
         required: true
       tags:
       - rbac
@@ -26112,7 +26758,7 @@ paths:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: |+
-            NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+            Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.
 
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -33046,6 +33692,10 @@ paths:
         name: failed_attempts_before_cancel
         schema:
           type: integer
+      - in: query
+        name: failed_attempts_before_lockout
+        schema:
+          type: integer
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -35232,360 +35882,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/domains/:
-    get:
-      operationId: tenants_domains_list
-      description: Domain ViewSet
-      parameters:
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - tenants
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedDomainList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: tenants_domains_create
-      description: Domain ViewSet
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DomainRequest'
-        required: true
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Domain'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/domains/{id}/:
-    get:
-      operationId: tenants_domains_retrieve
-      description: Domain ViewSet
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Domain.
-        required: true
-      tags:
-      - tenants
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Domain'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: tenants_domains_update
-      description: Domain ViewSet
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Domain.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DomainRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Domain'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: tenants_domains_partial_update
-      description: Domain ViewSet
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Domain.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedDomainRequest'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Domain'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: tenants_domains_destroy
-      description: Domain ViewSet
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Domain.
-        required: true
-      tags:
-      - tenants
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/tenants/:
-    get:
-      operationId: tenants_tenants_list
-      description: Tenant Viewset
-      parameters:
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - tenants
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedTenantList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: tenants_tenants_create
-      description: Tenant Viewset
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantRequest'
-        required: true
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/tenants/{tenant_uuid}/:
-    get:
-      operationId: tenants_tenants_retrieve
-      description: Tenant Viewset
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: tenants_tenants_update
-      description: Tenant Viewset
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: tenants_tenants_partial_update
-      description: Tenant Viewset
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedTenantRequest'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: tenants_tenants_destroy
-      description: Tenant Viewset
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/tenants/{tenant_uuid}/create_admin_group/:
-    post:
-      operationId: tenants_tenants_create_admin_group_create
-      description: Create admin group and add user to it.
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantAdminGroupRequestRequest'
-        required: true
-      responses:
-        '204':
-          description: Group created successfully.
-        '400':
-          description: Bad request
-        '404':
-          description: User not found
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /tenants/tenants/{tenant_uuid}/create_recovery_key/:
-    post:
-      operationId: tenants_tenants_create_recovery_key_create
-      description: Create recovery key for user.
-      parameters:
-      - in: path
-        name: tenant_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Tenant.
-        required: true
-      tags:
-      - tenants
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantRecoveryKeyRequestRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TenantRecoveryKeyResponse'
-          description: ''
-        '400':
-          description: Bad request
-        '404':
-          description: User not found
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
 components:
   parameters:
     QueryName:
@@ -35990,6 +36286,7 @@ components:
       properties:
         parent:
           type: integer
+          nullable: true
         label:
           type: string
         expiring:
@@ -36086,13 +36383,48 @@ components:
           type: string
         nonce_endpoint:
           type: string
+        authorization_endpoint:
+          type: string
       required:
       - audience
+      - authorization_endpoint
       - client_id
       - issuer
       - jwks_endpoint
       - nonce_endpoint
       - token_endpoint
+    AgentPSSODeviceState:
+      type: object
+      description: |-
+        What authentik currently has stored for this device's Platform SSO
+        registration, so the client can detect drift and repair it
+      properties:
+        device_registered:
+          type: boolean
+        sign_key_id:
+          type: string
+        enc_key_id:
+          type: string
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/AgentPSSODeviceStateUser'
+      required:
+      - device_registered
+      - enc_key_id
+      - sign_key_id
+      - users
+    AgentPSSODeviceStateUser:
+      type: object
+      description: A user currently registered for Platform SSO on this device
+      properties:
+        username:
+          type: string
+        enclave_key_id:
+          type: string
+      required:
+      - enclave_key_id
+      - username
     AgentPSSOUserRegistrationRequest:
       type: object
       description: Register Apple device user via Platform SSO
@@ -36169,6 +36501,9 @@ components:
       - ecdsa
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       type: string
     App:
       type: object
@@ -36184,7 +36519,6 @@ components:
     AppEnum:
       enum:
       - authentik.commands
-      - authentik.tenants
       - authentik.tasks
       - authentik.admin
       - authentik.api
@@ -36244,6 +36578,7 @@ components:
       - authentik.stages.user_logout
       - authentik.stages.user_write
       - authentik.tasks.schedules
+      - authentik.tenants
       - authentik.brands
       - authentik.blueprints
       - authentik.enterprise.agents
@@ -36251,6 +36586,7 @@ components:
       - authentik.enterprise.endpoints.connectors.agent
       - authentik.enterprise.endpoints.connectors.fleet
       - authentik.enterprise.endpoints.connectors.google_chrome
+      - authentik.enterprise.endpoints.connectors.microsoft_intune
       - authentik.enterprise.lifecycle
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
@@ -36440,11 +36776,21 @@ components:
         app:
           type: string
           format: uuid
+        app_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        app_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
         attributes:
           type: object
           additionalProperties: {}
       required:
       - app
+      - app_name
+      - app_slug
       - name
       - pbm_uuid
     ApplicationEntitlementRequest:
@@ -38462,6 +38808,9 @@ components:
       - dsa
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       type: string
     CertificateKeyPairRequest:
       type: object
@@ -38579,10 +38928,16 @@ components:
           type: integer
         cache_timeout_policies:
           type: integer
+        cache_timeout_brands:
+          type: integer
+        cache_timeout_system_settings:
+          type: integer
       required:
       - cache_timeout
+      - cache_timeout_brands
       - cache_timeout_flows
       - cache_timeout_policies
+      - cache_timeout_system_settings
       - capabilities
       - error_reporting
     ConnectionToken:
@@ -38599,20 +38954,19 @@ components:
           allOf:
           - $ref: '#/components/schemas/RACProvider'
           readOnly: true
-        endpoint:
+        device:
           type: string
           format: uuid
-        endpoint_obj:
-          allOf:
-          - $ref: '#/components/schemas/Endpoint'
+        device_name:
+          type: string
           readOnly: true
         user:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
-      - endpoint
-      - endpoint_obj
+      - device
+      - device_name
       - provider
       - provider_obj
       - user
@@ -38626,11 +38980,11 @@ components:
           title: Connection token uuid
         provider:
           type: integer
-        endpoint:
+        device:
           type: string
           format: uuid
       required:
-      - endpoint
+      - device
       - provider
     Connector:
       type: object
@@ -39188,6 +39542,48 @@ components:
       - matched_domain
       - ui_footer_links
       - ui_theme
+    CustomPermission:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        codename:
+          type: string
+          maxLength: 100
+        name:
+          type: string
+          maxLength: 255
+        model:
+          type: string
+        permission:
+          type: string
+          readOnly: true
+      required:
+      - codename
+      - model
+      - name
+      - permission
+      - pk
+    CustomPermissionRequest:
+      type: object
+      properties:
+        codename:
+          type: string
+          minLength: 1
+          maxLength: 100
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        model:
+          type: string
+          minLength: 1
+      required:
+      - codename
+      - model
+      - name
     DataExport:
       type: object
       description: |-
@@ -39678,6 +40074,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -39743,6 +40142,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -40003,41 +40405,6 @@ components:
       required:
       - name
       - url
-    Domain:
-      type: object
-      description: Domain Serializer
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        domain:
-          type: string
-          maxLength: 253
-        is_primary:
-          type: boolean
-        tenant:
-          type: string
-          format: uuid
-      required:
-      - domain
-      - id
-      - tenant
-    DomainRequest:
-      type: object
-      description: Domain Serializer
-      properties:
-        domain:
-          type: string
-          minLength: 1
-          maxLength: 253
-        is_primary:
-          type: boolean
-        tenant:
-          type: string
-          format: uuid
-      required:
-      - domain
-      - tenant
     DummyChallenge:
       type: object
       description: Dummy challenge
@@ -40453,57 +40820,26 @@ components:
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+    EncryptionAlgorithmEnum:
+      enum:
+      - http://www.w3.org/2001/04/xmlenc#aes128-cbc
+      - http://www.w3.org/2001/04/xmlenc#aes256-cbc
+      - http://www.w3.org/2009/xmlenc11#aes128-gcm
+      - http://www.w3.org/2009/xmlenc11#aes256-gcm
+      type: string
     Endpoint:
       type: object
-      description: Endpoint Serializer
+      description: Base serializer class which doesn't implement create/update methods
       properties:
-        pk:
+        id:
           type: string
-          format: uuid
-          readOnly: true
-          title: Pbm uuid
-        name:
-          type: string
-        provider:
-          type: integer
-        provider_obj:
-          allOf:
-          - $ref: '#/components/schemas/RACProvider'
-          readOnly: true
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
-        host:
-          type: string
-        settings:
-          type: object
-          additionalProperties: {}
-        property_mappings:
+        functions:
           type: array
           items:
             type: string
-            format: uuid
-        auth_mode:
-          $ref: '#/components/schemas/EndpointAuthModeEnum'
-        launch_url:
-          type: string
-          nullable: true
-          description: |-
-            Build actual launch URL (the provider itself does not have one, just
-            individual endpoints)
-          readOnly: true
-        maximum_connections:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
       required:
-      - auth_mode
-      - host
-      - launch_url
-      - name
-      - pk
-      - protocol
-      - provider
-      - provider_obj
+      - functions
+      - id
     EndpointAgentChallenge:
       type: object
       description: Signed challenge for authentik agent to respond to
@@ -40538,11 +40874,6 @@ components:
           type: string
           nullable: true
           minLength: 1
-    EndpointAuthModeEnum:
-      enum:
-      - static
-      - prompt
-      type: string
     EndpointDevice:
       type: object
       properties:
@@ -40580,11 +40911,16 @@ components:
           - $ref: '#/components/schemas/DeviceUserBinding'
           readOnly: true
           nullable: true
+        rac:
+          allOf:
+          - $ref: '#/components/schemas/RACConnectionOverride'
+          nullable: true
       required:
       - facts
       - name
       - pbm_uuid
       - primary_binding_obj
+      - rac
     EndpointDeviceDetails:
       type: object
       properties:
@@ -40622,6 +40958,10 @@ components:
           - $ref: '#/components/schemas/DeviceUserBinding'
           readOnly: true
           nullable: true
+        rac:
+          allOf:
+          - $ref: '#/components/schemas/RACConnectionOverride'
+          nullable: true
         connections_obj:
           type: array
           items:
@@ -40646,6 +40986,7 @@ components:
       - pbm_uuid
       - policies
       - primary_binding_obj
+      - rac
     EndpointDeviceRequest:
       type: object
       properties:
@@ -40670,42 +41011,13 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        rac:
+          allOf:
+          - $ref: '#/components/schemas/RACConnectionOverrideRequest'
+          nullable: true
       required:
       - name
-    EndpointRequest:
-      type: object
-      description: Endpoint Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        provider:
-          type: integer
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
-        host:
-          type: string
-          minLength: 1
-        settings:
-          type: object
-          additionalProperties: {}
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        auth_mode:
-          $ref: '#/components/schemas/EndpointAuthModeEnum'
-        maximum_connections:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-      required:
-      - auth_mode
-      - host
-      - name
-      - protocol
-      - provider
+      - rac
     EndpointStage:
       type: object
       description: EndpointStage Serializer
@@ -40922,6 +41234,9 @@ components:
       - user_offboarded
       - suspicious_request
       - password_set
+      - authenticator_locked
+      - authenticator_unlocked
+      - required_action_completed
       - secret_view
       - secret_rotate
       - invitation_used
@@ -44005,6 +44320,9 @@ components:
       - ec
       - ed25519
       - ed448
+      - mldsa44
+      - mldsa65
+      - mldsa87
       - rsa
     KubernetesServiceConnection:
       type: object
@@ -44920,23 +45238,6 @@ components:
       - trial
       - non_production
       type: string
-    LicenseForecast:
-      type: object
-      description: Serializer for license forecast
-      properties:
-        internal_users:
-          type: integer
-        external_users:
-          type: integer
-        forecasted_internal_users:
-          type: integer
-        forecasted_external_users:
-          type: integer
-      required:
-      - external_users
-      - forecasted_external_users
-      - forecasted_internal_users
-      - internal_users
     LicenseRequest:
       type: object
       description: License Serializer
@@ -44989,6 +45290,45 @@ components:
       - limit_exceeded_user
       - read_only
       type: string
+    LicenseUserCountRange:
+      type: object
+      description: Counts of active users added within a date range.
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        interval:
+          type: string
+          nullable: true
+        internal_users_added:
+          type: integer
+        external_users_added:
+          type: integer
+      required:
+      - end
+      - external_users_added
+      - internal_users_added
+      - interval
+      - start
+    LicenseUserCounts:
+      type: object
+      description: Current active user totals and counts for requested date ranges.
+      properties:
+        active_internal_users:
+          type: integer
+        active_external_users:
+          type: integer
+        ranges:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenseUserCountRange'
+      required:
+      - active_external_users
+      - active_internal_users
+      - ranges
     LifecycleIteration:
       type: object
       description: |-
@@ -45245,6 +45585,10 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
           nullable: true
         promoted:
           type: boolean
@@ -45625,9 +45969,92 @@ components:
       - microsoft_id
       - provider
       - user
+    MicrosoftIntuneConnector:
+      type: object
+      description: MicrosoftIntuneConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        client_id:
+          type: string
+        tenant_id:
+          type: string
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificate authorities which issue device certificates via
+            Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage
+            to validate certificates. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+      required:
+      - client_id
+      - component
+      - meta_model_name
+      - name
+      - tenant_id
+      - verbose_name
+      - verbose_name_plural
+    MicrosoftIntuneConnectorRequest:
+      type: object
+      description: MicrosoftIntuneConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        client_id:
+          type: string
+          minLength: 1
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        tenant_id:
+          type: string
+          minLength: 1
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificate authorities which issue device certificates via
+            Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage
+            to validate certificates. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+      required:
+      - client_id
+      - client_secret
+      - name
+      - tenant_id
     ModelEnum:
       enum:
-      - authentik_tenants.domain
       - authentik_core.group
       - authentik_core.user
       - authentik_core.application
@@ -45667,7 +46094,6 @@ components:
       - authentik_providers_oauth2.oauth2dynamicclientregistration
       - authentik_providers_proxy.proxyprovider
       - authentik_providers_rac.racprovider
-      - authentik_providers_rac.endpoint
       - authentik_providers_rac.racpropertymapping
       - authentik_providers_radius.radiusprovider
       - authentik_providers_radius.radiusproviderpropertymapping
@@ -45677,6 +46103,8 @@ components:
       - authentik_providers_scim.scimmapping
       - authentik_rbac.role
       - authentik_rbac.initialpermissions
+      - authentik_rbac.custompermission
+      - authentik_rbac.permissioncheck
       - authentik_sources_kerberos.kerberossource
       - authentik_sources_kerberos.kerberossourcepropertymapping
       - authentik_sources_kerberos.userkerberossourceconnection
@@ -45738,6 +46166,7 @@ components:
       - authentik_agents.agent
       - authentik_endpoints_connectors_fleet.fleetconnector
       - authentik_endpoints_connectors_google_chrome.googlechromeconnector
+      - authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector
       - authentik_lifecycle.lifecyclerule
       - authentik_lifecycle.lifecycleiteration
       - authentik_lifecycle.review
@@ -46994,7 +47423,6 @@ components:
         consumer_secret:
           type: string
           writeOnly: true
-          minLength: 1
         additional_scopes:
           type: string
         oidc_well_known_url:
@@ -47011,7 +47439,6 @@ components:
             token request flow
       required:
       - consumer_key
-      - consumer_secret
       - name
       - provider_type
       - slug
@@ -47733,6 +48160,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedCustomPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomPermission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedDataExportList:
       type: object
       properties:
@@ -47802,21 +48244,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DockerServiceConnection'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedDomainList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Domain'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -47907,21 +48334,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EndpointDevice'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedEndpointList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Endpoint'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -48588,6 +49000,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedMicrosoftIntuneConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftIntuneConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedMutualTLSStageList:
       type: object
       properties:
@@ -48798,6 +49225,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedPermissionCheckList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionCheck'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedPermissionList:
       type: object
       properties:
@@ -48957,6 +49399,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProxyProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedRACDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RACDevice'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -49557,21 +50014,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TelegramSourcePropertyMapping'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedTenantList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tenant'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50295,8 +50737,22 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        last_attempt_warning_message:
+          type: string
+          description: Warning shown when the user has one password attempt remaining.
+            Leave blank to show no warning.
+        lockout_message:
+          type: string
+          description: Message shown when the user's password has been locked. Leave
+            blank to show a generic authentication error.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -50332,8 +50788,22 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        last_attempt_warning_message:
+          type: string
+          description: Warning shown when the user has one password attempt remaining.
+            Leave blank to show no warning.
+        lockout_message:
+          type: string
+          description: Message shown when the user's password has been locked. Leave
+            blank to show a generic authentication error.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -50966,7 +51436,7 @@ components:
           title: Connection token uuid
         provider:
           type: integer
-        endpoint:
+        device:
           type: string
           format: uuid
     PatchedConsentStageRequest:
@@ -50983,6 +51453,20 @@ components:
           minLength: 1
           title: Consent expires in
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
+    PatchedCustomPermissionRequest:
+      type: object
+      properties:
+        codename:
+          type: string
+          minLength: 1
+          maxLength: 100
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        model:
+          type: string
+          minLength: 1
     PatchedDenyStageRequest:
       type: object
       description: DenyStage Serializer
@@ -51024,6 +51508,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -51067,19 +51554,6 @@ components:
           nullable: true
           description: Certificate/Key used for authentication. Can be left empty
             for no authentication.
-    PatchedDomainRequest:
-      type: object
-      description: Domain Serializer
-      properties:
-        domain:
-          type: string
-          minLength: 1
-          maxLength: 253
-        is_primary:
-          type: boolean
-        tenant:
-          type: string
-          format: uuid
     PatchedDummyPolicyRequest:
       type: object
       description: Dummy Policy Serializer
@@ -51211,34 +51685,10 @@ components:
         attributes:
           type: object
           additionalProperties: {}
-    PatchedEndpointRequest:
-      type: object
-      description: Endpoint Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        provider:
-          type: integer
-        protocol:
-          $ref: '#/components/schemas/ProtocolEnum'
-        host:
-          type: string
-          minLength: 1
-        settings:
-          type: object
-          additionalProperties: {}
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        auth_mode:
-          $ref: '#/components/schemas/EndpointAuthModeEnum'
-        maximum_connections:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
+        rac:
+          allOf:
+          - $ref: '#/components/schemas/RACConnectionOverrideRequest'
+          nullable: true
     PatchedEndpointStageRequest:
       type: object
       description: EndpointStage Serializer
@@ -52330,6 +52780,37 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+    PatchedMicrosoftIntuneConnectorRequest:
+      type: object
+      description: MicrosoftIntuneConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        client_id:
+          type: string
+          minLength: 1
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        tenant_id:
+          type: string
+          minLength: 1
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificate authorities which issue device certificates via
+            Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage
+            to validate certificates. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
     PatchedMutualTLSStageRequest:
       type: object
       description: MutualTLSStage Serializer
@@ -52700,7 +53181,6 @@ components:
         consumer_secret:
           type: string
           writeOnly: true
-          minLength: 1
         additional_scopes:
           type: string
         oidc_well_known_url:
@@ -52877,8 +53357,22 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        last_attempt_warning_message:
+          type: string
+          description: Warning shown when the user has one password attempt remaining.
+            Leave blank to show no warning.
+        lockout_message:
+          type: string
+          description: Message shown when the user's password has been locked. Leave
+            blank to show a generic authentication error.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -52897,6 +53391,20 @@ components:
         object_pk:
           type: string
           minLength: 1
+    PatchedPermissionCheckRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+        endpoints:
+          type: array
+          items:
+            type: string
+            minLength: 1
     PatchedPlexSourcePropertyMappingRequest:
       type: object
       description: PlexSourcePropertyMapping Serializer
@@ -53013,6 +53521,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -53218,6 +53729,21 @@ components:
         settings:
           type: object
           additionalProperties: {}
+        access_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only devices in this access group can be accessed through this
+            provider. When left empty, every device the user has access to can be
+            accessed.
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Maximum concurrent connections to a single device. Can be set
+            to -1 to disable the limit.
+        auth_mode:
+          $ref: '#/components/schemas/RACProviderAuthModeEnum'
         connection_expiry:
           type: string
           minLength: 1
@@ -53529,6 +54055,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -53561,6 +54091,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
     PatchedSAMLSourcePropertyMappingRequest:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -53664,8 +54200,8 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
-          description: NameID Policy sent to the IdP. Can be unset, in which case
-            no Policy is sent.
+          description: Format of the NameID Policy sent to the IdP. Select Unspecified
+            to let the IdP choose the format of the NameID it returns.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         verification_kp:
@@ -53754,6 +54290,13 @@ components:
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_basic_user:
+          type: string
+          description: Username used for Basic authentication
+        auth_basic_password:
+          type: string
+          writeOnly: true
+          description: Password used for Basic authentication
         auth_oauth:
           type: string
           format: uuid
@@ -53962,10 +54505,10 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
+          minLength: 1
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
-          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -54036,10 +54579,15 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
+            rbac_custom_permissions:
+              type: boolean
+              description: Let permission checks decide API access. While enabled,
+                every API request costs an additional database query.
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
+          - rbac_custom_permissions
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -54164,19 +54712,6 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-    PatchedTenantRequest:
-      type: object
-      description: Tenant Serializer
-      properties:
-        schema_name:
-          type: string
-          minLength: 1
-          maxLength: 63
-        name:
-          type: string
-          minLength: 1
-        ready:
-          type: boolean
     PatchedTokenRequest:
       type: object
       description: Token Serializer
@@ -54511,6 +55046,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
@@ -54585,6 +55124,59 @@ components:
           type: string
       required:
       - id
+    PermissionCheck:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Check uuid
+        name:
+          type: string
+        expression:
+          type: string
+        endpoints:
+          type: array
+          items:
+            type: string
+        unknown_endpoints:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        unknown_fields:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          readOnly: true
+      required:
+      - endpoints
+      - expression
+      - name
+      - pk
+      - unknown_endpoints
+      - unknown_fields
+    PermissionCheckRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+        endpoints:
+          type: array
+          items:
+            type: string
+            minLength: 1
+      required:
+      - endpoints
+      - expression
+      - name
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
@@ -54989,6 +55581,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -55041,6 +55636,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -55913,6 +56511,70 @@ components:
       - external_host
       - invalidation_flow
       - name
+    RACConnectionOverride:
+      type: object
+      description: RACConnectionOverride Serializer
+      properties:
+        host:
+          type: string
+          description: Hostname/IP to connect to. Optionally specify the port.
+        protocol:
+          $ref: '#/components/schemas/ProtocolEnum'
+      required:
+      - host
+      - protocol
+    RACConnectionOverrideRequest:
+      type: object
+      description: RACConnectionOverride Serializer
+      properties:
+        host:
+          type: string
+          minLength: 1
+          description: Hostname/IP to connect to. Optionally specify the port.
+        protocol:
+          $ref: '#/components/schemas/ProtocolEnum'
+      required:
+      - host
+      - protocol
+    RACDevice:
+      type: object
+      description: |-
+        Device as it can be launched through a RAC provider. Deliberately does not
+        include any connection settings, as this is also used by end-users launching a
+        connection.
+      properties:
+        device_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        protocols:
+          type: array
+          items:
+            $ref: '#/components/schemas/RACDeviceProtocol'
+          readOnly: true
+        override_pk:
+          type: integer
+          nullable: true
+          description: Primary key of this device's connection override, if it has
+            one
+          readOnly: true
+      required:
+      - name
+      - override_pk
+      - protocols
+    RACDeviceProtocol:
+      type: object
+      description: A protocol a device can be connected to with
+      properties:
+        protocol:
+          type: string
+        launch_url:
+          type: string
+          nullable: true
+      required:
+      - launch_url
+      - protocol
     RACPropertyMapping:
       type: object
       description: RACPropertyMapping Serializer
@@ -56054,6 +56716,21 @@ components:
           items:
             type: string
           readOnly: true
+        access_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only devices in this access group can be accessed through this
+            provider. When left empty, every device the user has access to can be
+            accessed.
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Maximum concurrent connections to a single device. Can be set
+            to -1 to disable the limit.
+        auth_mode:
+          $ref: '#/components/schemas/RACProviderAuthModeEnum'
         connection_expiry:
           type: string
           description: 'Determines how long a session lasts. Default of 0 means that
@@ -56074,6 +56751,11 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    RACProviderAuthModeEnum:
+      enum:
+      - static
+      - prompt
+      type: string
     RACProviderRequest:
       type: object
       description: RACProvider Serializer
@@ -56099,6 +56781,21 @@ components:
         settings:
           type: object
           additionalProperties: {}
+        access_group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only devices in this access group can be accessed through this
+            provider. When left empty, every device the user has access to can be
+            accessed.
+        maximum_connections:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Maximum concurrent connections to a single device. Can be set
+            to -1 to disable the limit.
+        auth_mode:
+          $ref: '#/components/schemas/RACProviderAuthModeEnum'
         connection_expiry:
           type: string
           minLength: 1
@@ -57354,6 +58051,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -57386,6 +58087,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
         url_download_metadata:
           type: string
           description: Get metadata download URL
@@ -57565,6 +58272,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_response:
@@ -57597,6 +58308,12 @@ components:
           description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
+          description: OAuth2 providers which can exchange their JWTs for a SAML Response
+            of this provider via token exchange.
       required:
       - acs_url
       - authorization_flow
@@ -57725,8 +58442,8 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
-          description: NameID Policy sent to the IdP. Can be unset, in which case
-            no Policy is sent.
+          description: Format of the NameID Policy sent to the IdP. Select Unspecified
+            to let the IdP choose the format of the NameID it returns.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         verification_kp:
@@ -57930,8 +58647,8 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
-          description: NameID Policy sent to the IdP. Can be unset, in which case
-            no Policy is sent.
+          description: Format of the NameID Policy sent to the IdP. Select Unspecified
+            to let the IdP choose the format of the NameID it returns.
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         verification_kp:
@@ -57979,6 +58696,7 @@ components:
     SCIMAuthenticationModeEnum:
       enum:
       - token
+      - basic
       - oauth
       - oauth_interactive
       type: string
@@ -58103,6 +58821,9 @@ components:
           type: boolean
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_basic_user:
+          type: string
+          description: Username used for Basic authentication
         auth_oauth:
           type: string
           format: uuid
@@ -58253,6 +58974,13 @@ components:
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_basic_user:
+          type: string
+          description: Username used for Basic authentication
+        auth_basic_password:
+          type: string
+          writeOnly: true
+          description: Password used for Basic authentication
         auth_oauth:
           type: string
           format: uuid
@@ -58957,6 +59685,15 @@ components:
       - name
       - pk
       - verbose_name
+    ServerLogRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        message:
+          type: string
+          minLength: 1
+      required:
+      - message
     ServiceBindMethodEnum:
       enum:
       - simple
@@ -59075,7 +59812,6 @@ components:
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
-          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -59144,10 +59880,15 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
+            rbac_custom_permissions:
+              type: boolean
+              description: Let permission checks decide API access. While enabled,
+                every API request costs an additional database query.
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
+          - rbac_custom_permissions
       required:
       - flags
     SettingsRequest:
@@ -59160,10 +59901,10 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
+          minLength: 1
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           format: uri
-          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -59234,10 +59975,15 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
+            rbac_custom_permissions:
+              type: boolean
+              description: Let permission checks decide API access. While enabled,
+                every API request costs an additional database query.
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
+          - rbac_custom_permissions
       required:
       - flags
     SeverityEnum:
@@ -59782,6 +60528,33 @@ components:
           type: string
           description: Configured external base URL. Can be empty
           readOnly: true
+        postgresql:
+          type: object
+          description: PostgreSQL information for this request's database connection
+          properties:
+            version:
+              type: string
+            jit:
+              type: string
+            jit_source:
+              type: string
+            ssl:
+              type: boolean
+            ssl_version:
+              type: string
+              nullable: true
+            ssl_cipher:
+              type: string
+              nullable: true
+          required:
+          - jit
+          - jit_source
+          - ssl
+          - ssl_cipher
+          - ssl_version
+          - version
+          readOnly: true
+          nullable: true
       required:
       - base_url
       - brand
@@ -59790,6 +60563,7 @@ components:
       - http_headers
       - http_host
       - http_is_secure
+      - postgresql
       - runtime
       - server_time
     TOTPDevice:
@@ -60257,74 +61031,6 @@ components:
       - name
       - pre_authentication_flow
       - slug
-    Tenant:
-      type: object
-      description: Tenant Serializer
-      properties:
-        tenant_uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        schema_name:
-          type: string
-          maxLength: 63
-        name:
-          type: string
-        ready:
-          type: boolean
-      required:
-      - name
-      - schema_name
-      - tenant_uuid
-    TenantAdminGroupRequestRequest:
-      type: object
-      description: Tenant admin group creation request serializer
-      properties:
-        user:
-          type: string
-          minLength: 1
-      required:
-      - user
-    TenantRecoveryKeyRequestRequest:
-      type: object
-      description: Tenant recovery key creation request serializer
-      properties:
-        user:
-          type: string
-          minLength: 1
-        duration_days:
-          type: integer
-      required:
-      - duration_days
-      - user
-    TenantRecoveryKeyResponse:
-      type: object
-      description: Tenant recovery key creation response serializer
-      properties:
-        expiry:
-          type: string
-          format: date-time
-        url:
-          type: string
-      required:
-      - expiry
-      - url
-    TenantRequest:
-      type: object
-      description: Tenant Serializer
-      properties:
-        schema_name:
-          type: string
-          minLength: 1
-          maxLength: 63
-        name:
-          type: string
-          minLength: 1
-        ready:
-          type: boolean
-      required:
-      - name
-      - schema_name
     ThemedUrls:
       type: object
       description: Themed URLs - maps theme names to URLs for light and dark themes
@@ -60362,7 +61068,7 @@ components:
           type: integer
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         description:
           type: string
@@ -60515,6 +61221,9 @@ components:
           description: Negates the outcome of the policy. Messages are unaffected.
         enabled:
           type: boolean
+        dry_run:
+          type: boolean
+          description: Execute the policy but ignore its result.
         order:
           type: integer
           maximum: 2147483647
@@ -60550,6 +61259,10 @@ components:
           type: string
         icon_url:
           type: string
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
         requires_enterprise:
           type: boolean
           default: false
@@ -60652,6 +61365,42 @@ components:
           description: Number of passwords to check against.
       required:
       - name
+    UpdateVersionInfo:
+      properties:
+        version:
+          title: Version
+          type: string
+        changelog:
+          title: Changelog
+          type: string
+        changelog_url:
+          format: uri
+          maxLength: 2083
+          minLength: 1
+          title: Changelog Url
+          type: string
+        reason:
+          $ref: '#/components/schemas/UpdateVersionReason'
+        valid:
+          default: true
+          title: Valid
+          type: boolean
+      required:
+      - version
+      - changelog
+      - changelog_url
+      - reason
+      title: UpdateVersionInfo
+      type: object
+    UpdateVersionReason:
+      description: Reason why an authentik update was released
+      enum:
+      - bugfix
+      - feature
+      - security
+      - other
+      title: UpdateVersionReason
+      type: string
     UsageEnum:
       enum:
       - media
@@ -60763,6 +61512,14 @@ components:
           type: string
           format: date-time
           readOnly: true
+        password_locked:
+          type: boolean
+          description: Whether the user's password currently refuses authentication.
+          readOnly: true
+        password_device:
+          type: integer
+          readOnly: true
+          nullable: true
         last_updated:
           type: string
           format: date-time
@@ -60775,6 +61532,8 @@ components:
       - last_updated
       - name
       - password_change_date
+      - password_device
+      - password_locked
       - pk
       - roles_obj
       - uid
@@ -61284,6 +62043,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/OffboardingStatusEnum'
           readOnly: true
+          default: pending
         created_by_obj:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
@@ -61336,6 +62096,11 @@ components:
         password:
           type: string
           minLength: 1
+        override:
+          type: boolean
+          default: false
+          description: Import a valid password hash even when its parameters do not
+            match authentik's current password hashing settings.
       required:
       - password
     UserPasswordSetRequest:
@@ -61678,6 +62443,10 @@ components:
           type: string
         icon_url:
           type: string
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
       required:
       - component
       - object_uid
@@ -61911,6 +62680,7 @@ components:
       - goauthentik.io/platform
       - fleetdm.com
       - chrome.google.com
+      - intune.microsoft.com
       type: string
     Version:
       type: object
@@ -61921,12 +62691,8 @@ components:
           description: Get current version
           readOnly: true
         version_latest:
-          type: string
-          description: Get latest version from cache
-          readOnly: true
-        version_latest_valid:
-          type: boolean
-          description: Check if latest version is valid
+          allOf:
+          - $ref: '#/components/schemas/UpdateVersionInfo'
           readOnly: true
         build_hash:
           type: string
@@ -61946,7 +62712,6 @@ components:
       - outpost_outdated
       - version_current
       - version_latest
-      - version_latest_valid
     VersionHistory:
       type: object
       description: VersionHistory Serializer
@@ -62093,6 +62858,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:
@@ -62217,6 +62986,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        encryption_algorithm:
+          allOf:
+          - $ref: '#/components/schemas/EncryptionAlgorithmEnum'
+          description: Block cipher used to encrypt the assertion.
         sign_assertion:
           type: boolean
         sign_logout_request:

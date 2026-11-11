@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,24 +10,19 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-
+import { parseDateTime } from "../runtime.js";
 /**
  * Dummy Policy Serializer
+ *
  * @export
  * @interface DummyPolicy
  */
 export interface DummyPolicy {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
-     * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
+     * When this option is enabled, all executions of this policy will be logged. By default, only
+     * execution errors are logged.
      */
     executionLogging?: boolean;
     /**
@@ -52,25 +45,10 @@ export interface DummyPolicy {
      * Return objects policy is bound to
      */
     readonly boundTo: number;
-    /**
-     *
-     */
     readonly lastUpdated: Date;
-    /**
-     *
-     */
     readonly created: Date;
-    /**
-     *
-     */
     result?: boolean;
-    /**
-     *
-     */
     waitMin?: number;
-    /**
-     *
-     */
     waitMax?: number;
 }
 

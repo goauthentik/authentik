@@ -1,19 +1,20 @@
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/SearchSelect/index";
-
 import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpers.js";
 
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
-import { AKLabel } from "#components/ak-label";
+import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 
+import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
@@ -21,15 +22,44 @@ import {
     IdentificationStage,
     Stage,
     StagesApi,
-    StagesAuthenticatorValidateListRequest,
-    StagesCaptchaListRequest,
-    StagesPasswordListRequest,
     UserFieldsEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+
+const groupStages = (stages: Stage[]) => groupBy(stages, (stage) => stage.verboseNamePlural);
+
+const passwordStageSource: SearchSelectSource<Stage> = {
+    fetchObjects: (query) =>
+        aki(StagesApi)
+            .stagesPasswordList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (stage) => stage.pk,
+    labelOf: (stage) => stage.name,
+    groupBy: groupStages,
+};
+
+const captchaStageSource: SearchSelectSource<Stage> = {
+    fetchObjects: (query) =>
+        aki(StagesApi)
+            .stagesCaptchaList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (stage) => stage.pk,
+    labelOf: (stage) => stage.name,
+    groupBy: groupStages,
+};
+
+const authenticatorValidateStageSource: SearchSelectSource<Stage> = {
+    fetchObjects: (query) =>
+        aki(StagesApi)
+            .stagesAuthenticatorValidateList(withQuery(query, { ordering: "name" }))
+            .then(({ results }) => results),
+    keyOf: (stage) => stage.pk,
+    labelOf: (stage) => stage.name,
+    groupBy: groupStages,
+};
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
@@ -107,26 +137,12 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         ></ak-checkbox-group>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Password stage")} name="passwordStage">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Stage[]> => {
-                                const args: StagesPasswordListRequest = {
-                                    ordering: "name",
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const stages = await aki(StagesApi).stagesPasswordList(args);
-                                return stages.results;
-                            }}
-                            .groupBy=${(items: Stage[]) =>
-                                groupBy(items, (stage) => stage.verboseNamePlural)}
-                            .renderElement=${(stage: Stage): string => stage.name}
-                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
-                            .selected=${(stage: Stage): boolean =>
-                                stage.pk === this.instance?.passwordStage}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "passwordStage",
+                            source: passwordStageSource,
+                            value: this.instance?.passwordStage,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks.",
@@ -134,26 +150,12 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Captcha stage")} name="captchaStage">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Stage[]> => {
-                                const args: StagesCaptchaListRequest = {
-                                    ordering: "name",
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const stages = await aki(StagesApi).stagesCaptchaList(args);
-                                return stages.results;
-                            }}
-                            .groupBy=${(items: Stage[]) =>
-                                groupBy(items, (stage) => stage.verboseNamePlural)}
-                            .renderElement=${(stage: Stage): string => stage.name}
-                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
-                            .selected=${(stage: Stage): boolean =>
-                                stage.pk === this.instance?.captchaStage}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "captchaStage",
+                            source: captchaStageSource,
+                            value: this.instance?.captchaStage,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.",
@@ -200,27 +202,12 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         label=${msg("WebAuthn Authenticator Validation Stage")}
                         name="webauthnStage"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Stage[]> => {
-                                const args: StagesAuthenticatorValidateListRequest = {
-                                    ordering: "name",
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const stages =
-                                    await aki(StagesApi).stagesAuthenticatorValidateList(args);
-                                return stages.results;
-                            }}
-                            .groupBy=${(items: Stage[]) =>
-                                groupBy(items, (stage) => stage.verboseNamePlural)}
-                            .renderElement=${(stage: Stage): string => stage.name}
-                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
-                            .selected=${(stage: Stage): boolean =>
-                                stage.pk === this.instance?.webauthnStage}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "webauthnStage",
+                            source: authenticatorValidateStageSource,
+                            value: this.instance?.webauthnStage,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.",
@@ -260,10 +247,11 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         label=${msg("Passwordless flow")}
                         name="passwordlessFlow"
                     >
-                        <ak-flow-search
-                            flowType=${FlowDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.passwordlessFlow}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({
+                            name: "passwordlessFlow",
+                            flowType: FlowDesignationEnum.Authentication,
+                            value: this.instance?.passwordlessFlow,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details.",
@@ -274,10 +262,11 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         label=${msg("Enrollment flow")}
                         name="enrollmentFlow"
                     >
-                        <ak-flow-search
-                            flowType=${FlowDesignationEnum.Enrollment}
-                            .currentFlow=${this.instance?.enrollmentFlow}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({
+                            name: "enrollmentFlow",
+                            flowType: FlowDesignationEnum.Enrollment,
+                            value: this.instance?.enrollmentFlow,
+                        })}
 
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -286,10 +275,11 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="recoveryFlow">
-                        <ak-flow-search
-                            flowType=${FlowDesignationEnum.Recovery}
-                            .currentFlow=${this.instance?.recoveryFlow}
-                        ></ak-flow-search>
+                        ${AKFlowSearch({
+                            name: "recoveryFlow",
+                            flowType: FlowDesignationEnum.Recovery,
+                            value: this.instance?.recoveryFlow,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Optional recovery flow, which is linked at the bottom of the page.",

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,32 +10,24 @@
  * Do not edit the class manually.
  */
 
-import type { DeniedActionEnum } from "./DeniedActionEnum";
-import { DeniedActionEnumFromJSON, DeniedActionEnumToJSON } from "./DeniedActionEnum";
-import type { FlowDesignationEnum } from "./FlowDesignationEnum";
-import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum";
-import type { FlowLayoutEnum } from "./FlowLayoutEnum";
-import { FlowLayoutEnumFromJSON, FlowLayoutEnumToJSON } from "./FlowLayoutEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { DeniedActionEnum } from "./DeniedActionEnum.js";
+import { DeniedActionEnumFromJSON, DeniedActionEnumToJSON } from "./DeniedActionEnum.js";
+import type { FlowDesignationEnum } from "./FlowDesignationEnum.js";
+import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum.js";
+import type { FlowLayoutEnum } from "./FlowLayoutEnum.js";
+import { FlowLayoutEnumFromJSON, FlowLayoutEnumToJSON } from "./FlowLayoutEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * Stripped down flow serializer
+ *
  * @export
  * @interface FlowSet
  */
 export interface FlowSet {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     readonly policybindingmodelPtrId: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Visible in the URL.
@@ -48,16 +38,14 @@ export interface FlowSet {
      */
     title: string;
     /**
-     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
+     * Decides what this Flow is used for. For example, the Authentication flow is redirect to when
+     * an un-authenticated user visits authentik.
      */
     designation: FlowDesignationEnum;
     /**
      * Get the URL to the background image
      */
     readonly backgroundUrl: string;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
     /**
      * Enable compatibility mode, increases compatibility with password managers on mobile devices.
@@ -67,9 +55,6 @@ export interface FlowSet {
      * Get export URL for flow
      */
     readonly exportUrl: string;
-    /**
-     *
-     */
     layout?: FlowLayoutEnum;
     /**
      * Configure what should happen when a flow denies access to a user.

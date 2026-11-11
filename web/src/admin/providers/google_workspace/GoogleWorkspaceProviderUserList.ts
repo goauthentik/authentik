@@ -1,7 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
-
 import { aki } from "#common/api/client";
 import { formatUserDisplayName } from "#common/users";
 
@@ -52,8 +51,14 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Google Workspace User(s)")}
+            verbose-name=${msg("Google Workspace User", {
+                id: "google-workspace.users.verbose-name.label",
+            })}
+            verbose-name-plural=${msg("Google Workspace Users", {
+                id: "google-workspace.users.verbose-name-plural.label",
+            })}
             .objects=${this.selectedElements}
             .delete=${(item: GoogleWorkspaceProviderUser) => {
                 return aki(ProvidersApi).providersGoogleWorkspaceUsersDestroy({

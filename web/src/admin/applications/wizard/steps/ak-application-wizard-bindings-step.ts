@@ -1,4 +1,5 @@
 import "#elements/EmptyState";
+import "#elements/Label";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
 import "#components/ak-status-label";
@@ -8,6 +9,7 @@ import "#elements/ak-table/ak-select-table";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#admin/applications/wizard/steps/bindings/ak-application-wizard-bindings-toolbar";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { SelectTable } from "#elements/ak-table/ak-select-table";
 
@@ -22,18 +24,17 @@ import { msg, str } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
 const COLUMNS = [
     [msg("Order"), "order"],
     [msg("Binding")],
     [msg("Enabled"), "enabled"],
+    [msg("Mode", { id: "policies.bindings.mode.label" })],
     [msg("Timeout"), "timeout"],
     [msg("Actions"), null, msg("Row Actions")],
 ];
 
 /**
- * @prop wizard - The current state of the application wizard, shared across all steps.
+ * @property wizard - The current state of the application wizard, shared across all steps.
  */
 @customElement("ak-application-wizard-bindings-step")
 export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
@@ -60,9 +61,10 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
 
     get bindingsAsColumns() {
         return this.wizard.bindings.map((binding, index) => {
-            const { order, enabled, timeout } = binding;
+            const { order, enabled, dryRun, timeout } = binding;
 
             const isSet = P.union(P.string.minLength(1), P.number);
+
             const policy = match(binding)
                 .with({ policy: isSet }, (v) => msg(str`Policy ${v.policyObj?.name}`))
                 .with({ group: isSet }, (v) => msg(str`Group ${v.groupObj?.name}`))
@@ -75,6 +77,13 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
                     order,
                     policy,
                     html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,
+                    dryRun
+                        ? html`<ak-label color="pf-m-blue" icon="fa-vial">
+                              ${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                          </ak-label>`
+                        : html`<ak-label icon="fa-shield-alt">
+                              ${msg("Enforced", { id: "policies.bindings.enforced.label" })}
+                          </ak-label>`,
                     timeout,
                     makeEditButton(msg("Edit"), index, (ev: CustomEvent<number>) =>
                         this.onBindingEvent(ev.detail),
@@ -98,7 +107,10 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         const toDelete = this.selectTable
             .toJSON()
             .map((i) => (typeof i === "string" ? parseInt(i, 10) : i));
-        const bindings = this.wizard.bindings.filter((binding, index) => !toDelete.includes(index));
+
+        const bindings = this.wizard.bindings.filter(
+            (_binding, index) => !toDelete.includes(index),
+        );
 
         return this.dispatchEvents({
             update: { bindings },
@@ -166,6 +178,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         if ((this.wizard.bindings ?? []).length === 0) {
             return this.renderEmptyCollection();
         }
+
         return this.renderCollection();
     }
 }

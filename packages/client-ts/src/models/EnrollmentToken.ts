@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,43 +10,21 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON } from "./DeviceAccessGroup";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceAccessGroup } from "./DeviceAccessGroup.js";
+import { DeviceAccessGroupFromJSON } from "./DeviceAccessGroup.js";
 
 /**
- *
  * @export
  * @interface EnrollmentToken
  */
 export interface EnrollmentToken {
-    /**
-     *
-     */
     readonly tokenUuid: string;
-    /**
-     *
-     */
     deviceGroup?: string | null;
-    /**
-     *
-     */
     readonly deviceGroupObj: DeviceAccessGroup | null;
-    /**
-     *
-     */
     connector: string;
-    /**
-     *
-     */
     name: string;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
 }
 

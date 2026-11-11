@@ -3,7 +3,6 @@
  */
 
 import "../Divider";
-
 import { akDivider, type DividerProps } from "../Divider";
 
 import { Meta, StoryObj } from "@storybook/web-components";

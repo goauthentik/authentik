@@ -1,10 +1,12 @@
 import "#elements/cards/AggregateCard";
 import "#elements/forms/DeleteBulkForm";
 import "#admin/endpoints/devices/DeviceAddHowTo";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
 
-import { modalInvoker } from "#elements/dialogs";
+import { ModalInvokerButton, modalInvoker } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -19,11 +21,15 @@ import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
 @customElement("ak-endpoints-device-list")
 export class DeviceListPage extends TablePage<EndpointDevice> {
+    public static override verboseName = msg("Endpoint Device", {
+        id: "endpoint-devices.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Endpoint Devices", {
+        id: "endpoint-devices.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [
         ...super.styles,
         PFGrid,
@@ -59,24 +65,27 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     async apiEndpoint(): Promise<PaginatedResponse<EndpointDevice>> {
         this.summary = await aki(EndpointsApi).endpointsDevicesSummaryRetrieve();
+
         return aki(EndpointsApi).endpointsDevicesList(await this.defaultEndpointConfig());
     }
 
     protected renderEmpty(inner?: TemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
-            ${inner
-                ? inner
-                : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${this.formatEmptyStateMessage()}</span>
-                      <div slot="body">
-                          ${this.search ? this.renderEmptyClearSearch() : nothing}
-                          <p>
-                              ${msg(
-                                  "No connectors configured. Navigate to Connectors in the sidebar and first create a connector.",
-                              )}
-                          </p>
-                      </div>
-                  </ak-empty-state>`}
+            ${
+                inner
+                    ? inner
+                    : html`<ak-empty-state icon=${this.pageIcon}
+                          ><span>${this.formatEmptyStateMessage()}</span>
+                          <div slot="body">
+                              ${this.search ? this.renderEmptyClearSearch() : nothing}
+                              <p>
+                                  ${msg(
+                                      "No connectors configured. Navigate to Connectors in the sidebar and first create a connector.",
+                                  )}
+                              </p>
+                          </div>
+                      </ak-empty-state>`
+            }
         `);
     }
 
@@ -130,6 +139,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         if (item.facts?.data.network?.hostname && item.facts.data.network.hostname !== item.name) {
             return msg(str`${item.facts.data.network.hostname} (${item.name})`);
         }
+
         return item.name;
     }
 
@@ -137,11 +147,13 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         return [
             html`<a href=${toAdminInterface(`endpoints/devices/${item.deviceUuid}`)}>
                 <div>${this.renderName(item)}</div>
-                ${item.facts?.data.hardware?.serial
-                    ? html`<small>${item.facts?.data.hardware?.serial}</small>`
-                    : nothing}
+                ${
+                    item.facts?.data.hardware?.serial
+                        ? html`<small>${item.facts?.data.hardware?.serial}</small>`
+                        : nothing
+                }
             </a>`,
-            html`${item.facts?.data.os?.name} ${item.facts?.data.os?.version}`,
+            html`${item.facts?.data.os ? html`${item.facts?.data.os?.name} ${item.facts?.data.os?.version}` : html`-`}`,
             item.primaryBindingObj ? getPolicyUserGroupRow(item.primaryBindingObj) : html`-`,
             html`${item.accessGroupObj?.name || "-"}`,
             item.facts?.created ? Timestamp(item.facts?.created) : html`-`,
@@ -156,10 +168,14 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         ];
     }
 
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(EndpointDeviceForm);
+    }
+
     renderToolbarSelected() {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Endpoint Device(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: EndpointDevice) => {
                 return [{ key: msg("Name"), value: item.name }];

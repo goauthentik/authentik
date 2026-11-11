@@ -13,7 +13,6 @@ import "#admin/providers/wsfed/WSFederationProviderForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName } from "#elements/dialogs";
@@ -32,6 +31,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
+    public static override verboseName = msg("Provider", { id: "providers.verbose-name.label" });
+    public static override verboseNamePlural = msg("Providers", {
+        id: "providers.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     override pageTitle = msg("Providers");
@@ -66,7 +70,6 @@ export class ProviderListPage extends TablePage<Provider> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Provider(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Provider) => {
                 return aki(ProvidersApi).providersAllUsedByList({

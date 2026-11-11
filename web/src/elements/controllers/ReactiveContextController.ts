@@ -61,7 +61,6 @@ export abstract class ReactiveContextController<
      * Updates the context value with the provided data.
      *
      * @param data The data to set in the context.
-     *
      * @see {@linkcode refresh} for fetching new data.
      */
     protected abstract doRefresh(data: Value): void | Promise<void>;
@@ -70,6 +69,7 @@ export abstract class ReactiveContextController<
      * Fetches data from the API endpoint.
      *
      * @param requestInit Optional request initialization parameters.
+     *
      * @returns A promise that resolves to the fetched data.
      */
     protected abstract apiEndpoint(requestInit?: RequestInit): Promise<Value>;

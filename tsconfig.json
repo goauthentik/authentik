@@ -1,6 +1,6 @@
 // TypeScript Project Configuration
 {
-    "extends": "@goauthentik/tsconfig",
+    "extends": "@goauthentik/tsconfig/node",
     "compilerOptions": {
         "ignoreDeprecations": "6.0"
     },

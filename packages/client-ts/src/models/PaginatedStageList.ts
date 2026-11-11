@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,28 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { Stage } from "./Stage";
-import { StageFromJSON, StageToJSON } from "./Stage";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { Stage } from "./Stage.js";
+import { StageFromJSON, StageToJSON } from "./Stage.js";
 
 /**
- *
  * @export
  * @interface PaginatedStageList
  */
 export interface PaginatedStageList {
-    /**
-     *
-     */
     pagination: Pagination;
-    /**
-     *
-     */
     results: Array<Stage>;
-    /**
-     *
-     */
     autocomplete: { [key: string]: any };
 }
 

@@ -58,6 +58,7 @@ export class ExpansionToggle extends AKElement {
 
     protected override updated() {
         const button = this.renderRoot.querySelector("button");
+
         if (!button || !("ariaControlsElements" in button)) return;
         button.ariaControlsElements = this.controls ? [this.controls] : null;
     }
@@ -77,6 +78,7 @@ export class ExpansionToggle extends AKElement {
     protected onClick() {
         const oldState = toggleState(this.expanded);
         this.expanded = !this.expanded;
+
         this.dispatchEvent(
             new ToggleEvent("toggle", {
                 oldState,
@@ -118,9 +120,9 @@ export type ExpansionToggleProps = ElementRest & {
 };
 
 /**
+ * @returns {TemplateResult} A Lit template result containing the configured ak-expansion-toggle
+ *   element
  * @summary Helper function to create an ExpansionToggle component programmatically
- *
- * @returns {TemplateResult} A Lit template result containing the configured ak-expansion-toggle element
  *
  * @see {@link ExpansionToggle} - The underlying web component
  */

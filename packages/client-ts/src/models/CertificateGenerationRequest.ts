@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,30 +10,19 @@
  * Do not edit the class manually.
  */
 
-import type { AlgEnum } from "./AlgEnum";
-import { AlgEnumFromJSON, AlgEnumToJSON } from "./AlgEnum";
+import type { AlgEnum } from "./AlgEnum.js";
+import { AlgEnumFromJSON, AlgEnumToJSON } from "./AlgEnum.js";
 
 /**
  * Certificate generation parameters
+ *
  * @export
  * @interface CertificateGenerationRequest
  */
 export interface CertificateGenerationRequest {
-    /**
-     *
-     */
     commonName: string;
-    /**
-     *
-     */
     subjectAltName?: string;
-    /**
-     *
-     */
     validityDays: number;
-    /**
-     *
-     */
     alg?: AlgEnum;
 }
 

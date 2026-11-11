@@ -1,9 +1,9 @@
 import "#elements/buttons/SpinnerButton/index";
-
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
+import { plural } from "#common/ui/locale/plurals";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
@@ -34,11 +34,13 @@ export class UserBulkRevokeSessionsTable extends StaticTable<User> {
                 const sessions = await aki(CoreApi).coreAuthenticatedSessionsList({
                     userUsername: user.username,
                 });
+
                 this.sessionCounts.set(user.pk, sessions.pagination.count);
             } catch {
                 this.sessionCounts.set(user.pk, 0);
             }
         }
+
         this.requestUpdate();
 
         return createPaginatedResponse(this.items);
@@ -54,12 +56,15 @@ export class UserBulkRevokeSessionsTable extends StaticTable<User> {
 
     row(item: User): SlottedTemplateResult[] {
         const sessionCount = this.sessionCounts.get(item.pk);
+
         return [
             html`${item.username}`,
             html`${item.name || msg("No name set")}`,
-            html`${sessionCount !== undefined
-                ? sessionCount
-                : html`<ak-spinner size="sm"></ak-spinner>`}`,
+            html`${
+                sessionCount !== undefined
+                    ? sessionCount
+                    : html`<ak-spinner size="sm"></ak-spinner>`
+            }`,
         ];
     }
 }
@@ -90,16 +95,19 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
                 const response = await aki(CoreApi).coreAuthenticatedSessionsBulkDeleteDestroy({
                     userPks: userIds,
                 });
+
                 this.revokedCount = response.deleted || 0;
             }
 
             this.onSuccess();
+
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
                 }),
             );
+
             this.open = false;
         } catch (e) {
             this.onError(e as Error);
@@ -110,10 +118,29 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
     }
 
     onSuccess(): void {
+        const { revokedCount } = this;
+        const userCount = this.users.length;
+
+        const users = plural(userCount, {
+            one: (formattedCount) =>
+                msg(str`${formattedCount} user`, { id: "users.revoke-sessions.user-count.one" }),
+            other: (formattedCount) =>
+                msg(str`${formattedCount} users`, { id: "users.revoke-sessions.user-count.other" }),
+        });
+
         showMessage({
-            message: msg(
-                str`Successfully revoked ${this.revokedCount} session(s) for ${this.users.length} user(s)`,
-            ),
+            message: plural(revokedCount, {
+                one: (formattedCount) =>
+                    msg(str`Successfully revoked ${formattedCount} session for ${users}.`, {
+                        id: "users.revoke-sessions.success.one",
+                        desc: "The second placeholder is a pluralized user count, such as '3 users'.",
+                    }),
+                other: (formattedCount) =>
+                    msg(str`Successfully revoked ${formattedCount} sessions for ${users}.`, {
+                        id: "users.revoke-sessions.success.other",
+                        desc: "The second placeholder is a pluralized user count, such as '3 users'.",
+                    }),
+            }),
             level: MessageLevel.success,
         });
     }
@@ -134,9 +161,18 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
             <section class="pf-c-modal-box__body pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
                     <p class="pf-c-title">
-                        ${msg(
-                            str`Are you sure you want to revoke all sessions for ${this.users.length} user(s)?`,
-                        )}
+                        ${plural(this.users.length, {
+                            one: (formattedCount) =>
+                                msg(
+                                    str`Are you sure you want to revoke all sessions for ${formattedCount} user?`,
+                                    { id: "users.revoke-sessions.confirmation.one" },
+                                ),
+                            other: (formattedCount) =>
+                                msg(
+                                    str`Are you sure you want to revoke all sessions for ${formattedCount} users?`,
+                                    { id: "users.revoke-sessions.confirmation.other" },
+                                ),
+                        })}
                     </p>
                     <p>
                         ${msg(

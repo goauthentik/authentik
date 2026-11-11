@@ -17,11 +17,11 @@ env:
 
 jobs:
   compile:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - id: generate_token
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v2
         with:
           client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
@@ -38,11 +38,11 @@ jobs:
           uv run make i18n-extract
       - name: run compile
         run: |
-          uv run ak compilemessages
+          uv run python -m manage compilemessages
           make web-check-compile
       - name: Create Pull Request
         if: ${{ github.event_name != 'pull_request' }}
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v7
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch: extract-compile-backend-translation

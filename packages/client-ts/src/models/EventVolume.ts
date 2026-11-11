@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,27 +10,19 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { EventActions } from "./EventActions";
-import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { EventActions } from "./EventActions.js";
+import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions.js";
 
 /**
  * Count of events of action created on day for a single event action
+ *
  * @export
  * @interface EventVolume
  */
 export interface EventVolume {
-    /**
-     *
-     */
     action: EventActions;
-    /**
-     *
-     */
     time: Date;
-    /**
-     *
-     */
     count: number;
 }
 

@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,22 +11,12 @@
  */
 
 /**
- *
  * @export
  * @interface Worker
  */
 export interface Worker {
-    /**
-     *
-     */
     workerId: string;
-    /**
-     *
-     */
     version: string;
-    /**
-     *
-     */
     versionMatching: boolean;
 }
 

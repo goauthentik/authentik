@@ -11,6 +11,7 @@ import { navigate, RouterNavigateEvent } from "#elements/router/core/navigation"
 import { getSearchParams, updateSearchParams } from "#elements/router/core/search-params";
 import Styles from "#elements/Tabs.css" with { type: "bundled-text" };
 import { routedTabBaseContext } from "#elements/tabs/tab-context";
+import { ActiveTabChangeEvent } from "#elements/tabs/tab-events";
 import { activeSlotForPath, tabHref } from "#elements/tabs/tab-path";
 import { ifPresent } from "#elements/utils/attributes";
 import { isFocusable } from "#elements/utils/focus";
@@ -141,6 +142,7 @@ export class Tabs extends AKElement {
 
         if (!this.visible) {
             this.#commands.clear();
+
             return;
         }
 
@@ -171,6 +173,21 @@ export class Tabs extends AKElement {
     };
 
     //#region Navigation
+
+    #activeTabLabel: string | null | undefined;
+
+    /**
+     * Dispatch an event with the active tab's label when it changes.
+     */
+    #dispatchActiveTab(): void {
+        const label = this.findActiveTabPanel()?.getAttribute("aria-label") || null;
+
+        if (label === this.#activeTabLabel) return;
+
+        this.#activeTabLabel = label;
+
+        window.dispatchEvent(new ActiveTabChangeEvent(label));
+    }
 
     /**
      * The active slot for the current location, or `null` when the tabs are not
@@ -217,6 +234,7 @@ export class Tabs extends AKElement {
         if (this.#pathMode) {
             this.activeTabName = this.#slotFromLocation();
             this.#publishChildBase();
+
             return;
         }
 
@@ -260,6 +278,10 @@ export class Tabs extends AKElement {
         if (changedProperties.has("visible")) {
             this.#updateCommands();
         }
+
+        if (this.#pathMode) {
+            this.#dispatchActiveTab();
+        }
     }
 
     public findActiveTabPanel(): Element | null {
@@ -269,11 +291,13 @@ export class Tabs extends AKElement {
     public activateTab(nextTabName: string): void {
         if (!nextTabName) {
             console.warn("Cannot activate falsey tab name:", nextTabName);
+
             return;
         }
 
         if (!this.tabs.has(nextTabName)) {
             console.warn("Cannot activate unknown tab name:", nextTabName, this.tabs);
+
             return;
         }
 
@@ -303,6 +327,7 @@ export class Tabs extends AKElement {
     public dispatchActivateEvent(tabPanel = this.findActiveTabPanel()): void {
         if (!tabPanel) {
             console.warn("Cannot dispatch activate event, no tab panel found");
+
             return;
         }
 
@@ -332,6 +357,7 @@ export class Tabs extends AKElement {
         // to the browser so real links keep working; the top outlet's anchor
         // interceptor claims the rest, but activate directly as a fallback.
         if (event.button !== 0) return;
+
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
         event.preventDefault();

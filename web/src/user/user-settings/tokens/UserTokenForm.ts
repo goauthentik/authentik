@@ -1,6 +1,5 @@
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-text-input";
-
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
@@ -35,12 +34,15 @@ export class UserTokenForm extends ModelForm<Token, string> {
     async send(data: Token): Promise<Token> {
         if (this.instance) {
             data.intent = this.instance.intent;
+
             return aki(CoreApi).coreTokensUpdate({
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
         }
+
         data.intent = this.intent;
+
         return aki(CoreApi).coreTokensCreate({
             tokenRequest: data,
         });
@@ -48,6 +50,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
 
     protected override renderForm(): TemplateResult {
         const now = new Date();
+
         const expiringDate = this.instance?.expires
             ? new Date(this.instance.expires.getTime())
             : new Date(now.getTime() + 30 * 60000);
@@ -70,26 +73,28 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 placeholder=${msg("Type a description for this token...")}
             ></ak-text-input>
 
-            ${this.intent === IntentEnum.AppPassword
-                ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
-                      ${AKLabel(
-                          {
-                              slot: "label",
-                              className: "pf-c-form__group-label",
-                              htmlFor: "expiration-date-input",
-                          },
-                          msg("Expires on"),
-                      )}
+            ${
+                this.intent === IntentEnum.AppPassword
+                    ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
+                          ${AKLabel(
+                              {
+                                  slot: "label",
+                                  className: "pf-c-form__group-label",
+                                  htmlFor: "expiration-date-input",
+                              },
+                              msg("Expires on"),
+                          )}
 
-                      <input
-                          id="expiration-date-input"
-                          type="datetime-local"
-                          value="${dateTimeLocal(expiringDate)}"
-                          min="${dateTimeLocal(now)}"
-                          class="pf-c-form-control"
-                      />
-                  </ak-form-element-horizontal>`
-                : nothing}`;
+                          <input
+                              id="expiration-date-input"
+                              type="datetime-local"
+                              value="${dateTimeLocal(expiringDate)}"
+                              min="${dateTimeLocal(now)}"
+                              class="pf-c-form-control"
+                          />
+                      </ak-form-element-horizontal>`
+                    : nothing
+            }`;
     }
 }
 

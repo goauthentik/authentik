@@ -3,7 +3,6 @@ import "#components/ak-switch-input";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/timestamp/ak-timestamp";
-
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
@@ -21,6 +20,13 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-offboarding-list")
 export class OffboardingListPage extends TablePage<UserOffboarding> {
+    public static override verboseName = msg("Offboarding", {
+        id: "offboarding.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Offboardings", {
+        id: "offboarding.verbose-name-plural.label",
+    });
+
     public override checkbox = true;
     public override clearOnRefresh = true;
     public override searchPlaceholder = msg("Search for an offboarding by username...");
@@ -81,10 +87,9 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Offboarding(s)")}
-            action=${msg("canceled")}
-            button-label=${msg("Cancel Offboardings")}
+            action="cancel"
             .objects=${this.selectedElements}
             .delete=${this.#cancelOffboarding}
             .metadata=${this.#cancelMetadata}
@@ -100,13 +105,13 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         // backend enforces both, so hide the control rather than offer a dead 403.
         const cancelable =
             item.status === OffboardingStatusEnum.Pending && item.user !== this.currentUser?.pk;
+
         if (!cancelable) {
             return msg("-");
         }
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Offboarding(s)")}
-            action=${msg("canceled")}
-            button-label=${msg("Cancel Offboarding")}
+            action="cancel"
             .objects=${[item]}
             .delete=${this.#cancelOffboarding}
             .metadata=${this.#cancelMetadata}

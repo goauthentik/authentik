@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,47 +10,31 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest.js";
 import {
     DeviceAccessGroupRequestFromJSON,
     DeviceAccessGroupRequestToJSON,
-} from "./DeviceAccessGroupRequest";
+} from "./DeviceAccessGroupRequest.js";
+import type { RACConnectionOverrideRequest } from "./RACConnectionOverrideRequest.js";
+import {
+    RACConnectionOverrideRequestFromJSON,
+    RACConnectionOverrideRequestToJSON,
+} from "./RACConnectionOverrideRequest.js";
 
 /**
- *
  * @export
  * @interface PatchedEndpointDeviceRequest
  */
 export interface PatchedEndpointDeviceRequest {
-    /**
-     *
-     */
     deviceUuid?: string;
-    /**
-     *
-     */
     name?: string;
-    /**
-     *
-     */
     accessGroup?: string | null;
-    /**
-     *
-     */
     accessGroupObj?: DeviceAccessGroupRequest;
-    /**
-     *
-     */
     expiring?: boolean;
-    /**
-     *
-     */
     expires?: Date | null;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
+    rac?: RACConnectionOverrideRequest | null;
 }
 
 /**
@@ -96,6 +78,12 @@ export function PatchedEndpointDeviceRequestFromJSONTyped(
                   ? null
                   : parseDateTime(json["expires"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
+        rac:
+            json["rac"] === undefined
+                ? undefined
+                : json["rac"] === null
+                  ? null
+                  : RACConnectionOverrideRequestFromJSON(json["rac"]),
     };
 }
 
@@ -119,5 +107,6 @@ export function PatchedEndpointDeviceRequestToJSONTyped(
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
+        rac: RACConnectionOverrideRequestToJSON(value["rac"]),
     };
 }

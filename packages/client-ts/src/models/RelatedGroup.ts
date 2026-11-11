@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -14,29 +12,18 @@
 
 /**
  * Stripped down group serializer to show relevant children/parents for groups
+ *
  * @export
  * @interface RelatedGroup
  */
 export interface RelatedGroup {
-    /**
-     *
-     */
     readonly pk: string;
-    /**
-     *
-     */
     name: string;
     /**
      * Users added to this group will be superusers.
      */
     isSuperuser?: boolean;
-    /**
-     *
-     */
     attributes?: { [key: string]: any };
-    /**
-     *
-     */
     readonly groupUuid: string;
 }
 

@@ -33,7 +33,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_IS_RESTORED,
     FlowPlan,
 )
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
@@ -47,7 +47,7 @@ from authentik.stages.password.models import PasswordStage
 from authentik.stages.user_login.models import UserLoginStage
 
 
-class TestSourceStage(FlowTestCase):
+class TestSourceStage(APIFlowTestCase):
     """Source stage tests"""
 
     def setUp(self):

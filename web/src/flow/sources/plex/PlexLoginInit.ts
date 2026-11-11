@@ -1,8 +1,14 @@
 import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
 import "#elements/Divider";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { aki } from "#common/api/client";
+import { globalAK } from "#common/global";
 import { PlexAPIClient, popupCenterScreen } from "#common/helpers/plex";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
@@ -19,12 +25,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
 @customElement("ak-flow-source-plex")
 export class PlexLoginInit extends BaseStage<
     PlexAuthenticationChallenge,
@@ -39,8 +39,10 @@ export class PlexLoginInit extends BaseStage<
         const authInfo = await PlexAPIClient.getPin(this.challenge?.clientId || "");
         this.authUrl = authInfo.authUrl;
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+
         PlexAPIClient.pinPoll(this.challenge?.clientId || "", authInfo.pin.id).then((token) => {
             authWindow?.close();
+
             aki(SourcesApi)
                 .sourcesPlexRedeemTokenCreate({
                     plexTokenRedeemRequest: {
@@ -54,7 +56,7 @@ export class PlexLoginInit extends BaseStage<
                 .catch(async (error: unknown) => {
                     return showAPIErrorMessage(error).then(() => {
                         setTimeout(() => {
-                            window.location.assign("/");
+                            window.location.assign(globalAK().api.base);
                         }, 5000);
                     });
                 });

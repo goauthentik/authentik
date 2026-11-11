@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -12,20 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { GrantTypeEnum } from "./GrantTypeEnum";
-import { GrantTypeEnumFromJSON, GrantTypeEnumToJSON } from "./GrantTypeEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { GrantTypeEnum } from "./GrantTypeEnum.js";
+import { GrantTypeEnumFromJSON, GrantTypeEnumToJSON } from "./GrantTypeEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * Serializer for OAuth2DynamicClientRegistration
+ *
  * @export
  * @interface PatchedOAuth2DynamicClientRegistrationRequest
  */
 export interface PatchedOAuth2DynamicClientRegistrationRequest {
-    /**
-     *
-     */
     provider?: number;
     /**
      * Group to assign to automatically created applications.
@@ -35,9 +31,6 @@ export interface PatchedOAuth2DynamicClientRegistrationRequest {
      * Authorization flow applied to dynamically registered clients.
      */
     overrideAuthorizationFlow?: string | null;
-    /**
-     *
-     */
     overrideInvalidationFlow?: string | null;
     /**
      * Scope mappings applied to dynamically registered clients.
@@ -55,9 +48,6 @@ export interface PatchedOAuth2DynamicClientRegistrationRequest {
      * If empty, all grant types are allowed.
      */
     allowedGrantTypes?: Array<GrantTypeEnum>;
-    /**
-     *
-     */
     policyEngineMode?: PolicyEngineMode;
 }
 

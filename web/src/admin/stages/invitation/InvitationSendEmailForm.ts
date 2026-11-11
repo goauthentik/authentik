@@ -1,8 +1,10 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#components/ak-textarea-input";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
 import { MessageLevel } from "#common/messages";
+import { plural } from "#common/ui/locale/plurals";
 
 import { Form } from "#elements/forms/Form";
 import { showMessage } from "#elements/messages/MessageContainer";
@@ -14,8 +16,6 @@ import { Invitation, StagesApi, TypeCreate } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 interface InvitationSendEmailRequestWithTemplate {
     emailAddresses: string;
@@ -74,6 +74,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
                 message: msg("Please enter at least one email address"),
                 level: MessageLevel.error,
             });
+
             return;
         }
 
@@ -89,9 +90,18 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
             });
 
             showMessage({
-                message: msg(
-                    str`Invitation emails queued for sending to ${addresses.length} recipient(s). Check the System Tasks for more information.`,
-                ),
+                message: plural(addresses.length, {
+                    one: (formattedCount) =>
+                        msg(
+                            str`Invitation email queued for sending to ${formattedCount} recipient. Check the System Tasks for more information.`,
+                            { id: "invitations.send-email.success.one" },
+                        ),
+                    other: (formattedCount) =>
+                        msg(
+                            str`Invitation emails queued for sending to ${formattedCount} recipients. Check the System Tasks for more information.`,
+                            { id: "invitations.send-email.success.other" },
+                        ),
+                }),
                 level: MessageLevel.success,
             });
         } catch (error) {

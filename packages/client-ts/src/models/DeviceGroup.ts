@@ -1,5 +1,3 @@
-/* tslint:disable */
-/* eslint-disable */
 /**
  * authentik
  * Making authentication simple.
@@ -13,18 +11,11 @@
  */
 
 /**
- *
  * @export
  * @interface DeviceGroup
  */
 export interface DeviceGroup {
-    /**
-     *
-     */
     id: string;
-    /**
-     *
-     */
     name?: string;
 }
 

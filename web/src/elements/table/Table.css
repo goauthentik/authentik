@@ -56,6 +56,19 @@
     ::part(pagination-bottom) {
         --pf-c-pagination--m-bottom--BackgroundColor: transparent;
     }
+
+    > td:has(> .pf-c-table__expandable-row-content > ak-section-card) {
+        --pf-c-table--cell--PaddingTop: var(--pf-global--spacer--md);
+        --pf-c-table--cell--PaddingRight: 0;
+        --pf-c-table--cell--PaddingBottom: var(--pf-global--spacer--md);
+        --pf-c-table--cell--PaddingLeft: var(--pf-global--spacer--lg);
+    }
+
+    .pf-c-table__expandable-row-content:has(> ak-section-card) {
+        display: flex;
+        flex-direction: column;
+        gap: var(--pf-global--spacer--lg);
+    }
 }
 
 .ak-c-table__actions {
@@ -68,6 +81,15 @@
 
     .pf-c-button:not(:has(i)):not(:first-child) {
         margin-inline-start: var(--pf-global--spacer--sm);
+    }
+
+    pf-tooltip {
+        user-select: none;
+        cursor: help;
+
+        button:disabled {
+            opacity: 0.5;
+        }
     }
 }
 
@@ -164,19 +186,9 @@ time {
 }
 
 .pf-c-pagination {
-    ak-timestamp {
-        font-size: 0.75rem;
-        font-style: italic;
-        color: var(--pf-global--Color--200);
-
-        &::part(label) {
-            display: inline-block;
-        }
-
-        &::part(elapsed) {
-            display: inline-block;
-        }
-    }
+    --ak-timestamp--FontSize: var(--pf-global--FontSize--xs);
+    --ak-timestamp--FontStyle: italic;
+    --ak-timestamp--Color: var(--pf-global--Color--200);
 }
 
 /* Fix alignment issues with images in tables */
