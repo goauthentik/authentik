@@ -11,4 +11,7 @@ html[lang^="ko-"] {
     --ak-font-family-heading:
         "Pretendard Variable", "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic",
         "맑은 고딕", sans-serif;
+
+    --ak-global--font-family--sans-serif: var(--ak-font-family-sans-serif);
+    --ak-global--font-family--display: var(--ak-font-family-heading);
 }
