@@ -10,6 +10,9 @@
  *   over the existing fetch-then-set-innerHTML path used by `<ak-mdx>`. The
  *   shape is `{ content, frontmatter, publicPath, publicDirectory }` where
  *   `content` is now pre-rendered HTML rather than raw markdown source.
+ *   The `file` loader takes the emitted extension from the resolved path, so
+ *   imports resolve to a `.json` sibling path and carry the real source path
+ *   in `pluginData`; the emitted asset is then `.json`, not `.mdx`.
  */
 
 import * as fs from "node:fs/promises";
@@ -49,18 +52,26 @@ export function mdxPlugin({ root }: MDXPluginOptions): Plugin {
         async function resolveListener(args: OnResolveArgs): Promise<OnResolveResult> {
             if (!args.path.startsWith("~")) return args;
 
+            const sourcePath = path.join(docsPackageRoot, "docs", args.path.slice(prefix.length));
+
             return {
-                path: path.join(docsPackageRoot, "docs", args.path.slice(prefix.length)),
+                path: sourcePath.replace(/\.mdx?$/, ".json"),
+                pluginData: { sourcePath },
                 pluginName,
             };
         }
 
-        async function loadListener(args: OnLoadArgs): Promise<OnLoadResult> {
-            const source = String(await fs.readFile(args.path));
+        async function loadListener(args: OnLoadArgs): Promise<OnLoadResult | undefined> {
+            const sourcePath: string | undefined = args.pluginData?.sourcePath;
+
+            // Not one of ours: let esbuild's default JSON loader handle it.
+            if (!sourcePath) return undefined;
+
+            const source = String(await fs.readFile(sourcePath));
 
             const publicPath = path.resolve(
                 "/",
-                path.relative(path.join(root, "website", "docs"), args.path),
+                path.relative(path.join(root, "website", "docs"), sourcePath),
             );
 
             const publicDirectory = path.dirname(publicPath);
@@ -75,12 +86,14 @@ export function mdxPlugin({ root }: MDXPluginOptions): Plugin {
                     publicDirectory,
                 }),
                 loader: "file",
+                // The resolved `.json` path doesn't exist; watch the real source instead.
+                watchFiles: [sourcePath],
                 pluginName,
             };
         }
 
         build.onResolve({ filter: /\.mdx?$/ }, resolveListener);
-        build.onLoad({ filter: /\.mdx?$/ }, loadListener);
+        build.onLoad({ filter: /\.json$/ }, loadListener);
     }
 
     return {
