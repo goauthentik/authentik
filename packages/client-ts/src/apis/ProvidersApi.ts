@@ -250,6 +250,10 @@ import {
     type SCIMProviderUserRequest,
     SCIMProviderUserRequestToJSON,
 } from "../models/SCIMProviderUserRequest.js";
+import {
+    type SCIMResourceTypeDiscovery,
+    SCIMResourceTypeDiscoveryFromJSON,
+} from "../models/SCIMResourceTypeDiscovery.js";
 import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum.js";
 import { type SSFProvider, SSFProviderFromJSON } from "../models/SSFProvider.js";
 import { type SSFProviderRequest, SSFProviderRequestToJSON } from "../models/SSFProviderRequest.js";
@@ -1276,6 +1280,17 @@ export interface ProvidersScimPartialUpdateRequest {
      */
     id: number;
     patchedSCIMProviderRequest?: PatchedSCIMProviderRequest;
+}
+
+export interface ProvidersScimResourceTypesRetrieveRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
+    id: number;
+    /**
+     * Bypass the cached discovery result.
+     */
+    refresh?: boolean;
 }
 
 export interface ProvidersScimRetrieveRequest {
@@ -9075,6 +9090,77 @@ export class ProvidersApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<SCIMProvider> {
         const response = await this.providersScimPartialUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for providersScimResourceTypesRetrieve without sending the request
+     */
+    async providersScimResourceTypesRetrieveRequestOpts(
+        requestParameters: ProvidersScimResourceTypesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling providersScimResourceTypesRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters["refresh"] != null) {
+            queryParameters["refresh"] = requestParameters["refresh"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/providers/scim/{id}/resource_types/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Inspect the destination's advertised resource types without changing sync behavior.
+     */
+    async providersScimResourceTypesRetrieveRaw(
+        requestParameters: ProvidersScimResourceTypesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMResourceTypeDiscovery>> {
+        const requestOptions =
+            await this.providersScimResourceTypesRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMResourceTypeDiscoveryFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Inspect the destination's advertised resource types without changing sync behavior.
+     */
+    async providersScimResourceTypesRetrieve(
+        requestParameters: ProvidersScimResourceTypesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMResourceTypeDiscovery> {
+        const response = await this.providersScimResourceTypesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
