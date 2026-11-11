@@ -114,6 +114,12 @@ class SimpleFlowExecutor {
             finalData = data;
         }
 
+        // The API schema uses `component` to tell the challenge responses apart, so send it as the
+        // default flow executor does.
+        if (this.challenge?.component) {
+            finalData.component = this.challenge.component;
+        }
+
         $.ajax({
             type: "POST",
             url: this.apiURL,
