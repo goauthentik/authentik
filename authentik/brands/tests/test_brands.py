@@ -3,16 +3,23 @@
 from json import loads
 
 from django.urls import reverse
+from django.utils.http import urlencode
 from rest_framework.test import APITestCase
 
 from authentik.admin.flags import Flag
 from authentik.blueprints.tests import apply_blueprint
 from authentik.brands.models import SESSION_KEY_BRAND_SAFE_MODE, Brand
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_brand
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_brand,
+    create_test_flow,
+)
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.saml.models import SAMLProvider
+from authentik.stages.password import BACKEND_INBUILT
+from authentik.stages.password.models import PasswordStage
 
 
 class TestBrands(APITestCase):
@@ -245,6 +252,30 @@ class TestBrands(APITestCase):
             reverse("authentik_api:brand-list"), data={"domain": "bar", "default": True}
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_change_password_no_flow(self):
+        """Test /.well-known/change-password without a configuration flow"""
+        create_test_brand()
+        PasswordStage.objects.create(name=generate_id(), backends=[BACKEND_INBUILT])
+        response = self.client.get(reverse("authentik_brands:change-password"))
+        self.assertEqual(response.status_code, 404)
+
+    def test_change_password(self):
+        """Test /.well-known/change-password redirects to the configuration flow"""
+        create_test_brand()
+        PasswordStage.objects.create(name=generate_id(), backends=[BACKEND_INBUILT])
+        stage = PasswordStage.objects.create(
+            name=generate_id(), backends=[BACKEND_INBUILT], configure_flow=create_test_flow()
+        )
+        response = self.client.get(reverse("authentik_brands:change-password"))
+        self.assertEqual(response.status_code, 302)
+        next_url = urlencode(
+            {"next": reverse("authentik_core:if-user-path", kwargs={"path": "settings"})}
+        )
+        self.assertEqual(
+            response["Location"],
+            reverse("authentik_flows:configure", kwargs={"stage_uuid": stage.pk}) + f"?{next_url}",
+        )
 
     def test_webfinger_no_app(self):
         """Test Webfinger"""
