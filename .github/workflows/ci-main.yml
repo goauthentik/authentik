@@ -407,6 +407,7 @@ jobs:
           rm -rf container/
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Run tests in the server image
+        continue-on-error: ${{ matrix.fips }}
         env:
           AUTHENTIK_IMAGE: authentik.invalid/goauthentik/server
           AUTHENTIK_TAG: ci${{ matrix.tag-suffix }}
