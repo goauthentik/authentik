@@ -1,3 +1,4 @@
+import "#admin/admin-overview/AdminOverviewPage";
 import { toUserInterface } from "#elements/router/core/interfaces";
 import { navigate } from "#elements/router/core/navigation";
 import { Route, type RouteLike } from "#elements/router/core/Route";

@@ -2,6 +2,7 @@ import "#elements/LicenseNotice";
 import "#admin/endpoints/connectors/agent/AgentConnectorForm";
 import "#admin/endpoints/connectors/fleet/FleetConnectorForm";
 import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
+import "#admin/endpoints/connectors/microsoft_intune/MicrosoftIntuneConnectorForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";

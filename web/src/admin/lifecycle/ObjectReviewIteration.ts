@@ -11,6 +11,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
+import { plural } from "#common/ui/locale/plurals";
 
 import { ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -106,14 +107,26 @@ export class ObjectReviewIteration extends Table<Review> {
 
         const groupList = reviewerGroups.map((g) => g.name).join(", ");
 
-        const label =
-            minReviewers === 1
-                ? reviewerGroups.length === 1
-                    ? msg(str`At least ${minReviewers} user from this group: ${groupList}.`)
-                    : msg(str`At least ${minReviewers} user from these groups: ${groupList}.`)
-                : reviewerGroups.length === 1
-                  ? msg(str`At least ${minReviewers} users from this group: ${groupList}.`)
-                  : msg(str`At least ${minReviewers} users from these groups: ${groupList}.`);
+        // The group list is a plain list of names, so the group wording depends on how many there
+        // are, not on a CLDR category.
+        const label = plural(minReviewers, {
+            one: (formattedCount) =>
+                reviewerGroups.length === 1
+                    ? msg(str`At least ${formattedCount} user from this group: ${groupList}.`, {
+                          id: "lifecycle.review.min-reviewers.single-group.one",
+                      })
+                    : msg(str`At least ${formattedCount} user from these groups: ${groupList}.`, {
+                          id: "lifecycle.review.min-reviewers.multiple-groups.one",
+                      }),
+            other: (formattedCount) =>
+                reviewerGroups.length === 1
+                    ? msg(str`At least ${formattedCount} users from this group: ${groupList}.`, {
+                          id: "lifecycle.review.min-reviewers.single-group.other",
+                      })
+                    : msg(str`At least ${formattedCount} users from these groups: ${groupList}.`, {
+                          id: "lifecycle.review.min-reviewers.multiple-groups.other",
+                      }),
+        });
 
         result.push(html` <div>${label}</div>`);
 
