@@ -10,6 +10,7 @@ import { isAPIResultReady } from "#common/api/responses";
 import { pluckErrorDetail } from "#common/errors/network";
 import { actionToLabel, severityToLevel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
+import { plural } from "#common/ui/locale/plurals";
 
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
@@ -202,9 +203,17 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                             ${msg("Notifications")}
                         </h2>
                         <span aria-live="polite" aria-atomic="true">
-                            ${msg(str`${unreadCount} unread`, {
-                                id: "notification-unread-count",
-                                desc: "Indicates the number of unread notifications in the notification drawer",
+                            ${plural(unreadCount, {
+                                one: () =>
+                                    msg(str`${unreadCount} unread`, {
+                                        id: "notifications.unread-count.label.one",
+                                        desc: "Indicates the number of unread notifications in the notification drawer",
+                                    }),
+                                other: () =>
+                                    msg(str`${unreadCount} unread`, {
+                                        id: "notifications.unread-count.label.other",
+                                        desc: "Indicates the number of unread notifications in the notification drawer",
+                                    }),
                             })}
                         </span>
                     </div>

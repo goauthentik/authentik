@@ -65,6 +65,13 @@ export const defaultAllowedTypes = [
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends Table<T> {
+    public static override verboseName = msg("Policy binding", {
+        id: "policy-bindings.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Policy bindings", {
+        id: "policy-bindings.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [
         ...super.styles,
         css`
@@ -170,7 +177,6 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         return html`<ak-spinner-button .callAction=${this.refreshListener} class="pf-m-secondary">
                 ${msg("Refresh")}</ak-spinner-button
             ><ak-forms-delete-bulk
-                object-label=${msg("Policy binding(s)")}
                 .objects=${this.selectedElements}
                 .metadata=${(item: PolicyBinding) => {
                     return [

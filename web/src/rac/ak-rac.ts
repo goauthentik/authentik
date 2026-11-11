@@ -4,6 +4,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 import { writeToClipboard } from "#common/clipboard";
+import { plural } from "#common/ui/locale/plurals";
 import { websocketURL } from "#common/urls";
 
 import { Interface } from "#elements/Interface";
@@ -232,18 +233,36 @@ export class RacInterface extends WithBrandConfig(Interface) {
                 return;
             }
         } else if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
-            this.reconnectingMessage = msg(
-                str`Connection failed after ${this.connectionAttempt} attempts.`,
-            );
+            const attempts = this.connectionAttempt;
+
+            this.reconnectingMessage = plural(attempts, {
+                one: () =>
+                    msg(str`Connection failed after ${attempts} attempt.`, {
+                        id: "rac.connection.failed.one",
+                    }),
+                other: () =>
+                    msg(str`Connection failed after ${attempts} attempts.`, {
+                        id: "rac.connection.failed.other",
+                    }),
+            });
 
             return;
         }
 
         const delay = 500 * this.connectionAttempt;
 
-        this.reconnectingMessage = msg(
-            str`Re-connecting in ${Math.max(1, delay / 1000)} second(s).`,
-        );
+        const seconds = Math.max(1, delay / 1000);
+
+        this.reconnectingMessage = plural(seconds, {
+            one: () =>
+                msg(str`Re-connecting in ${seconds} second.`, {
+                    id: "rac.connection.reconnecting.one",
+                }),
+            other: () =>
+                msg(str`Re-connecting in ${seconds} seconds.`, {
+                    id: "rac.connection.reconnecting.other",
+                }),
+        });
 
         setTimeout(() => {
             this.firstUpdated();

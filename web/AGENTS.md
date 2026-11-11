@@ -147,3 +147,25 @@ Always provide an explicit `id` to `msg()`; do not rely on auto-generated hashes
 - **Composable fragments** that get concatenated go under `.prefix.*` / `.suffix.*` (see `command-palette.prefix.*`).
 - **Shared strings** go under a top-level namespace like `common.actions.*` or `forms.validation.*` rather than being duplicated per feature.
 - **No flat kebab IDs** like `command-palette-placeholder` or `drawer-toggle-button-notifications` for new strings. Use the dotted hierarchy: `command-palette.placeholder`, `drawer.toggle-button.notifications`. Migrate legacy flat IDs opportunistically when touching surrounding code; do not do bulk renames.
+
+### Counts and plurals
+
+Every message that shows a count goes through `plural()` from `#common/ui/locale/plurals`, with one `msg()` per form and IDs ending in the CLDR suffix:
+
+```ts
+plural(count, {
+    one: () =>
+        msg(str`Successfully imported ${count} device.`, { id: "stages.duo.import.success.one" }),
+    other: () =>
+        msg(str`Successfully imported ${count} devices.`, {
+            id: "stages.duo.import.success.other",
+        }),
+});
+```
+
+- **Never** write `item(s)`, `Policy / Policies`, or a `count === 1 ? … : …` ternary to word a count. They read wrong in English and cannot be translated.
+- **Interpolate the count in every form**, including `one`. CLDR categories are not numbers: Russian's `one` covers 21 and French's covers 0, so "one object" is wrong there.
+- **Zero is not a category in English.** When zero needs its own wording ("not associated with any objects"), check `count === 0` before calling `plural()`.
+- **Pluralize even when English does not change**, such as `${count} unread`, so translators can word each form differently.
+- **Source strings have only `one` and `other`.** lit-localize offers translators only the IDs in the source, so locales with `two`, `few`, or `many` use their `other` translation for those counts.
+- **Bulk actions on table rows use `<ak-forms-delete-bulk>`**, which already pluralizes its heading, prompt, and toasts. Set `action` to `delete`, `remove`, or `cancel`, and give the table `static verboseName` and `verboseNamePlural`; the form reads them from the table that renders it. Pass `verbose-name` and `verbose-name-plural` when it is rendered outside a table, or when the noun must keep its capitals (`SCIM Users`): `Table` lowercases its names for the search placeholder and empty state.

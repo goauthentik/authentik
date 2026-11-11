@@ -7,6 +7,8 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
+import { APIMessage, MessageLevel } from "#common/messages";
+import { plural } from "#common/ui/locale/plurals";
 
 import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
@@ -38,11 +40,25 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
     @state()
     protected rolesToAdd: Role[] = [];
 
-    getSuccessMessage(): string {
-        return msg("Successfully added user to role(s).");
+    protected override formatAPISuccessMessage(data: { roles: string[] }): APIMessage {
+        const count = data.roles.length;
+
+        return {
+            level: MessageLevel.success,
+            message: plural(count, {
+                one: () =>
+                    msg(str`Successfully added user to ${count} role.`, {
+                        id: "roles.add-user.success.one",
+                    }),
+                other: () =>
+                    msg(str`Successfully added user to ${count} roles.`, {
+                        id: "roles.add-user.success.other",
+                    }),
+            }),
+        };
     }
 
-    async send(data: { roles: string[] }): Promise<unknown> {
+    async send(data: { roles: string[] }): Promise<{ roles: string[] }> {
         await Promise.all(
             data.roles.map((role) => {
                 if (!this.user) return Promise.resolve();
@@ -115,6 +131,11 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
 
 @customElement("ak-related-role-table")
 export class RelatedRoleTable extends Table<Role> {
+    public static override verboseName = msg("Role", { id: "roles.verbose-name.label" });
+    public static override verboseNamePlural = msg("Roles", {
+        id: "roles.verbose-name-plural.label",
+    });
+
     #api = aki(RbacApi);
 
     checkbox = true;
@@ -189,12 +210,10 @@ export class RelatedRoleTable extends Table<Role> {
         const disabled = !this.selectedElements.length;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Role(s)")}
-            submit-label=${msg("Remove from Role(s)")}
+            action="remove"
             action-subtext=${msg(
                 str`Are you sure you want to remove user ${this.targetUser?.username} from the following roles?`,
             )}
-            button-label=${msg("Remove")}
             .objects=${this.selectedElements}
             .delete=${(item: Role) => {
                 if (!this.targetUser) return;

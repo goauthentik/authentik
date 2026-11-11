@@ -24,6 +24,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
+    public static override verboseName = msg("Prompt", { id: "prompts.verbose-name.label" });
+    public static override verboseNamePlural = msg("Prompts", {
+        id: "prompts.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
     public override searchPlaceholder = msg("Search for a prompt by name, field or type...");
 
@@ -53,7 +58,6 @@ export class PromptListPage extends TablePage<Prompt> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Prompt(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Prompt) => {
                 return aki(StagesApi).stagesPromptPromptsUsedByList({

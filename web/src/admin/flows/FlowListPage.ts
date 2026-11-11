@@ -28,6 +28,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
+    public static override verboseName = msg("Flow", { id: "flows.verbose-name.label" });
+    public static override verboseNamePlural = msg("Flows", {
+        id: "flows.verbose-name-plural.label",
+    });
+
     static styles = [...super.styles, PFBanner];
 
     protected override searchEnabled = true;
@@ -66,7 +71,6 @@ export class FlowListPage extends TablePage<Flow> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Flow(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Flow) => {
                 return aki(FlowsApi).flowsInstancesUsedByList({

@@ -64,6 +64,13 @@ export function formatBlueprintDescription(item: BlueprintInstance): string | nu
 
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
+    public static override verboseName = msg("Blueprint", {
+        id: "blueprints.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Blueprints", {
+        id: "blueprints.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public pageTitle = msg("Blueprints");
@@ -93,7 +100,6 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Blueprint(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: BlueprintInstance) => {
                 return [{ key: msg("Name"), value: item.name }];

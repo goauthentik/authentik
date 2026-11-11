@@ -4,6 +4,13 @@ import { MessageFormatter } from "#common/ui/locale/format";
  * Defines the plural forms for a given locale, and provides a function to select the appropriate
  * form based on a count.
  *
+ * Every form must interpolate the count. A CLDR category is not a number: in Russian, "one" also
+ * covers 21 and 31, and in French it covers 0. A form that spells out "one item" is wrong in those
+ * locales.
+ *
+ * Categories are CLDR plural categories, not literal numbers. English never selects "zero"; when
+ * zero needs its own wording, check for it before calling {@linkcode plural}.
+ *
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/PluralRules MDN} for more information on plural categories and rules.
  */
 export interface PluralForms {
@@ -42,14 +49,35 @@ export interface PluralForms {
 const PluralRulesCache = new Map<Intl.LocalesArgument, Intl.PluralRules>();
 
 /**
+ * The active translation's locale, read from the document's `lang` attribute, which the locale
+ * controller keeps in sync. It can differ from the browser's own locale.
+ *
+ * Anything can write the attribute, a browser extension included, so a tag that is not valid falls
+ * back to the runtime default instead of making every pluralized message throw.
+ */
+function documentLocale(): string | undefined {
+    const lang = globalThis.document?.documentElement.lang;
+
+    if (!lang) return undefined;
+
+    try {
+        return Intl.getCanonicalLocales(lang)[0];
+    } catch {
+        return undefined;
+    }
+}
+
+/**
  * Get an {@linkcode Intl.PluralRules} instance for the given locale, using a cache to avoid
  * unnecessary allocations.
  *
- * @param locale The locale to get plural rules for, or undefined to use the default locale.
+ * @param locale The locale to get plural rules for, or undefined to use the active locale.
  *
  * @returns An {@linkcode Intl.PluralRules} instance for the given locale.
  */
 function getPluralRules(locale?: Intl.LocalesArgument): Intl.PluralRules {
+    locale ??= documentLocale();
+
     const key = locale ?? "";
     let pr = PluralRulesCache.get(key);
 
@@ -67,7 +95,7 @@ function getPluralRules(locale?: Intl.LocalesArgument): Intl.PluralRules {
  * @param count The count to get the plural form for.
  * @param forms The forms to use for each plural category.
  * @param locale The locale to use for determining the plural category, or undefined to use the
- *   default locale.
+ *   active locale.
  */
 export function plural(count: number, forms: PluralForms, locale?: Intl.LocalesArgument): string {
     const category = getPluralRules(locale).select(count);
