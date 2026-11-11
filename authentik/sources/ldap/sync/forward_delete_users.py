@@ -33,16 +33,30 @@ class UserLDAPForwardDeletion(BaseLDAPSynchronizer):
             generator=True,
             **kwargs,
         )
+        object_count = 0
         for batch in batched(users, UPDATE_CHUNK_SIZE, strict=False):
             identifiers = []
             for user in batch:
                 if not (attributes := self.get_attributes(user)):
                     continue
+                object_count += 1
                 if identifier := self.get_identifier(attributes):
                     identifiers.append(identifier)
             UserLDAPSourceConnection.objects.filter(identifier__in=identifiers).update(
                 validated_by=uuid
             )
+
+        # Safety guard (#27586): a search that returns no objects almost always means a
+        # misconfiguration (bad filter, wrong base DN, lost bind permissions), not that every
+        # object was removed from the directory. Deleting every synced object in that case is
+        # destructive and irreversible, so skip deletion and warn instead.
+        if object_count == 0:
+            self._task.warning(
+                "LDAP search returned no users; skipping deletion to avoid removing all "
+                "synced users. Check the source's user object filter, base DN and bind "
+                "account permissions."
+            )
+            return iter(())
 
         return batched(
             UserLDAPSourceConnection.objects.filter(source=self._source)

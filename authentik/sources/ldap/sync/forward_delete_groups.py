@@ -31,16 +31,30 @@ class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
             generator=True,
             **kwargs,
         )
+        object_count = 0
         for batch in batched(groups, UPDATE_CHUNK_SIZE, strict=False):
             identifiers = []
             for group in batch:
                 if not (attributes := self.get_attributes(group)):
                     continue
+                object_count += 1
                 if identifier := self.get_identifier(attributes):
                     identifiers.append(identifier)
             GroupLDAPSourceConnection.objects.filter(identifier__in=identifiers).update(
                 validated_by=uuid
             )
+
+        # Safety guard (#27586): a search that returns no objects almost always means a
+        # misconfiguration (bad filter, wrong base DN, lost bind permissions), not that every
+        # object was removed from the directory. Deleting every synced object in that case is
+        # destructive and irreversible, so skip deletion and warn instead.
+        if object_count == 0:
+            self._task.warning(
+                "LDAP search returned no groups; skipping deletion to avoid removing all "
+                "synced groups. Check the source's group object filter, base DN and bind "
+                "account permissions."
+            )
+            return iter(())
 
         return batched(
             GroupLDAPSourceConnection.objects.filter(source=self._source)

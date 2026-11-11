@@ -795,6 +795,41 @@ class LDAPSyncTests(TestCase):
             ldap_sync.send(self.source.pk)
         self.assertTrue(Group.objects.filter(name="not-in-the-source").exists())
 
+    def test_user_deletion_no_results(self):
+        """Test that users are NOT deleted when the LDAP user search returns no results
+        (e.g. a misconfigured filter or lost permissions). See #27586."""
+        user = User.objects.create_user(username="not-in-the-source")
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.user_object_filter = "(uid=this-matches-nothing)"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+        self.assertTrue(User.objects.filter(username="not-in-the-source").exists())
+
+    def test_group_deletion_no_results(self):
+        """Test that groups are NOT deleted when the LDAP group search returns no results
+        (e.g. a misconfigured filter or lost permissions). See #27586."""
+        group = Group.objects.create(name="not-in-the-source")
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(cn=this-matches-nothing)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.send(self.source.pk)
+        self.assertTrue(Group.objects.filter(name="not-in-the-source").exists())
+
     def test_batch_deletion(self):
         """Test batch deletion"""
         BATCH_SIZE = DELETE_CHUNK_SIZE + 1
