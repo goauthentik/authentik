@@ -1,4 +1,6 @@
 import "#elements/AppIcon";
+import "#elements/forms/ModalForm";
+import "#admin/applications/ApplicationForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 

@@ -166,11 +166,9 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
     protected renderLoadingBar(): SlottedTemplateResult {
         return until(
             this.refreshPromise?.then(() => null),
-            html`<ak-progress
-                part="loading"
-                variant="indeterminate"
-                label=${msg("Loading")}
-            ></ak-progress>`,
+            html`<ak-progress part="loading" variant="indeterminate">
+                <div slot="label">${msg("Loading")}</div>
+            </ak-progress>`,
         );
     }
 

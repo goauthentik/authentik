@@ -261,6 +261,9 @@ importers:
       '@hcaptcha/types':
         specifier: ^1.2.0
         version: 1.2.0
+      '@lit-labs/ssr-dom-shim':
+        specifier: ^1.6.0
+        version: 1.6.0
       '@lit/context':
         specifier: ^1.1.6
         version: 1.1.6

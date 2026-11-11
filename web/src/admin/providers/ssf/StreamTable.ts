@@ -21,6 +21,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-ssf-stream-list")
 export class SSFProviderStreamList extends Table<SSFStream> {
+    public static override verboseName = msg("Stream", { id: "ssf.streams.verbose-name.label" });
+    public static override verboseNamePlural = msg("Streams", {
+        id: "ssf.streams.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
     public checkbox: boolean = true;
     public clearOnRefresh: boolean = true;
@@ -46,7 +51,6 @@ export class SSFProviderStreamList extends Table<SSFStream> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Stream(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: SSFStream) => {
                 return aki(SsfApi).ssfStreamsDestroy({
