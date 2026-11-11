@@ -24,6 +24,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
+    public static override verboseName = msg("Stage", { id: "stages.verbose-name.label" });
+    public static override verboseNamePlural = msg("Stages", {
+        id: "stages.verbose-name-plural.label",
+    });
+
     public override pageTitle = msg("Stages");
     public override pageDescription = msg(
         "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
@@ -51,7 +56,6 @@ export class StageListPage extends TablePage<Stage> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Stage(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Stage) => {
                 return aki(StagesApi).stagesAllUsedByList({

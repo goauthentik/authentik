@@ -52,7 +52,7 @@
         "build:types": "wireit",
         "bundler:watch": "node scripts/build-web.ts --watch",
         "check": "run-s lint:check format:check",
-        "extract-locales": "lit-localize extract",
+        "extract-locales": "node scripts/extract-locales.ts",
         "fix": "run-s lint format",
         "format": "oxfmt --write .",
         "format:check": "oxfmt --check .",

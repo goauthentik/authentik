@@ -40,6 +40,13 @@ const assignedFirst = (a: PermissionDisplay, b: PermissionDisplay) =>
 
 @customElement("ak-rbac-role-object-permission-table")
 export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
+    public static override verboseName = msg("Permission", {
+        id: "permissions.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Permissions", {
+        id: "permissions.verbose-name-plural.label",
+    });
+
     static readonly styles = [
         ...Table.styles,
         css`
@@ -147,7 +154,6 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Permission(s)", { id: "permissions.delete.label" })}
             .objects=${this.selectedElements}
             .metadata=${(item: RoleAssignedObjectPermission) => [
                 {

@@ -23,6 +23,13 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-endpoints-device-list")
 export class DeviceListPage extends TablePage<EndpointDevice> {
+    public static override verboseName = msg("Endpoint Device", {
+        id: "endpoint-devices.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Endpoint Devices", {
+        id: "endpoint-devices.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [
         ...super.styles,
         PFGrid,
@@ -169,7 +176,6 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Endpoint Device(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: EndpointDevice) => {
                 return [{ key: msg("Name"), value: item.name }];
