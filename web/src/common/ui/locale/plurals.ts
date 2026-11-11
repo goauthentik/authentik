@@ -1,4 +1,5 @@
 import { MessageFormatter } from "#common/ui/locale/format";
+import { withPluralCategory } from "#common/ui/locale/plural-category";
 
 /**
  * Formats one plural variant. Receives the count, formatted for the active locale.
@@ -85,7 +86,9 @@ function cached<T>(
  * Select and format the variant of a pluralized message for a count, like an MF2
  * `.match {$count :number}` message.
  *
- * An exact numeric key wins over the count's plural category, and "other" is the fallback.
+ * An exact numeric key wins over the count's plural category. A category the forms leave out
+ * formats with the "other" form, using the locale's translation for that category when the
+ * catalog has one.
  *
  * @param count The count to select by.
  * @param forms The message variants.
@@ -105,7 +108,13 @@ export function plural(count: number, forms: PluralForms, options: PluralOptions
         return new Intl.NumberFormat(locale, numberOptions);
     });
 
-    const formatter = forms[count] ?? forms[rules.select(count)] ?? forms.other;
+    const formattedCount = numberFormat.format(count);
+    const exact = forms[count];
 
-    return formatter(numberFormat.format(count));
+    if (exact) return exact(formattedCount);
+
+    const category = rules.select(count);
+    const formatter = forms[category] ?? forms.other;
+
+    return withPluralCategory(category, () => formatter(formattedCount));
 }

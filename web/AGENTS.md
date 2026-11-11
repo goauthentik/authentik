@@ -150,22 +150,26 @@ Always provide an explicit `id` to `msg()`; do not rely on auto-generated hashes
 
 ### Counts and plurals
 
-Every message that shows a count goes through `plural()` from `#common/ui/locale/plurals`, with one `msg()` per form and IDs ending in the CLDR suffix:
+Every message that shows a count goes through `plural()` from `#common/ui/locale/plurals`, with one `msg()` per form and IDs ending in the CLDR suffix. Its shape follows an MF2 `.match {$count :number}` message, so call sites can move to `Intl.MessageFormat` once browsers ship it:
 
 ```ts
 plural(count, {
-    one: () =>
-        msg(str`Successfully imported ${count} device.`, { id: "stages.duo.import.success.one" }),
-    other: () =>
-        msg(str`Successfully imported ${count} devices.`, {
+    0: () => msg("No devices were imported.", { id: "stages.duo.import.success.none" }),
+    one: (formattedCount) =>
+        msg(str`Successfully imported ${formattedCount} device.`, {
+            id: "stages.duo.import.success.one",
+        }),
+    other: (formattedCount) =>
+        msg(str`Successfully imported ${formattedCount} devices.`, {
             id: "stages.duo.import.success.other",
         }),
 });
 ```
 
 - **Never** write `item(s)`, `Policy / Policies`, or a `count === 1 ? … : …` ternary to word a count. They read wrong in English and cannot be translated.
-- **Interpolate the count in every form**, including `one`. CLDR categories are not numbers: Russian's `one` covers 21 and French's covers 0, so "one object" is wrong there.
-- **Zero is not a category in English.** When zero needs its own wording ("not associated with any objects"), check `count === 0` before calling `plural()`.
-- **Pluralize even when English does not change**, such as `${count} unread`, so translators can word each form differently.
-- **Source strings have only `one` and `other`.** lit-localize offers translators only the IDs in the source, so locales with `two`, `few`, or `many` use their `other` translation for those counts.
+- **Interpolate `formattedCount` in every category form**, including `one`. It is the count formatted for the locale (`1,234`, `1 234`). CLDR categories are not numbers: Russian's `one` covers 21 and French's covers 0, so "one object" is wrong there.
+- **Numeric keys match a count exactly** and win over its category, like MF2's `0 {{…}}`. Use them when a count needs its own wording, such as zero. Their IDs must not end in a CLDR suffix.
+- **Options are `Intl.PluralRules` options plus `locale`**: `{ type: "ordinal" }` for "1st/2nd", digit options for decimals.
+- **Write only the forms English needs.** Extraction (`npm run extract-locales`) turns every message with an `.other` form into a Transifex plural group, and each translator fills in the forms their own language has. At runtime, a category the source doesn't write uses that language's translation for it.
+- **Pluralize even when English does not change**, such as `${formattedCount} unread`, so translators can word each form differently.
 - **Bulk actions on table rows use `<ak-forms-delete-bulk>`**, which already pluralizes its heading, prompt, and toasts. Set `action` to `delete`, `remove`, or `cancel`, and give the table `static verboseName` and `verboseNamePlural`; the form reads them from the table that renders it. Pass `verbose-name` and `verbose-name-plural` when it is rendered outside a table, or when the noun must keep its capitals (`SCIM Users`): `Table` lowercases its names for the search placeholder and empty state.
