@@ -43,7 +43,7 @@ export interface MdxPluginData {
 
 type MDXOnResolveArgs = Omit<OnResolveArgs, "pluginData"> & { pluginData: MdxPluginData };
 
-type MDXOnLoadArgs = Omit<OnLoadArgs, "pluginData"> & { pluginData: MdxPluginData };
+type MDXOnLoadArgs = Omit<OnLoadArgs, "pluginData"> & { pluginData?: MdxPluginData };
 
 /**
  * Bundle markdown and MDX source into JSON modules.
@@ -70,7 +70,7 @@ export function mdxPlugin({ root }: MDXPluginOptions): Plugin {
         }
 
         async function loadListener(args: MDXOnLoadArgs): Promise<OnLoadResult | undefined> {
-            const { sourcePath } = args.pluginData;
+            const sourcePath = args.pluginData?.sourcePath;
 
             if (!sourcePath) return undefined;
 
