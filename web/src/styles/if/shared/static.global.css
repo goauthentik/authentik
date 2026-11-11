@@ -16,7 +16,6 @@
  * Property will be applied when the browser paint phase begins.
  */
 
-@import "@patternfly/patternfly/components/BackgroundImage/background-image.css" layer(vendor);
 @import "@patternfly/patternfly/components/Button/button.css" layer(vendor);
 @import "@patternfly/patternfly/components/Form/form.css" layer(vendor);
 @import "@patternfly/patternfly/components/Drawer/drawer.css" layer(vendor);
