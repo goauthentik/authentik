@@ -10,9 +10,6 @@
  *   over the existing fetch-then-set-innerHTML path used by `<ak-mdx>`. The
  *   shape is `{ content, frontmatter, publicPath, publicDirectory }` where
  *   `content` is now pre-rendered HTML rather than raw markdown source.
- *   The `file` loader takes the emitted extension from the resolved path, so
- *   imports resolve to a `.json` sibling path and carry the real source path
- *   in `pluginData`; the emitted asset is then `.json`, not `.mdx`.
  */
 
 import * as fs from "node:fs/promises";
@@ -40,6 +37,14 @@ export interface MDXPluginOptions {
     root: string;
 }
 
+export interface MdxPluginData {
+    sourcePath: string | undefined;
+}
+
+type MDXOnResolveArgs = Omit<OnResolveArgs, "pluginData"> & { pluginData: MdxPluginData };
+
+type MDXOnLoadArgs = Omit<OnLoadArgs, "pluginData"> & { pluginData: MdxPluginData };
+
 /**
  * Bundle markdown and MDX source into JSON modules.
  */
@@ -49,9 +54,12 @@ export function mdxPlugin({ root }: MDXPluginOptions): Plugin {
     const docsPackageRoot = path.resolve(MonoRepoRoot, "website");
 
     function setup(build: PluginBuild) {
-        async function resolveListener(args: OnResolveArgs): Promise<OnResolveResult> {
+        async function resolveListener(args: MDXOnResolveArgs): Promise<OnResolveResult> {
             if (!args.path.startsWith("~")) return args;
 
+            // We explicitly convert the MDX into a JSON object for rendering, so we include the
+            // `sourcePath` as a separate field from the `path`, which points to our intended
+            // output.
             const sourcePath = path.join(docsPackageRoot, "docs", args.path.slice(prefix.length));
 
             return {
@@ -61,21 +69,15 @@ export function mdxPlugin({ root }: MDXPluginOptions): Plugin {
             };
         }
 
-        async function loadListener(args: OnLoadArgs): Promise<OnLoadResult | undefined> {
-            const sourcePath: string | undefined = args.pluginData?.sourcePath;
+        async function loadListener(args: MDXOnLoadArgs): Promise<OnLoadResult | undefined> {
+            const { sourcePath } = args.pluginData;
 
-            // Not one of ours: let esbuild's default JSON loader handle it.
             if (!sourcePath) return undefined;
 
             const source = String(await fs.readFile(sourcePath));
-
-            const publicPath = path.resolve(
-                "/",
-                path.relative(path.join(root, "website", "docs"), sourcePath),
-            );
-
+            const docsPath = path.join(root, "website", "docs");
+            const publicPath = path.resolve("/", path.relative(docsPath, sourcePath));
             const publicDirectory = path.dirname(publicPath);
-
             const { html, frontmatter } = await compileMarkdown(source, publicDirectory);
 
             return {
@@ -86,7 +88,8 @@ export function mdxPlugin({ root }: MDXPluginOptions): Plugin {
                     publicDirectory,
                 }),
                 loader: "file",
-                // The resolved `.json` path doesn't exist; watch the real source instead.
+                // Since the resolved `.json` path is output, we have to specify the source to
+                // watch.
                 watchFiles: [sourcePath],
                 pluginName,
             };
