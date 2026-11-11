@@ -3,7 +3,7 @@ import "#elements/forms/ModalForm";
 import "#user/requests/AccessRequestFulfillForm";
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
-import { renderTargetSummary } from "#common/requests/utils";
+import { renderRequestSummary } from "#common/requests/utils";
 
 import { modalInvoker } from "#elements/dialogs";
 import { RowType, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -36,7 +36,7 @@ export class PendingReviewList extends Table<GrantRequest> {
         return [
             html`<div>${item.createdBy.username}</div>
                 <small>${item.createdBy.name}</small>`,
-            renderTargetSummary(item.targetObjs ?? []),
+            renderRequestSummary(item),
             Timestamp(item.created),
             html`<button
                 class="pf-c-button pf-m-secondary pf-m-block"

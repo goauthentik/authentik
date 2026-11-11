@@ -23106,6 +23106,228 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /requests/application-templates/:
+    get:
+      operationId: requests_application_templates_list
+      description: Application templates, which application requests create new applications
+        from
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApplicationTemplateList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: requests_application_templates_create
+      description: Application templates, which application requests create new applications
+        from
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationTemplateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/application-templates/{uuid}/:
+    get:
+      operationId: requests_application_templates_retrieve
+      description: Application templates, which application requests create new applications
+        from
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Application Template.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: requests_application_templates_update
+      description: Application templates, which application requests create new applications
+        from
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Application Template.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationTemplateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: requests_application_templates_partial_update
+      description: Application templates, which application requests create new applications
+        from
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Application Template.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedApplicationTemplateRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationTemplate'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: requests_application_templates_destroy
+      description: Application templates, which application requests create new applications
+        from
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Application Template.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/application-templates/{uuid}/used_by/:
+    get:
+      operationId: requests_application_templates_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Application Template.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/application-templates/requestable/:
+    get:
+      operationId: requests_application_templates_requestable_list
+      description: List application templates the current user can request a new application
+        from
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApplicationTemplateList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /requests/grant-requests/:
     get:
       operationId: requests_grant_requests_list
@@ -23207,6 +23429,38 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/{uuid}/credentials/:
+    get:
+      operationId: requests_grant_requests_credentials_retrieve
+      description: |-
+        Client ID, client secret and setup URLs of the application an approved application
+        request created. Only for the requester: anyone else reads them from the provider, which
+        shows the client secret only to users who may change it.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Grant Request.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationCredentials'
+          description: ''
+        '404':
+          description: The request created no application
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -36763,6 +37017,26 @@ components:
       - pk
       - provider_obj
       - slug
+    ApplicationCredentials:
+      type: object
+      description: What a client of the application an application request created
+        is configured with
+      properties:
+        client_id:
+          type: string
+          readOnly: true
+        client_secret:
+          type: string
+          readOnly: true
+          nullable: true
+        urls:
+          allOf:
+          - $ref: '#/components/schemas/OAuth2ProviderSetupURLs'
+          readOnly: true
+      required:
+      - client_id
+      - client_secret
+      - urls
     ApplicationEntitlement:
       type: object
       description: ApplicationEntitlement Serializer
@@ -36851,6 +37125,102 @@ components:
       required:
       - name
       - slug
+    ApplicationTemplate:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        authorization_flow:
+          type: string
+          format: uuid
+        invalidation_flow:
+          type: string
+          format: uuid
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        signing_key:
+          type: string
+          format: uuid
+          nullable: true
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+        application_group:
+          type: string
+        bindable_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        bindable_groups_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/BindableGroup'
+          readOnly: true
+      required:
+      - authorization_flow
+      - bindable_groups
+      - bindable_groups_obj
+      - invalidation_flow
+      - name
+      - pbm_uuid
+    ApplicationTemplateRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+        invalidation_flow:
+          type: string
+          format: uuid
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        signing_key:
+          type: string
+          format: uuid
+          nullable: true
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+        application_group:
+          type: string
+        bindable_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - authorization_flow
+      - bindable_groups
+      - invalidation_flow
+      - name
     AuthTypeEnum:
       enum:
       - basic
@@ -38207,6 +38577,22 @@ components:
       - authentik.sources.ldap.auth.LDAPBackend
       - authentik.sources.kerberos.auth.KerberosBackend
       type: string
+    BindableGroup:
+      type: object
+      description: |-
+        A group an application request may bind. Only the name, since requesters and reviewers
+        see it without permission to view the group itself.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
     BindingTypeEnum:
       enum:
       - REDIRECT
@@ -42921,6 +43307,11 @@ components:
           items:
             $ref: '#/components/schemas/RequestableTarget'
           readOnly: true
+        requested_application:
+          allOf:
+          - $ref: '#/components/schemas/RequestedApplication'
+          readOnly: true
+          nullable: true
         uuid:
           type: string
           format: uuid
@@ -42929,6 +43320,7 @@ components:
       - created
       - created_by
       - is_active
+      - requested_application
       - revoked_by
       - status
       - target_objs
@@ -42946,6 +43338,11 @@ components:
           type: string
           description: Optional override for how long the grant should last once approved.
             Clamped to the granting rule binding(s)' expiry_granted_max.
+        application:
+          allOf:
+          - $ref: '#/components/schemas/RequestedApplicationRequest'
+          description: The application to create. Required when requesting from an
+            application template, and only then.
       required:
       - pbms
     GrantTypeEnum:
@@ -46182,6 +46579,7 @@ components:
       - authentik_requests.requestrulechildbinding
       - authentik_requests.requestrulebinding
       - authentik_requests.requestrule
+      - authentik_requests.applicationtemplate
       - authentik_requests.grantrequest
       - authentik_stages_account_lockdown.accountlockdownstage
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
@@ -47914,6 +48312,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Application'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedApplicationTemplateList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationTemplate'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -50994,6 +51407,44 @@ components:
         meta_hide:
           type: boolean
           description: Hide this application from the user's My applications page.
+    PatchedApplicationTemplateRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+        invalidation_flow:
+          type: string
+          format: uuid
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        signing_key:
+          type: string
+          format: uuid
+          nullable: true
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+        application_group:
+          type: string
+        bindable_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -57657,6 +58108,84 @@ components:
       - pbm_uuid
       - verbose_name
       - verbose_name_plural
+    RequestedApplication:
+      type: object
+      description: The application an application request asks for, and once approved,
+        the one created
+      properties:
+        name:
+          type: string
+        meta_description:
+          type: string
+        meta_launch_url:
+          type: string
+          format: uri
+        client_type:
+          $ref: '#/components/schemas/ClientTypeEnum'
+        redirect_uris:
+          type: array
+          items:
+            type: string
+        grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+        groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        groups_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/BindableGroup'
+          readOnly: true
+        application:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+      required:
+      - application
+      - client_type
+      - grant_types
+      - groups
+      - groups_obj
+      - name
+    RequestedApplicationRequest:
+      type: object
+      description: The application an application request asks for, and once approved,
+        the one created
+      properties:
+        name:
+          type: string
+          minLength: 1
+        meta_description:
+          type: string
+        meta_launch_url:
+          type: string
+          format: uri
+        client_type:
+          $ref: '#/components/schemas/ClientTypeEnum'
+        redirect_uris:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+        groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - client_type
+      - grant_types
+      - groups
+      - name
     ResumeOnMatchFailuresEnum:
       enum:
       - missing_property

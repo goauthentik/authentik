@@ -10,6 +10,12 @@
  * Do not edit the class manually.
  */
 
+import type { RequestedApplicationRequest } from "./RequestedApplicationRequest.js";
+import {
+    RequestedApplicationRequestFromJSON,
+    RequestedApplicationRequestToJSON,
+} from "./RequestedApplicationRequest.js";
+
 /**
  * Base serializer class which doesn't implement create/update methods
  *
@@ -23,6 +29,11 @@ export interface GrantRequestCreateRequest {
      * rule binding(s)' expiry_granted_max.
      */
     expiry?: string;
+    /**
+     * The application to create. Required when requesting from an application template, and only
+     * then.
+     */
+    application?: RequestedApplicationRequest;
 }
 
 /**
@@ -49,6 +60,10 @@ export function GrantRequestCreateRequestFromJSONTyped(
     return {
         pbms: json["pbms"],
         expiry: json["expiry"] == null ? undefined : json["expiry"],
+        application:
+            json["application"] == null
+                ? undefined
+                : RequestedApplicationRequestFromJSON(json["application"]),
     };
 }
 
@@ -67,5 +82,6 @@ export function GrantRequestCreateRequestToJSONTyped(
     return {
         pbms: value["pbms"],
         expiry: value["expiry"],
+        application: RequestedApplicationRequestToJSON(value["application"]),
     };
 }

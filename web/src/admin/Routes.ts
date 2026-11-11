@@ -218,6 +218,15 @@ export const ROUTES: RouteLike[] = [
         "request-rules",
     ),
     new Route(
+        "/requests/application-templates",
+        async () => {
+            await import("#admin/requests/ApplicationTemplateListPage");
+
+            return html`<ak-application-template-list></ak-application-template-list>`;
+        },
+        "application-templates",
+    ),
+    new Route(
         "/requests/access-requests",
         async () => {
             await import("#admin/requests/AccessRequestListPage");

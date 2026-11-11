@@ -18,12 +18,28 @@ import {
     type AgentGrantRequestCreateRequest,
     AgentGrantRequestCreateRequestToJSON,
 } from "../models/AgentGrantRequestCreateRequest.js";
+import {
+    type ApplicationCredentials,
+    ApplicationCredentialsFromJSON,
+} from "../models/ApplicationCredentials.js";
+import {
+    type ApplicationTemplate,
+    ApplicationTemplateFromJSON,
+} from "../models/ApplicationTemplate.js";
+import {
+    type ApplicationTemplateRequest,
+    ApplicationTemplateRequestToJSON,
+} from "../models/ApplicationTemplateRequest.js";
 import { type GrantRequest, GrantRequestFromJSON } from "../models/GrantRequest.js";
 import {
     type GrantRequestCreateRequest,
     GrantRequestCreateRequestToJSON,
 } from "../models/GrantRequestCreateRequest.js";
 import { type Link, LinkFromJSON } from "../models/Link.js";
+import {
+    type PaginatedApplicationTemplateList,
+    PaginatedApplicationTemplateListFromJSON,
+} from "../models/PaginatedApplicationTemplateList.js";
 import {
     type PaginatedGrantRequestList,
     PaginatedGrantRequestListFromJSON,
@@ -40,6 +56,10 @@ import {
     type PaginatedRequestRuleList,
     PaginatedRequestRuleListFromJSON,
 } from "../models/PaginatedRequestRuleList.js";
+import {
+    type PatchedApplicationTemplateRequest,
+    PatchedApplicationTemplateRequestToJSON,
+} from "../models/PatchedApplicationTemplateRequest.js";
 import {
     type PatchedGrantRequestFulfillRequest,
     PatchedGrantRequestFulfillRequestToJSON,
@@ -78,12 +98,100 @@ import { type RequestStatus } from "../models/RequestStatus.js";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
 import * as runtime from "../runtime.js";
 
+export interface RequestsApplicationTemplatesCreateRequest {
+    applicationTemplateRequest: ApplicationTemplateRequest;
+}
+
+export interface RequestsApplicationTemplatesDestroyRequest {
+    /**
+     * A UUID string identifying this Application Template.
+     */
+    uuid: string;
+}
+
+export interface RequestsApplicationTemplatesListRequest {
+    name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface RequestsApplicationTemplatesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Application Template.
+     */
+    uuid: string;
+    patchedApplicationTemplateRequest?: PatchedApplicationTemplateRequest;
+}
+
+export interface RequestsApplicationTemplatesRequestableListRequest {
+    name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface RequestsApplicationTemplatesRetrieveRequest {
+    /**
+     * A UUID string identifying this Application Template.
+     */
+    uuid: string;
+}
+
+export interface RequestsApplicationTemplatesUpdateRequest {
+    /**
+     * A UUID string identifying this Application Template.
+     */
+    uuid: string;
+    applicationTemplateRequest: ApplicationTemplateRequest;
+}
+
+export interface RequestsApplicationTemplatesUsedByListRequest {
+    /**
+     * A UUID string identifying this Application Template.
+     */
+    uuid: string;
+}
+
 export interface RequestsGrantRequestsAgentCreateRequest {
     agentGrantRequestCreateRequest: AgentGrantRequestCreateRequest;
 }
 
 export interface RequestsGrantRequestsCreateRequest {
     grantRequestCreateRequest: GrantRequestCreateRequest;
+}
+
+export interface RequestsGrantRequestsCredentialsRetrieveRequest {
+    /**
+     * A UUID string identifying this Grant Request.
+     */
+    uuid: string;
 }
 
 export interface RequestsGrantRequestsDestroyRequest {
@@ -348,6 +456,578 @@ export interface RequestsRulesUsedByListRequest {
 
 export class RequestsApi extends runtime.BaseAPI {
     /**
+     * Creates request options for requestsApplicationTemplatesCreate without sending the request
+     */
+    async requestsApplicationTemplatesCreateRequestOpts(
+        requestParameters: RequestsApplicationTemplatesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["applicationTemplateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "applicationTemplateRequest",
+                'Required parameter "applicationTemplateRequest" was null or undefined when calling requestsApplicationTemplatesCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/requests/application-templates/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: ApplicationTemplateRequestToJSON(requestParameters["applicationTemplateRequest"]),
+        };
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesCreateRaw(
+        requestParameters: RequestsApplicationTemplatesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ApplicationTemplate>> {
+        const requestOptions =
+            await this.requestsApplicationTemplatesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ApplicationTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesCreate(
+        requestParameters: RequestsApplicationTemplatesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ApplicationTemplate> {
+        const response = await this.requestsApplicationTemplatesCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsApplicationTemplatesDestroy without sending the request
+     */
+    async requestsApplicationTemplatesDestroyRequestOpts(
+        requestParameters: RequestsApplicationTemplatesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling requestsApplicationTemplatesDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/application-templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesDestroyRaw(
+        requestParameters: RequestsApplicationTemplatesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.requestsApplicationTemplatesDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesDestroy(
+        requestParameters: RequestsApplicationTemplatesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.requestsApplicationTemplatesDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for requestsApplicationTemplatesList without sending the request
+     */
+    async requestsApplicationTemplatesListRequestOpts(
+        requestParameters: RequestsApplicationTemplatesListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/requests/application-templates/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesListRaw(
+        requestParameters: RequestsApplicationTemplatesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedApplicationTemplateList>> {
+        const requestOptions =
+            await this.requestsApplicationTemplatesListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedApplicationTemplateListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesList(
+        requestParameters: RequestsApplicationTemplatesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedApplicationTemplateList> {
+        const response = await this.requestsApplicationTemplatesListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsApplicationTemplatesPartialUpdate without sending the
+     * request
+     */
+    async requestsApplicationTemplatesPartialUpdateRequestOpts(
+        requestParameters: RequestsApplicationTemplatesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling requestsApplicationTemplatesPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/application-templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedApplicationTemplateRequestToJSON(
+                requestParameters["patchedApplicationTemplateRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesPartialUpdateRaw(
+        requestParameters: RequestsApplicationTemplatesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ApplicationTemplate>> {
+        const requestOptions =
+            await this.requestsApplicationTemplatesPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ApplicationTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesPartialUpdate(
+        requestParameters: RequestsApplicationTemplatesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ApplicationTemplate> {
+        const response = await this.requestsApplicationTemplatesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsApplicationTemplatesRequestableList without sending the
+     * request
+     */
+    async requestsApplicationTemplatesRequestableListRequestOpts(
+        requestParameters: RequestsApplicationTemplatesRequestableListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        const urlPath = `/requests/application-templates/requestable/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List application templates the current user can request a new application from
+     */
+    async requestsApplicationTemplatesRequestableListRaw(
+        requestParameters: RequestsApplicationTemplatesRequestableListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedApplicationTemplateList>> {
+        const requestOptions =
+            await this.requestsApplicationTemplatesRequestableListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedApplicationTemplateListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * List application templates the current user can request a new application from
+     */
+    async requestsApplicationTemplatesRequestableList(
+        requestParameters: RequestsApplicationTemplatesRequestableListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedApplicationTemplateList> {
+        const response = await this.requestsApplicationTemplatesRequestableListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsApplicationTemplatesRetrieve without sending the request
+     */
+    async requestsApplicationTemplatesRetrieveRequestOpts(
+        requestParameters: RequestsApplicationTemplatesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling requestsApplicationTemplatesRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/application-templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesRetrieveRaw(
+        requestParameters: RequestsApplicationTemplatesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ApplicationTemplate>> {
+        const requestOptions =
+            await this.requestsApplicationTemplatesRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ApplicationTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesRetrieve(
+        requestParameters: RequestsApplicationTemplatesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ApplicationTemplate> {
+        const response = await this.requestsApplicationTemplatesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsApplicationTemplatesUpdate without sending the request
+     */
+    async requestsApplicationTemplatesUpdateRequestOpts(
+        requestParameters: RequestsApplicationTemplatesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling requestsApplicationTemplatesUpdate().',
+            );
+        }
+
+        if (requestParameters["applicationTemplateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "applicationTemplateRequest",
+                'Required parameter "applicationTemplateRequest" was null or undefined when calling requestsApplicationTemplatesUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/application-templates/{uuid}/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: ApplicationTemplateRequestToJSON(requestParameters["applicationTemplateRequest"]),
+        };
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesUpdateRaw(
+        requestParameters: RequestsApplicationTemplatesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ApplicationTemplate>> {
+        const requestOptions =
+            await this.requestsApplicationTemplatesUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ApplicationTemplateFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Application templates, which application requests create new applications from
+     */
+    async requestsApplicationTemplatesUpdate(
+        requestParameters: RequestsApplicationTemplatesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ApplicationTemplate> {
+        const response = await this.requestsApplicationTemplatesUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsApplicationTemplatesUsedByList without sending the
+     * request
+     */
+    async requestsApplicationTemplatesUsedByListRequestOpts(
+        requestParameters: RequestsApplicationTemplatesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling requestsApplicationTemplatesUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/application-templates/{uuid}/used_by/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async requestsApplicationTemplatesUsedByListRaw(
+        requestParameters: RequestsApplicationTemplatesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.requestsApplicationTemplatesUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async requestsApplicationTemplatesUsedByList(
+        requestParameters: RequestsApplicationTemplatesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.requestsApplicationTemplatesUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
      * Creates request options for requestsGrantRequestsAgentCreate without sending the request
      */
     async requestsGrantRequestsAgentCreateRequestOpts(
@@ -482,6 +1162,78 @@ export class RequestsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Link> {
         const response = await this.requestsGrantRequestsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for requestsGrantRequestsCredentialsRetrieve without sending the
+     * request
+     */
+    async requestsGrantRequestsCredentialsRetrieveRequestOpts(
+        requestParameters: RequestsGrantRequestsCredentialsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling requestsGrantRequestsCredentialsRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/grant-requests/{uuid}/credentials/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Client ID, client secret and setup URLs of the application an approved application request
+     * created. Only for the requester: anyone else reads them from the provider, which shows the
+     * client secret only to users who may change it.
+     */
+    async requestsGrantRequestsCredentialsRetrieveRaw(
+        requestParameters: RequestsGrantRequestsCredentialsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ApplicationCredentials>> {
+        const requestOptions =
+            await this.requestsGrantRequestsCredentialsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ApplicationCredentialsFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Client ID, client secret and setup URLs of the application an approved application request
+     * created. Only for the requester: anyone else reads them from the provider, which shows the
+     * client secret only to users who may change it.
+     */
+    async requestsGrantRequestsCredentialsRetrieve(
+        requestParameters: RequestsGrantRequestsCredentialsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ApplicationCredentials> {
+        const response = await this.requestsGrantRequestsCredentialsRetrieveRaw(
             requestParameters,
             initOverrides,
         );

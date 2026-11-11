@@ -1,7 +1,10 @@
 import "#components/ak-text-input";
 import "#elements/CodeEditor/ak-code-editor";
 import "#components/ak-radio-input";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+
 import { aki } from "#common/api/client";
+import { renderRequestedApplication } from "#common/requests/utils";
 
 import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
@@ -17,11 +20,13 @@ import { ifDefined } from "lit-html/directives/if-defined.js";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { html } from "lit-html";
+import { html, nothing } from "lit-html";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-access-request-fulfill-form")
 export class AccessRequestFulfillForm extends Form<PatchedGrantRequestFulfillRequest> {
+    public static override styles = [...super.styles, PFDescriptionList];
+
     @property({ type: Object })
     request?: GrantRequest;
 
@@ -59,6 +64,17 @@ export class AccessRequestFulfillForm extends Form<PatchedGrantRequestFulfillReq
                     },
                 ]}
             ></ak-radio-input>
+            ${
+                this.request?.requestedApplication
+                    ? html`<ak-form-element-horizontal
+                          label=${msg("Requested application", {
+                              id: "requests.fulfill.requested-application.label",
+                          })}
+                      >
+                          ${renderRequestedApplication(this.request.requestedApplication)}
+                      </ak-form-element-horizontal>`
+                    : nothing
+            }
             <ak-form-element-horizontal label=${msg("Requestor notes")}>
                 <pre>${JSON.stringify(this.request?.requesterData, null, 4)}</pre>
             </ak-form-element-horizontal>
