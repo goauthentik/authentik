@@ -52,7 +52,7 @@
         "build:types": "wireit",
         "bundler:watch": "node scripts/build-web.ts --watch",
         "check": "run-s lint:check format:check",
-        "extract-locales": "lit-localize extract",
+        "extract-locales": "node scripts/extract-locales.ts",
         "fix": "run-s lint format",
         "format": "oxfmt --write .",
         "format:check": "oxfmt --check .",
@@ -121,7 +121,7 @@
             "command": "lit-analyzer src"
         },
         "build:types": {
-            "command": "tsc -p .",
+            "command": "tsc -p tsconfig.unit.json",
             "dependencies": [
                 "build-locales"
             ]
@@ -174,6 +174,7 @@
         "@goauthentik/theme": "link:../packages/theme",
         "@goauthentik/tsconfig": "link:../packages/tsconfig",
         "@hcaptcha/types": "^1.2.0",
+        "@lit-labs/ssr-dom-shim": "^1.6.0",
         "@lit/context": "^1.1.6",
         "@lit/localize": "^0.12.2",
         "@lit/localize-tools": "^0.8.2",
@@ -232,7 +233,7 @@
         "lit-html": "^3.3.3",
         "maplibre-gl": "^5.24.0",
         "md-front-matter": "^1.0.4",
-        "mermaid": "^11.16.1",
+        "mermaid": "^11.17.2",
         "node-domexception": "workspace:*",
         "npm-run-all": "^4.1.5",
         "oxfmt": "catalog:",

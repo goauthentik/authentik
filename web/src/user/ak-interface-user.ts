@@ -31,11 +31,11 @@ import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
+import { renderNotificationDrawerPanel } from "#components/notifications/panel";
 import {
     DrawerState,
     persistDrawerParams,
     readDrawerParams,
-    renderNotificationDrawerPanel,
 } from "#components/notifications/utils";
 
 import Styles from "#user/ak-interface-user.css";

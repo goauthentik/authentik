@@ -6,7 +6,7 @@ import type { IdentificationStage } from "#flow/stages/identification/Identifica
 
 import type { IdentificationChallenge } from "@goauthentik/api";
 
-import { createRef } from "lit-html/directives/ref.js";
+import type { Ref } from "lit-html/directives/ref.js";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const USER_KEY = "ak:remember_me:user";
@@ -87,10 +87,11 @@ function createController(challenge?: Partial<IdentificationChallenge>) {
         challenge,
     } as ReactiveElementHost<IdentificationStage>;
 
-    const identificationFieldRef = createRef<HTMLInputElement>();
     const usernameField = createUsernameField();
 
-    identificationFieldRef.value = usernameField as unknown as HTMLInputElement;
+    const identificationFieldRef: Ref<HTMLInputElement> = {
+        value: usernameField as unknown as HTMLInputElement,
+    };
 
     const controller = new RememberMeController(host, {
         pendingUserIdentifier: null,

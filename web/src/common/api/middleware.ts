@@ -16,7 +16,6 @@ import {
     ResponseContext,
 } from "@goauthentik/api";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import { html } from "lit";
 
 export const AcceptLanguage = "Accept-Language";
@@ -73,25 +72,11 @@ export class EventMiddleware implements Middleware {
     }
 }
 
-export class LocaleMiddleware implements Middleware, Disposable {
+export class LocaleMiddleware implements Middleware {
     #locale: string;
 
-    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (event.detail.status !== "ready") {
-            return;
-        }
-
-        this.#locale = formatAcceptLanguageHeader(event.detail.readyLocale);
-    };
-
-    constructor(languageTagHint: Intl.UnicodeBCP47LocaleIdentifier) {
-        this.#locale = formatAcceptLanguageHeader(languageTagHint);
-
-        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
-    }
-
-    [Symbol.dispose]() {
-        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    constructor(languageTag: Intl.UnicodeBCP47LocaleIdentifier) {
+        this.#locale = formatAcceptLanguageHeader(languageTag);
     }
 
     pre(context: RequestContext): Promise<FetchParams | void> {
@@ -115,15 +100,16 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
         this.#warnings.clear();
     };
 
-    #timeoutId = -1;
+    #timeoutID = -1;
 
     public clearAfterIdle = () => {
-        clearTimeout(this.#timeoutId);
-        this.#timeoutId = window.setTimeout(this.clear, 1000);
+        clearTimeout(this.#timeoutID);
+        this.#timeoutID = setTimeout(this.clear, 1000);
     };
 
     constructor(protected readonly maxRequests: number = 10) {
         window.addEventListener("hashchange", this.clear, { passive: true });
+
         window.addEventListener(AKRefreshEvent.eventName, this.clear, { passive: true });
         window.addEventListener(AKEnterpriseRefreshEvent.eventName, this.clear, { passive: true });
 
@@ -132,6 +118,11 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
 
     public [Symbol.dispose]() {
         window.removeEventListener("hashchange", this.clear);
+
+        window.removeEventListener(AKRefreshEvent.eventName, this.clear);
+        window.removeEventListener(AKEnterpriseRefreshEvent.eventName, this.clear);
+
+        window.removeEventListener("click", this.clearAfterIdle);
     }
 
     public async pre(context: RequestContext): Promise<FetchParams | void> {

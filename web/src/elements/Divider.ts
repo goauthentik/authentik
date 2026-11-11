@@ -7,7 +7,7 @@ import { akDivider, Divider, type DividerProps } from "./Divider_impl/Divider";
 export { akDivider, Divider };
 export type { DividerProps };
 
-window.customElements.define("ak-divider", Divider);
+customElements.define("ak-divider", Divider);
 
 declare global {
     interface HTMLElementTagNameMap {

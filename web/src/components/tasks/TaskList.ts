@@ -1,5 +1,6 @@
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
+import "#elements/cards/SectionCard";
 import "#elements/events/LogViewer";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -215,21 +216,23 @@ export class TaskList extends Table<Task> {
     }
 
     renderExpanded(item: Task): TemplateResult {
-        return html`<div class="pf-c-content">
-            <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
-            <ak-log-viewer display-box="contents" .items=${item.logs}></ak-log-viewer>
+        return html`<ak-section-card
+                label=${msg("Current execution logs", { id: "tasks.execution-logs.current" })}
+            >
+                <ak-log-viewer display-box="contents" .items=${item.logs}></ak-log-viewer>
+            </ak-section-card>
             ${
                 item.previousLogs.length > 0
-                    ? html`<p class="pf-c-title pf-u-mt-xl pf-u-mb-md">
-                              ${msg("Previous executions logs")}
-                          </p>
+                    ? html`<ak-section-card
+                          label=${msg("Previous executions logs", { id: "tasks.execution-logs.previous" })}
+                      >
                           <ak-log-viewer
                               display-box="contents"
                               .items=${item.previousLogs}
-                          ></ak-log-viewer>`
+                          ></ak-log-viewer
+                      ></ak-section-card>`
                     : nothing
-            }
-        </div>`;
+            }`;
     }
 }
 
