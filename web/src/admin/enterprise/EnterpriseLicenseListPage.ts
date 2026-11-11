@@ -40,6 +40,13 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
+    public static override verboseName = msg("License", {
+        id: "enterprise-licenses.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Licenses", {
+        id: "enterprise-licenses.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [
         ...super.styles,
         PFGrid,
@@ -175,7 +182,6 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("License(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: License) => {
                 return [

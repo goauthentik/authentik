@@ -20,7 +20,7 @@ describe("BoundPoliciesList", () => {
                 ...subject,
             } as PolicyBinding;
 
-            render(list.row(binding).at(-1), container);
+            render(list["row"](binding).at(-1), container);
             const link = container.querySelector("a");
             expect(link).not.toBeNull();
             const href = decodeURIComponent(link!.href);

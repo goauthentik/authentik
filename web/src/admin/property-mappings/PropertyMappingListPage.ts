@@ -41,6 +41,13 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
+    public static override verboseName = msg("Property Mapping", {
+        id: "property-mappings.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Property Mappings", {
+        id: "property-mappings.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
     public override pageTitle = msg("Property Mappings");
     public override pageDescription = msg(
@@ -74,7 +81,6 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Property Mapping(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: PropertyMapping) => {
                 return aki(PropertymappingsApi).propertymappingsAllUsedByList({
