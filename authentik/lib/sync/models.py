@@ -1,8 +1,8 @@
 from uuid import uuid4
 
-from django.db import models
+from django.contrib.postgres.fields import ArrayField
+from django.db import models, transaction
 from django.utils.timezone import now
-from django_dramatiq_postgres.models import TaskState
 from dramatiq.broker import get_broker
 from dramatiq.message import Message
 
@@ -20,9 +20,7 @@ class SyncStatus(models.TextChoices):
 class Sync(InternallyManagedMixin, models.Model):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    # Must be defined by subclasses with a through model
-    # tasks = models.ManyToManyField(Task, related_name="+")
-    tasks: models.ManyToManyField
+    tasks = ArrayField(base_field=models.UUIDField(), default=list)
 
     status = models.TextField(choices=SyncStatus, default=SyncStatus.RUNNING)
 
@@ -38,15 +36,8 @@ class Sync(InternallyManagedMixin, models.Model):
         return cls.objects.exclude(pk__in=cls.objects.order_by("-started_at")[:20]).delete()[0]
 
     @property
-    def done(self) -> bool:
-        return not any(
-            state not in (TaskState.DONE, TaskState.REJECTED)
-            for state in self.tasks.values_list("state", flat=True)
-        )
-
-    @property
     def tasks_status(self) -> SyncStatus:
-        states = self.tasks.values_list("aggregated_status", flat=True)
+        states = Task.objects.filter(pk__in=self.tasks).values_list("aggregated_status", flat=True)
         if any(
             state
             in (
@@ -84,11 +75,12 @@ class Sync(InternallyManagedMixin, models.Model):
     def enqueue(self, messages: list[Message], existing_tasks_as_dependencies: bool = True) -> None:
         broker = get_broker()
         if existing_tasks_as_dependencies:
-            dependencies = self.tasks.values_list("pk", flat=True)
             for message in messages:
-                message.options.setdefault("dependencies", []).extend(dependencies)
-        new_tasks: list[Task] = []
-        for message in messages:
-            new_message = broker.enqueue(message)
-            new_tasks.append(new_message.options["task"])
-        self.tasks.add(*new_tasks)
+                message.options.setdefault("dependencies", []).extend(self.tasks)
+        new_tasks = [message.message_id for message in messages]
+        with transaction.atomic():
+            self.refresh_from_db()
+            self.tasks += new_tasks
+            self.save(update_fields=["tasks"])
+            for message in messages:
+                broker.enqueue(message)
