@@ -27,6 +27,10 @@ import {
     KubernetesServiceConnectionRequestToJSON,
 } from "../models/KubernetesServiceConnectionRequest.js";
 import { type LDAPCheckAccess, LDAPCheckAccessFromJSON } from "../models/LDAPCheckAccess.js";
+import {
+    type LDAPSearchVisibility,
+    LDAPSearchVisibilityFromJSON,
+} from "../models/LDAPSearchVisibility.js";
 import { type Outpost, OutpostFromJSON } from "../models/Outpost.js";
 import {
     type OutpostDefaultConfig,
@@ -208,6 +212,13 @@ export interface OutpostsLdapListRequest {
      * A search term.
      */
     search?: string;
+}
+
+export interface OutpostsLdapSearchVisibilityRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
+    id: number;
 }
 
 export interface OutpostsProxyListRequest {
@@ -1287,6 +1298,79 @@ export class OutpostsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<PaginatedLDAPOutpostConfigList> {
         const response = await this.outpostsLdapListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for outpostsLdapSearchVisibility without sending the request
+     */
+    async outpostsLdapSearchVisibilityRequestOpts(
+        requestParameters: OutpostsLdapSearchVisibilityRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling outpostsLdapSearchVisibility().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/outposts/ldap/{id}/search_visibility/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Users and groups visible through this provider when `limit_search_to_application_access` is
+     * enabled. Users are those that pass the application's policy bindings. Groups are those that
+     * any visible user is a member of, including their ancestors, so that no group entry references
+     * a parent that isn't visible.
+     */
+    async outpostsLdapSearchVisibilityRaw(
+        requestParameters: OutpostsLdapSearchVisibilityRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPSearchVisibility>> {
+        const requestOptions =
+            await this.outpostsLdapSearchVisibilityRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LDAPSearchVisibilityFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Users and groups visible through this provider when `limit_search_to_application_access` is
+     * enabled. Users are those that pass the application's policy bindings. Groups are those that
+     * any visible user is a member of, including their ancestors, so that no group entry references
+     * a parent that isn't visible.
+     */
+    async outpostsLdapSearchVisibility(
+        requestParameters: OutpostsLdapSearchVisibilityRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPSearchVisibility> {
+        const response = await this.outpostsLdapSearchVisibilityRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 

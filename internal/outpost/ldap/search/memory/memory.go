@@ -32,6 +32,12 @@ type snapshot struct {
 	users     []api.User
 	groups    []api.Group
 	usersByPk map[int32]int // index into users
+
+	// Users and groups served to identities that can search the directory.
+	// When the provider limits search to application access, these are
+	// filtered once per fetch; otherwise they're the same as users/groups.
+	searchUsers  []api.User
+	searchGroups []api.Group
 }
 
 type MemorySearcher struct {
@@ -70,7 +76,12 @@ func (ms *MemorySearcher) fetch() {
 		PageSize: config.Get().LDAP.PageSize,
 		Logger:   ms.log,
 	})
-	if err := errors.Join(usersErr, groupsErr); err != nil {
+	visibility, visibilityErr := search.FetchVisibility(context.TODO(), ms.si.GetAPIClient(), ms.si.GetProviderID(), ms.si.GetLimitSearchToApplicationAccess())
+	if visibilityErr != nil && ms.si.GetLimitSearchToApplicationAccess() {
+		// Never fall back to serving the unfiltered directory.
+		visibility = search.NewVisibility(nil, nil)
+	}
+	if err := errors.Join(usersErr, groupsErr, visibilityErr); err != nil {
 		// A failed fetch may be empty or incomplete. Keep serving the
 		// previous snapshot rather than replacing it; users and groups are
 		// kept together so the two never come from different fetches. The
@@ -88,9 +99,11 @@ func (ms *MemorySearcher) fetch() {
 		usersByPk[u.Pk] = i
 	}
 	ms.cache.Store(&snapshot{
-		users:     users,
-		groups:    groups,
-		usersByPk: usersByPk,
+		users:        users,
+		groups:       groups,
+		usersByPk:    usersByPk,
+		searchUsers:  visibility.FilterUsers(users),
+		searchGroups: visibility.FilterGroups(groups),
 	})
 }
 
@@ -167,7 +180,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 	if needUsers {
 		if flag.CanSearch {
-			users = &snap.users
+			users = &snap.searchUsers
 		} else {
 			if idx, ok := snap.usersByPk[flag.UserPk]; ok {
 				u := []api.User{snap.users[idx]}
@@ -182,7 +195,11 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	if needGroups {
 		groups = make([]*group.LDAPGroup, 0)
 
-		for _, g := range snap.groups {
+		searchGroups := snap.groups
+		if flag.CanSearch {
+			searchGroups = snap.searchGroups
+		}
+		for _, g := range searchGroups {
 			if flag.CanSearch {
 				groups = append(groups, group.FromAPIGroup(g, ms.si))
 			} else {

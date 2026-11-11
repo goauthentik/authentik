@@ -288,6 +288,7 @@ export * from "./LDAPDebug.js";
 export * from "./LDAPOutpostConfig.js";
 export * from "./LDAPProvider.js";
 export * from "./LDAPProviderRequest.js";
+export * from "./LDAPSearchVisibility.js";
 export * from "./LDAPSource.js";
 export * from "./LDAPSourcePropertyMapping.js";
 export * from "./LDAPSourcePropertyMappingRequest.js";

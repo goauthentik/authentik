@@ -57,6 +57,13 @@ pub struct LdapOutpostConfig {
     /// rejected if it contains a semicolon.
     #[serde(rename = "mfa_support", skip_serializing_if = "Option::is_none")]
     pub mfa_support: Option<bool>,
+    /// When enabled, searches only return users who have access to the application according to
+    /// its policy bindings, and the groups those users are members of.
+    #[serde(
+        rename = "limit_search_to_application_access",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub limit_search_to_application_access: Option<bool>,
 }
 
 impl LdapOutpostConfig {
@@ -82,6 +89,7 @@ impl LdapOutpostConfig {
             search_mode: None,
             bind_mode: None,
             mfa_support: None,
+            limit_search_to_application_access: None,
         }
     }
 }
