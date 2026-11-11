@@ -21,6 +21,7 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { StorageAccessor } from "#common/storage/accessor";
 import type { PersistenceKey } from "#common/storage/shared";
+import { plural } from "#common/ui/locale/plurals";
 import { groupBy } from "#common/utils";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
@@ -536,23 +537,27 @@ export class LibraryPage extends WithSession(AKElement) {
                 // We must present the count within the label to ensure that the screen reader
                 // considers the update significant enough to read on each change,
                 // rather than the on just the first render.
-                message =
-                    count === 1
-                        ? msg(str`${count} application found for "${query}"`, {
-                              id: "user.library.application-count-singular-with-query",
-                          })
-                        : msg(str`${count} applications found for "${query}"`, {
-                              id: "user.library.application-count-plural-with-query",
-                          });
+                message = plural(count, {
+                    one: (formattedCount) =>
+                        msg(str`${formattedCount} application found for "${query}"`, {
+                            id: "user.library.application-count.search-result.one",
+                        }),
+                    other: (formattedCount) =>
+                        msg(str`${formattedCount} applications found for "${query}"`, {
+                            id: "user.library.application-count.search-result.other",
+                        }),
+                });
             } else {
-                message =
-                    count === 1
-                        ? msg(str`${count} application available`, {
-                              id: "user.library.application-count-singular",
-                          })
-                        : msg(str`${count} applications available`, {
-                              id: "user.library.application-count-plural",
-                          });
+                message = plural(count, {
+                    one: (formattedCount) =>
+                        msg(str`${formattedCount} application available`, {
+                            id: "user.library.application-count.available.one",
+                        }),
+                    other: (formattedCount) =>
+                        msg(str`${formattedCount} applications available`, {
+                            id: "user.library.application-count.available.other",
+                        }),
+                });
             }
 
             return html`<output
