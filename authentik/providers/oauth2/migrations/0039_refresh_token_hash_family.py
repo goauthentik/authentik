@@ -5,11 +5,22 @@ This migration is written by hand, as the auto-generated version would be unsafe
 - The plaintext `token` column is kept (as `legacy_token`, same column) instead of being
   dropped, so existing tokens keep working, tokens issued by older versions during a rolling
   upgrade can still be found, and rolling back the image keeps working. A future release will
-  clear and drop it.
-- `family` is added without a default and backfilled with one UUID per row. Adding it with
-  `default=uuid4` would put every existing token into the same family, so that any reuse would
-  revoke all refresh tokens.
-- The backfill is a single SQL statement instead of a Python loop, as this table can be large.
+  hash the remaining tokens, then clear and drop it.
+- `family` is added without a default. Adding it with `default=uuid4` would put every existing
+  token into the same family, so that any reuse would revoke all refresh tokens.
+
+Existing tokens are deliberately not backfilled. This migration holds an exclusive lock on the
+refresh token table, so instances still running the previous version can't refresh tokens
+until it commits. In a local benchmark with 5M refresh tokens, a backfill (hashing every token
+and assigning each a family) held that lock for 66s and wrote 20GB of WAL. Without it, only the
+index builds remain. A backfill isn't needed either:
+
+- Lookups fall back to the plaintext column, and `RefreshToken.save()` hashes an existing token
+  the next time it is saved.
+- A backfilled family would only ever contain the token itself, as previous versions didn't
+  record which token was rotated from which. A family is started when an existing token is
+  first refreshed instead.
+- Expired tokens are deleted by `clean_expired_models`.
 """
 
 import uuid
@@ -18,15 +29,6 @@ import django.contrib.postgres.indexes
 from django.db import migrations, models
 
 import authentik.lib.utils.time
-
-BACKFILL = """
--- Expired tokens are deleted by `clean_expired_models` anyways, skip backfilling them
-DELETE FROM authentik_providers_oauth2_refreshtoken WHERE expiring AND expires < now();
-UPDATE authentik_providers_oauth2_refreshtoken
-SET token_hash = encode(sha256(convert_to(token, 'UTF8')), 'hex'),
-    family = gen_random_uuid()
-WHERE token_hash IS NULL;
-"""
 
 
 class Migration(migrations.Migration):
@@ -83,12 +85,20 @@ class Migration(migrations.Migration):
             name="rotated_at",
             field=models.DateTimeField(default=None, null=True),
         ),
-        migrations.RunSQL(BACKFILL, reverse_sql=migrations.RunSQL.noop),
-        # Create indexes after the backfill, which is faster than updating them row by row
+        # Existing tokens have no family, only index the ones that do
+        migrations.AddIndex(
+            model_name="refreshtoken",
+            index=models.Index(
+                condition=models.Q(("family__isnull", False)),
+                fields=["family"],
+                name="authentik_p_rt_family_idx",
+            ),
+        ),
+        # Only new tokens get a family by default, so this doesn't change existing rows
         migrations.AlterField(
             model_name="refreshtoken",
             name="family",
-            field=models.UUIDField(db_index=True, default=uuid.uuid4, null=True),
+            field=models.UUIDField(default=uuid.uuid4, null=True),
         ),
         migrations.AddIndex(
             model_name="refreshtoken",
@@ -98,9 +108,10 @@ class Migration(migrations.Migration):
         ),
         # `token_hash` has no planner statistics yet. Without them, a lookup by token is
         # estimated to match many rows, and `.first()` (ORDER BY id LIMIT 1) is planned as a
-        # walk of the primary key instead of an index lookup. That is slow on large tables,
-        # especially for new tokens (highest ids), until autovacuum analyzes the table, which
-        # can take minutes after this backfill. ANALYZE only samples the table, so it is fast.
+        # walk of the primary key instead of an index lookup. In a local benchmark with 1M
+        # refresh tokens, that made looking up a new or unknown token take ~250ms instead of
+        # ~0.02ms until autovacuum analyzed the table. ANALYZE only samples the table, so it
+        # is fast.
         migrations.RunSQL(
             "ANALYZE authentik_providers_oauth2_refreshtoken", reverse_sql=migrations.RunSQL.noop
         ),

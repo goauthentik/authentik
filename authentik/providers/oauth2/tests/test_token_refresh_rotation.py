@@ -2,10 +2,8 @@
 
 from base64 import b64encode
 from datetime import timedelta
-from importlib import import_module
 from json import dumps, loads
 
-from django.db import connection
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.timezone import now
@@ -33,8 +31,6 @@ from authentik.providers.oauth2.models import (
     hash_refresh_token,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
-
-MIGRATION = "authentik.providers.oauth2.migrations.0039_refresh_token_hash_family"
 
 
 class TestRefreshTokenRotation(OAuthTestCase):
@@ -332,31 +328,28 @@ class TestRefreshTokenRotation(OAuthTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(RefreshToken.objects.all()), [other])
 
-    def test_migration_backfill(self):
-        """The migration's SQL backfill hashes like `hash_refresh_token`, gives each token its
-        own family and deletes expired tokens"""
-        provider, _ = self._create_refresh_token_provider()
-        first = self._create_refresh_token(provider)
-        second = self._create_refresh_token(provider)
-        expired = self._create_refresh_token(provider)
-        raw_first, raw_second = generate_id(), generate_id()
-        RefreshToken.objects.filter(pk=first.pk).update(legacy_token=raw_first)
-        RefreshToken.objects.filter(pk=second.pk).update(legacy_token=raw_second)
-        RefreshToken.objects.filter(pk=expired.pk).update(
-            legacy_token=generate_id(), expires=now() - timedelta(days=1)
+    def test_legacy_token_refreshed_without_rotation(self):
+        """A token issued by an older version (existing tokens aren't backfilled by the
+        migration) is hashed and starts a family when it is first refreshed, even when it isn't
+        rotated, and the access token issued from it joins that family"""
+        provider, header = self._create_refresh_token_provider(
+            refresh_token_threshold="seconds=1"  # nosec
         )
-        RefreshToken.objects.including_expired().update(token_hash=None, family=None)
-
-        with connection.cursor() as cursor:
-            cursor.execute(import_module(MIGRATION).BACKFILL)
-
-        first.refresh_from_db()
-        second.refresh_from_db()
-        self.assertEqual(first.token_hash, hash_refresh_token(raw_first))
-        self.assertEqual(second.token_hash, hash_refresh_token(raw_second))
-        self.assertIsNotNone(first.family)
-        self.assertIsNotNone(second.family)
-        self.assertNotEqual(first.family, second.family)
+        token = self._create_refresh_token(provider)
+        raw = generate_id()
+        RefreshToken.objects.filter(pk=token.pk).update(
+            legacy_token=raw, token_hash=None, family=None
+        )
+        response = self._refresh(header, raw)
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertNotIn("refresh_token", loads(response.content.decode()))
+        token.refresh_from_db()
+        self.assertFalse(token.revoked)
+        self.assertEqual(token.token_hash, hash_refresh_token(raw))
+        self.assertIsNotNone(token.family)
         # The plaintext is kept until a future release
-        self.assertEqual(first.legacy_token, raw_first)
-        self.assertFalse(RefreshToken.objects.including_expired().filter(pk=expired.pk).exists())
+        self.assertEqual(token.legacy_token, raw)
+        self.assertEqual(AccessToken.objects.get().family, token.family)
+        # Found by its hash from now on
+        self._refresh(header, raw)
+        self.assertEqual(RefreshToken.objects.get(token_hash=hash_refresh_token(raw)).pk, token.pk)

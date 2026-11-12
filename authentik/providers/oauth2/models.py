@@ -729,10 +729,12 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
     # write it; it is only used as a lookup fallback for tokens issued by an older authentik
     # version (for example during a rolling upgrade). It will be removed in a future release.
     legacy_token = models.TextField(db_column="token", null=True, default=None)
+    # Tokens issued by an older version have no hash until they are next saved
     token_hash = models.TextField(null=True, default=None)
     # All refresh tokens rotated from the same authorization share a family, so that reuse of a
-    # rotated token can revoke the whole chain (RFC 9700 Section 4.14.2).
-    family = models.UUIDField(null=True, default=uuid4, db_index=True)
+    # rotated token can revoke the whole chain (RFC 9700 Section 4.14.2). Tokens issued by an
+    # older version have no family until they are refreshed.
+    family = models.UUIDField(null=True, default=uuid4)
     rotated_at = models.DateTimeField(null=True, default=None)
     _id_token = models.TextField(verbose_name=_("ID Token"))
     dpop_jkt = models.CharField(
@@ -750,6 +752,12 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
         indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["legacy_token"]),
             HashIndex(fields=["token_hash"]),
+            # Tokens issued by an older version have no family, only index the ones that do
+            models.Index(
+                fields=["family"],
+                name="authentik_p_rt_family_idx",
+                condition=Q(family__isnull=False),
+            ),
         ]
         verbose_name = _("OAuth2 Refresh Token")
         verbose_name_plural = _("OAuth2 Refresh Tokens")
