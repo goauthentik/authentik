@@ -19,7 +19,7 @@ from authentik.core.api.sources import (
 )
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.sync.api import SyncStatusSerializer, sync_status_response
+from authentik.lib.sync.api import SyncStatusMixin
 from authentik.rbac.filters import ObjectFilter
 from authentik.sources.ldap.models import (
     LDAPSource,
@@ -139,7 +139,7 @@ class LDAPSourceSerializer(SourceSerializer):
         extra_kwargs = {"bind_password": {"write_only": True}}
 
 
-class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
+class LDAPSourceViewSet(SyncStatusMixin, UsedByMixin, ModelViewSet):
     """LDAP Source Viewset"""
 
     queryset = LDAPSource.objects.all()
@@ -178,19 +178,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]
-
-    @extend_schema(responses={200: SyncStatusSerializer()})
-    @action(
-        methods=["GET"],
-        detail=True,
-        pagination_class=None,
-        url_path="sync/status",
-        filter_backends=[ObjectFilter],
-    )
-    def sync_status(self, request: Request, slug: str) -> Response:
-        """Get provider's sync status"""
-        source: LDAPSource = self.get_object()
-        return sync_status_response(source, ldap_sync.actor_name)
+    sync_task = ldap_sync
 
     @extend_schema(
         responses={

@@ -11,8 +11,7 @@ from authentik.api.validation import validate
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.events.logs import LogEventSerializer
-from authentik.lib.sync.api import SyncStatusSerializer, sync_status_response
-from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.sync.api import SyncStatusMixin
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.rbac.filters import ObjectFilter
 from authentik.tasks.models import Task
@@ -37,24 +36,11 @@ class SyncObjectResultSerializer(PassiveSerializer):
     messages = LogEventSerializer(many=True, read_only=True)
 
 
-class OutgoingSyncProviderStatusMixin:
+class OutgoingSyncProviderStatusMixin(SyncStatusMixin):
     """Common API Endpoints for Outgoing sync providers"""
 
     sync_task: Actor
     sync_objects_task: Actor
-
-    @extend_schema(responses={200: SyncStatusSerializer()})
-    @action(
-        methods=["GET"],
-        detail=True,
-        pagination_class=None,
-        url_path="sync/status",
-        filter_backends=[ObjectFilter],
-    )
-    def sync_status(self, request: Request, pk: int) -> Response:
-        """Get provider's sync status"""
-        provider: OutgoingSyncProvider = self.get_object()
-        return sync_status_response(provider, self.sync_task.actor_name)
 
     @extend_schema(
         request=SyncObjectSerializer,

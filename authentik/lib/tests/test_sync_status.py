@@ -9,10 +9,11 @@ from django_dramatiq_postgres.models import TaskState
 from dramatiq.actor import Actor
 from rest_framework.fields import DateTimeField
 from rest_framework.response import Response
+from rest_framework.test import APIRequestFactory
 
 from authentik.lib.generators import generate_id
-from authentik.lib.sync.api import sync_status_response
 from authentik.sources.kerberos.tasks import kerberos_sync
+from authentik.sources.ldap.api.sources import LDAPSourceViewSet
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.tasks import ldap_sync
 from authentik.tasks.models import Task, TaskStatus
@@ -21,7 +22,7 @@ from authentik.tasks.schedules.models import Schedule
 
 
 class SyncStatusTests(TestCase):
-    """The status helper reports one actor's schedule, not every schedule on the object."""
+    """The status action reports one actor's schedule, not every schedule on the object."""
 
     def _source(self) -> LDAPSource:
         return LDAPSource.objects.create(
@@ -39,6 +40,11 @@ class SyncStatusTests(TestCase):
             rel_obj=source,
         ).update_or_create()
 
+    def _status(self, source: LDAPSource) -> Response:
+        view = LDAPSourceViewSet()
+        view.get_object = lambda: source
+        return view.sync_status(APIRequestFactory().get("/"))
+
     def _task(self, schedule: Schedule, state: str, mtime: datetime) -> Task:
         return Task.objects.create(
             actor_name=schedule.actor_name,
@@ -53,7 +59,7 @@ class SyncStatusTests(TestCase):
         schedule = self._schedule(source, kerberos_sync)
         self._task(schedule, TaskState.DONE, now())
 
-        response: Response = sync_status_response(source, ldap_sync.actor_name)
+        response = self._status(source)
 
         self.assertJSONEqual(json.dumps(response.data), {"is_running": False})
 
@@ -68,7 +74,7 @@ class SyncStatusTests(TestCase):
         self._task(matching, TaskState.REJECTED, current - timedelta(hours=1))
         self._task(matching, TaskState.QUEUED, current)
 
-        response: Response = sync_status_response(source, ldap_sync.actor_name)
+        response = self._status(source)
 
         successful.refresh_from_db()
         self.assertJSONEqual(

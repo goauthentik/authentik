@@ -1,17 +1,12 @@
 """Source API Views"""
 
 from django.core.cache import cache
-from drf_spectacular.utils import extend_schema
-from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
-from rest_framework.request import Request
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.lib.sync.api import SyncStatusSerializer, sync_status_response
-from authentik.rbac.filters import ObjectFilter
+from authentik.lib.sync.api import SyncStatusMixin
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.tasks import CACHE_KEY_STATUS, kerberos_sync
 
@@ -54,7 +49,7 @@ class KerberosSourceSerializer(SourceSerializer):
         }
 
 
-class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
+class KerberosSourceViewSet(SyncStatusMixin, UsedByMixin, ModelViewSet):
     """Kerberos Source Viewset"""
 
     queryset = KerberosSource.objects.all()
@@ -82,16 +77,4 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
         "spnego_server_name",
     ]
     ordering = ["name"]
-
-    @extend_schema(responses={200: SyncStatusSerializer()})
-    @action(
-        methods=["GET"],
-        detail=True,
-        pagination_class=None,
-        url_path="sync/status",
-        filter_backends=[ObjectFilter],
-    )
-    def sync_status(self, request: Request, slug: str) -> Response:
-        """Get provider's sync status"""
-        source: KerberosSource = self.get_object()
-        return sync_status_response(source, kerberos_sync.actor_name)
+    sync_task = kerberos_sync
