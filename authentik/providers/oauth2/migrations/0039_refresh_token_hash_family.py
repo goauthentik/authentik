@@ -96,6 +96,14 @@ class Migration(migrations.Migration):
                 fields=["token_hash"], name="authentik_p_token_h_51a65d_hash"
             ),
         ),
+        # `token_hash` has no planner statistics yet. Without them, a lookup by token is
+        # estimated to match many rows, and `.first()` (ORDER BY id LIMIT 1) is planned as a
+        # walk of the primary key instead of an index lookup. That is slow on large tables,
+        # especially for new tokens (highest ids), until autovacuum analyzes the table, which
+        # can take minutes after this backfill. ANALYZE only samples the table, so it is fast.
+        migrations.RunSQL(
+            "ANALYZE authentik_providers_oauth2_refreshtoken", reverse_sql=migrations.RunSQL.noop
+        ),
         # Existing providers keep the previous behaviour (reuse is only logged), new providers
         # revoke the family on reuse
         migrations.AddField(
