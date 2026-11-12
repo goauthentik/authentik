@@ -1,0 +1,113 @@
+---
+title: Integrate with OneCal
+sidebar_label: OneCal
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is OneCal?
+
+> OneCal is a calendar management platform for syncing iCloud, CalDAV, Outlook, and Google Calendars, with booking links, a unified calendar view, team collaboration, and iOS and Android apps.
+>
+> -- https://www.onecal.io
+
+This guide configures authentik as the OpenID Connect (OIDC) identity provider for OneCal team login, with optional SCIM provisioning through OneCal Directory Sync.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info OneCal requirements
+OneCal enables SSO and Directory Sync on request for team accounts. You need to be the Owner or an Admin of the OneCal team, and you need to contact OneCal at `contact@onecal.io` to complete the configuration. OneCal provides the redirect URI for your organization during this process.
+:::
+
+## authentik configuration
+
+To support the integration of OneCal with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
+
+### Create an application and provider in authentik
+
+<RedirectURI20265Note />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Temporarily add a **Redirect URI** of type `Strict` `Authorization` as `https://temp.temp`. You replace this value after OneCal provides the redirect URI for your organization.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page. If you add a SCIM provider as a backchannel provider later, only users who can view this application are synchronized.
+
+3. Click **Submit** to save the new application and provider.
+
+## OneCal configuration
+
+OneCal does not offer a self-service SSO configuration page. Instead, OneCal support connects your identity provider for you.
+
+1. Email OneCal at `contact@onecal.io` from the account of a OneCal team Owner or Admin, and request OIDC SSO for your organization.
+2. When OneCal asks for your identity provider details, share the following values through a secure channel:
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **OpenID Configuration URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+    - **Client ID**: the **Client ID** from authentik.
+    - **Client Secret**: the **Client Secret** from authentik.
+    - **Email domain**: the email domain that your team uses to sign in to OneCal.
+3. Note the redirect URI that OneCal provides for your organization because you need it in the next section.
+
+### Update the authentik provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the OneCal provider.
+3. Under **Protocol settings**, replace the `https://temp.temp` **Redirect URI** with the redirect URI that OneCal provided, and keep the type set to `Strict` `Authorization`.
+4. Click **Update**.
+
+After OneCal confirms that SSO is enabled, Owners and Admins can check the status in OneCal under **Settings**, in the **OIDC/SAML SSO** row.
+
+## Configure SCIM provisioning _(optional)_
+
+OneCal Directory Sync can automatically add users to and remove users from your OneCal team. Directory Sync requires SSO to be configured first.
+
+When authentik provisions a user, OneCal adds them to the team as a Member and adds a seat to the subscription. When authentik deactivates or deletes a user, OneCal removes them from the team and deletes their OneCal account. OneCal does not map directory groups to OneCal roles, and Directory Sync never removes the team Owner.
+
+### Request a SCIM endpoint from OneCal
+
+1. Email OneCal at `contact@onecal.io` and request Directory Sync for your organization.
+2. Note the SCIM **Endpoint URL** and **Bearer Token** that OneCal provides because they are required in the next section.
+
+### Create a SCIM provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click **Create**.
+3. Select **SCIM Provider** as the provider type and click **Next**.
+4. Configure the following settings:
+    - **Name**: provide a descriptive name.
+    - **URL**: enter the SCIM **Endpoint URL** from OneCal.
+    - **Authentication Mode**: select **Token**.
+    - **Token**: enter the SCIM **Bearer Token** from OneCal.
+5. Click **Finish**.
+6. Navigate to **Applications** > **Applications** and click the **Edit** icon of the OneCal application.
+7. Under **Backchannel Providers**, add the SCIM provider that you created.
+8. Click **Update**.
+
+:::warning Verify assignments before syncing
+OneCal deletes the account of any user that authentik deactivates or deletes through SCIM. Confirm that the correct users can view the OneCal application in authentik before the first synchronization.
+:::
+
+## Configuration verification
+
+To confirm that authentik is properly configured with OneCal, log out of OneCal and open the [OneCal login page](https://app.onecal.io/login). Click **Use single sign-on (SSO)**, enter an email address from your SSO-enabled domain, and click **Continue with SSO**. You should be redirected to authentik to log in, and if successful, you should then be redirected to OneCal.
+
+If you configured SCIM provisioning, open the SCIM provider in authentik and confirm that the synchronization completed successfully. Then, in OneCal, confirm that the expected users appear as team members. Users added by Directory Sync appear in the OneCal [Audit Logs](https://docs.onecal.io/docs/team/audit-logs) with **System** as the actor.
+
+## Resources
+
+- [OneCal documentation - Single Sign-On (OIDC/SAML SSO)](https://docs.onecal.io/docs/team/sso)
+- [OneCal documentation - Directory Sync (SCIM)](https://docs.onecal.io/docs/team/directory-sync)
+- [OneCal documentation - Login Methods](https://docs.onecal.io/docs/account/login-methods)
