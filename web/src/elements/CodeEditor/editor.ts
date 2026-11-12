@@ -16,8 +16,8 @@ import "monaco-editor/features/contextmenu/register";
 import "monaco-editor/features/cursorUndo/register";
 import "monaco-editor/features/find/register";
 import "monaco-editor/features/folding/register";
-import "monaco-editor/features/hover/register";
 import "monaco-editor/features/gotoLine/register";
+import "monaco-editor/features/hover/register";
 import "monaco-editor/features/indentation/register";
 import "monaco-editor/features/linesOperations/register";
 import "monaco-editor/features/multicursor/register";
@@ -42,12 +42,14 @@ import MonacoStyles from "monaco-editor/min/vs/editor/editor.main.css";
 import { createStyleSheetUnsafe, setAdoptedStyleSheets } from "#common/stylesheets";
 import { ResolvedUITheme, ThemeChangeEvent } from "#common/theme";
 
-import { CodeEditorMode } from "#elements/CodeEditor/shared";
+import type { Disposable as SchemaAssociation } from "#elements/CodeEditor/languages/schemas";
+import type { LanguageService } from "#elements/CodeEditor/languages/types";
+import { CodeEditorMode, CodeEditorSchema } from "#elements/CodeEditor/shared";
 import { OneDark } from "#elements/CodeEditor/themes/one-dark";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
-import { editor as monaco } from "monaco-editor/editor/editor.api";
+import { languages, editor as monaco, Uri } from "monaco-editor/editor/editor.api";
 
 const $MonacoStyles = createStyleSheetUnsafe(MonacoStyles);
 
@@ -89,24 +91,39 @@ monaco.defineTheme("ak-light", {
 
 monaco.defineTheme("ak-dark", OneDark);
 
+// JSON's language service loads with the first JSON editor, but models need its ID up front.
+languages.register({
+    id: "json",
+    extensions: [".json"],
+    aliases: ["JSON", "json"],
+    mimetypes: ["application/json"],
+});
+
 /**
  * Language services, loaded with the first editor of their language.
  */
-const LanguageServices: Partial<Record<CodeEditorMode, () => Promise<unknown>>> = {
+const LanguageServices: Partial<Record<CodeEditorMode, () => Promise<LanguageService>>> = {
     [CodeEditorMode.CSS]: () => import("#elements/CodeEditor/languages/css-service"),
+    [CodeEditorMode.JSON]: () => import("#elements/CodeEditor/languages/json-service"),
     [CodeEditorMode.Python]: () => import("#elements/CodeEditor/languages/python-service"),
 };
 
-function loadLanguageService(mode: CodeEditorMode): void {
-    LanguageServices[mode]?.().catch((error: unknown) => {
+function loadLanguageService(mode: string): Promise<LanguageService | null> {
+    const load = LanguageServices[mode as CodeEditorMode];
+
+    if (!load) return Promise.resolve(null);
+
+    return load().catch((error: unknown) => {
         console.warn("code-editor: failed to load language service", mode, error);
+
+        return null;
     });
 }
 
 /**
  * Python is indented by four spaces by convention, and in authentik's documentation.
  */
-function tabSize(mode: CodeEditorMode): number {
+function tabSize(mode: string): number {
     return mode === CodeEditorMode.Python ? 4 : 2;
 }
 
@@ -114,11 +131,14 @@ function themeName(theme: ResolvedUITheme): string {
     return theme === UiThemeEnum.Dark ? "ak-dark" : "ak-light";
 }
 
+let modelCount = 0;
+
 export interface MonacoEditorInit {
     mode?: CodeEditorMode;
     theme?: ResolvedUITheme;
     readOnly?: boolean;
     value?: string;
+    schema?: CodeEditorSchema;
     root: ShadowRoot;
     onChange?: (value: string) => void;
 }
@@ -127,13 +147,20 @@ export class MonacoEditor implements Disposable {
     public editor: monaco.IStandaloneCodeEditor;
 
     #container = document.createElement("div");
+    #model: monaco.ITextModel;
     #themeAbortController = new AbortController();
+
+    #schema?: CodeEditorSchema;
+    #schemaAssociation?: SchemaAssociation;
+    #schemaRequest = 0;
+    #disposed = false;
 
     constructor({
         mode = CodeEditorMode.JavaScript,
         theme = "light",
         readOnly = false,
         value = "",
+        schema,
         onChange = () => {},
         root,
     }: MonacoEditorInit) {
@@ -146,15 +173,22 @@ export class MonacoEditor implements Disposable {
         this.#container.className = "ak-c-code-editor";
         root.appendChild(this.#container);
 
-        this.editor = monaco.create(this.#container, {
+        // Language services match schemas to models by URI.
+        this.#model = monaco.createModel(
             value,
-            language: mode,
+            mode,
+            Uri.parse(`inmemory://ak-code-editor/${++modelCount}.${mode}`),
+        );
+
+        this.#model.updateOptions({ tabSize: tabSize(mode) });
+
+        this.editor = monaco.create(this.#container, {
+            model: this.#model,
             theme: themeName(theme),
             readOnly,
             automaticLayout: true,
             minimap: { enabled: false },
             wordWrap: "on",
-            tabSize: tabSize(mode),
             // The editor grows with its content, see the content size listener below.
             scrollBeyondLastLine: false,
             // Let the page scroll once the editor has nothing left to scroll.
@@ -167,7 +201,8 @@ export class MonacoEditor implements Disposable {
             wordBasedSuggestions: "off",
         });
 
-        loadLanguageService(mode);
+        this.#schema = schema;
+        this.#loadLanguage();
 
         // Monaco needs an explicit height. Following the content keeps short values compact,
         // and the container's CSS `max-height` caps long ones, which then scroll.
@@ -199,24 +234,53 @@ export class MonacoEditor implements Disposable {
         );
     }
 
+    //#region Language
+
     public setMode(mode: CodeEditorMode): void {
-        const model = this.editor.getModel();
+        monaco.setModelLanguage(this.#model, mode);
+        this.#model.updateOptions({ tabSize: tabSize(mode) });
 
-        if (model) {
-            monaco.setModelLanguage(model, mode);
-            model.updateOptions({ tabSize: tabSize(mode) });
-        }
-
-        loadLanguageService(mode);
+        this.#loadLanguage();
     }
 
     public setReadOnly(readOnly: boolean): void {
         this.editor.updateOptions({ readOnly });
     }
 
+    public setSchema(schema: CodeEditorSchema | undefined): void {
+        this.#schema = schema;
+
+        this.#loadLanguage();
+    }
+
+    /**
+     * Loads the model's language service, then applies the schema if the service takes one.
+     */
+    async #loadLanguage() {
+        const request = ++this.#schemaRequest;
+        const language = this.#model.getLanguageId();
+
+        this.#schemaAssociation?.dispose();
+        this.#schemaAssociation = undefined;
+
+        const service = await loadLanguageService(language);
+
+        if (request !== this.#schemaRequest || this.#disposed || !this.#schema) return;
+
+        this.#schemaAssociation = service?.associateSchema?.(
+            this.#model.uri.toString(),
+            this.#schema,
+        );
+    }
+
+    //#endregion
+
     public [Symbol.dispose](): void {
+        this.#disposed = true;
+        this.#schemaAssociation?.dispose();
         this.#themeAbortController.abort();
         this.editor.dispose();
+        this.#model.dispose();
         this.#container.remove();
     }
 

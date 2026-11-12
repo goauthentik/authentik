@@ -251,8 +251,8 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                               </ak-form-element-horizontal>
                               <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
                                   <ak-code-editor
-                                      mode="javascript"
-                                      value="${JSON.stringify(this.instance?.oidcJwks ?? {})}"
+                                      mode="json"
+                                      .value=${this.instance?.oidcJwks ?? {}}
                                   >
                                   </ak-code-editor>
                                   <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
