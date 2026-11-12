@@ -42,19 +42,14 @@ def _load_certificate(certificate_data: str) -> Certificate:
     return load_pem_x509_certificate(certificate_data.encode("utf-8"), default_backend())
 
 
-def _parse_private_key(key_data: str, *, validate: bool) -> PrivateKeyTypes:
+@lru_cache(maxsize=128)
+def _load_private_key(key_data: str) -> PrivateKeyTypes:
+    """Load and validate a normalized PEM private key."""
     return load_pem_private_key(
         key_data.encode("utf-8"),
         password=None,
         backend=default_backend(),
-        unsafe_skip_rsa_key_validation=not validate,
     )
-
-
-@lru_cache(maxsize=128)
-def _load_private_key(key_data: str) -> PrivateKeyTypes:
-    """Load and validate a normalized PEM private key."""
-    return _parse_private_key(key_data, validate=True)
 
 
 @lru_cache(maxsize=128)
@@ -65,8 +60,13 @@ def _load_public_key(key_data: str) -> PublicKeyTypes:
     primes are prime, which takes tens of milliseconds for a 3072-bit key and more for a 4096-bit
     one. That check protects signing, and every path that stores a key already ran it. The public
     key is only the modulus and exponent, so this skips the check and returns nothing that can
-    sign."""
-    return _parse_private_key(key_data, validate=False).public_key()
+    sign. Keep the unvalidated private key inside this function."""
+    return load_pem_private_key(
+        key_data.encode("utf-8"),
+        password=None,
+        backend=default_backend(),
+        unsafe_skip_rsa_key_validation=True,
+    ).public_key()
 
 
 def format_cert(raw_pam: str) -> str:
