@@ -7,7 +7,11 @@ from ldap3 import SUBTREE
 from authentik.core.models import Group
 from authentik.sources.ldap.models import GroupLDAPSourceConnection
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
-from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE, UPDATE_CHUNK_SIZE
+from authentik.sources.ldap.sync.forward_delete_users import (
+    DELETE_CHUNK_SIZE,
+    UPDATE_CHUNK_SIZE,
+    skip_empty_deletion,
+)
 
 
 class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
@@ -44,16 +48,7 @@ class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
                 validated_by=uuid
             )
 
-        # Safety guard (#27586): a search that returns no objects almost always means a
-        # misconfiguration (bad filter, wrong base DN, lost bind permissions), not that every
-        # object was removed from the directory. Deleting every synced object in that case is
-        # destructive and irreversible, so skip deletion and warn instead.
-        if object_count == 0:
-            self._task.warning(
-                "LDAP search returned no groups; skipping deletion to avoid removing all "
-                "synced groups. Check the source's group object filter, base DN and bind "
-                "account permissions."
-            )
+        if skip_empty_deletion(self._task, object_count, "group"):
             return iter(())
 
         return batched(

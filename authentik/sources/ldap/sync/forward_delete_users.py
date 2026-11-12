@@ -7,9 +7,26 @@ from ldap3 import SUBTREE
 from authentik.core.models import User
 from authentik.sources.ldap.models import UserLDAPSourceConnection
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+from authentik.tasks.models import Task
 
 UPDATE_CHUNK_SIZE = 10_000
 DELETE_CHUNK_SIZE = 50
+
+
+def skip_empty_deletion(task: Task, object_count: int, kind: str) -> bool:
+    """Return whether to skip forward deletion because the LDAP search returned no objects.
+
+    A search that returns no objects almost always means a misconfiguration (bad filter, wrong
+    base DN, lost bind permissions), not that every object was removed from the directory.
+    Deleting every synced object in that case is destructive and irreversible, so skip deletion
+    and warn instead. See #27586."""
+    if object_count > 0:
+        return False
+    task.warning(
+        f"LDAP search returned no {kind}s; skipping deletion to avoid removing all synced "
+        f"{kind}s. Check the source's {kind} object filter, base DN and bind account permissions."
+    )
+    return True
 
 
 class UserLDAPForwardDeletion(BaseLDAPSynchronizer):
@@ -46,16 +63,7 @@ class UserLDAPForwardDeletion(BaseLDAPSynchronizer):
                 validated_by=uuid
             )
 
-        # Safety guard (#27586): a search that returns no objects almost always means a
-        # misconfiguration (bad filter, wrong base DN, lost bind permissions), not that every
-        # object was removed from the directory. Deleting every synced object in that case is
-        # destructive and irreversible, so skip deletion and warn instead.
-        if object_count == 0:
-            self._task.warning(
-                "LDAP search returned no users; skipping deletion to avoid removing all "
-                "synced users. Check the source's user object filter, base DN and bind "
-                "account permissions."
-            )
+        if skip_empty_deletion(self._task, object_count, "user"):
             return iter(())
 
         return batched(
