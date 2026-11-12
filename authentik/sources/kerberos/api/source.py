@@ -10,11 +10,10 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.lib.sync.api import SyncStatusSerializer
+from authentik.lib.sync.api import SyncStatusSerializer, sync_status_response
 from authentik.rbac.filters import ObjectFilter
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.tasks import CACHE_KEY_STATUS, kerberos_sync
-from authentik.tasks.models import Task, TaskStatus
 
 
 class KerberosSourceSerializer(SourceSerializer):
@@ -95,35 +94,4 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get provider's sync status"""
         source: KerberosSource = self.get_object()
-
-        status = {}
-
-        with source.sync_lock as lock_acquired:
-            # If we could not acquire the lock, it means a task is using it, and thus is running
-            status["is_running"] = not lock_acquired
-
-        sync_schedule = None
-        for schedule in source.schedules.all():
-            if schedule.actor_name == kerberos_sync.actor_name:
-                sync_schedule = schedule
-
-        if not sync_schedule:
-            return Response(SyncStatusSerializer(status).data)
-
-        last_task: Task = (
-            sync_schedule.tasks.filter(state__in=(TaskStatus.DONE, TaskStatus.REJECTED))
-            .order_by("-mtime")
-            .first()
-        )
-        last_successful_task: Task = (
-            sync_schedule.tasks.filter(aggregated_status__in=(TaskStatus.DONE, TaskStatus.INFO))
-            .order_by("-mtime")
-            .first()
-        )
-
-        if last_task:
-            status["last_sync_status"] = last_task.aggregated_status
-        if last_successful_task:
-            status["last_successful_sync"] = last_successful_task.mtime
-
-        return Response(SyncStatusSerializer(status).data)
+        return sync_status_response(source, kerberos_sync.actor_name)

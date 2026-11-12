@@ -11,11 +11,11 @@ from authentik.api.validation import validate
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.events.logs import LogEventSerializer
-from authentik.lib.sync.api import SyncStatusSerializer
+from authentik.lib.sync.api import SyncStatusSerializer, sync_status_response
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.rbac.filters import ObjectFilter
-from authentik.tasks.models import Task, TaskStatus
+from authentik.tasks.models import Task
 
 
 class SyncObjectSerializer(PassiveSerializer):
@@ -54,38 +54,7 @@ class OutgoingSyncProviderStatusMixin:
     def sync_status(self, request: Request, pk: int) -> Response:
         """Get provider's sync status"""
         provider: OutgoingSyncProvider = self.get_object()
-
-        status = {}
-
-        with provider.sync_lock as lock_acquired:
-            # If we could not acquire the lock, it means a task is using it, and thus is running
-            status["is_running"] = not lock_acquired
-
-        sync_schedule = None
-        for schedule in provider.schedules.all():
-            if schedule.actor_name == self.sync_task.actor_name:
-                sync_schedule = schedule
-
-        if not sync_schedule:
-            return Response(SyncStatusSerializer(status).data)
-
-        last_task: Task = (
-            sync_schedule.tasks.filter(state__in=(TaskStatus.DONE, TaskStatus.REJECTED))
-            .order_by("-mtime")
-            .first()
-        )
-        last_successful_task: Task = (
-            sync_schedule.tasks.filter(aggregated_status__in=(TaskStatus.DONE, TaskStatus.INFO))
-            .order_by("-mtime")
-            .first()
-        )
-
-        if last_task:
-            status["last_sync_status"] = last_task.aggregated_status
-        if last_successful_task:
-            status["last_successful_sync"] = last_successful_task.mtime
-
-        return Response(SyncStatusSerializer(status).data)
+        return sync_status_response(provider, self.sync_task.actor_name)
 
     @extend_schema(
         request=SyncObjectSerializer,
