@@ -34,6 +34,11 @@ import { ConsoleLogger } from "#logger/browser";
  * Name of the cross-tab Web Lock that elects a single resume leader.
  */
 const TabLockName = "ak:tab_locked" satisfies PersistenceKey;
+
+/**
+ * Name of the cross-tab Web Lock that elects a single tab to start a source sign-in.
+ */
+const SignInLockName = "ak:sign_in_locked" satisfies PersistenceKey;
 const logger = ConsoleLogger.prefix("mtab/orchestrate");
 
 // How often to poll for a follower that hasn't sent its exit event yet.
@@ -135,7 +140,7 @@ function waitForTabExit(tabID: string, resumeID: string): Promise<void> {
 }
 
 export async function multiTabOrchestrateResume() {
-    if (!globalAK().brand.flags.flowsContinuousLogin || !navigator.locks) {
+    if (!multiTabCoordinationEnabled()) {
         return;
     }
 
@@ -169,5 +174,42 @@ export async function multiTabOrchestrateResume() {
         }
 
         logger.debug("All tabs done.");
+    });
+}
+
+/**
+ * Whether tabs should coordinate their flows with each other.
+ */
+export function multiTabCoordinationEnabled(): boolean {
+    return !!globalAK().brand.flags.flowsContinuousLogin && !!navigator.locks;
+}
+
+/**
+ * Claim the source sign-in for this tab.
+ *
+ * Only one tab may leave for a source at a time, since the source only accepts the response to the
+ * most recent request. The other tabs wait on the identification stage, and the tab that signs in
+ * resumes them once it completes the flow.
+ *
+ * @returns Whether this tab should start the sign-in.
+ */
+export async function multiTabClaimSignIn(): Promise<boolean> {
+    if (!multiTabCoordinationEnabled()) {
+        return true;
+    }
+
+    return navigator.locks.request(SignInLockName, async () => {
+        // Discovery also gives a pending announcement from the previous holder time to arrive.
+        await Broadcast.shared.discoverTabs();
+
+        if (Broadcast.shared.awaitingSignIn) {
+            logger.debug("Another tab is signing in, waiting for it");
+
+            return false;
+        }
+
+        Broadcast.shared.announceSignIn();
+
+        return true;
     });
 }
