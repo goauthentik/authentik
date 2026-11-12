@@ -169,6 +169,9 @@ web:
   timeout_http_read: 30s
   timeout_http_write: 60s
   timeout_http_idle: 120s
+  # Experimental: WebSocket routes the Rust server serves itself instead of relaying them to
+  # Django Channels. Read at startup. Supported: client (browser notifications, /ws/client/)
+  rust_websocket_routes: []
 
 worker:
   processes: 1

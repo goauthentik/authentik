@@ -55,6 +55,7 @@ use crate::{
 mod core;
 mod r#static;
 mod tls;
+mod websocket;
 
 #[derive(Debug, Default, FromArgs, PartialEq, Eq)]
 /// Run the authentik server.
@@ -334,8 +335,8 @@ async fn route_core_and_outpost(
     response
 }
 
-fn build_router(server: &Arc<Server>) -> Result<Router> {
-    let core_router = core::build_router(server)?;
+fn build_router(server: &Arc<Server>, websocket_router: Router) -> Result<Router> {
+    let core_router = core::build_router(server, websocket_router)?;
     let proxy_router = outpost::proxy::embedded_router();
 
     metrics::describe_histogram!(
@@ -369,7 +370,8 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
         .name(&format!("{}::watch_server", module_path!()))
         .spawn(watch_server(arbiter.clone(), Arc::clone(&server)))?;
 
-    let router = build_router(&server)?;
+    let websocket_router = websocket::start(tasks, server.client.clone())?;
+    let router = build_router(&server, websocket_router)?;
 
     for addr in config::get().listen.http.iter().copied() {
         ak_axum::server::start_plain(tasks, "server", router.clone(), addr)?;

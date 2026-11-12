@@ -375,8 +375,8 @@ class LoggingMiddleware:
 
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
         """Log request"""
-        # Those are logged by the server above
-        if request.path in ("/-/metrics/", "/-/health/ready/"):
+        # Those are logged by the server above, or log the WebSocket connection themselves
+        if request.path in ("/-/metrics/", "/-/health/ready/", "/-/internal/ws/authorize/"):
             return
         for header in self.headers_to_log:
             header_value = request.headers.get(header)

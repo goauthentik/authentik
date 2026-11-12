@@ -6,12 +6,13 @@ use std::{
 use ipnet::IpNet;
 use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
 
-pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 5] = [
+pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 6] = [
     "listen.http",
     "listen.https",
     "listen.metrics",
     "listen.trusted_proxy_cidrs",
     "log.http_headers",
+    "web.rust_websocket_routes",
 ];
 
 /// Deserialize a list, ignoring empty entries.
@@ -251,6 +252,31 @@ pub struct WebConfig {
     pub timeout_http_read: String,
     pub timeout_http_write: String,
     pub timeout_http_idle: String,
+    /// WebSocket routes the Rust server serves itself instead of relaying them to Django
+    /// Channels.
+    #[serde(default, deserialize_with = "deserialize_list")]
+    pub rust_websocket_routes: Vec<RustWebsocketRoute>,
+}
+
+/// A WebSocket route the Rust server can serve itself, see [`WebConfig::rust_websocket_routes`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RustWebsocketRoute {
+    /// Browser notifications, `/ws/client/`.
+    Client,
+}
+
+impl FromStr for RustWebsocketRoute {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.trim() {
+            "client" => Ok(Self::Client),
+            other => Err(format!(
+                "unknown WebSocket route '{other}', expected one of: client"
+            )),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

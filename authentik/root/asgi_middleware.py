@@ -1,13 +1,18 @@
 """ASGI middleware"""
 
+from importlib import import_module
+
 from channels.auth import UserLazyObject
 from channels.db import database_sync_to_async
 from channels.middleware import BaseMiddleware
 from channels.sessions import CookieMiddleware
 from channels.sessions import InstanceSessionWrapper as UpstreamInstanceSessionWrapper
 from channels.sessions import SessionMiddleware as UpstreamSessionMiddleware
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.sessions.backends.base import SessionBase
 
+from authentik.core.models import User
 from authentik.root.middleware import SessionMiddleware as HTTPSessionMiddleware
 
 
@@ -39,6 +44,24 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         return await self.inner(wrapper.scope, receive, wrapper.send)
 
 
+def user_from_session(session: SessionBase) -> User | AnonymousUser:
+    """Return the user a session is logged in as, or `AnonymousUser`."""
+    user = None
+    if (authenticated_session := session.get("authenticatedsession", None)) is not None:
+        user = authenticated_session.user
+    return user or AnonymousUser()
+
+
+def user_from_session_cookie(raw_cookie: str | None) -> User | AnonymousUser:
+    """Resolve the raw session cookie a WebSocket handshake carried to its user.
+
+    Shared by the ASGI middleware below and the internal endpoint the Rust server calls
+    for the WebSocket routes it serves itself, so both authorize connections the same way."""
+    session_key = HTTPSessionMiddleware.decode_session_key(raw_cookie)
+    session_store = import_module(settings.SESSION_ENGINE).SessionStore
+    return user_from_session(session_store(session_key))
+
+
 @database_sync_to_async
 def get_user(scope):
     """
@@ -49,10 +72,7 @@ def get_user(scope):
         raise ValueError(
             "Cannot find session in scope. You should wrap your consumer in SessionMiddleware."
         )
-    user = None
-    if (authenticated_session := scope["session"].get("authenticatedsession", None)) is not None:
-        user = authenticated_session.user
-    return user or AnonymousUser()
+    return user_from_session(scope["session"])
 
 
 class AuthMiddleware(BaseMiddleware):

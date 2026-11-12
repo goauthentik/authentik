@@ -11,6 +11,7 @@ from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_apps
 from authentik.lib.utils.urls import sort_hot
 from authentik.root.monitoring import MetricsView, ReadyView
+from authentik.root.websocket_internal import WebsocketAuthorizeView
 
 LOGGER = get_logger()
 
@@ -55,4 +56,10 @@ urlpatterns = [
     # for reversing the URL
     path("-/health/live/", View.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
+    # Only reachable from the Rust server, see `authentik.root.websocket_internal`
+    path(
+        "-/internal/ws/authorize/",
+        WebsocketAuthorizeView.as_view(),
+        name="internal-ws-authorize",
+    ),
 ]

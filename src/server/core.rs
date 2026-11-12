@@ -402,7 +402,11 @@ async fn health_live(State(server): State<Arc<Server>>) -> Result<StatusCode> {
     Ok(StatusCode::OK)
 }
 
-pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
+/// Builds the router for everything that isn't the embedded outpost.
+///
+/// `websocket_router` holds the WebSocket routes the server serves itself. Its routes take
+/// precedence over the fallback that relays everything else to gunicorn.
+pub(super) fn build_router(server: &Arc<Server>, websocket_router: Router) -> eyre::Result<Router> {
     // Router for monitoring endpoints, under /-/
     let monitoring_router = wrap_router(
         Router::new()
@@ -426,6 +430,7 @@ pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
     let router = Router::new()
         .nest("/-/", monitoring_router.clone())
         .merge(static_router)
+        .merge(websocket_router)
         .merge(gunicorn_router);
 
     let web_path = &config::get().web.path;
