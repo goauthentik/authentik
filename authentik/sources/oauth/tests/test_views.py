@@ -230,8 +230,8 @@ class TestOAuthSource(APITestCase):
         self.assertEqual(res.status_code, 302)
         self.assertEqual(self.client.session[SESSION_KEY_GET], {NEXT_ARG_NAME: next_url})
 
-    def test_source_redirect_next_absolute(self):
-        """test redirect view ignores next URLs pointing to another host"""
+    def test_source_redirect_next_unsafe(self):
+        """test redirect view ignores next URLs that are not relative paths on this host"""
         session = self.client.session
         session[SESSION_KEY_GET] = {NEXT_ARG_NAME: "/if/user/"}
         session.save()
@@ -265,6 +265,57 @@ class TestOAuthSource(APITestCase):
         )
         self.assertEqual(res.status_code, 302)
         self.assertEqual(self.client.session[SESSION_KEY_GET], {NEXT_ARG_NAME: "/if/user/"})
+
+    def test_source_redirect_next_keeps_flow_params(self):
+        """test redirect view keeps other query parameters of a running flow"""
+        session = self.client.session
+        session[SESSION_KEY_GET] = {"itoken": "foo", NEXT_ARG_NAME: "/if/user/"}
+        session.save()
+        next_url = "/application/o/authorize/?client_id=foo"
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.source.slug},
+            ),
+            data={NEXT_ARG_NAME: next_url},
+        )
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(
+            self.client.session[SESSION_KEY_GET], {"itoken": "foo", NEXT_ARG_NAME: next_url}
+        )
+
+    def test_source_redirect_next_slack(self):
+        """test next is stored for source types that override get_redirect_url"""
+        source = OAuthSource.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider_type="slack",
+            consumer_key=generate_id(),
+        )
+        next_url = "/application/o/authorize/?client_id=foo"
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": source.slug},
+            ),
+            data={NEXT_ARG_NAME: next_url},
+        )
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(self.client.session[SESSION_KEY_GET], {NEXT_ARG_NAME: next_url})
+
+    def test_source_redirect_next_disabled(self):
+        """test next is not stored when the source is disabled"""
+        self.source.enabled = False
+        self.source.save()
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.source.slug},
+            ),
+            data={NEXT_ARG_NAME: "/foo/"},
+        )
+        self.assertEqual(res.status_code, 404)
+        self.assertNotIn(SESSION_KEY_GET, self.client.session)
 
     def test_source_callback(self):
         """test callback view"""

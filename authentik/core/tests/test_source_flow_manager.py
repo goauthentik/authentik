@@ -17,10 +17,11 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowAuthenticationRequirement
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_USER_SWITCH_ADD_USER,
     FlowPlan,
 )
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.expression.models import ExpressionPolicy
@@ -77,6 +78,22 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(response.status_code, 302)
         flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
         self.assertEqual(flow_plan.bindings[0].stage.view, PostSourceStage)
+
+    def test_unauthenticated_auth_next(self):
+        """Test the next URL stored in the session becomes the plan's redirect"""
+        UserOAuthSourceConnection.objects.create(
+            user=get_anonymous_user(), source=self.source, identifier=self.identifier
+        )
+        request = self.request_factory.get("/", user=AnonymousUser())
+        next_url = "/application/o/authorize/?client_id=foo"
+        request.session[SESSION_KEY_GET] = {NEXT_ARG_NAME: next_url}
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+        response = flow_manager.get_flow()
+        self.assertEqual(response.status_code, 302)
+        flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        self.assertEqual(flow_plan.context[PLAN_CONTEXT_REDIRECT], next_url)
 
     def test_authenticated_link(self):
         """Test authenticated user linking"""
