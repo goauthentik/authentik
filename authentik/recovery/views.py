@@ -9,6 +9,7 @@ from django.utils.translation import gettext as _
 from django.views import View
 
 from authentik.brands.models import SESSION_KEY_BRAND_SAFE_MODE
+from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import Token, TokenIntents
 from authentik.stages.password import BACKEND_INBUILT
 
@@ -29,6 +30,11 @@ class UseTokenView(View):
             if token is None:
                 raise Http404
 
+            # Don't carry the previous user's session data into this login.
+            if request.user.is_authenticated and (
+                request.user.pk != token.user_id or SESSION_KEY_IMPERSONATE_USER in request.session
+            ):
+                request.session.flush()
             login(request, token.user, backend=BACKEND_INBUILT)
             token.delete()
 
