@@ -33,9 +33,12 @@ class ActionRequirements:
         if not detail:
             return
         obj = view.get_object()
-        allowed = (not self.obj_perm or request.user.has_perm(self.obj_perm, obj)) and all(
-            permission.allows_object(request, view, obj) for permission in base
-        )
+        allowed = (
+            not self.obj_perm
+            or request.user.has_perm(
+                self.obj_perm, ObjectPermissions.as_model(obj, view.get_queryset().model)
+            )
+        ) and all(permission.allows_object(request, view, obj) for permission in base)
         if not checks.has_object_permission(obj, allowed):
             view.permission_denied(request)
 
