@@ -1,15 +1,19 @@
 """Test Users Avatars"""
 
+from datetime import timedelta
 from json import loads
 
 from django.core.cache import cache
 from django.urls.base import reverse
+from django.utils.timezone import now
+from django_postgres_cache.models import CacheEntry
 from requests_mock import Mocker
 from rest_framework.test import APITestCase
 
 from authentik.admin.utils import get_system_settings
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.lib.avatars import AVATAR_STATUS_TTL_SECONDS
 
 
 class TestUsersAvatars(APITestCase):
@@ -184,6 +188,29 @@ class TestUsersAvatars(APITestCase):
         self.assertIsNone(cache.get(cache_key))
         # Verify TTL was set (cache entry exists)
         self.assertTrue(cache.has_key(cache_key))
+
+    def test_avatars_cache_hit_keeps_ttl(self):
+        """Test that a cache hit keeps the avatar TTL instead of shortening it to the default"""
+        cache.clear()
+        self.set_avatar_mode("https://example.com/avatar/%(username)s")
+        self.client.force_login(self.admin)
+        with Mocker() as mocker:
+            mocker.head(
+                f"https://example.com/avatar/{self.admin.username}",
+                headers={"Content-Type": "image/png"},
+            )
+            # The first request fills the cache, the second one hits it
+            for _ in range(2):
+                response = self.client.get(reverse("authentik_api:user-me"))
+                self.assertEqual(response.status_code, 200)
+            self.assertEqual(mocker.call_count, 1)
+
+        from hashlib import md5
+
+        mail_hash = md5(self.admin.email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()
+        cache_key = cache.make_key(f"goauthentik.io/lib/avatars/example.com/{mail_hash}")
+        entry = CacheEntry.objects.get(cache_key=cache_key)
+        self.assertGreater(entry.expires - now(), timedelta(seconds=AVATAR_STATUS_TTL_SECONDS - 60))
 
     def test_avatars_custom_redirect(self):
         """Test custom avatar URL follows redirects"""
