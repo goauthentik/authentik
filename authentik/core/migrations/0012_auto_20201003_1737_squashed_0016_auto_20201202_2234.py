@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("authentik_providers_saml", "0006_remove_samlprovider_name"),
         ("authentik_providers_oauth2", "0006_remove_oauth2provider_name"),
-        ("authentik_core", "0011_provider_name_temp"),
+        ("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp"),
     ]
 
     operations = [

@@ -340,3 +340,15 @@ filterwarnings = [
   "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
   "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
 ]
+
+[tool.django_migration_linter]
+# Released or already applied on existing instances, so these can't be changed anymore.
+# The NOT NULL columns get a database default in a follow-up migration.
+ignore_name = [
+  "0009_rac_devices",
+  "0013_ldapsource_service_bind_method",
+  "0013_policybinding_dry_run",
+  "0022_scimprovider_auth_basic_password_and_more",
+  "0023_samlprovider_encryption_algorithm",
+  "0026_remove_samlsource_audience_override",
+]

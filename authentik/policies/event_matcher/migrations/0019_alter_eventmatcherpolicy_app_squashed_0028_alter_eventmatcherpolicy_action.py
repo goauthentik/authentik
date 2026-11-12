@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
     ]
 
     dependencies = [
-        ("authentik_policies_event_matcher", "0018_alter_eventmatcherpolicy_action"),
+        ("authentik_policies_event_matcher", "0001_squashed_0018_alter_eventmatcherpolicy_action"),
     ]
 
     operations = [
