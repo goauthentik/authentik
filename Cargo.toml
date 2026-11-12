@@ -71,7 +71,7 @@ nix = { version = "= 0.31.3", features = [
   "signal",
   "user",
 ] }
-notify = "= 8.2.1"
+notify = "= 8.2.2"
 pem = "= 4.0.0"
 percent-encoding = "= 2.3.2"
 pin-project-lite = "= 0.2.17"
