@@ -1,6 +1,7 @@
 """Test Users Avatars"""
 
 from datetime import timedelta
+from hashlib import md5
 from json import loads
 
 from django.core.cache import cache
@@ -204,8 +205,6 @@ class TestUsersAvatars(APITestCase):
                 response = self.client.get(reverse("authentik_api:user-me"))
                 self.assertEqual(response.status_code, 200)
             self.assertEqual(mocker.call_count, 1)
-
-        from hashlib import md5
 
         mail_hash = md5(self.admin.email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()
         cache_key = cache.make_key(f"goauthentik.io/lib/avatars/example.com/{mail_hash}")
