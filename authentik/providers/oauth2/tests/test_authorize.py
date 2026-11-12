@@ -19,6 +19,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
+from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -36,7 +37,10 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
-from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
+from authentik.providers.oauth2.views.authorize import (
+    SESSION_KEY_LAST_LOGIN_UID,
+    OAuthAuthorizationParams,
+)
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD
 
@@ -1294,3 +1298,90 @@ class TestAuthorize(OAuthTestCase):
         with self.assertRaises(AuthorizeError) as cm:
             OAuthAuthorizationParams.from_request(request)
         self.assertEqual(cm.exception.error, "invalid_request")
+
+
+class TestAuthorizePromptLogin(OAuthTestCase):
+    """Test prompt=login re-authentication bookkeeping (SESSION_KEY_LAST_LOGIN_UID)"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.flow = create_test_flow()
+        self.auth_flow = create_test_flow()
+        FlowStageBinding.objects.create(
+            target=self.auth_flow, stage=DummyStage.objects.create(name=generate_id()), order=10
+        )
+        self.provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=self.flow,
+            authentication_flow=self.auth_flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        Application.objects.create(name="app", slug="app", provider=self.provider)
+        self.user = create_test_admin_user()
+
+    def get_authorize(self, state: str):
+        return self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                "prompt": "login",
+            },
+        )
+
+    def perform_login(self) -> None:
+        """Simulate a completed authentication flow: authenticated user with a new login
+        event in the session"""
+        self.client.force_login(self.user)
+        event = Event.new(EventAction.LOGIN)
+        event.save()
+        self.client.session[SESSION_LOGIN_EVENT] = event
+        self.client.session.save()
+
+    def assert_reauth_redirect(self, response) -> None:
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(self.auth_flow.slug, response.url)
+
+    def assert_code_issued(self, state: str, response) -> None:
+        code: AuthorizationCode = AuthorizationCode.objects.filter(user=self.user).first()
+        self.assertIsNotNone(code)
+        self.assertEqual(response.url, f"foo://localhost?code={code.code}&state={state}")
+
+    def test_fresh_session_reauth_once(self):
+        """A fresh session with prompt=login requires exactly one login, not two"""
+        state = generate_id()
+        self.assert_reauth_redirect(self.get_authorize(state))
+        self.perform_login()
+        self.assert_code_issued(state, self.get_authorize(state))
+
+    def test_existing_session_reauth_once(self):
+        """prompt=login on a session that already has a login event requires exactly one
+        new login"""
+        state = generate_id()
+        self.perform_login()
+        self.assert_reauth_redirect(self.get_authorize(state))
+        self.perform_login()
+        self.assert_code_issued(state, self.get_authorize(state))
+
+    def test_marker_consumed_after_success(self):
+        """After a successful prompt=login cycle, the next prompt=login request requires
+        a fresh re-authentication again"""
+        state = generate_id()
+        self.perform_login()
+        self.assert_reauth_redirect(self.get_authorize(state))
+        self.perform_login()
+        self.assert_code_issued(state, self.get_authorize(state))
+        self.assertNotIn(SESSION_KEY_LAST_LOGIN_UID, self.client.session)
+        self.assert_reauth_redirect(self.get_authorize(generate_id()))
+
+    def test_marker_state_bound(self):
+        """A marker from another authorization request (different state) must not skip
+        re-authentication"""
+        self.perform_login()
+        self.assert_reauth_redirect(self.get_authorize(generate_id()))
+        self.assert_reauth_redirect(self.get_authorize(generate_id()))

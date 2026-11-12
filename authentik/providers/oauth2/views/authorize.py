@@ -543,6 +543,22 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # Activate language before parsing params (error messages should be localized)
         return self.dispatch_with_language(request, *args, **kwargs)
 
+    def handle_no_permission(self) -> HttpResponse:
+        """When a prompt=login request (max_age=0 is equivalent to prompt=login) is sent
+        to the authentication flow, remember the request's state and the login event (if
+        any) that currently exists, so that get() can recognize a new login event created
+        by the flow run as the re-authentication the client requested. Without this, a
+        request from a fresh session (no login event yet) would be sent to the flow a
+        second time after the user logs in, and a marker left over from an earlier
+        request would let later prompt=login requests skip re-authentication."""
+        if PROMPT_LOGIN in self.params.prompt or self.params.max_age == 0:
+            login_event = get_login_event(self.request)
+            self.request.session[SESSION_KEY_LAST_LOGIN_UID] = {
+                "state": self.params.state,
+                "uid": str(login_event.pk) if login_event else None,
+            }
+        return super().handle_no_permission()
+
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Start FlowPLanner, return to flow executor shell"""
         # Require a login event to be set, otherwise make the user re-login
@@ -564,22 +580,23 @@ class AuthorizationFlowInitView(PolicyAccessView):
                     max_age=self.params.max_age,
                     ago=int(current_age.total_seconds()),
                 )
-                # Since we already need to re-authenticate the user, set the old login UID
-                # in case this request has both max_age and prompt=login
-                self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
                 return self.handle_no_permission()
-        # If prompt=login, we need to re-authenticate the user regardless. max_age=0 is
-        # defined as equivalent to prompt=login, see
+        # If prompt=login, we need to re-authenticate the user, unless a new login event
+        # was created after this request was sent to the authentication flow. max_age=0
+        # is defined as equivalent to prompt=login, see
         # https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest
-        # Check if we're not already doing the re-authentication
         if PROMPT_LOGIN in self.params.prompt or self.params.max_age == 0:
-            # No previous login UID saved, so save the current uid and trigger
-            # re-login, or previous login UID matches current one, so no re-login happened yet
+            last_login = self.request.session.get(SESSION_KEY_LAST_LOGIN_UID)
             if (
-                SESSION_KEY_LAST_LOGIN_UID not in self.request.session
-                or login_uid == self.request.session[SESSION_KEY_LAST_LOGIN_UID]
+                isinstance(last_login, dict)
+                and last_login.get("state") == self.params.state
+                and last_login.get("uid") != login_uid
             ):
-                self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
+                # A new login event was created since this request triggered the
+                # re-authentication: consume the marker so the next prompt=login request
+                # requires a fresh login again
+                del self.request.session[SESSION_KEY_LAST_LOGIN_UID]
+            else:
                 return self.handle_no_permission()
         scope_descriptions = UserInfoView().get_scope_descriptions(
             self.params.scope, self.params.provider
