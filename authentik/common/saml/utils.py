@@ -3,13 +3,14 @@
 import base64
 from collections.abc import Iterator
 from typing import cast
+from xml.etree.ElementTree import Element  # nosec
 
 from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import Certificate
 from lxml.etree import _Element
 
 
-def get_element_text(element: _Element) -> str:
+def get_element_text(element: _Element | Element) -> str:
     """Return the full text content of an XML element.
 
     ``Element.text`` only returns the text up to the first child node, so a value

@@ -40,7 +40,7 @@ from authentik.policies.denied import AccessDeniedResponse
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
 from authentik.sources.saml.models import SAMLSource
-from authentik.sources.saml.processors.response import SAMLSourceFlowManager
+from authentik.sources.saml.stages import SAMLSourceFlowManager
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage

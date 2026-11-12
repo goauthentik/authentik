@@ -294,6 +294,7 @@ import {
 } from "../models/SCIMSourceUserRequest.js";
 import { type ServiceBindMethodEnum } from "../models/ServiceBindMethodEnum.js";
 import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum.js";
+import { type SloBindingEnum } from "../models/SloBindingEnum.js";
 import { type Source, SourceFromJSON } from "../models/Source.js";
 import { type SourceType, SourceTypeFromJSON } from "../models/SourceType.js";
 import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus.js";
@@ -1149,10 +1150,13 @@ export interface SourcesSamlListRequest {
      * A search term.
      */
     search?: string;
+    signAuthnRequest?: boolean;
+    signLogoutRequest?: boolean;
     signatureAlgorithm?: SignatureAlgorithmEnum;
     signedAssertion?: boolean;
     signedResponse?: boolean;
     signingKp?: string;
+    sloBinding?: SloBindingEnum;
     sloUrl?: string;
     slug?: string;
     ssoUrl?: string;
@@ -8344,6 +8348,14 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["search"] = requestParameters["search"];
         }
 
+        if (requestParameters["signAuthnRequest"] != null) {
+            queryParameters["sign_authn_request"] = requestParameters["signAuthnRequest"];
+        }
+
+        if (requestParameters["signLogoutRequest"] != null) {
+            queryParameters["sign_logout_request"] = requestParameters["signLogoutRequest"];
+        }
+
         if (requestParameters["signatureAlgorithm"] != null) {
             queryParameters["signature_algorithm"] = requestParameters["signatureAlgorithm"];
         }
@@ -8358,6 +8370,10 @@ export class SourcesApi extends runtime.BaseAPI {
 
         if (requestParameters["signingKp"] != null) {
             queryParameters["signing_kp"] = requestParameters["signingKp"];
+        }
+
+        if (requestParameters["sloBinding"] != null) {
+            queryParameters["slo_binding"] = requestParameters["sloBinding"];
         }
 
         if (requestParameters["sloUrl"] != null) {

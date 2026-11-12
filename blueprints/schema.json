@@ -13603,6 +13603,15 @@
                     ],
                     "title": "Binding type"
                 },
+                "slo_binding": {
+                    "type": "string",
+                    "enum": [
+                        "REDIRECT",
+                        "POST"
+                    ],
+                    "title": "SLO Binding",
+                    "description": "Binding type for Single Logout requests to the IdP."
+                },
                 "verification_kp": {
                     "type": "string",
                     "format": "uuid",
@@ -13659,6 +13668,16 @@
                 "signed_response": {
                     "type": "boolean",
                     "title": "Signed response"
+                },
+                "sign_authn_request": {
+                    "type": "boolean",
+                    "title": "Sign AuthnRequest",
+                    "description": "Whether to sign outgoing AuthnRequests. Requires a Signing Keypair to be set."
+                },
+                "sign_logout_request": {
+                    "type": "boolean",
+                    "title": "Sign LogoutRequest",
+                    "description": "Whether to sign outgoing LogoutRequests. Requires a Signing Keypair to be set."
                 }
             },
             "required": []
