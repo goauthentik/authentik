@@ -48,7 +48,7 @@ from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageVie
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
-from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.policies.views import ForcedLoginAccessView, RequestValidationError
 from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
@@ -79,7 +79,6 @@ from authentik.stages.consent.stage import (
 LOGGER = get_logger()
 
 PLAN_CONTEXT_PARAMS = "goauthentik.io/providers/oauth2/params"
-SESSION_KEY_REAUTHENTICATION = "authentik/providers/oauth2/reauthentication"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
 
@@ -445,7 +444,7 @@ class OAuthAuthorizationParams:
         return code
 
 
-class AuthorizationFlowInitView(PolicyAccessView):
+class AuthorizationFlowInitView(ForcedLoginAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
     params: OAuthAuthorizationParams
@@ -543,17 +542,6 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # Activate language before parsing params (error messages should be localized)
         return self.dispatch_with_language(request, *args, **kwargs)
 
-    def handle_no_permission(self) -> HttpResponse:
-        # Remember the login before every authentication redirect, including the
-        # initial redirect for an anonymous user in PolicyAccessView.dispatch().
-        login_event = get_login_event(self.request)
-        response = super().handle_no_permission()
-        self.request.session[SESSION_KEY_REAUTHENTICATION] = {
-            "request": self.request.get_full_path(),
-            "login_uid": str(login_event.pk) if login_event else None,
-        }
-        return response
-
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Start FlowPLanner, return to flow executor shell"""
         # Require a login event to be set, otherwise make the user re-login
@@ -561,7 +549,6 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if not login_event:
             LOGGER.warning("request with no login event")
             return self.handle_no_permission()
-        login_uid = str(login_event.pk)
         # After we've checked permissions, and the user has access, check if we need
         # to re-authenticate the user
         if self.params.max_age:
@@ -579,15 +566,10 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # If prompt=login, we need to re-authenticate the user regardless. max_age=0 is
         # defined as equivalent to prompt=login, see
         # https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest
-        # Check if we're not already doing the re-authentication
-        if PROMPT_LOGIN in self.params.prompt or self.params.max_age == 0:
-            # No authentication started for this request, or no new login happened yet.
-            pending_auth = self.request.session.get(SESSION_KEY_REAUTHENTICATION, {})
-            same_request = pending_auth.get("request") == request.get_full_path()
-            if not same_request or login_uid == pending_auth.get("login_uid"):
-                return self.handle_no_permission()
-        # A completed login must not satisfy subsequent forced-login requests.
-        self.request.session.pop(SESSION_KEY_REAUTHENTICATION, None)
+        if response := self.check_forced_login(
+            PROMPT_LOGIN in self.params.prompt or self.params.max_age == 0
+        ):
+            return response
         scope_descriptions = UserInfoView().get_scope_descriptions(
             self.params.scope, self.params.provider
         )
