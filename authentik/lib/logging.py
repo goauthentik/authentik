@@ -127,6 +127,7 @@ def get_logger_config():
         "httpx": "WARNING",
         "azure": "WARNING",
         "httpcore": "WARNING",
+        "django_migration_linter": "WARNING",
     }
     for handler_name, level in handler_level_map.items():
         base_config["loggers"][handler_name] = {

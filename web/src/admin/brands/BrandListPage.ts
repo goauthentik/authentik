@@ -25,6 +25,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
+    public static override verboseName = msg("Brand", { id: "brands.verbose-name.label" });
+    public static override verboseNamePlural = msg("Brands", {
+        id: "brands.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [...super.styles, PFBanner];
     protected override searchEnabled = true;
     public override searchPlaceholder = msg("Search by domain or brand name...");
@@ -57,7 +62,6 @@ export class BrandListPage extends TablePage<Brand> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Brand(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Brand) => {
                 return [{ key: msg("Domain"), value: item.domain }];
