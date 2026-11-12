@@ -18,7 +18,10 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("authentik_flows", "0024_alter_flow_compatibility_mode"),
+        (
+            "authentik_flows",
+            "0019_alter_flow_background_squashed_0024_alter_flow_compatibility_mode",
+        ),
     ]
 
     operations = [
