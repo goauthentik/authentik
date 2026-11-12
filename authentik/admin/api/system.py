@@ -138,18 +138,22 @@ class SystemInfoSerializer(PassiveSerializer):
         try:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT current_setting('server_version'), setting, source, ssl, "
-                    "version, cipher FROM pg_settings, pg_stat_ssl WHERE name = 'jit' "
-                    "AND pid = pg_backend_pid()"
+                    "SELECT current_setting('server_version'), s.setting, s.source, "
+                    "ssl.ssl, ssl.version, ssl.cipher FROM pg_settings s "
+                    "LEFT JOIN pg_stat_ssl ssl ON ssl.pid = pg_backend_pid() "
+                    "WHERE s.name = 'jit'"
                 )
-                version, jit, jit_source, ssl, ssl_version, ssl_cipher = cursor.fetchone()
+                row = cursor.fetchone()
         except Error:
             return None
+        if row is None:
+            return None
+        version, jit, jit_source, ssl, ssl_version, ssl_cipher = row
         return {
             "version": version,
             "jit": jit,
             "jit_source": jit_source,
-            "ssl": ssl,
+            "ssl": bool(ssl),
             "ssl_version": ssl_version,
             "ssl_cipher": ssl_cipher,
         }

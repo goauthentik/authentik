@@ -22,7 +22,7 @@ const metadata: Meta<FooterLinkInput> = {
     },
     decorators: [
         (story: Decorator) => {
-            window.setTimeout(() => {
+            setTimeout(() => {
                 const control = document.getElementById("footer-link");
 
                 if (!control) {

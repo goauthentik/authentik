@@ -16,7 +16,7 @@ export {
     type ProgressVariant,
 };
 
-window.customElements.define("ak-progress", Progress);
+customElements.define("ak-progress", Progress);
 
 declare global {
     interface HTMLElementTagNameMap {

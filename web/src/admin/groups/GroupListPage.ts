@@ -22,6 +22,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
+    public static override verboseName = msg("Group", { id: "groups.verbose-name.label" });
+    public static override verboseNamePlural = msg("Groups", {
+        id: "groups.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override checkbox = true;
@@ -57,7 +62,6 @@ export class GroupListPage extends TablePage<Group> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Group(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Group) => {
                 return aki(CoreApi).coreGroupsUsedByList({
