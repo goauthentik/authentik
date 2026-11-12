@@ -3,4 +3,4 @@ services:
   # docker-compose ecosystem can see and bump this image; the docker-in-docker
   # integration tests read the tag back out via DockerTestCase.pinned_image().
   dind:
-    image: docker.io/library/docker:28.5.2-dind-alpine3.22
+    image: docker.io/library/docker:29.1.2-dind-alpine3.22
