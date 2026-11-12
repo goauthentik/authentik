@@ -15,7 +15,7 @@ from authentik.sources.saml.exceptions import (
     SAMLException,
 )
 from authentik.sources.saml.models import SAMLSource
-from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
+from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 
 # This source.
@@ -61,6 +61,27 @@ class TestResponseBinding(TestCase):
         request.session.save()
 
         ResponseProcessor(self.source, request).parse()
+
+    def test_response_to_earlier_request(self):
+        """A response to an earlier request is accepted after the session starts another"""
+        request = self.factory.get("/")
+        first = RequestProcessor(self.source, request, "first")
+        RequestProcessor(self.source, request, "second")
+        response = load_fixture(
+            "fixtures/response_binding.xml",
+            destination=ACS_URL,
+            response_in_response_to=first.request_id,
+            recipient=ACS_URL,
+            assertion_in_response_to=first.request_id,
+            subject_not_on_or_after=VALID_UNTIL,
+        )
+        acs_request = self.factory.post(
+            "/", data={"SAMLResponse": b64encode(response.encode()).decode()}
+        )
+        acs_request.session[SESSION_KEY_REQUEST_ID] = request.session[SESSION_KEY_REQUEST_ID]
+        acs_request.session.save()
+
+        ResponseProcessor(self.source, acs_request).parse()
 
     def test_minimal_response(self):
         """A response that carries none of the optional values is accepted"""

@@ -4,6 +4,7 @@ from base64 import b64encode
 from urllib.parse import quote_plus
 
 import xmlsec
+from django.contrib.sessions.backends.base import SessionBase
 from django.http import HttpRequest
 from django.urls import reverse
 from lxml import etree  # nosec
@@ -24,6 +25,17 @@ from authentik.providers.saml.utils.time import get_time_string
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 
 SESSION_KEY_REQUEST_ID = "authentik/sources/saml/request_id"
+# Several tabs can start a login at once, so keep the most recent requests rather than only the last
+MAX_PENDING_REQUEST_IDS = 10
+
+
+def get_pending_request_ids(session: SessionBase) -> list[str]:
+    """Get the IDs of the AuthnRequests this session is waiting on, newest last."""
+    pending = session.get(SESSION_KEY_REQUEST_ID)
+    # Sessions from before multiple pending requests hold a single ID
+    if isinstance(pending, str):
+        return [pending]
+    return list(pending or [])
 
 
 class RequestProcessor:
@@ -42,7 +54,9 @@ class RequestProcessor:
         self.http_request = request
         self.relay_state = relay_state
         self.request_id = get_random_id()
-        self.http_request.session[SESSION_KEY_REQUEST_ID] = self.request_id
+        pending = get_pending_request_ids(self.http_request.session)
+        pending.append(self.request_id)
+        self.http_request.session[SESSION_KEY_REQUEST_ID] = pending[-MAX_PENDING_REQUEST_IDS:]
         self.issue_instant = get_time_string()
 
     def get_issuer(self) -> Element:
