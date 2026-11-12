@@ -16,12 +16,14 @@ import "monaco-editor/features/contextmenu/register";
 import "monaco-editor/features/cursorUndo/register";
 import "monaco-editor/features/find/register";
 import "monaco-editor/features/folding/register";
+import "monaco-editor/features/hover/register";
 import "monaco-editor/features/gotoLine/register";
 import "monaco-editor/features/indentation/register";
 import "monaco-editor/features/linesOperations/register";
 import "monaco-editor/features/multicursor/register";
 import "monaco-editor/features/readOnlyMessage/register";
 import "monaco-editor/features/smartSelect/register";
+import "monaco-editor/features/snippet/register";
 import "monaco-editor/features/toggleTabFocusMode/register";
 import "monaco-editor/features/wordHighlighter/register";
 import "monaco-editor/features/wordOperations/register";
@@ -32,6 +34,8 @@ import "monaco-editor/languages/definitions/javascript/register";
 import "monaco-editor/languages/definitions/python/register";
 import "monaco-editor/languages/definitions/xml/register";
 import "monaco-editor/languages/definitions/yaml/register";
+// The suggestion widget has no feature entry point of its own.
+import "monaco-editor/editor/contrib/suggest/browser/suggestController";
 // Monaco's package exports do not cover its CSS, so the bundlers alias this path to the file.
 import MonacoStyles from "monaco-editor/min/vs/editor/editor.main.css";
 
@@ -84,6 +88,19 @@ monaco.defineTheme("ak-light", {
 });
 
 monaco.defineTheme("ak-dark", OneDark);
+
+/**
+ * Language services, loaded with the first editor of their language.
+ */
+const LanguageServices: Partial<Record<CodeEditorMode, () => Promise<unknown>>> = {
+    [CodeEditorMode.CSS]: () => import("#elements/CodeEditor/languages/css-service"),
+};
+
+function loadLanguageService(mode: CodeEditorMode): void {
+    LanguageServices[mode]?.().catch((error: unknown) => {
+        console.warn("code-editor: failed to load language service", mode, error);
+    });
+}
 
 function themeName(theme: ResolvedUITheme): string {
     return theme === UiThemeEnum.Dark ? "ak-dark" : "ak-light";
@@ -138,7 +155,11 @@ export class MonacoEditor implements Disposable {
             renderWhitespace: "selection",
             guides: { bracketPairs: "active" },
             padding: { top: 6, bottom: 6 },
+            // Word suggestions are computed in a web worker, which is not bundled.
+            wordBasedSuggestions: "off",
         });
+
+        loadLanguageService(mode);
 
         // Monaco needs an explicit height. Following the content keeps short values compact,
         // and the container's CSS `max-height` caps long ones, which then scroll.
@@ -174,6 +195,8 @@ export class MonacoEditor implements Disposable {
         const model = this.editor.getModel();
 
         if (model) monaco.setModelLanguage(model, mode);
+
+        loadLanguageService(mode);
     }
 
     public setReadOnly(readOnly: boolean): void {
