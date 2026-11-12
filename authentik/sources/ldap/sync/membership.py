@@ -119,8 +119,9 @@ class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
             if not group:
                 continue
 
+            member_values = members + [[member] for member in members]
             users = User.objects.filter(
-                Q(**{f"attributes__{self._source.user_membership_attribute}__in": members})
+                Q(**{f"attributes__{self._source.user_membership_attribute}__in": member_values})
                 | Q(
                     **{
                         f"attributes__{self._source.user_membership_attribute}__isnull": True,
