@@ -13,7 +13,7 @@ dependencies = [
   "channels==4.3.2",
   "cryptography==50.0.2",
   "dacite==1.9.2",
-  "deepmerge==3.0.1",
+  "deepmerge==4.0.0",
   "defusedxml==0.7.1",
   "django-channels-postgres",
   "django-countries==9.1.0",
@@ -39,7 +39,7 @@ dependencies = [
   "google-api-python-client==2.201.0",
   "gssapi==1.12.0",
   "gunicorn==26.2.0",
-  "jsonpatch==1.41",
+  "jsonpatch==1.42",
   "jwcrypto==1.6.1",
   "kubernetes==37.0.1",
   "ldap3==2.9.1",
@@ -98,6 +98,7 @@ dev = [
   "coverage[toml]==7.17.2",
   "daphne==4.2.3",
   "debugpy==1.8.22",
+  "django-migration-linter==6.0.0",
   "django-stubs[compatible-mypy]==6.1.2",
   "djangorestframework-stubs[compatible-mypy]==3.18.2",
   "drf-jsonschema-serializer==3.0.0",
@@ -338,4 +339,16 @@ addopts = "-p authentik.root.test_plugin --junitxml=unittest.xml -vv --full-trac
 filterwarnings = [
   "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
   "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
+]
+
+[tool.django_migration_linter]
+# Released or already applied on existing instances, so these can't be changed anymore.
+# The NOT NULL columns get a database default in a follow-up migration.
+ignore_name = [
+  "0009_rac_devices",
+  "0013_ldapsource_service_bind_method",
+  "0013_policybinding_dry_run",
+  "0022_scimprovider_auth_basic_password_and_more",
+  "0023_samlprovider_encryption_algorithm",
+  "0026_remove_samlsource_audience_override",
 ]
