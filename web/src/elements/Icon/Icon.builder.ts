@@ -1,6 +1,6 @@
-import "./ak-icon.component.js";
+import "./Icon.component";
 import type { ElementRest } from "../types.js";
-import { Icon } from "./ak-icon.component.js";
+import { Icon } from "./Icon.component";
 
 import { spread } from "@open-wc/lit-helpers";
 

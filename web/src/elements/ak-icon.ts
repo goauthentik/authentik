@@ -1,5 +1,5 @@
-import { akIcon, type IconProps } from "./ak-icon.builder.js";
-import { Icon } from "./ak-icon.component.js";
+import { akIcon, type IconProps } from "#elements/Icon/Icon.builder";
+import { Icon } from "#elements/Icon/Icon.component";
 
 export { akIcon, Icon, type IconProps };
 

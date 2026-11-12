@@ -2,6 +2,7 @@ import "#elements/Spinner";
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import "#elements/ak-icon";
 
 import { AggregateCard, StatusTone } from "#elements/cards/AggregateCard";
 import { SlottedTemplateResult } from "#elements/types";
@@ -117,9 +118,11 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for status display
      */
     private renderStatus(status: AdminStatus): SlottedTemplateResult {
+        console.log(status);
         return html`<div class="status-container">
             <h2 class="status-heading">
-                <i class="${status.icon}" aria-hidden="true"></i>${this.renderValue()}
+                <ak-icon name="status-${status.tone}" aria-hidden="true"></ak-icon
+                >${this.renderValue()}
             </h2>
             ${status.message ? html`<p class="subtext">${status.message}</p>` : nothing}
         </div>`;

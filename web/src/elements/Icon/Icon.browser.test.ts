@@ -1,5 +1,5 @@
-import "#elements/ak-icon/ak-icon";
-import type { Icon } from "#elements/ak-icon/ak-icon";
+import "#elements/ak-icon";
+import type { Icon } from "#elements/ak-icon";
 
 import { afterEach, describe, expect, it } from "vitest";
 import { page } from "vitest/browser";
@@ -19,7 +19,7 @@ async function mount(template: TemplateResult): Promise<Icon> {
     return element;
 }
 
-const image = (element: Icon) => element.style.getPropertyValue("--ak-icon-image");
+const image = (element: Icon) => element.style.getPropertyValue("--ak-icon--image");
 
 describe("ak-icon", () => {
     afterEach(() => {
@@ -29,7 +29,7 @@ describe("ak-icon", () => {
 
     it("maps a dotted token to its catalog property", async () => {
         const element = await mount(html`<ak-icon name="status.success"></ak-icon>`);
-        expect(image(element)).toBe("var(--ak-icon-status-success)");
+        expect(image(element)).toBe("var(--ak-icon--status-success)");
     });
 
     it("clears the image when the name becomes invalid", async () => {

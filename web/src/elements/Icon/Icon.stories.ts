@@ -1,5 +1,5 @@
-import "./ak-icon.js";
-import { akIcon, type IconProps } from "./ak-icon.js";
+import "../ak-icon";
+import { akIcon, type IconProps } from "../ak-icon";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 

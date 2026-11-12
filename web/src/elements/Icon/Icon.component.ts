@@ -28,7 +28,7 @@ export class Icon extends LitElement {
             height: 1em;
             vertical-align: -0.125em;
             background-color: currentColor;
-            mask: var(--ak-icon-image, var(--ak-icon-unknown)) center / contain no-repeat;
+            mask: var(--ak-icon--image, var(--ak-icon--unknown)) center / contain no-repeat;
         }
 
         @media (forced-colors: active) {
@@ -48,10 +48,10 @@ export class Icon extends LitElement {
         if (changed.has("name")) {
             if (this.name && TOKEN_PATTERN.test(this.name)) {
                 const token = this.name.replaceAll(".", "-");
-                this.style.setProperty("--ak-icon-image", `var(--ak-icon-${token})`);
+                this.style.setProperty("--ak-icon--image", `var(--ak-icon--${token})`);
             } else {
                 // Clear it, or an invalid value would leave the previous icon showing.
-                this.style.removeProperty("--ak-icon-image");
+                this.style.removeProperty("--ak-icon--image");
             }
         }
 
