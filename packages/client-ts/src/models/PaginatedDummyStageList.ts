@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { DummyStage } from "./DummyStage";
-import { DummyStageFromJSON, DummyStageToJSON } from "./DummyStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { DummyStage } from "./DummyStage.js";
+import { DummyStageFromJSON, DummyStageToJSON } from "./DummyStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

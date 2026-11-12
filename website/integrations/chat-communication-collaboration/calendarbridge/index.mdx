@@ -1,0 +1,83 @@
+---
+title: Integrate with CalendarBridge
+sidebar_label: CalendarBridge
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is CalendarBridge?
+
+> CalendarBridge synchronizes events between Google Calendar, Microsoft 365, Outlook, and iCloud calendars. It also provides a unified calendar view, scheduling pages, and booking links.
+>
+> -- https://calendarbridge.com
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info CalendarBridge requirements
+Single sign-on requires a CalendarBridge Group (organization) plan, an account with the organization administrator role, and at least one [authorized domain](https://help.calendarbridge.com/group-admin-docs/managing-authorized-domains/) on the organization.
+:::
+
+## authentik configuration
+
+To support the integration of CalendarBridge with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
+
+CalendarBridge matches users to your organization by the `email` claim, so each user's email address in authentik must be on an authorized domain of your CalendarBridge organization.
+
+### Create an application and provider
+
+<RedirectURI20265Note />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Set the **Launch URL** to `https://app.calendarbridge.com/login`. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://auth.calendarbridge.com/oauth2/idpresponse`.
+        - Select any available **Signing Key**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+
+## CalendarBridge configuration
+
+CalendarBridge creates an account for each user on their first SSO login and adds the user to your organization with an organization seat.
+
+### Configure SSO
+
+1. Log in to CalendarBridge as an organization administrator.
+2. Navigate to **Manage Organization** > **SSO** and click **Configure SSO**.
+3. Configure the following settings:
+    - **Protocol**: select **OIDC**.
+    - **Identity provider**: select the generic option, because authentik is not listed.
+    - **Apply to Domains**: select the domain that your users log in with.
+    - **Discovery URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+    - **Client ID**: the Client ID from authentik.
+    - **Client Secret**: the Client Secret from authentik.
+4. Check that the redirect URI that the form shows matches the **Redirect URI** of the authentik provider. If it differs, update the authentik provider to use the value from CalendarBridge.
+5. Click **Save Configuration**. The configuration status changes to **Active** when CalendarBridge accepts the configuration.
+
+### Require SSO _(optional)_
+
+After you confirm that SSO works, you can require it for the selected domains. Users on those domains can then log in only through authentik, and CalendarBridge no longer sends them emailed login codes.
+
+1. Navigate to **Manage Organization** > **SSO** and click **Edit Configuration**.
+2. Enable **Require SSO — disable magic-link fallback for these domains**.
+3. Click **Save Configuration**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with CalendarBridge, log out of CalendarBridge. On the CalendarBridge login page, click **Sign in with SSO**, enter the email address of an authentik user, and continue. You are redirected to authentik, and after you authenticate, CalendarBridge opens the dashboard.
+
+## Resources
+
+- [CalendarBridge Help - Configuring Single Sign-On (SAML & OIDC)](https://help.calendarbridge.com/group-admin-docs/configuring-sso/)
+- [CalendarBridge Help - Connect authorized domains to group account](https://help.calendarbridge.com/group-admin-docs/managing-authorized-domains/)

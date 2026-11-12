@@ -39,7 +39,7 @@ class WSFederationProvider(SAMLProvider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/wsfed.svg")
+        return static("authentik/sources/wsfed/light.svg")
 
     @property
     def component(self) -> str:

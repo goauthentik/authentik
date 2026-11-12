@@ -5,8 +5,8 @@
 
 import "@goauthentik/fonts/faces.css";
 import "@goauthentik/fonts/icons.css";
-import "#styles/interface.global.css";
-import "#styles/static.global.css";
+import "#styles/if/authenticated/index.global.css";
+import "#styles/if/shared/static.global.css";
 import "./preview.css";
 import { ThemedDocsContainer } from "./DocsContainer.tsx";
 import { extendStorybookTheme } from "./theme.js";

@@ -9,8 +9,9 @@ from typing import Any, Self
 from uuid import uuid4
 
 import pgtrigger
+from asgiref.sync import sync_to_async
 from deepmerge import always_merger
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import UNUSABLE_PASSWORD_PREFIX
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
@@ -33,6 +34,7 @@ from rest_framework.fields import BooleanField, CharField, IntegerField, ListFie
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.backends.static import static_url_name
 from authentik.admin.files.fields import FileField
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
@@ -131,6 +133,9 @@ class UserTypes(models.TextChoices):
     # Special user type for internally managed and created service
     # accounts, such as outpost users
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
+
+
+SERVICE_ACCOUNT_TYPES = (UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT)
 
 
 class AttributesMixin(models.Model):
@@ -365,7 +370,12 @@ class UserManager(DjangoUserManager.from_queryset(UserQuerySet)):
 
     def create_user(self, username, email=None, password=None, **extra_fields):
         """User manager that doesn't assign is_superuser and is_staff"""
-        return self._create_user(username, email, password, **extra_fields)
+        from authentik.stages.password.models import PasswordDevice
+
+        user = self.create(username=username, email=self.normalize_email(email), **extra_fields)
+        if password is not None:
+            PasswordDevice.set_password(user, password, signal=False)
+        return user
 
     def exclude_anonymous(self) -> QuerySet:
         """Exclude anonymous user"""
@@ -389,7 +399,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     roles = models.ManyToManyField(
         "authentik_rbac.Role", related_name="users", blank=True, through="UserRole"
     )
-    password_change_date = models.DateTimeField(auto_now_add=True)
 
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -406,7 +415,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         ]
         indexes = [
             models.Index(fields=["last_login"]),
-            models.Index(fields=["password_change_date"]),
             models.Index(fields=["uuid"]),
             models.Index(fields=["path"]),
             models.Index(fields=["type"]),
@@ -495,7 +503,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def app_entitlements(self, app: Application | None) -> QuerySet[ApplicationEntitlement]:
         """Get all entitlements this user has for `app`."""
         if not app:
-            return []
+            return ApplicationEntitlement.objects.none()
         return self.all_app_entitlements().filter(app=app)
 
     def all_app_entitlements(self) -> QuerySet[ApplicationEntitlement]:
@@ -573,49 +581,33 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         )
         return self.groups
 
-    def set_password(self, raw_password, signal=True, sender=None, request=None):
-        if self.pk and signal:
-            from authentik.core.signals import password_changed
+    # Passwords are written through authentik.stages.password.models.PasswordDevice.
+    # These read-only properties keep `user.password` and `user.password_change_date`
+    # working in expressions, Django's session hash and the user API.
+    @property
+    def password(self) -> str:
+        device = getattr(self, "password_device", None)
+        return device.password if device else UNUSABLE_PASSWORD_PREFIX
 
-            if not sender:
-                sender = self
-            password_changed.send(sender=sender, user=self, password=raw_password, request=request)
-        self.password_change_date = now()
-        return super().set_password(raw_password)
-
-    def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
-        """Set password directly from a pre-hashed value.
-
-        Unlike set_password(), this does not hash the input again. The provided value
-        must already be validated by the caller, and it is stored directly on the user.
-
-        Because no raw password is available, downstream password sync integrations
-        such as LDAP and Kerberos cannot be updated from this code path.
-        """
-        if self.pk and signal:
-            from authentik.core.signals import password_hash_changed
-
-            if not sender:
-                sender = self
-            password_hash_changed.send(sender=sender, user=self, request=request)
-        self.password = password_hash
-        self.password_change_date = now()
+    @property
+    def password_change_date(self) -> datetime:
+        device = getattr(self, "password_device", None)
+        return device.password_change_date if device else self.date_joined
 
     def check_password(self, raw_password: str) -> bool:
-        """
-        Return a boolean of whether the raw_password was correct. Handles
-        hashing formats behind the scenes.
+        # Django's version writes `password` when it upgrades an outdated hash.
+        device = getattr(self, "password_device", None)
+        return device.check_password(raw_password) if device else False
 
-        Slightly changed version which doesn't send a signal for such internal hash upgrades
-        """
+    async def acheck_password(self, raw_password: str) -> bool:
+        return await sync_to_async(self.check_password)(raw_password)
 
-        def setter(raw_password):
-            self.set_password(raw_password, signal=False)
-            # Password hash upgrades shouldn't be considered password changes.
-            self._password = None
-            self.save(update_fields=["password"])
+    # Django's password writes would assign the read-only `password`; fail loudly instead.
+    def set_password(self, raw_password):
+        raise NotImplementedError("Use PasswordDevice.set_password()")
 
-        return check_password(raw_password, self.password, setter)
+    def set_unusable_password(self):
+        raise NotImplementedError("Use PasswordDevice.set_unusable_password()")
 
     @property
     def uid(self) -> str:
@@ -638,6 +630,13 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
         return get_avatar(self)
+
+
+def get_init_anonymous_user(user_model: type[User]) -> User:
+    """Build guardian's anonymous user, which has no password device and so no password.
+
+    guardian's default calls `set_unusable_password()`, which needs a writable `password`."""
+    return user_model(username=settings.ANONYMOUS_USER_NAME)
 
 
 class Provider(SerializerModel):
@@ -802,7 +801,7 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
 
     @property
     def get_meta_icon_themed_urls(self) -> dict[str, str] | None:
-        """Get themed URLs for meta_icon if it contains %(theme)s"""
+        """Get themed URLs for meta_icon if it contains %(theme)s or is a built-in source icon"""
         if not self.meta_icon:
             return None
 
@@ -1037,9 +1036,10 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         request=None,
         use_cache: bool = True,
     ) -> dict[str, str] | None:
-        """Get themed URLs for icon if it contains %(theme)s."""
+        """Get themed URLs for the icon if it contains %(theme)s or is a built-in source icon."""
         if not self.icon:
-            return None
+            # Subclasses fall back to a built-in default icon, relative like their icon_url
+            return get_file_manager(FileUsage.MEDIA).themed_urls(static_url_name(self.icon_url))
         return get_file_manager(FileUsage.MEDIA).themed_urls(
             self.icon,
             request,
@@ -1563,7 +1563,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
     # https://github.com/goauthentik/authentik/issues/24250
     is_array = models.BooleanField(default=False)
 
-    def run_validation(self, value: Any) -> None:
+    def run_validation(self, value: Any, instance: models.Model | None = None) -> None:
         err_key = f"attributes_{self.key}"
 
         if self.is_required and value is None:
@@ -1605,7 +1605,11 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
         if not self.is_array and self.is_unique:
             model: type[models.Model] = self.object_type.model_class()
             lookup_key = f"attributes__{self.key.replace('.', '__')}"
-            if model.objects.filter(**{lookup_key: value}).exists():
+            existing = model.objects.filter(**{lookup_key: value})
+            # The row being saved already has this value; uniqueness is against other objects.
+            if instance is not None and isinstance(instance, model) and instance.pk is not None:
+                existing = existing.exclude(pk=instance.pk)
+            if existing.exists():
                 raise ValidationError({err_key: _("Value is not unique.")})
 
     @property
@@ -1692,6 +1696,4 @@ class Actor(ExpiringModel, User):
             type=UserTypes.SERVICE_ACCOUNT,
             **kwargs,
         )
-        actor.set_unusable_password()
-        actor.save()
         return actor

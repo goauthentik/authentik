@@ -54,6 +54,8 @@ CONSUMABLE_TASK_STATES: set[TaskState] = set(TaskState) - {
     TaskState.REJECTED,
     TaskState.WAITING_FOR_DEPENDENCIES,
 }
+# Only fetch the most due messages, so a consumer's memory doesn't grow with the queue's backlog
+PENDING_FETCH_LIMIT = 1000
 
 
 def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
@@ -380,20 +382,21 @@ class _PostgresConsumer(Consumer):
 
     def _fetch_pending_messages(self) -> set[str]:
         self.logger.debug("Fetching for pending messages", queue=self.queue_name)
-        pending = set(
-            self.query_set.exclude(message_id__in=self.in_processing)
+        pending = {
+            str(message_id)
+            for message_id in self.query_set.exclude(message_id__in=self.in_processing)
             .filter(queue_name=self.queue_name)
             .filter(state__in=CONSUMABLE_TASK_STATES)
             .exclude(eta__gte=timezone.now() + timedelta(seconds=self.timeout))
             .order_by(F("eta").asc(nulls_first=True))
-            .values_list("message_id", flat=True)
-        )
+            .values_list("message_id", flat=True)[:PENDING_FETCH_LIMIT]
+        }
         self.logger.debug(
             "Finished fetching pending messages in queue",
             pending=len(pending),
             queue=self.queue_name,
         )
-        return {str(message_id) for message_id in pending}
+        return pending
 
     def _reconcile_pending_messages(self) -> None:
         self.pending.update(self._fetch_pending_messages())

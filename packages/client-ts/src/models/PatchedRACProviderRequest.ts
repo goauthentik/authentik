@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { RACProviderAuthModeEnum } from "./RACProviderAuthModeEnum";
+import type { RACProviderAuthModeEnum } from "./RACProviderAuthModeEnum.js";
 import {
     RACProviderAuthModeEnumFromJSON,
     RACProviderAuthModeEnumToJSON,
-} from "./RACProviderAuthModeEnum";
+} from "./RACProviderAuthModeEnum.js";
 
 /**
  * RACProvider Serializer

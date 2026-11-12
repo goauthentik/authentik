@@ -37,6 +37,13 @@ export function formatObjectAttributeType(type?: ObjectAttributeTypeEnum): strin
 
 @customElement("ak-object-attribute-list")
 export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
+    public static override verboseName = msg("Object Attribute", {
+        id: "object-attributes.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Object Attributes", {
+        id: "object-attributes.verbose-name-plural.label",
+    });
+
     static styles = [...super.styles, PFBanner];
     protected override searchEnabled = true;
     protected override rowLabel(item: ObjectAttribute): string | null {
@@ -75,7 +82,6 @@ export class ObjectAttributeListPage extends TablePage<ObjectAttribute> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Object Attribute(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: ObjectAttribute) => {
                 return [

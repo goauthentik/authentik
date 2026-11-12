@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { Reputation } from "./Reputation";
-import { ReputationFromJSON, ReputationToJSON } from "./Reputation";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { Reputation } from "./Reputation.js";
+import { ReputationFromJSON, ReputationToJSON } from "./Reputation.js";
 
 /**
  * @export

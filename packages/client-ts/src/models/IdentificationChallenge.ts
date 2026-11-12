@@ -10,15 +10,15 @@
  * Do not edit the class manually.
  */
 
-import type { CaptchaChallenge } from "./CaptchaChallenge";
-import { CaptchaChallengeFromJSON, CaptchaChallengeToJSON } from "./CaptchaChallenge";
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
-import type { FlowDesignationEnum } from "./FlowDesignationEnum";
-import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum";
-import type { LoginSource } from "./LoginSource";
-import { LoginSourceFromJSON, LoginSourceToJSON } from "./LoginSource";
+import type { CaptchaChallenge } from "./CaptchaChallenge.js";
+import { CaptchaChallengeFromJSON, CaptchaChallengeToJSON } from "./CaptchaChallenge.js";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
+import type { FlowDesignationEnum } from "./FlowDesignationEnum.js";
+import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum.js";
+import type { LoginSource } from "./LoginSource.js";
+import { LoginSourceFromJSON, LoginSourceToJSON } from "./LoginSource.js";
 
 /**
  * Identification challenges with all UI elements

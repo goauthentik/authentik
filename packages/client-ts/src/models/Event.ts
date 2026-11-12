@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { EventActions } from "./EventActions";
-import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { EventActions } from "./EventActions.js";
+import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions.js";
 
 /**
  * Event Serializer

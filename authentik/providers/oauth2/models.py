@@ -13,12 +13,12 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP256R1,
     SECP384R1,
     SECP521R1,
-    EllipticCurvePrivateKey,
+    EllipticCurvePublicKey,
 )
-from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
+from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes, PublicKeyTypes
 from dacite import Config
 from dacite.core import from_dict
 from django.contrib.postgres.fields import ArrayField
@@ -55,6 +55,7 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
+from authentik.lib.jwt_mldsa import MLDSAAlgorithm, MLDSAKey
 from authentik.lib.models import (
     DomainlessURLValidator,
     ExpiringModel,
@@ -97,12 +98,6 @@ class GrantType(models.TextChoices):
     PASSWORD = GRANT_TYPE_PASSWORD
     DEVICE_CODE = GRANT_TYPE_DEVICE_CODE
     TOKEN_EXCHANGE = GRANT_TYPE_TOKEN_EXCHANGE
-
-
-# Fallback for decoding previous sessions from 2026.2 to 2026.5
-# https://github.com/goauthentik/authentik/issues/22588
-# TODO: Remove after 2026.8
-GrantTypes = GrantType
 
 
 class ResponseMode(models.TextChoices):
@@ -169,22 +164,31 @@ class JWTAlgorithms(models.TextChoices):
     ES384 = "ES384", _("ES384 (Asymmetric Encryption)")
     ES512 = "ES512", _("ES512 (Asymmetric Encryption)")
     EDDSA = "EdDSA", _("EdDSA (Asymmetric Encryption)")
+    MLDSA44 = "ML-DSA-44", _("ML-DSA-44 (Post-quantum, Asymmetric Encryption)")
+    MLDSA65 = "ML-DSA-65", _("ML-DSA-65 (Post-quantum, Asymmetric Encryption)")
+    MLDSA87 = "ML-DSA-87", _("ML-DSA-87 (Post-quantum, Asymmetric Encryption)")
 
     @classmethod
     def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
-        if isinstance(private_key, RSAPrivateKey):
+        return cls.from_public_key(private_key.public_key() if private_key else None)
+
+    @classmethod
+    def from_public_key(cls, public_key: PublicKeyTypes | None) -> str:
+        if isinstance(public_key, MLDSAKey):
+            return cls(MLDSAAlgorithm.algorithm_for_key(public_key))
+        if isinstance(public_key, RSAPublicKey):
             return cls.RS256
-        if isinstance(private_key, EllipticCurvePrivateKey):
-            curve = private_key.curve
+        if isinstance(public_key, EllipticCurvePublicKey):
+            curve = public_key.curve
             if isinstance(curve, SECP256R1):
                 return cls.ES256
             if isinstance(curve, SECP384R1):
                 return cls.ES384
             if isinstance(curve, SECP521R1):
                 return cls.ES512
-        if isinstance(private_key, Ed25519PrivateKey | Ed448PrivateKey):
+        if isinstance(public_key, Ed25519PublicKey | Ed448PublicKey):
             return cls.EDDSA
-        raise ValueError(f"Invalid private key type: {type(private_key)}")
+        raise ValueError(f"Invalid key type: {type(public_key)}")
 
 
 class ScopeMapping(PropertyMapping):
@@ -365,6 +369,13 @@ class OAuth2Provider(WebfingerProvider, Provider):
         private_key = key.private_key
         return private_key, JWTAlgorithms.from_private_key(private_key)
 
+    @cached_property
+    def jwt_alg(self) -> str:
+        """Get the signing algorithm without loading the private key for signing"""
+        if not self.signing_key:
+            return JWTAlgorithms.HS256
+        return JWTAlgorithms.from_public_key(self.signing_key.public_key)
+
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""
         if self.issuer_mode == IssuerMode.GLOBAL:
@@ -435,7 +446,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/openidconnect.svg")
+        return static("authentik/sources/openidconnect/light.svg")
 
     @property
     def component(self) -> str:

@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { IntentEnum } from "./IntentEnum";
-import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { IntentEnum } from "./IntentEnum.js";
+import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
 
 /**
  * Token Serializer

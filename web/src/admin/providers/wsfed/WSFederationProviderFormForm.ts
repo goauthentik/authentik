@@ -27,6 +27,7 @@ import {
     availableHashes,
     DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
+    encryptionAlgorithmOptions,
     retrieveSignatureAlgorithm,
 } from "#admin/providers/saml/SAMLProviderOptions";
 
@@ -62,6 +63,7 @@ const samlNameIDPolicyAndLabel = [
     ],
     [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName, msg("X509 Subject")],
     [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient, msg("Transient")],
+    [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified, msg("Unspecified")],
 ];
 
 export interface WSFederationProviderFormProps {
@@ -70,6 +72,8 @@ export interface WSFederationProviderFormProps {
     setHasSigningKp: (event: SearchSelectChangeEvent<CertificateKeyPair>) => void;
     hasSigningKp: boolean;
     signingKeyType: KeyTypeEnum | null;
+    setHasEncryptionKp: (event: SearchSelectChangeEvent<CertificateKeyPair>) => void;
+    hasEncryptionKp: boolean;
 }
 
 export function renderForm({
@@ -78,6 +82,8 @@ export function renderForm({
     setHasSigningKp,
     hasSigningKp,
     signingKeyType,
+    setHasEncryptionKp,
+    hasEncryptionKp,
 }: WSFederationProviderFormProps) {
     const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
 
@@ -160,11 +166,39 @@ export function renderForm({
                     label=${msg("Encryption Certificate")}
                     name="encryptionKp"
                 >
-                    ${AKCertificateSearch({ name: "encryptionKp", value: provider.encryptionKp, noKey: true, allowedKeyTypes: XMLSigningKeyTypes })}
+                    ${AKCertificateSearch({ name: "encryptionKp", value: provider.encryptionKp, noKey: true, allowedKeyTypes: XMLSigningKeyTypes, onChange: setHasEncryptionKp })}
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
                     </p>
                 </ak-form-element-horizontal>
+                ${
+                    hasEncryptionKp
+                        ? html`<ak-form-element-horizontal
+                              label=${msg("Encryption algorithm")}
+                              required
+                              name="encryptionAlgorithm"
+                          >
+                              <select class="pf-c-form-control">
+                                  ${encryptionAlgorithmOptions.map(
+                                      (opt) => html`
+                                          <option
+                                              value=${opt.value}
+                                              ?selected=${
+                                                  provider?.encryptionAlgorithm === opt.value ||
+                                                  (!provider?.encryptionAlgorithm && opt.default)
+                                              }
+                                          >
+                                              ${opt.label}
+                                          </option>
+                                      `,
+                                  )}
+                              </select>
+                              <p class="pf-c-form__helper-text">
+                                  ${msg("Block cipher used to encrypt the assertion.")}
+                              </p>
+                          </ak-form-element-horizontal>`
+                        : nothing
+                }
                 <ak-form-element-horizontal
                     label=${msg("Property mappings")}
                     name="propertyMappings"

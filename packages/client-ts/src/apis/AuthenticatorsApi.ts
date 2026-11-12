@@ -10,88 +10,91 @@
  * Do not edit the class manually.
  */
 
-import { type Device, DeviceFromJSON } from "../models/Device";
-import { type DuoDevice, DuoDeviceFromJSON } from "../models/DuoDevice";
-import { type DuoDeviceRequest, DuoDeviceRequestToJSON } from "../models/DuoDeviceRequest";
-import { type EmailDevice, EmailDeviceFromJSON } from "../models/EmailDevice";
-import { type EmailDeviceRequest, EmailDeviceRequestToJSON } from "../models/EmailDeviceRequest";
+import { type Device, DeviceFromJSON } from "../models/Device.js";
+import { type DuoDevice, DuoDeviceFromJSON } from "../models/DuoDevice.js";
+import { type DuoDeviceRequest, DuoDeviceRequestToJSON } from "../models/DuoDeviceRequest.js";
+import { type EmailDevice, EmailDeviceFromJSON } from "../models/EmailDevice.js";
+import { type EmailDeviceRequest, EmailDeviceRequestToJSON } from "../models/EmailDeviceRequest.js";
 import {
     type GoogleEndpointDevice,
     GoogleEndpointDeviceFromJSON,
-} from "../models/GoogleEndpointDevice";
+} from "../models/GoogleEndpointDevice.js";
 import {
     type GoogleEndpointDeviceRequest,
     GoogleEndpointDeviceRequestToJSON,
-} from "../models/GoogleEndpointDeviceRequest";
+} from "../models/GoogleEndpointDeviceRequest.js";
 import {
     type PaginatedDuoDeviceList,
     PaginatedDuoDeviceListFromJSON,
-} from "../models/PaginatedDuoDeviceList";
+} from "../models/PaginatedDuoDeviceList.js";
 import {
     type PaginatedEmailDeviceList,
     PaginatedEmailDeviceListFromJSON,
-} from "../models/PaginatedEmailDeviceList";
+} from "../models/PaginatedEmailDeviceList.js";
 import {
     type PaginatedGoogleEndpointDeviceList,
     PaginatedGoogleEndpointDeviceListFromJSON,
-} from "../models/PaginatedGoogleEndpointDeviceList";
+} from "../models/PaginatedGoogleEndpointDeviceList.js";
 import {
     type PaginatedSMSDeviceList,
     PaginatedSMSDeviceListFromJSON,
-} from "../models/PaginatedSMSDeviceList";
+} from "../models/PaginatedSMSDeviceList.js";
 import {
     type PaginatedStaticDeviceList,
     PaginatedStaticDeviceListFromJSON,
-} from "../models/PaginatedStaticDeviceList";
+} from "../models/PaginatedStaticDeviceList.js";
 import {
     type PaginatedTOTPDeviceList,
     PaginatedTOTPDeviceListFromJSON,
-} from "../models/PaginatedTOTPDeviceList";
+} from "../models/PaginatedTOTPDeviceList.js";
 import {
     type PaginatedWebAuthnDeviceList,
     PaginatedWebAuthnDeviceListFromJSON,
-} from "../models/PaginatedWebAuthnDeviceList";
+} from "../models/PaginatedWebAuthnDeviceList.js";
 import {
     type PatchedDuoDeviceRequest,
     PatchedDuoDeviceRequestToJSON,
-} from "../models/PatchedDuoDeviceRequest";
+} from "../models/PatchedDuoDeviceRequest.js";
 import {
     type PatchedEmailDeviceRequest,
     PatchedEmailDeviceRequestToJSON,
-} from "../models/PatchedEmailDeviceRequest";
+} from "../models/PatchedEmailDeviceRequest.js";
 import {
     type PatchedGoogleEndpointDeviceRequest,
     PatchedGoogleEndpointDeviceRequestToJSON,
-} from "../models/PatchedGoogleEndpointDeviceRequest";
+} from "../models/PatchedGoogleEndpointDeviceRequest.js";
 import {
     type PatchedSMSDeviceRequest,
     PatchedSMSDeviceRequestToJSON,
-} from "../models/PatchedSMSDeviceRequest";
+} from "../models/PatchedSMSDeviceRequest.js";
 import {
     type PatchedStaticDeviceRequest,
     PatchedStaticDeviceRequestToJSON,
-} from "../models/PatchedStaticDeviceRequest";
+} from "../models/PatchedStaticDeviceRequest.js";
 import {
     type PatchedTOTPDeviceRequest,
     PatchedTOTPDeviceRequestToJSON,
-} from "../models/PatchedTOTPDeviceRequest";
+} from "../models/PatchedTOTPDeviceRequest.js";
 import {
     type PatchedWebAuthnDeviceRequest,
     PatchedWebAuthnDeviceRequestToJSON,
-} from "../models/PatchedWebAuthnDeviceRequest";
-import { type SMSDevice, SMSDeviceFromJSON } from "../models/SMSDevice";
-import { type SMSDeviceRequest, SMSDeviceRequestToJSON } from "../models/SMSDeviceRequest";
-import { type StaticDevice, StaticDeviceFromJSON } from "../models/StaticDevice";
-import { type StaticDeviceRequest, StaticDeviceRequestToJSON } from "../models/StaticDeviceRequest";
-import { type TOTPDevice, TOTPDeviceFromJSON } from "../models/TOTPDevice";
-import { type TOTPDeviceRequest, TOTPDeviceRequestToJSON } from "../models/TOTPDeviceRequest";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import { type WebAuthnDevice, WebAuthnDeviceFromJSON } from "../models/WebAuthnDevice";
+} from "../models/PatchedWebAuthnDeviceRequest.js";
+import { type SMSDevice, SMSDeviceFromJSON } from "../models/SMSDevice.js";
+import { type SMSDeviceRequest, SMSDeviceRequestToJSON } from "../models/SMSDeviceRequest.js";
+import { type StaticDevice, StaticDeviceFromJSON } from "../models/StaticDevice.js";
+import {
+    type StaticDeviceRequest,
+    StaticDeviceRequestToJSON,
+} from "../models/StaticDeviceRequest.js";
+import { type TOTPDevice, TOTPDeviceFromJSON } from "../models/TOTPDevice.js";
+import { type TOTPDeviceRequest, TOTPDeviceRequestToJSON } from "../models/TOTPDeviceRequest.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import { type WebAuthnDevice, WebAuthnDeviceFromJSON } from "../models/WebAuthnDevice.js";
 import {
     type WebAuthnDeviceRequest,
     WebAuthnDeviceRequestToJSON,
-} from "../models/WebAuthnDeviceRequest";
-import * as runtime from "../runtime";
+} from "../models/WebAuthnDeviceRequest.js";
+import * as runtime from "../runtime.js";
 
 export interface AuthenticatorsAdminAllListRequest {
     user?: number;
@@ -621,6 +624,20 @@ export interface AuthenticatorsEndpointUsedByListRequest {
      * A UUID string identifying this Endpoint Device.
      */
     uuid: string;
+}
+
+export interface AuthenticatorsPasswordLockCreateRequest {
+    /**
+     * A unique integer value identifying this Password Device.
+     */
+    id: number;
+}
+
+export interface AuthenticatorsPasswordUnlockCreateRequest {
+    /**
+     * A unique integer value identifying this Password Device.
+     */
+    id: number;
 }
 
 export interface AuthenticatorsSmsDestroyRequest {
@@ -4896,6 +4913,128 @@ export class AuthenticatorsApi extends runtime.BaseAPI {
             initOverrides,
         );
         return await response.value();
+    }
+
+    /**
+     * Creates request options for authenticatorsPasswordLockCreate without sending the request
+     */
+    async authenticatorsPasswordLockCreateRequestOpts(
+        requestParameters: AuthenticatorsPasswordLockCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling authenticatorsPasswordLockCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/authenticators/password/{id}/lock/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Prevent a password authenticator from authenticating.
+     */
+    async authenticatorsPasswordLockCreateRaw(
+        requestParameters: AuthenticatorsPasswordLockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.authenticatorsPasswordLockCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Prevent a password authenticator from authenticating.
+     */
+    async authenticatorsPasswordLockCreate(
+        requestParameters: AuthenticatorsPasswordLockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.authenticatorsPasswordLockCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for authenticatorsPasswordUnlockCreate without sending the request
+     */
+    async authenticatorsPasswordUnlockCreateRequestOpts(
+        requestParameters: AuthenticatorsPasswordUnlockCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling authenticatorsPasswordUnlockCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/authenticators/password/{id}/unlock/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Allow a locked password authenticator to authenticate again.
+     */
+    async authenticatorsPasswordUnlockCreateRaw(
+        requestParameters: AuthenticatorsPasswordUnlockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.authenticatorsPasswordUnlockCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Allow a locked password authenticator to authenticate again.
+     */
+    async authenticatorsPasswordUnlockCreate(
+        requestParameters: AuthenticatorsPasswordUnlockCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.authenticatorsPasswordUnlockCreateRaw(requestParameters, initOverrides);
     }
 
     /**

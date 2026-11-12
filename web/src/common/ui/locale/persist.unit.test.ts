@@ -2,8 +2,7 @@ import { LanguageCookieName, persistLocale, readPersistedLocale } from "#common/
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-// `persistLocale` reads the web base path from the global; stub it so the test
-// does not depend on a rendered `window.authentik`.
+// `persistLocale` reads the web base path from the global, so stub it.
 vi.mock("#common/global", () => ({
     globalAK: () => ({ api: { relBase: "/" } }),
 }));
@@ -44,7 +43,7 @@ describe("locale persistence", () => {
 
     beforeEach(() => {
         jar = installCookieJar();
-        vi.stubGlobal("location", { protocol: "http:" });
+        vi.stubGlobal("window", { location: { protocol: "http:" } });
     });
 
     afterEach(() => {
@@ -68,7 +67,7 @@ describe("locale persistence", () => {
     });
 
     it("marks the cookie secure when served over HTTPS", () => {
-        vi.stubGlobal("location", { protocol: "https:" });
+        vi.stubGlobal("window", { location: { protocol: "https:" } });
 
         persistLocale("fr-FR");
 

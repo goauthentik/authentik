@@ -10,14 +10,14 @@
  * Do not edit the class manually.
  */
 
-import type { DeliveryMethodEnum } from "./DeliveryMethodEnum";
-import { DeliveryMethodEnumFromJSON, DeliveryMethodEnumToJSON } from "./DeliveryMethodEnum";
-import type { EventsRequestedEnum } from "./EventsRequestedEnum";
-import { EventsRequestedEnumFromJSON, EventsRequestedEnumToJSON } from "./EventsRequestedEnum";
-import type { SSFProvider } from "./SSFProvider";
-import { SSFProviderFromJSON } from "./SSFProvider";
-import type { SSFStreamStatusEnum } from "./SSFStreamStatusEnum";
-import { SSFStreamStatusEnumFromJSON, SSFStreamStatusEnumToJSON } from "./SSFStreamStatusEnum";
+import type { DeliveryMethodEnum } from "./DeliveryMethodEnum.js";
+import { DeliveryMethodEnumFromJSON, DeliveryMethodEnumToJSON } from "./DeliveryMethodEnum.js";
+import type { EventsRequestedEnum } from "./EventsRequestedEnum.js";
+import { EventsRequestedEnumFromJSON, EventsRequestedEnumToJSON } from "./EventsRequestedEnum.js";
+import type { SSFProvider } from "./SSFProvider.js";
+import { SSFProviderFromJSON } from "./SSFProvider.js";
+import type { SSFStreamStatusEnum } from "./SSFStreamStatusEnum.js";
+import { SSFStreamStatusEnumFromJSON, SSFStreamStatusEnumToJSON } from "./SSFStreamStatusEnum.js";
 
 /**
  * SSFStream Serializer

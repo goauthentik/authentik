@@ -2,11 +2,14 @@
 
 from unittest.mock import patch
 
+from django.core.cache import cache
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.tests.utils import RequestFactory, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
@@ -15,7 +18,7 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
-from authentik.providers.oauth2.views.provider import ProviderInfoView
+from authentik.providers.oauth2.views.provider import ProviderInfoView, claims_cache_key
 
 
 class TestProviderInfo(OAuthTestCase):
@@ -98,3 +101,40 @@ class TestProviderInfo(OAuthTestCase):
         )
         body = self.get_info()
         self.assertIn("email", body["claims_supported"])
+
+    def test_private_key_not_loaded(self):
+        """Test the signing algorithm is read without loading the private key, whose validation
+        is slow for RSA keys"""
+        with patch("authentik.crypto.models._load_private_key", side_effect=AssertionError):
+            body = self.get_info()
+        self.assertEqual(body["id_token_signing_alg_values_supported"], ["RS256"])
+
+    def test_queries(self):
+        """Test a request with cached claims loads the application, provider and keys in one
+        query"""
+        self.get_info()
+        request = RequestFactory().get("/")
+        # provider, scope names, cached claims and dynamic client registration
+        with self.assertNumQueries(4):
+            response = ProviderInfoView.as_view()(request, application_slug=self.app.slug)
+        self.assertEqual(response.status_code, 200)
+
+    def test_claims_queries(self):
+        """Test evaluating the claims does not query once per scope mapping"""
+        request = RequestFactory().get("/")
+
+        def count_queries() -> int:
+            cache.delete(claims_cache_key(self.provider))
+            with CaptureQueriesContext(connection) as ctx:
+                ProviderInfoView.as_view()(request, application_slug=self.app.slug)
+            return len(ctx.captured_queries)
+
+        def mapping() -> ScopeMapping:
+            return ScopeMapping.objects.create(
+                name=generate_id(), scope_name=generate_id(), expression="return {'claim': 1}"
+            )
+
+        self.provider.property_mappings.set([mapping()])
+        one = count_queries()
+        self.provider.property_mappings.add(mapping(), mapping(), mapping())
+        self.assertEqual(count_queries(), one)

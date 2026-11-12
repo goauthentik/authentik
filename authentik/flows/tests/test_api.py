@@ -2,6 +2,7 @@
 
 from json import loads
 
+from django.core.cache import cache
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -15,6 +16,7 @@ from authentik.flows.models import (
     FlowStageBinding,
     Stage,
 )
+from authentik.flows.planner import cache_key
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -32,6 +34,25 @@ def edge_set(graph: dict) -> set[tuple[str, str, str]]:
 
 class TestFlowsAPI(APITestCase):
     """API tests"""
+
+    def test_cache_count(self) -> None:
+        """Count flow entries in the current cache version, including expired entries."""
+        self.client.force_login(create_test_admin_user())
+        flow = create_test_flow()
+        other_flow = create_test_flow()
+        detail_url = reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug})
+        cache_info_url = reverse("authentik_api:flow-cache-info")
+        self.assertEqual(self.client.get(detail_url).data["cache_count"], 0)
+        self.assertEqual(self.client.get(cache_info_url).data["count"], 0)
+
+        cache.set(f"{cache_key(flow)}#first", "cached-plan")
+        cache.set(f"{cache_key(flow)}#expired", "cached-plan", timeout=0)
+        cache.set(f"{cache_key(flow)}#other-version", "cached-plan", version=cache.version + 1)
+        cache.set(f"{cache_key(other_flow)}#first", "cached-plan")
+        cache.set("unrelated", "value")
+
+        self.assertEqual(self.client.get(detail_url).data["cache_count"], 2)
+        self.assertEqual(self.client.get(cache_info_url).data["count"], 3)
 
     def test_models(self):
         self.assertIsNone(Stage().ui_user_settings())
@@ -217,8 +238,11 @@ class TestFlowsAPI(APITestCase):
         self.client.force_login(user)
 
         flow = create_test_flow()
+        cache.set(f"{cache_key(flow)}#test-user", "cached-plan")
         response = self.client.get(reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug}))
         body = loads(response.content.decode())
+        self.assertEqual(body["cache_count"], 1)
+        self.assertEqual(self.client.get(reverse("authentik_api:flow-cache-info")).data["count"], 1)
         self.assertEqual(
             body["background_url"],
             "/static/dist/assets/images/flow_background.jpg",

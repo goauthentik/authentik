@@ -51,6 +51,6 @@ export function applyCustomElementsGetNamePolyfill(
     };
 }
 
-if (typeof window !== "undefined" && window.customElements) {
-    applyCustomElementsGetNamePolyfill(window.customElements);
+if ("customElements" in globalThis) {
+    applyCustomElementsGetNamePolyfill(customElements);
 }

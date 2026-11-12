@@ -21,6 +21,7 @@ import type { PaginatedResponse } from "#common/api/responses";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 import { truncateWords } from "#common/strings";
+import { plural } from "#common/ui/locale/plurals";
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
@@ -578,6 +579,16 @@ export abstract class Table<T extends object, D = T>
     }
 
     /**
+     * The fetch currently in flight, if any.
+     */
+    #inFlightFetch: Promise<void> | null = null;
+
+    /**
+     * A fetch requested while another was in flight, run once that one settles.
+     */
+    #queuedFetch: Promise<void> | null = null;
+
+    /**
      * Fetch data from the API endpoint.
      *
      * @see {@linkcode apiEndpoint}
@@ -597,13 +608,20 @@ export abstract class Table<T extends object, D = T>
             return Promise.resolve();
         }
 
-        if (this.loading) {
-            return Promise.resolve();
+        if (this.#inFlightFetch) {
+            // Rerun with the latest parameters, e.g. a search typed during the first load.
+            this.#queuedFetch ??= this.#inFlightFetch.then(() => {
+                this.#queuedFetch = null;
+
+                return this.fetch();
+            });
+
+            return this.#queuedFetch;
         }
 
         this.loading = true;
 
-        return this.apiEndpoint()
+        this.#inFlightFetch = this.apiEndpoint()
             .then((data) => {
                 this.data = data;
                 this.error = null;
@@ -643,11 +661,14 @@ export abstract class Table<T extends object, D = T>
                 this.error = await parseAPIResponseError(error);
             })
             .finally(() => {
+                this.#inFlightFetch = null;
                 this.loading = false;
                 this.lastRefreshedAt = new Date();
                 this.#deferredRefreshRequestAt = null;
                 this.requestUpdate();
             });
+
+        return this.#inFlightFetch;
     }
 
     //#region Render
@@ -747,7 +768,8 @@ export abstract class Table<T extends object, D = T>
             return this.renderEmpty(this.renderError());
         }
 
-        if (this.loading && this.data === null) {
+        // No response yet, including while the first fetch is deferred until the table is visible.
+        if (this.data === null) {
             return this.renderLoading();
         }
 
@@ -932,8 +954,7 @@ export abstract class Table<T extends object, D = T>
                     "pf-m-expanded": expanded,
                 })}"
             >
-                <td aria-hidden="true"></td>
-                <td colspan=${this.columnCount - 1}>
+                <td colspan=${this.columnCount}>
                     <div class="pf-c-table__expandable-row-content">
                         ${this.renderExpanded(item)}
                     </div>
@@ -1118,9 +1139,22 @@ export abstract class Table<T extends object, D = T>
                 ${ref(this.selectAllCheckboxRef)}
                 name="select-all"
                 type="checkbox"
-                aria-label=${msg(
-                    str`Select all rows on page (${selectedCount} of ${pageItemCount} selected)`,
-                )}
+                aria-label=${plural(selectedCount, {
+                    one: (formattedCount) =>
+                        msg(
+                            str`Select all rows on page (${formattedCount} of ${pageItemCount} selected)`,
+                            {
+                                id: "table.select-all.aria-label.one",
+                            },
+                        ),
+                    other: (formattedCount) =>
+                        msg(
+                            str`Select all rows on page (${formattedCount} of ${pageItemCount} selected)`,
+                            {
+                                id: "table.select-all.aria-label.other",
+                            },
+                        ),
+                })}
                 .indeterminate=${indeterminate}
                 .checked=${checked}
                 @input=${this.#synchronizeCheckboxAll}
