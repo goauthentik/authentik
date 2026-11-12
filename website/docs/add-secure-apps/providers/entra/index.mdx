@@ -18,7 +18,7 @@ Upon creating the Entra ID provider, it will run a discovery task to query your 
 
 Users are matched on their email address. Groups are matched based on their names.
 
-This discovery also takes into consideration any **User filtering** options configured in the provider, such as only linking to authentik users in a specific group or excluding service accounts. This discovery process occurs each time a [full sync](#full-sync) is initiated.
+This discovery also takes into consideration the provider's sync scope: the application's access policies, selected group filters, and excluded service accounts. This discovery process occurs each time a [full sync](#full-sync) is initiated.
 
 ## Synchronization
 
@@ -30,11 +30,35 @@ A direct sync occurs when a user or group is created, updated or deleted in auth
 
 ### Full sync
 
-A full sync occurs when the provider is initially created and when it is saved. During a full sync, all users and groups that match the **User filtering** settings are processed and created or updated in Entra ID. After the initial sync, authentik automatically performs a full sync every four hours by default to maintain consistency between users and groups.
+A full sync occurs when the provider is initially created and when it is saved. During a full sync, all users and groups in the provider's sync scope are processed and created or updated in Entra ID. After the initial sync, authentik automatically performs a full sync every four hours by default to maintain consistency between users and groups.
 
 During the full sync, if a user or group exists in both authentik and Entra ID, authentik will automatically link them.
 
 Additionally, any users or groups present in authentik but absent in Entra ID will be created and linked.
+
+## Filter the sync scope
+
+You can limit which users and groups an Entra ID provider synchronizes. User filtering and group filtering are configured separately.
+
+### User filtering
+
+Users are controlled through the access policies of the application this provider is assigned to. Only users who can access that application are synchronized. A common setup is to bind a group to the application so that its members are synchronized to Entra ID.
+
+If no users are bound to the application, the provider synchronizes all users.
+
+On a full sync, authentik applies the provider's **User deletion action** to a linked user who can no longer access the application.
+
+Use **Exclude service accounts** when service accounts should not be synchronized.
+
+### Group filters
+
+**Group filters** define which groups are synchronized. They do not limit which users are synchronized.
+
+If no group filters are selected, the provider synchronizes all groups.
+
+If group filters are selected, only the selected groups are synchronized.
+
+On a full sync, authentik applies the provider's **Group deletion action** to a linked group that is no longer selected.
 
 ## Deletion and offboarding
 
@@ -58,12 +82,12 @@ This requires the user to remain included in synchronization. Custom property ma
 
 ### Offboard users and groups
 
-- To retain a user's accounts while disabling sign-in, mark the authentik user inactive and verify that synchronization has disabled the Entra ID account before removing the user from synchronization filters.
+- To retain a user's accounts while disabling sign-in, mark the authentik user inactive and verify that synchronization has disabled the Entra ID account before removing the user's access to the application.
 - To delete an authentik user while retaining the remote account, select **Suspend** for **User deletion action** before deleting the user. Use **Do Nothing** only if you intend to manage the remote account's access separately.
 - To delete the remote user or group as well, use **Delete**. Complete any required data retention or ownership transfers in Entra ID before deleting the authentik object.
 - After offboarding, check the provider's sync tasks for errors and verify the account or group state in Entra ID.
 
-Removing a user from the provider's filtering group, changing **User filtering** to exclude the user, or skipping a user with `SkipObject` does not itself delete or suspend the remote account. These changes exclude the user from provisioning updates. Removing group membership can also remove that membership in Entra ID, but it does not disable the account.
+Skipping a user or group with `SkipObject` excludes that object from the current sync and does not delete or suspend the remote account. When a user or group leaves the sync scope, the next full sync applies the configured deletion action. Removing group membership can also remove that membership in Entra ID, but it does not disable the account.
 
 Do not rely on filtering alone to revoke access. If you later delete a previously linked authentik user, its retained connection record still allows the configured deletion action to run.
 

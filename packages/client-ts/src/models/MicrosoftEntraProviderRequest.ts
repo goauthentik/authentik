@@ -33,7 +33,10 @@ export interface MicrosoftEntraProviderRequest {
     clientSecret: string;
     tenantId: string;
     excludeUsersServiceAccount?: boolean;
-    filterGroup?: string | null;
+    /**
+     * Group filters used to define sync-scope for groups.
+     */
+    groupFilters?: Array<string>;
     userDeleteAction?: OutgoingSyncDeleteAction;
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
@@ -108,12 +111,7 @@ export function MicrosoftEntraProviderRequestFromJSONTyped(
             json["exclude_users_service_account"] == null
                 ? undefined
                 : json["exclude_users_service_account"],
-        filterGroup:
-            json["filter_group"] === undefined
-                ? undefined
-                : json["filter_group"] === null
-                  ? null
-                  : json["filter_group"],
+        groupFilters: json["group_filters"] == null ? undefined : json["group_filters"],
         userDeleteAction:
             json["user_delete_action"] == null
                 ? undefined
@@ -149,7 +147,7 @@ export function MicrosoftEntraProviderRequestToJSONTyped(
         client_secret: value["clientSecret"],
         tenant_id: value["tenantId"],
         exclude_users_service_account: value["excludeUsersServiceAccount"],
-        filter_group: value["filterGroup"],
+        group_filters: value["groupFilters"],
         user_delete_action: OutgoingSyncDeleteActionToJSON(value["userDeleteAction"]),
         group_delete_action: OutgoingSyncDeleteActionToJSON(value["groupDeleteAction"]),
         sync_page_size: value["syncPageSize"],

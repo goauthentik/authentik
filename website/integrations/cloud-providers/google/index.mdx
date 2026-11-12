@@ -69,7 +69,7 @@ The authentik Enterprise Google Workspace provider syncs authentik users and gro
     - Under **Protocol settings**, set **Delegated Subject** to the Google Workspace user email address that authentik should act as.
     - Under **Protocol settings**, set **Default group email domain** to the Google Workspace domain that authentik should use when generating group email addresses.
     - Under **Protocol settings**, choose the **User deletion action** and **Group deletion action** that match your lifecycle policy.
-    - Under **User filtering**, optionally configure which authentik users are synchronized.
+    - Under **Filtering**, optionally exclude service accounts and select which groups are synchronized. Users are synchronized based on who can access this application.
     - Under **Attribute mapping**, optionally customize the user and group property mappings.
 4. Click **Finish**.
 5. Navigate to **Applications** > **Applications** and edit the Google Workspace application that you created earlier.

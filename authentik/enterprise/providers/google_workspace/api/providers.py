@@ -33,7 +33,7 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "credentials",
             "scopes",
             "exclude_users_service_account",
-            "filter_group",
+            "group_filters",
             "user_delete_action",
             "group_delete_action",
             "default_group_email_domain",
@@ -55,7 +55,7 @@ class GoogleWorkspaceProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixi
         "name",
         "exclude_users_service_account",
         "delegated_subject",
-        "filter_group",
+        "group_filters",
     ]
     search_fields = ["name"]
     ordering = ["name"]
