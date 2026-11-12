@@ -9,6 +9,8 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.blueprints.v1.common import Blueprint, BlueprintEntry
+from authentik.blueprints.v1.importer import Importer
 from authentik.common.saml.constants import NS_MAP
 from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.core.models import Application
@@ -290,7 +292,7 @@ class TestLegacyACSURLWrites(TestCase):
 
 
 class TestSAMLProviderACSURLsAPI(APITestCase):
-    """Test the deprecated `acs_url` API field with multiple ACS URLs"""
+    """Test the ACS URL API"""
 
     def setUp(self):
         self.user = create_test_admin_user()
@@ -306,6 +308,27 @@ class TestSAMLProviderACSURLsAPI(APITestCase):
                 **data,
             },
             format="json",
+        )
+
+    def test_create(self):
+        """Test creating a provider with multiple ACS URLs"""
+        response = self.create(
+            acs_urls=[
+                {"url": DEFAULT, "index": 0},
+                {"url": SECOND, "is_default": True},
+                {"url": REGEX, "matching_mode": "regex"},
+            ]
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        body = response.json()
+        self.assertEqual(body["acs_url"], SECOND)
+        self.assertEqual(
+            body["acs_urls"],
+            [
+                {"url": DEFAULT, "matching_mode": "strict", "index": 0, "is_default": False},
+                {"url": SECOND, "matching_mode": "strict", "index": None, "is_default": True},
+                {"url": REGEX, "matching_mode": "regex", "index": None, "is_default": False},
+            ],
         )
 
     def test_create_legacy(self):
@@ -329,6 +352,88 @@ class TestSAMLProviderACSURLsAPI(APITestCase):
             [entry.url for entry in provider.acs_urls],
             [SECOND, "https://sp.example.com/new", REGEX],
         )
+
+    def test_create_missing(self):
+        """Test that at least one ACS URL is required"""
+        self.assertEqual(self.create().status_code, 400)
+        self.assertEqual(self.create(acs_urls=[]).status_code, 400)
+
+    def test_patch_minimal_entries(self):
+        """PATCH replaces the list and supplies defaults for each new entry."""
+        provider = create_provider()
+        response = self.client.patch(
+            reverse("authentik_api:samlprovider-detail", kwargs={"pk": provider.pk}),
+            data={"acs_urls": [{"url": SECOND}, {"url": REGEX, "matching_mode": "regex"}]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        provider.refresh_from_db()
+        self.assertEqual(
+            provider.acs_urls,
+            [
+                SAMLACSURL(url=SECOND),
+                SAMLACSURL(url=REGEX, matching_mode=SAMLACSURLMatchingMode.REGEX),
+            ],
+        )
+
+    def test_patch_missing_url(self):
+        """A list entry without a URL returns a validation error rather than crashing."""
+        provider = create_provider()
+        response = self.client.patch(
+            reverse("authentik_api:samlprovider-detail", kwargs={"pk": provider.pk}),
+            data={"acs_urls": [{"index": 1}]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertIn("url", response.json()["acs_urls"]["0"])
+        provider.refresh_from_db()
+        self.assertEqual(provider.acs_url, DEFAULT)
+
+    def test_blueprint_reapplication(self):
+        """Minimal ACS entries work both on blueprint creation and subsequent updates."""
+        name = generate_id()
+        blueprint = Blueprint(
+            entries=[
+                BlueprintEntry(
+                    model="authentik_providers_saml.samlprovider",
+                    identifiers={"name": name},
+                    attrs={
+                        "authorization_flow": str(create_test_flow().pk),
+                        "invalidation_flow": str(create_test_flow().pk),
+                        "acs_urls": [{"url": DEFAULT}],
+                    },
+                )
+            ]
+        )
+        for _ in range(2):
+            self.assertTrue(Importer(blueprint).apply())
+        self.assertEqual(SAMLProvider.objects.get(name=name).acs_urls, [SAMLACSURL(url=DEFAULT)])
+
+    def test_create_invalid(self):
+        """Test validation of ACS URLs"""
+        invalid = [
+            # Invalid URL
+            [{"url": "not a url"}],
+            # Non-http(s) scheme
+            [{"url": "javascript:alert(1)"}],
+            # Invalid regex
+            [{"url": DEFAULT}, {"url": "[", "matching_mode": "regex"}],
+            # Regex as default
+            [{"url": DEFAULT}, {"url": REGEX, "matching_mode": "regex", "is_default": True}],
+            # Regex with index
+            [{"url": DEFAULT}, {"url": REGEX, "matching_mode": "regex", "index": 1}],
+            # Only regex
+            [{"url": REGEX, "matching_mode": "regex"}],
+            # Duplicate index
+            [{"url": DEFAULT, "index": 1}, {"url": SECOND, "index": 1}],
+            # Multiple defaults
+            [{"url": DEFAULT, "is_default": True}, {"url": SECOND, "is_default": True}],
+            # Negative index
+            [{"url": DEFAULT, "index": -1}],
+        ]
+        for acs_urls in invalid:
+            with self.subTest(acs_urls=acs_urls):
+                self.assertEqual(self.create(acs_urls=acs_urls).status_code, 400)
 
     def test_filter(self):
         """Test filtering providers by any of their ACS URLs"""
