@@ -27,7 +27,11 @@ from authentik.sources.ldap.models import (
     LDAPSourcePropertyMapping,
     UserLDAPSourceConnection,
 )
-from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
+from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
+from authentik.sources.ldap.sync.forward_delete_users import (
+    DELETE_CHUNK_SIZE,
+    UserLDAPForwardDeletion,
+)
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import (
     GroupHierarchyLDAPSynchronizer,
@@ -854,6 +858,68 @@ class LDAPSyncTests(TestCase):
 
         self.assertFalse(User.objects.filter(username__startswith="not-in-the-source").exists())
         self.assertFalse(Group.objects.filter(name__startswith="not-in-the-source").exists())
+
+    def _create_overlapping_source(self) -> LDAPSource:
+        """Configure self.source for deletion and create a second source with the same
+        directory and settings"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+        return LDAPSource.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            base_dn=self.source.base_dn,
+            additional_user_dn=self.source.additional_user_dn,
+            additional_group_dn=self.source.additional_group_dn,
+            object_uniqueness_field=self.source.object_uniqueness_field,
+            group_object_filter=self.source.group_object_filter,
+            delete_not_found_objects=True,
+        )
+
+    def test_user_deletion_overlapping_sources(self):
+        """Test that a concurrent sync of another source with the same identifiers does not
+        cause users that are still in the directory to be deleted"""
+        other_source = self._create_overlapping_source()
+        user = User.objects.create_user(username=generate_id())
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier=user_in_slapd_uid
+        )
+        other_user = User.objects.create_user(username=generate_id())
+        UserLDAPSourceConnection.objects.create(
+            user=other_user, source=other_source, identifier=user_in_slapd_uid
+        )
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            # The deletion query is lazy, so the other source's run can mark its objects
+            # between this source marking its objects and querying for unmarked ones.
+            pages = UserLDAPForwardDeletion(self.source, Task()).get_objects()
+            list(UserLDAPForwardDeletion(other_source, Task()).get_objects())
+            to_delete = [pk for page in pages for pk in page]
+        self.assertNotIn(user.pk, to_delete)
+
+    def test_group_deletion_overlapping_sources(self):
+        """Test that a concurrent sync of another source with the same identifiers does not
+        cause groups that are still in the directory to be deleted"""
+        other_source = self._create_overlapping_source()
+        group = Group.objects.create(name=generate_id())
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier=group_in_slapd_uid
+        )
+        other_group = Group.objects.create(name=generate_id())
+        GroupLDAPSourceConnection.objects.create(
+            group=other_group, source=other_source, identifier=group_in_slapd_uid
+        )
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            # The deletion query is lazy, so the other source's run can mark its objects
+            # between this source marking its objects and querying for unmarked ones.
+            pages = GroupLDAPForwardDeletion(self.source, Task()).get_objects()
+            list(GroupLDAPForwardDeletion(other_source, Task()).get_objects())
+            to_delete = [pk for page in pages for pk in page]
+        self.assertNotIn(group.pk, to_delete)
 
     def test_membership_sync_special_chars_in_group_dn(self):
         """Test membership synchronization with special characters in group DN"""

@@ -44,9 +44,9 @@ class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
                 object_count += 1
                 if identifier := self.get_identifier(attributes):
                     identifiers.append(identifier)
-            GroupLDAPSourceConnection.objects.filter(identifier__in=identifiers).update(
-                validated_by=uuid
-            )
+            GroupLDAPSourceConnection.objects.filter(
+                source=self._source, identifier__in=identifiers
+            ).update(validated_by=uuid)
 
         if skip_empty_deletion(self._task, object_count, "group"):
             return iter(())

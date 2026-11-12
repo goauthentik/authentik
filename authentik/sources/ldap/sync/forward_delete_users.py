@@ -59,9 +59,9 @@ class UserLDAPForwardDeletion(BaseLDAPSynchronizer):
                 object_count += 1
                 if identifier := self.get_identifier(attributes):
                     identifiers.append(identifier)
-            UserLDAPSourceConnection.objects.filter(identifier__in=identifiers).update(
-                validated_by=uuid
-            )
+            UserLDAPSourceConnection.objects.filter(
+                source=self._source, identifier__in=identifiers
+            ).update(validated_by=uuid)
 
         if skip_empty_deletion(self._task, object_count, "user"):
             return iter(())
