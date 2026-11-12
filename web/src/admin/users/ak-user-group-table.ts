@@ -59,7 +59,8 @@ export class UserGroupTable extends Table<Group> {
 
         return html`<div class="pf-c-banner pf-m-warning">
                 ${msg(
-                    "Warning: Adding the user to the selected group(s) will give them superuser permissions.",
+                    "Warning: Adding the user to the selected groups will give them superuser permissions.",
+                    { id: "users.add-to-groups.superuser.warning" },
                 )}
             </div>
             ${super.render()}`;

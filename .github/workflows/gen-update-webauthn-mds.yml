@@ -26,7 +26,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - run: uv run python -m manage update_webauthn_mds
-      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
+      - uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v7
         id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}
