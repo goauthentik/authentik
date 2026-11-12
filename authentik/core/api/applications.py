@@ -6,6 +6,7 @@ from copy import copy
 from django.core.cache import cache
 from django.db.models import Case, Prefetch, QuerySet
 from django.db.models.expressions import When
+from django.db.models.manager import BaseManager
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from django_filters.rest_framework import DjangoFilterBackend
@@ -17,9 +18,12 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import ListSerializer
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.manager import get_file_manager
+from authentik.admin.files.usage import FileUsage
 from authentik.api.ordering import NullsAwareOrderingFilter
 from authentik.api.pagination import Pagination
 from authentik.api.search.ql import QLSearch
@@ -56,6 +60,17 @@ def user_app_cache_key(
     if page_number:
         key += f"/{page_number}"
     return key
+
+
+class ApplicationListSerializer(ListSerializer):
+    """Applications, with the cached URLs of all their icons read in one query"""
+
+    def to_representation(self, data):
+        applications = data.all() if isinstance(data, BaseManager) else data
+        with get_file_manager(FileUsage.MEDIA).prefetch_urls(
+            application.meta_icon for application in applications
+        ):
+            return super().to_representation(applications)
 
 
 class ApplicationSerializer(ModelSerializer):
@@ -107,6 +122,7 @@ class ApplicationSerializer(ModelSerializer):
 
     class Meta:
         model = Application
+        list_serializer_class = ApplicationListSerializer
         fields = [
             "pk",
             "pbm_uuid",
