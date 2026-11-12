@@ -186,20 +186,18 @@ export class AKPageNavbar
                         ><slot name="bookmark"></slot>
                     </h1>
                 </div>
-                <div
-                    role="heading"
-                    aria-level="2"
-                    aria-label="${this.description ?? msg("breadcrumbs", { id: "page:navbar:breadcrumbs " })}"
-                    class="items page-description pf-c-content"
-                >
-                    ${
-                        this.description
-                            ? html`<p>${this.description}</p>`
-                            : html`<div class="items page-description pf-c-content">
-                                  <slot name="breadcrumbs"></slot>
-                              </div>`
-                    }
-                </div>
+                ${
+                    this.description
+                        ? html`<div
+                              role="heading"
+                              aria-level="2"
+                              aria-label=${this.description}
+                              class="items page-description pf-c-content"
+                          >
+                              <p>${this.description}</p>
+                          </div>`
+                        : null
+                }
 
                 <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">

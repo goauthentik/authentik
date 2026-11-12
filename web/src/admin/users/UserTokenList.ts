@@ -111,7 +111,6 @@ export class AdminUserTokenList extends Table<Token> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Token) => {
                 return [{ key: msg("Identifier"), value: item.identifier }];

@@ -22,6 +22,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-bound-request-rules-table")
 export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
+    public static override verboseName = msg("Request rule binding", {
+        id: "request-rule-bindings.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Request rule bindings", {
+        id: "request-rule-bindings.verbose-name-plural.label",
+    });
+
     static styles = [PFList, ...super.styles];
 
     @property({ type: String })
@@ -41,7 +48,7 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
 
     protected override columns: TableColumn[] = [
         [msg("Rule")],
-        [msg("Entitlement(s)")],
+        [msg("Entitlements", { id: "request-rules.bindings.column.entitlements" })],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
@@ -49,7 +56,6 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Request rule binding(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: RequestRuleBinding) => {
                 return [{ key: msg("Rule"), value: item.ruleObj?.name ?? "-" }];

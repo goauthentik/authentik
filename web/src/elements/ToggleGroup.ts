@@ -6,7 +6,7 @@ import { ToggleGroup, ToggleGroupEvent } from "./ToggleGroup_impl/ToggleGroup";
 
 export { ToggleGroup, ToggleGroupEvent };
 
-window.customElements.define("ak-toggle-group", ToggleGroup);
+customElements.define("ak-toggle-group", ToggleGroup);
 
 declare global {
     interface HTMLElementTagNameMap {

@@ -29,7 +29,7 @@ export interface SentrySetupOptions {
      */
     debug: boolean;
     /**
-     * The current query string, i.e. `window.location.search`.
+     * The current query string, i.e. `location.search`.
      */
     search: string;
     /**

@@ -18,7 +18,7 @@ license-file = "LICENSE"
 publish = false
 
 [workspace.dependencies]
-arc-swap = "= 1.9.3"
+arc-swap = "= 1.9.4"
 argh = "= 0.1.19"
 askama = "= 0.16.1"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
@@ -71,7 +71,7 @@ nix = { version = "= 0.31.3", features = [
   "signal",
   "user",
 ] }
-notify = "= 8.2.1"
+notify = "= 8.2.2"
 pem = "= 4.0.0"
 percent-encoding = "= 2.3.2"
 pin-project-lite = "= 0.2.17"
@@ -153,7 +153,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.29.1", features = ["serde", "v4"] }
+uuid = { version = "= 1.29.2", features = ["serde", "v4"] }
 
 ak-axum = { package = "authentik-axum", version = "2026.11.0-rc1", path = "./packages/ak-axum" }
 ak-client = { package = "authentik-client", version = "2026.11.0-rc1", path = "./packages/client-rust" }

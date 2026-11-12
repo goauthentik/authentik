@@ -51,8 +51,7 @@ describe("password lock actions", () => {
 
     it("hides lock actions when the user has no password device", () => {
         const container = document.createElement("div");
-        const target = user(false);
-        target.passwordDevice = null;
+        const target = { ...user(false), passwordDevice: null };
         render(ToggleUserPasswordLockButton(target, { hasEnterpriseLicense: true }), container);
         expect(container.querySelector("button")).toBeNull();
     });
