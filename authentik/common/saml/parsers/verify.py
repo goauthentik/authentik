@@ -8,6 +8,7 @@ from lxml.etree import _Element  # nosec
 
 from authentik.common.saml.constants import NS_MAP, SIGN_ALGORITHM_TRANSFORM_MAP
 from authentik.common.saml.exceptions import (
+    ERROR_CANNOT_DECODE_REQUEST,
     ERROR_FAILED_TO_VERIFY,
     ERROR_SIGNATURE_REQUIRED_BUT_ABSENT,
     CannotHandleAssertion,
@@ -25,7 +26,7 @@ def verify_enveloped_signature(
     try:
         root = lxml_from_string(raw_xml)
     except UnsafeXML as exc:
-        raise CannotHandleAssertion(str(exc)) from exc
+        raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from exc
     xmlsec.tree.add_ids(root, ["ID"])
     signature_nodes = root.xpath(xpath, namespaces=NS_MAP)
     if not isinstance(signature_nodes, list) or len(signature_nodes) < 1:
@@ -43,7 +44,7 @@ def verify_enveloped_signature(
         )
         ctx.verify(signature_node)
     except xmlsec.Error as exc:
-        raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+        raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=exc) from exc
 
 
 def verify_detached_signature(  # noqa: PLR0913
@@ -82,4 +83,4 @@ def verify_detached_signature(  # noqa: PLR0913
             b64decode(signature),
         )
     except xmlsec.Error as exc:
-        raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+        raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=exc) from exc
