@@ -212,8 +212,8 @@ export class InputPassword extends AKElement {
 
         this.observeInputFocus();
 
-        addEventListener("keydown", this.capsLockListener);
-        addEventListener("keyup", this.capsLockListener);
+        window.addEventListener("keydown", this.capsLockListener);
+        window.addEventListener("keyup", this.capsLockListener);
     }
 
     disconnectedCallback() {
@@ -223,8 +223,8 @@ export class InputPassword extends AKElement {
 
         super.disconnectedCallback();
 
-        removeEventListener("keydown", this.capsLockListener);
-        removeEventListener("keyup", this.capsLockListener);
+        window.removeEventListener("keydown", this.capsLockListener);
+        window.removeEventListener("keyup", this.capsLockListener);
     }
 
     //#endregion
