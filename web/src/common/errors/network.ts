@@ -100,6 +100,37 @@ export function isCausedByAbortError(error: unknown): error is AbortErrorLike {
     );
 }
 
+/**
+ * An error originating from a request aborted by {@linkcode AbortSignal.timeout}.
+ *
+ * @see {@linkcode isTimeoutError} to check if an error originates from a timed-out request.
+ */
+export interface TimeoutErrorLike extends DOMException {
+    name: "TimeoutError";
+}
+
+/**
+ * Type predicate to check if an error originates from a timed-out request.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static | MDN}
+ */
+export function isTimeoutError(error: unknown): error is TimeoutErrorLike {
+    return error instanceof DOMException && error.name === "TimeoutError";
+}
+
+/**
+ * Type predicate to check if an error originates from a timed-out request.
+ *
+ * @see {@linkcode isTimeoutError} for the underlying implementation.
+ */
+export function isCausedByTimeoutError(error: unknown): error is TimeoutErrorLike {
+    return (
+        error instanceof Error &&
+        // ---
+        (isTimeoutError(error) || isTimeoutError(error.cause))
+    );
+}
+
 //#endregion
 
 //#region API
