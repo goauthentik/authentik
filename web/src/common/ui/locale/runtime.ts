@@ -10,6 +10,7 @@ import { sourceLocale, targetLocales } from "../../../locale-codes.js";
 
 import { globalAK } from "#common/global";
 import { LocaleLoaderRecord, TargetLanguageTag } from "#common/ui/locale/definitions";
+import { withPluralRedirect } from "#common/ui/locale/plural-category";
 import { isTargetLanguageTag } from "#common/ui/locale/utils";
 
 import { configureLocalization, LocaleModule } from "@lit/localize";
@@ -19,7 +20,7 @@ function loadLocale(locale: string): Promise<LocaleModule> {
         throw new TypeError(`Unsupported locale code: ${locale}`);
     }
 
-    return LocaleLoaderRecord[locale]();
+    return LocaleLoaderRecord[locale]().then(withPluralRedirect);
 }
 
 /**

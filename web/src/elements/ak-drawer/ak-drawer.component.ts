@@ -29,6 +29,12 @@ export class AkDrawer extends LitElement {
     @property({ type: String, reflect: true })
     public width = "33";
 
+    @property({ type: Boolean, reflect: true })
+    public inline = false;
+
+    @property({ type: String, reflect: true })
+    public position: "left" | "bottom" | null = null;
+
     private resize = new DrawerResizeController(this);
 
     onDrawerRequest = (ev: DrawerExpandRequest) => {

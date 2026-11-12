@@ -51,7 +51,7 @@ export interface PaginatedResponse<T, A extends object = object> {
  */
 export function createPaginatedResponse<T = unknown, A extends object = object>(
     input?: Iterable<T> | null,
-): PaginatedResponse<T, A> {
+): PaginatedResponse<T, A> & { autocomplete: A } {
     const results = Array.from(input ?? []);
 
     return {

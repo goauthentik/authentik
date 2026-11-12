@@ -1,6 +1,7 @@
 import "#admin/endpoints/connectors/agent/AgentConnectorViewPage";
 import "#admin/endpoints/connectors/fleet/FleetConnectorViewPage";
 import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorViewPage";
+import "#admin/endpoints/connectors/microsoft_intune/MicrosoftIntuneConnectorViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -50,6 +51,10 @@ export class ConnectorViewPage extends AKElement {
                 return html`<ak-endpoints-connector-google-chrome-view
                     connectorID=${ifDefined(this.connector.connectorUuid)}
                 ></ak-endpoints-connector-google-chrome-view>`;
+            case "ak-endpoints-connector-microsoft-intune-form":
+                return html`<ak-endpoints-connector-microsoft-intune-view
+                    connectorID=${ifDefined(this.connector.connectorUuid)}
+                ></ak-endpoints-connector-microsoft-intune-view>`;
             default:
                 return html`<p>Invalid connector type ${this.connector?.component}</p>`;
         }

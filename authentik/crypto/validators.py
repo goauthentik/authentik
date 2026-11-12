@@ -6,7 +6,7 @@ from rest_framework.utils.representation import smart_repr
 
 from authentik.crypto.models import CertificateKeyPair, KeyType
 
-# Key types that can be signed with via JOSE/JWT. Bounded by JWTAlgorithms.from_private_key, which
+# Key types that can be signed with via JOSE/JWT. Bounded by JWTAlgorithms.from_public_key, which
 # maps RSA to RS256, EC to ES256/384/512, both Edwards curves to EdDSA (RFC 8037) and the ML-DSA
 # parameter sets to ML-DSA-44/65/87 (RFC 9964). DSA has no JWA signature algorithm at all.
 JWT_SIGNING_KEY_TYPES = [

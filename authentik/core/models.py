@@ -1563,7 +1563,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
     # https://github.com/goauthentik/authentik/issues/24250
     is_array = models.BooleanField(default=False)
 
-    def run_validation(self, value: Any) -> None:
+    def run_validation(self, value: Any, instance: models.Model | None = None) -> None:
         err_key = f"attributes_{self.key}"
 
         if self.is_required and value is None:
@@ -1605,7 +1605,11 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
         if not self.is_array and self.is_unique:
             model: type[models.Model] = self.object_type.model_class()
             lookup_key = f"attributes__{self.key.replace('.', '__')}"
-            if model.objects.filter(**{lookup_key: value}).exists():
+            existing = model.objects.filter(**{lookup_key: value})
+            # The row being saved already has this value; uniqueness is against other objects.
+            if instance is not None and isinstance(instance, model) and instance.pk is not None:
+                existing = existing.exclude(pk=instance.pk)
+            if existing.exists():
                 raise ValidationError({err_key: _("Value is not unique.")})
 
     @property

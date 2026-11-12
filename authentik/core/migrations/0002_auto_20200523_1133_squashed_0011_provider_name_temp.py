@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_core", "0001_initial"),
-        ("authentik_flows", "0003_auto_20200523_1133"),
+        ("authentik_flows", "0001_squashed_0007_auto_20200703_2059"),
         ("auth", "0012_alter_user_first_name_max_length"),
     ]
 

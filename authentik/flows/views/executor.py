@@ -470,10 +470,13 @@ class FlowExecutorView(APIView):
                 keep_context=keep_context,
             )
             return self.restart_flow(keep_context)
-        self.cancel()
         challenge_view = AccessDeniedStage(self, error_message)
         challenge_view.request = self.request
-        return to_stage_response(self.request, challenge_view.get(self.request))
+        # Render the challenge first, because cancel() clears the stored query that its
+        # cancel URL reads `next` from
+        response = challenge_view.get(self.request)
+        self.cancel()
+        return to_stage_response(self.request, response)
 
     def cancel(self):
         """Cancel current flow execution"""

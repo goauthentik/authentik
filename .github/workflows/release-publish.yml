@@ -233,7 +233,7 @@ jobs:
           sed -E -i 's/[0-9]{4}\.[0-9]{1,2}\.[0-9]+$/${{ needs.metadata.outputs.version }}/' charts/authentik/Chart.yaml
           ./scripts/helm-docs.sh
       - name: Create pull request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v7
         with:
           token: "${{ steps.app-token.outputs.token }}"
           branch: bump-${{ needs.metadata.outputs.version }}

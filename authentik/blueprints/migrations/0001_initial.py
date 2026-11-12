@@ -71,7 +71,7 @@ def migration_blueprint_import(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
 class Migration(migrations.Migration):
     initial = True
 
-    dependencies = [("authentik_flows", "0001_initial")]
+    dependencies = [("authentik_flows", "0001_squashed_0007_auto_20200703_2059")]
 
     # migration_blueprint_import below treats "a flow already exists" as "this is an existing
     # install". That only holds if we run before any migration that creates a flow, which is
