@@ -28,6 +28,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
+    public static override verboseName = msg("Token", { id: "tokens.verbose-name.label" });
+    public static override verboseNamePlural = msg("Tokens", {
+        id: "tokens.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
     public override pageTitle = msg("Tokens");
     public override pageDescription = msg(
@@ -61,7 +66,6 @@ export class TokenListPage extends TablePage<Token> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Token) => {
                 return [{ key: msg("Identifier"), value: item.identifier }];

@@ -1,6 +1,7 @@
 """Crypto tests"""
 
 from json import loads
+from math import isnan
 from os import makedirs
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -19,6 +20,7 @@ from cryptography.x509.extensions import SubjectAlternativeName
 from cryptography.x509.general_name import DNSName
 from django.urls import reverse
 from django.utils.timezone import now
+from prometheus_client import REGISTRY
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
@@ -45,6 +47,7 @@ from authentik.crypto.validators import TLS_KEY_TYPES, XML_SIGNING_KEY_TYPES, Ke
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
+from authentik.root.monitoring import monitoring_set
 
 
 class TestCrypto(APITestCase):
@@ -716,3 +719,27 @@ class TestCrypto(APITestCase):
         # Kid should now be SHA512 for the new key
         self.assertNotEqual(cert.kid, legacy_kid)
         self.assertEqual(cert.kid, generate_key_id(cert.key_data))
+
+
+class TestCryptoMetrics(APITestCase):
+    """Certificate expiry metric tests"""
+
+    METRIC = "authentik_crypto_certificate_expiry_timestamp_seconds"
+
+    def test_expiry_exported(self):
+        """Each pair's certificate expiry is exported as a timestamp"""
+        kp = create_test_cert()
+        monitoring_set.send_robust(self)
+        self.assertEqual(
+            REGISTRY.get_sample_value(self.METRIC, {"name": kp.name, "kp_uuid": str(kp.kp_uuid)}),
+            kp.cert_expiry.timestamp(),
+        )
+
+    def test_deleted_pair_nan(self):
+        """A deleted pair is reported as NaN instead of its old expiry"""
+        kp = create_test_cert()
+        labels = {"name": kp.name, "kp_uuid": str(kp.kp_uuid)}
+        monitoring_set.send_robust(self)
+        kp.delete()
+        monitoring_set.send_robust(self)
+        self.assertTrue(isnan(REGISTRY.get_sample_value(self.METRIC, labels)))

@@ -26,7 +26,7 @@ const metadata: Meta<IArrayInput<unknown>> = {
     },
     decorators: [
         (story: Decorator) => {
-            window.setTimeout(() => {
+            setTimeout(() => {
                 const menu = document.getElementById("ak-array-input");
 
                 if (!menu) {

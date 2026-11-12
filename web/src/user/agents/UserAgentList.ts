@@ -18,6 +18,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-agent-list")
 export class UserAgentList extends Table<Agent> {
+    public static override verboseName = msg("Agent", { id: "agent.verbose-name.label" });
+    public static override verboseNamePlural = msg("Agents", {
+        id: "agent.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override checkbox = true;
@@ -65,7 +70,6 @@ export class UserAgentList extends Table<Agent> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Agent(s)", { id: "agent.delete.object-label" })}
             .objects=${this.selectedElements}
             .metadata=${(item: Agent) => [
                 {
@@ -95,7 +99,6 @@ export class UserAgentList extends Table<Agent> {
                 : html`${msg("-", { id: "agent.expires.never" })}`,
             html`${IconTokenCopyButton(item.tokenIdentifier)}
                 <ak-forms-delete-bulk
-                    object-label=${msg("Agent", { id: "agent.delete.object-label-single" })}
                     .objects=${[item]}
                     .delete=${(agent: Agent) =>
                         aki(AgentsApi).agentsAgentsDestroy({

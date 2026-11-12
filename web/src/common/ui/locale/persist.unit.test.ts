@@ -43,7 +43,7 @@ describe("locale persistence", () => {
 
     beforeEach(() => {
         jar = installCookieJar();
-        vi.stubGlobal("location", { protocol: "http:" });
+        vi.stubGlobal("window", { location: { protocol: "http:" } });
     });
 
     afterEach(() => {
@@ -67,7 +67,7 @@ describe("locale persistence", () => {
     });
 
     it("marks the cookie secure when served over HTTPS", () => {
-        vi.stubGlobal("location", { protocol: "https:" });
+        vi.stubGlobal("window", { location: { protocol: "https:" } });
 
         persistLocale("fr-FR");
 
