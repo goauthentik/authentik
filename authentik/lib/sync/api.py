@@ -30,7 +30,8 @@ class SyncStatusTarget(Protocol):
     """Model with an advisory sync lock and schedules attached to it."""
 
     @property
-    def sync_lock(self) -> pglock.advisory: ...
+    def sync_lock(self) -> pglock.advisory:
+        pass
 
     schedules: Manager[Schedule]
 
