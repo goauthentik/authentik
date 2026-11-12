@@ -135,6 +135,7 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         if self.provider.compatibility_mode in [
             SCIMCompatibilityMode.GITLAB,
             SCIMCompatibilityMode.VCENTER,
+            SCIMCompatibilityMode.ZULIP,
         ]:
             return default_config
 
