@@ -39,7 +39,12 @@ export type ProviderOverview<T extends OneOfProvider | unknown = unknown> = (
 
 const renderSAMLOverview: ProviderOverview<SAMLProvider> = (provider) => {
     return renderSummary("SAML", provider.name, [
-        [msg("ACS URL"), provider.acsUrl],
+        [
+            msg("ACS URLs", { id: "provider.saml.acs-urls.label" }),
+            (provider.acsUrls ?? []).map((acsURL) => acsURL.url).join(", ") ||
+                provider.acsUrl ||
+                "-",
+        ],
         [msg("Audience"), provider.audience || "-"],
         [msg("Issuer"), provider.urlIssuer],
     ]);
