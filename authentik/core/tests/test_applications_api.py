@@ -3,7 +3,6 @@
 from json import loads
 from unittest.mock import patch
 
-from django.core.cache import cache
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
@@ -12,12 +11,13 @@ from rest_framework.test import APITestCase
 
 from authentik.admin.files.manager import get_file_manager
 from authentik.admin.files.usage import FileUsage
-from authentik.core.models import Application, PropertyMapping, Provider
+from authentik.core.models import Application, PropertyMapping
 from authentik.core.tests.utils import (
     create_test_admin_user,
     create_test_flow,
     create_test_user,
 )
+from authentik.flows.signals import delete_cache_prefix
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -68,6 +68,17 @@ class TestApplicationsAPI(APITestCase):
             self.allowed.get_launch_url(self.user),
             f"https://{self.user.username}-test.test.goauthentik.io/{self.user.username}",
         )
+
+    def test_formatted_launch_url_percent_encoding(self):
+        """Only placeholders and `%%` are formatted, percent-encoding is kept as is rather than
+        being filled with the whole user"""
+        self.allowed.meta_launch_url = "https://goauthentik.io/%(username)s/Joe%27s?q=a%20b%%2F%"
+        self.assertEqual(
+            self.allowed.get_launch_url(self.user),
+            f"https://goauthentik.io/{self.user.username}/Joe%27s?q=a%20b%2F%",
+        )
+        self.allowed.meta_launch_url = "https://goauthentik.io/Joe%27s"
+        self.assertEqual(self.allowed.get_launch_url(self.user), "https://goauthentik.io/Joe%27s")
 
     def test_check_access(self):
         """Test check_access operation"""
@@ -256,6 +267,20 @@ class TestApplicationsAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsNone(response.json()["provider_obj"])
 
+    def test_with_provider_combined(self):
+        """with_provider() can be called again, and after lookups through the provider"""
+        provider = SAMLProvider.objects.create(name=generate_id())
+        app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        app = (
+            Application.objects.prefetch_related("provider__property_mappings")
+            .with_provider()
+            .with_provider()
+            .get(pk=app.pk)
+        )
+        with self.assertNumQueries(0):
+            self.assertEqual(app.get_provider(), provider)
+            self.assertEqual(list(app.get_provider().property_mappings.all()), [])
+
     def test_list_rbac_ignores_policies(self):
         """RBAC access and policy access are separate: the list only checks
         permissions, @accessible only checks policies"""
@@ -281,6 +306,9 @@ class TestApplicationsAPI(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual([app["slug"] for app in response.json()["results"]], [self.allowed.slug])
+        self.assertEqual(
+            response.json()["results"][0]["launch_url"], f"https://goauthentik.io/{user.username}"
+        )
 
     def test_get_provider(self):
         """Ensure that proxy providers (at the time of writing that is the only provider
@@ -349,12 +377,8 @@ class TestApplicationsAPI(APITestCase):
         mapping = PropertyMapping.objects.create(name=generate_id(), expression="return {}")
         apps = []
         for index in range(count):
-            provider = [
-                lambda: OAuth2Provider.objects.create(name=generate_id(), authorization_flow=flow),
-                lambda: SAMLProvider.objects.create(name=generate_id(), authorization_flow=flow),
-                lambda: ProxyProvider.objects.create(name=generate_id(), authorization_flow=flow),
-                lambda: LDAPProvider.objects.create(name=generate_id(), authorization_flow=flow),
-            ][index % 4]()
+            model = (OAuth2Provider, SAMLProvider, ProxyProvider, LDAPProvider)[index % 4]
+            provider = model.objects.create(name=generate_id(), authorization_flow=flow)
             provider.property_mappings.add(mapping)
             app = Application.objects.create(
                 name=generate_id(),
@@ -374,28 +398,29 @@ class TestApplicationsAPI(APITestCase):
             apps.append(app)
         return apps
 
-    def _get_queries(self, url: str, uncached=False) -> tuple[Response, CaptureQueriesContext]:
+    def _get_queries(self, url: str, cached=False) -> tuple[Response, CaptureQueriesContext]:
         """Request `url` twice and capture the queries of the second request, as the first one
-        after a change also loads the session and brand. With `uncached`, both requests evaluate
-        policies instead of reading the user's application list from the cache."""
-        if uncached:
-            cache.delete_many(cache.keys(f"{CACHE_PREFIX}*"))
+        after a change also loads the session and brand. Unless `cached`, both requests evaluate
+        policies; with it, the second request reads the user's application list that the first
+        one cached."""
+        delete_cache_prefix(f"{CACHE_PREFIX}*")
         self.assertEqual(self.client.get(url).status_code, 200)
-        if uncached:
-            cache.delete_many(cache.keys(f"{CACHE_PREFIX}*"))
+        if not cached:
+            delete_cache_prefix(f"{CACHE_PREFIX}*")
         with CaptureQueriesContext(connection) as captured:
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         return response, captured
 
     def _assert_serialized(self, results: list[dict], apps: list[Application]):
-        """Icons have the URLs the file manager gives them, and providers are serialized as
-        their concrete type, with their applications"""
+        """`results` are exactly `apps`. Icons have the URLs the file manager gives them, and
+        providers are serialized as their concrete type, with their applications"""
         by_slug = {app["slug"]: app for app in results}
+        self.assertCountEqual(by_slug, [app.slug for app in apps])
         files = get_file_manager(FileUsage.MEDIA)
         for app in apps:
-            provider = Provider.objects.get_subclass(pk=app.provider_id)
-            backchannel = app.backchannel_providers.get()
+            provider = app.provider
+            backchannel = SCIMProvider.objects.get(backchannel_application=app)
             data = by_slug[app.slug]
             self.assertEqual(data["meta_icon_url"], files.file_url(app.meta_icon))
             self.assertEqual(data["meta_icon_themed_urls"], files.themed_urls(app.meta_icon))
@@ -407,6 +432,9 @@ class TestApplicationsAPI(APITestCase):
             )
             self.assertEqual(data["backchannel_providers"], [backchannel.pk])
             self.assertEqual(len(data["backchannel_providers_obj"]), 1)
+            self.assertEqual(
+                data["backchannel_providers_obj"][0]["component"], backchannel.component
+            )
             self.assertEqual(
                 data["backchannel_providers_obj"][0]["assigned_backchannel_application_slug"],
                 app.slug,
@@ -437,29 +465,25 @@ class TestApplicationsAPI(APITestCase):
 
         apps += self._create_applications(8, self.user, denied_user)
         response, large = self._get_queries(url)
-        self.assertEqual(len(response.json()["results"]), 12)
         self._assert_serialized(response.json()["results"], apps)
         self.assertEqual(len(large), len(small))
 
     def test_list_accessible_queries(self):
-        """@accessible returns exactly the applications whose policies the user passes, and
-        the number of queries does not grow with the number of applications."""
+        """@accessible returns exactly the applications whose policies the user passes, whether
+        it evaluates policies or reads the user's application list from the cache, and the number
+        of queries does not grow with the number of applications."""
         Application.objects.all().delete()
         user = create_test_user()
-        apps = self._create_applications(4, user, self.user)
+        allowed = self._create_applications(4, user, self.user)[1::2]
         self.client.force_login(user)
         url = reverse("authentik_api:application-accessible") + "?only_with_launch_url=true"
-        response, small = self._get_queries(url, uncached=True)
-        allowed = apps[1::2]
-        self.assertCountEqual(
-            [app["slug"] for app in response.json()["results"]], [app.slug for app in allowed]
-        )
-        self._assert_serialized(response.json()["results"], allowed)
+        small = {}
+        for cached in (False, True):
+            response, small[cached] = self._get_queries(url, cached)
+            self._assert_serialized(response.json()["results"], allowed)
 
         allowed += self._create_applications(8, user, self.user)[1::2]
-        response, large = self._get_queries(url, uncached=True)
-        self.assertCountEqual(
-            [app["slug"] for app in response.json()["results"]], [app.slug for app in allowed]
-        )
-        self._assert_serialized(response.json()["results"], allowed)
-        self.assertEqual(len(large), len(small))
+        for cached in (False, True):
+            response, large = self._get_queries(url, cached)
+            self._assert_serialized(response.json()["results"], allowed)
+            self.assertEqual(len(large), len(small[cached]))

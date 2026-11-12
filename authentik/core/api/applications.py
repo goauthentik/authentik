@@ -93,17 +93,18 @@ class ApplicationSerializer(ModelSerializer):
     )
 
     def get_launch_url(self, app: Application) -> str | None:
-        """Allow formatting of launch URL"""
-        url = app.get_launch_url()
-        # Formatting a URL without placeholders returns it unchanged. Serializing the user
-        # queries their groups, roles and avatar, so it happens only for a URL that needs it,
-        # and once for all applications in the response.
-        if not url or "%" not in url or "request" not in self.context:
-            return url
-        user = self.context["request"].user
+        """Format the launch URL for the user given as `for_user` in the context, or else the
+        requesting user"""
+        user = self.context.get("for_user") or getattr(self.context.get("request"), "user", None)
+        if not user:
+            return app.get_launch_url()
+        return app.get_launch_url(user, user_data=lambda: self._get_user_data(user))
+
+    def _get_user_data(self, user: User) -> dict:
+        """`user` serialized, once for all applications in the response"""
         if "_cached_user_data" not in self.context:
             self.context["_cached_user_data"] = UserSerializer(instance=user).data
-        return app.get_launch_url(user, user_data=self.context["_cached_user_data"])
+        return self.context["_cached_user_data"]
 
     def validate_slug(self, slug: str) -> str:
         if slug in Application.reserved_slugs:
@@ -156,20 +157,18 @@ class ApplicationViewSet(
 ):
     """Application Viewset"""
 
-    queryset = (
-        Application.objects.all().with_provider()
-        # ProviderSerializer reads each provider's property mappings, application and
-        # backchannel application
-        .prefetch_related(
-            "provider__property_mappings",
-            "provider__backchannel_application",
-            Prefetch(
-                "backchannel_providers",
-                queryset=Provider.objects.select_related("application").prefetch_related(
-                    "property_mappings"
-                ),
+    # ProviderSerializer reads each provider's concrete type, property mappings, application and
+    # backchannel application. A provider's application is prefetched rather than selected, as
+    # select_subclasses() returns the subclass instances and not the selected base rows.
+    queryset = Application.objects.with_provider().prefetch_related(
+        "provider__property_mappings",
+        "provider__backchannel_application",
+        Prefetch(
+            "backchannel_providers",
+            queryset=Provider.objects.select_subclasses().prefetch_related(
+                "application", "property_mappings"
             ),
-        )
+        ),
     )
     serializer_class = ApplicationSerializer
     search_fields = [
@@ -340,7 +339,11 @@ class ApplicationViewSet(
             allowed_applications = self._get_allowed_applications(queryset, user=for_user)
             paginated_apps = paginator.paginate_queryset(allowed_applications, request)
 
-            serializer = self.get_serializer(paginated_apps, many=True)
+            serializer = self.get_serializer(
+                paginated_apps,
+                many=True,
+                context={**self.get_serializer_context(), "for_user": for_user},
+            )
             return self.get_paginated_response(serializer.data)
 
         paginated_apps = paginator.paginate_queryset(queryset, request)
