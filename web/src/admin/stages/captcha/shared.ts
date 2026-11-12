@@ -242,6 +242,8 @@ export function pluckFormValues(
         return {
             jsUrl: instance.jsUrl,
             apiUrl: instance.apiUrl,
+            capWasmUrl: instance.capWasmUrl ?? "",
+            capHashwxWasmUrl: instance.capHashwxWasmUrl ?? "",
             requestContentType: instance.requestContentType,
             interactive: instance.interactive,
             scoreMinThreshold: instance.scoreMinThreshold,
@@ -253,6 +255,8 @@ export function pluckFormValues(
     return {
         jsUrl: preset.jsUrl,
         apiUrl: preset.apiUrl,
+        capWasmUrl: "",
+        capHashwxWasmUrl: "",
         requestContentType: preset.requestContentType,
         interactive: preset.interactive,
         scoreMinThreshold: preset.score?.min ?? 0.5,

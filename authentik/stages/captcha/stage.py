@@ -30,6 +30,8 @@ class CaptchaChallenge(WithUserInfoChallenge):
 
     site_key = CharField(required=True)
     js_url = CharField(required=True)
+    cap_wasm_url = CharField(required=False, allow_blank=True)
+    cap_hashwx_wasm_url = CharField(required=False, allow_blank=True)
     interactive = BooleanField(required=True)
 
 
@@ -117,11 +119,14 @@ class CaptchaStageView(ChallengeStageView):
         site_key = self.executor.plan.context.get(
             PLAN_CONTEXT_CAPTCHA_SITE_KEY, self.executor.current_stage.public_key
         )
+        stage: CaptchaStage = self.executor.current_stage
         return CaptchaChallenge(
             data={
-                "js_url": self.executor.current_stage.js_url,
+                "js_url": stage.js_url,
                 "site_key": site_key,
-                "interactive": self.executor.current_stage.interactive,
+                "cap_wasm_url": stage.cap_wasm_url,
+                "cap_hashwx_wasm_url": stage.cap_hashwx_wasm_url,
+                "interactive": stage.interactive,
             }
         )
 
