@@ -133,23 +133,15 @@ class WSFedFlowFinalView(ChallengeStageView):
         # Create SAMLSession to track this login
         auth_session = AuthenticatedSession.from_request(self.request, self.request.user)
         if auth_session:
-            # Since samlsessions should only exist uniquely for an active session and a provider
-            # any existing combination is likely an old, dead session
-            SAMLSession.objects.filter(
-                session_index=saml_processor.session_index, provider=provider
-            ).delete()
-
-            SAMLSession.objects.update_or_create(
+            SAMLSession.upsert(
                 session_index=saml_processor.session_index,
                 provider=provider,
-                defaults={
-                    "user": self.request.user,
-                    "session": auth_session,
-                    "name_id": saml_processor.name_id,
-                    "name_id_format": saml_processor.name_id_format,
-                    "expires": saml_processor.session_not_on_or_after_datetime,
-                    "expiring": True,
-                },
+                user=self.request.user,
+                session=auth_session,
+                name_id=saml_processor.name_id,
+                name_id_format=saml_processor.name_id_format,
+                expires=saml_processor.session_not_on_or_after_datetime,
+                expiring=True,
             )
         return AutosubmitChallenge(
             data={
