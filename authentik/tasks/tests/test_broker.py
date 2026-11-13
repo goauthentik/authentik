@@ -1,5 +1,5 @@
 from datetime import timedelta
-from unittest.mock import MagicMock, patch
+from unittest.mock import ANY, MagicMock, call, patch
 from uuid import uuid4
 
 from django.test import SimpleTestCase, TestCase, TransactionTestCase
@@ -329,8 +329,12 @@ class TestPostgresConsumerAutoPurge(TestCase):
             list(TaskDependency.objects.values_list("task_id", "dependency_id")),
             [(survivors[2].pk, survivors[3].pk)],
         )
-        consumer.logger.info.assert_called_once_with(
-            "Purged messages in all queues", count=len(expired)
+        self.assertEqual(
+            consumer.logger.info.call_args_list,
+            [
+                call("Task purge started"),
+                call("Task purge finished", count=len(expired), took_s=ANY),
+            ],
         )
 
     def test_auto_purge_not_due_on_first_poll(self):

@@ -659,7 +659,8 @@ class _PostgresConsumer(Consumer):
     def _auto_purge(self) -> None:
         if timezone.now() - self.task_purge_last_run < self.task_purge_interval:
             return
-        self.logger.debug("Running garbage collector")
+        self.logger.info("Task purge started")
+        start = time.monotonic()
         count = delete_in_batches(
             self.query_set.filter(
                 state__in=(TaskState.DONE, TaskState.REJECTED),
@@ -667,7 +668,11 @@ class _PostgresConsumer(Consumer):
                 result_expiry__lte=timezone.now(),
             )
         )
-        self.logger.info("Purged messages in all queues", count=count)
+        self.logger.info(
+            "Task purge finished",
+            count=count,
+            took_s=round(time.monotonic() - start, 3),
+        )
         self.task_purge_last_run = timezone.now()
 
     @raise_broker_connection_error
