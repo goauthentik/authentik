@@ -51,6 +51,13 @@ CATALOG: tuple[CheckDef, ...] = (
         (f"{D}4.4.1 (resource)", "RFC 8707 §2"),
     ),
     CheckDef(
+        "ras.subject-email-link",
+        "With the IdP trusted for an email domain, an ID-JAG for a subject with no connection "
+        "yet whose email (compared without case) names an existing user there connects that "
+        "user; later ID-JAGs resolve by sub",
+        (f"{D}3.1 (email), 4.4.1, 9.8", "MCP enterprise-managed authorization"),
+    ),
+    CheckDef(
         "ras.e2e.authentik-issuer",
         "An ID-JAG issued by authentik (token exchange, as IdP Authorization Server) is "
         "redeemed by authentik as Resource Authorization Server for the same user",
@@ -113,6 +120,12 @@ CATALOG: tuple[CheckDef, ...] = (
         "ras.neg.no-client-auth",
         "A request without client authentication is rejected with invalid_client",
         (f"{D}4.4 (MUST invalid_client)",),
+    ),
+    CheckDef(
+        "ras.neg.email-domain-not-trusted",
+        "An email naming an existing user, in a domain the IdP isn't trusted for, is refused "
+        "with access_denied and connects nobody",
+        (f"{D}9.8", f"{D}4.4.3 (access_denied)"),
     ),
     CheckDef(
         "ras.neg.subject-not-provisioned",
