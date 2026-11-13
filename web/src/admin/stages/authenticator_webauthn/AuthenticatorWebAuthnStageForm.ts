@@ -8,7 +8,10 @@ import { aki } from "#common/api/client";
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
-import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
+import {
+    additionalAcceptedOriginsField,
+    deviceTypeRestrictionPair,
+} from "#admin/stages/authenticator_webauthn/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
@@ -95,6 +98,10 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
+                    ${additionalAcceptedOriginsField(
+                        "additionalAcceptedOrigins",
+                        this.instance?.additionalAcceptedOrigins,
+                    )}
                     <ak-form-element-horizontal
                         label=${msg("User verification")}
                         required
