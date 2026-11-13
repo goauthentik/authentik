@@ -1,12 +1,16 @@
-import "../Expand.js";
-import { Expand, type IExpand } from "../Expand.js";
+/**
+ * @file Storybook stories for the default Expand component implementation
+ */
+
+import "../Expand";
+import { type ExpandProps } from "../Expand";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const metadata: Meta<Expand> = {
+const metadata: Meta<ExpandProps> = {
     title: "Elements/<ak-expand>",
     component: "ak-expand",
     tags: ["autodocs"],
@@ -16,10 +20,10 @@ const metadata: Meta<Expand> = {
                 component: /* md */ `
 # Expand
 
-Expand is an in-page element used to hide cluttering details that a user may wish to reveal, such as raw
-details of an alert or event.
+Expand is our Summary/Detail component, used for progressive reveal (of secrets or passwords), or
+just as a way to declutter the page.
 
-It has one unnamed slot for the content to be displayed.
+It has an unnamed slot for the content to be displayed.
 
 ## Usage
 
@@ -29,12 +33,6 @@ import "#elements/Expand";
 
 \`\`\`html
 <ak-expand><p>Your primary content goes here</p></ak-expand>
-\`\`\`
-
-To show the expanded content on initial render:
-
-\`\`\`html
-<ak-expand expanded><p>Your primary content goes here</p></ak-expand>
 \`\`\`
 `,
             },
@@ -52,7 +50,7 @@ export default metadata;
 const container = (content: TemplateResult) =>
     html` <div>
         <style>
-            ak-divider {
+            ak-expand {
                 display: inline-block;
                 width: 32rem;
                 max-width: 32rem;
@@ -60,14 +58,16 @@ const container = (content: TemplateResult) =>
         >${content}
     </div>`;
 
-export const DefaultStory: StoryObj = {
+type Story = StoryObj<ExpandProps>;
+
+export const DefaultStory: Story = {
     args: {
         expanded: false,
         textOpen: undefined,
         textClosed: undefined,
     },
 
-    render: ({ expanded, textOpen, textClosed }: IExpand) =>
+    render: ({ expanded, textOpen, textClosed }) =>
         container(
             html` <ak-expand
                 ?expanded=${expanded}
@@ -81,10 +81,7 @@ export const DefaultStory: StoryObj = {
         ),
 };
 
-export const Expanded = {
+export const Expanded: Story = {
     ...DefaultStory,
-    args: {
-        ...DefaultStory,
-        expanded: true,
-    },
+    args: { ...DefaultStory.args, expanded: true },
 };

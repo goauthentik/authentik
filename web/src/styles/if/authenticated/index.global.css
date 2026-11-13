@@ -38,6 +38,8 @@
 @import "#elements/StructuredView/StructuredView.root.css" layer(components);
 @import "#elements/Paginator_impl/Paginator.root.css" layer(components);
 @import "#elements/Progress_impl/Progress.root.css" layer(components);
+@import "#elements/ExpansionToggle_impl/ExpansionToggle.root.css" layer(components);
+@import "#elements/Expand_impl/Expand.root.css" layer(components);
 @import "#elements/ToggleGroup_impl/ToggleGroup.root.css" layer(components);
 @import "#elements/sidebar/Sidebar.root.css" layer(components);
 @import "#elements/timestamp/Timestamp.root.css" layer(components);

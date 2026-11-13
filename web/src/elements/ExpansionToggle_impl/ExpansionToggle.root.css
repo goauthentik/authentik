@@ -1,0 +1,31 @@
+/**
+ * @file Document-level CSS Custom Properties for ExpansionToggle components.
+ */
+
+:root {
+    --ak-c-expansion-toggle--PaddingTop: var(--pf-global--spacer--form-element);
+    --ak-c-expansion-toggle--PaddingRight: var(--pf-global--spacer--sm);
+    --ak-c-expansion-toggle--PaddingBottom: var(--pf-global--spacer--form-element);
+    --ak-c-expansion-toggle--PaddingLeft: 0;
+    --ak-c-expansion-toggle--MarginTop: 0;
+    --ak-c-expansion-toggle--BackgroundColor: transparent;
+    --ak-c-expansion-toggle--ColumnGap: calc(
+        var(--pf-global--spacer--xs) + var(--pf-global--spacer--sm)
+    );
+
+    --ak-c-expansion-toggle--Color: var(--pf-global--link--Color);
+    --ak-c-expansion-toggle--hover--Color: var(--pf-global--link--Color--hover);
+    --ak-c-expansion-toggle--active--Color: var(--pf-global--link--Color--hover);
+    --ak-c-expansion-toggle--focus--Color: var(--pf-global--link--Color--hover);
+    --ak-c-expansion-toggle--m-expanded--Color: var(--pf-global--link--Color--hover);
+
+    --ak-c-expansion-toggle--focus--OutlineWidth: 2px;
+    --ak-c-expansion-toggle--focus--OutlineColor: var(--pf-global--primary-color--100);
+    --ak-c-expansion-toggle--focus--OutlineOffset: 2px;
+
+    --ak-c-expansion-toggle__icon--Color: var(--pf-global--Color--100);
+    --ak-c-expansion-toggle__icon--MinWidth: 1em;
+    --ak-c-expansion-toggle__icon--Transition: 0.2s ease-in 0s;
+    --ak-c-expansion-toggle__icon--Rotate: 0;
+    --ak-c-expansion-toggle--m-expanded__icon--Rotate: 90deg;
+}
