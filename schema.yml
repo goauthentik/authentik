@@ -36722,7 +36722,9 @@ components:
         launch_url:
           type: string
           nullable: true
-          description: Allow formatting of launch URL
+          description: |-
+            Format the launch URL for the user given as `for_user` in the context, or else the
+            requesting user
           readOnly: true
         open_in_new_tab:
           type: boolean
