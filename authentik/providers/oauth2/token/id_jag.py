@@ -6,7 +6,8 @@ Trust is configured with the provider's existing `jwt_federation_sources`: an OA
 with an OIDC well-known URL is a trusted IdP Authorization Server. Its issuer identifier is the
 one that well-known URL is derived from (draft-06 §7.1, RFC 8414 §3.1, OIDC Discovery §4), and
 its signing keys are the source's cached JWKS. The ID-JAG `sub` resolves to the user connected
-to that source with the same identifier.
+to that source with the same identifier. Without one, the ID-JAG `email` can connect the one
+active user with that address, but only in email domains the source is trusted for (§9.8).
 """
 
 from hashlib import sha256
@@ -15,13 +16,13 @@ from typing import Any
 from urllib.parse import urlparse
 
 from django.core.cache import cache
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.http import HttpRequest
 from django.utils import timezone
 from jwt import PyJWT, PyJWTError
 
 from authentik.common.oauth.constants import JWT_TYPE_ID_JAG
-from authentik.core.models import Application, User
+from authentik.core.models import Application, User, UserTypes
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.lib.jwt_mldsa import MLDSA_ALGORITHMS, key_from_jwk
@@ -91,6 +92,8 @@ class IdJagTokenRequest(FederatedTokenRequest):
 
     source: OAuthSource | None = None
     id_jag: dict[str, Any] | None = None
+    # Set when the user was found by email; saved once the user is authorized
+    new_connection: UserOAuthSourceConnection | None = None
 
     def check_scopes(self):
         """Scopes come from the ID-JAG; they're resolved once it has been validated."""
@@ -114,6 +117,8 @@ class IdJagTokenRequest(FederatedTokenRequest):
             self.check_policy_access(app, request, oauth_jwt=self.id_jag)
         except TokenError:
             raise TokenError("access_denied").with_cause("policy_denied") from None
+        if self.new_connection:
+            self.save_new_connection(request)
 
         Event.new(
             action=EventAction.LOGIN,
@@ -261,16 +266,85 @@ class IdJagTokenRequest(FederatedTokenRequest):
         self.scope = requested & allowed
 
     def resolve_id_jag_user(self) -> User:
-        """The user connected to the issuing source with the ID-JAG's `sub`. Without one,
-        the user isn't provisioned here (draft-06 §4.4.3 `access_denied`)."""
+        """Subject resolution (draft-06 §4.4.1, §9.8). `iss` + `sub` is the stable identifier:
+        the user connected to the issuing source with the ID-JAG's `sub`. Without one, the
+        `email` claim can identify a user who exists here already, as the MCP enterprise-managed
+        authorization extension describes, but only in email domains the source is trusted for,
+        as an issuer can assert any address. Users aren't created (no JIT provisioning), so an
+        unknown subject isn't provisioned here (§4.4.3 `access_denied`)."""
         connection = (
             UserOAuthSourceConnection.objects.filter(
-                source=self.source, identifier=self.id_jag["sub"], user__is_active=True
+                source=self.source, identifier=self.id_jag["sub"]
             )
             .select_related("user")
             .first()
         )
-        if not connection:
+        if connection:
+            if not connection.user.is_active:
+                # Never fall back to email: that could hand this subject to another user
+                self.logger.info("ID-JAG subject's user is inactive", source=self.source.slug)
+                raise TokenError("access_denied").with_cause("subject_inactive")
+            return connection.user
+        user = self.resolve_id_jag_user_by_email()
+        self.new_connection = UserOAuthSourceConnection(
+            user=user, source=self.source, identifier=self.id_jag["sub"]
+        )
+        return user
+
+    def resolve_id_jag_user_by_email(self) -> User:
+        """The one active user whose email matches the ID-JAG's, in a trusted domain"""
+        email = self.id_jag.get("email")
+        trusted_domains = self.source.id_jag_email_domains
+        if email is None or not trusted_domains:
             self.logger.info("ID-JAG subject has no connection", source=self.source.slug)
             raise TokenError("access_denied").with_cause("subject_not_provisioned")
-        return connection.user
+        if not isinstance(email, str):
+            raise TokenError("invalid_grant").with_cause("invalid_email_claim")
+        local, _, domain = email.rpartition("@")
+        if not local or domain.lower() not in trusted_domains:
+            self.logger.info("ID-JAG email domain isn't trusted", source=self.source.slug)
+            raise TokenError("access_denied").with_cause("email_domain_not_trusted")
+        # An issuer stating the address isn't verified isn't vouching for it
+        if self.id_jag.get("email_verified", True) is not True:
+            self.logger.info("ID-JAG email isn't verified", source=self.source.slug)
+            raise TokenError("access_denied").with_cause("email_not_verified")
+        users = list(
+            User.objects.exclude_anonymous()
+            .exclude_agents()
+            .filter(
+                email__iexact=email,
+                is_active=True,
+                type__in=[UserTypes.INTERNAL, UserTypes.EXTERNAL],
+            )[:2]
+        )
+        if not users:
+            self.logger.info("No user with the ID-JAG email", source=self.source.slug)
+            raise TokenError("access_denied").with_cause("subject_not_provisioned")
+        if len(users) > 1:
+            self.logger.warning("Several users have the ID-JAG email", source=self.source.slug)
+            raise TokenError("access_denied").with_cause("email_not_unique")
+        user = users[0]
+        # A user has one connection per source: one for another subject means the email
+        # now names someone (or something) else at the issuer
+        if UserOAuthSourceConnection.objects.filter(source=self.source, user=user).exists():
+            self.logger.warning(
+                "User is connected to another ID-JAG subject", source=self.source.slug
+            )
+            raise TokenError("access_denied").with_cause("subject_conflict")
+        return user
+
+    def save_new_connection(self, request: HttpRequest):
+        """Connect the user found by email to the ID-JAG subject, so later ID-JAGs resolve by
+        `sub`. Saved only once the user is authorized for the application."""
+        try:
+            with transaction.atomic():
+                self.new_connection.save()
+        except IntegrityError:
+            # A concurrent redemption connected this user first
+            raise TokenError("access_denied").with_cause("subject_conflict") from None
+        Event.new(
+            EventAction.SOURCE_LINKED,
+            message="Linked source from an ID-JAG email address",
+            source=self.source,
+            identifier=self.id_jag["sub"],
+        ).from_http(request, user=self.user)
