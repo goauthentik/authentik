@@ -62,10 +62,17 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         if attrs.get("intent") not in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
             raise ValidationError({"intent": f"Invalid intent {attrs.get('intent')}"})
 
-        if attrs.get("intent") == TokenIntents.INTENT_APP_PASSWORD:
-            # user IS in attrs
-            user: User = attrs.get("user")
-            max_token_lifetime = user.group_attributes(request).get(
+        # Lifetime limits belong to the token's owner (which cannot change on update), resolved
+        # through brand and group attributes. Superusers making the request are exempt, as they
+        # can already create non-expiring tokens.
+        owner: User = self.instance.user if self.instance else attrs.get("user")
+        caller: User = request.user if request else owner
+        # Read the same way as in `TokenViewSet.perform_create`
+        token_expiring = owner.attributes.get(USER_ATTRIBUTE_TOKEN_EXPIRING, True)
+        expires = attrs.get("expires")
+
+        if not caller.is_superuser and token_expiring:
+            max_token_lifetime = owner.group_attributes(request).get(
                 USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
             )
             max_token_lifetime_dt = default_token_duration()
@@ -75,7 +82,7 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
                 except ValueError:
                     pass
 
-            expires = attrs.get("expires")
+            # if expires is provided, ensure it does not exceed the maximum resolved token lifetime
             if expires is not None and expires > max_token_lifetime_dt:
                 raise ValidationError(
                     {
@@ -84,9 +91,11 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
                         )
                     }
                 )
-        elif attrs.get("intent") == TokenIntents.INTENT_API:
-            # For API tokens, expires cannot be overridden
-            attrs["expires"] = default_token_duration()
+
+            # if expires is None, set it to the allowed token lifetime. Don't reset the expiry of
+            # an existing token on an update that doesn't touch it.
+            if expires is None and (self.instance is None or "expires" in attrs):
+                attrs["expires"] = max_token_lifetime_dt
 
         return attrs
 

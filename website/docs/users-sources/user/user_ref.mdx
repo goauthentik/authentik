@@ -84,9 +84,11 @@ Only applies when the token creation is triggered by the user with this attribut
 
 ### `goauthentik.io/user/token-maximum-lifetime`:
 
-Optional flag, when set, defines the maximum lifetime of user-created tokens. Defaults to the system setting if not set.
+Optional flag, when set, defines the maximum lifetime of the user's API tokens and app passwords. Can also be set on a group or brand. Defaults to the system setting if not set.
 
-Only applies when `goauthentik.io/user/token-expires` set to true.
+Creating or editing a token with an expiry beyond this lifetime fails. When no expiry is given, the token expires after this lifetime.
+
+Only applies when `goauthentik.io/user/token-expires` set to true. Additionally, the limit does not apply when a superuser creates or edits the token.
 
 Format is string of format `days=10;hours=1;minute=3;seconds=5`.
 
