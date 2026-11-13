@@ -176,13 +176,22 @@ class CheckResult:
 
 
 class Report:
-    def __init__(self, meta: dict[str, Any]):
+    def __init__(
+        self,
+        meta: dict[str, Any],
+        catalog: tuple[CheckDef, ...] = CATALOG,
+        suite: str = "id-jag-issuer",
+    ):
         self.meta = meta
+        self.catalog = catalog
+        self.catalog_ids = tuple(c.id for c in catalog)
+        # Matrix name of the check: `test-mcp-conformance (<suite>)`
+        self.suite = suite
         self.results: dict[str, CheckResult] = {}
         self.unexpected: list[str] = []
 
     def add(self, result: CheckResult) -> CheckResult:
-        if result.id not in CATALOG_IDS or result.id in self.results:
+        if result.id not in self.catalog_ids or result.id in self.results:
             self.unexpected.append(result.id)
         self.results[result.id] = result
         return result
@@ -192,7 +201,7 @@ class Report:
 
     def verdict(self) -> tuple[bool, list[str]]:
         problems = []
-        for check_id in CATALOG_IDS:
+        for check_id in self.catalog_ids:
             res = self.results.get(check_id)
             if res is None:
                 problems.append(f"{check_id}: MISSING (check never executed)")
@@ -205,15 +214,16 @@ class Report:
 
     def as_dict(self) -> dict:
         ok, problems = self.verdict()
-        defs = {c.id: c for c in CATALOG}
+        defs = {c.id: c for c in self.catalog}
         return {
-            "suite": "mcp-conformance-id-jag-issuer",
+            "suite": f"mcp-conformance-{self.suite}",
+            "check_name": f"test-mcp-conformance ({self.suite})",
             "spec": DRAFT,
             "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "meta": self.meta,
             "verdict": "PASS" if ok else "FAIL",
             "problems": problems,
-            "expected_checks": list(CATALOG_IDS),
+            "expected_checks": list(self.catalog_ids),
             "checks": [
                 {
                     **asdict(r),
@@ -235,7 +245,7 @@ class Report:
 
 def render_markdown(data: dict) -> str:
     lines = [
-        f"## test-mcp-conformance (id-jag-issuer): {data['verdict']}",
+        f"## {data['check_name']}: {data['verdict']}",
         "",
         f"Spec: `{data['spec']}`",
         "",
@@ -255,24 +265,26 @@ def render_markdown(data: dict) -> str:
 
 def render_junit(data: dict) -> str:
     by_id = {c["id"]: c for c in data["checks"]}
+    classname = quoteattr(data["suite"].removeprefix("mcp-conformance-").replace("-", "_"))
+    classname = classname.replace('"', '"mcp.', 1)
     cases = []
     failures = 0
     for check_id in data["expected_checks"]:
         c = by_id.get(check_id)
         name = quoteattr(check_id)
         if c and c["status"] == PASS:
-            cases.append(f'<testcase classname="mcp.id_jag_issuer" name={name}/>')
+            cases.append(f"<testcase classname={classname} name={name}/>")
             continue
         failures += 1
         msg = c["summary"] if c else "check never executed"
         body = escape(json.dumps(c["details"] if c else {}, indent=2, default=str))
         status = c["status"] if c else "MISSING"
         cases.append(
-            f'<testcase classname="mcp.id_jag_issuer" name={name}>'
+            f"<testcase classname={classname} name={name}>"
             f"<failure message={quoteattr(f'{status}: {msg}')}>{body}</failure></testcase>"
         )
     return (
         '<?xml version="1.0" encoding="utf-8"?>\n'
-        f'<testsuite name="mcp-conformance-id-jag-issuer" tests="{len(cases)}" '
+        f"<testsuite name={quoteattr(data['suite'])} tests=\"{len(cases)}\" "
         f'failures="{failures}">\n' + "\n".join(cases) + "\n</testsuite>\n"
     )
