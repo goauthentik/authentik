@@ -21,23 +21,17 @@ class RefreshTokenTokenRequest(TokenRequest):
             token=raw_token, provider=self.provider
         ).first()
         if not self.refresh_token:
-            self.logger.warning(
-                "Refresh token does not exist",
-                token=raw_token,
-            )
+            self.logger.warning("Refresh token does not exist")
             raise TokenError("invalid_grant")
         if self.refresh_token.is_expired:
-            self.logger.warning(
-                "Refresh token is expired",
-                token=raw_token,
-            )
+            self.logger.warning("Refresh token is expired")
             raise TokenError("invalid_grant")
         # https://datatracker.ietf.org/doc/html/rfc6749#section-6
         # Fallback to original token's scopes when none are given
         if not self.scope:
             self.scope = self.refresh_token.scope
         if self.refresh_token.revoked:
-            self.logger.warning("Refresh token is revoked", token=raw_token)
+            self.logger.warning("Refresh token is revoked")
             Event.new(
                 action=EventAction.SUSPICIOUS_REQUEST,
                 message="Revoked refresh token was used",

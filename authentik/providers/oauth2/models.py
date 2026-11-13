@@ -4,6 +4,7 @@ import base64
 import binascii
 import json
 from dataclasses import asdict, dataclass
+from datetime import timedelta
 from functools import cached_property
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any
@@ -689,6 +690,11 @@ class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGr
         from authentik.providers.oauth2.api.tokens import TokenModelSerializer
 
         return TokenModelSerializer
+
+
+# Rotated (revoked) refresh tokens are kept this long so that reuse of an old token can still be
+# detected and logged as a suspicious request, after which they expire and are cleaned up.
+REVOKED_REFRESH_TOKEN_RETENTION = timedelta(hours=48)
 
 
 class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
