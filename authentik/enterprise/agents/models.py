@@ -51,18 +51,21 @@ class Agent(Actor):
     id_jag_audience = models.TextField(
         blank=True,
         default="",
+        db_default="",
         verbose_name=_("ID-JAG audience"),
         help_text=_("Issuer of the authorization server ID-JAGs are minted for."),
     )
     id_jag_client_id = models.TextField(
         blank=True,
         default="",
+        db_default="",
         verbose_name=_("ID-JAG client ID"),
         help_text=_("Identifier of the client at that authorization server."),
     )
     id_jag_resources = ArrayField(
         models.TextField(),
         default=list,
+        db_default=[],
         blank=True,
         verbose_name=_("ID-JAG resources"),
         help_text=_("Resources an ID-JAG may be requested for at that server."),

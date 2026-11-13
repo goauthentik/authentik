@@ -28,6 +28,7 @@ class Migration(migrations.Migration):
             name="id_jag_audience",
             field=models.TextField(
                 blank=True,
+                db_default="",
                 default="",
                 help_text="Issuer of the authorization server ID-JAGs are minted for.",
                 verbose_name="ID-JAG audience",
@@ -38,6 +39,7 @@ class Migration(migrations.Migration):
             name="id_jag_client_id",
             field=models.TextField(
                 blank=True,
+                db_default="",
                 default="",
                 help_text="Identifier of the client at that authorization server.",
                 verbose_name="ID-JAG client ID",
@@ -49,6 +51,7 @@ class Migration(migrations.Migration):
             field=django.contrib.postgres.fields.ArrayField(
                 base_field=models.TextField(),
                 blank=True,
+                db_default=[],
                 default=list,
                 help_text="Resources an ID-JAG may be requested for at that server.",
                 size=None,
