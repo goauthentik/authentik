@@ -32,6 +32,11 @@ type snapshot struct {
 	users     []api.User
 	groups    []api.Group
 	usersByPk map[int32]int // index into users
+	// usersByDN and groupsByDN map a lower-cased entry DN to its index, so a
+	// base-object search for one user or group by a binder with search
+	// permission builds that one entry instead of every cached one.
+	usersByDN  map[string]int // index into users
+	groupsByDN map[string]int // index into groups
 }
 
 type MemorySearcher struct {
@@ -84,13 +89,21 @@ func (ms *MemorySearcher) fetch() {
 		ms.log.WithError(err).Warning("failed to fetch directory, data may be incomplete")
 	}
 	usersByPk := make(map[int32]int, len(users))
+	usersByDN := make(map[string]int, len(users))
 	for i, u := range users {
 		usersByPk[u.Pk] = i
+		usersByDN[strings.ToLower(ms.si.GetUserDN(u.Username))] = i
+	}
+	groupsByDN := make(map[string]int, len(groups))
+	for i, g := range groups {
+		groupsByDN[strings.ToLower(ms.si.GetGroupDN(g.Name))] = i
 	}
 	ms.cache.Store(&snapshot{
-		users:     users,
-		groups:    groups,
-		usersByPk: usersByPk,
+		users:      users,
+		groups:     groups,
+		usersByPk:  usersByPk,
+		usersByDN:  usersByDN,
+		groupsByDN: groupsByDN,
 	})
 }
 
@@ -179,25 +192,37 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		}
 	}
 
+	// A base-object search names exactly one user or group; with search
+	// permission that entry is found through the DN index rather than by
+	// building every cached entry and keeping the one whose DN matches.
+	singleUserByDN := flag.CanSearch && utils.HasSuffixNoCase(req.BaseDN, ","+ms.si.GetBaseUserDN())
+	singleGroupByDN := flag.CanSearch && utils.HasSuffixNoCase(req.BaseDN, ","+ms.si.GetBaseGroupDN())
+
 	if needGroups {
 		groups = make([]*group.LDAPGroup, 0)
 
-		for _, g := range snap.groups {
-			if flag.CanSearch {
-				groups = append(groups, group.FromAPIGroup(g, ms.si))
-			} else {
-				// If the user cannot search, we're going to only return
-				// the groups they're in _and_ only return themselves
-				// as a member.
-				for _, u := range g.UsersObj {
-					if flag.UserPk == u.Pk {
-						// TODO: Is there a better way to clone this object?
-						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, []api.RelatedGroup{}, []api.PartialUser{u}, []api.Role{}, nil, []string{}, []api.RelatedGroup{})
-						fg.SetUsers([]int32{flag.UserPk})
-						fg.SetAttributes(g.Attributes)
-						fg.SetIsSuperuser(*g.IsSuperuser)
-						groups = append(groups, group.FromAPIGroup(*fg, ms.si))
-						break
+		if singleGroupByDN {
+			if idx, ok := snap.groupsByDN[strings.ToLower(req.BaseDN)]; ok {
+				groups = append(groups, group.FromAPIGroup(snap.groups[idx], ms.si))
+			}
+		} else {
+			for _, g := range snap.groups {
+				if flag.CanSearch {
+					groups = append(groups, group.FromAPIGroup(g, ms.si))
+				} else {
+					// If the user cannot search, we're going to only return
+					// the groups they're in _and_ only return themselves
+					// as a member.
+					for _, u := range g.UsersObj {
+						if flag.UserPk == u.Pk {
+							// TODO: Is there a better way to clone this object?
+							fg := api.NewGroup(g.Pk, g.NumPk, g.Name, []api.RelatedGroup{}, []api.PartialUser{u}, []api.Role{}, nil, []string{}, []api.RelatedGroup{})
+							fg.SetUsers([]int32{flag.UserPk})
+							fg.SetAttributes(g.Attributes)
+							fg.SetIsSuperuser(*g.IsSuperuser)
+							groups = append(groups, group.FromAPIGroup(*fg, ms.si))
+							break
+						}
 					}
 				}
 			}
@@ -217,10 +242,16 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		}
 
 		if scope >= 0 && users != nil && utils.IncludeObjectClass(req.FilterObjectClass, constants.GetUserOCs()) {
-			for _, u := range *users {
-				entry := ms.si.UserEntry(u)
-				if strings.EqualFold(req.BaseDN, entry.DN) || !singleu {
-					entries = append(entries, entry)
+			if singleUserByDN {
+				if idx, ok := snap.usersByDN[strings.ToLower(req.BaseDN)]; ok {
+					entries = append(entries, ms.si.UserEntry(snap.users[idx]))
+				}
+			} else {
+				for _, u := range *users {
+					entry := ms.si.UserEntry(u)
+					if strings.EqualFold(req.BaseDN, entry.DN) || !singleu {
+						entries = append(entries, entry)
+					}
 				}
 			}
 		}
