@@ -11,6 +11,9 @@ GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
 GRANT_TYPE_PASSWORD = "password"  # nosec
 GRANT_TYPE_DEVICE_CODE = "urn:ietf:params:oauth:grant-type:device_code"
 GRANT_TYPE_TOKEN_EXCHANGE = "urn:ietf:params:oauth:grant-type:token-exchange"  # nosec
+# RFC 7523 §2.1. authentik accepts it only for the ID-JAG profile (draft-ietf-oauth-identity-
+# assertion-authz-grant §4.4), as a Resource Authorization Server.
+GRANT_TYPE_JWT_BEARER = "urn:ietf:params:oauth:grant-type:jwt-bearer"  # nosec
 
 # Token type identifiers for the token exchange grant
 # https://datatracker.ietf.org/doc/html/rfc8693#section-3
@@ -36,6 +39,8 @@ ACTOR_TOKEN_TYPES = TOKEN_EXCHANGE_TOKEN_TYPES | {TOKEN_TYPE_URI_AUTHENTIK_TOKEN
 TOKEN_TYPE_URI_ID_JAG = "urn:ietf:params:oauth:token-type:id-jag"  # nosec
 # JWT header `typ` for an issued ID-JAG
 JWT_TYPE_ID_JAG = "oauth-id-jag+jwt"
+# draft-ietf-oauth-identity-assertion-authz-grant §7.2 authorization_grant_profiles_supported
+GRANT_PROFILE_ID_JAG = "urn:ietf:params:oauth:grant-profile:id-jag"
 # Spec's subject_token is normally an ID Token, not an access token -- accepted
 # alongside TOKEN_EXCHANGE_TOKEN_TYPES specifically when requesting an id-jag.
 TOKEN_TYPE_URI_ID_TOKEN = "urn:ietf:params:oauth:token-type:id_token"  # nosec
