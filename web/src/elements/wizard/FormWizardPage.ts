@@ -18,8 +18,6 @@ export class FormWizardPage<S extends WizardPageState = WizardPageState> extends
     };
 
     public override activeCallback = async () => {
-        this.host.valid = true;
-
         // A Form renders nothing until `visible`, and that flag is driven by an
         // IntersectionObserver on the form itself. Rendering nothing leaves the element
         // 0x0, so the observer never reports it as intersecting and it never becomes

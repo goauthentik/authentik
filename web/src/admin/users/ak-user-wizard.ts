@@ -75,7 +75,6 @@ export class ServiceAccountResultPage extends WizardPage<UserWizardState> {
 
         this.result = result;
 
-        this.host.valid = true;
         this.host.cancelable = false;
     };
 

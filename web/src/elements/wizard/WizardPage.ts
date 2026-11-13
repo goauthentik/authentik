@@ -53,11 +53,19 @@ export abstract class WizardPage<S = WizardPageState> extends AKElement {
     }
 
     /**
+     * Whether the wizard's next button is enabled while this page is active.
+     *
+     * Override for pages that gate progress on something other than form validity, and call
+     * `this.host.requestUpdate()` when the result changes.
+     */
+    public get canAdvance(): boolean {
+        return true;
+    }
+
+    /**
      * Called when this is the page brought into view.
      */
-    public activeCallback: WizardPageActiveCallback = () => {
-        this.host.valid = false;
-    };
+    public activeCallback: WizardPageActiveCallback = () => {};
 
     /**
      * An overridable method to compute the sidebar label for this page.

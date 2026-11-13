@@ -160,12 +160,6 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     public description: string | null = null;
 
     /**
-     * Whether the wizard is valid and can proceed to the next step.
-     */
-    @property({ type: Boolean })
-    public valid = false;
-
-    /**
      * Actions to display at the end of the wizard.
      */
     private _actions: WizardAction[] = [];
@@ -343,6 +337,8 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
             if (!completedStep) return false;
 
             if (lastPage) {
+                this.loading = true;
+
                 const promise = this.finalHandler?.() || Promise.resolve();
 
                 return promise
@@ -556,10 +552,19 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
         activeStepIndex,
         lastPage,
     }: StepProgress): SlottedTemplateResult {
-        const { canBack, cancelable, valid, childElementCount } = this;
+        const { canBack, cancelable, loading, childElementCount } = this;
+        const canAdvance = !!this.activeStepElement?.canAdvance;
 
         return guard(
-            [activeStepIndex, lastPage, canBack, cancelable, valid, childElementCount],
+            [
+                activeStepIndex,
+                lastPage,
+                canBack,
+                cancelable,
+                canAdvance,
+                loading,
+                childElementCount,
+            ],
             () => {
                 const customLabel = this.activeStepElement?.formatNextLabel();
 
@@ -597,7 +602,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                     html`<button
                         data-test-id="wizard-navigation-next"
                         class="pf-c-button pf-m-primary"
-                        ?disabled=${!this.valid || this.loading}
+                        ?disabled=${!canAdvance || loading}
                         type="button"
                         @click=${this.navigateNext}
                     >
