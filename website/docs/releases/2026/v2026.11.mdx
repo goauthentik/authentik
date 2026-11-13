@@ -238,9 +238,30 @@ LDAP sources can authenticate to the directory with a TLS client certificate usi
 
 ### Performance
 
-The users list loads much faster in large directories; in testing with 10,000 users, pages that previously took more than 20 seconds load in under 100 milliseconds. Filtering users by type, looking up users by email, and listing tokens, OAuth2 providers, notifications, and files are also faster.
+{/* @dominic-r TODO: drop the application list and events paragraphs if #27694, #27695, or #27692 miss 2026.11. */}
 
-Most requests make fewer database queries. Each authentik process now keeps brands, system settings, and the license summary in memory, so changes to brands and system settings take about 15 seconds to reach other processes. The new `AUTHENTIK_CACHE__TIMEOUT_BRANDS` and `AUTHENTIK_CACHE__TIMEOUT_SYSTEM_SETTINGS` settings control this delay. The PostgreSQL cache backend uses plain SQL again, which makes cache reads more than twice as fast, and flow cache statistics are counted in the database. Each event's notification rules are evaluated in a single task instead of one task per rule.
+In testing with 10,000 users, the users list goes from more than 20 seconds to under 100 milliseconds. Filtering users by type, looking up users by email, and listing tokens, OAuth2 providers, notifications, and files are also faster.
+
+Below, a timing that goes from one number to another is the median of our benchmark, measured against the same build without that change.
+
+On a small directory, the Admin interface list goes from 159 milliseconds to 29 milliseconds, and the **Application Dashboard** goes from 148 milliseconds to 42 milliseconds. On a directory 40 times as large, a page of 100 applications goes from 340 milliseconds to 55 milliseconds and makes 71 queries instead of 279. In a separate run with PostgreSQL 0.6 milliseconds away, that page goes from 112 milliseconds to 51 milliseconds at the larger size and from 44 milliseconds to 36 milliseconds on a small directory, in 10 queries instead of 71. With PostgreSQL on the same host, the larger page stays about 50 milliseconds.
+
+At 10 million events:
+
+- The events list goes from 4.7 seconds to 426 milliseconds.
+- Events on a user's page go from 8.2 seconds to 38 milliseconds.
+- An application changelog goes from 11.7 seconds to 12 milliseconds, and a user's changelog from 12 seconds to 9 milliseconds.
+- A search for one username goes from 8.5 seconds to 48 milliseconds.
+- Application statistics go from 839 milliseconds to 20 milliseconds.
+- The notification drawer goes from 139 milliseconds to 8 milliseconds.
+- The system tasks list goes from 77 milliseconds and 46 queries to 18 milliseconds and 6 queries.
+- The chart of applications with the most usage goes from 16.1 seconds to 6.5 seconds.
+
+Free-text search of the events list goes from 18.8 seconds to 13.7 seconds. At 10,000 events these pages are unchanged or slightly faster. Rebuilding the event indexes during the upgrade takes about 12 seconds at 1 million events and about 66 seconds at 10 million.
+
+On a directory of 44 applications and 14 OAuth2 providers with 3072-bit keys, OpenID Connect discovery goes from 110 milliseconds to 15 milliseconds and JWKS from 100 milliseconds to 3 milliseconds. With warm caches, discovery stays about 6 milliseconds and runs 4 queries instead of 7.
+
+Each authentik process keeps brands, system settings, and the license summary in memory. A change to a brand or a system setting reaches other processes after about 15 seconds. [`AUTHENTIK_CACHE__TIMEOUT_BRANDS`](../../install-config/configuration/configuration.mdx#authentik_cache__timeout_brands) and [`AUTHENTIK_CACHE__TIMEOUT_SYSTEM_SETTINGS`](../../install-config/configuration/configuration.mdx#authentik_cache__timeout_system_settings) set that delay. The PostgreSQL cache backend uses plain SQL again, and cache reads are more than twice as fast. Flow cache statistics are counted in the database. Each event's notification rules run in one task instead of one task per rule.
 
 A fix to the audit middleware prevents workers from stalling under load, which could cause intermittent `503` errors and failed readiness checks in Kubernetes. When a recycled worker closes an idle connection, the server now retries `GET`, `HEAD`, `OPTIONS`, and `TRACE` requests without a body once on a new connection instead of returning `503`. The `/-/health/live/` endpoint no longer queries the database and is no longer included in access logs and request metrics.
 
