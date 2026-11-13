@@ -1,8 +1,10 @@
 ---
 # Acceptance check: authentik as ID-JAG issuer (draft-ietf-oauth-identity-assertion-authz-grant-06)
 # for MCP Enterprise-Managed Authorization. See tests/mcp_conformance_id_jag_issuer/HANDOFF.md
-# for tested revisions and results. Keep non-required while coverage and the spec baseline
-# are under review.
+# for tested revisions and results. The matrix also runs authentik as Resource Authorization
+# Server (tests/mcp_conformance_id_jag_resource_as/) and the end-to-end flow through the
+# official MCP TypeScript SDK (tests/mcp_conformance_id_jag_mcp_client/). Keep non-required
+# while coverage and the spec baseline are under review.
 name: CI - MCP conformance (id-jag-issuer)
 
 on:
@@ -43,13 +45,20 @@ jobs:
           - name: id-jag-issuer
             dir: tests/mcp_conformance_id_jag_issuer
             acceptance: tests/mcp_conformance_id_jag_issuer/acceptance_id_jag.py
-            selfcheck: tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
+            selfcheck: uv run python tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
           # authentik as Resource Authorization Server; shares the issuer suite's stub IdP
           # and independent verifier, so it runs the same self-check
           - name: id-jag-resource-as
             dir: tests/mcp_conformance_id_jag_resource_as
             acceptance: tests/mcp_conformance_id_jag_resource_as/acceptance_ras.py
-            selfcheck: tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
+            selfcheck: uv run python tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
+          # authentik in both roles, driven end to end by the official MCP TypeScript SDK
+          # (Node harness with its own pinned lockfile in the suite directory)
+          - name: id-jag-mcp-client
+            dir: tests/mcp_conformance_id_jag_mcp_client
+            acceptance: tests/mcp_conformance_id_jag_mcp_client/acceptance_mcp_client.py
+            selfcheck: pnpm --dir tests/mcp_conformance_id_jag_mcp_client run selfcheck
+            node: true
     env:
       # Disposable runner database; a dedicated test DB name keeps it apart from anything else
       AUTHENTIK_POSTGRESQL__TEST__NAME: test_authentik_mcp_id_jag_issuer
@@ -63,9 +72,26 @@ jobs:
         with:
           # No browser, web UI, Go or Rust needed: SSO is driven through the flow executor API
           dependencies: "system,python,runtime"
+      # Only the MCP client harness needs Node; it installs from its own lockfile, not the
+      # repository's workspaces
+      - name: Setup pnpm (harness)
+        if: ${{ matrix.job.node }}
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          package_json_file: ${{ matrix.job.dir }}/package.json
+      - name: Setup node (harness)
+        if: ${{ matrix.job.node }}
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: ${{ matrix.job.dir }}/package.json
+          cache: pnpm
+          cache-dependency-path: ${{ matrix.job.dir }}/pnpm-lock.yaml
+      - name: Install harness dependencies
+        if: ${{ matrix.job.node }}
+        run: pnpm --dir ${{ matrix.job.dir }} install --frozen-lockfile
       - name: Fixture self-check (independent of authentik)
         timeout-minutes: 3
-        run: uv run python ${{ matrix.job.selfcheck }}
+        run: ${{ matrix.job.selfcheck }}
       - name: Run acceptance check
         timeout-minutes: 12
         run: |
