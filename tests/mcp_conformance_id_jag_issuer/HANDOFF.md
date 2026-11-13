@@ -2,6 +2,16 @@
 
 I cannot create issues or PRs, but I can help you write the content for them.
 
+## Migration linter fix (2026-11-12)
+
+- Hosted `lint-migrations` (django-migration-linter, added to main in #27748) failed on both PRs: `authentik_agents.0002_agent_applications_agent_id_jag_audience_and_more` reported `NOT NULL constraint on columns`. The new non-null `id_jag_*` columns had only Python-side defaults, which Django drops from the column after backfilling.
+- Implementation commit: `92228f452c` on `providers/oauth2/id-jag` (PR #26973), on top of `ee15e583de`. It sets `db_default` (`""`, `[]`) alongside `default` in the model and in `0002`. `0002` is absent from `version/2026.8.5`, the previous-stable tag CI lints against, so it is amended in place. The 12 conformance commits replayed onto it with identical patches (`git range-diff`); the diff against issuance remains test/CI/documentation only.
+- Local validation against an isolated scratch PostgreSQL 18 cluster (no developer database, no local.env.yml): `lintmigrations --git-commit-id version/2026.8.5` reports **0/22 erroneous** (0002 OK); `sqlmigrate` emits `DEFAULT '' NOT NULL` / `DEFAULT '{}'::text[] NOT NULL`, and after `migrate` the columns keep those defaults; `makemigrations --check` found no changes; `make gen-build` produced no schema changes; Black/Ruff passed.
+- Regression: **103 tests and 23 subtests passed** (agents incl. migration preservation, token exchange, explicit many-to-many check, RBAC permission coverage).
+- Acceptance on conformance head `c824378b64`: **21 PASS / 0 FAIL / 0 ERROR / 0 BLOCKED**, **17 fixture self-checks passed**. [Report](results/db-default-c824378b64/report.md), [JSON](results/db-default-c824378b64/report.json), [JUnit](results/db-default-c824378b64/checks.junit.xml). No compact JWTs or private-key blocks in artifacts or logs. Docker was unavailable, so the `run-local.sh` steps after container start were run against the scratch cluster with identical settings.
+- Other hosted failures at `ee15e583de`/`38b49b3c3c` were judged unrelated: single-shard `test-migrations-from-stable` failures in different untouched tests on each PR (ws-fed permission coverage; flow executor), `test-e2e (rac)` (also failed on main at the base `937d44569d`), and `ssf_transmitter` (`Webdriver failed after 3`, before any authentik assertion). New hosted results must be evaluated on the new heads.
+- Backups of the stale pre-linear local branches: `backup/providers-oauth2-id-jag-local-d1cb2b580d`, `backup/t3-id-jag-issuer-pre-linear-88dcf83a13`. Logs: `/private/tmp/claude-501/-Users-jsachs--t3-worktrees-authentik-t3-dacb2538/6b90920b-b5dc-438f-b73e-9619902d7547/scratchpad/lintmig-local.log`, `/private/tmp/claude-501/-Users-jsachs--t3-worktrees-authentik-t3-dacb2538/6b90920b-b5dc-438f-b73e-9619902d7547/scratchpad/dbdefault-tests.log`, `/private/tmp/claude-501/-Users-jsachs--t3-worktrees-authentik-t3-dacb2538/6b90920b-b5dc-438f-b73e-9619902d7547/scratchpad/dbdefault-acceptance.log`.
+
 ## Linear stack rebase (2026-11-08)
 
 - Main base: `5d2488a26ea869c8abc033f6be8272fb898ec949`.
