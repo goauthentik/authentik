@@ -261,6 +261,8 @@ class TestWebAuthnOrigins(TestCase):
                 ANDROID_ORIGIN.lower(),
             ]:
                 device.set_sign_count(0)
+                # Challenges are single-use, so issue a fresh one for every attempt
+                self.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b"test challenge" * 3
                 with self.subTest(allowed=allowed, origin=origin):
                     if origin == "https://testserver" or origin in allowed:
                         verified = self.authenticate(self.credential(origin))

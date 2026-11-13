@@ -25,6 +25,7 @@ class Migration(migrations.Migration):
                     ]
                 ),
                 blank=True,
+                db_default=[],
                 default=list,
                 help_text="Additional trusted origins for WebAuthn authentication. Matched exactly.",
                 size=None,

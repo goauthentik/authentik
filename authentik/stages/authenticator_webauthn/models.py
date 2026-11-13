@@ -118,6 +118,7 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
     additional_accepted_origins = ArrayField(
         models.TextField(validators=[validate_webauthn_origin]),
         default=list,
+        db_default=[],
         blank=True,
         help_text=_("Additional trusted origins for WebAuthn registration. Matched exactly."),
     )
