@@ -1,5 +1,6 @@
 import functools
 import logging
+import random
 import time
 from collections.abc import Callable, Iterable
 from datetime import UTC, datetime, timedelta
@@ -32,7 +33,7 @@ from psycopg import sql
 from psycopg.errors import AdminShutdown
 from structlog.stdlib import get_logger
 
-from authentik.lib.utils.db import chunked_queryset
+from authentik.lib.utils.db import delete_in_batches
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import CHANNEL_PREFIX, ChannelIdentifier, TaskBase, TaskState
 
@@ -282,7 +283,11 @@ class _PostgresConsumer(Consumer):
         self._next_pending_reconciliation = time.monotonic() + self.timeout
 
         self.task_purge_interval = timedelta(seconds=Conf().task_purge_interval)
-        self.task_purge_last_run = timezone.now() - self.task_purge_interval
+        # Spread the first purge over the interval instead of running it on boot. Using
+        # now() would starve purging on pods that restart more often than the interval.
+        self.task_purge_last_run = timezone.now() - timedelta(
+            seconds=random.uniform(0, self.task_purge_interval.total_seconds())  # nosec
+        )
 
         self.scheduler = None
         if Conf().schedule_model:
@@ -655,17 +660,13 @@ class _PostgresConsumer(Consumer):
         if timezone.now() - self.task_purge_last_run < self.task_purge_interval:
             return
         self.logger.debug("Running garbage collector")
-        count = 0
-        for task in chunked_queryset(
+        count = delete_in_batches(
             self.query_set.filter(
                 state__in=(TaskState.DONE, TaskState.REJECTED),
                 mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
                 result_expiry__lte=timezone.now(),
-            ),
-            chunk_size=100,
-        ):
-            task.delete()
-            count += 1
+            )
+        )
         self.logger.info("Purged messages in all queues", count=count)
         self.task_purge_last_run = timezone.now()
 
