@@ -21,6 +21,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-permission-check-list")
 export class PermissionCheckListPage extends TablePage<PermissionCheck> {
+    public static override verboseName = msg("Permission Check", {
+        id: "permission-checks.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Permission Checks", {
+        id: "permission-checks.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override checkbox = true;
@@ -50,7 +57,6 @@ export class PermissionCheckListPage extends TablePage<PermissionCheck> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Permission Checks")}
             .objects=${this.selectedElements}
             .usedBy=${(item: PermissionCheck) => {
                 return aki(RbacApi).rbacPermissionChecksUsedByList({ checkUuid: item.pk });

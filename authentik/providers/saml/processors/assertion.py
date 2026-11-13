@@ -13,7 +13,6 @@ from lxml.etree import Element, SubElement, _Element  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
-    DIGEST_ALGORITHM_TRANSLATION_MAP,
     ENCRYPTION_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
@@ -30,9 +29,9 @@ from authentik.core.expression.exceptions import PropertyMappingExpressionExcept
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
+from authentik.providers.saml.processors.signature import sign_xml_element
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.time import get_time_string
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
@@ -379,37 +378,10 @@ class AssertionProcessor:
         response.append(self.get_assertion())
         return response
 
-    def _sign(self, element: _Element):
+    def _sign(self, element: _Element) -> None:
         """Sign an XML element based on the providers' configured signing settings"""
-        digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
-            self.provider.digest_algorithm, xmlsec.constants.TransformSha1
-        )
-        xmlsec.tree.add_ids(element, ["ID"])
-        signature_node = xmlsec.tree.find_node(element, xmlsec.constants.NodeSignature)
-        ref = xmlsec.template.add_reference(
-            signature_node,
-            digest_algorithm_transform,
-            uri="#" + element.attrib["ID"],
-        )
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)
-        key_info = xmlsec.template.ensure_key_info(signature_node)
-        xmlsec.template.add_x509_data(key_info)
-
-        ctx = xmlsec.SignatureContext()
-
-        key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-            None,
-        )
-        key.load_cert_from_memory(
-            self.provider.signing_kp.certificate_data,
-            xmlsec.constants.KeyDataFormatCertPem,
-        )
-        ctx.key = key
         try:
-            ctx.sign(remove_xml_newlines(element, signature_node))
+            sign_xml_element(element, self.provider)
         except xmlsec.Error as exc:
             raise InvalidSignature() from exc
 

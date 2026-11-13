@@ -173,7 +173,7 @@ export class AKPageNavbar
                 ${this.renderBrand()}
                 <slot name="toggle"></slot>
 
-                <div class="items primary pf-c-content ${this.description ? "block-sibling" : ""}">
+                <div class="items primary pf-c-content block-sibling">
                     <h1 aria-labelledby="page-navbar-heading" class="page-title">
                         ${
                             this.hasIcon
@@ -182,7 +182,8 @@ export class AKPageNavbar
                                   >`
                                 : nothing
                         }
-                        <span id="page-navbar-heading">${this.header}</span>
+                        <span id="page-navbar-heading">${this.header}</span
+                        ><slot name="bookmark"></slot>
                     </h1>
                 </div>
                 ${
@@ -190,12 +191,12 @@ export class AKPageNavbar
                         ? html`<div
                               role="heading"
                               aria-level="2"
-                              aria-label="${this.description}"
+                              aria-label=${this.description}
                               class="items page-description pf-c-content"
                           >
                               <p>${this.description}</p>
                           </div>`
-                        : nothing
+                        : null
                 }
 
                 <div class="items secondary">

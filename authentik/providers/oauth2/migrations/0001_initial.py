@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("authentik_core", "0007_auto_20200815_1841"),
+        ("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp"),
         ("authentik_crypto", "0002_create_self_signed_kp"),
     ]
 

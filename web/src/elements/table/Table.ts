@@ -21,6 +21,7 @@ import type { PaginatedResponse } from "#common/api/responses";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { AKRefreshEvent } from "#common/events";
 import { truncateWords } from "#common/strings";
+import { plural } from "#common/ui/locale/plurals";
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
@@ -953,8 +954,7 @@ export abstract class Table<T extends object, D = T>
                     "pf-m-expanded": expanded,
                 })}"
             >
-                <td aria-hidden="true"></td>
-                <td colspan=${this.columnCount - 1}>
+                <td colspan=${this.columnCount}>
                     <div class="pf-c-table__expandable-row-content">
                         ${this.renderExpanded(item)}
                     </div>
@@ -1139,9 +1139,22 @@ export abstract class Table<T extends object, D = T>
                 ${ref(this.selectAllCheckboxRef)}
                 name="select-all"
                 type="checkbox"
-                aria-label=${msg(
-                    str`Select all rows on page (${selectedCount} of ${pageItemCount} selected)`,
-                )}
+                aria-label=${plural(selectedCount, {
+                    one: (formattedCount) =>
+                        msg(
+                            str`Select all rows on page (${formattedCount} of ${pageItemCount} selected)`,
+                            {
+                                id: "table.select-all.aria-label.one",
+                            },
+                        ),
+                    other: (formattedCount) =>
+                        msg(
+                            str`Select all rows on page (${formattedCount} of ${pageItemCount} selected)`,
+                            {
+                                id: "table.select-all.aria-label.other",
+                            },
+                        ),
+                })}
                 .indeterminate=${indeterminate}
                 .checked=${checked}
                 @input=${this.#synchronizeCheckboxAll}

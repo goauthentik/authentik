@@ -95,7 +95,7 @@ export class AKCommandPaletteUserModal extends AKCommandPaletteModal {
     protected override inputListener = () => {
         clearTimeout(this.#refreshTimeout);
 
-        this.#refreshTimeout = window.setTimeout(() => {
+        this.#refreshTimeout = setTimeout(() => {
             this.refreshUsers().then(() => {
                 this.synchronizeFilteredCommands();
             });

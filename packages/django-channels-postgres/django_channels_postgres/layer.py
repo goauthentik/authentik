@@ -388,12 +388,14 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
                         SELECT DISTINCT {table}.{channel}
                         FROM {table}
                         WHERE {table}.{group_key} = %s
+                          AND {table}.{expires} >= %s
                         """).format(
                         table=sql.Identifier(GROUP_CHANNEL_TABLE),
                         channel=sql.Identifier("channel"),
                         group_key=sql.Identifier("group_key"),
+                        expires=sql.Identifier("expires"),
                     ),
-                    (group_key,),
+                    (group_key, now()),
                 )
                 channels = [row[0] for row in await cursor.fetchall()]
             messages = [
@@ -432,12 +434,14 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
                     SELECT DISTINCT {table}.{channel}
                     FROM {table}
                     WHERE {table}.{group_key} = %s
+                      AND {table}.{expires} >= %s
                     """).format(
                     table=sql.Identifier(GROUP_CHANNEL_TABLE),
                     channel=sql.Identifier("channel"),
                     group_key=sql.Identifier("group_key"),
+                    expires=sql.Identifier("expires"),
                 ),
-                (group_key,),
+                (group_key, now()),
             )
             channels = [row[0] for row in cursor.fetchall()]
         messages = [
