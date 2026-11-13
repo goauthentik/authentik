@@ -25,6 +25,11 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
+    public static override verboseName = msg("Outpost", { id: "outposts.verbose-name.label" });
+    public static override verboseNamePlural = msg("Outposts", {
+        id: "outposts.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override searchPlaceholder = msg(
@@ -123,7 +128,6 @@ export class OutpostListPage extends TablePage<Outpost> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Outpost(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Outpost) => {
                 return aki(OutpostsApi).outpostsInstancesUsedByList({

@@ -1,12 +1,14 @@
 """test admin api"""
 
 from json import loads
+from unittest.mock import MagicMock, patch
 
 from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
 
 from authentik import authentik_version
+from authentik.admin.api.system import SystemInfoSerializer
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Group, User
 from authentik.lib.generators import generate_id
@@ -58,3 +60,10 @@ class TestAdminAPI(TestCase):
         self.assertTrue(postgresql["version"])
         self.assertEqual(postgresql["ssl"], connection.connection.pgconn.ssl_in_use)
         self.assertEqual(postgresql["ssl_version"] is not None, postgresql["ssl"])
+
+    def test_system_postgresql_no_row(self):
+        """Test system API returns null PostgreSQL info when the query returns no row"""
+        mock_connection = MagicMock()
+        mock_connection.cursor.return_value.__enter__.return_value.fetchone.return_value = None
+        with patch("authentik.admin.api.system.connection", mock_connection):
+            self.assertIsNone(SystemInfoSerializer().get_postgresql(None))

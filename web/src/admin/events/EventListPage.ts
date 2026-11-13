@@ -6,6 +6,7 @@ import "#elements/Label";
 import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import "#elements/cards/SectionCard";
 
 import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
@@ -131,7 +132,9 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
+        return html`<ak-section-card
+            ><ak-event-info .event=${item as EventWithContext}></ak-event-info
+        ></ak-section-card>`;
     }
 
     protected renderToolbar(): TemplateResult {

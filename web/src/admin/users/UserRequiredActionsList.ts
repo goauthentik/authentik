@@ -194,9 +194,7 @@ export class UserRequiredActionsList extends Table<RequiredActionRow> {
             html`${item.name}`,
             html`${item.slug}`,
             html`<ak-forms-delete-bulk
-                object-label=${msg("Required action", {
-                    id: "user-required-actions.object.label.one",
-                })}
+                action="remove"
                 .objects=${[item]}
                 .delete=${() =>
                     this.#patch((actions) => actions.filter((entry) => entry !== item.slug))}

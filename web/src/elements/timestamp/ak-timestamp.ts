@@ -95,9 +95,7 @@ export class AKTimestamp extends AKElement {
         }
 
         if (!AKTimestamp.reducedMotionMediaQuery) {
-            AKTimestamp.reducedMotionMediaQuery = window.matchMedia(
-                "(prefers-reduced-motion: reduce)",
-            );
+            AKTimestamp.reducedMotionMediaQuery = matchMedia("(prefers-reduced-motion: reduce)");
         }
 
         AKTimestamp.reducedMotionMediaQuery.addEventListener("change", this.startInterval);
@@ -115,7 +113,7 @@ export class AKTimestamp extends AKElement {
         // then every minute afterwards.
 
         if (startWithinInterval && !reducedMotionMediaQuery.matches) {
-            this.#interval = self.setInterval(() => {
+            this.#interval = setInterval(() => {
                 if (!this.visible || document.visibilityState !== "visible") return;
 
                 this.requestUpdate();
@@ -127,7 +125,7 @@ export class AKTimestamp extends AKElement {
                 }
             }, 1000);
         } else {
-            this.#interval = self.setInterval(() => {
+            this.#interval = setInterval(() => {
                 if (!this.visible || document.visibilityState !== "visible") return;
 
                 this.requestUpdate();
