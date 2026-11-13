@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 00:13+0000\n"
+"POT-Creation-Date: 2026-11-13 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,11 @@ msgstr ""
 #: authentik/admin/api/settings.py
 #, python-brace-format
 msgid "Value for flag {flag_key} needs to be of type {type}."
+msgstr ""
+
+#: authentik/admin/files/api.py
+#, python-brace-format
+msgid "File size ({size}B) exceeds maximum allowed size ({max_size}B)."
 msgstr ""
 
 #: authentik/admin/files/validation.py
@@ -48,6 +53,16 @@ msgstr ""
 
 #: authentik/admin/files/validation.py
 msgid "Paths cannot start with '.'"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
 msgstr ""
 
 #: authentik/admin/models.py
@@ -340,6 +355,12 @@ msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr ""
 
 #: authentik/core/api/groups.py
+#, python-brace-format
+msgid ""
+"User does not have permission to set superuser status to {superuser_status}."
+msgstr ""
+
+#: authentik/core/api/groups.py
 msgid "User does not have permission to add members to this group."
 msgstr ""
 
@@ -543,6 +564,7 @@ msgid "Hide this application from the user's My applications page."
 msgstr ""
 
 #: authentik/core/models.py
+#: authentik/stages/authenticator_validate/challenge.py
 msgid "Application"
 msgstr ""
 
@@ -1238,6 +1260,30 @@ msgstr ""
 msgid "Verifying your browser..."
 msgstr ""
 
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid ""
+"Certificate authorities which issue device certificates via Intune (Cloud "
+"PKI, SCEP or PKCS profiles), used by the endpoint stage to validate "
+"certificates. This option has a higher priority than the "
+"`client_certificate` option on `Brand`."
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connectors"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector Certificate Authority"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector Certificate Authorities"
+msgstr ""
+
 #: authentik/enterprise/lifecycle/offboarding/actions.py
 #, python-format
 msgid "User %(username)s was offboarded (%(action)s)"
@@ -1377,6 +1423,31 @@ msgstr ""
 
 #: authentik/enterprise/lifecycle/review/models.py
 msgid "Overdue"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Go to {model_name}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review is due for {model_name} {object_label}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review is overdue for {model_name} {object_label}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review completed for {model_name} {object_label}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review attested for {model_name} {object_label}"
 msgstr ""
 
 #: authentik/enterprise/lifecycle/review/tasks.py
@@ -1704,6 +1775,14 @@ msgid "WS-Federation Providers"
 msgstr ""
 
 #: authentik/enterprise/providers/ws_federation/views.py
+msgid "Invalid WS-Federation action"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
+msgid "Invalid WS-Federation request"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
 #, python-brace-format
@@ -1716,6 +1795,11 @@ msgstr ""
 
 #: authentik/enterprise/reports/models.py
 msgid "Data Exports"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
 msgstr ""
 
 #: authentik/enterprise/reports/models.py
@@ -1840,6 +1924,20 @@ msgstr ""
 msgid "Send access-request review notification."
 msgstr ""
 
+#: authentik/enterprise/required_actions/api.py
+msgid ""
+"Required actions must reference existing flows that a logged-in user can "
+"run, other than authentication or invalidation flows."
+msgstr ""
+
+#: authentik/enterprise/required_actions/middleware.py
+msgid "The required actions are invalid. Contact your administrator."
+msgstr ""
+
+#: authentik/enterprise/required_actions/middleware.py
+msgid "Complete the required actions before continuing."
+msgstr ""
+
 #: authentik/enterprise/stages/account_lockdown/api.py
 msgid "User to lock. If omitted, locks the current user (self-service)."
 msgstr ""
@@ -1960,6 +2058,10 @@ msgstr ""
 
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "No user found for certificate."
+msgstr ""
+
+#: authentik/enterprise/stages/password/api.py
+msgid "A service account's password cannot be locked."
 msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
@@ -2289,6 +2391,10 @@ msgstr ""
 msgid "The fields {field_names} must be used together."
 msgstr ""
 
+#: authentik/lib/views.py
+msgid "Bad Request"
+msgstr ""
+
 #: authentik/outposts/api/service_connections.py
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
@@ -2442,6 +2548,26 @@ msgstr ""
 msgid ""
 "Matches Event's Client IP (strict matching, for network matching use an "
 "Expression Policy)"
+msgstr ""
+
+#: authentik/policies/event_matcher/models.py
+msgid "Query matched."
+msgstr ""
+
+#: authentik/policies/event_matcher/models.py
+msgid "Action matched."
+msgstr ""
+
+#: authentik/policies/event_matcher/models.py
+msgid "Client IP matched."
+msgstr ""
+
+#: authentik/policies/event_matcher/models.py
+msgid "App matched."
+msgstr ""
+
+#: authentik/policies/event_matcher/models.py
+msgid "Model matched."
 msgstr ""
 
 #: authentik/policies/event_matcher/models.py
@@ -2796,6 +2922,18 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "EdDSA (Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-44 (Post-quantum, Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-65 (Post-quantum, Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-87 (Post-quantum, Asymmetric Encryption)"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -3557,6 +3695,21 @@ msgstr ""
 msgid "SAML Sessions"
 msgstr ""
 
+#: authentik/providers/saml/views/flows.py
+msgid "Invalid sp_binding specified"
+msgstr ""
+
+#: authentik/providers/saml/views/sp_slo.py
+#: authentik/providers/saml/views/sso.py
+#: authentik/providers/saml/views/unified.py
+msgid "The SAML request payload is missing."
+msgstr ""
+
+#: authentik/providers/saml/views/unified.py
+#, python-brace-format
+msgid "Unsupported SAML message type: {message_type}"
+msgstr ""
+
 #: authentik/providers/scim/models.py
 msgid "Basic"
 msgstr ""
@@ -3702,6 +3855,62 @@ msgstr ""
 msgid "Dispatch syncs for a related object (memberships) for SCIM providers."
 msgstr ""
 
+#: authentik/rbac/api/custom_permissions.py
+msgid "Unknown model."
+msgstr ""
+
+#: authentik/rbac/api/custom_permissions.py
+msgid "This cannot change."
+msgstr ""
+
+#: authentik/rbac/api/custom_permissions.py
+msgid ""
+"Start with custom_, followed by lowercase letters, digits, and underscores."
+msgstr ""
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Define at least one of {functions}."
+msgstr ""
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Unknown endpoint {id}."
+msgstr ""
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Already bound to another check: {ids}."
+msgstr ""
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "{id} runs no functions defined for it."
+msgstr ""
+
+#: authentik/rbac/api/rbac.py
+#, python-brace-format
+msgid "Unknown permission {name}"
+msgstr ""
+
+#: authentik/rbac/apps.py
+msgid ""
+"Let permission checks decide API access. While enabled, every API request "
+"costs an additional database query."
+msgstr ""
+
+#: authentik/rbac/endpoint_checks.py
+msgid "A permission check failed."
+msgstr ""
+
+#: authentik/rbac/field_rules.py
+msgid "You cannot change this value."
+msgstr ""
+
+#: authentik/rbac/field_rules.py
+msgid "This field is hidden from you."
+msgstr ""
+
 #: authentik/rbac/models.py
 msgid "Role"
 msgstr ""
@@ -3760,6 +3969,22 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can manage media files"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Custom permission"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Custom permissions"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Permission check"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Permission checks"
 msgstr ""
 
 #: authentik/rbac/tasks.py
@@ -3893,6 +4118,12 @@ msgstr ""
 
 #: authentik/sources/ldap/api/sources.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
+msgstr ""
+
+#: authentik/sources/ldap/api/sources.py
+#, python-brace-format
+msgid ""
+"When 'Sync {type}s' is enabled, '{type}s property mappings' cannot be empty."
 msgstr ""
 
 #: authentik/sources/ldap/api/sources.py
@@ -4417,7 +4648,8 @@ msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid ""
-"NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
+"Format of the NameID Policy sent to the IdP. Select Unspecified to let the "
+"IdP choose the format of the NameID it returns."
 msgstr ""
 
 #: authentik/sources/saml/models.py
@@ -4607,6 +4839,10 @@ msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
 msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
+msgid "authentik Sign-in code"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stage"
 msgstr ""
 
@@ -4783,6 +5019,23 @@ msgstr ""
 msgid "Invalid device type. Contact your {brand} administrator for help."
 msgstr ""
 
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Assertion failed"
+msgstr ""
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Invalid security key. Please re-register or contact an administrator."
+msgstr ""
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Domain"
+msgstr ""
+
+#: authentik/stages/authenticator_validate/challenge.py
+#, python-brace-format
+msgid "{brand_name} Login request"
+msgstr ""
+
 #: authentik/stages/authenticator_validate/models.py
 msgid "Static"
 msgstr ""
@@ -4882,6 +5135,11 @@ msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "Authenticator WebAuthn Stage Device Type Restrictions"
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Exceeded maximum attempts. Contact your {brand} administrator for help."
 msgstr ""
 
 #: authentik/stages/authenticator_webauthn/tasks.py
@@ -5349,8 +5607,26 @@ msgstr ""
 
 #: authentik/stages/password/models.py
 msgid ""
-"How many attempts a user has before the flow is canceled. To lock the user "
-"out, use a reputation policy and a user_write stage."
+"How many attempts a user has before the flow is canceled. This only cancels "
+"the flow, it does not lock the user's password."
+msgstr ""
+
+#: authentik/stages/password/models.py
+msgid ""
+"How many consecutive failed attempts lock the user's password until an "
+"administrator unlocks it. Set to 0 to never lock."
+msgstr ""
+
+#: authentik/stages/password/models.py
+msgid ""
+"Warning shown when the user has one password attempt remaining. Leave blank "
+"to show no warning."
+msgstr ""
+
+#: authentik/stages/password/models.py
+msgid ""
+"Message shown when the user's password has been locked. Leave blank to show "
+"a generic authentication error."
 msgstr ""
 
 #: authentik/stages/password/models.py
@@ -5365,6 +5641,14 @@ msgstr ""
 
 #: authentik/stages/password/models.py
 msgid "Password Stages"
+msgstr ""
+
+#: authentik/stages/password/models.py
+msgid "Password Device"
+msgstr ""
+
+#: authentik/stages/password/models.py
+msgid "Password Devices"
 msgstr ""
 
 #: authentik/stages/password/stage.py
