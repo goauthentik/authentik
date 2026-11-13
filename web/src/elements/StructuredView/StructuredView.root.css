@@ -1,0 +1,13 @@
+:root {
+    --ak-c-structured-view--FontFamily: var(--pf-global--FontFamily--monospace);
+    --ak-c-structured-view__summary--WordSpacing: -0.5ch;
+    --ak-c-structured-view__toggle--Width: var(--pf-global--spacer--lg);
+    --ak-c-structured-view__key--Color: inherit;
+    --ak-c-structured-view__list--Color: inherit;
+    --ak-c-structured-view__nested-indicator--Width: var(--pf-global--BorderWidth--sm);
+    --ak-c-structured-view__nested-indicator--Width--hover: var(--pf-global--BorderWidth--md);
+    --ak-c-structured-view__nested-indicator--Style: solid;
+    --ak-c-structured-view__nested-indicator--Color: var(--pf-global--active-color--200);
+    --ak-c-structured-view__keycount--Color: var(--pf-global--active-color--300);
+    --ak-c-structured-view__keycount--FontSize: var(--pf-global--FontSize--xs);
+}

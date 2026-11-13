@@ -13,12 +13,12 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP256R1,
     SECP384R1,
     SECP521R1,
-    EllipticCurvePrivateKey,
+    EllipticCurvePublicKey,
 )
-from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
+from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes, PublicKeyTypes
 from dacite import Config
 from dacite.core import from_dict
 from django.contrib.postgres.fields import ArrayField
@@ -170,21 +170,25 @@ class JWTAlgorithms(models.TextChoices):
 
     @classmethod
     def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
-        if isinstance(private_key, MLDSAKey):
-            return cls(MLDSAAlgorithm.algorithm_for_key(private_key))
-        if isinstance(private_key, RSAPrivateKey):
+        return cls.from_public_key(private_key.public_key() if private_key else None)
+
+    @classmethod
+    def from_public_key(cls, public_key: PublicKeyTypes | None) -> str:
+        if isinstance(public_key, MLDSAKey):
+            return cls(MLDSAAlgorithm.algorithm_for_key(public_key))
+        if isinstance(public_key, RSAPublicKey):
             return cls.RS256
-        if isinstance(private_key, EllipticCurvePrivateKey):
-            curve = private_key.curve
+        if isinstance(public_key, EllipticCurvePublicKey):
+            curve = public_key.curve
             if isinstance(curve, SECP256R1):
                 return cls.ES256
             if isinstance(curve, SECP384R1):
                 return cls.ES384
             if isinstance(curve, SECP521R1):
                 return cls.ES512
-        if isinstance(private_key, Ed25519PrivateKey | Ed448PrivateKey):
+        if isinstance(public_key, Ed25519PublicKey | Ed448PublicKey):
             return cls.EDDSA
-        raise ValueError(f"Invalid private key type: {type(private_key)}")
+        raise ValueError(f"Invalid key type: {type(public_key)}")
 
 
 class ScopeMapping(PropertyMapping):
@@ -364,6 +368,13 @@ class OAuth2Provider(WebfingerProvider, Provider):
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
         return private_key, JWTAlgorithms.from_private_key(private_key)
+
+    @cached_property
+    def jwt_alg(self) -> str:
+        """Get the signing algorithm without loading the private key for signing"""
+        if not self.signing_key:
+            return JWTAlgorithms.HS256
+        return JWTAlgorithms.from_public_key(self.signing_key.public_key)
 
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""

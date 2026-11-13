@@ -2,13 +2,13 @@
 
 from base64 import urlsafe_b64encode
 from binascii import hexlify
+from collections.abc import Callable
 from functools import lru_cache
 from hashlib import md5, sha512
 from ssl import PEM_FOOTER, PEM_HEADER
 from textwrap import wrap
 from uuid import uuid4
 
-from cryptography.exceptions import InternalError, UnsupportedAlgorithm
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.dsa import DSAPublicKey
@@ -30,6 +30,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
+from authentik.lib.jwt_mldsa import KEY_LOAD_ERRORS
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 LOGGER = get_logger()
@@ -49,6 +50,23 @@ def _load_private_key(key_data: str) -> PrivateKeyTypes:
         password=None,
         backend=default_backend(),
     )
+
+
+@lru_cache(maxsize=128)
+def _load_public_key(key_data: str) -> PublicKeyTypes:
+    """Load the public key of a normalized PEM private key.
+
+    Loading an RSA private key normally checks its private components, including that both
+    primes are prime, which takes tens of milliseconds for a 3072-bit key and more for a 4096-bit
+    one. That check protects signing, and every path that stores a key already ran it. The public
+    key is only the modulus and exponent, so this skips the check and returns nothing that can
+    sign. Keep the unvalidated private key inside this function."""
+    return load_pem_private_key(
+        key_data.encode("utf-8"),
+        password=None,
+        backend=default_backend(),
+        unsafe_skip_rsa_key_validation=True,
+    ).public_key()
 
 
 def format_cert(raw_pam: str) -> str:
@@ -183,9 +201,9 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
     @property
     def public_key(self) -> PublicKeyTypes | None:
-        """Get public key of the private key"""
+        """Get public key of the private key, without loading the private key for signing"""
         if not self._public_key:
-            self._public_key = self.private_key.public_key()
+            self._public_key = self._load_key(_load_public_key, "public")
         return self._public_key
 
     @property
@@ -193,18 +211,21 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         self,
     ) -> PrivateKeyTypes | None:
         """Get python cryptography PrivateKey instance"""
-        if not self._private_key and self.key_data != "":
-            try:
-                self._private_key = _load_private_key(
-                    "\n".join(x.strip() for x in self.key_data.split("\n"))
-                )
-            except (ValueError, InternalError, UnsupportedAlgorithm) as exc:
-                # InternalError/UnsupportedAlgorithm: OpenSSL has no implementation for the key's
-                # algorithm in the current configuration (e.g. ML-DSA under a FIPS provider that
-                # predates it), so treat the key as unusable rather than failing the caller
-                LOGGER.warning("Failed to load private key", exc=exc)
-                return None
+        if not self._private_key:
+            self._private_key = self._load_key(_load_private_key, "private")
         return self._private_key
+
+    def _load_key[T](self, loader: Callable[[str], T], kind: str) -> T | None:
+        if self.key_data == "":
+            return None
+        try:
+            return loader("\n".join(x.strip() for x in self.key_data.split("\n")))
+        except KEY_LOAD_ERRORS as exc:
+            # InternalError/UnsupportedAlgorithm: OpenSSL has no implementation for the key's
+            # algorithm in the current configuration (e.g. ML-DSA under a FIPS provider that
+            # predates it), so treat the key as unusable rather than failing the caller
+            LOGGER.warning(f"Failed to load {kind} key", exc=exc)
+            return None
 
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name}"
