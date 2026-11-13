@@ -150,6 +150,15 @@ The built-in source and provider icons have been refreshed, and each now has a l
 
 If you set a custom source icon that relied on the inversion, such as a black logo, it will be hard to see in dark mode. Upload a version for each theme and use `%(theme)s` in the source's **Icon** field. For more details, refer to [Source icons in light and dark themes](../../customize/file-picker.mdx#source-icons-in-light-and-dark-themes).
 
+### Google Workspace and Entra ID sync scope :ak-enterprise
+
+Google Workspace and Entra ID providers now choose users and groups the same way [SCIM providers](../../add-secure-apps/providers/scim/index.mdx#filter-the-sync-scope) do.
+
+- Users are limited by the policies bound to the application the provider is assigned to. If that application has no bindings, all users are synchronized. **Exclude service accounts** still applies.
+- The single **Group** field (`filter_group`) is removed. Use **Group filters** (`group_filters`) to choose which groups are synchronized. Group filters do not limit users. If none are selected, all groups are synchronized.
+- When a provider had a group selected, that group is copied to **Group filters**, dry-run mode is turned on, and a configuration warning is logged. Review the provider, then turn dry-run mode off. Until you do, the provider does not change Google Workspace or Entra ID.
+- On a full sync, authentik applies the provider's deletion action to a linked user or group that is no longer in scope.
+
 ### API changes
 
 The following API changes may require updates to scripts and API clients:
@@ -161,6 +170,7 @@ The following API changes may require updates to scripts and API clients:
 - `/admin/version/` returns `version_latest` as an object with the version, changelog, and release reason instead of a string, and `version_latest_valid` has been removed.
 - Tokens return their owner in `user_obj` as a partial user, without groups, roles, or computed fields. The same applies to `token_obj` in SCIM sources and SSF providers.
 - In the generated API clients, the WS-Federation provider's `SamlVersionEnum` type has been renamed to `WSFedSAMLVersionEnum`. The values sent over the API are unchanged.
+- Google Workspace and Entra ID providers replace `filter_group` with `group_filters`, a list of group primary keys.
 
 ## New features and improvements
 

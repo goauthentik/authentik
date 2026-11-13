@@ -4,7 +4,6 @@ from typing import Any, Self
 from uuid import uuid4
 
 from django.db import models
-from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
@@ -16,11 +15,14 @@ from authentik.core.models import (
     Group,
     PropertyMapping,
     User,
-    UserTypes,
 )
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
+from authentik.lib.sync.outgoing.models import (
+    OutgoingSyncDeleteAction,
+    OutgoingSyncObjectQueryMixin,
+    OutgoingSyncProvider,
+)
 
 
 def default_scopes() -> list[str]:
@@ -84,7 +86,9 @@ class GoogleWorkspaceProviderGroup(InternallyManagedMixin, SerializerModel):
         return f"Google Workspace Provider Group {self.group_id} to {self.provider_id}"
 
 
-class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
+class GoogleWorkspaceProvider(
+    OutgoingSyncObjectQueryMixin, OutgoingSyncProvider, BackchannelProvider
+):
     """Sync users from authentik into Google Workspace."""
 
     delegated_subject = models.EmailField()
@@ -100,8 +104,12 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
         choices=OutgoingSyncDeleteAction.choices, default=OutgoingSyncDeleteAction.DELETE
     )
 
-    filter_group = models.ForeignKey(
-        "authentik_core.group", on_delete=models.SET_DEFAULT, default=None, null=True
+    group_filters = models.ManyToManyField(
+        "authentik_core.group",
+        default=None,
+        blank=True,
+        help_text=_("Group filters used to define sync-scope for groups."),
+        through="GoogleWorkspaceProviderGroupFilter",
     )
 
     property_mappings_group = models.ManyToManyField(
@@ -135,23 +143,6 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
 
             return GoogleWorkspaceGroupClient(self)
         raise ValueError(f"Invalid model {model}")
-
-    def get_object_qs(self, type: type[User | Group], **kwargs) -> QuerySet[User | Group]:
-        if type == User:
-            # Get queryset of all users with consistent ordering
-            # according to the provider's settings
-            base = User.objects.all().exclude_anonymous().filter(**kwargs)
-            if self.exclude_users_service_account:
-                base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
-                    type=UserTypes.INTERNAL_SERVICE_ACCOUNT
-                )
-            if self.filter_group:
-                base = base.filter(groups__in=[self.filter_group])
-            return base.order_by("pk")
-        if type == Group:
-            # Get queryset of all groups with consistent ordering
-            return Group.objects.all().filter(**kwargs).order_by("pk")
-        raise ValueError(f"Invalid type {type}")
 
     @classmethod
     def get_object_mappings(cls, obj: User | Group) -> list[tuple[str, str]]:
@@ -194,6 +185,27 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     class Meta:
         verbose_name = _("Google Workspace Provider")
         verbose_name_plural = _("Google Workspace Providers")
+
+
+class GoogleWorkspaceProviderGroupFilter(SimpleThroughModel):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    google_workspace_provider = models.ForeignKey(
+        GoogleWorkspaceProvider,
+        on_delete=models.CASCADE,
+        db_column="googleworkspaceprovider_id",
+    )
+
+    class Meta:
+        db_table = "authentik_providers_google_workspace_group_filters"
+        unique_together = (("group", "google_workspace_provider"),)
+        verbose_name = _("Google Workspace Provider Group Filter")
+        verbose_name_plural = _("Google Workspace Provider Group Filters")
+
+    def __str__(self):
+        return (
+            f"GoogleWorkspaceProviderGroupFilter for GoogleWorkspaceProvider "
+            f"{self.google_workspace_provider_id} and Group {self.group_id}."
+        )
 
 
 class GoogleWorkspaceProviderPropertyMappingsGroup(SimpleThroughModel):

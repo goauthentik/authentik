@@ -377,7 +377,7 @@ export interface ProvidersGoogleWorkspaceGroupsUsedByListRequest {
 export interface ProvidersGoogleWorkspaceListRequest {
     delegatedSubject?: string;
     excludeUsersServiceAccount?: boolean;
-    filterGroup?: string;
+    groupFilters?: Array<string>;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -618,7 +618,7 @@ export interface ProvidersMicrosoftEntraGroupsUsedByListRequest {
 
 export interface ProvidersMicrosoftEntraListRequest {
     excludeUsersServiceAccount?: boolean;
-    filterGroup?: string;
+    groupFilters?: Array<string>;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -2349,8 +2349,8 @@ export class ProvidersApi extends runtime.BaseAPI {
                 requestParameters["excludeUsersServiceAccount"];
         }
 
-        if (requestParameters["filterGroup"] != null) {
-            queryParameters["filter_group"] = requestParameters["filterGroup"];
+        if (requestParameters["groupFilters"] != null) {
+            queryParameters["group_filters"] = requestParameters["groupFilters"];
         }
 
         if (requestParameters["name"] != null) {
@@ -4198,8 +4198,8 @@ export class ProvidersApi extends runtime.BaseAPI {
                 requestParameters["excludeUsersServiceAccount"];
         }
 
-        if (requestParameters["filterGroup"] != null) {
-            queryParameters["filter_group"] = requestParameters["filterGroup"];
+        if (requestParameters["groupFilters"] != null) {
+            queryParameters["group_filters"] = requestParameters["groupFilters"];
         }
 
         if (requestParameters["name"] != null) {

@@ -24,6 +24,7 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
 ):
     """Base client for syncing to google workspace"""
 
+    remote_id_field = "google_id"
     domains: list
     can_discover = True
 

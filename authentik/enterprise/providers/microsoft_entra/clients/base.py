@@ -76,6 +76,7 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
 ):
     """Base client for syncing to microsoft entra"""
 
+    remote_id_field = "microsoft_id"
     domains: list
     can_discover = True
 

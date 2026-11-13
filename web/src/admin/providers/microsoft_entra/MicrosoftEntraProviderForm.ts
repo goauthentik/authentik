@@ -11,11 +11,10 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import { aki } from "#common/api/client";
 
-import { AKSearchSelect } from "#components/ak-search-select-field";
-
-import { groupSource } from "#admin/common/search-sources";
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
+    groupsProvider,
+    groupsSelector,
     propertyMappingsProvider,
     propertyMappingsSelector,
 } from "#admin/providers/microsoft_entra/MicrosoftEntraProviderFormHelpers";
@@ -156,22 +155,22 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     ></ak-switch-input>
                 </div>
             </ak-form-group>
-            <ak-form-group open label="${msg("User filtering")}">
+            <ak-form-group open label="${msg("Filtering")}">
                 <div class="pf-c-form">
                     <ak-switch-input
                         name="excludeUsersServiceAccount"
                         label=${msg("Exclude service accounts")}
                         ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("Group")} name="filterGroup">
-                        ${AKSearchSelect({
-                            name: "filterGroup",
-                            source: groupSource,
-                            value: this.instance?.filterGroup,
-                            blankable: true,
-                        })}
+                    <ak-form-element-horizontal label=${msg("Group Filter")} name="groupFilters">
+                        <ak-dual-select-dynamic-selected
+                            .provider=${groupsProvider}
+                            .selector=${groupsSelector(this.instance?.groupFilters)}
+                            available-label=${msg("Available Groups")}
+                            selected-label=${msg("Selected Groups")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Only sync users within the selected group.")}
+                            ${msg("Groups to be synced. If empty, all groups will be synced.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
