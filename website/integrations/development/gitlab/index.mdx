@@ -62,7 +62,7 @@ Apply the GitLab configuration for the SSO method that you configured in authent
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
-4. Navigate to **System** > **Certificates** and expand the certificate that you selected for the SAML provider. Take note of the **Certificate Fingerprint (SHA1)** because it will be required later.
+4. Navigate to **System** > **Certificates** and expand the certificate that you selected for the SAML provider. Take note of the **Certificate Fingerprint (SHA256)** because it will be required later.
 
 #### Configure GitLab
 
@@ -82,7 +82,7 @@ gitlab_rails['omniauth_providers'] = [
     label: 'authentik',
     args: {
       assertion_consumer_service_url: 'https://gitlab.company/users/auth/saml/callback',
-      idp_cert_fingerprint: '<Certificate Fingerprint (SHA1) from authentik>',
+      idp_cert_fingerprint: '<Certificate Fingerprint (SHA256) from authentik>',
       idp_sso_target_url: 'https://authentik.company/application/saml/<application_slug>/',
       issuer: 'https://gitlab.company',
       name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
