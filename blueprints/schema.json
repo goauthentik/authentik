@@ -10605,7 +10605,8 @@
                             "client_credentials",
                             "password",
                             "urn:ietf:params:oauth:grant-type:device_code",
-                            "urn:ietf:params:oauth:grant-type:token-exchange"
+                            "urn:ietf:params:oauth:grant-type:token-exchange",
+                            "urn:ietf:params:oauth:grant-type:jwt-bearer"
                         ],
                         "title": "Allowed grant types"
                     },
@@ -10704,7 +10705,8 @@
                             "client_credentials",
                             "password",
                             "urn:ietf:params:oauth:grant-type:device_code",
-                            "urn:ietf:params:oauth:grant-type:token-exchange"
+                            "urn:ietf:params:oauth:grant-type:token-exchange",
+                            "urn:ietf:params:oauth:grant-type:jwt-bearer"
                         ],
                         "title": "Grant types"
                     },

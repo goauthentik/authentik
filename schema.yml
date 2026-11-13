@@ -43010,6 +43010,7 @@ components:
       - password
       - urn:ietf:params:oauth:grant-type:device_code
       - urn:ietf:params:oauth:grant-type:token-exchange
+      - urn:ietf:params:oauth:grant-type:jwt-bearer
       type: string
     Group:
       type: object

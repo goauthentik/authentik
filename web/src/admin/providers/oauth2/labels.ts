@@ -13,6 +13,9 @@ export const GrantTypeLabelRecord: Record<GrantTypeEnum, string> = {
     [GrantTypeEnum.Password]: msg("Password"),
     [GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode]: msg("Device-code"),
     [GrantTypeEnum.UrnIetfParamsOauthGrantTypeTokenExchange]: msg("Token exchange"),
+    [GrantTypeEnum.UrnIetfParamsOauthGrantTypeJwtBearer]: msg("JWT bearer (ID-JAG)", {
+        id: "providers.oauth2.grant-type.jwt-bearer.label",
+    }),
     [GrantTypeEnum.UnknownDefaultOpenApi]: msg("Unknown Grant type"),
 };
 
@@ -25,6 +28,7 @@ export const GrantTypeCheckboxItems: CheckboxItem<GrantTypeEnum>[] = [
     GrantTypeEnum.Password,
     GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode,
     GrantTypeEnum.UrnIetfParamsOauthGrantTypeTokenExchange,
+    GrantTypeEnum.UrnIetfParamsOauthGrantTypeJwtBearer,
 ].map((grantType) => ({
     name: grantType,
     label: GrantTypeLabelRecord[grantType],

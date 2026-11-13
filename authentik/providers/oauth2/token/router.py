@@ -7,6 +7,7 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_CLIENT_CREDENTIALS,
     GRANT_TYPE_DEVICE_CODE,
+    GRANT_TYPE_JWT_BEARER,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
     GRANT_TYPE_TOKEN_EXCHANGE,
@@ -17,6 +18,7 @@ from authentik.providers.oauth2.token.authorization_code import AuthorizationCod
 from authentik.providers.oauth2.token.base import TokenRequest
 from authentik.providers.oauth2.token.client_credentials import ClientCredentialsTokenRequest
 from authentik.providers.oauth2.token.device_code import DeviceCodeTokenRequest
+from authentik.providers.oauth2.token.id_jag import IdJagTokenRequest
 from authentik.providers.oauth2.token.refresh_token import RefreshTokenTokenRequest
 from authentik.providers.oauth2.token.token_exchange import TokenExchangeTokenRequest
 
@@ -36,6 +38,8 @@ def route_token_request(grant_type: str) -> type[TokenRequest]:
         return DeviceCodeTokenRequest
     elif grant_type == GRANT_TYPE_TOKEN_EXCHANGE:
         return TokenExchangeTokenRequest
+    elif grant_type == GRANT_TYPE_JWT_BEARER:
+        return IdJagTokenRequest
     raise TokenError("unsupported_grant_type")
 
 
