@@ -13023,6 +13023,16 @@
                     ],
                     "title": "Authorization code auth method",
                     "description": "How to perform authentication during an authorization_code token request flow"
+                },
+                "id_jag_email_domains": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Id jag email domains"
+                    },
+                    "title": "ID-JAG email domains",
+                    "description": "Email domains this source is trusted for when redeeming ID-JAGs. An ID-JAG whose subject isn't connected to a user yet is connected to the one active user with its email address, if that address is in one of these domains."
                 }
             },
             "required": []

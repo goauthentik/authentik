@@ -1,5 +1,6 @@
 """OAuth Source Serializer"""
 
+from re import compile as re_compile
 from typing import Any
 
 from django.urls.base import reverse_lazy
@@ -21,6 +22,11 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource, PKCEMethod
 from authentik.sources.oauth.types.registry import SourceType, registry
+
+# A DNS name with at least two labels, lowercase; no wildcards
+EMAIL_DOMAIN = re_compile(
+    r"^(?=.{1,253}$)([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9-]{2,63}$"
+)
 
 
 class SourceTypeSerializer(PassiveSerializer):
@@ -66,6 +72,17 @@ class OAuthSourceSerializer(SourceSerializer):
         if self.instance:
             return getattr(self.instance, key)
         return default
+
+    def validate_id_jag_email_domains(self, domains: list[str]) -> list[str]:
+        """Lowercase domain names, compared exactly (subdomains aren't implied)"""
+        normalized = []
+        for value in domains:
+            domain = value.strip().lower().rstrip(".")
+            if not EMAIL_DOMAIN.match(domain):
+                raise ValidationError(f"Invalid email domain: {value!r}")
+            if domain not in normalized:
+                normalized.append(domain)
+        return normalized
 
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
@@ -166,6 +183,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "oidc_jwks_url",
             "oidc_jwks",
             "authorization_code_auth_method",
+            "id_jag_email_domains",
         ]
         extra_kwargs = {
             "consumer_secret": {"write_only": True, "allow_blank": True, "required": False},

@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.http.request import HttpRequest
 from django.urls import reverse
@@ -68,6 +69,21 @@ class OAuthSource(NonCreatableType, Source):
     oidc_well_known_url = models.TextField(default="", blank=True)
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
+    # ID-JAG (draft-ietf-oauth-identity-assertion-authz-grant §9.8): an issuer can assert any
+    # email, so emails are only trusted for subject resolution in domains the administrator
+    # trusts this issuer for.
+    id_jag_email_domains = ArrayField(
+        models.TextField(),
+        default=list,
+        db_default=[],
+        blank=True,
+        verbose_name=_("ID-JAG email domains"),
+        help_text=_(
+            "Email domains this source is trusted for when redeeming ID-JAGs. An ID-JAG whose "
+            "subject isn't connected to a user yet is connected to the one active user with "
+            "its email address, if that address is in one of these domains."
+        ),
+    )
     pkce = models.TextField(
         choices=PKCEMethod.choices, default=PKCEMethod.NONE, verbose_name=_("PKCE")
     )

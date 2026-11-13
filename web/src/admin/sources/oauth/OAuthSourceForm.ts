@@ -4,12 +4,14 @@ import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
+import "#elements/ak-array-input";
 import "#elements/CodeEditor";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import "#admin/sources/oauth/OAuthSourceIDJAGEmailDomain";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
@@ -498,6 +500,35 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 <div class="pf-c-form">
                     ${AKSourceAuthenticationFlowField({ value: this.instance?.authenticationFlow, sourcePk: this.instance?.pk })}
                     ${AKSourceEnrollmentFlowField({ value: this.instance?.enrollmentFlow, sourcePk: this.instance?.pk })}
+                </div>
+            </ak-form-group>
+            <ak-form-group
+                label=${msg("ID-JAG settings", { id: "sources.oauth.id-jag.group.label" })}
+            >
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("ID-JAG email domains", {
+                            id: "sources.oauth.id-jag.email-domains.label",
+                        })}
+                        name="idJagEmailDomains"
+                    >
+                        <ak-array-input
+                            .items=${this.instance?.idJagEmailDomains ?? []}
+                            .newItem=${() => ""}
+                            .row=${(domain: string) =>
+                                html`<ak-oauth-source-id-jag-email-domain
+                                    name="id-jag-email-domain"
+                                    style="width: 100%"
+                                    .domain=${domain}
+                                ></ak-oauth-source-id-jag-email-domain>`}
+                        ></ak-array-input>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When an ID-JAG from this source names a subject that isn't connected to a user yet, it's connected to the one active user with the ID-JAG's email address, if that address is in one of these domains. Only list domains this source's issuer is authoritative for, as an issuer can assert any address. Leave empty to only accept connected subjects.",
+                                { id: "sources.oauth.id-jag.email-domains.description" },
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group label=${msg("Advanced settings")}>

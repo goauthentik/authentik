@@ -47311,6 +47311,14 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        id_jag_email_domains:
+          type: array
+          items:
+            type: string
+          description: Email domains this source is trusted for when redeeming ID-JAGs.
+            An ID-JAG whose subject isn't connected to a user yet is connected to
+            the one active user with its email address, if that address is in one
+            of these domains.
       required:
       - callback_url
       - component
@@ -47490,6 +47498,15 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        id_jag_email_domains:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Email domains this source is trusted for when redeeming ID-JAGs.
+            An ID-JAG whose subject isn't connected to a user yet is connected to
+            the one active user with its email address, if that address is in one
+            of these domains.
       required:
       - consumer_key
       - name
@@ -53266,6 +53283,15 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        id_jag_email_domains:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Email domains this source is trusted for when redeeming ID-JAGs.
+            An ID-JAG whose subject isn't connected to a user yet is connected to
+            the one active user with its email address, if that address is in one
+            of these domains.
     PatchedObjectAttributeRequest:
       type: object
       properties:
