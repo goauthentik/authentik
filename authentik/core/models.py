@@ -2,7 +2,7 @@
 
 import re
 import traceback
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import StrEnum
 from hashlib import sha256
 from typing import Any, Self
@@ -17,7 +17,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
-from django.db import models
+from django.db import connections, models
 from django.db.models import Q, QuerySet, options
 from django.db.models.functions import Upper
 from django.http import HttpRequest
@@ -1697,3 +1697,43 @@ class Actor(ExpiringModel, User):
             **kwargs,
         )
         return actor
+
+
+USER_ACTIVITY_INTERVAL = timedelta(minutes=5)
+
+
+class UserActivityManager(models.Manager["UserActivity"]):
+    """Record successful activity without rewriting frequently active users."""
+
+    def record(self, user_id: object, at: datetime | None = None) -> None:
+        if type(user_id) is not int or not 0 < user_id <= 2147483647:  # noqa: PLR2004
+            return
+        with connections[self.db].cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO authentik_core_useractivity AS activity (user_id, last_activity_at)
+                VALUES (%s, %s)
+                ON CONFLICT (user_id) DO UPDATE
+                SET last_activity_at = EXCLUDED.last_activity_at
+                WHERE activity.last_activity_at <= EXCLUDED.last_activity_at - %s
+                """,
+                [user_id, at or now(), USER_ACTIVITY_INTERVAL],
+            )
+
+
+class UserActivity(models.Model):
+    """Latest sampled successful activity, independent of audit retention."""
+
+    # A late write after user deletion may leave an orphan; expiration joins existing users.
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="activity",
+        db_constraint=False,
+    )
+    last_activity_at = models.DateTimeField()
+    objects = UserActivityManager()
+
+    def __str__(self):
+        return f"Activity for user {self.user_id}"

@@ -23,7 +23,8 @@ from authentik.common.oauth.constants import (
     TOKEN_TYPE,
     TOKEN_TYPE_URI_SAML2,
 )
-from authentik.core.middleware import CTX_AUTH_VIA
+from authentik.core.middleware import CTX_AUTH_VIA, SESSION_KEY_IMPERSONATE_USER
+from authentik.core.models import UserActivity
 from authentik.events.signals import get_login_event
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
@@ -248,6 +249,19 @@ class TokenView(View):
             self.params.refresh_token.revoked = True
             self.params.refresh_token.save()
             response["refresh_token"] = refresh_token.token
+
+        from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+        from authentik.flows.views.executor import SESSION_KEY_PLAN
+
+        user = self.params.refresh_token.user
+        # Don't credit the user during impersonation or another user's flow.
+        if SESSION_KEY_IMPERSONATE_USER in self.request.session:
+            return response
+        plan = self.request.session.get(SESSION_KEY_PLAN)
+        pending_user = plan.context.get(PLAN_CONTEXT_PENDING_USER) if plan else None
+        if pending_user is not None and pending_user.pk != user.pk:
+            return response
+        UserActivity.objects.record(user.pk, now)
 
         return response
 

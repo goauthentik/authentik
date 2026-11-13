@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.db import transaction
 from django.db.models import F
 from django.utils import timezone
@@ -19,7 +20,10 @@ def execute_due_offboardings():
     due_pks = UserOffboarding.objects.filter(
         status=OffboardingStatus.PENDING,
         scheduled_at__lte=timezone.now(),
-    ).values_list("pk", flat=True)
+    )
+    if not apps.get_app_config("authentik_enterprise").enabled():
+        due_pks = due_pks.filter(rule__isnull=True)
+    due_pks = due_pks.values_list("pk", flat=True)
     for pk in due_pks:
         # rel_obj groups each execution under the sweeper's schedule in the UI.
         execute_offboarding.send_with_options(args=(str(pk),), rel_obj=task.rel_obj)

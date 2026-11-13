@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from django.apps import apps
 from django.db import models, transaction
 from django.db.models import Q
 from django.http import HttpRequest
@@ -7,6 +8,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 
+from authentik.core.models import User
 from authentik.lib.models import SerializerModel
 
 
@@ -55,6 +57,16 @@ class UserOffboarding(SerializerModel):
     attempts = models.PositiveSmallIntegerField(
         default=0, help_text=_("Number of times execution has been attempted and failed.")
     )
+    # Set when a user expiration rule generated this row; `created_by` stays null.
+    # Unlike `rule`, it survives the rule being deleted.
+    generated = models.BooleanField(default=False)
+    rule = models.ForeignKey(
+        "authentik_lifecycle.UserExpirationRule",
+        on_delete=models.SET_NULL,
+        null=True,
+        default=None,
+        related_name="offboardings",
+    )
 
     class Meta:
         verbose_name = _("User Offboarding")
@@ -74,7 +86,13 @@ class UserOffboarding(SerializerModel):
                 fields=["scheduled_at"],
                 condition=Q(status=OffboardingStatus.PENDING),
                 name="pending_offboarding_idx",
-            )
+            ),
+            # The expiration sweeper looks up the latest generated row per user.
+            models.Index(
+                fields=["user", "executed_at"],
+                condition=Q(generated=True),
+                name="generated_offboarding_idx",
+            ),
         ]
 
     @property
@@ -85,6 +103,11 @@ class UserOffboarding(SerializerModel):
 
     def __str__(self):
         return f"User offboarding for user {self.user_id} ({self.action}) at {self.scheduled_at}"
+
+    def save(self, *args, **kwargs):
+        if self.rule_id is not None:
+            self.generated = True
+        super().save(*args, **kwargs)
 
     def cancel(self) -> bool:
         """Cancel iff still pending; returns whether it was cancelled.
@@ -114,8 +137,29 @@ class UserOffboarding(SerializerModel):
         transaction, so a mid-way failure rolls back completely: the user is
         left untouched and the row stays `PENDING` for retry.
         """
+        from authentik.enterprise.lifecycle.expiration.models import UserExpirationRule
         from authentik.enterprise.lifecycle.offboarding.actions import offboard_user
 
+        context = {}
+        if self.rule_id is not None:
+            # Generated rows stay pending without a license.
+            if not apps.get_app_config("authentik_enterprise").enabled():
+                return
+            # The rule or the user may have changed since the last sweep.
+            self.user = User.objects.select_related("activity").get(pk=self.user_id)
+            kept, rewarn = self.rule.reconcile_offboarding(self)
+            if not kept:
+                return
+            if UserExpirationRule.resolve_winner(self):
+                rewarn = True
+            if self.scheduled_at > timezone.now():
+                if rewarn:
+                    # Warn after the row lock is released.
+                    transaction.on_commit(
+                        lambda rule=self.rule, user=self.user, row=self: rule._warn(user, row)
+                    )
+                return
+            context["rule"] = self.rule
         # `delete` removes this row via cascade, so capture the action first.
         is_delete = self.action == OffboardingAction.DELETE
         with transaction.atomic():
@@ -126,6 +170,7 @@ class UserOffboarding(SerializerModel):
                 revoke_tokens=self.revoke_tokens,
                 request=request,
                 initiator=self.created_by,
+                **context,
             )
             if is_delete:
                 return
