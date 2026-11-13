@@ -44,6 +44,12 @@ jobs:
             dir: tests/mcp_conformance_id_jag_issuer
             acceptance: tests/mcp_conformance_id_jag_issuer/acceptance_id_jag.py
             selfcheck: tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
+          # authentik as Resource Authorization Server; shares the issuer suite's stub IdP
+          # and independent verifier, so it runs the same self-check
+          - name: id-jag-resource-as
+            dir: tests/mcp_conformance_id_jag_resource_as
+            acceptance: tests/mcp_conformance_id_jag_resource_as/acceptance_ras.py
+            selfcheck: tests/mcp_conformance_id_jag_issuer/selfcheck_resource_as.py
     env:
       # Disposable runner database; a dedicated test DB name keeps it apart from anything else
       AUTHENTIK_POSTGRESQL__TEST__NAME: test_authentik_mcp_id_jag_issuer
@@ -60,7 +66,7 @@ jobs:
       - name: Fixture self-check (independent of authentik)
         timeout-minutes: 3
         run: uv run python ${{ matrix.job.selfcheck }}
-      - name: Run ID-JAG issuer acceptance check
+      - name: Run acceptance check
         timeout-minutes: 12
         run: |
           uv run coverage run manage.py test ${{ matrix.job.acceptance }}
