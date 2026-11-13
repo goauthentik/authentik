@@ -319,14 +319,21 @@ class TestPostgresConsumerAutoPurge(TestCase):
 
         consumer._auto_purge()
 
+        created = [task.pk for task in expired + survivors]
         self.assertCountEqual(
-            Task.objects.values_list("pk", flat=True), [task.pk for task in survivors]
+            Task.objects.filter(pk__in=created).values_list("pk", flat=True),
+            [task.pk for task in survivors],
         )
         self.assertCountEqual(
-            TaskLog.objects.values_list("task_id", flat=True), [task.pk for task in survivors]
+            TaskLog.objects.filter(task_id__in=created).values_list("task_id", flat=True),
+            [task.pk for task in survivors],
         )
         self.assertEqual(
-            list(TaskDependency.objects.values_list("task_id", "dependency_id")),
+            list(
+                TaskDependency.objects.filter(task_id__in=created).values_list(
+                    "task_id", "dependency_id"
+                )
+            ),
             [(survivors[2].pk, survivors[3].pk)],
         )
         self.assertEqual(
