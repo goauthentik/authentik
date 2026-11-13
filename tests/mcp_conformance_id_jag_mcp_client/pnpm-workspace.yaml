@@ -1,0 +1,6 @@
+# Its own pnpm root, outside the repository's workspaces: the harness is a standalone,
+# independent MCP client with a pinned SDK, installed only to run this suite.
+packages: []
+
+# No dependency may run install scripts.
+onlyBuiltDependencies: []
