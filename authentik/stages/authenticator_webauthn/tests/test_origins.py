@@ -4,7 +4,8 @@ from hashlib import sha256
 from json import dumps
 
 from cbor2 import dumps as cbor_encode
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+from cryptography.hazmat.primitives.asymmetric.ec import ECDSA, SECP256R1, generate_private_key
+from cryptography.hazmat.primitives.hashes import SHA256
 from django.core.exceptions import ValidationError as ModelValidationError
 from django.test import SimpleTestCase, TestCase
 from rest_framework.exceptions import ValidationError
@@ -110,13 +111,16 @@ class TestWebAuthnOrigins(TestCase):
         self.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b"test challenge" * 3
         self.registration_stage = AuthenticatorWebAuthnStage.objects.create(name="registration")
         self.validation_stage = AuthenticatorValidateStage.objects.create(name="validation")
-        self.private_key = Ed25519PrivateKey.generate()
+        # ES256 (ECDSA P-256), since the OpenSSL FIPS provider has no Ed25519
+        self.private_key = generate_private_key(SECP256R1())
+        public_numbers = self.private_key.public_key().public_numbers()
         self.public_key = cbor_encode(
             {
-                1: 1,
-                3: -8,
-                -1: 6,
-                -2: self.private_key.public_key().public_bytes_raw(),
+                1: 2,
+                3: -7,
+                -1: 1,
+                -2: public_numbers.x.to_bytes(32, "big"),
+                -3: public_numbers.y.to_bytes(32, "big"),
             }
         )
         self.credential_id = b"test credential"
@@ -153,7 +157,7 @@ class TestWebAuthnOrigins(TestCase):
         else:
             response["authenticatorData"] = bytes_to_base64url(auth_data)
             response["signature"] = bytes_to_base64url(
-                self.private_key.sign(auth_data + sha256(client_data).digest())
+                self.private_key.sign(auth_data + sha256(client_data).digest(), ECDSA(SHA256()))
             )
         return {
             "id": bytes_to_base64url(self.credential_id),
