@@ -11,11 +11,14 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import "#flow/components/ak-prompt-showable-password";
+
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
+import { ShowablePasswordStyles } from "#flow/components/ak-prompt-showable-password";
 import { BaseStage } from "#flow/stages/base";
 import { LocalePrompt } from "#flow/stages/prompt/components/locale";
 
@@ -54,6 +57,7 @@ export class PromptStage extends WithCapabilitiesConfig(
         PFTitle,
         PFButton,
         PFCheck,
+        ShowablePasswordStyles,
         css`
             textarea {
                 min-height: 4em;
@@ -164,6 +168,13 @@ ${prompt.initialValue}</textarea>`;
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                 />`;
+            case PromptTypeEnum.PasswordViewable:
+                return html`<ak-prompt-showable-password
+                    fieldid=${fieldId}
+                    fieldkey="${prompt.fieldKey}"
+                    placeholder="${prompt.placeholder}"
+                    ?required=${prompt.required}
+                ></ak-prompt-showable-password>`;
             case PromptTypeEnum.Number:
                 return html`<input
                     type="number"

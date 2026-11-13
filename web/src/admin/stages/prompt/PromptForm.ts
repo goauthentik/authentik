@@ -142,6 +142,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             [PromptTypeEnum.Username, msg("Username: Same as Text input, but checks for and prevents duplicate usernames.")],
             [PromptTypeEnum.Email, msg("Email: Text field with Email type.")],
             [PromptTypeEnum.Password, msg("Password: Masked input, multiple inputs of this type on the same prompt need to be identical.")],
+            [PromptTypeEnum.PasswordViewable, msg("Password w/show button: Masked input w/show button, multiple inputs of this type on the same prompt need to be identical.")],
             [PromptTypeEnum.Number, msg("Number")],
             [PromptTypeEnum.Checkbox, msg("Checkbox")],
             [PromptTypeEnum.RadioButtonGroup, msg("Radio Button Group (fixed choice)")],
