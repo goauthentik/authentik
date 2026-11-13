@@ -355,6 +355,69 @@ class IdJagResourceASAcceptance(StaticLiveServerTestCase):
         )
         return {"summary": "verified; userinfo accepts it for the connected user"}
 
+    def check_subject_email_link(self):
+        """An administrator trusts the IdP for an email domain; an ID-JAG for a subject with no
+        connection yet, whose email names an existing user in it, connects that user"""
+        source = self.state["source"]
+        domain = f"corp-{generate_id(6).lower()}.example"
+        resp = self.api(
+            "PATCH",
+            f"sources/oauth/{source.slug}/",
+            json={
+                # Partial updates of an OpenID Connect source still have to name its URLs
+                "authorization_url": source.authorization_url,
+                "access_token_url": source.access_token_url,
+                "profile_url": source.profile_url,
+                "id_jag_email_domains": [domain.upper()],
+            },
+        )
+        require(
+            resp.ok and resp.json().get("id_jag_email_domains") == [domain],
+            f"trusting the IdP for {domain} failed: HTTP {resp.status_code}",
+            response=response_summary(resp),
+        )
+        user = create_test_user()
+        user.email = f"{user.username}@{domain}"
+        user.save()
+        subject = f"idp-user-{generate_id(8)}"
+        # Emails compare without case (Claude-issued ID-JAGs lowercase them, IdPs needn't)
+        email = f"{user.username.upper()}@{domain}"
+        body = self.expect_issued(self.redeem(self.id_jag(sub=subject, email=email)))
+        _header, claims = self.verify_access_token(body["access_token"])
+        expected_sub = IDToken()._resolve_sub(self.ras["provider"], user)
+        require(
+            claims.get("sub") == expected_sub,
+            "the access token doesn't name the user with the ID-JAG's email",
+            sub=claims.get("sub"),
+        )
+        connection = UserOAuthSourceConnection.objects.filter(source=source, user=user).first()
+        require(
+            connection is not None and connection.identifier == subject,
+            "the user wasn't connected to the ID-JAG subject",
+        )
+        # From now on the subject resolves by `sub`, whatever email the IdP sends
+        self.expect_issued(self.redeem(self.id_jag(sub=subject, email="moved@else.example")))
+        self.state["email_domain"] = domain
+        return {
+            "summary": "user found by email in a trusted domain, then by sub",
+            "details": {"trusted_domain": domain},
+        }
+
+    def neg_email_domain_not_trusted(self):
+        """An email naming an existing user, in a domain the IdP isn't trusted for"""
+        user = create_test_user()
+        user.email = f"{user.username}@untrusted-{generate_id(6).lower()}.example"
+        user.save()
+        result = self.rejects(
+            lambda: self.id_jag(sub=f"idp-user-{generate_id(8)}", email=user.email),
+            ("access_denied",),
+        )()
+        require(
+            not UserOAuthSourceConnection.objects.filter(user=user).exists(),
+            "the user was connected although the email domain isn't trusted",
+        )
+        return result
+
     def check_scope_semantics(self):
         claimed = f"{IDP_SCOPE} fixture:unknown"
         body = self.expect_issued(self.redeem(self.id_jag(scope=claimed)))
@@ -501,6 +564,12 @@ class IdJagResourceASAcceptance(StaticLiveServerTestCase):
         for check_id, probe in negatives.items():
             self.run_check(check_id, probe, requires=positive)
         self.run_check("ras.neg.replay", self.neg_replay, requires=positive)
+        self.run_check("ras.subject-email-link", self.check_subject_email_link, requires=positive)
+        self.run_check(
+            "ras.neg.email-domain-not-trusted",
+            self.neg_email_domain_not_trusted,
+            requires=("ras.subject-email-link",),
+        )
 
         self.report.write(RESULTS_DIR)
         ok, problems = self.report.verdict()
