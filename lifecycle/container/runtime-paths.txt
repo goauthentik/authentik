@@ -44,4 +44,3 @@
 # writable mount points
 /certs
 /data
-/media
