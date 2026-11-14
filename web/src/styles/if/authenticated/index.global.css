@@ -41,6 +41,6 @@
 @import "#elements/ToggleGroup_impl/ToggleGroup.root.css" layer(components);
 @import "#elements/sidebar/Sidebar.root.css" layer(components);
 @import "#elements/timestamp/Timestamp.root.css" layer(components);
-@import "#styles/global/locales/ja/globals.css" layer(components);
-@import "#styles/global/locales/ko/globals.css" layer(components);
-@import "#styles/global/locales/zh/globals.css" layer(components);
+@import "#styles/global/locales/ja/globals.css" layer(theme);
+@import "#styles/global/locales/ko/globals.css" layer(theme);
+@import "#styles/global/locales/zh/globals.css" layer(theme);
