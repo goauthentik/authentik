@@ -2,12 +2,17 @@ from collections.abc import Generator
 from itertools import batched
 from uuid import uuid4
 
+from django.db import transaction
 from ldap3 import SUBTREE
 
-from authentik.core.models import Group
+from authentik.core.models import Group, GroupSourceConnection
 from authentik.sources.ldap.models import GroupLDAPSourceConnection
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
-from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE, UPDATE_CHUNK_SIZE
+from authentik.sources.ldap.sync.forward_delete_users import (
+    DELETE_CHUNK_SIZE,
+    UPDATE_CHUNK_SIZE,
+    skip_deletion_without_identifiers,
+)
 
 
 class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
@@ -31,6 +36,7 @@ class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
             generator=True,
             **kwargs,
         )
+        identifier_count = 0
         for batch in batched(groups, UPDATE_CHUNK_SIZE, strict=False):
             identifiers = []
             for group in batch:
@@ -38,9 +44,13 @@ class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
                     continue
                 if identifier := self.get_identifier(attributes):
                     identifiers.append(identifier)
-            GroupLDAPSourceConnection.objects.filter(identifier__in=identifiers).update(
-                validated_by=uuid
-            )
+            identifier_count += len(identifiers)
+            GroupLDAPSourceConnection.objects.filter(
+                source=self._source, identifier__in=identifiers
+            ).update(validated_by=uuid)
+
+        if skip_deletion_without_identifiers(self._task, identifier_count, "group"):
+            return iter(())
 
         return batched(
             GroupLDAPSourceConnection.objects.filter(source=self._source)
@@ -57,5 +67,22 @@ class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
             self._task.info("Group syncing is disabled for this Source")
             return -1
         self._logger.debug("Deleting groups", group_pks=group_pks)
-        _, deleted_per_type = Group.objects.filter(pk__in=group_pks).delete()
+        with transaction.atomic():
+            list(
+                Group.objects.select_for_update()
+                .filter(pk__in=group_pks)
+                .order_by("pk")
+                .values_list("pk", flat=True)
+            )
+            linked_elsewhere = set(
+                GroupSourceConnection.objects.filter(group_id__in=group_pks)
+                .exclude(source=self._source)
+                .values_list("group_id", flat=True)
+            )
+            GroupLDAPSourceConnection.objects.filter(
+                source=self._source, group_id__in=linked_elsewhere
+            ).delete()
+            _, deleted_per_type = Group.objects.filter(
+                pk__in=set(group_pks) - linked_elsewhere
+            ).delete()
         return deleted_per_type.get(Group._meta.label, 0)
