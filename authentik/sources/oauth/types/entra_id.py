@@ -2,28 +2,20 @@
 
 from asyncio import run
 from dataclasses import asdict
-from typing import Any
+from typing import TYPE_CHECKING, Any
+from urllib.parse import urlsplit
 
-from httpx import HTTPError
-from kiota_abstractions.api_error import APIError
-from kiota_abstractions.authentication.anonymous_authentication_provider import (
-    AnonymousAuthenticationProvider,
-)
-from kiota_abstractions.base_request_configuration import RequestConfiguration
-from kiota_abstractions.headers_collection import HeadersCollection
-from kiota_http.kiota_client_factory import KiotaClientFactory
-from msgraph.generated.models.entity import Entity
-from msgraph.graph_request_adapter import GraphRequestAdapter, options
-from msgraph.graph_service_client import GraphServiceClient
-from msgraph_core import GraphClientFactory
 from structlog.stdlib import get_logger
 
 from authentik.events.utils import sanitize_item
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
-from authentik.sources.oauth.models import AuthorizationCodeAuthMethod
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.redirect import OAuthRedirect
+
+if TYPE_CHECKING:
+    from msgraph.generated.models.entity import Entity
 
 LOGGER = get_logger()
 
@@ -40,12 +32,18 @@ def entity_as_dict(entity: Entity) -> dict:
     )
 
 
+def get_graph_url(source: OAuthSource, path: str) -> str:
+    """Use the configured profile's origin for Graph scopes and API requests."""
+    profile_url = source.profile_url or EntraIDType.profile_url
+    return urlsplit(profile_url)._replace(path=path, query="", fragment="").geturl()
+
+
 class EntraIDOAuthRedirect(OAuthRedirect):
     """Entra ID OAuth2 Redirect"""
 
-    def get_additional_parameters(self, source):  # pragma: no cover
+    def get_additional_parameters(self, source):
         return {
-            "scope": ["openid", "https://graph.microsoft.com/User.Read"],
+            "scope": ["openid", get_graph_url(source, "/User.Read")],
         }
 
 
@@ -53,8 +51,14 @@ class EntraIDClient(UserprofileHeaderAuthClient):
     """Fetch EntraID group information"""
 
     def get_profile_info(self, token):
+        # The Graph SDK is heavy, only import it when an Entra ID source is used
+        from httpx import HTTPError
+        from kiota_abstractions.api_error import APIError
+
         profile_data = super().get_profile_info(token)
-        if "https://graph.microsoft.com/GroupMember.Read.All" not in self.source.additional_scopes:
+        group_scope = get_graph_url(self.source, "/GroupMember.Read.All")
+        scopes = self.source.additional_scopes.removeprefix("*").split()
+        if profile_data is None or group_scope not in scopes:
             return profile_data
         try:
             profile_data["raw_groups"] = run(self.get_groups(token))
@@ -65,15 +69,25 @@ class EntraIDClient(UserprofileHeaderAuthClient):
 
     async def get_groups(self, token):
         """Fetch all memberships and convert Graph entities for property mappings."""
+        from kiota_abstractions.authentication.anonymous_authentication_provider import (
+            AnonymousAuthenticationProvider,
+        )
+        from kiota_abstractions.base_request_configuration import RequestConfiguration
+        from kiota_abstractions.headers_collection import HeadersCollection
+        from kiota_http.kiota_client_factory import KiotaClientFactory
+        from msgraph.graph_request_adapter import GraphRequestAdapter, options
+        from msgraph.graph_service_client import GraphServiceClient
+        from msgraph_core import GraphClientFactory
+
         # RequestConfiguration shares its default headers between instances
         config = RequestConfiguration(headers=HeadersCollection())
         config.headers.add("Authorization", f"{token['token_type']} {token['access_token']}")
         async with GraphClientFactory.create_with_default_middleware(
             options=options, client=KiotaClientFactory.get_default_client()
         ) as http_client:
-            client = GraphServiceClient(
-                request_adapter=GraphRequestAdapter(AnonymousAuthenticationProvider(), http_client)
-            )
+            adapter = GraphRequestAdapter(AnonymousAuthenticationProvider(), http_client)
+            adapter.base_url = get_graph_url(self.source, "/v1.0")
+            client = GraphServiceClient(request_adapter=adapter)
             groups = []
             request = client.me.member_of
             while request:

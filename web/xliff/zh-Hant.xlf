@@ -518,9 +518,6 @@
 <trans-unit id="sda170fd79bca1616">
   <source><x id="0" equiv-text="${this.label ?? &quot;Table&quot;}"/> actions</source>
 </trans-unit>
-<trans-unit id="sd09354b0220a13ce">
-  <source>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
-</trans-unit>
 <trans-unit id="s76ef34813bff563f">
   <source>Last refreshed</source>
 </trans-unit>
@@ -839,23 +836,9 @@
   <source>Delete</source>
   <target>刪除</target>
 </trans-unit>
-<trans-unit id="s1f25e1e20469a9ea">
-  <source>deleted</source>
-</trans-unit>
 <trans-unit id="s09240e07b5b8d640">
   <source>ID</source>
   <target>ID</target>
-</trans-unit>
-<trans-unit id="se33b158a1ec02a09">
-  <source>Successfully deleted <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/></source>
-  <target>成功刪除 <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/></target>
-</trans-unit>
-<trans-unit id="s039b6434e8a75560">
-  <source>Delete <x id="0" equiv-text="${this.objectLabel}"/></source>
-</trans-unit>
-<trans-unit id="s5819a49638f6d7cb">
-  <source>Are you sure you want to delete <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>?</source>
-  <target>您確定要刪除 <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>嗎？</target>
 </trans-unit>
 <trans-unit id="sd5903cc8de68b3fc">
   <source>No form found</source>
@@ -897,10 +880,6 @@
 <trans-unit id="scd84d10ee9137070">
   <source>Assign permission to role</source>
   <target>分配權限到角色</target>
-</trans-unit>
-<trans-unit id="sb923723d27df40ba">
-  <source>Permission(s)</source>
-  <target>權限</target>
 </trans-unit>
 <trans-unit id="sc5fb00b25c7f5a02">
   <source>Permission</source>
@@ -1035,12 +1014,6 @@
 </trans-unit>
 <trans-unit id="s8ff646d0515aab2a">
   <source>Retry task</source>
-</trans-unit>
-<trans-unit id="sac44b0f4dc14c227">
-  <source>Current execution logs</source>
-</trans-unit>
-<trans-unit id="s5e13dff03b580216">
-  <source>Previous executions logs</source>
 </trans-unit>
 <trans-unit id="s9b8dccb514a0e34c">
   <source>Schedule</source>
@@ -2308,10 +2281,6 @@
 <trans-unit id="se669a4b939be0891">
   <source>authentik was unable to complete this process.</source>
 </trans-unit>
-<trans-unit id="s71c5d51d5a357dbd">
-  <source>Don't show this message again.</source>
-  <target>不要再顯示這個通知。</target>
-</trans-unit>
 <trans-unit id="sd1a5560fde6f2271">
   <source>Successfully imported provider.</source>
   <target>成功匯入供應商。</target>
@@ -2419,10 +2388,6 @@
 <trans-unit id="s0c9d1c885a69abe8">
   <source>Provider Search</source>
 </trans-unit>
-<trans-unit id="s10929ca568ae10bc">
-  <source>Provider(s)</source>
-  <target>供應商</target>
-</trans-unit>
 <trans-unit id="sb2b3b281954752c4">
   <source>Assigned to application </source>
   <target>分配給應用程式：</target>
@@ -2453,14 +2418,8 @@
 <trans-unit id="s3819162efec77de1">
   <source>Sync Group</source>
 </trans-unit>
-<trans-unit id="s7d2d3d298fdccfc8">
-  <source>Google Workspace Group(s)</source>
-</trans-unit>
 <trans-unit id="se9da93aa2e6cce21">
   <source>Sync User</source>
-</trans-unit>
-<trans-unit id="s8c9cf2c004755526">
-  <source>Google Workspace User(s)</source>
 </trans-unit>
 <trans-unit id="s03f42eea72154959">
   <source>Username</source>
@@ -2602,12 +2561,6 @@
   <source>Search base</source>
   <target>搜尋基礎</target>
 </trans-unit>
-<trans-unit id="s10092327ad833090">
-  <source>Microsoft Entra Group(s)</source>
-</trans-unit>
-<trans-unit id="s811c45ad24a5feae">
-  <source>Microsoft Entra User(s)</source>
-</trans-unit>
 <trans-unit id="s79dd6df244c05ae9">
   <source>Update Microsoft Entra Provider</source>
 </trans-unit>
@@ -2700,9 +2653,6 @@
 <trans-unit id="s1b783856ab4aaaf3">
   <source>No additional setup is required.</source>
   <target>無須額外設定。</target>
-</trans-unit>
-<trans-unit id="sc93712b5fbdc6810">
-  <source>Connection Token(s)</source>
 </trans-unit>
 <trans-unit id="s526a525cdc79bbdc">
   <source>Endpoint</source>
@@ -3074,10 +3024,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Members</source>
   <target>成員</target>
 </trans-unit>
-<trans-unit id="sec5cdfa358f9dbf7">
-  <source>Warning: Adding the user to the selected group(s) will give them superuser permissions.</source>
-  <target>警告：使用者加入到所選的群組將會賦予其超級使用者的權限。</target>
-</trans-unit>
 <trans-unit id="sb3087c7347bed341">
   <source>Company employees with access to the full enterprise feature set.</source>
 </trans-unit>
@@ -3143,10 +3089,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Edit User</source>
   <target>編輯使用者</target>
 </trans-unit>
-<trans-unit id="se291dfd2a59d7842">
-  <source>Policy binding(s)</source>
-  <target>政策附加</target>
-</trans-unit>
 <trans-unit id="sbad5b96fb855ef36">
   <source>No Policies bound.</source>
   <target>沒有已附加的政策。</target>
@@ -3211,12 +3153,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>NameID attribute</source>
   <target>NameID 特徵項</target>
 </trans-unit>
-<trans-unit id="sd000b42fea07c34a">
-  <source>SCIM Group(s)</source>
-</trans-unit>
-<trans-unit id="s146769fb55f1ee50">
-  <source>SCIM User(s)</source>
-</trans-unit>
 <trans-unit id="sc6c575c5ff64cdb1">
   <source>Update SCIM Provider</source>
   <target>更新 SCIM 供應商</target>
@@ -3251,10 +3187,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s0a3fdba3a68a2730">
   <source>Applications Documentation</source>
-</trans-unit>
-<trans-unit id="sd20f6cd02c90867f">
-  <source>Application(s)</source>
-  <target>應用程式</target>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
   <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
@@ -3298,9 +3230,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s86bee999b735111f">
   <source>Successfully created entitlement.</source>
-</trans-unit>
-<trans-unit id="s8a48455905fc14e6">
-  <source>Application entitlement(s)</source>
 </trans-unit>
 <trans-unit id="sae971cbff672090b">
   <source>Update Entitlement</source>
@@ -3444,9 +3373,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Update Device</source>
   <target>更新裝置</target>
 </trans-unit>
-<trans-unit id="sf655f75d8e14d5fe">
-  <source>Endpoint Device(s)</source>
-</trans-unit>
 <trans-unit id="sd667856c73082c35">
   <source>Device <x id="0" equiv-text="${this.device?.name}"/></source>
 </trans-unit>
@@ -3533,9 +3459,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s80b0feb2a6b98ef9">
   <source>Connectors</source>
 </trans-unit>
-<trans-unit id="s06b8c7e7fb99c1d8">
-  <source>Connector(s)</source>
-</trans-unit>
 <trans-unit id="s476ffc07e6d66f18">
   <source>Successfully updated token.</source>
   <target>成功更新權杖。</target>
@@ -3563,9 +3486,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Expiry date</source>
   <target>到期日</target>
 </trans-unit>
-<trans-unit id="se85e2f1923fd96ac">
-  <source>Enrollment Token(s)</source>
-</trans-unit>
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
   <target>複製權杖</target>
@@ -3578,9 +3498,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sbe0fb540e9dee187">
   <source>Create groups of devices to manage access.</source>
-</trans-unit>
-<trans-unit id="s7924cdccf3592aa8">
-  <source>Device Group(s)</source>
 </trans-unit>
 <trans-unit id="s24875d5475e82526">
   <source>Successfully updated source.</source>
@@ -4105,10 +4022,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.</source>
   <target>身分來源，既可以同步到 authentik 的資料庫，也能被使用者用來進行身分認證和註冊。</target>
 </trans-unit>
-<trans-unit id="s0a0ca63b967f1630">
-  <source>Source(s)</source>
-  <target>來源</target>
-</trans-unit>
 <trans-unit id="s66722bc2ea775e05">
   <source>Disabled</source>
   <target>已停用</target>
@@ -4275,10 +4188,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Control how authentik exposes and interprets information.</source>
   <target>控制 authentik 如何公開和解釋資訊。</target>
 </trans-unit>
-<trans-unit id="s59dc0eda07f9e2b6">
-  <source>Property Mapping(s)</source>
-  <target>屬性對應</target>
-</trans-unit>
 <trans-unit id="s7468e87263dfff7e">
   <source>Identifier</source>
   <target>識別碼</target>
@@ -4314,10 +4223,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sdcc7b2c109ce9775">
   <source>Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.</source>
   <target>權杖在整個 authentik 中用於電子郵件認證階段、救援金鑰和存取 API。</target>
-</trans-unit>
-<trans-unit id="s71dcd9cf808449aa">
-  <source>Token(s)</source>
-  <target>權杖</target>
 </trans-unit>
 <trans-unit id="sb15e8daacf26bdfc">
   <source>Create Token</source>
@@ -4492,9 +4397,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Default?</source>
   <target>是否為預設</target>
 </trans-unit>
-<trans-unit id="s02774bc46a167346">
-  <source>Brand(s)</source>
-</trans-unit>
 <trans-unit id="s8cb7bb82e96d5d77">
   <source>Policies</source>
   <target>政策</target>
@@ -4503,16 +4405,9 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.</source>
   <target>允許使用者根據屬性使用應用程式、執行密碼的標準，和有選擇性地應用在階段。</target>
 </trans-unit>
-<trans-unit id="se16ac750b81fa93d">
-  <source>Assigned to <x id="0" equiv-text="${item.boundTo}"/> object(s).</source>
-</trans-unit>
 <trans-unit id="s5a48d5171e1a1522">
   <source>Warning: Policy is not assigned.</source>
   <target>警告：政策未被分配。</target>
-</trans-unit>
-<trans-unit id="s00c8354318addfa0">
-  <source>Policy / Policies</source>
-  <target>政策</target>
 </trans-unit>
 <trans-unit id="s76da2c978dcc5ef4">
   <source>Successfully cleared policy cache</source>
@@ -4550,10 +4445,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Updated</source>
   <target>最後更新時間</target>
 </trans-unit>
-<trans-unit id="sa33d061d2ade20aa">
-  <source>Reputation</source>
-  <target>名譽</target>
-</trans-unit>
 <trans-unit id="sf0d94539428a0900">
   <source>Search for a group by name…</source>
 </trans-unit>
@@ -4571,10 +4462,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s62f93cfcb45d5a06">
   <source>Superuser privileges?</source>
   <target>是否擁有超級使用者權限</target>
-</trans-unit>
-<trans-unit id="s9fdda7ea4642306c">
-  <source>Group(s)</source>
-  <target>群組</target>
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
   <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
@@ -4623,10 +4510,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Email stage</source>
   <target>電子郵件階段</target>
 </trans-unit>
-<trans-unit id="sdb53ccdd6174e6e3">
-  <source>Successfully added user(s).</source>
-  <target>成功加入使用者</target>
-</trans-unit>
 <trans-unit id="s586d6bd2eca2da93">
   <source>Users</source>
   <target>使用者</target>
@@ -4637,13 +4520,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s424f57afae0caac4">
   <source>Add users</source>
   <target>新增使用者</target>
-</trans-unit>
-<trans-unit id="s7d499be3b781a3ca">
-  <source>User(s)</source>
-  <target>使用者</target>
-</trans-unit>
-<trans-unit id="s10154dbd4fbc697b">
-  <source>removed</source>
 </trans-unit>
 <trans-unit id="sf466142da6a65052">
   <source>Impersonate</source>
@@ -4765,10 +4641,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s441f155311f1748a">
   <source>User paths</source>
 </trans-unit>
-<trans-unit id="sa982875b258fea07">
-  <source>Successfully added user to group(s).</source>
-  <target>成功加入使用者到群組。</target>
-</trans-unit>
 <trans-unit id="s1bd5920d8adf2bd5">
   <source>Groups to add</source>
   <target>欲加入的群組</target>
@@ -4776,10 +4648,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sd9f67fbf3f86efcf">
   <source>Add group</source>
   <target>新增群組</target>
-</trans-unit>
-<trans-unit id="s5f71fa3c53828e30">
-  <source>Remove from Group(s)</source>
-  <target>從群組中移除</target>
 </trans-unit>
 <trans-unit id="sb4c9ed2a487b238f">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following groups?</source>
@@ -4808,23 +4676,12 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>ID Token</source>
   <target>ID 權杖</target>
 </trans-unit>
-<trans-unit id="s4a799b4562ab2051">
-  <source>Access Tokens(s)</source>
-</trans-unit>
-<trans-unit id="s90760e5e02e95dfe">
-  <source>Refresh Tokens(s)</source>
-  <target>重新整理權杖</target>
-</trans-unit>
 <trans-unit id="s1b88fa3df4423292">
   <source>Last IP</source>
   <target>最後登入的 IP</target>
 </trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
-</trans-unit>
-<trans-unit id="se63f9d833700af49">
-  <source>Session(s)</source>
-  <target>會談</target>
 </trans-unit>
 <trans-unit id="sf679b7a62808287e">
   <source>Expiry</source>
@@ -4833,13 +4690,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sde1907073fd96017">
   <source>(Current session)</source>
   <target>(正在使用的會談)</target>
-</trans-unit>
-<trans-unit id="s76881c01b6a3a8c7">
-  <source>Consent(s)</source>
-  <target>同意</target>
-</trans-unit>
-<trans-unit id="s23446284b56ca0cc">
-  <source>Reputation score(s)</source>
 </trans-unit>
 <trans-unit id="sd2208cd1a767644b">
   <source>Disconnect</source>
@@ -4884,10 +4734,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sbfee780fa0a2c83e">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
-</trans-unit>
-<trans-unit id="sa0b01f479f40c52d">
-  <source>Device(s)</source>
-  <target>裝置</target>
 </trans-unit>
 <trans-unit id="sd1f44f1a8bc20e67">
   <source>Email</source>
@@ -4956,10 +4802,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s3484b1e6d0b5335f">
   <source>Manage roles which grant permissions to objects within authentik.</source>
   <target>在 authentik 中管理角色來賦予物件權限。</target>
-</trans-unit>
-<trans-unit id="s259de999919316db">
-  <source>Role(s)</source>
-  <target>角色</target>
 </trans-unit>
 <trans-unit id="s6ea6a64acb45dfdf">
   <source>Successfully updated initial permissions.</source>
@@ -5042,10 +4884,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s4aee34a672e5cfc0">
   <source>Created by</source>
   <target>建立者</target>
-</trans-unit>
-<trans-unit id="sd5ba2d61ee4796fe">
-  <source>Invitation(s)</source>
-  <target>邀請函</target>
 </trans-unit>
 <trans-unit id="s96dcf7ec8342c335">
   <source>Invitation not limited to any flow, and can be used with any enrollment flow.</source>
@@ -5242,10 +5080,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s41b105819b67ee7a">
   <source>Stages</source>
   <target>階段</target>
-</trans-unit>
-<trans-unit id="sec7443a45fd141e5">
-  <source>Prompt(s)</source>
-  <target>提示</target>
 </trans-unit>
 <trans-unit id="s61b6f3e6bc59c6dd">
   <source>Create Prompt</source>
@@ -5864,10 +5698,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s03e4044abe0b556c">
   <source>User database + Kerberos password</source>
 </trans-unit>
-<trans-unit id="sdc30bddeda2f0225">
-  <source>Validate the user's password against the selected backend(s).</source>
-  <target>由選擇的後端來驗證使用者密碼。</target>
-</trans-unit>
 <trans-unit id="sb8d4f44a1d5b9a14">
   <source>Backends</source>
   <target>後端</target>
@@ -5882,10 +5712,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s77994108c886b965">
   <source>Failed attempts before cancel</source>
   <target>取消前可嘗試的次數</target>
-</trans-unit>
-<trans-unit id="sa9020b93c3bd7235">
-  <source>How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.</source>
-  <target>在取消流程前使用者嘗試的次數。要鎖定使用者請使用名譽政策和 user_write 階段。</target>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
@@ -6154,9 +5980,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Automatic import</source>
   <target>自動匯入</target>
 </trans-unit>
-<trans-unit id="s77299a9d3dd932cd">
-  <source>Successfully imported <x id="0" equiv-text="${res.count}"/> devices.</source>
-</trans-unit>
 <trans-unit id="s6a615f6165ef01c9">
   <source>Start automatic import</source>
   <target>開始自動匯入</target>
@@ -6181,10 +6004,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sb69a4b0acd0895f2">
   <source>Flows</source>
   <target>流程</target>
-</trans-unit>
-<trans-unit id="s0eaf755fa88c8d97">
-  <source>Stage(s)</source>
-  <target>階段</target>
 </trans-unit>
 <trans-unit id="s3914cb410fca44d4">
   <source>Import</source>
@@ -6289,10 +6108,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
   <target>流程描述了一系列階段，用於認證、註冊或救援使用者。根據應用於它們的政策選擇階段。</target>
 </trans-unit>
-<trans-unit id="s6f857299d5db1ecf">
-  <source>Flow(s)</source>
-  <target>流程</target>
-</trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
   <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
@@ -6323,10 +6138,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Are you sure you want to clear the flow cache?
             This will cause all flows to be re-evaluated on their next usage.</source>
   <target>您確定要清除流程快取嗎？這將導致所有流程在下次使用時重新評估。</target>
-</trans-unit>
-<trans-unit id="sbe47a5bdeec19ab0">
-  <source>Stage binding(s)</source>
-  <target>階段附加</target>
 </trans-unit>
 <trans-unit id="sfa88f413e287bb0f">
   <source>Stage type</source>
@@ -6464,10 +6275,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Define how notifications are sent to users, like Email or Webhook.</source>
   <target>定義如何向使用者傳送通知，例如電子郵件或 Webhook。</target>
 </trans-unit>
-<trans-unit id="s624256f8a4bb4c89">
-  <source>Notification transport(s)</source>
-  <target>通知通道</target>
-</trans-unit>
 <trans-unit id="s0a39e4f61ccafacb">
   <source>Successfully updated rule.</source>
   <target>成功更新規則。</target>
@@ -6511,15 +6318,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sf3f9a0feaf083207">
   <source>Sent to group</source>
   <target>已發送到群組</target>
-</trans-unit>
-<trans-unit id="sc92ed9d5e01d3f24">
-  <source>Notification rule(s)</source>
-  <target>通知規則</target>
-</trans-unit>
-<trans-unit id="s5795b310ab271d20">
-  <source>These bindings control upon which events this rule triggers.
-Bindings to groups/users are checked against the user of the event.</source>
-  <target>這些附加控制了此規則觸發的事件。附加到群組或使用者的條件會根據事件的使用者來檢查。</target>
 </trans-unit>
 <trans-unit id="s90c3b62194fe8508">
   <source>Outpost Deployment Info</source>
@@ -6617,10 +6415,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>No integration active</source>
   <target>沒有啟用的整合</target>
 </trans-unit>
-<trans-unit id="s1d49ec5030447643">
-  <source>Outpost(s)</source>
-  <target>Outpost(s)</target>
-</trans-unit>
 <trans-unit id="sdc1ef94016f0d855">
   <source>Successfully updated integration.</source>
   <target>成功更新整合。</target>
@@ -6679,10 +6473,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sb96629f50f2e7fab">
   <source>Unhealthy</source>
   <target>不健康</target>
-</trans-unit>
-<trans-unit id="sa8e255492bb6ae0d">
-  <source>Outpost integration(s)</source>
-  <target>Outpost 整合</target>
 </trans-unit>
 <trans-unit id="s9d18948d25c68d66">
   <source>Successfully generated certificate-key pair.</source>
@@ -6971,12 +6761,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Last applied</source>
   <target>最後應用時間</target>
 </trans-unit>
-<trans-unit id="s2708cac1f4942708">
-  <source>Blueprint(s)</source>
-  <target>藍圖</target>
-</trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+  <source>Apply "<x id="0" equiv-text="${name}"/>" blueprint</source>
 </trans-unit>
 <trans-unit id="sb8f855b49234b81b">
   <source>Apply</source>
@@ -7030,10 +6816,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sf9ebf11ac2645820">
   <source>No licenses found.</source>
   <target>找不到授權許可證。</target>
-</trans-unit>
-<trans-unit id="sd49099e9522635f4">
-  <source>License(s)</source>
-  <target>授權許可證</target>
 </trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
@@ -7092,15 +6874,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Enterprise</source>
   <target>企業版</target>
 </trans-unit>
-<trans-unit id="sd51d6a39208696cc">
-  <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
-</trans-unit>
-<trans-unit id="scce64bcfb0a73ad7">
-  <source>Expand <x id="0" equiv-text="${this.label}"/></source>
-</trans-unit>
-<trans-unit id="sfe1fb536cab6c0f5">
-  <source><x id="0" equiv-text="${this.label}"/> navigation</source>
-</trans-unit>
 <trans-unit id="s8849ece8c65e3a18">
   <source>Dashboards</source>
   <target>儀表板</target>
@@ -7142,12 +6915,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7df5b92a3f93544f">
   <source>Warning: The current user count has exceeded the configured licenses.</source>
   <target>警告：目前的使用者人數已抵達設設定的授權許可上限。</target>
-</trans-unit>
-<trans-unit id="s9f4d6296b906d591">
-  <source>Warning: One or more license(s) have expired.</source>
-</trans-unit>
-<trans-unit id="s3b016caea59af3ef">
-  <source>Warning: One or more license(s) will expire within the next 2 weeks.</source>
 </trans-unit>
 <trans-unit id="sd8a5f7269b7ac7a3">
   <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
@@ -7199,17 +6966,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Notifications</source>
   <target>通知</target>
 </trans-unit>
-<trans-unit id="sf1a3d030efd11f28">
-  <source>Open about dialog</source>
-</trans-unit>
-<trans-unit id="s95b96d7ead27527f">
-  <source>Product name</source>
-</trans-unit>
-<trans-unit id="s68b6d404c3349b18">
-  <source>Product version</source>
-</trans-unit>
 <trans-unit id="s358e08de4fbebf51">
-  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent}"/></source>
 </trans-unit>
 <trans-unit id="se0d7715f3211d220">
   <source>Global navigation</source>
@@ -7638,9 +7396,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s28b99b59541f54ca">
   <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
 </trans-unit>
-<trans-unit id="s7c7d956418e1c8c8">
-  <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
-</trans-unit>
 <trans-unit id="sfc003381f593d943">
   <source>Connecting...</source>
 </trans-unit>
@@ -7811,12 +7566,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s42d82601762f5321">
   <source>Manage uploaded files.</source>
 </trans-unit>
-<trans-unit id="saad01178f02a6a23">
-  <source>file</source>
-</trans-unit>
-<trans-unit id="s69f800801812a5f0">
-  <source>files</source>
-</trans-unit>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
 </trans-unit>
@@ -7895,18 +7644,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
 </trans-unit>
-<trans-unit id="s11a2ac9f2bd811d8">
-  <source>Delete Object Permission</source>
-</trans-unit>
-<trans-unit id="s78aa910bcb26034d">
-  <source>Global and object permission</source>
-</trans-unit>
-<trans-unit id="sc8f73affccb6ae4d">
-  <source>Global permission</source>
-</trans-unit>
-<trans-unit id="scf9ebad133d2d561">
-  <source>Object permission</source>
-</trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
 </trans-unit>
@@ -7952,9 +7689,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se14ede3bc78d9599">
   <source>Primary</source>
 </trans-unit>
-<trans-unit id="sc67ff7b2278e81e4">
-  <source>Remove User(s)</source>
-</trans-unit>
 <trans-unit id="s76e10cbcb80c3a64">
   <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
 </trans-unit>
@@ -7964,17 +7698,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
 </trans-unit>
-<trans-unit id="sed582fb69fd1eed8">
-  <source>Successfully added user to role(s).</source>
-</trans-unit>
 <trans-unit id="s78daaa3ef4325cac">
   <source>Roles to add</source>
 </trans-unit>
 <trans-unit id="sca5f586369a597a4">
   <source>Add role</source>
-</trans-unit>
-<trans-unit id="sd8b8f59ad30971f7">
-  <source>Remove from Role(s)</source>
 </trans-unit>
 <trans-unit id="s5fcb76c89d17698c">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following roles?</source>
@@ -8008,9 +7736,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s21c76a0f6cae7920">
   <source>Row actions</source>
-</trans-unit>
-<trans-unit id="s97aa774d38013957">
-  <source>Data export(s)</source>
 </trans-unit>
 <trans-unit id="s694b2e2c53d2d85d">
   <source>Query parameters</source>
@@ -8196,10 +7921,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sea858aeacf6ae9b0">
   <source>No User Tokens enrolled.</source>
 </trans-unit>
-<trans-unit id="notification-unread-count">
-  <source><x id="0" equiv-text="${unreadCount}"/> unread</source>
-  <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
-</trans-unit>
 <trans-unit id="s42636dae6e29892e">
   <source>Agent version: <x id="0" equiv-text="${vendorData.agent_version ?? &quot;-&quot;}"/></source>
 </trans-unit>
@@ -8238,18 +7959,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>A verification token has been sent to your email address.</source>
   <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
 </trans-unit>
-<trans-unit id="user.library.application-count-singular-with-query">
-  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="user.library.application-count-plural-with-query">
-  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="user.library.application-count-singular">
-  <source><x id="0" equiv-text="${count}"/> application available</source>
-</trans-unit>
-<trans-unit id="user.library.application-count-plural">
-  <source><x id="0" equiv-text="${count}"/> applications available</source>
-</trans-unit>
 <trans-unit id="user.library.search.type-to-filter-hint">
   <source>Type to filter applications</source>
   <note from="lit-localize">Screen reader hint to inform the user they can filter the application list by typing</note>
@@ -8269,17 +7978,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc1e9c9bab6765c74">
   <source>Active Sessions</source>
 </trans-unit>
-<trans-unit id="s83991563e9d607ac">
-  <source>Successfully revoked <x id="0" equiv-text="${this.revokedCount}"/> session(s) for <x id="1" equiv-text="${this.users.length}"/> user(s)</source>
-</trans-unit>
 <trans-unit id="s4b004192e4d6ab2e">
   <source>Failed to revoke sessions: <x id="0" equiv-text="${e.toString()}"/></source>
 </trans-unit>
 <trans-unit id="sb458ffb37cbde768">
   <source>Revoke Sessions</source>
-</trans-unit>
-<trans-unit id="s1bd2d0f088b75b92">
-  <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${this.users.length}"/> user(s)?</source>
 </trans-unit>
 <trans-unit id="s5c5e74eabcb9eba1">
   <source>This will force the selected users to re-authenticate on all their devices.</source>
@@ -8397,26 +8100,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${formatAPISource()}&lt;/a&#10;                                                &gt;.`}"/></source>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${apiSourceLabel}&lt;/a&#10;                                                &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
-</trans-unit>
-<trans-unit id="s3934affe32f6a454">
-  <source><x id="0" equiv-text="${availableCount}"/> item marked to add.</source>
-</trans-unit>
-<trans-unit id="s8b68948382758d57">
-  <source><x id="0" equiv-text="${availableCount}"/> items marked to add.</source>
-</trans-unit>
-<trans-unit id="s3a482e34c3713e41">
-  <source><x id="0" equiv-text="${selectedTotal}"/> item selected.</source>
-</trans-unit>
-<trans-unit id="s726a7342e18dc660">
-  <source><x id="0" equiv-text="${selectedTotal}"/> items selected.</source>
-</trans-unit>
-<trans-unit id="s403a360d48a11d5f">
-  <source><x id="0" equiv-text="${selectedCount}"/> item marked to remove.</source>
-</trans-unit>
-<trans-unit id="s2e92b61847f32e72">
-  <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
 </trans-unit>
 <trans-unit id="sa5d4a82c5daae3de">
   <source>Reply URL</source>
@@ -8607,9 +8292,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s24cc4e5aa6446401">
   <source>Schedule periodic reviews for objects in authentik.</source>
 </trans-unit>
-<trans-unit id="s468f705986fff045">
-  <source>Lifecycle rule(s)</source>
-</trans-unit>
 <trans-unit id="s9279704dfc98cdf9">
   <source>No reviews yet.</source>
 </trans-unit>
@@ -8624,18 +8306,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5754eb43287dd6e5">
   <source>No review iteration found for this object.</source>
-</trans-unit>
-<trans-unit id="s68ea8ed25680242f">
-  <source>At least <x id="0" equiv-text="${minReviewers}"/> user from this group: <x id="1" equiv-text="${groupList}"/>.</source>
-</trans-unit>
-<trans-unit id="sd9e03fcf99724085">
-  <source>At least <x id="0" equiv-text="${minReviewers}"/> user from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
-</trans-unit>
-<trans-unit id="sbbaa87f8826a0756">
-  <source>At least <x id="0" equiv-text="${minReviewers}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
-</trans-unit>
-<trans-unit id="s79ef398b6e3e2c44">
-  <source>At least <x id="0" equiv-text="${minReviewers}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
 </trans-unit>
 <trans-unit id="s33d20c1a2e0bf773">
   <source>Review opened on</source>
@@ -8734,9 +8404,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="safcbc1ba006eba57">
   <source>Please enter at least one email address</source>
-</trans-unit>
-<trans-unit id="s0f957a7b0725a6dd">
-  <source>Invitation emails queued for sending to <x id="0" equiv-text="${addresses.length}"/> recipient(s). Check the System Tasks for more information.</source>
 </trans-unit>
 <trans-unit id="s27c34847aec88ec6">
   <source>Failed to queue invitation emails: <x id="0" equiv-text="${error}"/></source>
@@ -9026,9 +8693,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="command-palette.prefix.reloads-page">
   <source>Reloads page</source>
 </trans-unit>
-<trans-unit id="s35ed5cf95b0c7262">
-  <source>authentik information</source>
-</trans-unit>
 <trans-unit id="s55402a876309f95b">
   <source>Landmark: <x id="0" equiv-text="${capitalCase(this.pageIdentifier)}"/></source>
 </trans-unit>
@@ -9125,9 +8789,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa79a733d1d6ea7ca">
   <source>When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.</source>
 </trans-unit>
-<trans-unit id="sd70c33ce20f4221f">
-  <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${totalCount}"/> instances are healthy.</source>
-</trans-unit>
 <trans-unit id="sc1006ec5976bf600">
   <source>Federated OAuth2/OpenID Providers</source>
 </trans-unit>
@@ -9136,9 +8797,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s83cb0a6bd0b57d0c">
   <source>Verify Push stream endpoints' certificate</source>
-</trans-unit>
-<trans-unit id="s2044fd89e1e779ff">
-  <source>Stream(s)</source>
 </trans-unit>
 <trans-unit id="sdbfc37eb5da37686">
   <source>Delivery method</source>
@@ -9170,9 +8828,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s0e1a87cb82be68ac">
   <source>No connectivity status available.</source>
 </trans-unit>
-<trans-unit id="sf053496846861a89">
-  <source>LDAP Group(s)</source>
-</trans-unit>
 <trans-unit id="s08d22cb65d51ec12">
   <source>Connect Group</source>
 </trans-unit>
@@ -9181,9 +8836,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf5c3def20e22e0ac">
   <source>The unique identifier of this object in LDAP, the value of the '<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>' attribute.</source>
-</trans-unit>
-<trans-unit id="s6e982a7b2b65c859">
-  <source>LDAP User(s)</source>
 </trans-unit>
 <trans-unit id="s37d7a0b00f4f6378">
   <source>Connect User</source>
@@ -9797,9 +9449,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="used-by.consequence.unrecognized">
   <source><x id="0" equiv-text="${verboseName}"/> has an unrecognized relationship (check logs)</source>
 </trans-unit>
-<trans-unit id="s539942ab7cc7210e">
-  <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/></source>
-</trans-unit>
 <trans-unit id="sc420894701de5ea3">
   <source>Modify</source>
 </trans-unit>
@@ -9829,14 +9478,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Unknown user</source>
   <note from="lit-localize">Placeholder for an unknown user, in the format 'Unknown user'.</note>
 </trans-unit>
-<trans-unit id="usedBy.count.other">
-  <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${usedByList.length}"/> objects.</source>
-  <note from="lit-localize">Plural: N objects use this entity.</note>
-</trans-unit>
-<trans-unit id="usedBy.count.one">
-  <source><x id="0" equiv-text="${verboseName}"/> is associated with one object.</source>
-  <note from="lit-localize">Singular: exactly one object uses this entity.</note>
-</trans-unit>
 <trans-unit id="table.empty">
   <source>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</source>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
@@ -9848,10 +9489,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="used-by-list-item">
   <source><x id="0" equiv-text="${formattedName}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
   <note from="lit-localize">Used in list item, showing the name of the object and the consequence of deletion.</note>
-</trans-unit>
-<trans-unit id="usedBy.count.zero">
-  <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
-  <note from="lit-localize">Zero: no objects use this entity.</note>
 </trans-unit>
 <trans-unit id="s78a13f8f08d3a317">
   <source>Authorization Code</source>
@@ -10214,7 +9851,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="captcha.provider-link.cap">
   <source>Use the
-                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;`}"/>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${apiSourceLabel}&lt;/a&#10;                                            &gt;`}"/>
                                             to self-host Cap and configure the endpoint.</source>
   <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
 </trans-unit>
@@ -10272,10 +9909,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="table.emptyState.search">
   <source>No <x id="0" equiv-text="${singularNoun}"/> matches "<x id="1" equiv-text="${truncateWords(this.search, 50)}"/>"</source>
   <note from="lit-localize">Empty state message when no objects match the search query, where the entity singular is interpolated, followed by the search query truncated to 50 characters.</note>
-</trans-unit>
-<trans-unit id="wizard.header.verbose-name.one">
-  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
-  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
 </trans-unit>
 <trans-unit id="tokens.copy-button.label">
   <source>Copy token</source>
@@ -10467,9 +10100,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s0b9470a6fac5a80b">
   <source>Object attributes</source>
 </trans-unit>
-<trans-unit id="s25fb1e88492eba62">
-  <source>Object Attribute(s)</source>
-</trans-unit>
 <trans-unit id="sc8d9d9b824e7e8e9">
   <source>New Attribute</source>
 </trans-unit>
@@ -10545,17 +10175,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="scae52d94b155a605">
   <source>Scheduled by</source>
 </trans-unit>
-<trans-unit id="s116de51b09153006">
-  <source>Offboarding(s)</source>
-</trans-unit>
-<trans-unit id="see8b386a20d5d43a">
-  <source>canceled</source>
-</trans-unit>
 <trans-unit id="sdaf25bddf0323e13">
   <source>Cancel Offboardings</source>
-</trans-unit>
-<trans-unit id="s3dfc819b4986e252">
-  <source>Cancel Offboarding</source>
 </trans-unit>
 <trans-unit id="s78636b92c1a3909c">
   <source>Pending</source>
@@ -10722,17 +10343,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s312cccc7c299a685">
   <source>Are you sure you want to revoke this grant? Access will be removed immediately.</source>
 </trans-unit>
-<trans-unit id="sf4cfca0c6dcd5cc8">
-  <source>Entitlement(s)</source>
-</trans-unit>
-<trans-unit id="s98b0bb374889b323">
-  <source>Request rule binding(s)</source>
-</trans-unit>
 <trans-unit id="sd700d2a7e8fe68e7">
   <source>Bind existing rule</source>
-</trans-unit>
-<trans-unit id="s84d52a11b0a6dbd2">
-  <source>These bindings control which users/groups can request access to this object.</source>
 </trans-unit>
 <trans-unit id="s3c7ee40c88248316">
   <source>No request rules bound.</source>
@@ -10814,12 +10426,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5b612c6c619807b0">
   <source>Bound to</source>
-</trans-unit>
-<trans-unit id="s0a6c5f79e64745b8">
-  <source>Request rule(s)</source>
-</trans-unit>
-<trans-unit id="s569fd8461083ddc0">
-  <source><x id="0" equiv-text="${item.targets.length}"/> object(s)</source>
 </trans-unit>
 <trans-unit id="s2479a752090884e8">
   <source>These bindings control which users/groups can approve requests.</source>
@@ -11123,9 +10729,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s4eb514ebcb80553d">
   <source>Parent</source>
 </trans-unit>
-<trans-unit id="s9e5233ef650728d6">
-  <source>Agent(s)</source>
-</trans-unit>
 <trans-unit id="user.activation.confirm.deactivate">
   <source>Are you sure you want to deactivate <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</source>
 </trans-unit>
@@ -11141,17 +10744,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="agent.column.actions">
   <source>Actions</source>
 </trans-unit>
-<trans-unit id="agent.delete.object-label">
-  <source>Agent(s)</source>
-</trans-unit>
 <trans-unit id="agent.delete.trigger">
   <source>Delete</source>
 </trans-unit>
 <trans-unit id="agent.expires.never">
   <source>-</source>
-</trans-unit>
-<trans-unit id="agent.delete.object-label-single">
-  <source>Agent</source>
 </trans-unit>
 <trans-unit id="agent.delete.tooltip">
   <source>Delete</source>
@@ -11528,6 +11125,897 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sbf0ff47d8bff9545">
   <source>Click here for the changelog.</source>
 </trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-44.label">
+  <source>ML-DSA-44</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-65.label">
+  <source>ML-DSA-65</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-87.label">
+  <source>ML-DSA-87</source>
+</trans-unit>
+<trans-unit id="sfdcaa7f363be0c81">
+  <source>Encryption algorithm</source>
+</trans-unit>
+<trans-unit id="s53b68dd0954af12d">
+  <source>Block cipher used to encrypt the assertion.</source>
+</trans-unit>
+<trans-unit id="permissions.aria.universal">
+  <source>Global and object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.universal">
+  <source>object + global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.global">
+  <source>Global permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.global">
+  <source>global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.object">
+  <source>Object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.object">
+  <source>object</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.role">
+  <source>Role</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.permissions">
+  <source>Permissions</source>
+</trans-unit>
+<trans-unit id="permission.sort.by-name">
+  <source>By name</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-first">
+  <source>Assigned first</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-only">
+  <source>Assigned only</source>
+</trans-unit>
+<trans-unit id="permissions.filter.show-assigned">
+  <source>Sort and filter</source>
+</trans-unit>
+<trans-unit id="permissions.delete.meta-data">
+  <source>Permission</source>
+</trans-unit>
+<trans-unit id="permissions.delete.button">
+  <source>Delete object permission</source>
+</trans-unit>
+<trans-unit id="s679140171e483ff5">
+  <source>Changes to system settings will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="se7820c791adf0953">
+  <source>Changes to brands will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="sde7cf26113f800fb">
+  <source>Selected providers can exchange their JWTs for a SAML Response of this provider via token exchange.</source>
+</trans-unit>
+<trans-unit id="s42cebc8c4e28982e">
+  <source>This security key is already registered on your account. Touch a different key to add it.</source>
+</trans-unit>
+<trans-unit id="sidebar.notice.enterprise-only">
+  <source>Enterprise</source>
+</trans-unit>
+<trans-unit id="array-input.validation.invalid-entry">
+  <source>One or more entries are invalid.</source>
+</trans-unit>
+<trans-unit id="array-input.remove.aria-label">
+  <source>Remove entry</source>
+</trans-unit>
+<trans-unit id="sa3b6915ea75108da">
+  <source>Custom permissions</source>
+</trans-unit>
+<trans-unit id="s485485e456e22baa">
+  <source>Let custom permission checks override access control decisions made by authentik.</source>
+</trans-unit>
+<trans-unit id="applications.verbose-name.label">
+  <source>Application</source>
+</trans-unit>
+<trans-unit id="applications.verbose-name-plural.label">
+  <source>Applications</source>
+</trans-unit>
+<trans-unit id="application-entitlements.verbose-name.label">
+  <source>Application entitlement</source>
+</trans-unit>
+<trans-unit id="application-entitlements.verbose-name-plural.label">
+  <source>Application entitlements</source>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.outpost.description">
+  <source>This provider must be assigned to an outpost before users can access the application.</source>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.view-provider.label">
+  <source>View Provider</source>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.outposts.label">
+  <source>Go to Outposts</source>
+</trans-unit>
+<trans-unit id="blueprints.verbose-name.label">
+  <source>Blueprint</source>
+</trans-unit>
+<trans-unit id="blueprints.verbose-name-plural.label">
+  <source>Blueprints</source>
+</trans-unit>
+<trans-unit id="s97cc54c7d1813837">
+  <source>OCI manifest</source>
+</trans-unit>
+<trans-unit id="brands.verbose-name.label">
+  <source>Brand</source>
+</trans-unit>
+<trans-unit id="brands.verbose-name-plural.label">
+  <source>Brands</source>
+</trans-unit>
+<trans-unit id="certificate-key-pairs.verbose-name.label">
+  <source>Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="certificate-key-pairs.verbose-name-plural.label">
+  <source>Certificate-Key Pairs</source>
+</trans-unit>
+<trans-unit id="s6ad8e2906d8a7153">
+  <source>Successfully updated Microsoft Intune connector.</source>
+</trans-unit>
+<trans-unit id="scb7bb1ca1fa8bd20">
+  <source>Successfully created Microsoft Intune connector.</source>
+</trans-unit>
+<trans-unit id="s7b847d8e57e7e115">
+  <source>Microsoft Intune settings</source>
+</trans-unit>
+<trans-unit id="sa95334c5ec254a2c">
+  <source>ID of the tenant.</source>
+</trans-unit>
+<trans-unit id="s42c83d9f0cb85542">
+  <source>Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. If none are selected, the client certificates configured on the brand are used.</source>
+</trans-unit>
+<trans-unit id="device-access-groups.verbose-name.label">
+  <source>Device Group</source>
+</trans-unit>
+<trans-unit id="device-access-groups.verbose-name-plural.label">
+  <source>Device Groups</source>
+</trans-unit>
+<trans-unit id="endpoint-devices.verbose-name.label">
+  <source>Endpoint Device</source>
+</trans-unit>
+<trans-unit id="endpoint-devices.verbose-name-plural.label">
+  <source>Endpoint Devices</source>
+</trans-unit>
+<trans-unit id="enterprise-licenses.verbose-name.label">
+  <source>License</source>
+</trans-unit>
+<trans-unit id="enterprise-licenses.verbose-name-plural.label">
+  <source>Licenses</source>
+</trans-unit>
+<trans-unit id="data-exports.verbose-name.label">
+  <source>Data export</source>
+</trans-unit>
+<trans-unit id="data-exports.verbose-name-plural.label">
+  <source>Data exports</source>
+</trans-unit>
+<trans-unit id="notification-rules.verbose-name.label">
+  <source>Notification rule</source>
+</trans-unit>
+<trans-unit id="notification-rules.verbose-name-plural.label">
+  <source>Notification rules</source>
+</trans-unit>
+<trans-unit id="s84eec986af7ea820">
+  <source>These bindings control upon which events this rule triggers.
+                Bindings to groups/users are checked against the user of the event.</source>
+</trans-unit>
+<trans-unit id="notification-transports.verbose-name.label">
+  <source>Notification transport</source>
+</trans-unit>
+<trans-unit id="notification-transports.verbose-name-plural.label">
+  <source>Notification transports</source>
+</trans-unit>
+<trans-unit id="files.verbose-name.label">
+  <source>File</source>
+</trans-unit>
+<trans-unit id="files.verbose-name-plural.label">
+  <source>Files</source>
+</trans-unit>
+<trans-unit id="stage-bindings.verbose-name.label">
+  <source>Stage binding</source>
+</trans-unit>
+<trans-unit id="stage-bindings.verbose-name-plural.label">
+  <source>Stage bindings</source>
+</trans-unit>
+<trans-unit id="flows.verbose-name.label">
+  <source>Flow</source>
+</trans-unit>
+<trans-unit id="flows.verbose-name-plural.label">
+  <source>Flows</source>
+</trans-unit>
+<trans-unit id="groups.verbose-name.label">
+  <source>Group</source>
+</trans-unit>
+<trans-unit id="groups.verbose-name-plural.label">
+  <source>Groups</source>
+</trans-unit>
+<group id="groups.add-user.success" restype="x-gettext-plurals">
+  <trans-unit id="groups.add-user.success[0]" xml:space="preserve">
+    <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> groups.</source>
+  </trans-unit>
+</group>
+<group id="users.add-related.success" restype="x-gettext-plurals">
+  <trans-unit id="users.add-related.success[0]" xml:space="preserve">
+    <source>Successfully added <x id="0" equiv-text="${formattedCount}"/> users.</source>
+  </trans-unit>
+</group>
+<trans-unit id="users.verbose-name.label">
+  <source>User</source>
+</trans-unit>
+<trans-unit id="users.verbose-name-plural.label">
+  <source>Users</source>
+</trans-unit>
+<trans-unit id="lifecycle-rules.verbose-name.label">
+  <source>Lifecycle rule</source>
+</trans-unit>
+<trans-unit id="lifecycle-rules.verbose-name-plural.label">
+  <source>Lifecycle rules</source>
+</trans-unit>
+<group id="lifecycle.review.min-reviewers.single-group" restype="x-gettext-plurals">
+  <trans-unit id="lifecycle.review.min-reviewers.single-group[0]" xml:space="preserve">
+    <source>At least <x id="0" equiv-text="${formattedCount}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+  </trans-unit>
+</group>
+<group id="lifecycle.review.min-reviewers.multiple-groups" restype="x-gettext-plurals">
+  <trans-unit id="lifecycle.review.min-reviewers.multiple-groups[0]" xml:space="preserve">
+    <source>At least <x id="0" equiv-text="${formattedCount}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+  </trans-unit>
+</group>
+<trans-unit id="offboarding.verbose-name.label">
+  <source>Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.verbose-name-plural.label">
+  <source>Offboardings</source>
+</trans-unit>
+<trans-unit id="object-attributes.verbose-name.label">
+  <source>Object Attribute</source>
+</trans-unit>
+<trans-unit id="object-attributes.verbose-name-plural.label">
+  <source>Object Attributes</source>
+</trans-unit>
+<trans-unit id="outposts.verbose-name.label">
+  <source>Outpost</source>
+</trans-unit>
+<trans-unit id="outposts.verbose-name-plural.label">
+  <source>Outposts</source>
+</trans-unit>
+<group id="outposts.health.summary" restype="x-gettext-plurals">
+  <trans-unit id="outposts.health.summary[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${formattedCount}"/> instances are healthy.</source>
+  </trans-unit>
+</group>
+<trans-unit id="outpost-integrations.verbose-name.label">
+  <source>Outpost integration</source>
+</trans-unit>
+<trans-unit id="outpost-integrations.verbose-name-plural.label">
+  <source>Outpost integrations</source>
+</trans-unit>
+<trans-unit id="policy-bindings.verbose-name.label">
+  <source>Policy binding</source>
+</trans-unit>
+<trans-unit id="policy-bindings.verbose-name-plural.label">
+  <source>Policy bindings</source>
+</trans-unit>
+<trans-unit id="policies.bindings.mode.label">
+  <source>Mode</source>
+</trans-unit>
+<trans-unit id="policies.bindings.dry-run.view-results.label">
+  <source>View dry-run results</source>
+</trans-unit>
+<trans-unit id="policies.bindings.enforced.label">
+  <source>Enforced</source>
+</trans-unit>
+<trans-unit id="policies.verbose-name.label">
+  <source>Policy</source>
+</trans-unit>
+<trans-unit id="policies.verbose-name-plural.label">
+  <source>Policies</source>
+</trans-unit>
+<group id="policies.bound-to.label" restype="x-gettext-plurals">
+  <trans-unit id="policies.bound-to.label[0]" xml:space="preserve">
+    <source>Assigned to <x id="0" equiv-text="${formattedCount}"/> objects.</source>
+  </trans-unit>
+</group>
+<trans-unit id="policies.bindings.dry-run.description">
+  <source>Evaluate this binding without including its result or messages in the final decision.
+            Results are recorded in the <x id="0" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;events/log&quot;)}&quot;&gt;"/>Event Log<x id="1" equiv-text="&lt;/a&gt;"/>.
+            Expression policies can still make network requests, create events, or modify data.</source>
+</trans-unit>
+<trans-unit id="policy-bindings.label">
+  <source>Policy bindings</source>
+</trans-unit>
+<trans-unit id="reputation-scores.verbose-name.label">
+  <source>Reputation score</source>
+</trans-unit>
+<trans-unit id="reputation-scores.verbose-name-plural.label">
+  <source>Reputation scores</source>
+</trans-unit>
+<trans-unit id="property-mappings.verbose-name.label">
+  <source>Property Mapping</source>
+</trans-unit>
+<trans-unit id="property-mappings.verbose-name-plural.label">
+  <source>Property Mappings</source>
+</trans-unit>
+<trans-unit id="google-workspace.groups.verbose-name.label">
+  <source>Google Workspace Group</source>
+</trans-unit>
+<trans-unit id="google-workspace.groups.verbose-name-plural.label">
+  <source>Google Workspace Groups</source>
+</trans-unit>
+<trans-unit id="google-workspace.users.verbose-name.label">
+  <source>Google Workspace User</source>
+</trans-unit>
+<trans-unit id="google-workspace.users.verbose-name-plural.label">
+  <source>Google Workspace Users</source>
+</trans-unit>
+<trans-unit id="microsoft-entra.groups.verbose-name.label">
+  <source>Microsoft Entra Group</source>
+</trans-unit>
+<trans-unit id="microsoft-entra.groups.verbose-name-plural.label">
+  <source>Microsoft Entra Groups</source>
+</trans-unit>
+<trans-unit id="microsoft-entra.users.verbose-name.label">
+  <source>Microsoft Entra User</source>
+</trans-unit>
+<trans-unit id="microsoft-entra.users.verbose-name-plural.label">
+  <source>Microsoft Entra Users</source>
+</trans-unit>
+<trans-unit id="providers.verbose-name.label">
+  <source>Provider</source>
+</trans-unit>
+<trans-unit id="providers.verbose-name-plural.label">
+  <source>Providers</source>
+</trans-unit>
+<trans-unit id="see7e5431ccf76ccc">
+  <source>Unspecified</source>
+</trans-unit>
+<trans-unit id="scim.groups.verbose-name.label">
+  <source>SCIM Group</source>
+</trans-unit>
+<trans-unit id="scim.groups.verbose-name-plural.label">
+  <source>SCIM Groups</source>
+</trans-unit>
+<trans-unit id="scim.users.verbose-name.label">
+  <source>SCIM User</source>
+</trans-unit>
+<trans-unit id="scim.users.verbose-name-plural.label">
+  <source>SCIM Users</source>
+</trans-unit>
+<trans-unit id="ssf.streams.verbose-name.label">
+  <source>Stream</source>
+</trans-unit>
+<trans-unit id="ssf.streams.verbose-name-plural.label">
+  <source>Streams</source>
+</trans-unit>
+<trans-unit id="s86d385ff812dfced">
+  <source>Custom Permission</source>
+</trans-unit>
+<trans-unit id="s47694f288124407a">
+  <source>Custom Permissions</source>
+</trans-unit>
+<trans-unit id="sbbeccfb40931d00d">
+  <source>Successfully updated custom permission.</source>
+</trans-unit>
+<trans-unit id="s2f7d64e86c256034">
+  <source>Successfully created custom permission.</source>
+</trans-unit>
+<trans-unit id="s149e4dae7751f5a6">
+  <source>Search for a model...</source>
+</trans-unit>
+<trans-unit id="h7caeadd948c6500e">
+  <source>The model the permission applies to. Use
+                            <x id="0" equiv-text="&lt;code&gt;"/>authentik_rbac.systempermission<x id="1" equiv-text="&lt;/code&gt;"/> for permissions about
+                            authentik as a whole. It cannot be changed later.</source>
+</trans-unit>
+<trans-unit id="se74c2ff960282baf">
+  <source>Codename</source>
+</trans-unit>
+<trans-unit id="hfb6ea4f521187709">
+  <source>Starts with <x id="0" equiv-text="&lt;code&gt;"/>custom_<x id="1" equiv-text="&lt;/code&gt;"/>, followed by lowercase letters, digits
+                            and underscores. It cannot be changed later.</source>
+</trans-unit>
+<trans-unit id="custom-permissions.verbose-name.label">
+  <source>Custom Permission</source>
+</trans-unit>
+<trans-unit id="custom-permissions.verbose-name-plural.label">
+  <source>Custom Permissions</source>
+</trans-unit>
+<trans-unit id="sd171577d6e81af69">
+  <source>Search for custom permissions...</source>
+</trans-unit>
+<trans-unit id="s949ee709acee8fde">
+  <source>Create a custom permission to get started.</source>
+</trans-unit>
+<trans-unit id="sb211e62f2c69d795">
+  <source>Define your own permissions on models, assign them to roles, and test them in permission checks.</source>
+</trans-unit>
+<trans-unit id="initial-permissions.verbose-name.label">
+  <source>Initial Permissions</source>
+</trans-unit>
+<trans-unit id="initial-permissions.verbose-name-plural.label">
+  <source>Initial Permissions</source>
+</trans-unit>
+<trans-unit id="s8327938fa76b5c7a">
+  <source>Paths started with fields it lacks: <x id="0" equiv-text="${unknownFields.join(&quot;, &quot;)}"/></source>
+</trans-unit>
+<trans-unit id="sb497ab0f5338b526">
+  <source>Permission Check</source>
+</trans-unit>
+<trans-unit id="s166d000a695c1f6f">
+  <source>Permission Checks</source>
+</trans-unit>
+<trans-unit id="sda9f3bb440258a0c">
+  <source>Successfully updated permission check.</source>
+</trans-unit>
+<trans-unit id="s5f84c961b35b071f">
+  <source>Successfully created permission check.</source>
+</trans-unit>
+<trans-unit id="s8465a2caa2d9ea5d">
+  <source>Endpoints</source>
+</trans-unit>
+<trans-unit id="se275ef18f06cf8eb">
+  <source>Bound</source>
+</trans-unit>
+<trans-unit id="sdf9e135bb3078b00">
+  <source>API endpoints this check decides on, like core/users:list. An endpoint can be bound to one check only.</source>
+</trans-unit>
+<trans-unit id="sff5458d09ac165ce">
+  <source>Python code defining permission checks.</source>
+</trans-unit>
+<trans-unit id="s6a146a1e841d3203">
+  <source>See examples in the documentation.</source>
+</trans-unit>
+<trans-unit id="permission-checks.verbose-name.label">
+  <source>Permission Check</source>
+</trans-unit>
+<trans-unit id="permission-checks.verbose-name-plural.label">
+  <source>Permission Checks</source>
+</trans-unit>
+<trans-unit id="sf3b9adc4507c57bc">
+  <source>Search for permission checks...</source>
+</trans-unit>
+<trans-unit id="sf1355416c3efc50b">
+  <source>Create a permission check to get started.</source>
+</trans-unit>
+<trans-unit id="scaa8455fd5a8fe97">
+  <source>Python code that has the final say on access to API endpoints.</source>
+</trans-unit>
+<trans-unit id="s4c7b85c8ef6f0fc5">
+  <source>No longer exists</source>
+</trans-unit>
+<trans-unit id="permissions.verbose-name.label">
+  <source>Permission</source>
+</trans-unit>
+<trans-unit id="permissions.verbose-name-plural.label">
+  <source>Permissions</source>
+</trans-unit>
+<trans-unit id="request-rule-bindings.verbose-name.label">
+  <source>Request rule binding</source>
+</trans-unit>
+<trans-unit id="request-rule-bindings.verbose-name-plural.label">
+  <source>Request rule bindings</source>
+</trans-unit>
+<trans-unit id="request-rules.bindings.column.entitlements">
+  <source>Entitlements</source>
+</trans-unit>
+<trans-unit id="s5307a13bc1e6634c">
+  <source>These bindings control which users or groups can request access to this object.</source>
+</trans-unit>
+<trans-unit id="request-rules.verbose-name.label">
+  <source>Request rule</source>
+</trans-unit>
+<trans-unit id="request-rules.verbose-name-plural.label">
+  <source>Request rules</source>
+</trans-unit>
+<group id="request-rules.target-count.label" restype="x-gettext-plurals">
+  <trans-unit id="request-rules.target-count.label[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> objects</source>
+  </trans-unit>
+</group>
+<group id="roles.add-user.success" restype="x-gettext-plurals">
+  <trans-unit id="roles.add-user.success[0]" xml:space="preserve">
+    <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> roles.</source>
+  </trans-unit>
+</group>
+<trans-unit id="roles.verbose-name.label">
+  <source>Role</source>
+</trans-unit>
+<trans-unit id="roles.verbose-name-plural.label">
+  <source>Roles</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.label">
+  <source>Show on login page</source>
+</trans-unit>
+<trans-unit id="ldap.groups.verbose-name.label">
+  <source>LDAP Group</source>
+</trans-unit>
+<trans-unit id="ldap.groups.verbose-name-plural.label">
+  <source>LDAP Groups</source>
+</trans-unit>
+<trans-unit id="ldap.users.verbose-name.label">
+  <source>LDAP User</source>
+</trans-unit>
+<trans-unit id="ldap.users.verbose-name-plural.label">
+  <source>LDAP Users</source>
+</trans-unit>
+<trans-unit id="sources.verbose-name.label">
+  <source>Source</source>
+</trans-unit>
+<trans-unit id="sources.verbose-name-plural.label">
+  <source>Sources</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.stage.flows.description">
+  <source>Used in: <x id="0" equiv-text="${flows}"/></source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.stage.unbound.description">
+  <source>Not bound to any flow</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.description">
+  <source>Add this source to an Identification stage if you want it displayed on the login page. Otherwise, you can skip this step.</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.empty">
+  <source>No identification stages exist yet.</source>
+</trans-unit>
+<group id="stages.duo.import.success" restype="x-gettext-plurals">
+  <trans-unit id="stages.duo.import.success[0]" xml:space="preserve">
+    <source>Successfully imported <x id="0" equiv-text="${formattedCount}"/> devices.</source>
+  </trans-unit>
+</group>
+<trans-unit id="invitations.verbose-name.label">
+  <source>Invitation</source>
+</trans-unit>
+<trans-unit id="invitations.verbose-name-plural.label">
+  <source>Invitations</source>
+</trans-unit>
+<group id="invitations.send-email.success" restype="x-gettext-plurals">
+  <trans-unit id="invitations.send-email.success[0]" xml:space="preserve">
+    <source>Invitation emails queued for sending to <x id="0" equiv-text="${formattedCount}"/> recipients. Check the System Tasks for more information.</source>
+  </trans-unit>
+</group>
+<trans-unit id="password-stage.lockout-threshold.label">
+  <source>Failed attempts before lockout</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-threshold.enterprise.description">
+  <source>Password lockout requires an Enterprise license.</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-threshold.description">
+  <source>Lock password login after this many consecutive failed attempts, until an administrator unlocks it. LDAP users are exempt while any LDAP source is enabled; Kerberos users are exempt when linked to an enabled source. The corresponding backend must be selected. Set to 0 to never lock.</source>
+</trans-unit>
+<trans-unit id="password-stage.last-attempt-warning-message.label">
+  <source>Last-attempt warning message</source>
+</trans-unit>
+<trans-unit id="password-stage.last-attempt-warning-message.description">
+  <source>Warning shown when the user has one password attempt remaining. Leave blank to show no warning.</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-message.label">
+  <source>Lockout message</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-message.description">
+  <source>Message shown when the user's password has been locked. Leave blank to show a generic authentication error.</source>
+</trans-unit>
+<trans-unit id="stages.password.backends.description">
+  <source>Validate the user's password against the selected backends.</source>
+</trans-unit>
+<trans-unit id="password-stage.failed-attempts-before-cancel.description">
+  <source>How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.</source>
+</trans-unit>
+<trans-unit id="prompts.verbose-name.label">
+  <source>Prompt</source>
+</trans-unit>
+<trans-unit id="prompts.verbose-name-plural.label">
+  <source>Prompts</source>
+</trans-unit>
+<trans-unit id="stages.verbose-name.label">
+  <source>Stage</source>
+</trans-unit>
+<trans-unit id="stages.verbose-name-plural.label">
+  <source>Stages</source>
+</trans-unit>
+<trans-unit id="stage.list.unbound.label">
+  <source>Not bound to any flow</source>
+</trans-unit>
+<trans-unit id="tokens.verbose-name.label">
+  <source>Token</source>
+</trans-unit>
+<trans-unit id="tokens.verbose-name-plural.label">
+  <source>Tokens</source>
+</trans-unit>
+<trans-unit id="users.add-to-groups.superuser.warning">
+  <source>Warning: Adding the user to the selected groups will give them superuser permissions.</source>
+</trans-unit>
+<trans-unit id="user.entitlements.empty.label">
+  <source>No application entitlements.</source>
+</trans-unit>
+<trans-unit id="user.entitlements.empty.description">
+  <source>This user has not been granted any application entitlements.</source>
+</trans-unit>
+<group id="users.revoke-sessions.user-count" restype="x-gettext-plurals">
+  <trans-unit id="users.revoke-sessions.user-count[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> users</source>
+  </trans-unit>
+</group>
+<group id="users.revoke-sessions.confirmation" restype="x-gettext-plurals">
+  <trans-unit id="users.revoke-sessions.confirmation[0]" xml:space="preserve">
+    <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${formattedCount}"/> users?</source>
+  </trans-unit>
+</group>
+<trans-unit id="user-required-actions.card.title">
+  <source>Required actions</source>
+</trans-unit>
+<trans-unit id="user-required-actions.card.description">
+  <source>The user must complete these flows in order before they can continue. Changes apply on their next request.</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.label">
+  <source>Unlock password login</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock.label">
+  <source>Lock password login</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.pending">
+  <source>Unlocking password login...</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock.pending">
+  <source>Locking password login...</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.success">
+  <source>Password login unlocked</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock.success">
+  <source>Password login locked</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock-review.label">
+  <source>Review password unlock</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock-review.label">
+  <source>Review password lock</source>
+</trans-unit>
+<trans-unit id="user.display.unknown.label">
+  <source>Unknown user</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock-confirm.description">
+  <source>Allow <x id="0" equiv-text="${displayName}"/> to authenticate with a password again?</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock-confirm.description">
+  <source>Prevent <x id="0" equiv-text="${displayName}"/> from authenticating through password stages, including with app passwords? Existing sessions and passwordless authentication are not affected.</source>
+</trans-unit>
+<group id="user-required-actions.object.label" restype="x-gettext-plurals">
+  <trans-unit id="user-required-actions.object.label[0]" xml:space="preserve">
+    <source>Required actions</source>
+  </trans-unit>
+</group>
+<trans-unit id="user-required-actions.column.flow.label">
+  <source>Flow</source>
+</trans-unit>
+<trans-unit id="user-required-actions.column.slug.label">
+  <source>Slug</source>
+</trans-unit>
+<trans-unit id="user-required-actions.column.actions.label">
+  <source>Actions</source>
+</trans-unit>
+<trans-unit id="user-required-actions.select.placeholder">
+  <source>Select a flow...</source>
+</trans-unit>
+<trans-unit id="user-required-actions.add.label">
+  <source>Add</source>
+</trans-unit>
+<trans-unit id="user-required-actions.remove.label">
+  <source>Remove</source>
+</trans-unit>
+<trans-unit id="events.authenticator-locked.label">
+  <source>Authenticator locked</source>
+</trans-unit>
+<trans-unit id="events.authenticator-unlocked.label">
+  <source>Authenticator unlocked</source>
+</trans-unit>
+<trans-unit id="events.action.required-action-completed.label">
+  <source>Required action completed</source>
+</trans-unit>
+<trans-unit id="policies.bindings.dry-run.label">
+  <source>Dry-run</source>
+</trans-unit>
+<trans-unit id="events.policy-execution.raw-result.label">
+  <source>Raw result</source>
+</trans-unit>
+<trans-unit id="events.policy-execution.cached.label">
+  <source>Cached</source>
+</trans-unit>
+<trans-unit id="tasks.execution-logs.current">
+  <source>Current execution logs</source>
+</trans-unit>
+<trans-unit id="tasks.execution-logs.previous">
+  <source>Previous executions logs</source>
+</trans-unit>
+<group id="dual-select.status.marked-to-add" restype="x-gettext-plurals">
+  <trans-unit id="dual-select.status.marked-to-add[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items marked to add.</source>
+  </trans-unit>
+</group>
+<group id="dual-select.status.selected" restype="x-gettext-plurals">
+  <trans-unit id="dual-select.status.selected[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items selected.</source>
+  </trans-unit>
+</group>
+<group id="dual-select.status.marked-to-remove" restype="x-gettext-plurals">
+  <trans-unit id="dual-select.status.marked-to-remove[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items marked to remove.</source>
+  </trans-unit>
+</group>
+<trans-unit id="data-view.format.yaml.label">
+  <source>YAML</source>
+</trans-unit>
+<trans-unit id="data-view.format.json.label">
+  <source>JSON</source>
+</trans-unit>
+<trans-unit id="data-view.copy.yaml.label">
+  <source>Copy YAML to clipboard</source>
+</trans-unit>
+<trans-unit id="data-view.copy.json.label">
+  <source>Copy JSON to clipboard</source>
+</trans-unit>
+<trans-unit id="data-view.format.tree.label">
+  <source>Tree</source>
+</trans-unit>
+<trans-unit id="enterprise.license.banner.expired">
+  <source>Warning: One or more licenses have expired.</source>
+</trans-unit>
+<trans-unit id="enterprise.license.banner.expiry-soon">
+  <source>Warning: One or more licenses will expire within the next 2 weeks.</source>
+</trans-unit>
+<trans-unit id="s3b8a6245b12fa2ad">
+  <source>Breadcrumbs</source>
+</trans-unit>
+<trans-unit id="crontab.parse-failed">
+  <source>Cron string does not parse.</source>
+</trans-unit>
+<group id="bulk-action.delete.heading" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.delete.heading[0]" xml:space="preserve">
+    <source>Delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+</group>
+<group id="bulk-action.delete.confirmation" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.delete.confirmation[0]" xml:space="preserve">
+    <source>Are you sure you want to delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.delete.success" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.delete.success[0]" xml:space="preserve">
+    <source>Successfully deleted <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.delete.error" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.delete.error[0]" xml:space="preserve">
+    <source>Failed to delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<trans-unit id="bulk-action.delete.submit.label">
+  <source>Delete</source>
+</trans-unit>
+<group id="bulk-action.remove.heading" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.remove.heading[0]" xml:space="preserve">
+    <source>Remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+</group>
+<group id="bulk-action.remove.confirmation" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.remove.confirmation[0]" xml:space="preserve">
+    <source>Are you sure you want to remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.remove.success" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.remove.success[0]" xml:space="preserve">
+    <source>Successfully removed <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.remove.error" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.remove.error[0]" xml:space="preserve">
+    <source>Failed to remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<trans-unit id="bulk-action.remove.submit.label">
+  <source>Remove</source>
+</trans-unit>
+<group id="bulk-action.cancel.heading" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.cancel.heading[0]" xml:space="preserve">
+    <source>Cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+</group>
+<group id="bulk-action.cancel.confirmation" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.cancel.confirmation[0]" xml:space="preserve">
+    <source>Are you sure you want to cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.cancel.success" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.cancel.success[0]" xml:space="preserve">
+    <source>Successfully canceled <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.cancel.error" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.cancel.error[0]" xml:space="preserve">
+    <source>Failed to cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<trans-unit id="bulk-action.verbose-name.default.label">
+  <source>Object</source>
+</trans-unit>
+<trans-unit id="bulk-action.verbose-name-plural.default.label">
+  <source>Objects</source>
+</trans-unit>
+<trans-unit id="sidebar.toggle.aria-label">
+  <source>Toggle <x id="0" equiv-text="${label}"/></source>
+</trans-unit>
+<trans-unit id="data-view.summary.unknown-type.label">
+  <source>Unknown JSON type</source>
+</trans-unit>
+<group id="data-view.summary.item-count" restype="x-gettext-plurals">
+  <trans-unit id="data-view.summary.item-count[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${count}"/> items</source>
+  </trans-unit>
+</group>
+<group id="data-view.summary.key-count" restype="x-gettext-plurals">
+  <trans-unit id="data-view.summary.key-count[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${count}"/> keys</source>
+  </trans-unit>
+</group>
+<trans-unit id="data-view.value.unrepresentable.label">
+  <source>Unrepresentable</source>
+</trans-unit>
+<group id="table.select-all.aria-label" restype="x-gettext-plurals">
+  <trans-unit id="table.select-all.aria-label[0]" xml:space="preserve">
+    <source>Select all rows on page (<x id="0" equiv-text="${formattedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+  </trans-unit>
+</group>
+<group id="rac.connection.failed" restype="x-gettext-plurals">
+  <trans-unit id="rac.connection.failed[0]" xml:space="preserve">
+    <source>Connection failed after <x id="0" equiv-text="${formattedCount}"/> attempts.</source>
+  </trans-unit>
+</group>
+<group id="rac.connection.reconnecting" restype="x-gettext-plurals">
+  <trans-unit id="rac.connection.reconnecting[0]" xml:space="preserve">
+    <source>Re-connecting in <x id="0" equiv-text="${formattedCount}"/> seconds.</source>
+  </trans-unit>
+</group>
+<group id="user.library.application-count.search-result" restype="x-gettext-plurals">
+  <trans-unit id="user.library.application-count.search-result[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+  </trans-unit>
+</group>
+<group id="user.library.application-count.available" restype="x-gettext-plurals">
+  <trans-unit id="user.library.application-count.available[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> applications available</source>
+  </trans-unit>
+</group>
+<trans-unit id="mfa-devices.verbose-name.label">
+  <source>Device</source>
+</trans-unit>
+<trans-unit id="mfa-devices.verbose-name-plural.label">
+  <source>Devices</source>
+</trans-unit>
+<trans-unit id="wizard.header.verbose-name.label">
+  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
+  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
+</trans-unit>
+<group id="notifications.unread-count.label" restype="x-gettext-plurals">
+  <trans-unit id="notifications.unread-count.label[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> unread</source>
+    <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+  </trans-unit>
+</group>
+<trans-unit id="used-by.count.none">
+  <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
+  <note from="lit-localize">No objects use this entity.</note>
+</trans-unit>
+<group id="used-by.count" restype="x-gettext-plurals">
+  <trans-unit id="used-by.count[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${formattedCount}"/> objects.</source>
+    <note from="lit-localize">The first placeholder is the entity type, the second the number of objects using it.</note>
+  </trans-unit>
+</group>
+<group id="users.revoke-sessions.success" restype="x-gettext-plurals">
+  <trans-unit id="users.revoke-sessions.success[0]" xml:space="preserve">
+    <source>Successfully revoked <x id="0" equiv-text="${formattedCount}"/> sessions for <x id="1" equiv-text="${users}"/>.</source>
+    <note from="lit-localize">The second placeholder is a pluralized user count, such as '3 users'.</note>
+  </trans-unit>
+</group>
 </body>
 </file>
 </xliff>

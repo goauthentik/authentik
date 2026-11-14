@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { EmailDevice } from "./EmailDevice";
-import { EmailDeviceFromJSON, EmailDeviceToJSON } from "./EmailDevice";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { EmailDevice } from "./EmailDevice.js";
+import { EmailDeviceFromJSON, EmailDeviceToJSON } from "./EmailDevice.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

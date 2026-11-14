@@ -27,6 +27,11 @@ export interface PatchedSettingsRequestFlags {
      * Upon successful authentication, re-start authentication in other open tabs.
      */
     flowsContinuousLogin: boolean;
+    /**
+     * Let permission checks decide API access. While enabled, every API request costs an additional
+     * database query.
+     */
+    rbacCustomPermissions: boolean;
 }
 
 /**
@@ -56,6 +61,13 @@ export function instanceOfPatchedSettingsRequestFlags(
             (value as Record<string, any>)["flows_continuous_login"] === undefined)
     )
         return false;
+    if (
+        (!("rbacCustomPermissions" in (value as Record<string, any>)) &&
+            !("rbac_custom_permissions" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["rbacCustomPermissions"] === undefined &&
+            (value as Record<string, any>)["rbac_custom_permissions"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -74,6 +86,7 @@ export function PatchedSettingsRequestFlagsFromJSONTyped(
         coreDefaultAppAccess: json["core_default_app_access"],
         enterpriseAuditIncludeExpandedDiff: json["enterprise_audit_include_expanded_diff"],
         flowsContinuousLogin: json["flows_continuous_login"],
+        rbacCustomPermissions: json["rbac_custom_permissions"],
     };
 }
 
@@ -93,5 +106,6 @@ export function PatchedSettingsRequestFlagsToJSONTyped(
         core_default_app_access: value["coreDefaultAppAccess"],
         enterprise_audit_include_expanded_diff: value["enterpriseAuditIncludeExpandedDiff"],
         flows_continuous_login: value["flowsContinuousLogin"],
+        rbac_custom_permissions: value["rbacCustomPermissions"],
     };
 }

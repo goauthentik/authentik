@@ -1,5 +1,7 @@
 import "#elements/Expand";
+import "#elements/Label";
 import "#elements/Spinner";
+import "#elements/ak-attribute-view";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -11,17 +13,19 @@ import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { EventContext, EventContextProperty, EventModel, EventWithContext } from "#common/events";
+import { staticURL } from "#common/urls";
 
 import { AKElement } from "#elements/Base";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { renderDescriptionList } from "#components/DescriptionList";
 
 import { EventActions, FlowsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { map } from "lit/directives/map.js";
 import { until } from "lit/directives/until.js";
 
 // TODO: Settle these types. It's too hard to make sense of what we're expecting here.
@@ -110,17 +114,6 @@ export class EventInfo extends AKElement {
         `,
     ];
 
-    renderDescriptionGroup([term, description]: FieldLabelTuple) {
-        return html` <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${term}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${description}</div>
-            </dd>
-        </div>`;
-    }
-
     getModelInfo(context: EventModel): TemplateResult {
         if (context === null) {
             return html`<span>-</span>`;
@@ -134,9 +127,7 @@ export class EventInfo extends AKElement {
         ];
 
         return html`<div class="pf-c-card__body">
-            <dl class="pf-c-description-list pf-m-horizontal">
-                ${map(modelFields, this.renderDescriptionGroup)}
-            </dl>
+            ${renderDescriptionList(modelFields, { horizontal: true, compact: true })}
         </div>`;
     }
 
@@ -158,9 +149,7 @@ export class EventInfo extends AKElement {
             ],
         ] satisfies FieldLabelTuple<EventSlotValueType>[];
 
-        return html`<dl class="pf-c-description-list pf-m-horizontal">
-            ${map(emailFields, this.renderDescriptionGroup)}
-        </dl>`;
+        return renderDescriptionList(emailFields, { horizontal: true, compact: true });
     }
 
     renderDefaultResponse(): TemplateResult {
@@ -168,13 +157,13 @@ export class EventInfo extends AKElement {
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("Context")}</div>
                 <div class="pf-c-card__body">
-                    <code>${JSON.stringify(this.event?.context, null, 4)}</code>
+                    <ak-attribute-view show-count .value=${this.event?.context}></ak-attribute-view>
                 </div>
             </div>
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("User")}</div>
                 <div class="pf-c-card__body">
-                    <code>${JSON.stringify(this.event?.user, null, 4)}</code>
+                    <ak-attribute-view show-count .value=${this.event?.user}></ak-attribute-view>
                 </div>
             </div>
         </div>`;
@@ -379,7 +368,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre>`;
 
     renderEmailSent() {
         let body = this.event.context.body as string;
-        body = body.replace("cid:logo", "/static/dist/assets/icons/icon_left_brand.png");
+        body = body.replace("cid:logo", staticURL("/static/dist/assets/icons/icon_left_brand.png"));
 
         return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
             <div class="pf-c-card__body">${this.getEmailInfo(this.event.context)}</div>
@@ -474,6 +463,9 @@ ${JSON.stringify(value.new_value, null, 4)}</pre>`;
     }
 
     renderPolicyExecution() {
+        const result = this.event.context.result as EventContext;
+        const dryRun = this.event.context.dry_run === true;
+
         return html`<div class="pf-l-flex">
                 <div class="pf-l-flex__item">
                     <div class="pf-c-card__title">${msg("Binding")}</div>
@@ -505,24 +497,49 @@ ${JSON.stringify(value.new_value, null, 4)}</pre>`;
                     </div>
                 </div>
                 <div class="pf-l-flex__item">
-                    <div class="pf-c-card__title">${msg("Result")}</div>
+                    <div class="pf-c-card__title">
+                        ${msg("Result")}
+                        ${
+                            dryRun
+                                ? html`<ak-label color="pf-m-blue" icon="fa-vial">
+                                      ${msg("Dry-run", {
+                                          id: "policies.bindings.dry-run.label",
+                                      })}
+                                  </ak-label>`
+                                : nothing
+                        }
+                    </div>
                     <div class="pf-c-card__body">
                         <ul class="pf-c-list">
-                            <li>
-                                ${msg("Passing")}:
-                                ${(this.event.context.result as EventContext).passing}
-                            </li>
+                            <li>${msg("Passing")}: ${result.passing}</li>
                             <li>
                                 ${msg("Messages")}:
                                 <ul class="pf-c-list">
-                                    ${(
-                                        (this.event.context.result as EventContext)
-                                            .messages as string[]
-                                    ).map((msg) => {
+                                    ${(result.messages as string[]).map((msg) => {
                                         return html`<li>${msg}</li>`;
                                     })}
                                 </ul>
                             </li>
+                            ${
+                                result.raw_result !== null && result.raw_result !== undefined
+                                    ? html`<li>
+                                          ${msg("Raw result", {
+                                              id: "events.policy-execution.raw-result.label",
+                                          })}:
+                                          <pre>${JSON.stringify(result.raw_result, null, 4)}</pre>
+                                      </li>`
+                                    : nothing
+                            }
+                            ${
+                                dryRun
+                                    ? html`<li>
+                                          ${msg("Cached", {
+                                              id: "events.policy-execution.cached.label",
+                                          })}:
+                                          ${this.event.context.cached ? msg("Yes") : msg("No")}
+                                      </li>`
+                                    : nothing
+                            }
                         </ul>
                     </div>
                 </div>

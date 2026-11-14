@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { ApplePSSO } from "./ApplePSSO";
-import { ApplePSSOFromJSON, ApplePSSOToJSON } from "./ApplePSSO";
+import type { ApplePSSO } from "./ApplePSSO.js";
+import { ApplePSSOFromJSON, ApplePSSOToJSON } from "./ApplePSSO.js";
 
 /**
  * @export

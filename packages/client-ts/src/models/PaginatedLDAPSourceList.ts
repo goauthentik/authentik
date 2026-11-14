@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { LDAPSource } from "./LDAPSource";
-import { LDAPSourceFromJSON, LDAPSourceToJSON } from "./LDAPSource";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { LDAPSource } from "./LDAPSource.js";
+import { LDAPSourceFromJSON, LDAPSourceToJSON } from "./LDAPSource.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

@@ -17,17 +17,7 @@ slug: "/releases/2026.8"
 
 ### `hash_password` management command security improvements
 
-The `hash_password` management command no longer accepts a password as a positional command-line argument (password was visible in the process list). Run the command without arguments to enter the password in a hidden interactive prompt:
-
-```bash
-docker compose run --rm server hash_password
-```
-
-For automation, pipe the password through standard input:
-
-```bash
-printf '%s' "$PASSWORD" | docker compose run --rm server hash_password
-```
+The `hash_password` management command no longer accepts a password as a positional command-line argument, where it was visible in the process list. The command now reads the password from a hidden prompt or from standard input. Refer to [Generate a password hash](../../core/password-hashes.mdx#generate-a-password-hash) for the current commands.
 
 ### "Prevent duplicate device" in WebAuthn setup stage removed
 
@@ -151,7 +141,7 @@ A task can log an error and still finish, for example a sync that failed for a s
 - **SAML providers**: Authentication requests that set `ForceAuthn` now require fresh authentication.
 - **WS-Federation**: :ak-enterprise Providers can issue SAML 1.1 assertions, enabling WS-Federation integration with [Microsoft 365 and Entra ID](https://integrations.goauthentik.io/platforms/microsoft-ws-federation/).
 - **User event history**: Account changes made by administrators now appear in the affected user's event history.
-- **Password hash imports**: [Bootstrap and API password hash imports](../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) now reject malformed values before they are stored.
+- **Password hash imports**: [Bootstrap and API password hash imports](../../core/password-hashes.mdx) now reject malformed values before they are stored.
 - **Enterprise licensing**: :ak-enterprise The license status card now shows when a license expires today or the number of days remaining.
 - **Performance**: Group lists use fewer database queries, and S3-backed file storage reuses clients instead of creating them for each operation.
 - **Authenticators**: Deleting an authenticator stage no longer deletes enrolled devices that reference it.
@@ -651,6 +641,14 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - web/flows: fix layout shift once initial challenge is loaded (cherry-pick #26758 to version-2026.8) (#26759)
 - web/user: fix requests banner wording (cherry-pick #26586 to version-2026.8) (#26589)
 - web/user: remove slug display in any display mode on the user application library page (cherry-pick #26441 to version-2026.8) (#26446)
+
+## Fixed in 2026.8.5
+
+- endpoints: fix MultipleObjectsReturned (cherry-pick #26971 to version-2026.8) (#26972)
+- enterprise/providers/microsoft_entra: skip members already in the group (cherry-pick #26891 to version-2026.8) (#26952)
+- root: bump cert-related deps due to emudhra (cherry-pick #27068 to version-2026.8) (#27071)
+- web/stages: Fix stage type errors (cherry-pick #25689 to version-2026.8) (#26194)
+- web/user: fix agents tab flashing without license (cherry-pick #27069 to version-2026.8) (#27073)
 
 ## API Changes
 

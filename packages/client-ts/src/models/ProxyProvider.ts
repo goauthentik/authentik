@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { ProxyMode } from "./ProxyMode";
-import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode";
-import type { RedirectURI } from "./RedirectURI";
-import { RedirectURIFromJSON } from "./RedirectURI";
+import type { ProxyMode } from "./ProxyMode.js";
+import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode.js";
+import type { RedirectURI } from "./RedirectURI.js";
+import { RedirectURIFromJSON } from "./RedirectURI.js";
 
 /**
  * ProxyProvider Serializer

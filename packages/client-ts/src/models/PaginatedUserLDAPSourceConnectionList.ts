@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserLDAPSourceConnection } from "./UserLDAPSourceConnection";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { UserLDAPSourceConnection } from "./UserLDAPSourceConnection.js";
 import {
     UserLDAPSourceConnectionFromJSON,
     UserLDAPSourceConnectionToJSON,
-} from "./UserLDAPSourceConnection";
+} from "./UserLDAPSourceConnection.js";
 
 /**
  * @export

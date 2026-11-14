@@ -20,7 +20,7 @@ export {
     type PaginatorState,
 };
 
-window.customElements.define("ak-paginator", Paginator);
+customElements.define("ak-paginator", Paginator);
 
 declare global {
     interface HTMLElementTagNameMap {

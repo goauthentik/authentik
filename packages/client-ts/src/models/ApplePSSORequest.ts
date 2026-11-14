@@ -10,21 +10,21 @@
  * Do not edit the class manually.
  */
 
-import type { ApplePSSOAuthenticationMethodEnum } from "./ApplePSSOAuthenticationMethodEnum";
+import type { ApplePSSOAuthenticationMethodEnum } from "./ApplePSSOAuthenticationMethodEnum.js";
 import {
     ApplePSSOAuthenticationMethodEnumFromJSON,
     ApplePSSOAuthenticationMethodEnumToJSON,
-} from "./ApplePSSOAuthenticationMethodEnum";
-import type { ApplePSSOAuthenticationPolicyEnum } from "./ApplePSSOAuthenticationPolicyEnum";
+} from "./ApplePSSOAuthenticationMethodEnum.js";
+import type { ApplePSSOAuthenticationPolicyEnum } from "./ApplePSSOAuthenticationPolicyEnum.js";
 import {
     ApplePSSOAuthenticationPolicyEnumFromJSON,
     ApplePSSOAuthenticationPolicyEnumToJSON,
-} from "./ApplePSSOAuthenticationPolicyEnum";
-import type { ApplePSSOBiometricRequirementEnum } from "./ApplePSSOBiometricRequirementEnum";
+} from "./ApplePSSOAuthenticationPolicyEnum.js";
+import type { ApplePSSOBiometricRequirementEnum } from "./ApplePSSOBiometricRequirementEnum.js";
 import {
     ApplePSSOBiometricRequirementEnumFromJSON,
     ApplePSSOBiometricRequirementEnumToJSON,
-} from "./ApplePSSOBiometricRequirementEnum";
+} from "./ApplePSSOBiometricRequirementEnum.js";
 
 /**
  * Apple Platform SSO settings, see ApplePSSOConfig

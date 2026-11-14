@@ -85,11 +85,25 @@ The client must request the scope, and the scope mapping must be assigned to the
 
 The returned claims are available from the `UserInfo` endpoint. authentik includes them in the ID token and access token only when **Include claims in id_token** is enabled on the provider.
 
+### Claims returned by several scope mappings
+
+authentik evaluates the scope mappings for the requested scopes sorted by scope name and combines their results. When more than one mapping returns the same claim:
+
+- Lists are combined. An item that an earlier mapping already returned is not added again.
+- Dictionaries are combined key by key, following these same rules.
+- Any other value, or a value whose type differs between the mappings, is replaced by the value from the mapping evaluated last.
+
+For example, the default `profile` scope mapping returns the user's group names in the `groups` claim. If you also add a custom `groups` scope mapping that returns the same claim, the client receives each group name once.
+
+Combining lists only adds items, so a custom mapping cannot remove values that another mapping returns. To send a filtered list of groups, remove the default `profile` scope mapping from the provider and add a custom `profile` scope mapping that returns the profile claims without `groups`.
+
 See [Scope mappings](../oauth2/index.mdx#scope-mappings) for scope authorization, default scopes, and special scopes.
 
 ## Synchronization property mappings
 
 Synchronization providers use property mappings to build the user and group data that they send to integrated services. The mapping must return data in the format that the integrated service expects.
+
+When several mappings return the same key, authentik combines their results with the same rules as [scope mappings](#claims-returned-by-several-scope-mappings). For example, two SCIM mappings that each return `urn:ietf:params:scim:schemas:core:2.0:User` in `schemas` send it once.
 
 :::warning Property mapping errors
 Synchronization providers evaluate property mappings in name order. If a property mapping fails to evaluate, authentik stops the synchronization and does not evaluate the remaining mappings. Other provider types generally record the error and continue with the next property mapping.

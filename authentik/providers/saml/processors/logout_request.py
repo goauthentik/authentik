@@ -9,7 +9,6 @@ from lxml.etree import Element, _Element
 
 from authentik.common.saml.constants import (
     DEFAULT_ISSUER,
-    DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
@@ -17,8 +16,8 @@ from authentik.common.saml.constants import (
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 from authentik.core.models import User
-from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.processors.signature import sign_xml_element
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.providers.saml.utils.time import get_time_string
@@ -167,36 +166,9 @@ class LogoutRequestProcessor:
 
         self._sign(logout_request)
 
-    def _sign(self, element: _Element):
+    def _sign(self, element: _Element) -> None:
         """Sign an XML element based on the providers' configured signing settings"""
-        digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
-            self.provider.digest_algorithm, xmlsec.constants.TransformSha1
-        )
-        xmlsec.tree.add_ids(element, ["ID"])
-        signature_node = xmlsec.tree.find_node(element, xmlsec.constants.NodeSignature)
-        ref = xmlsec.template.add_reference(
-            signature_node,
-            digest_algorithm_transform,
-            uri="#" + element.attrib["ID"],
-        )
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)
-        key_info = xmlsec.template.ensure_key_info(signature_node)
-        xmlsec.template.add_x509_data(key_info)
-
-        ctx = xmlsec.SignatureContext()
-
-        key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-            None,
-        )
-        key.load_cert_from_memory(
-            self.provider.signing_kp.certificate_data,
-            xmlsec.constants.KeyDataFormatCertPem,
-        )
-        ctx.key = key
-        ctx.sign(remove_xml_newlines(element, signature_node))
+        sign_xml_element(element, self.provider)
 
     def _build_signable_query_string(self, params: dict) -> str:
         """Build query string for signing (order matters per SAML spec)"""

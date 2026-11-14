@@ -13,7 +13,7 @@ from lxml.etree import Element, SubElement, _Element  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
-    DIGEST_ALGORITHM_TRANSLATION_MAP,
+    ENCRYPTION_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
@@ -29,9 +29,9 @@ from authentik.core.expression.exceptions import PropertyMappingExpressionExcept
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
+from authentik.providers.saml.processors.signature import sign_xml_element
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.time import get_time_string
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
@@ -91,6 +91,11 @@ class AssertionProcessor:
         self._valid_not_on_or_after = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_on_or_after)
         )
+
+    @property
+    def _session_key(self) -> str:
+        # Sessionless requests (e.g. token exchange) fall back to a per-response value
+        return self.http_request.session.session_key or self._response_id
 
     def get_attributes(self) -> Element:
         """Get AttributeStatement Element with Attributes from Property Mappings."""
@@ -163,9 +168,7 @@ class AssertionProcessor:
         """Generate AuthnStatement with AuthnContext and ContextClassRef Elements."""
         auth_n_statement = Element(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
         auth_n_statement.attrib["AuthnInstant"] = self._auth_instant
-        self.session_index = sha256(
-            self.http_request.session.session_key.encode("ascii")
-        ).hexdigest()
+        self.session_index = sha256(self._session_key.encode("ascii")).hexdigest()
         auth_n_statement.attrib["SessionIndex"] = self.session_index
         auth_n_statement.attrib["SessionNotOnOrAfter"] = self._session_not_on_or_after
 
@@ -292,8 +295,7 @@ class AssertionProcessor:
             return name_id
         if self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_TRANSIENT:
             # Use the hash of the user's session, which changes every session
-            session_key: str = self.http_request.session.session_key
-            name_id.text = sha256(session_key.encode()).hexdigest()
+            name_id.text = sha256(self._session_key.encode()).hexdigest()
             self.name_id = name_id.text
             return name_id
         raise UnsupportedNameIDFormat(
@@ -376,37 +378,10 @@ class AssertionProcessor:
         response.append(self.get_assertion())
         return response
 
-    def _sign(self, element: _Element):
+    def _sign(self, element: _Element) -> None:
         """Sign an XML element based on the providers' configured signing settings"""
-        digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
-            self.provider.digest_algorithm, xmlsec.constants.TransformSha1
-        )
-        xmlsec.tree.add_ids(element, ["ID"])
-        signature_node = xmlsec.tree.find_node(element, xmlsec.constants.NodeSignature)
-        ref = xmlsec.template.add_reference(
-            signature_node,
-            digest_algorithm_transform,
-            uri="#" + element.attrib["ID"],
-        )
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)
-        key_info = xmlsec.template.ensure_key_info(signature_node)
-        xmlsec.template.add_x509_data(key_info)
-
-        ctx = xmlsec.SignatureContext()
-
-        key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-            None,
-        )
-        key.load_cert_from_memory(
-            self.provider.signing_kp.certificate_data,
-            xmlsec.constants.KeyDataFormatCertPem,
-        )
-        ctx.key = key
         try:
-            ctx.sign(remove_xml_newlines(element, signature_node))
+            sign_xml_element(element, self.provider)
         except xmlsec.Error as exc:
             raise InvalidSignature() from exc
 
@@ -427,13 +402,16 @@ class AssertionProcessor:
 
         manager.add_key(key)
         encryption_context = xmlsec.EncryptionContext(manager)
+        transform, key_bits = ENCRYPTION_ALGORITHM_TRANSLATION_MAP[
+            self.provider.encryption_algorithm
+        ]
         encryption_context.key = xmlsec.Key.generate(
-            xmlsec.constants.KeyDataAes, 128, xmlsec.constants.KeyDataTypeSession
+            xmlsec.constants.KeyDataAes, key_bits, xmlsec.constants.KeyDataTypeSession
         )
 
         container = SubElement(parent, f"{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         enc_data = xmlsec.template.encrypted_data_create(
-            container, xmlsec.Transform.AES128, type=xmlsec.EncryptionType.ELEMENT, ns="xenc"
+            container, transform, type=xmlsec.EncryptionType.ELEMENT, ns="xenc"
         )
         xmlsec.template.encrypted_data_ensure_cipher_value(enc_data)
         key_info = xmlsec.template.encrypted_data_ensure_key_info(enc_data, ns="ds")

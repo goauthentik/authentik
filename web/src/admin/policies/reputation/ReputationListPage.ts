@@ -19,6 +19,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-policy-reputation-list")
 export class ReputationListPage extends TablePage<Reputation> {
+    public static override verboseName = msg("Reputation score", {
+        id: "reputation-scores.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Reputation scores", {
+        id: "reputation-scores.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override pageTitle = msg("Reputation scores");
@@ -53,7 +60,6 @@ export class ReputationListPage extends TablePage<Reputation> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Reputation")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
                 return aki(PoliciesApi).policiesReputationScoresUsedByList({

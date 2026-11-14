@@ -16,7 +16,7 @@
 export const ApplePSSOAuthenticationMethodEnum = {
     UserSecureEnclaveKey: "user_secure_enclave_key",
     Password: "password",
-    Openid: "openid",
+    Web: "web",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type ApplePSSOAuthenticationMethodEnum =

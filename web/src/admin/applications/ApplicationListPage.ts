@@ -29,13 +29,18 @@ import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 import MDApplication from "~docs/add-secure-apps/applications/index.mdx";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-export const applicationListStyle = css``;
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
+    public static override verboseName = msg("Application", {
+        id: "applications.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Applications", {
+        id: "applications.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [
         // ---
         ...TablePage.styles,
@@ -103,7 +108,6 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
                 return aki(CoreApi).coreApplicationsUsedByList({

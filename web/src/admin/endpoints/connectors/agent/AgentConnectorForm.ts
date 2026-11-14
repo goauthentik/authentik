@@ -110,8 +110,8 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                 )}`,
             },
             {
-                label: msg("Web (OpenID, macOS 27+)"),
-                value: ApplePSSOAuthenticationMethodEnum.Openid,
+                label: msg("Web"),
+                value: ApplePSSOAuthenticationMethodEnum.Web,
                 description: html`${msg(
                     "Users sign in through the authentik web interface, allowing for any custom flow to be used. Requires macOS 27 or later.",
                 )}`,

@@ -16,6 +16,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-role-assigned-global-permissions-table")
 export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
+    public static override verboseName = msg("Permission", {
+        id: "permissions.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Permissions", {
+        id: "permissions.verbose-name-plural.label",
+    });
+
     @property({ type: String, attribute: "role-uuid" })
     public roleUuid: string | null = null;
 
@@ -64,7 +71,6 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Permission) => {
                 return aki(RbacApi).rbacPermissionsAssignedByRolesUnassignPartialUpdate({

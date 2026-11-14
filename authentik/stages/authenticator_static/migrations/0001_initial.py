@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("authentik_flows", "0006_auto_20200629_0857"),
+        ("authentik_flows", "0001_squashed_0007_auto_20200703_2059"),
     ]
 
     operations = [

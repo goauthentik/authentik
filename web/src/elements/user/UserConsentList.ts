@@ -45,7 +45,6 @@ export class UserConsentList extends Table<UserConsent> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Consent(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: UserConsent) => {
                 return [

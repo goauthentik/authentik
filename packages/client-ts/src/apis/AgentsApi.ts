@@ -10,13 +10,19 @@
  * Do not edit the class manually.
  */
 
-import { type Agent, AgentFromJSON } from "../models/Agent";
-import { type AgentCreated, AgentCreatedFromJSON } from "../models/AgentCreated";
-import { type AgentCreateRequest, AgentCreateRequestToJSON } from "../models/AgentCreateRequest";
-import { type AgentRequest, AgentRequestToJSON } from "../models/AgentRequest";
-import { type PaginatedAgentList, PaginatedAgentListFromJSON } from "../models/PaginatedAgentList";
-import { type PatchedAgentRequest, PatchedAgentRequestToJSON } from "../models/PatchedAgentRequest";
-import * as runtime from "../runtime";
+import { type Agent, AgentFromJSON } from "../models/Agent.js";
+import { type AgentCreated, AgentCreatedFromJSON } from "../models/AgentCreated.js";
+import { type AgentCreateRequest, AgentCreateRequestToJSON } from "../models/AgentCreateRequest.js";
+import { type AgentRequest, AgentRequestToJSON } from "../models/AgentRequest.js";
+import {
+    type PaginatedAgentList,
+    PaginatedAgentListFromJSON,
+} from "../models/PaginatedAgentList.js";
+import {
+    type PatchedAgentRequest,
+    PatchedAgentRequestToJSON,
+} from "../models/PatchedAgentRequest.js";
+import * as runtime from "../runtime.js";
 
 export interface AgentsAgentsCreateRequest {
     agentCreateRequest?: AgentCreateRequest;

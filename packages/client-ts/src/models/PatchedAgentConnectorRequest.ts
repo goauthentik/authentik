@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { ApplePSSORequest } from "./ApplePSSORequest";
-import { ApplePSSORequestFromJSON, ApplePSSORequestToJSON } from "./ApplePSSORequest";
+import type { ApplePSSORequest } from "./ApplePSSORequest.js";
+import { ApplePSSORequestFromJSON, ApplePSSORequestToJSON } from "./ApplePSSORequest.js";
 
 /**
  * @export

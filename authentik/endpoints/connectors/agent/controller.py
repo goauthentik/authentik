@@ -97,14 +97,14 @@ class AgentConnectorController(BaseController[AgentConnector]):
         return {
             ApplePSSOAuthenticationMethod.PASSWORD: "Password",
             ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY: "UserSecureEnclaveKey",
-            ApplePSSOAuthenticationMethod.OPENID: "OpenID",
+            ApplePSSOAuthenticationMethod.WEB: "OpenID",
         }[self.connector.apple_psso_config.authentication_method]
 
     def _psso_method_specific(self, request: HttpRequest) -> dict:
         """Login, unlock and FileVault policies of the Platform SSO payload, which Apple only
         applies to the password method"""
         config = self.connector.apple_psso_config
-        if config.authentication_method == ApplePSSOAuthenticationMethod.OPENID:
+        if config.authentication_method == ApplePSSOAuthenticationMethod.WEB:
             return {
                 "WebLoginURLAllowList": [
                     request.build_absolute_uri(reverse("authentik_core:root-redirect"))

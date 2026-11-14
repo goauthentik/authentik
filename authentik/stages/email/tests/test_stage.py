@@ -16,7 +16,7 @@ from authentik.core.tests.utils import RequestFactory, create_test_admin_user, c
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
@@ -25,7 +25,7 @@ from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStageView
 
 
-class TestEmailStage(FlowTestCase):
+class TestEmailStage(APIFlowTestCase):
     """Email tests"""
 
     def setUp(self):
@@ -497,3 +497,30 @@ class TestEmailStage(FlowTestCase):
                 "Too many account verification attempts. Please try again after 5 minutes.",
                 message_list[-1].message,
             )
+
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_initial_send_rate_limited_on_flow_restart(self):
+        """Tests that restarting the flow does not bypass the rate limit
+        applied to resending the email."""
+        self.stage.recovery_max_attempts = 2
+        self.stage.recovery_cache_timeout = "minutes=10"
+        self.stage.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        # Each iteration simulates a full flow restart by seeding a fresh plan,
+        # so the initial email is attempted every time
+        for expected_mails in (1, 2, 2):
+            plan = FlowPlan(
+                flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
+            )
+            plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+            session = self.client.session
+            session[SESSION_KEY_PLAN] = plan
+            session.save()
+
+            response = self.client.get(url)
+            self.assertStageResponse(response, self.flow, component="ak-stage-email")
+            self.assertEqual(len(mail.outbox), expected_mails)

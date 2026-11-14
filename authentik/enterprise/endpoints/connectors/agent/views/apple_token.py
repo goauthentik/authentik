@@ -26,7 +26,10 @@ from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.models import CertificateKeyPair
-from authentik.endpoints.connectors.agent.auth import agent_auth_issue_token
+from authentik.endpoints.connectors.agent.auth import (
+    agent_auth_issue_token,
+    check_device_policies,
+)
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
@@ -388,6 +391,18 @@ class TokenView(View):
         if not authenticated:
             LOGGER.info("Platform SSO password login failed")
             raise InvalidCredentials
+        # Checked after the credentials, so that the result isn't disclosed to anyone else
+        policy_result = check_device_policies(
+            self.device_connection.device, authenticated, self.request
+        )
+        if not policy_result.passing:
+            LOGGER.info(
+                "Platform SSO password login denied by device policies",
+                user=authenticated,
+                device=self.device_connection.device,
+                messages=policy_result.messages,
+            )
+            raise ValidationError("Invalid request")
         return self.login_response(authenticated)
 
     def handle_v1_0_urn_ietf_params_oauth_grant_type_token_exchange(self) -> HttpResponse:

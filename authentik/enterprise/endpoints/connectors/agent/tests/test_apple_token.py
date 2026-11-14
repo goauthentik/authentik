@@ -27,6 +27,7 @@ from authentik.endpoints.models import Device
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import JWTAlgorithms
+from authentik.stages.password.models import PasswordDevice
 
 
 class TestAppleToken(TestCase):
@@ -162,8 +163,7 @@ class TestAppleToken(TestCase):
     def test_token_password(self):
         """A password login authenticates against the dedicated flow's password stage"""
         password = generate_id()
-        self.user.set_password(password)
-        self.user.save()
+        PasswordDevice.set_password(self.user, password)
         nonce = generate_id()
         AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
 
@@ -181,8 +181,7 @@ class TestAppleToken(TestCase):
     @reconcile_app("authentik_crypto")
     def test_token_password_invalid(self):
         """A wrong password is rejected as an invalid credential and issues no token"""
-        self.user.set_password(generate_id())
-        self.user.save()
+        PasswordDevice.set_password(self.user, generate_id())
         nonce = generate_id()
         AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
 
@@ -191,6 +190,29 @@ class TestAppleToken(TestCase):
         # macOS re-prompts for the password on a 401
         self.assertEqual(res.status_code, 401)
         self.assertJSONEqual(res.content, {"error": "invalid_grant"})
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.LOGIN,
+                app="authentik.endpoints.connectors.agent",
+            ).exists()
+        )
+
+    @apply_blueprint("default/flow-endpoints-agent-psso-password.yaml")
+    @reconcile_app("authentik_crypto")
+    def test_token_password_device_access_denied(self):
+        """Correct credentials of a user without access to the device issue no token"""
+        other_user = create_test_user()
+        password = generate_id()
+        PasswordDevice.set_password(other_user, password)
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+
+        res = self._post_password_request(
+            self._password_request(nonce, username=other_user.username, password=password)
+        )
+
+        # Not a 401, as macOS would re-prompt for a password that was correct
+        self.assertEqual(res.status_code, 400)
         self.assertFalse(
             Event.objects.filter(
                 action=EventAction.LOGIN,
