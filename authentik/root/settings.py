@@ -172,6 +172,15 @@ SPECTACULAR_SETTINGS = {
     },
     "ENUM_NAME_OVERRIDES": {
         "AppEnum": "authentik.lib.api.Apps",
+        "ApplePSSOAuthenticationMethodEnum": (
+            "authentik.endpoints.connectors.agent.models.ApplePSSOAuthenticationMethod"
+        ),
+        "ApplePSSOAuthenticationPolicyEnum": (
+            "authentik.endpoints.connectors.agent.models.ApplePSSOAuthenticationPolicy"
+        ),
+        "ApplePSSOBiometricRequirementEnum": (
+            "authentik.endpoints.connectors.agent.models.ApplePSSOBiometricRequirement"
+        ),
         "AuthenticationEnum": "authentik.flows.models.FlowAuthenticationRequirement",
         "ClientTypeEnum": "authentik.providers.oauth2.models.ClientType",
         "ConsentModeEnum": "authentik.stages.consent.models.ConsentMode",
