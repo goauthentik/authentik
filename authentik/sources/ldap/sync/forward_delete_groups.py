@@ -7,7 +7,11 @@ from ldap3 import SUBTREE
 from authentik.core.models import Group
 from authentik.sources.ldap.models import GroupLDAPSourceConnection
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
-from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE, UPDATE_CHUNK_SIZE
+from authentik.sources.ldap.sync.forward_delete_users import (
+    DELETE_CHUNK_SIZE,
+    UPDATE_CHUNK_SIZE,
+    skip_empty_deletion,
+)
 
 
 class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
@@ -31,16 +35,21 @@ class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
             generator=True,
             **kwargs,
         )
+        object_count = 0
         for batch in batched(groups, UPDATE_CHUNK_SIZE, strict=False):
             identifiers = []
             for group in batch:
                 if not (attributes := self.get_attributes(group)):
                     continue
+                object_count += 1
                 if identifier := self.get_identifier(attributes):
                     identifiers.append(identifier)
-            GroupLDAPSourceConnection.objects.filter(identifier__in=identifiers).update(
-                validated_by=uuid
-            )
+            GroupLDAPSourceConnection.objects.filter(
+                source=self._source, identifier__in=identifiers
+            ).update(validated_by=uuid)
+
+        if skip_empty_deletion(self._task, object_count, "group"):
+            return iter(())
 
         return batched(
             GroupLDAPSourceConnection.objects.filter(source=self._source)
