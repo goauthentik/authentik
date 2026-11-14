@@ -71,8 +71,9 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 from authentik.providers.oauth2.views.userinfo import UserInfoView
-from authentik.stages.consent.models import ConsentMode, ConsentStage
+from authentik.stages.consent.models import ConsentClient, ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
+    PLAN_CONTEXT_CONSENT_CLIENT,
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
 )
@@ -80,6 +81,9 @@ from authentik.stages.consent.stage import (
 LOGGER = get_logger()
 
 PLAN_CONTEXT_PARAMS = "goauthentik.io/providers/oauth2/params"
+# Client making the authorization request, as an `OAuthClientContext`. Set in the context of
+# application access policies and of the authorization flow.
+PLAN_CONTEXT_OAUTH_CLIENT = "oauth_client"
 SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
@@ -460,6 +464,23 @@ class OAuthAuthorizationParams:
         before the client was resolved belong to the provider's registered client."""
         return getattr(self, "client", None) or OAuthClientContext.for_provider(self.provider)
 
+    def consent_client(self) -> ConsentClient | None:
+        """Client consent is given to. Consent for the provider's registered client is given
+        to its application, as it always has been; every other client gets its own consent,
+        which neither the application's nor another client's consent can satisfy."""
+        client = self.bound_client()
+        if client.is_registered_client:
+            return None
+        redirect = urlparse(self.redirect_uri)
+        # Redirect URIs of native apps may use a private-use scheme instead of a host
+        redirect_host = redirect.hostname or redirect.scheme or None
+        client_host = urlparse(client.client_id).hostname
+        return ConsentClient(
+            client_id=client.client_id,
+            name=client.display_name,
+            redirect_host=redirect_host if redirect_host != client_host else None,
+        )
+
 
 class AuthorizationFlowInitView(PolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
@@ -521,6 +542,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         return super().modify_flow_context(flow, context)
 
     def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
+        request.context[PLAN_CONTEXT_OAUTH_CLIENT] = self.client
         request.context["oauth_scopes"] = self.params.scope
         request.context["oauth_grant_type"] = self.params.grant_type
         request.context["oauth_code_challenge"] = self.params.code_challenge
@@ -613,20 +635,22 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
+        context: dict[str, Any] = {
+            PLAN_CONTEXT_SSO: True,
+            PLAN_CONTEXT_APPLICATION: self.application,
+            # OAuth2 related params
+            PLAN_CONTEXT_PARAMS: self.params,
+            PLAN_CONTEXT_OAUTH_CLIENT: self.client,
+            # Consent related params
+            PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
+            % {"application": self.application.name},
+            PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
+        }
+        consent_client = self.params.consent_client()
+        if consent_client:
+            context[PLAN_CONTEXT_CONSENT_CLIENT] = consent_client
         try:
-            plan = planner.plan(
-                self.request,
-                {
-                    PLAN_CONTEXT_SSO: True,
-                    PLAN_CONTEXT_APPLICATION: self.application,
-                    # OAuth2 related params
-                    PLAN_CONTEXT_PARAMS: self.params,
-                    # Consent related params
-                    PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
-                    % {"application": self.application.name},
-                    PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
-                },
-            )
+            plan = planner.plan(self.request, context)
         except FlowNonApplicableException:
             return self.handle_no_permission_authenticated()
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
@@ -709,6 +733,9 @@ class OAuthFulfillmentStage(StageView):
         self.params: OAuthAuthorizationParams = self.executor.plan.context.pop(PLAN_CONTEXT_PARAMS)
         self.application: Application = self.executor.plan.context.pop(PLAN_CONTEXT_APPLICATION)
         self.provider = get_object_or_404(OAuth2Provider, pk=self.application.provider_id)
+        if self.params.bound_client().provider.pk != self.provider.pk:
+            LOGGER.warning("Authorization client does not belong to the flow's application")
+            return HttpResponseBadRequest()
         try:
             # At this point we don't need to check permissions anymore
             if {PROMPT_NONE, PROMPT_CONSENT}.issubset(self.params.prompt):

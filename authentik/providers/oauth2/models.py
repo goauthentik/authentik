@@ -912,6 +912,12 @@ class OAuth2SessionLogin(InternallyManagedMixin, models.Model):
 
     session = models.ForeignKey(AuthenticatedSession, on_delete=models.CASCADE)
     provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
+    # Client logged in, for clients other than the provider's registered client, which is
+    # the only one front- and backchannel logout are sent to. Empty for the registered client.
+    client_id = models.CharField(
+        max_length=GRANT_CLIENT_ID_MAX_LENGTH, null=True, default=None, verbose_name=_("Client ID")
+    )
+    client_id_hash = models.CharField(max_length=64, null=True, default=None, editable=False)
     # Stored as issued to the RP, as the issuer can't be resolved without a request and the
     # provider's `sub_mode` might change during the lifetime of the session.
     iss = models.TextField()
@@ -922,21 +928,44 @@ class OAuth2SessionLogin(InternallyManagedMixin, models.Model):
         verbose_name_plural = _("OAuth2 Session Logins")
         constraints = [
             models.UniqueConstraint(
-                fields=("session", "provider"), name="oauth2_session_login_unique"
+                fields=("session", "provider"),
+                condition=models.Q(client_id_hash__isnull=True),
+                name="oauth2_session_login_unique",
+            ),
+            models.UniqueConstraint(
+                fields=("session", "provider", "client_id_hash"),
+                condition=models.Q(client_id_hash__isnull=False),
+                name="oauth2_session_login_client_unique",
             ),
         ]
 
     def __str__(self):
         return f"Session Login for {self.provider_id} for session {self.session_id}"
 
+    def save(self, *args, **kwargs):
+        self.client_id_hash = hash_client_id(self.client_id) if self.client_id is not None else None
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None and "client_id" in update_fields:
+            kwargs["update_fields"] = set(update_fields) | {"client_id_hash"}
+        return super().save(*args, **kwargs)
+
+    @staticmethod
+    def registered_client_q() -> models.Q:
+        """Filter for logins of their provider's registered client"""
+        return models.Q(client_id_hash__isnull=True)
+
     @classmethod
     def record(cls, token: BaseGrantModel, id_token: IDToken) -> None:
-        """Remember that the provider of `token` has been issued `id_token` for its session"""
+        """Remember that the client of `token` has been issued `id_token` for its session"""
         if not token.session_id:
             return
+        client_id = None if token.is_bound_to_registered_client() else token.client_id
+        client_id_hash = hash_client_id(client_id) if client_id is not None else None
         cls.objects.update_or_create(
             session_id=token.session_id,
             provider=token.provider,
+            client_id_hash=client_id_hash,
+            client_id=client_id,
             defaults={"iss": id_token.iss, "sub": id_token.sub},
         )
 

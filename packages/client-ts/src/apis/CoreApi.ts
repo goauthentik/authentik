@@ -706,6 +706,7 @@ export interface CoreUserConsentDestroyRequest {
 
 export interface CoreUserConsentListRequest {
     application?: string;
+    clientId?: string;
     /**
      * Which field to use when ordering the results.
      */
@@ -5062,6 +5063,10 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["application"] != null) {
             queryParameters["application"] = requestParameters["application"];
+        }
+
+        if (requestParameters["clientId"] != null) {
+            queryParameters["client_id"] = requestParameters["clientId"];
         }
 
         if (requestParameters["ordering"] != null) {
