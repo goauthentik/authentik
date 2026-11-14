@@ -126,7 +126,11 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = OAuth2Provider.objects.select_related(
         "application", "backchannel_application"
-    ).prefetch_related("property_mappings", "jwt_federation_sources", "jwt_federation_providers")
+    ).prefetch_related(
+        "property_mappings",
+        "jwt_federation_sources",
+        "jwt_federation_providers",
+    )
     serializer_class = OAuth2ProviderSerializer
     filterset_fields = [
         "name",
