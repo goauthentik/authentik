@@ -4,7 +4,8 @@ from collections import OrderedDict
 from datetime import timedelta
 
 import django_filters
-from django.db.models import Count, ExpressionWrapper, F, QuerySet
+from django.contrib.postgres.aggregates import ArrayAgg
+from django.db.models import Count, ExpressionWrapper, F, Func, JSONField, QuerySet
 from django.db.models import DateTimeField as DjangoDateTimeField
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import TruncHour
@@ -37,6 +38,12 @@ from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 
 AGGR_MAX_AGE = timedelta(days=90)
+
+
+class ArrayFirst(Func):
+    """Get the first element of an array expression"""
+
+    template = "(%(expressions)s)[1]"
 
 
 class EventVolumeSerializer(PassiveSerializer):
@@ -238,14 +245,24 @@ class EventViewSet(
     def top_per_user(self, request: Request, query: TopPerUserSerializer):
         """Get the top_n events grouped by user count"""
         top_n = query.validated_data.get("top_n")
+        application = KeyTransform("authorized_application", "context")
         events = (
             self.filter_queryset(self.get_queryset())
             .exclude(context__authorized_application=None)
-            .annotate(application=KeyTransform("authorized_application", "context"))
+            .annotate(application_pk=KeyTextTransform("pk", application))
             .annotate(user_pk=KeyTextTransform("pk", "user"))
-            .values("application")
-            .annotate(counted_events=Count("application"))
+            # Group by the application's primary key and not the serialized application
+            # itself, as otherwise renaming an application splits its usage in two
+            .values("application_pk")
+            .annotate(counted_events=Count("pk"))
             .annotate(unique_users=Count("user_pk", distinct=True))
+            # The application is only stored as it was serialized when the event was
+            # created, so use the details of the most recent event of each application
+            .annotate(
+                application=ArrayFirst(
+                    ArrayAgg(application, order_by="-created"), output_field=JSONField()
+                )
+            )
             .values("unique_users", "application", "counted_events")
             .order_by("-counted_events")[:top_n]
         )
