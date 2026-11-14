@@ -8,6 +8,7 @@ from functools import cached_property
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse, urlunparse
+from uuid import uuid4
 
 from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP256R1,
@@ -69,6 +70,7 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.sources.oauth.models import OAuthSource
 
 if TYPE_CHECKING:
+    from authentik.providers.oauth2.client import OAuthClientContext
     from authentik.providers.oauth2.id_token import IDToken
 
 LOGGER = get_logger()
@@ -568,7 +570,153 @@ class OAuth2ProviderJWTFederationProvider(SimpleThroughModel):
         )
 
 
-class BaseGrantModel(models.Model):
+# Upper bound for client identifiers and resources stored on grants. Client identifiers of
+# registered providers are much shorter, but other registration kinds may use URLs.
+GRANT_CLIENT_ID_MAX_LENGTH = 2048
+GRANT_RESOURCE_MAX_LENGTH = 2048
+
+
+def hash_client_id(client_id: str) -> str:
+    """Fixed-length digest of a client identifier, used to index grants by client.
+    The digest only narrows a lookup; the full client identifier must still be compared."""
+    return sha256(client_id.encode("utf-8")).hexdigest()
+
+
+@dataclass(frozen=True, slots=True)
+class ClientGrantBinding:
+    """Client attributes recorded on a grant, and compared when the grant is used"""
+
+    # Exact client identifier, never normalized
+    client_id: str
+    # Token endpoint authentication method selected for the client
+    auth_method: str
+    # Opaque reference to a credential managed outside of this app, and its version.
+    # Never a foreign key, so that core does not depend on whatever manages it.
+    external_binding: str | None = None
+    external_binding_version: str | None = None
+
+
+class ClientBoundModel(models.Model):
+    """Binds a grant to the exact client it was issued to, within its provider.
+
+    Rows without a client binding were issued before grants recorded their client. They
+    belong to the provider's own registered client only, never to any other client of the
+    same provider. Subclasses must have a `provider` foreign key, and should index
+    `("provider", "client_id_hash")`.
+
+    Lookups narrow by `bound_to_q()`, which matches on the indexed hash and the exact
+    client identifier; callers must still check `is_bound_to()` on the result, which also
+    compares the authentication method and any external binding."""
+
+    provider_id: Any
+
+    client_id = models.CharField(
+        max_length=GRANT_CLIENT_ID_MAX_LENGTH, null=True, default=None, verbose_name=_("Client ID")
+    )
+    client_id_hash = models.CharField(max_length=64, null=True, default=None, editable=False)
+    client_auth_method = models.CharField(
+        max_length=64,
+        null=True,
+        default=None,
+        verbose_name=_("Client authentication method"),
+    )
+    # Resource the grant is restricted to (RFC 8707), used as the access token audience
+    resource = models.CharField(
+        max_length=GRANT_RESOURCE_MAX_LENGTH,
+        null=True,
+        default=None,
+        verbose_name=_("Resource"),
+    )
+    external_binding = models.CharField(max_length=255, null=True, default=None)
+    external_binding_version = models.CharField(max_length=64, null=True, default=None)
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        self.client_id_hash = hash_client_id(self.client_id) if self.client_id is not None else None
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None and "client_id" in update_fields:
+            kwargs["update_fields"] = set(update_fields) | {"client_id_hash"}
+        return super().save(*args, **kwargs)
+
+    def bind_client(self, client: OAuthClientContext, *, resource: str | None = None) -> None:
+        """Record the client this grant is issued to"""
+        if self.provider_id is None:
+            self.provider = client.provider  # type: ignore[attr-defined]
+        elif self.provider_id != client.provider.pk:
+            raise ValueError("Grant provider does not match client provider")
+        binding = client.grant_binding
+        self.client_id = binding.client_id
+        self.client_id_hash = hash_client_id(binding.client_id)
+        self.client_auth_method = binding.auth_method
+        self.external_binding = binding.external_binding
+        self.external_binding_version = binding.external_binding_version
+        self.resource = resource
+
+    @property
+    def is_client_bound(self) -> bool:
+        """False for rows issued before grants recorded their client"""
+        return self.client_id is not None
+
+    @property
+    def grant_binding(self) -> ClientGrantBinding | None:
+        """Client binding recorded on this grant, None for rows without one"""
+        if self.client_id is None:
+            return None
+        return ClientGrantBinding(
+            client_id=self.client_id,
+            auth_method=self.client_auth_method or "",
+            external_binding=self.external_binding,
+            external_binding_version=self.external_binding_version,
+        )
+
+    @property
+    def bound_client_id(self) -> str:
+        """Client identifier this grant was issued to. Rows without a binding belong to
+        their provider's registered client."""
+        if self.client_id is not None:
+            return self.client_id
+        return self.provider.client_id  # type: ignore[attr-defined]
+
+    def is_bound_to(self, client: OAuthClientContext) -> bool:
+        """Check whether `client` may use this grant"""
+        if self.provider_id != client.provider.pk:
+            return False
+        binding = self.grant_binding
+        if binding is None:
+            return client.is_registered_client
+        return client.matches_grant_binding(binding)
+
+    def is_bound_to_registered_client(self) -> bool:
+        """Check whether this grant belongs to its provider's own registered client"""
+        if self.client_id is None:
+            return True
+        return (
+            self.external_binding is None
+            and self.client_id == self.provider.client_id  # type: ignore[attr-defined]
+        )
+
+    @staticmethod
+    def bound_to_q(client: OAuthClientContext) -> models.Q:
+        """Filter for grants which may belong to `client`. Narrows by the indexed client
+        hash; results must be verified with `is_bound_to()`."""
+        query = models.Q(
+            client_id_hash=hash_client_id(client.client_id), client_id=client.client_id
+        )
+        if client.is_registered_client:
+            query |= models.Q(client_id__isnull=True)
+        return models.Q(provider=client.provider) & query
+
+    @staticmethod
+    def registered_client_q() -> models.Q:
+        """Filter for grants which belong to their provider's own registered client"""
+        return models.Q(client_id__isnull=True) | models.Q(
+            client_id=models.F("provider__client_id"), external_binding__isnull=True
+        )
+
+
+class BaseGrantModel(ClientBoundModel):
     """Base Model for all grants"""
 
     provider = models.ForeignKey(OAuth2Provider, on_delete=models.CASCADE)
@@ -591,9 +739,21 @@ class BaseGrantModel(models.Model):
         blank=True,
         default=None,
     )
+    # Redirect URI the grant was authorized for, where one was used
+    redirect_uri = models.TextField(null=True, default=None, verbose_name=_("Redirect URI"))
 
     class Meta:
         abstract = True
+
+    def bind_client(
+        self,
+        client: OAuthClientContext,
+        *,
+        resource: str | None = None,
+        redirect_uri: str | None = None,
+    ) -> None:
+        super().bind_client(client, resource=resource)
+        self.redirect_uri = redirect_uri
 
     @property
     def scope(self) -> list[str]:
@@ -621,7 +781,9 @@ class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, 
     class Meta:
         verbose_name = _("Authorization Code")
         verbose_name_plural = _("Authorization Codes")
-        indexes = ExpiringModel.Meta.indexes
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["provider", "client_id_hash"]),
+        ]
 
     def __str__(self):
         return f"Authorization code for {self.provider_id} for user {self.user_id}"
@@ -652,6 +814,7 @@ class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGr
     class Meta:
         indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["token"]),
+            models.Index(fields=["provider", "client_id_hash"]),
         ]
         verbose_name = _("OAuth2 Access Token")
         verbose_name_plural = _("OAuth2 Access Tokens")
@@ -704,10 +867,16 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
     )
+    # Identifies all refresh tokens descending from the same initial grant. Successors
+    # issued on refresh keep their predecessor's family. Rows issued before families
+    # were tracked have none.
+    family_id = models.UUIDField(null=True, default=uuid4, editable=False)
 
     class Meta:
         indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["token"]),
+            models.Index(fields=["provider", "client_id_hash"]),
+            models.Index(fields=["family_id"]),
         ]
         verbose_name = _("OAuth2 Refresh Token")
         verbose_name_plural = _("OAuth2 Refresh Tokens")
@@ -772,7 +941,7 @@ class OAuth2SessionLogin(InternallyManagedMixin, models.Model):
         )
 
 
-class DeviceToken(InternallyManagedMixin, ExpiringModel):
+class DeviceToken(InternallyManagedMixin, ExpiringModel, ClientBoundModel):
     """Temporary device token for OAuth device flow"""
 
     user = models.ForeignKey(
@@ -789,6 +958,16 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
         AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
     )
 
+    class Meta:
+        verbose_name = _("Device Token")
+        verbose_name_plural = _("Device Tokens")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["provider", "client_id_hash"]),
+        ]
+
+    def __str__(self):
+        return f"Device Token for {self.provider_id}"
+
     @property
     def scope(self) -> list[str]:
         """Return scopes as list of strings"""
@@ -797,14 +976,6 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
     @scope.setter
     def scope(self, value):
         self._scope = " ".join(value)
-
-    class Meta:
-        verbose_name = _("Device Token")
-        verbose_name_plural = _("Device Tokens")
-        indexes = ExpiringModel.Meta.indexes
-
-    def __str__(self):
-        return f"Device Token for {self.provider_id}"
 
 
 class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):

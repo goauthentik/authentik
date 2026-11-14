@@ -36,6 +36,7 @@ from authentik.providers.oauth2.errors import (
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
+    BaseGrantModel,
     OAuth2Provider,
     OAuth2SessionLogin,
     RefreshToken,
@@ -124,6 +125,12 @@ class TokenView(View):
         if self.params.dpop_jwk is not None:
             id_token.cnf = {"jwk": self.params.dpop_jwk}
 
+    def _bind_from(self, grant: BaseGrantModel, source: BaseGrantModel) -> None:
+        """Bind a grant issued from `source` to the requesting client, keeping the
+        redirect URI and resource `source` was authorized for. `source` has been checked
+        to be bound to the requesting client while parsing the request."""
+        grant.bind_client(self.client, redirect_uri=source.redirect_uri, resource=source.resource)
+
     def create_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
         now = timezone.now()
@@ -137,6 +144,7 @@ class TokenView(View):
             auth_time=self.params.authorization_code.auth_time,
             session=self.params.authorization_code.session,
         )
+        self._bind_from(access_token, self.params.authorization_code)
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -170,6 +178,7 @@ class TokenView(View):
                 session=self.params.authorization_code.session,
                 dpop_jkt=self.params.authorization_code.dpop_jkt,
             )
+            self._bind_from(refresh_token, self.params.authorization_code)
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
@@ -204,6 +213,7 @@ class TokenView(View):
             auth_time=self.params.refresh_token.auth_time,
             session=self.params.refresh_token.session,
         )
+        self._bind_from(access_token, self.params.refresh_token)
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -240,6 +250,11 @@ class TokenView(View):
                 session=self.params.refresh_token.session,
                 dpop_jkt=self.params.refresh_token.dpop_jkt,
             )
+            self._bind_from(refresh_token, self.params.refresh_token)
+            # Successors stay in their predecessor's family. Tokens issued before
+            # families were tracked start a new one.
+            if self.params.refresh_token.family_id:
+                refresh_token.family_id = self.params.refresh_token.family_id
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
@@ -269,6 +284,7 @@ class TokenView(View):
             scope=self.params.scope,
             auth_time=now,
         )
+        access_token.bind_client(self.client)
         access_token.id_token = IDToken.new(
             self.provider,
             access_token,
@@ -300,6 +316,7 @@ class TokenView(View):
             auth_time=auth_event.created if auth_event else now,
             session=self.params.device_code.session,
         )
+        access_token.bind_client(self.client, resource=self.params.device_code.resource)
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -331,6 +348,7 @@ class TokenView(View):
                 auth_time=auth_event.created if auth_event else now,
                 dpop_jkt=self.params.device_code.dpop_jkt,
             )
+            refresh_token.bind_client(self.client, resource=self.params.device_code.resource)
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
@@ -379,6 +397,11 @@ class TokenView(View):
             expires=access_token_expiry,
             scope=self.params.scope,
             auth_time=now,
+        )
+        # A token issued on another provider (`audience`) is issued as that provider's
+        # registered client, as it always has been
+        access_token.bind_client(
+            self.client if provider == self.provider else OAuthClientContext.for_provider(provider)
         )
         access_token.id_token = IDToken.new(
             provider,
