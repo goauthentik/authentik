@@ -26,6 +26,9 @@ interface InvitationSendEmailRequestWithTemplate {
 
 @customElement("ak-invitation-send-email-form")
 export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWithTemplate> {
+    public override submitLabel = msg("Send");
+    public override headline = msg("Send Invitation via Email");
+
     static get styles(): CSSResult[] {
         return [...super.styles, PFDescriptionList];
     }
@@ -47,14 +50,9 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
         }
     };
 
-    connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
-        this.addEventListener("ak-modal-show", this.fetchAvailableTemplates);
-    }
-
-    public disconnectedCallback(): void {
-        super.disconnectedCallback();
-        this.removeEventListener("ak-modal-show", this.fetchAvailableTemplates);
+        this.fetchAvailableTemplates();
     }
 
     parseEmailAddresses(addresses: string): string[] {
