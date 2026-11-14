@@ -22,6 +22,7 @@ export const GrantTypeEnum = {
     Password: "password",
     UrnIetfParamsOauthGrantTypeDeviceCode: "urn:ietf:params:oauth:grant-type:device_code",
     UrnIetfParamsOauthGrantTypeTokenExchange: "urn:ietf:params:oauth:grant-type:token-exchange",
+    UrnIetfParamsOauthGrantTypeJwtBearer: "urn:ietf:params:oauth:grant-type:jwt-bearer",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type GrantTypeEnum = (typeof GrantTypeEnum)[keyof typeof GrantTypeEnum];

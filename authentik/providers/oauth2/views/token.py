@@ -15,6 +15,7 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_CLIENT_CREDENTIALS,
     GRANT_TYPE_DEVICE_CODE,
+    GRANT_TYPE_JWT_BEARER,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
     GRANT_TYPE_TOKEN_EXCHANGE,
@@ -103,6 +104,9 @@ class TokenView(View):
                 if self.params.grant_type == GRANT_TYPE_TOKEN_EXCHANGE:
                     LOGGER.debug("Token exchange grant")
                     return TokenResponse(self.create_token_exchange_response())
+                if self.params.grant_type == GRANT_TYPE_JWT_BEARER:
+                    LOGGER.debug("ID-JAG grant")
+                    return TokenResponse(self.create_id_jag_grant_response())
                 raise TokenError("unsupported_grant_type")
         except TokenError as error:
             return TokenResponse(error.create_dict(request), status=400)
@@ -279,6 +283,29 @@ class TokenView(View):
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
             "id_token": access_token.id_token.to_jwt(self.provider),
+        }
+
+    def create_id_jag_grant_response(self) -> dict[str, Any]:
+        """Redeem an ID-JAG for an access token, as a Resource Authorization Server.
+        See draft-ietf-oauth-identity-assertion-authz-grant §4.4.2"""
+        now = timezone.now()
+        validity = timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken(
+            provider=self.provider,
+            user=self.params.user,
+            expires=now + validity,
+            scope=self.params.scope,
+            auth_time=now,
+        )
+        access_token.id_token = IDToken.new(self.provider, access_token, self.request)
+        access_token.save()
+        # §4.4.1: granted scopes are always reported. §4.4.4: no refresh token; the client
+        # re-presents a new ID-JAG instead.
+        return {
+            "access_token": access_token.token,
+            "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
+            "expires_in": int(validity.total_seconds()),
         }
 
     def create_device_code_response(self) -> dict[str, Any]:

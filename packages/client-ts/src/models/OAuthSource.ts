@@ -135,6 +135,12 @@ export interface OAuthSource {
      * How to perform authentication during an authorization_code token request flow
      */
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
+    /**
+     * Email domains this source is trusted for when redeeming ID-JAGs. An ID-JAG whose subject
+     * isn't connected to a user yet is connected to the one active user with its email address, if
+     * that address is in one of these domains.
+     */
+    idJagEmailDomains?: Array<string>;
 }
 
 /**
@@ -296,6 +302,8 @@ export function OAuthSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
             json["authorization_code_auth_method"] == null
                 ? undefined
                 : AuthorizationCodeAuthMethodEnumFromJSON(json["authorization_code_auth_method"]),
+        idJagEmailDomains:
+            json["id_jag_email_domains"] == null ? undefined : json["id_jag_email_domains"],
     };
 }
 
@@ -351,5 +359,6 @@ export function OAuthSourceToJSONTyped(
         authorization_code_auth_method: AuthorizationCodeAuthMethodEnumToJSON(
             value["authorizationCodeAuthMethod"],
         ),
+        id_jag_email_domains: value["idJagEmailDomains"],
     };
 }
