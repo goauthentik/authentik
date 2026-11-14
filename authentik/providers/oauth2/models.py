@@ -324,6 +324,15 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=IssuerMode.PER_PROVIDER,
         help_text=_("Configure how the issuer field of the ID Token should be filled."),
     )
+    include_issuer_in_authorization_response = models.BooleanField(
+        default=True,
+        verbose_name=_("Include issuer in authorization responses"),
+        help_text=_(
+            "Include the issuer identifier as the iss parameter in authorization responses "
+            "(RFC 9207), so that clients can detect mix-up attacks. The issuer must be "
+            "identical regardless of the URL authentik is accessed with."
+        ),
+    )
 
     signing_key = models.ForeignKey(
         CertificateKeyPair,
@@ -390,6 +399,14 @@ class OAuth2Provider(WebfingerProvider, Provider):
             return request.build_absolute_uri(url)
         except Provider.application.RelatedObjectDoesNotExist:
             return None
+
+    def get_authorization_response_issuer(self, request: HttpRequest) -> str | None:
+        """Issuer to return as the `iss` parameter of authorization responses (RFC 9207),
+        or None when it should be omitted. Identical to the issuer in the discovery document
+        and in ID tokens."""
+        if not self.include_issuer_in_authorization_response:
+            return None
+        return self.get_issuer(request)
 
     @property
     def redirect_uris(self) -> list[RedirectURI]:

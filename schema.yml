@@ -46887,6 +46887,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
+        include_issuer_in_authorization_response:
+          type: boolean
+          title: Include issuer in authorization responses
+          description: Include the issuer identifier as the iss parameter in authorization
+            responses (RFC 9207), so that clients can detect mix-up attacks. The issuer
+            must be identical regardless of the URL authentik is accessed with.
         jwt_federation_sources:
           type: array
           items:
@@ -47017,6 +47023,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
+        include_issuer_in_authorization_response:
+          type: boolean
+          title: Include issuer in authorization responses
+          description: Include the issuer identifier as the iss parameter in authorization
+            responses (RFC 9207), so that clients can detect mix-up attacks. The issuer
+            must be identical regardless of the URL authentik is accessed with.
         jwt_federation_sources:
           type: array
           items:
@@ -53069,6 +53081,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
+        include_issuer_in_authorization_response:
+          type: boolean
+          title: Include issuer in authorization responses
+          description: Include the issuer identifier as the iss parameter in authorization
+            responses (RFC 9207), so that clients can detect mix-up attacks. The issuer
+            must be identical regardless of the URL authentik is accessed with.
         jwt_federation_sources:
           type: array
           items:

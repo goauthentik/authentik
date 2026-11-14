@@ -1,8 +1,9 @@
 """OAuth test helpers"""
 
 from typing import Any
+from urllib.parse import urlencode
 
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from jwcrypto.jwe import JWE
 from jwcrypto.jwk import JWK
 from jwt import decode
@@ -28,6 +29,14 @@ class OAuthTestCase(TestCase):
     def setUpClass(cls) -> None:
         cls.keypair = create_test_cert()
         super().setUpClass()
+
+    def issuer(self, provider: OAuth2Provider) -> str:
+        """Issuer of a provider, as returned by the test client"""
+        return provider.get_issuer(RequestFactory().get("/"))
+
+    def iss_param(self, provider: OAuth2Provider) -> str:
+        """Encoded `iss` authorization response parameter (RFC 9207)"""
+        return urlencode({"iss": self.issuer(provider)})
 
     def assert_non_none_or_unset(self, container: dict, key: str):
         """Check that a key, if set, is not none"""
