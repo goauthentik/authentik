@@ -39,6 +39,7 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
+from authentik.stages.authenticator_webauthn.algorithms import supported_pub_key_algs
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     AuthenticatorWebAuthnStage,
@@ -84,6 +85,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 expected_challenge=challenge,
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
+                supported_pub_key_algs=supported_pub_key_algs(),
             )
         except WebAuthnException as exc:
             self.stage.logger.warning("registration failed", exc=exc)
@@ -183,6 +185,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             ),
             attestation=AttestationConveyancePreference.DIRECT,
             hints=hints,
+            supported_pub_key_algs=supported_pub_key_algs(),
         )
 
         self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = registration_options.challenge
