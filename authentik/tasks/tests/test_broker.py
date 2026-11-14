@@ -1,8 +1,8 @@
 from datetime import timedelta
-from unittest.mock import MagicMock, patch
+from unittest.mock import ANY, MagicMock, call, patch
 from uuid import uuid4
 
-from django.test import SimpleTestCase, TransactionTestCase
+from django.test import SimpleTestCase, TestCase, TransactionTestCase
 from django.test.utils import CaptureQueriesContext
 from django.utils.timezone import now
 from django_dramatiq_postgres.broker import (
@@ -10,11 +10,12 @@ from django_dramatiq_postgres.broker import (
     PENDING_FETCH_LIMIT,
     PostgresBroker,
 )
+from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import TaskState
 from dramatiq.broker import MessageProxy
 from dramatiq.message import Message
 
-from authentik.tasks.models import Task
+from authentik.tasks.models import Task, TaskDependency, TaskLog, TaskStatus
 
 
 class TestPostgresConsumer(SimpleTestCase):
@@ -260,6 +261,106 @@ class TestPostgresConsumer(SimpleTestCase):
         self.assertEqual(consumer._next_pending_reconciliation, 35)
         consumer._poll_for_notify.assert_called_once_with()
         consumer._fetch_pending_messages.assert_called_once_with()
+
+
+class TestPostgresConsumerAutoPurge(TestCase):
+    def setUp(self):
+        self.broker = PostgresBroker()
+        self.task_expiration = timedelta(seconds=Conf().task_expiration)
+        self.task_purge_interval = timedelta(seconds=Conf().task_purge_interval)
+
+    def _create_task(self, state: TaskState, mtime_age: timedelta, result_expiry) -> Task:
+        task = Task.objects.create(
+            queue_name="default",
+            actor_name="test.actor",
+            state=state,
+            mtime=now() - mtime_age,
+            result_expiry=result_expiry,
+        )
+        TaskLog.objects.create(
+            task=task,
+            event="test",
+            log_level=TaskStatus.INFO,
+            logger="test",
+            timestamp=now(),
+            attributes={},
+        )
+        return task
+
+    def _create_expired_task(self, state: TaskState = TaskState.DONE) -> Task:
+        return self._create_task(
+            state, self.task_expiration + timedelta(hours=1), now() - timedelta(hours=1)
+        )
+
+    def _due_consumer(self):
+        consumer = self.broker.consume(queue_name="default")
+        consumer.task_purge_last_run = now() - self.task_purge_interval
+        return consumer
+
+    def test_auto_purge_deletes_expired_tasks(self):
+        old = self.task_expiration + timedelta(hours=1)
+        past = now() - timedelta(hours=1)
+        expired = [
+            self._create_expired_task(TaskState.DONE),
+            self._create_expired_task(TaskState.REJECTED),
+        ]
+        survivors = [
+            self._create_task(TaskState.DONE, timedelta(hours=1), past),
+            self._create_task(TaskState.DONE, old, now() + timedelta(hours=1)),
+            self._create_task(TaskState.QUEUED, old, past),
+            self._create_task(TaskState.RUNNING, old, past),
+        ]
+        for task in expired:
+            TaskDependency.objects.create(task=task, dependency=survivors[2])
+            TaskDependency.objects.create(task=survivors[3], dependency=task)
+        TaskDependency.objects.create(task=survivors[2], dependency=survivors[3])
+        consumer = self._due_consumer()
+        consumer.logger = MagicMock()
+
+        consumer._auto_purge()
+
+        created = [task.pk for task in expired + survivors]
+        self.assertCountEqual(
+            Task.objects.filter(pk__in=created).values_list("pk", flat=True),
+            [task.pk for task in survivors],
+        )
+        self.assertCountEqual(
+            TaskLog.objects.filter(task_id__in=created).values_list("task_id", flat=True),
+            [task.pk for task in survivors],
+        )
+        self.assertEqual(
+            list(
+                TaskDependency.objects.filter(task_id__in=created).values_list(
+                    "task_id", "dependency_id"
+                )
+            ),
+            [(survivors[2].pk, survivors[3].pk)],
+        )
+        self.assertEqual(
+            consumer.logger.info.call_args_list,
+            [
+                call("Task purge started"),
+                call("Task purge finished", count=len(expired), took_s=ANY),
+            ],
+        )
+
+    def test_auto_purge_not_due_on_first_poll(self):
+        task = self._create_expired_task()
+        interval = self.task_purge_interval.total_seconds()
+
+        with patch(
+            "django_dramatiq_postgres.broker.random.uniform",
+            return_value=interval / 2,
+        ) as uniform:
+            consumer = self.broker.consume(queue_name="default")
+        uniform.assert_called_once_with(0, interval)
+
+        consumer._auto_purge()
+        self.assertTrue(Task.objects.filter(pk=task.pk).exists())
+
+        consumer.task_purge_last_run = now() - self.task_purge_interval
+        consumer._auto_purge()
+        self.assertFalse(Task.objects.filter(pk=task.pk).exists())
 
 
 class TestPostgresConsumerAdvisoryLocks(TransactionTestCase):
