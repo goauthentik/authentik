@@ -1,4 +1,8 @@
-use std::{fmt::Display, sync::Arc};
+use std::{
+    fmt::Display,
+    sync::{Arc, OnceLock},
+    time::Instant,
+};
 
 use ak_common::{Arbiter, Tasks, VERSION, api, arbiter, authentik_build_hash, config, tls};
 use axum::http::{HeaderValue, header::AUTHORIZATION};
@@ -133,6 +137,7 @@ async fn watch_events_inner<O: Outpost>(
     controller: Arc<OutpostController>,
     outpost: Arc<O>,
     attempt: u32,
+    connected_at: &OnceLock<Instant>,
 ) -> Result<()> {
     type WsWriter = Box<dyn Sink<Message, Error = WsError> + Unpin + Send>;
     type WsReader = Box<dyn Stream<Item = Result<Message, WsError>> + Unpin + Send>;
@@ -215,6 +220,7 @@ async fn watch_events_inner<O: Outpost>(
         "connected to websocket"
     );
     controller.m_connection.set(1_u8);
+    let _ = connected_at.set(Instant::now());
 
     let get_refresh_interval = || {
         let mut interval = controller.outpost.load().refresh_interval_s;
@@ -316,39 +322,74 @@ async fn watch_events_inner<O: Outpost>(
     Ok(())
 }
 
+/// Reconnect delay and attempt counter of the event watcher.
+struct Reconnect {
+    delay: Duration,
+    attempt: u32,
+}
+
+impl Reconnect {
+    const INITIAL_DELAY: Duration = Duration::from_secs(1);
+    const MAX_DELAY: Duration = Duration::from_mins(5);
+    /// A session must stay connected at least this long to count as healthy.
+    const STABLE_SESSION: Duration = Duration::from_mins(1);
+
+    const fn new() -> Self {
+        Self {
+            delay: Self::INITIAL_DELAY,
+            attempt: 0,
+        }
+    }
+
+    /// Start over after a healthy session. Connection failures and short-lived sessions keep
+    /// the exponential backoff, so a server that accepts and immediately drops is not hammered.
+    fn session_ended(&mut self, connected_for: Option<Duration>) {
+        if connected_for.is_some_and(|duration| duration >= Self::STABLE_SESSION) {
+            *self = Self::new();
+        }
+    }
+
+    /// Grow the delay after waiting for it.
+    fn waited(&mut self) {
+        self.delay = (self.delay * 2).min(Self::MAX_DELAY);
+        self.attempt += 1;
+    }
+}
+
 async fn watch_events<O: Outpost>(
     arbiter: Arbiter,
     controller: Arc<OutpostController>,
     outpost: Arc<O>,
 ) -> Result<()> {
-    const MAX_BACKOFF: Duration = Duration::from_mins(5);
-    let mut backoff = Duration::from_secs(1);
-    let mut attempt: u32 = 0;
+    let mut reconnect = Reconnect::new();
 
     loop {
+        let connected_at = OnceLock::new();
         tokio::select! {
             () = arbiter.shutdown() => break,
             res = watch_events_inner(
                 arbiter.clone(),
                 Arc::clone(&controller),
                 Arc::clone(&outpost),
-                attempt
+                reconnect.attempt,
+                &connected_at,
             ) => {
                 controller.m_connection.set(0_u8);
+                reconnect.session_ended(connected_at.get().map(Instant::elapsed));
+                let Reconnect { delay, attempt } = reconnect;
                 match res {
                     Ok(()) => debug!("websocket disconnected cleanly"),
                     Err(err) => warn!(?err, attempt, "websocket error"),
                 }
 
-                info!(attempt, delay = backoff.as_secs(), "reconnecting websocket in {}s...", backoff.as_secs());
+                info!(attempt, delay = delay.as_secs(), "reconnecting websocket in {}s...", delay.as_secs());
 
                 tokio::select! {
                     () = arbiter.shutdown() => break,
-                    () = sleep(backoff) => {}
+                    () = sleep(delay) => {}
                 }
 
-                backoff = (backoff * 2).min(MAX_BACKOFF);
-                attempt += 1;
+                reconnect.waited();
             }
         }
     }
@@ -370,4 +411,64 @@ pub(crate) fn start<O: Outpost + 'static>(
         .spawn(watch_events(arbiter, controller, outpost))?;
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use tokio::time::Duration;
+
+    use super::Reconnect;
+
+    fn saturated() -> Reconnect {
+        let mut reconnect = Reconnect::new();
+        for _ in 0_u8..20_u8 {
+            reconnect.waited();
+        }
+        reconnect
+    }
+
+    #[test]
+    fn delay_grows_up_to_the_maximum() {
+        let mut reconnect = Reconnect::new();
+        let mut delays = Vec::new();
+        for _ in 0_u8..12_u8 {
+            delays.push(reconnect.delay.as_secs());
+            reconnect.waited();
+        }
+        assert_eq!(delays, [1, 2, 4, 8, 16, 32, 64, 128, 256, 300, 300, 300]);
+        assert_eq!(reconnect.attempt, 12);
+    }
+
+    #[test]
+    fn stable_session_resets_backoff() {
+        let mut reconnect = saturated();
+        assert_eq!(reconnect.delay, Reconnect::MAX_DELAY);
+
+        reconnect.session_ended(Some(Reconnect::STABLE_SESSION));
+
+        assert_eq!(reconnect.delay, Reconnect::INITIAL_DELAY);
+        assert_eq!(reconnect.attempt, 0);
+    }
+
+    #[test]
+    fn failed_connection_keeps_backoff() {
+        let mut reconnect = saturated();
+        let attempt = reconnect.attempt;
+
+        reconnect.session_ended(None);
+
+        assert_eq!(reconnect.delay, Reconnect::MAX_DELAY);
+        assert_eq!(reconnect.attempt, attempt);
+    }
+
+    #[test]
+    fn short_session_keeps_backoff() {
+        let mut reconnect = saturated();
+        let attempt = reconnect.attempt;
+
+        reconnect.session_ended(Some(Duration::from_secs(59)));
+
+        assert_eq!(reconnect.delay, Reconnect::MAX_DELAY);
+        assert_eq!(reconnect.attempt, attempt);
+    }
 }
