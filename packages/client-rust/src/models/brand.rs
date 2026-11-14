@@ -56,6 +56,8 @@ pub struct Brand {
         skip_serializing_if = "Option::is_none"
     )]
     pub flow_user_switch: Option<Option<uuid::Uuid>>,
+    #[serde(rename = "flow_provider_authorization")]
+    pub flow_provider_authorization: uuid::Uuid,
     #[serde(
         rename = "flow_invalidation",
         default,
@@ -133,7 +135,11 @@ pub struct Brand {
 
 impl Brand {
     /// Brand Serializer
-    pub fn new(brand_uuid: uuid::Uuid, domain: String) -> Brand {
+    pub fn new(
+        brand_uuid: uuid::Uuid,
+        domain: String,
+        flow_provider_authorization: uuid::Uuid,
+    ) -> Brand {
         Brand {
             brand_uuid,
             domain,
@@ -146,6 +152,7 @@ impl Brand {
             branding_map_tiles: None,
             flow_authentication: None,
             flow_user_switch: None,
+            flow_provider_authorization,
             flow_invalidation: None,
             flow_recovery: None,
             flow_unenrollment: None,
