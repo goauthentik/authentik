@@ -11,10 +11,12 @@ from ldap3.utils.conv import escape_filter_chars
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import (
     Group,
+    GroupSourceConnection,
     Session,
     SourceGroupMatchingModes,
     SourceUserMatchingModes,
     User,
+    UserSourceConnection,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_session
 from authentik.events.models import Event, EventAction
@@ -27,7 +29,11 @@ from authentik.sources.ldap.models import (
     LDAPSourcePropertyMapping,
     UserLDAPSourceConnection,
 )
-from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
+from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
+from authentik.sources.ldap.sync.forward_delete_users import (
+    DELETE_CHUNK_SIZE,
+    UserLDAPForwardDeletion,
+)
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import (
     GroupHierarchyLDAPSynchronizer,
@@ -819,6 +825,118 @@ class LDAPSyncTests(TestCase):
 
         self.assertFalse(User.objects.filter(username__startswith="not-in-the-source").exists())
         self.assertFalse(Group.objects.filter(name__startswith="not-in-the-source").exists())
+
+    def _overlapping_source(self) -> LDAPSource:
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+        return LDAPSource.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            base_dn=self.source.base_dn,
+            additional_user_dn=self.source.additional_user_dn,
+            additional_group_dn=self.source.additional_group_dn,
+            object_uniqueness_field="uid",
+            group_object_filter=self.source.group_object_filter,
+            delete_not_found_objects=True,
+        )
+
+    def test_user_deletion_marks_only_own_source(self):
+        other = self._overlapping_source()
+        user = User.objects.create_user(username=generate_id())
+        other_user = User.objects.create_user(username=generate_id())
+        for source, account in ((self.source, user), (other, other_user)):
+            UserLDAPSourceConnection.objects.create(
+                user=account, source=source, identifier=user_in_slapd_uid
+            )
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            pages = UserLDAPForwardDeletion(self.source, Task()).get_objects()
+            list(UserLDAPForwardDeletion(other, Task()).get_objects())
+            to_delete = [pk for page in pages for pk in page]
+        self.assertNotIn(user.pk, to_delete)
+
+    def test_group_deletion_marks_only_own_source(self):
+        other = self._overlapping_source()
+        group = Group.objects.create(name=generate_id())
+        other_group = Group.objects.create(name=generate_id())
+        for source, item in ((self.source, group), (other, other_group)):
+            GroupLDAPSourceConnection.objects.create(
+                group=item, source=source, identifier=group_in_slapd_uid
+            )
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            pages = GroupLDAPForwardDeletion(self.source, Task()).get_objects()
+            list(GroupLDAPForwardDeletion(other, Task()).get_objects())
+            to_delete = [pk for page in pages for pk in page]
+        self.assertNotIn(group.pk, to_delete)
+
+    def test_user_deletion_skips_entries_without_identifier(self):
+        self._overlapping_source()
+        user = User.objects.create_user(username=generate_id())
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier="present-in-source"
+        )
+        connection = MagicMock()
+        connection.extend.standard.paged_search.return_value = iter(
+            [{"attributes": {"cn": ["present"]}}]
+        )
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", return_value=connection):
+            pages = UserLDAPForwardDeletion(self.source, Task()).get_objects()
+            to_delete = [pk for page in pages for pk in page]
+        self.assertNotIn(user.pk, to_delete)
+
+    def test_group_deletion_skips_entries_without_identifier(self):
+        self._overlapping_source()
+        group = Group.objects.create(name=generate_id())
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier="present-in-source"
+        )
+        connection = MagicMock()
+        connection.extend.standard.paged_search.return_value = iter(
+            [{"attributes": {"cn": ["present"]}}]
+        )
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", return_value=connection):
+            pages = GroupLDAPForwardDeletion(self.source, Task()).get_objects()
+            to_delete = [pk for page in pages for pk in page]
+        self.assertNotIn(group.pk, to_delete)
+
+    def test_user_deletion_preserves_account_linked_to_other_source(self):
+        other = self._overlapping_source()
+        user = User.objects.create_user(username=generate_id())
+        for source in (self.source, other):
+            UserLDAPSourceConnection.objects.create(
+                user=user, source=source, identifier="not-in-directory"
+            )
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            deletion = UserLDAPForwardDeletion(self.source, Task())
+            for page in deletion.get_objects():
+                deletion.sync(page)
+        self.assertTrue(User.objects.filter(pk=user.pk).exists())
+        self.assertTrue(UserSourceConnection.objects.filter(user=user, source=other).exists())
+        self.assertFalse(
+            UserSourceConnection.objects.filter(user=user, source=self.source).exists()
+        )
+
+    def test_group_deletion_preserves_group_linked_to_other_source(self):
+        other = self._overlapping_source()
+        group = Group.objects.create(name=generate_id())
+        for source in (self.source, other):
+            GroupLDAPSourceConnection.objects.create(
+                group=group, source=source, identifier="not-in-directory"
+            )
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            deletion = GroupLDAPForwardDeletion(self.source, Task())
+            for page in deletion.get_objects():
+                deletion.sync(page)
+        self.assertTrue(Group.objects.filter(pk=group.pk).exists())
+        self.assertTrue(GroupSourceConnection.objects.filter(group=group, source=other).exists())
+        self.assertFalse(
+            GroupSourceConnection.objects.filter(group=group, source=self.source).exists()
+        )
 
     def test_membership_sync_special_chars_in_group_dn(self):
         """Test membership synchronization with special characters in group DN"""
