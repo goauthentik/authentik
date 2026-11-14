@@ -17,16 +17,11 @@ from authentik.core.tests.utils import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
-<<<<<<< HEAD
-from authentik.sources.saml.exceptions import InvalidEncryption, InvalidSignature
-=======
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
-    MismatchedAudience,
     UnsuccessfulStatus,
 )
->>>>>>> 61e1f1d0a (sources/saml: log response processing errors and show users a generic message (#27012))
 from authentik.sources.saml.models import (
     GroupSAMLSourceConnection,
     SAMLSource,
