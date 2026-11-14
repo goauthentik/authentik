@@ -20,11 +20,11 @@ use tokio_tungstenite::{
 use tracing::{debug, info, instrument, trace, warn};
 use url::Url;
 
-use crate::outpost::{Outpost, OutpostController};
+use crate::{Outpost, OutpostController};
 
 #[derive(Serialize_repr, Deserialize_repr, PartialEq, Debug, Clone, Copy, Eq)]
 #[repr(u8)]
-enum EventKind {
+pub enum EventKind {
     /// Code used to acknowledge a previous message.
     Ack = 0,
     /// Code used to send a healthcheck keepalive.
@@ -50,14 +50,14 @@ impl Display for EventKind {
 }
 
 #[derive(Serialize, Deserialize)]
-struct Event {
-    instruction: EventKind,
-    args: serde_json::Value,
+pub struct Event {
+    pub instruction: EventKind,
+    pub args: serde_json::Value,
 }
 
 #[derive(Debug, Deserialize)]
-pub(crate) struct EventSessionEnd {
-    pub(crate) session_id: String,
+pub struct EventSessionEnd {
+    pub session_id: String,
 }
 
 fn build_ws_url(mut url: Url, outpost_pk: &str, instance_uuid: &str, attempt: u32) -> Result<Url> {
@@ -152,7 +152,7 @@ async fn watch_events_inner<O: Outpost>(
         warn!(?err, "failed to refresh");
     }
 
-    let (host, insecure) = if controller.is_embedded() {
+    let (host, insecure) = if controller.embedded_socket.is_some() {
         (
             Url::parse(&format!("http://localhost{}", config::get().web.path))?,
             false,
@@ -181,34 +181,22 @@ async fn watch_events_inner<O: Outpost>(
         HeaderValue::from_str(&format!("Bearer {token}"))?,
     );
 
-    // Embedded outposts run inside the core server and reach it over its unix socket,
-    // which only exists when built with the `core` feature.
-    let embedded_stream = if controller.is_embedded() {
-        #[cfg(feature = "core")]
-        {
-            Some(UnixStream::connect(crate::server::socket_path()).await?)
-        }
-        #[cfg(not(feature = "core"))]
-        {
-            None::<UnixStream>
-        }
-    } else {
-        None
-    };
-
-    let (mut ws_write, mut ws_read): (WsWriter, WsReader) = if let Some(stream) = embedded_stream {
-        let (ws_stream, _response) = tokio_tungstenite::client_async(request, stream).await?;
-        let (write, read) = ws_stream.split();
-        (Box::new(write), Box::new(read))
-    } else {
-        let connector =
-            insecure.then(|| Connector::Rustls(Arc::new(tls::client::insecure_config())));
-        let (ws_stream, _response) =
-            tokio_tungstenite::connect_async_tls_with_config(request, None, false, connector)
-                .await?;
-        let (write, read) = ws_stream.split();
-        (Box::new(write), Box::new(read))
-    };
+    // The embedded outpost runs inside the core server and reaches it over its unix socket.
+    let (mut ws_write, mut ws_read): (WsWriter, WsReader) =
+        if let Some(socket) = controller.embedded_socket.as_ref() {
+            let stream = UnixStream::connect(socket).await?;
+            let (ws_stream, _response) = tokio_tungstenite::client_async(request, stream).await?;
+            let (write, read) = ws_stream.split();
+            (Box::new(write), Box::new(read))
+        } else {
+            let connector =
+                insecure.then(|| Connector::Rustls(Arc::new(tls::client::insecure_config())));
+            let (ws_stream, _response) =
+                tokio_tungstenite::connect_async_tls_with_config(request, None, false, connector)
+                    .await?;
+            let (write, read) = ws_stream.split();
+            (Box::new(write), Box::new(read))
+        };
 
     info!(
         outpost = %controller.outpost.load().pk,

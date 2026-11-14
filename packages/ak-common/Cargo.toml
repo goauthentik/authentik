@@ -10,9 +10,9 @@ license-file.workspace = true
 publish.workspace = true
 
 [features]
-default = ["core", "proxy"]
+default = ["core", "outpost"]
 core = ["dep:sqlx"]
-proxy = []
+outpost = []
 
 [dependencies]
 ak-client.workspace = true
