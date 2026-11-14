@@ -1,0 +1,128 @@
+---
+title: Integrate with Sure
+sidebar_label: Sure
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Sure?
+
+> Sure is a fully-featured personal finance and wealth management app that you can self-host for free. Track your accounts, manage transactions, monitor investments, and take control of your financial future — all with complete ownership of your data.
+>
+> -- https://sure.am/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `sure.company` is the FQDN of the Sure installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of Sure with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add two **Redirect URIs**:
+            - `Strict` `Authorization`: `https://sure.company/auth/authentik/callback`
+            - `Strict` `Post Logout`: `https://sure.company/auth/logout/callback`
+
+            :::info Callback URL depends on the provider name
+            The authorization callback path contains the name of the provider in Sure: `https://sure.company/auth/<provider_name>/callback`. This guide uses `authentik` as the provider name when configuring Sure through the Admin UI. If you configure Sure with environment variables instead, the default provider name is `openid_connect`, so use `https://sure.company/auth/openid_connect/callback`.
+            :::
+
+        - Select any available **Signing Key**.
+
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Sure configuration
+
+Sure can load SSO providers either from its database, which lets you manage them in the Sure UI without restarting, or from environment variables. Sure recommends the database-backed option.
+
+<Tabs
+  defaultValue="ui"
+  values={[
+    { label: 'Using the Admin UI', value: 'ui' },
+    { label: 'With environment variables', value: 'env' },
+  ]}>
+  <TabItem value="ui">
+
+1. Add the following variable to the `.env` file of your Sure deployment, then restart Sure:
+
+    ```env title=".env"
+    AUTH_PROVIDERS_SOURCE=db
+    ```
+
+2. Log in to Sure as a super admin and navigate to `https://sure.company/admin/sso_providers`.
+3. Click **Add Provider** and configure the following settings:
+    - **Strategy**: `OpenID Connect`
+    - **Name**: `authentik`
+    - **Button Label**: `Sign in with authentik`
+    - **Enable this provider**: enabled
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Client ID**: enter the **Client ID** from authentik.
+    - **Client Secret**: enter the **Client Secret** from authentik.
+4. Confirm that the **Callback URL** shown by Sure matches the `Authorization` redirect URI that you configured in authentik.
+5. Click **Save Provider**.
+
+  </TabItem>
+  <TabItem value="env">
+
+Add the following variables to the `.env` file of your Sure deployment, then restart Sure:
+
+```env title=".env"
+OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
+OIDC_CLIENT_ID=<Client ID from authentik>
+OIDC_CLIENT_SECRET=<Client Secret from authentik>
+OIDC_REDIRECT_URI=https://sure.company/auth/openid_connect/callback
+OIDC_BUTTON_LABEL=Sign in with authentik
+```
+
+  </TabItem>
+</Tabs>
+
+### User provisioning _(optional)_
+
+By default, Sure creates an account the first time a user signs in with authentik. You can change this behavior with the following environment variables:
+
+- `AUTH_JIT_MODE=link_only`: only link authentik logins to existing Sure users instead of creating new accounts.
+- `ALLOWED_OIDC_DOMAINS=company.com`: only create accounts for users with email addresses in the listed comma-separated domains.
+- `AUTH_LOCAL_LOGIN_ENABLED=false`: hide the email and password login form so that users must sign in with authentik. Set `AUTH_LOCAL_ADMIN_OVERRIDE_ENABLED=true` to still allow super admins to log in locally if authentik is unavailable.
+
+### Group to role mapping _(optional)_
+
+When providers are managed through the Admin UI, Sure can assign roles based on the groups of an authentik user. authentik includes the `groups` claim in the default `profile` scope, so no additional scope is required.
+
+1. Log in to Sure as a super admin and navigate to `https://sure.company/admin/sso_providers`.
+2. Edit the authentik provider and expand **Group to Role Mapping (Optional)**.
+3. Enter comma-separated authentik group names in the **Super Admin Groups**, **Admin Groups**, **Member Groups**, or **Guest Groups** fields. Group names are case-sensitive, and users receive the highest matching role.
+4. Click **Save Provider**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Sure, log out of Sure, then click **Sign in with authentik** on the Sure login page. You should be redirected to authentik to log in, and then back to Sure.
+
+Super admins can also use the **Test Connection** button when editing the provider in `https://sure.company/admin/sso_providers` to validate the configuration.
+
+## Resources
+
+- [Sure Docs - Authentication guide](https://docs.sure.am/authentication/guide)
+- [Sure Docs - Authentication quickstart](https://docs.sure.am/authentication/quickstart)
