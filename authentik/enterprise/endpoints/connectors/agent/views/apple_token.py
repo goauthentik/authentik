@@ -43,23 +43,18 @@ from authentik.endpoints.connectors.agent.models import (
 from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
-from authentik.flows.exceptions import FlowNonApplicableException
-from authentik.flows.models import Flow
-from authentik.flows.planner import (
-    PLAN_CONTEXT_DEVICE,
-    PLAN_CONTEXT_PENDING_USER,
-    FlowPlanner,
-)
+from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import JWTAlgorithms
 from authentik.root.middleware import SessionMiddleware
-from authentik.stages.password.models import PasswordStage
+from authentik.stages.password import BACKEND_INBUILT, BACKEND_KERBEROS, BACKEND_LDAP
 from authentik.stages.password.stage import authenticate
 
 LOGGER = get_logger()
-# Seeded by blueprints/default/flow-endpoints-agent-psso-password.yaml
-PSSO_PASSWORD_FLOW_SLUG = "endpoints-agent-psso-password"
+# Password logins have no browser and can't run a flow, so the backends are fixed. App passwords
+# are left out so that an API token can't be used to log in to a device.
+PSSO_PASSWORD_BACKENDS = [BACKEND_INBUILT, BACKEND_KERBEROS, BACKEND_LDAP]
 LOGIN_REQUEST_TYPE = "platformsso-login-request+jwt"
 KEY_REQUEST_TYPE = "platformsso-key-request+jwt"
 
@@ -355,8 +350,8 @@ class TokenView(View):
         )
 
     def handle_v1_0_password(self) -> HttpResponse:
-        """Authenticate with the credentials of the login request, using the backends of the
-        password stage in the dedicated flow"""
+        """Authenticate with the credentials of the login request. This can't run a flow, so
+        it doesn't support MFA"""
         username = self.jwt_request.get("username")
         password = self.jwt_request.get("password")
         if not username or not password:
@@ -365,28 +360,12 @@ class TokenView(View):
                 request_claims=sorted(self.jwt_request.keys()),
             )
             raise ValidationError("Invalid request")
-        flow = Flow.objects.filter(slug=PSSO_PASSWORD_FLOW_SLUG).first()
-        stage = PasswordStage.objects.filter(flow__slug=PSSO_PASSWORD_FLOW_SLUG).first()
-        if not flow or not stage:
-            LOGGER.warning(
-                "Platform SSO password flow is missing or has no password stage",
-                slug=PSSO_PASSWORD_FLOW_SLUG,
-            )
-            raise ValidationError("Invalid request")
-        user = User.objects.filter(username=username).first()
-        if not user:
+        if not User.objects.filter(username=username).exists():
             # Same response as a wrong password, to prevent username enumeration
             LOGGER.info("Platform SSO password login for unknown user")
             raise InvalidCredentials
-        planner = FlowPlanner(flow)
-        planner.allow_empty_flows = True
-        try:
-            planner.plan(self.request, {PLAN_CONTEXT_PENDING_USER: user})
-        except FlowNonApplicableException:
-            LOGGER.info("Platform SSO password login denied by flow policies")
-            raise ValidationError("Invalid request") from None
         authenticated = authenticate(
-            self.request, stage.backends, stage, username=username, password=password
+            self.request, PSSO_PASSWORD_BACKENDS, username=username, password=password
         )
         if not authenticated:
             LOGGER.info("Platform SSO password login failed")

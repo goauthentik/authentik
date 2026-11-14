@@ -9,7 +9,7 @@ from jwcrypto.jwe import JWE
 from jwcrypto.jwk import JWK
 from jwt import encode
 
-from authentik.blueprints.tests import apply_blueprint, reconcile_app
+from authentik.blueprints.tests import reconcile_app
 from authentik.core.tests.utils import create_test_cert, create_test_user
 from authentik.crypto.builder import PrivateKeyAlg
 from authentik.endpoints.connectors.agent.models import (
@@ -158,10 +158,9 @@ class TestAppleToken(TestCase):
             },
         )
 
-    @apply_blueprint("default/flow-endpoints-agent-psso-password.yaml")
     @reconcile_app("authentik_crypto")
     def test_token_password(self):
-        """A password login authenticates against the dedicated flow's password stage"""
+        """A password login authenticates with the credentials of the login request"""
         password = generate_id()
         PasswordDevice.set_password(self.user, password)
         nonce = generate_id()
@@ -177,7 +176,6 @@ class TestAppleToken(TestCase):
         self.assertIsNotNone(event)
         self.assertEqual(event.context["device"]["name"], self.device.name)
 
-    @apply_blueprint("default/flow-endpoints-agent-psso-password.yaml")
     @reconcile_app("authentik_crypto")
     def test_token_password_invalid(self):
         """A wrong password is rejected as an invalid credential and issues no token"""
@@ -197,7 +195,6 @@ class TestAppleToken(TestCase):
             ).exists()
         )
 
-    @apply_blueprint("default/flow-endpoints-agent-psso-password.yaml")
     @reconcile_app("authentik_crypto")
     def test_token_password_device_access_denied(self):
         """Correct credentials of a user without access to the device issue no token"""
@@ -220,7 +217,6 @@ class TestAppleToken(TestCase):
             ).exists()
         )
 
-    @apply_blueprint("default/flow-endpoints-agent-psso-password.yaml")
     @reconcile_app("authentik_crypto")
     def test_token_password_unknown_user(self):
         """Unknown users get the same response as a wrong password"""
