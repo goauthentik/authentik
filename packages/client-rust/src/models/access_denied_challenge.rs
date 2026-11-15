@@ -17,6 +17,8 @@ pub struct AccessDeniedChallenge {
     pub flow_info: Option<models::ContextualFlowInfo>,
     #[serde(rename = "component", skip_serializing_if = "Option::is_none")]
     pub component: Option<String>,
+    #[serde(rename = "stage_binding", skip_serializing_if = "Option::is_none")]
+    pub stage_binding: Option<String>,
     #[serde(rename = "response_errors", skip_serializing_if = "Option::is_none")]
     pub response_errors: Option<std::collections::HashMap<String, Vec<models::ErrorDetail>>>,
     #[serde(rename = "pending_user")]
@@ -33,6 +35,7 @@ impl AccessDeniedChallenge {
         AccessDeniedChallenge {
             flow_info: None,
             component: None,
+            stage_binding: None,
             response_errors: None,
             pending_user,
             pending_user_avatar,

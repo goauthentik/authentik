@@ -23,6 +23,7 @@ import type { ErrorDetail } from "./ErrorDetail.js";
 export interface EndpointAgentChallenge {
     flowInfo?: ContextualFlowInfo;
     component?: string;
+    stageBinding?: string;
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     challenge: string;
     challengeIdleTimeout: number;
@@ -58,6 +59,7 @@ export function EndpointAgentChallengeFromJSONTyped(
         flowInfo:
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
+        stageBinding: json["stage_binding"] == null ? undefined : json["stage_binding"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         challenge: json["challenge"],
         challengeIdleTimeout: json["challenge_idle_timeout"],
@@ -79,6 +81,7 @@ export function EndpointAgentChallengeToJSONTyped(
     return {
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
+        stage_binding: value["stageBinding"],
         response_errors: value["responseErrors"],
         challenge: value["challenge"],
         challenge_idle_timeout: value["challengeIdleTimeout"],

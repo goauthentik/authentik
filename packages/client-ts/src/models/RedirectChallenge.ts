@@ -23,6 +23,7 @@ import type { ErrorDetail } from "./ErrorDetail.js";
 export interface RedirectChallenge {
     flowInfo?: ContextualFlowInfo;
     component?: string;
+    stageBinding?: string;
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     to: string;
     finalRedirect?: boolean;
@@ -51,6 +52,7 @@ export function RedirectChallengeFromJSONTyped(
         flowInfo:
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
+        stageBinding: json["stage_binding"] == null ? undefined : json["stage_binding"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         to: json["to"],
         finalRedirect: json["final_redirect"] == null ? undefined : json["final_redirect"],
@@ -72,6 +74,7 @@ export function RedirectChallengeToJSONTyped(
     return {
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
+        stage_binding: value["stageBinding"],
         response_errors: value["responseErrors"],
         to: value["to"],
         final_redirect: value["finalRedirect"],

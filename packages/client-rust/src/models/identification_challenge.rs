@@ -17,6 +17,8 @@ pub struct IdentificationChallenge {
     pub flow_info: Option<models::ContextualFlowInfo>,
     #[serde(rename = "component", skip_serializing_if = "Option::is_none")]
     pub component: Option<String>,
+    #[serde(rename = "stage_binding", skip_serializing_if = "Option::is_none")]
+    pub stage_binding: Option<String>,
     #[serde(rename = "response_errors", skip_serializing_if = "Option::is_none")]
     pub response_errors: Option<std::collections::HashMap<String, Vec<models::ErrorDetail>>>,
     #[serde(rename = "user_fields", deserialize_with = "Option::deserialize")]
@@ -86,6 +88,7 @@ impl IdentificationChallenge {
         IdentificationChallenge {
             flow_info: None,
             component: None,
+            stage_binding: None,
             response_errors: None,
             user_fields,
             pending_user_identifier: None,
