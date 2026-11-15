@@ -24,6 +24,8 @@ Algs
 Backblaze
 CASB
 CLDR
+COSE
+CTAP
 Cloudflare
 DOTADIW
 DTCG
