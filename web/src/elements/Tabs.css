@@ -1,23 +1,26 @@
 @import "@patternfly/patternfly/components/Tabs/tabs.css";
 
-:host([vertical]) {
-    display: grid;
-    grid-template-columns: auto 1fr;
+/* Narrower viewports lay vertical tabs out as a row. Matches `wideViewport` in `Tabs.ts`. */
+@media (width >= 768px) {
+    :host([vertical]) {
+        display: grid;
+        grid-template-columns: auto 1fr;
 
-    .pf-c-tabs {
-        width: auto !important;
-    }
+        .pf-c-tabs {
+            width: auto !important;
+        }
 
-    .pf-c-tabs__list {
-        height: 100%;
-    }
+        .pf-c-tabs__list {
+            height: 100%;
+        }
 
-    .pf-c-tabs .pf-c-tabs__list::before {
-        border-color: transparent;
-    }
+        .pf-c-tabs .pf-c-tabs__list::before {
+            border-color: transparent;
+        }
 
-    .pf-c-tabs__link {
-        --pf-c-tabs__link--before--BorderRightWidth: 0;
+        .pf-c-tabs__link {
+            --pf-c-tabs__link--before--BorderRightWidth: 0;
+        }
     }
 }
 
