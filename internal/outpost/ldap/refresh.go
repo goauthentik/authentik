@@ -70,7 +70,7 @@ func (ls *LDAPServer) Refresh() error {
 			boundUsers:             users,
 			s:                      ls,
 			log:                    logger,
-			tlsServerName:          provider.TlsServerName,
+			tlsServerName:          provider.GetTlsServerName(),
 			uidStartNumber:         provider.GetUidStartNumber(),
 			gidStartNumber:         provider.GetGidStartNumber(),
 			mfaSupport:             provider.GetMfaSupport(),

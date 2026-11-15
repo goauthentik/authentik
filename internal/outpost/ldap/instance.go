@@ -30,7 +30,7 @@ type ProviderInstance struct {
 	s                      *LDAPServer
 	log                    *log.Entry
 
-	tlsServerName   *string
+	tlsServerName   string
 	cert            *tls.Certificate
 	certUUID        string
 	outpostName     string
