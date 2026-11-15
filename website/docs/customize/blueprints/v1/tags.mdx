@@ -47,7 +47,7 @@ Example:
 password: !Env my_env_var
 ```
 
-Returns the value of the given environment variable. To return a default value when the variable is not set, use a sequence: `!Env [my_env_var, default]`.
+Returns the value of the given environment variable. To return a default value when the variable is not set or is empty, use a sequence: `!Env [my_env_var, default]`.
 
 #### `!File`
 
