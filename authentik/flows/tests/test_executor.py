@@ -42,6 +42,7 @@ from authentik.stages.deny.models import DenyStage
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password.models import PasswordStage
+from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 
 POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False, "foo"))
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
@@ -293,6 +294,55 @@ class TestFlowExecutor(APIFlowTestCase):
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]
         self.assertEqual(len(plan.bindings), 1)
+
+    def test_stage_binding_consecutive_stages(self):
+        """Test that consecutive stages of the same type get different stage bindings"""
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
+        )
+        first = FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
+        )
+        second = FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=1
+        )
+
+        exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.get(exec_url)
+        self.assertStageResponse(
+            response, flow, component="ak-stage-dummy", stage_binding=str(first.pk)
+        )
+        response = self.client.post(exec_url, follow=True)
+        self.assertStageResponse(
+            response, flow, component="ak-stage-dummy", stage_binding=str(second.pk)
+        )
+
+    def test_stage_binding_invalid_response(self):
+        """Test that a stage keeps its stage binding after an invalid response"""
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
+        )
+        prompt = Prompt.objects.create(
+            name=generate_id(),
+            field_key="text_prompt",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            required=True,
+        )
+        stage = PromptStage.objects.create(name=generate_id())
+        stage.fields.set([prompt])
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=0)
+
+        exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.get(exec_url)
+        self.assertStageResponse(
+            response, flow, component="ak-stage-prompt", stage_binding=str(binding.pk)
+        )
+        response = self.client.post(exec_url, {"text_prompt": ""})
+        self.assertStageResponse(
+            response, flow, component="ak-stage-prompt", stage_binding=str(binding.pk)
+        )
+        self.assertIn("text_prompt", response.json()["response_errors"])
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",

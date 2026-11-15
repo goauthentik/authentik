@@ -83,8 +83,11 @@ class TesOAuth2DeviceInit(OAuthTestCase):
             ),
         )
         self.assertEqual(res.status_code, 200)
-        self.assertJSONEqual(
-            res.content,
+        challenge = loads(res.content)
+        # The device code stage is added to the plan in memory, so its binding ID is random
+        self.assertTrue(challenge.pop("stage_binding"))
+        self.assertEqual(
+            challenge,
             {
                 "component": "ak-provider-oauth2-device-code",
                 "flow_info": {

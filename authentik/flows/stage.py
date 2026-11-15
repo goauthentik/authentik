@@ -225,6 +225,8 @@ class ChallengeStageView(StageView):
                 )
                 flow_info.is_valid()
                 challenge.initial_data["flow_info"] = flow_info.data
+            if "stage_binding" not in challenge.initial_data and self.executor.current_binding:
+                challenge.initial_data["stage_binding"] = str(self.executor.current_binding.pk)
             if isinstance(challenge, WithUserInfoChallenge):
                 # If there's a pending user, update the `username` field
                 # this field is only used by password managers.

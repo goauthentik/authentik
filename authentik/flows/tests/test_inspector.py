@@ -30,7 +30,7 @@ class TestFlowInspector(APITestCase):
             name=generate_id(),
             user_fields=[UserFields.USERNAME],
         )
-        FlowStageBinding.objects.create(
+        ident_binding = FlowStageBinding.objects.create(
             target=flow,
             stage=ident_stage,
             order=0,
@@ -64,6 +64,7 @@ class TestFlowInspector(APITestCase):
                 "sources": [],
                 "show_source_labels": False,
                 "pending_user_identifier": None,
+                "stage_binding": str(ident_binding.pk),
                 "user_fields": ["username"],
             },
         )
