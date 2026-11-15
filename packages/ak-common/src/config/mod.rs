@@ -298,8 +298,7 @@ enum WatchState {
 /// Watch each of `paths`, returning the outcome for each of them.
 ///
 /// A failure must not stop authentik: a file may not exist yet and a directory may only be
-/// traversable. Such failures are reported at startup and repeat on every change, so they are
-/// only logged at debug level then. Running out of inotify watches leaves changes undetected.
+/// traversable. Running out of inotify watches leaves changes undetected.
 fn watch_all<W: Watcher>(
     watcher: &mut W,
     paths: &[PathBuf],
@@ -333,15 +332,9 @@ fn watch_all<W: Watcher>(
 /// Replace `current` with `replacement` unless that loses a watch of `current`, whose state for
 /// each of `paths` is tracked in `states`.
 ///
-/// The replacement is set up before the current watcher is dropped, so no change goes unnoticed
-/// in between. A path that no longer exists has no watch to lose if the replacement watches its
-/// directory, which notices it coming back; otherwise only the current watch can, should the file
-/// have been renamed away. If the replacement cannot be created, or fails to watch a path the
-/// current watcher watches, for example because the file is no longer readable or no inotify
-/// watch is left while both exist, the current watcher is kept and watches the paths again: that
-/// also follows replaced files, but keeps watching the files they replaced, so it is only the
-/// fallback. An `FSEvents` watcher is left as is: watching a path again stops and restarts its
-/// stream, which stays stopped if it fails to start, and adds the path a second time.
+/// The replacement is set up before the current watcher is dropped. A path that no longer exists
+/// has no watch to lose if the replacement watches its directory; otherwise only the current watch
+/// notices it coming back, should the file have been renamed away.
 fn hand_over<W: Watcher>(
     current: &mut W,
     states: &mut [WatchState],
@@ -380,23 +373,12 @@ fn hand_over<W: Watcher>(
                 "a new config file watcher failed to watch what the current one does, reusing the \
                  current one"
             );
-            // Release its watches before the current watcher needs more.
-            drop(replacement);
         }
         Err(err) => {
             warn!(
                 ?err,
                 "failed to create a new config file watcher, reusing the current one"
             );
-        }
-    }
-    if W::kind() == notify::WatcherKind::Fsevent {
-        return;
-    }
-    // An inotify watch that cannot be set up again is left in place.
-    for (old, new) in states.iter_mut().zip(watch_all(current, paths, true)) {
-        if new == WatchState::Watched {
-            *old = new;
         }
     }
 }
@@ -414,9 +396,8 @@ async fn watch_config(arbiter: Arbiter) -> Result<()> {
         .collect();
     // A watch is lost along with the file when the file is replaced rather than written to, as
     // editors do when saving atomically and the kubelet does when updating a mounted `Secret` or
-    // `ConfigMap`. A new watcher is therefore created after each change, which follows the paths
-    // to the new files, and the previous one is dropped with all its watches. The directories
-    // catch files that have no watch to lose: created after startup, or deleted and created again.
+    // `ConfigMap`. A new watcher is therefore created after each change, and the directories are
+    // watched to catch files that have no watch to lose.
     let watch_dirs: BTreeSet<PathBuf> = watch_paths
         .iter()
         .filter_map(|path| path.parent().map(Path::to_path_buf))
@@ -1229,7 +1210,7 @@ mod tests {
         // Some platforms, macOS included, report events by the real path of the file.
         assert!(detector.is_change(&event(
             EventKind::Modify(ModifyKind::Data(DataChange::Any)),
-            &[&secrets.join("password")]
+            &[&fs::canonicalize(secrets.join("password")).expect("failed to resolve path")]
         )));
     }
 
@@ -1244,16 +1225,20 @@ mod tests {
         let mut detector = super::ChangeDetector::new(std::slice::from_ref(&watched));
 
         // Some platforms, macOS included, report events by the directory's real path.
-        assert!(detector.is_change(&event(
-            EventKind::Modify(ModifyKind::Data(DataChange::Any)),
-            &[&real_dir.join("watched")]
-        )));
+        assert!(
+            detector.is_change(&event(
+                EventKind::Modify(ModifyKind::Data(DataChange::Any)),
+                &[&fs::canonicalize(&real_dir)
+                    .expect("failed to resolve path")
+                    .join("watched")]
+            ))
+        );
     }
 
     /// A watcher that records what it watches, or fails with `failure` to watch `failing_path`,
-    /// or every path if that is not set. It reports itself as an `FSEvents` watcher if `FSEVENTS`.
+    /// or every path if that is not set.
     #[derive(Default)]
-    struct FakeWatcher<const FSEVENTS: bool = false> {
+    struct FakeWatcher {
         id: u8,
         watched: Vec<PathBuf>,
         failure: Option<fn() -> notify::ErrorKind>,
@@ -1261,7 +1246,7 @@ mod tests {
     }
 
     #[expect(clippy::missing_trait_methods, reason = "test double")]
-    impl<const FSEVENTS: bool> notify::Watcher for FakeWatcher<FSEVENTS> {
+    impl notify::Watcher for FakeWatcher {
         fn new<F: notify::EventHandler>(_: F, _: notify::Config) -> notify::Result<Self> {
             Ok(Self::default())
         }
@@ -1281,11 +1266,7 @@ mod tests {
         }
 
         fn kind() -> notify::WatcherKind {
-            if FSEVENTS {
-                notify::WatcherKind::Fsevent
-            } else {
-                notify::WatcherKind::NullWatcher
-            }
+            notify::WatcherKind::NullWatcher
         }
     }
 
@@ -1362,7 +1343,6 @@ mod tests {
         let replacement = Ok(failing_watcher(|| notify::ErrorKind::PathNotFound));
         let (current, state) = handed_over(WatchState::Watched, replacement);
         assert_eq!(current.id, 1);
-        assert_eq!(current.watched, [PathBuf::from("/config")]);
         assert_eq!(state, WatchState::Watched);
     }
 
@@ -1381,7 +1361,6 @@ mod tests {
         let (current, state) =
             handed_over(WatchState::Watched, Ok(failing_watcher(permission_denied)));
         assert_eq!(current.id, 1);
-        assert_eq!(current.watched, [PathBuf::from("/config")]);
         assert_eq!(state, WatchState::Watched);
     }
 
@@ -1390,56 +1369,15 @@ mod tests {
         let replacement = Ok(failing_watcher(|| notify::ErrorKind::MaxFilesWatch));
         let (current, state) = handed_over(WatchState::Watched, replacement);
         assert_eq!(current.id, 1);
-        assert_eq!(current.watched, [PathBuf::from("/config")]);
         assert_eq!(state, WatchState::Watched);
     }
 
     #[test]
     fn hand_over_keeps_current_watcher_when_creation_fails() {
         let replacement = Err(notify::Error::generic("no inotify instance left"));
-        let (current, state) = handed_over(WatchState::Failed, replacement);
+        let (current, state) = handed_over(WatchState::Watched, replacement);
         assert_eq!(current.id, 1);
-        assert_eq!(current.watched, [PathBuf::from("/config")]);
-        // The current watcher now watches the path it could not watch before.
         assert_eq!(state, WatchState::Watched);
-    }
-
-    #[test]
-    fn hand_over_keeps_watches_that_cannot_be_set_up_again() {
-        // The current watcher keeps its watch of a file that is no longer readable.
-        let mut current = FakeWatcher {
-            id: 1,
-            failure: Some(permission_denied),
-            ..FakeWatcher::default()
-        };
-        let mut states = [WatchState::Watched];
-        super::hand_over(
-            &mut current,
-            &mut states,
-            Ok(failing_watcher(permission_denied)),
-            &[PathBuf::from("/config")],
-        );
-        assert_eq!(current.id, 1);
-        assert_eq!(states, [WatchState::Watched]);
-    }
-
-    #[test]
-    fn hand_over_leaves_fsevents_watcher_as_is() {
-        // Watching a path again would restart its stream, which may then fail to start.
-        let mut current = FakeWatcher::<true> {
-            id: 1,
-            ..FakeWatcher::default()
-        };
-        let mut states = [WatchState::Watched];
-        super::hand_over(
-            &mut current,
-            &mut states,
-            Err(notify::Error::generic("unable to start FSEvent stream")),
-            &[PathBuf::from("/config")],
-        );
-        assert_eq!(current.id, 1);
-        assert_eq!(current.watched, Vec::<PathBuf>::new());
-        assert_eq!(states, [WatchState::Watched]);
     }
 
     #[test]
