@@ -20,7 +20,6 @@ from cryptography.x509.oid import NameOID
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from authentik import authentik_version
 from authentik.crypto.models import CertificateKeyPair
 
 # Key types whose signature scheme takes no separate hash algorithm (EdDSA, ML-DSA) and whose
@@ -112,32 +111,37 @@ class CertificateBuilder:
         for alt_name in subject_alt_names or []:
             if alt_name.strip() != "":
                 alt_names.append(x509.DNSName(alt_name))
+        name = x509.Name(
+            [
+                x509.NameAttribute(NameOID.COMMON_NAME, self.common_name[:64]),
+                x509.NameAttribute(NameOID.ORGANIZATION_NAME, "authentik"),
+                x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, "Self-signed"),
+            ]
+        )
+        # A self-signed end-entity certificate: issued by itself, so clients can trust it
+        # directly, but not a CA, so it can't sign other certificates.
         self.__builder = (
             x509.CertificateBuilder()
-            .subject_name(
-                x509.Name(
-                    [
-                        x509.NameAttribute(NameOID.COMMON_NAME, self.common_name[:64]),
-                        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "authentik"),
-                        x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, "Self-signed"),
-                    ]
-                )
-            )
-            .issuer_name(
-                x509.Name(
-                    [
-                        x509.NameAttribute(NameOID.COMMON_NAME, f"authentik {authentik_version()}"),
-                    ]
-                )
-            )
+            .subject_name(name)
+            .issuer_name(name)
             .not_valid_before(datetime.datetime.today() - one_day)
             .not_valid_after(datetime.datetime.today() + datetime.timedelta(days=validity_days))
             .serial_number(int(uuid.uuid4()))
             .public_key(self.__public_key)
+            .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)
+            .add_extension(
+                x509.SubjectKeyIdentifier.from_public_key(self.__public_key), critical=False
+            )
+            .add_extension(
+                x509.AuthorityKeyIdentifier.from_issuer_public_key(self.__public_key),
+                critical=False,
+            )
         )
         if alt_names:
+            # The subject is set, so the SAN extension must not be critical (RFC 5280,
+            # 4.2.1.6). Strict verifiers such as pyca/cryptography reject it otherwise.
             self.__builder = self.__builder.add_extension(
-                x509.SubjectAlternativeName(alt_names), critical=True
+                x509.SubjectAlternativeName(alt_names), critical=False
             )
         algo = hashes.SHA256()
         # EdDSA and ML-DSA don't take a hash algorithm

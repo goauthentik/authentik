@@ -16,8 +16,15 @@ from cryptography.hazmat.primitives.serialization import (
 from cryptography.x509 import (
     load_pem_x509_certificate as cryptography_load_pem_x509_certificate,
 )
-from cryptography.x509.extensions import SubjectAlternativeName
+from cryptography.x509.extensions import (
+    AuthorityKeyIdentifier,
+    BasicConstraints,
+    ExtensionNotFound,
+    SubjectAlternativeName,
+    SubjectKeyIdentifier,
+)
 from cryptography.x509.general_name import DNSName
+from cryptography.x509.verification import PolicyBuilder, Store
 from django.urls import reverse
 from django.utils.timezone import now
 from prometheus_client import REGISTRY
@@ -168,8 +175,7 @@ class TestCrypto(APITestCase):
         )
         key = CertificateKeyPair.objects.filter(name=name).first()
         self.assertIsNotNone(key)
-        ext: SubjectAlternativeName = key.certificate.extensions[0].value
-        self.assertIsInstance(ext, SubjectAlternativeName)
+        ext = key.certificate.extensions.get_extension_for_class(SubjectAlternativeName).value
         self.assertIsInstance(ext[0], DNSName)
         self.assertEqual(ext[0].value, "bar")
         self.assertIsInstance(ext[1], DNSName)
@@ -196,7 +202,8 @@ class TestCrypto(APITestCase):
         )
         key = CertificateKeyPair.objects.filter(name=name).first()
         self.assertIsNotNone(key)
-        self.assertEqual(len(key.certificate.extensions), 0)
+        with self.assertRaises(ExtensionNotFound):
+            key.certificate.extensions.get_extension_for_class(SubjectAlternativeName)
 
     def test_builder_api_empty_san_multiple(self):
         """Test Builder (via API)"""
@@ -208,7 +215,8 @@ class TestCrypto(APITestCase):
         )
         key = CertificateKeyPair.objects.filter(name=name).first()
         self.assertIsNotNone(key)
-        self.assertEqual(len(key.certificate.extensions), 0)
+        with self.assertRaises(ExtensionNotFound):
+            key.certificate.extensions.get_extension_for_class(SubjectAlternativeName)
 
     def test_builder_api_invalid(self):
         """Test Builder (via API) (invalid)"""
@@ -218,6 +226,31 @@ class TestCrypto(APITestCase):
             data={},
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_builder_self_issued(self):
+        """Generated certificates are issued by themselves and are not CAs, so clients can
+        trust them directly"""
+        for alg in PrivateKeyAlg:
+            with self.subTest(alg=alg):
+                if backend._fips_enabled and alg not in (PrivateKeyAlg.RSA, PrivateKeyAlg.ECDSA):
+                    self.skipTest("The FIPS provider only has RSA and ECDSA")
+                builder = CertificateBuilder(generate_id())
+                builder.alg = alg
+                builder.build(subject_alt_names=["self-signed.example"], validity_days=3)
+                cert = builder.save().certificate
+                self.assertEqual(cert.issuer, cert.subject)
+                cert.verify_directly_issued_by(cert)
+                self.assertFalse(cert.extensions.get_extension_for_class(BasicConstraints).value.ca)
+                self.assertEqual(
+                    cert.extensions.get_extension_for_class(
+                        AuthorityKeyIdentifier
+                    ).value.key_identifier,
+                    cert.extensions.get_extension_for_class(SubjectKeyIdentifier).value.digest,
+                )
+                if alg in (PrivateKeyAlg.RSA, PrivateKeyAlg.ECDSA):
+                    PolicyBuilder().store(Store([cert])).time(now()).build_server_verifier(
+                        DNSName("self-signed.example")
+                    ).verify(cert, [])
 
     @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_builder_mldsa(self):
