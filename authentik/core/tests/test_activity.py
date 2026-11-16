@@ -1,10 +1,12 @@
 """Activity recording, attribution, and historical backfill."""
 
+from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 from importlib import import_module
+from threading import Barrier
 from unittest.mock import patch
 
-from django.db import connection
+from django.db import close_old_connections, connection
 from django.test import TestCase, TransactionTestCase
 from django.utils.timezone import now
 from freezegun import freeze_time
@@ -68,9 +70,9 @@ class TestUserActivity(TestCase):
             event.save()
         UserActivity.objects.record(users[0].pk)
         current = UserActivity.objects.get(user=users[0]).last_activity_at
-        migration = import_module("authentik.core.migrations.0068_backfill_useractivity")
+        migration = import_module("authentik.core.migrations.0069_useractivity")
         with connection.cursor() as cursor:
-            cursor.execute(migration.Migration.operations[0].sql)
+            cursor.execute(migration.Migration.operations[-1].sql)
         self.assertEqual(UserActivity.objects.get(user=users[0]).last_activity_at, current)
         self.assertEqual(UserActivity.objects.get(user=users[1]).last_activity_at, at)
         self.assertFalse(UserActivity.objects.filter(user=users[2]).exists())
@@ -78,11 +80,6 @@ class TestUserActivity(TestCase):
 
 class TestConcurrentActivityRecording(TransactionTestCase):
     def test_concurrent_first_writes_keep_the_newest_timestamp(self):
-        from concurrent.futures import ThreadPoolExecutor
-        from threading import Barrier
-
-        from django.db import close_old_connections
-
         user = create_test_user()
         at = now()
         barrier = Barrier(2)

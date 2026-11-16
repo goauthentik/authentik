@@ -18,7 +18,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
-from django.db import connections, models
+from django.db import models
 from django.db.models import Prefetch, Q, QuerySet, options
 from django.db.models.functions import Upper
 from django.http import HttpRequest
@@ -29,8 +29,11 @@ from django.utils.translation import gettext_lazy as _
 from guardian.conf import settings
 from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
+from psqlextra.expressions import ExcludedCol
 from psqlextra.indexes import UniqueIndex
 from psqlextra.models import PostgresMaterializedViewModel
+from psqlextra.query import ConflictAction
+from psqlextra.util import postgres_manager
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, IntegerField, ListField
 from rest_framework.serializers import Serializer
@@ -64,6 +67,7 @@ from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 USERNAME_MAX_LENGTH = 150
+USER_ACTIVITY_INTERVAL = timedelta(minutes=5)
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 _USER_ATTR_PREFIX = f"{USER_PATH_SYSTEM_PREFIX}/user"
 USER_ATTRIBUTE_DEBUG = f"{_USER_ATTR_PREFIX}/debug"
@@ -1719,26 +1723,20 @@ class Actor(ExpiringModel, User):
         return actor
 
 
-USER_ACTIVITY_INTERVAL = timedelta(minutes=5)
-
-
 class UserActivityManager(models.Manager["UserActivity"]):
     """Record successful activity without rewriting frequently active users."""
 
-    def record(self, user_id: object, at: datetime | None = None) -> None:
+    def record(self, user_id: Any, at: datetime | None = None) -> None:
         if type(user_id) is not int or not 0 < user_id <= 2147483647:  # noqa: PLR2004
             return
-        with connections[self.db].cursor() as cursor:
-            cursor.execute(
-                """
-                INSERT INTO authentik_core_useractivity AS activity (user_id, last_activity_at)
-                VALUES (%s, %s)
-                ON CONFLICT (user_id) DO UPDATE
-                SET last_activity_at = EXCLUDED.last_activity_at
-                WHERE activity.last_activity_at <= EXCLUDED.last_activity_at - %s
-                """,
-                [user_id, at or now(), USER_ACTIVITY_INTERVAL],
-            )
+        excluded = ExcludedCol(self.model._meta.get_field("last_activity_at"))
+        with postgres_manager(self.model) as manager:
+            manager.on_conflict(
+                ["user_id"],
+                ConflictAction.UPDATE,
+                update_condition=Q(last_activity_at__lte=excluded - USER_ACTIVITY_INTERVAL),
+                update_values={"last_activity_at": excluded},
+            ).insert(using=self.db, user_id=user_id, last_activity_at=at or now())
 
 
 class UserActivity(models.Model):
