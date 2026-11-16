@@ -247,10 +247,9 @@ class TestCrypto(APITestCase):
                     ).value.key_identifier,
                     cert.extensions.get_extension_for_class(SubjectKeyIdentifier).value.digest,
                 )
-                if alg in (PrivateKeyAlg.RSA, PrivateKeyAlg.ECDSA):
-                    PolicyBuilder().store(Store([cert])).time(now()).build_server_verifier(
-                        DNSName("self-signed.example")
-                    ).verify(cert, [])
+                PolicyBuilder().store(Store([cert])).time(now()).build_server_verifier(
+                    DNSName("self-signed.example")
+                ).verify(cert, [])
 
     @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_builder_mldsa(self):
