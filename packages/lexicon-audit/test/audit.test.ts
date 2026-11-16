@@ -29,7 +29,8 @@ async function repository() {
             ["vulgar", "00000", "IKE"],
             ["offensive", "00400", "pakala"],
         ]),
-        "allowlist.tsv": "locale\tword\tnote\ntok\tpakala\tMeans broken, used for errors\n",
+        "allowlist.tsv":
+            "locale\tword\tnote\ntok\tpakala\tMeans broken, used for errors\nen-US\tmimsy\tKeyed by the lexicon locale\n",
 
         "locale/en/LC_MESSAGES/django.po": po(
             "en",
@@ -161,6 +162,23 @@ describe("audit", () => {
 
         expect(result.findings.some((f) => f.word === "pakala")).toBe(false);
         expect(result.allowed).toBe(1);
+    });
+
+    it("applies allowlist entries keyed by the lexicon's locale", async () => {
+        const root = await repository();
+        const path = join(root, "locale/en/LC_MESSAGES/django.po");
+
+        // Source text in "en" audits against the en-US lexicon; the allowlist entry is keyed en-US.
+        await writeFile(path, (await readFile(path, "utf8")) + '\nmsgid "So mimsy"\nmsgstr ""\n');
+
+        const result = await audit(root, {
+            tiers: ["vulgar", "offensive", "sensitive"],
+            sourceLocale: "en",
+        });
+
+        expect(result.sourceLexicon?.lexicon).toBe("en-US");
+        expect(result.findings.some((f) => f.word === "mimsy")).toBe(false);
+        expect(result.allowed).toBe(2);
     });
 
     it("doesn't borrow another region's lexicon unless asked", async () => {

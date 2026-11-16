@@ -194,7 +194,8 @@ export function collectFindings(
     const seen = new Set<string>();
 
     for (const { entry, start, end, matchType } of matchText(text, unit.format, locale, index)) {
-        if (allowlist?.has(locale, entry.word)) {
+        // An entry may be keyed by the text's locale (ca-ES) or the lexicon's (ca).
+        if (allowlist?.has(locale, entry.word) || allowlist?.has(entry.locale, entry.word)) {
             result.allowed++;
             continue;
         }
