@@ -59,7 +59,7 @@ class UserOffboarding(SerializerModel):
     )
     # Set when a user expiration rule generated this row; `created_by` stays null.
     # Unlike `rule`, it survives the rule being deleted.
-    generated = models.BooleanField(default=False)
+    generated = models.BooleanField(default=False, db_default=False)
     rule = models.ForeignKey(
         "authentik_lifecycle.UserExpirationRule",
         on_delete=models.SET_NULL,
