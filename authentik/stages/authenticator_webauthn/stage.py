@@ -44,6 +44,7 @@ from authentik.stages.authenticator_webauthn.algorithms import supported_pub_key
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     AuthenticatorWebAuthnStage,
+    UserVerification,
     WebAuthnDevice,
     WebAuthnDeviceType,
 )
@@ -79,6 +80,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
     def validate_response(self, response: dict) -> VerifiedRegistrationData:
         """Validate webauthn challenge response"""
         challenge = self.stage.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]
+        stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         try:
             registration: VerifiedRegistration = verify_registration_response(
@@ -87,6 +89,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
                 supported_pub_key_algs=supported_pub_key_algs(),
+                require_user_verification=stage.user_verification == UserVerification.REQUIRED,
             )
         # py_webauthn does not wrap cryptography's ValueError when an attestation certificate
         # fails to parse, which happens with authenticators that ship non-DER certificates
@@ -97,7 +100,6 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             ) from None
 
         registration_data = VerifiedRegistrationData(registration)
-        stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         att_obj = parse_attestation_object(registration.attestation_object)
         if (

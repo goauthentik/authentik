@@ -57,16 +57,19 @@ class SoftwareCredential:
         """CBOR-encoded COSE public key, as stored on a WebAuthnDevice"""
         return cbor.encode(self.cose_class.from_cryptography_key(self.private_key.public_key()))
 
-    def registration_response(self, challenge: bytes) -> dict:
+    def registration_response(self, challenge: bytes, user_verified: bool = True) -> dict:
         """Build a `navigator.credentials.create()` response with a `none` attestation"""
         credential_data = AttestedCredentialData.create(
             bytes.fromhex(UNKNOWN_DEVICE_TYPE_AAGUID.replace("-", "")),
             self.credential_id,
             self.cose_class.from_cryptography_key(self.private_key.public_key()),
         )
+        flags = AuthenticatorData.FLAG.UP | AuthenticatorData.FLAG.AT
+        if user_verified:
+            flags |= AuthenticatorData.FLAG.UV
         auth_data = AuthenticatorData.create(
             sha256(self.rp_id.encode("utf-8")).digest(),
-            AuthenticatorData.FLAG.UP | AuthenticatorData.FLAG.UV | AuthenticatorData.FLAG.AT,
+            flags,
             self.sign_count,
             credential_data,
         )
