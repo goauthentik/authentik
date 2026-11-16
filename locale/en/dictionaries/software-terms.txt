@@ -121,6 +121,7 @@ hres
 kadmin
 kiprop
 kubeadm
+kubelet
 labelledby
 wasabisys
 LLM
