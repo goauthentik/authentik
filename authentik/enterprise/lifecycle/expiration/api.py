@@ -23,7 +23,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.lifecycle.expiration.models import UserExpirationRule
+from authentik.enterprise.lifecycle.expiration.models import PendingChange, UserExpirationRule
 from authentik.enterprise.lifecycle.offboarding.models import OffboardingAction
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.rbac.decorators import permission_required
@@ -172,12 +172,12 @@ class UserExpirationRuleViewSet(UsedByMixin, ModelViewSet):
                 if field not in ("pk", "id", "pbm_uuid", "notification_transports"):
                     setattr(rule, field, value)
         rule.enabled = True
-        counts = dict.fromkeys(("updated", "taken_over", "removed"), 0)
-        offboardings: dict[str, list[dict]] = {change: [] for change in counts}
+        counts = {change: 0 for change in PendingChange}
+        offboardings: dict[PendingChange, list[dict]] = {change: [] for change in PendingChange}
         withdrawn: list[UUID] = []
         for change, row, due_at in rule.preview_pending():
             counts[change] += 1
-            if change == "removed":
+            if change == PendingChange.REMOVED:
                 withdrawn.append(row.pk)
             if len(offboardings[change]) >= PREVIEW_LIMIT:
                 continue

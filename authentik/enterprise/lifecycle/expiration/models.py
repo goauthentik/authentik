@@ -1,7 +1,9 @@
 """Automatic user expiration: rules that schedule offboardings for inactive users."""
 
 from collections.abc import Collection, Iterator
+from dataclasses import dataclass
 from datetime import datetime, timedelta
+from enum import StrEnum
 from itertools import batched
 from uuid import UUID, uuid4
 
@@ -31,7 +33,23 @@ LOGGER = get_logger()
 CHUNK_SIZE = 500
 ACTION_SEVERITY = {OffboardingAction.DEACTIVATE: 0, OffboardingAction.DELETE: 1}
 
-type Rank = tuple[datetime, int, UUID]
+
+@dataclass(frozen=True, order=True)
+class Rank:
+    """Lowest wins. Fields compare in order: earliest due date, then least destructive
+    action, then rule ID."""
+
+    due_at: datetime
+    severity: int
+    rule_id: UUID
+
+
+class PendingChange(StrEnum):
+    """How enabling a rule would change an existing pending offboarding."""
+
+    UPDATED = "updated"
+    TAKEN_OVER = "taken_over"
+    REMOVED = "removed"
 
 
 def default_user_types() -> list[str]:
@@ -135,12 +153,11 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         return last_activity + self.inactivity_timedelta
 
     def rank(self, user: User) -> Rank:
-        """Lowest wins: earliest due date, then least destructive action, then rule ID."""
-        return (self.due_at(user), ACTION_SEVERITY[self.action], self.pk)
+        return Rank(self.due_at(user), ACTION_SEVERITY[self.action], self.pk)
 
     @staticmethod
     def row_rank(row: UserOffboarding) -> Rank:
-        return (row.scheduled_at, ACTION_SEVERITY[row.action], row.rule_id)
+        return Rank(row.scheduled_at, ACTION_SEVERITY[row.action], row.rule_id)
 
     @staticmethod
     def withdraw_pending(user: User, logged_in_at: datetime | None = None):
@@ -183,7 +200,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 best, best_rank = rule, rank
         if best is None:
             return False
-        best._update_offboarding(row, best_rank[0])
+        best._update_offboarding(row, best_rank.due_at)
         return True
 
     def scope(
@@ -371,7 +388,9 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             .filter(user__in=self.scope(threshold=self._threshold()))
         )
 
-    def preview_pending(self) -> Iterator[tuple[str, UserOffboarding, datetime | None]]:
+    def preview_pending(
+        self,
+    ) -> Iterator[tuple[PendingChange, UserOffboarding, datetime | None]]:
         """Changes to pending rows if this rule were enabled, without writing anything."""
         activity = Prefetch("user", queryset=User.objects.select_related("activity"))
         owned = UserOffboarding.objects.filter(rule=self, status=OffboardingStatus.PENDING)
@@ -381,9 +400,9 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             for row in batch:
                 due_at = self._pending_due_at(row, in_scope=row.user_id in eligible)
                 if due_at is None:
-                    yield "removed", row, None
+                    yield PendingChange.REMOVED, row, None
                 elif not self._row_matches(row, due_at):
-                    yield "updated", row, due_at
+                    yield PendingChange.UPDATED, row, due_at
         for batch in batched(
             self._foreign_rows()
             .order_by("user__username")
@@ -399,7 +418,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             eligible = self._eligible_user_ids([row.user_id for row, _ in ranked])
             for row, rank in ranked:
                 if row.user_id in eligible:
-                    yield "taken_over", row, rank[0]
+                    yield PendingChange.TAKEN_OVER, row, rank.due_at
 
     def _tighten_foreign_rows(self):
         """Take over other rules' pending rows that this rule outranks."""
@@ -421,7 +440,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                     )
                     if locked is None or rank >= self.row_rank(locked):
                         continue
-                    self._update_offboarding(locked, rank[0])
+                    self._update_offboarding(locked, rank.due_at)
                 self._warn(row.user, locked)
 
     def apply(self) -> int:
