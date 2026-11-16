@@ -20,7 +20,7 @@ import { coerce } from "semver";
 export const SUPPORTED_RELEASE_COUNT = 3;
 
 /**
- * @typedef {FastGlob.Entry & AKReleaseFile} AKReleaseFileEntry
+ * @typedef {FastGlob.Entry & AKReleaseFile & { filePath: string }} AKReleaseFileEntry
  */
 
 /**
