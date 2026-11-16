@@ -16,6 +16,7 @@ draft: true
 - **Dry-run policy bindings**: Test a new access rule against real traffic before it affects any access decision.
 - **Portable blueprint exports**: Exported blueprints and flows reference related objects by stable identifiers, so they can be imported into a different authentik instance.
 - **Post-quantum cryptography**: Generate ML-DSA certificates, and use a hybrid post-quantum key exchange for outpost TLS.
+- **User expiration**: Automatically deactivate or delete users after a configurable period of inactivity and optionally warn them first. :ak-enterprise
 
 ## Breaking changes
 
@@ -249,6 +250,10 @@ A fix to the audit middleware prevents workers from stalling under load, which c
 authentik now disables PostgreSQL's just-in-time (JIT) compilation for its own database user when it starts. In load tests, disabling JIT resolved a slowdown that built up over several hours. PostgreSQL 19 makes the same change to its default.
 
 authentik only changes `jit` while it has PostgreSQL's built-in default, and only for the user that authentik connects as, in the authentik database. If you have set `jit` explicitly, authentik leaves it unchanged. The `/admin/system/` API endpoint reports the PostgreSQL version, the effective `jit` value and where it was set, and the connection's TLS version and cipher. For more details, including how to keep JIT enabled, refer to [authentik disables JIT compilation](../../troubleshooting/postgres/slow-queries.mdx#authentik-disables-jit-compilation).
+
+### User expiration :ak-enterprise
+
+User expiration rules schedule users for offboarding after a configured period of inactivity. The default **Last activity** basis counts successful authentication and application access, including OAuth refresh grants. Choose **Last login** to measure inactivity using only the recorded last login. A rule can target users by group and user type and warn them before their accounts expire. If a user logs in before the scheduled time, authentik removes the pending offboarding. API token requests do not count as activity, and rules exclude service accounts by default. For details, see [User expiration](../../sys-mgmt/user-expiration.mdx).
 
 ### Distroless server image
 
