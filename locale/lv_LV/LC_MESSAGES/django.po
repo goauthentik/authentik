@@ -26,6 +26,12 @@ msgstr ""
 msgid "Value for flag {flag_key} needs to be of type {type}."
 msgstr "Karoga {flag_key} vērtības veidam jābūt {type}."
 
+#: authentik/admin/files/api.py
+#, python-brace-format
+msgid "File size ({size}B) exceeds maximum allowed size ({max_size}B)."
+msgstr ""
+"Faila izmērs ({size}B) pārsniedz atļauto maksimālo izmēru ({max_size}B)."
+
 #: authentik/admin/files/validation.py
 msgid "File name cannot be empty"
 msgstr "Faila nosaukums nedrīkst būt tukšs"
@@ -56,6 +62,18 @@ msgstr "Atsauces uz vecākdirektoriju ('..') nav atļautas"
 #: authentik/admin/files/validation.py
 msgid "Paths cannot start with '.'"
 msgstr "Ceļi nedrīkst sākties ar '.'"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+msgstr ""
+"Faila nosaukums ir pārāk garš (maks. {MAX_FILE_NAME_LENGTH} rakstzīmes)"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
+msgstr ""
+"Ceļa komponents ir pārāk garš (maks. {MAX_PATH_COMPONENT_LENGTH} rakstzīmes)"
 
 #: authentik/admin/models.py
 msgid "Configure how authentik should show avatars for users."
@@ -371,6 +389,14 @@ msgstr ""
 #, python-brace-format
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr "Īsvārds '{slug}' ir rezervēts, un to nevar izmantot lietotnēm."
+
+#: authentik/core/api/groups.py
+#, python-brace-format
+msgid ""
+"User does not have permission to set superuser status to {superuser_status}."
+msgstr ""
+"Lietotājam nav atļaujas iestatīt superlietotāja statusu uz "
+"{superuser_status}."
 
 #: authentik/core/api/groups.py
 msgid "User does not have permission to add members to this group."
@@ -1315,6 +1341,34 @@ msgstr "Google Device Trust savienotāji"
 msgid "Verifying your browser..."
 msgstr "Pārbauda jūsu pārlūku..."
 
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid ""
+"Certificate authorities which issue device certificates via Intune (Cloud "
+"PKI, SCEP or PKCS profiles), used by the endpoint stage to validate "
+"certificates. This option has a higher priority than the "
+"`client_certificate` option on `Brand`."
+msgstr ""
+"Sertifikācijas iestādes, kas izsniedz ierīču sertifikātus, izmantojot Intune"
+" (Cloud PKI, SCEP vai PKCS profilus), ko galapunkta posms izmanto "
+"sertifikātu pārbaudei. Šai opcijai ir augstāka prioritāte nekā opcijai "
+"`client_certificate` objektā `Brand`."
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector"
+msgstr "Microsoft Intune savienotājs"
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connectors"
+msgstr "Microsoft Intune savienotāji"
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector Certificate Authority"
+msgstr "Microsoft Intune savienotāja sertificēšanas iestāde"
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector Certificate Authorities"
+msgstr "Microsoft Intune savienotāja sertificēšanas iestādes"
+
 #: authentik/enterprise/lifecycle/offboarding/actions.py
 #, python-format
 msgid "User %(username)s was offboarded (%(action)s)"
@@ -1457,6 +1511,32 @@ msgstr "Pārskatīts"
 #: authentik/enterprise/lifecycle/review/models.py
 msgid "Overdue"
 msgstr "Nokavēts"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Go to {model_name}"
+msgstr "Doties uz {model_name}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review is due for {model_name} {object_label}"
+msgstr "Piekļuves pārskatīšanas termiņš iestājas: {model_name} {object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review is overdue for {model_name} {object_label}"
+msgstr ""
+"Piekļuves pārskatīšanas termiņš ir nokavēts: {model_name} {object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review completed for {model_name} {object_label}"
+msgstr "Piekļuves pārskatīšana pabeigta: {model_name} {object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review attested for {model_name} {object_label}"
+msgstr "Piekļuves pārskatīšana apstiprināta: {model_name} {object_label}"
 
 #: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Dispatch tasks to apply lifecycle rules."
@@ -1812,6 +1892,14 @@ msgid "WS-Federation Providers"
 msgstr "WS-Federation pakalpojuma sniedzēji"
 
 #: authentik/enterprise/providers/ws_federation/views.py
+msgid "Invalid WS-Federation action"
+msgstr "Nederīga WS-Federation darbība"
+
+#: authentik/enterprise/providers/ws_federation/views.py
+msgid "Invalid WS-Federation request"
+msgstr "Nederīgs WS-Federation pieprasījums"
+
+#: authentik/enterprise/providers/ws_federation/views.py
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
 #, python-brace-format
@@ -1825,6 +1913,11 @@ msgstr "Datu eksports"
 #: authentik/enterprise/reports/models.py
 msgid "Data Exports"
 msgstr "Datu eksporti"
+
+#: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
+msgstr "{model_verbose_name} eksports veiksmīgi ģenerēts"
 
 #: authentik/enterprise/reports/models.py
 msgid "Download"
@@ -1952,6 +2045,22 @@ msgstr "Piešķīruma pieprasījuma apstiprinājumi"
 #: authentik/enterprise/requests/tasks.py
 msgid "Send access-request review notification."
 msgstr "Nosūtīt paziņojumu par piekļuves pieprasījuma pārskatīšanu."
+
+#: authentik/enterprise/required_actions/api.py
+msgid ""
+"Required actions must reference existing flows that a logged-in user can "
+"run, other than authentication or invalidation flows."
+msgstr ""
+"Obligātajām darbībām jāatsaucas uz esošām plūsmām, ko pieteicies lietotājs "
+"var palaist, izņemot autentifikācijas un anulēšanas plūsmas."
+
+#: authentik/enterprise/required_actions/middleware.py
+msgid "The required actions are invalid. Contact your administrator."
+msgstr "Obligātās darbības nav derīgas. Sazinieties ar administratoru."
+
+#: authentik/enterprise/required_actions/middleware.py
+msgid "Complete the required actions before continuing."
+msgstr "Pirms turpināšanas pabeidziet obligātās darbības."
 
 #: authentik/enterprise/stages/account_lockdown/api.py
 msgid "User to lock. If omitted, locks the current user (self-service)."
@@ -2083,6 +2192,10 @@ msgstr "Sertifikāts ir obligāts, bet netika iesniegts."
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "No user found for certificate."
 msgstr "Sertifikātam nav atrasts neviens lietotājs."
+
+#: authentik/enterprise/stages/password/api.py
+msgid "A service account's password cannot be locked."
+msgstr "Servisa konta paroli nevar bloķēt."
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -2449,6 +2562,10 @@ msgstr "%(value)s nav pareizā formātā 'hours=3;minutes=1'."
 msgid "The fields {field_names} must be used together."
 msgstr "Lauki {field_names} jāizmanto kopā."
 
+#: authentik/lib/views.py
+msgid "Bad Request"
+msgstr "Nepareizs pieprasījums"
+
 #: authentik/outposts/api/service_connections.py
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
@@ -2625,6 +2742,26 @@ msgid ""
 msgstr ""
 "Salīdzina notikuma klienta IP (stingra atbilstība; tīklu salīdzināšanai "
 "izmantojiet izteiksmes politiku)"
+
+#: authentik/policies/event_matcher/models.py
+msgid "Query matched."
+msgstr "Vaicājums atbilst."
+
+#: authentik/policies/event_matcher/models.py
+msgid "Action matched."
+msgstr "Darbība atbilst."
+
+#: authentik/policies/event_matcher/models.py
+msgid "Client IP matched."
+msgstr "Klienta IP atbilst."
+
+#: authentik/policies/event_matcher/models.py
+msgid "App matched."
+msgstr "Lietotne atbilst."
+
+#: authentik/policies/event_matcher/models.py
+msgid "Model matched."
+msgstr "Modelis atbilst."
 
 #: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policy"
@@ -3001,6 +3138,18 @@ msgstr "ES512 (asimetriskā šifrēšana)"
 #: authentik/providers/oauth2/models.py
 msgid "EdDSA (Asymmetric Encryption)"
 msgstr "EdDSA (asimetriskā šifrēšana)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-44 (Post-quantum, Asymmetric Encryption)"
+msgstr "ML-DSA-44 (pēckvantu, asimetriskā šifrēšana)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-65 (Post-quantum, Asymmetric Encryption)"
+msgstr "ML-DSA-65 (pēckvantu, asimetriskā šifrēšana)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-87 (Post-quantum, Asymmetric Encryption)"
+msgstr "ML-DSA-87 (pēckvantu, asimetriskā šifrēšana)"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
@@ -3850,6 +3999,21 @@ msgstr "SAML sesija"
 msgid "SAML Sessions"
 msgstr "SAML sesijas"
 
+#: authentik/providers/saml/views/flows.py
+msgid "Invalid sp_binding specified"
+msgstr "Norādīts nederīgs sp_binding"
+
+#: authentik/providers/saml/views/sp_slo.py
+#: authentik/providers/saml/views/sso.py
+#: authentik/providers/saml/views/unified.py
+msgid "The SAML request payload is missing."
+msgstr "Trūkst SAML pieprasījuma satura."
+
+#: authentik/providers/saml/views/unified.py
+#, python-brace-format
+msgid "Unsupported SAML message type: {message_type}"
+msgstr "Neatbalstīts SAML ziņojuma tips: {message_type}"
+
 #: authentik/providers/scim/models.py
 msgid "Basic"
 msgstr "Basic"
@@ -4005,6 +4169,64 @@ msgstr ""
 "Nodot izpildei saistītā objekta (dalības) sinhronizāciju SCIM pakalpojuma "
 "sniedzējiem."
 
+#: authentik/rbac/api/custom_permissions.py
+msgid "Unknown model."
+msgstr "Nezināms modelis."
+
+#: authentik/rbac/api/custom_permissions.py
+msgid "This cannot change."
+msgstr "To nevar mainīt."
+
+#: authentik/rbac/api/custom_permissions.py
+msgid ""
+"Start with custom_, followed by lowercase letters, digits, and underscores."
+msgstr "Sākas ar custom_, kam seko mazie burti, cipari un apakšsvītras."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Define at least one of {functions}."
+msgstr "Definējiet vismaz vienu no {functions}."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Unknown endpoint {id}."
+msgstr "Nezināms galapunkts {id}."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Already bound to another check: {ids}."
+msgstr "Jau piesaistīts citai pārbaudei: {ids}."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "{id} runs no functions defined for it."
+msgstr "{id} neizpilda nevienu tai definētu funkciju."
+
+#: authentik/rbac/api/rbac.py
+#, python-brace-format
+msgid "Unknown permission {name}"
+msgstr "Nezināma atļauja {name}"
+
+#: authentik/rbac/apps.py
+msgid ""
+"Let permission checks decide API access. While enabled, every API request "
+"costs an additional database query."
+msgstr ""
+"Ļaut atļauju pārbaudēm noteikt piekļuvi API. Kamēr šī opcija ir iespējota, "
+"katrs API pieprasījums prasa papildu datubāzes vaicājumu."
+
+#: authentik/rbac/endpoint_checks.py
+msgid "A permission check failed."
+msgstr "Atļauju pārbaude neizdevās."
+
+#: authentik/rbac/field_rules.py
+msgid "You cannot change this value."
+msgstr "Šo vērtību nevar mainīt."
+
+#: authentik/rbac/field_rules.py
+msgid "This field is hidden from you."
+msgstr "Šis lauks jums nav redzams."
+
 #: authentik/rbac/models.py
 msgid "Role"
 msgstr "Loma"
@@ -4064,6 +4286,22 @@ msgstr "Var skatīt multivides failus"
 #: authentik/rbac/models.py
 msgid "Can manage media files"
 msgstr "Var pārvaldīt multivides failus"
+
+#: authentik/rbac/models.py
+msgid "Custom permission"
+msgstr "Pielāgota atļauja"
+
+#: authentik/rbac/models.py
+msgid "Custom permissions"
+msgstr "Pielāgotas atļaujas"
+
+#: authentik/rbac/models.py
+msgid "Permission check"
+msgstr "Atļauju pārbaude"
+
+#: authentik/rbac/models.py
+msgid "Permission checks"
+msgstr "Atļauju pārbaudes"
 
 #: authentik/rbac/tasks.py
 msgid "Remove object-level permissions whose object no longer exists."
@@ -4210,6 +4448,14 @@ msgstr ""
 #: authentik/sources/ldap/api/sources.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr "Atļauts tikai viens LDAP avots ar paroļu sinhronizāciju"
+
+#: authentik/sources/ldap/api/sources.py
+#, python-brace-format
+msgid ""
+"When 'Sync {type}s' is enabled, '{type}s property mappings' cannot be empty."
+msgstr ""
+"Ja ir iespējota opcija 'Sinhronizēt {type}s', '{type}s rekvizītu kartējumi' "
+"nevar būt tukši."
 
 #: authentik/sources/ldap/api/sources.py
 msgid "SASL EXTERNAL requires a client certificate with a private key."
@@ -4761,6 +5007,15 @@ msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid ""
+"Format of the NameID Policy sent to the IdP. Select Unspecified to let the "
+"IdP choose the format of the NameID it returns."
+msgstr ""
+"NameID politikas formāts, ko nosūta identitātes pakalpojuma sniedzējam. "
+"Izvēlieties Nenorādīts, lai identitātes pakalpojuma sniedzējs izvēlētos "
+"atgriežamā NameID formātu."
+
+#: authentik/sources/saml/models.py
+msgid ""
 "NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
 "sent."
 msgstr ""
@@ -4968,6 +5223,10 @@ msgstr ""
 "hours=3,minutes=17,seconds=300)."
 
 #: authentik/stages/authenticator_email/models.py
+msgid "authentik Sign-in code"
+msgstr "authentik pieteikšanās kods"
+
+#: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stage"
 msgstr "E-pasta autentifikatora iestatīšanas posms"
 
@@ -5163,6 +5422,25 @@ msgstr ""
 "Nederīgs ierīces veids. Lai saņemtu palīdzību, sazinieties ar {brand} "
 "administratoru."
 
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Assertion failed"
+msgstr "Apgalvojums neizdevās"
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Invalid security key. Please re-register or contact an administrator."
+msgstr ""
+"Nederīga drošības atslēga. Lūdzu, reģistrējiet to atkārtoti vai sazinieties "
+"ar administratoru."
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Domain"
+msgstr "Domēns"
+
+#: authentik/stages/authenticator_validate/challenge.py
+#, python-brace-format
+msgid "{brand_name} Login request"
+msgstr "{brand_name} pieteikšanās pieprasījums"
+
 #: authentik/stages/authenticator_validate/models.py
 msgid "Static"
 msgstr "Statisks"
@@ -5268,6 +5546,14 @@ msgstr "WebAuthn autentifikatora posma ierīces veida ierobežojums"
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "Authenticator WebAuthn Stage Device Type Restrictions"
 msgstr "WebAuthn autentifikatora posma ierīču veidu ierobežojumi"
+
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid ""
+"Exceeded maximum attempts. Contact your {brand} administrator for help."
+msgstr ""
+"Pārsniegts maksimālais mēģinājumu skaits. Palīdzībai sazinieties ar {brand} "
+"administratoru."
 
 #: authentik/stages/authenticator_webauthn/tasks.py
 msgid ""
@@ -5790,6 +6076,38 @@ msgstr "Aizmugursistēmas, kurās pārbaudīt paroli."
 
 #: authentik/stages/password/models.py
 msgid ""
+"How many attempts a user has before the flow is canceled. This only cancels "
+"the flow, it does not lock the user's password."
+msgstr ""
+"Cik mēģinājumu lietotājam ir, pirms plūsma tiek atcelta. Tas atceļ tikai "
+"plūsmu, un lietotāja parole netiek bloķēta."
+
+#: authentik/stages/password/models.py
+msgid ""
+"How many consecutive failed attempts lock the user's password until an "
+"administrator unlocks it. Set to 0 to never lock."
+msgstr ""
+"Cik secīgi neveiksmīgi mēģinājumi bloķē lietotāja paroli, līdz "
+"administrators to atbloķē. Iestatiet 0, lai nekad nebloķētu."
+
+#: authentik/stages/password/models.py
+msgid ""
+"Warning shown when the user has one password attempt remaining. Leave blank "
+"to show no warning."
+msgstr ""
+"Brīdinājums, kas tiek rādīts, kad lietotājam ir atlicis viens paroles "
+"mēģinājums. Atstājiet tukšu, lai brīdinājums netiktu rādīts."
+
+#: authentik/stages/password/models.py
+msgid ""
+"Message shown when the user's password has been locked. Leave blank to show "
+"a generic authentication error."
+msgstr ""
+"Ziņojums, kas tiek rādīts, kad lietotāja parole ir bloķēta. Atstājiet tukšu,"
+" lai rādītu vispārīgu autentifikācijas kļūdu."
+
+#: authentik/stages/password/models.py
+msgid ""
 "How many attempts a user has before the flow is canceled. To lock the user "
 "out, use a reputation policy and a user_write stage."
 msgstr ""
@@ -5809,6 +6127,14 @@ msgstr "Paroles posms"
 #: authentik/stages/password/models.py
 msgid "Password Stages"
 msgstr "Paroles posmi"
+
+#: authentik/stages/password/models.py
+msgid "Password Device"
+msgstr "Paroles ierīce"
+
+#: authentik/stages/password/models.py
+msgid "Password Devices"
+msgstr "Paroles ierīces"
 
 #: authentik/stages/password/stage.py
 msgid "Invalid password"
