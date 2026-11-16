@@ -30,4 +30,4 @@ Monorepo history uses concise, scoped conventional-style subjects, often `area: 
 
 ## Security & Configuration
 
-The package is private and may process sensitive translation content. Do not add network calls, commit local source datasets, or expose raw findings by default. Validate paths and input formats, and preserve read-only behavior for source files.
+The package is private and may process sensitive translation content. Do not add network calls, commit local source datasets, or expose raw findings by default. The one committed copy of the lexicon is `lexicon-audit.db.gpg`, encrypted with `seal`; never commit the decrypted database or the passphrase. Validate paths and input formats, and preserve read-only behavior for source files.
