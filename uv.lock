@@ -449,7 +449,7 @@ requires-dist = [
     { name = "google-api-python-client", specifier = "==2.201.0" },
     { name = "gssapi", specifier = "==1.12.0" },
     { name = "gunicorn", specifier = "==26.2.0" },
-    { name = "jsonpatch", specifier = "==1.43" },
+    { name = "jsonpatch", specifier = "==1.44" },
     { name = "jwcrypto", specifier = "==1.6.1" },
     { name = "kubernetes", specifier = "==37.0.1" },
     { name = "ldap3", specifier = "==2.9.1" },
@@ -2094,14 +2094,14 @@ wheels = [
 
 [[package]]
 name = "jsonpatch"
-version = "1.43"
+version = "1.44"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jsonpointer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/63/d2/b8e85a5c18344f2885dffa0eef881617540000bb10212939e7b5e4b9e650/jsonpatch-1.43.tar.gz", hash = "sha256:0dbd831e9853e4ec9a3897a9cca87716533d2c05f8b5ca0f6cde70d83e5758b6", size = 66374, upload-time = "2026-11-05T21:10:01.312Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/e0/5fff51896a5556c44890b4d211278284d6a4c847e509b4e585e5f4616060/jsonpatch-1.44.tar.gz", hash = "sha256:88fc1d9728168b4a9be27bb00de469dfb3cd28e8e5b568b24efb2ac583cba7b9", size = 66776, upload-time = "2026-11-06T11:42:33.614Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/dc/9296033289168d0d0be2e474be25daa6f50a24ca31a1f71c9883493826ee/jsonpatch-1.43-py3-none-any.whl", hash = "sha256:18a4a6e439d08a77ca8db4f0596f13511036a38c005fdf7b0c98fba2c148e5c4", size = 23165, upload-time = "2026-11-05T21:10:00.043Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/56/890cb3357504efa2f9848ffa7df18e9e2583402aeeccbba2dc1c9318f5bb/jsonpatch-1.44-py3-none-any.whl", hash = "sha256:801f9238740d19eb101f9f7cea9c1c4810dbc4746f3edc89f7751d1798b917ff", size = 23283, upload-time = "2026-11-06T11:42:31.234Z" },
 ]
 
 [[package]]
