@@ -1005,12 +1005,21 @@ class TestExecution(ExpirationTestCase):
         self.assertEqual(done_row.status, OffboardingStatus.COMPLETED)
         self.assertIsNone(done_row.rule)
 
-    def test_sweeper_dispatches_enabled_rules(self):
+    def test_sweeper_applies_enabled_rules(self):
         self._rule()
         self._rule(enabled=False)
-        with patch(APPLY_RULE) as send:
+        with patch.object(UserExpirationRule, "apply") as apply:
             apply_expiration_rules.send()
-        send.assert_called_once()
+        apply.assert_called_once()
+
+    def test_sweeper_continues_after_failing_rule(self):
+        self._rule()
+        self._rule()
+        with patch.object(
+            UserExpirationRule, "apply", side_effect=[RuntimeError("boom"), 0]
+        ) as apply:
+            apply_expiration_rules.send()
+        self.assertEqual(apply.call_count, 2)
 
     def test_without_license_sweeper_and_generated_rows_stop(self):
         rule = self._rule()
@@ -1024,9 +1033,9 @@ class TestExecution(ExpirationTestCase):
         with patch(
             "authentik.enterprise.apps.AuthentikEnterpriseConfig.enabled", return_value=False
         ):
-            with patch(APPLY_RULE) as send:
+            with patch.object(UserExpirationRule, "apply") as apply:
                 apply_expiration_rules.send()
-            send.assert_not_called()
+            apply.assert_not_called()
             with patch(
                 "authentik.enterprise.lifecycle.offboarding.tasks"
                 ".execute_offboarding.send_with_options"
