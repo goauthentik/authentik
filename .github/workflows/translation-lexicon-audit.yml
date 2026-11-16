@@ -1,0 +1,59 @@
+---
+name: Translation - Lexicon audit
+
+# Decrypts the committed lexicon database and audits translations against it.
+# The passphrase lives in the `lexicon-audit` environment, so fork pull requests are skipped.
+# Output is counts only; run `lexicon-audit audit --report` locally to see findings.
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "locale/**"
+      - "web/xliff/**"
+      - "packages/lexicon-audit/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-26.04
+    environment: lexicon-audit
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          persist-credentials: false
+      - name: Check for a sealed lexicon
+        id: sealed
+        run: |
+          if [ -f packages/lexicon-audit/lexicon-audit.db.gpg ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No sealed lexicon committed yet; skipping the audit."
+          fi
+      - name: Setup authentik env
+        if: ${{ steps.sealed.outputs.present == 'true' }}
+        uses: ./.github/actions/setup
+        with:
+          dependencies: node
+      - name: Unseal the lexicon
+        if: ${{ steps.sealed.outputs.present == 'true' }}
+        run: pnpm exec lexicon-audit unseal
+        env:
+          LEXICON_AUDIT_PASSPHRASE: ${{ secrets.LEXICON_AUDIT_PASSPHRASE }}
+      - name: Audit translations
+        if: ${{ steps.sealed.outputs.present == 'true' }}
+        # Report-only until the allowlist covers known false positives.
+        continue-on-error: true
+        run: pnpm run lint:lexicon
+      - name: Remove the unsealed lexicon
+        if: ${{ always() }}
+        run: rm -rf packages/lexicon-audit/out

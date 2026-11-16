@@ -17,6 +17,16 @@ export const DATABASE_PATH = join(OUT_DIR, DATABASE_NAME);
 export const CORPUS_DIR = join(PACKAGE_ROOT, "corpus", "words");
 
 /**
+ * The lexicon database encrypted with `seal`, committed so CI can audit without the plaintext.
+ */
+export const SEALED_DATABASE_PATH = join(PACKAGE_ROOT, `${DATABASE_NAME}.gpg`);
+
+/**
+ * Environment variable holding the passphrase for {@linkcode SEALED_DATABASE_PATH}.
+ */
+export const PASSPHRASE_ENV = "LEXICON_AUDIT_PASSPHRASE";
+
+/**
  * Lexicon words reviewed as false positives. Ignored by git; `build` stores it in the database.
  */
 export const ALLOWLIST_PATH = join(PACKAGE_ROOT, "allowlist.tsv");
