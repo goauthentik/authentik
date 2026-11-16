@@ -9,7 +9,6 @@ from django.urls import reverse
 from lxml.etree import Element, SubElement, _Element, tostring  # nosec
 
 from authentik.common.saml.constants import (
-    DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_METADATA,
     NS_SAML_PROTOCOL,
@@ -22,8 +21,8 @@ from authentik.common.saml.constants import (
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 from authentik.common.saml.utils import x509_certificate_b64
-from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.processors.signature import sign_xml_element
 
 
 class MetadataProcessor:
@@ -121,36 +120,8 @@ class MetadataProcessor:
         )
         entity_descriptor.append(signature)
 
-    def _sign(self, entity_descriptor: _Element):
-        digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
-            self.provider.digest_algorithm, xmlsec.constants.TransformSha1
-        )
-        assertion = entity_descriptor.xpath("//md:EntityDescriptor", namespaces=NS_MAP)[0]
-        xmlsec.tree.add_ids(assertion, ["ID"])
-        signature_node = xmlsec.tree.find_node(assertion, xmlsec.constants.NodeSignature)
-        ref = xmlsec.template.add_reference(
-            signature_node,
-            digest_algorithm_transform,
-            uri="#" + self.xml_id,
-        )
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)
-        key_info = xmlsec.template.ensure_key_info(signature_node)
-        xmlsec.template.add_x509_data(key_info)
-
-        ctx = xmlsec.SignatureContext()
-
-        key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-            None,
-        )
-        key.load_cert_from_memory(
-            self.provider.signing_kp.certificate_data,
-            xmlsec.constants.KeyDataFormatCertPem,
-        )
-        ctx.key = key
-        ctx.sign(remove_xml_newlines(assertion, signature_node))
+    def _sign(self, entity_descriptor: _Element) -> None:
+        sign_xml_element(entity_descriptor, self.provider)
 
     def add_children(self, entity_descriptor: _Element):
         self.add_idp_sso(entity_descriptor)

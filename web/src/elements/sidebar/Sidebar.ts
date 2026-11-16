@@ -14,7 +14,7 @@ import { SlotController } from "@patternfly/pfe-core/controllers/slot-controller
 import { kebabCase } from "change-case";
 import { match, P } from "ts-pattern";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -51,7 +51,7 @@ export function findParentKeys(entries: readonly SidebarItem[], key: string): st
  * @element ak-sidebar
  *
  * The sidebar is a navigational element meant to assist users in finding their way about a complex
- * application.  It is
+ * application.
  */
 
 @customElement("ak-sidebar")
@@ -120,10 +120,10 @@ export class Sidebar extends AKElement {
         return html`<li part="list-item with-path" data-key=${key}>
             <a
                 id="sidebar-nav-link-${slugify(key)}"
-                part="row ${current ? "link current" : ""}"
+                part="row ${current ? "current" : ""}"
                 href=${path!}
                 data-depth=${depth}
-                aria-current=${ifPresent(current ? "page" : undefined)}
+                aria-current=${ifPresent(current, "page")}
                 ><div part="${waypoint ? "icon" : "rail"}">${waypoint ?? nothing}</div>
                 <span part="label"
                     ><span part="label-text">${label}</span
@@ -140,63 +140,68 @@ export class Sidebar extends AKElement {
         const id = slugify(key);
         const waypoint = mkIcon(icon);
 
-        return html`<li
-                part="list-item list-item-expandable"
+        return html`<li part="list-item list-item-expandable" data-key=${key}>
+            <button
+                id="sidebar-toggle-${id}"
+                type="button"
+                part="button row"
+                data-depth=${depth}
                 aria-expanded=${open ? "true" : "false"}
-                data-key=${key}
+                aria-controls="sidebar-subnav-${id}"
+                @click=${() => this.#toggleExpanded(key, !open)}
             >
-                <button
-                    id="sidebar-toggle-${id}"
-                    type="button"
-                    part="button row"
-                    data-depth=${depth}
-                    aria-controls="sidebar-subnav-${id}"
-                    @click=${() => this.#toggleExpanded(key, !open)}
-                >
-                    <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint ?? nothing}</div>
-                    <span part="label">${label}</span>
-                    <span part="toggle">
-                        <span part="toggle-icon">
-                            <i class="fas fa-angle-right" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                </button>
-            </li>
-            ${open ? children.map((child) => this.renderItem(child, depth + 1)) : nothing} `;
-    }
-
-    protected renderPathAndChildren(entry: SidebarItemWithBoth, depth = 0) {
-        const { key, label, icon, children } = entry;
-
-        const open = this.#isOpen(entry);
-        const id = slugify(key);
-        const waypoint = mkIcon(icon);
-
-        return html`<li
-                part="list-item list-item-expandable"
-                aria-expanded=${open ? "true" : "false"}
-                data-key=${key}
-            >
-                <button
-                    id="sidebar-toggle-${id}"
-                    type="button"
-                    part="button row"
-                    data-depth=${depth}
-                >
-                    <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint ?? nothing}</div>
-                    <span part="label">${label}</span>
-                </button>
-                <span
-                    part="toggle"
-                    aria-controls="sidebar-subnav-${id}"
-                    @click=${() => this.#toggleExpanded(key, !open)}
-                >
+                <div part="waypoint ${icon ? "icon" : "rail"}">${waypoint ?? nothing}</div>
+                <span part="label">${label}</span>
+                <span part="toggle">
                     <span part="toggle-icon">
                         <i class="fas fa-angle-right" aria-hidden="true"></i>
                     </span>
                 </span>
-            </li>
-            ${open ? children.map((child) => this.renderItem(child, depth + 1)) : nothing} `;
+            </button>
+            ${this.renderSubnav(id, open, children, depth)}
+        </li>`;
+    }
+
+    protected renderPathAndChildren(entry: SidebarItemWithBoth, depth = 0) {
+        const { path, key, label, icon, children } = entry;
+
+        const current = key === this.current;
+        const open = this.#isOpen(entry);
+        const id = slugify(key);
+        const waypoint = mkIcon(icon);
+
+        return html`<li part="list-item list-item-expandable" data-key=${key}>
+            <div part="row ${current ? "current" : ""}" data-depth=${depth}>
+                <a
+                    id="sidebar-nav-link-${id}"
+                    part="link"
+                    href=${ifPresent(path)}
+                    aria-current=${ifPresent(current, "page")}
+                    ><div part="${waypoint ? "icon" : "rail"}">${waypoint ?? nothing}</div>
+                    <span part="label"><span part="label-text">${label}</span></span>
+                </a>
+                <button
+                    id="sidebar-toggle-${id}"
+                    type="button"
+                    part="toggle"
+                    aria-label=${msg(str`Toggle ${label}`, { id: "sidebar.toggle.aria-label" })}
+                    aria-expanded=${open ? "true" : "false"}
+                    aria-controls="sidebar-subnav-${id}"
+                    @click=${() => this.#toggleExpanded(key, !open)}
+                >
+                    <span part="toggle-icon"
+                        ><i class="fas fa-angle-right" aria-hidden="true"></i
+                    ></span>
+                </button>
+            </div>
+            ${this.renderSubnav(id, open, children, depth)}
+        </li>`;
+    }
+
+    protected renderSubnav(id: string, open: boolean, children: SidebarItem[], depth: number) {
+        return html`<ul id="sidebar-subnav-${id}" part="subnav" ?hidden=${!open}>
+            ${open ? children.map((child) => this.renderItem(child, depth + 1)) : nothing}
+        </ul>`;
     }
 
     protected renderItem(entry: SidebarItem, depth = 0): TemplateResult {

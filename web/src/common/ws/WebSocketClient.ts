@@ -104,7 +104,7 @@ export class WebsocketClient extends WebSocket implements Disposable {
     };
 
     #openListener = () => {
-        window.clearTimeout(this.#connectionTimeoutID);
+        clearTimeout(this.#connectionTimeoutID);
 
         WebsocketClient.#logger.debug(`Connected to ${this.url}`);
 
@@ -114,7 +114,7 @@ export class WebsocketClient extends WebSocket implements Disposable {
     };
 
     #closeListener = (event: CloseEvent) => {
-        window.clearTimeout(this.#connectionTimeoutID);
+        clearTimeout(this.#connectionTimeoutID);
 
         WebsocketClient.#logger.warn("Connection closed", event);
 
@@ -130,7 +130,7 @@ export class WebsocketClient extends WebSocket implements Disposable {
             );
         }
 
-        this.#connectionTimeoutID = window.setTimeout(() => {
+        this.#connectionTimeoutID = setTimeout(() => {
             WebsocketClient.#logger.info(`Reconnecting in ${this.#retryDelay}ms`);
 
             WebsocketClient.connect();

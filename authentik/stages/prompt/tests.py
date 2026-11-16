@@ -13,7 +13,10 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id
+from authentik.lib.utils.reflection import class_to_path
+from authentik.policies.apps import HIST_POLICIES_ENGINE_TOTAL_TIME
 from authentik.policies.expression.models import ExpressionPolicy
+from authentik.policies.models import PolicyBindingModel
 from authentik.stages.prompt.models import FieldTypes, InlineFileField, Prompt, PromptStage
 from authentik.stages.prompt.stage import (
     PLAN_CONTEXT_PROMPT,
@@ -272,6 +275,43 @@ class TestPromptStage(APIFlowTestCase):
         for prompt in self.stage.fields.all():
             prompt: Prompt
             self.assertEqual(data[prompt.field_key], self.prompt_data[prompt.field_key])
+
+    def test_validation_policy_engine_metric_label(self):
+        """Test that the validation policy engine uses a stable metric label per stage
+        instead of creating a new label set on every submission"""
+        expr_policy = ExpressionPolicy.objects.create(name=generate_id(), expression="return True")
+        self.stage.validation_policies.set([expr_policy])
+        pbm_type = class_to_path(PolicyBindingModel)
+
+        with patch.object(
+            HIST_POLICIES_ENGINE_TOTAL_TIME,
+            "labels",
+            wraps=HIST_POLICIES_ENGINE_TOTAL_TIME.labels,
+        ) as labels:
+            for _ in range(2):
+                plan = FlowPlan(
+                    flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
+                )
+                session = self.client.session
+                session[SESSION_KEY_PLAN] = plan
+                session.save()
+                with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
+                    response = self.client.post(
+                        reverse(
+                            "authentik_api:flow-executor",
+                            kwargs={"flow_slug": self.flow.slug},
+                        ),
+                        self.prompt_data,
+                    )
+                self.assertEqual(response.status_code, 200)
+                self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+        pbm_calls = [
+            call for call in labels.call_args_list if call.kwargs.get("obj_type") == pbm_type
+        ]
+        self.assertEqual(len(pbm_calls), 2)
+        for call in pbm_calls:
+            self.assertEqual(call.kwargs["obj_pk"], str(self.stage.pk))
 
     def test_invalid_password(self):
         """Test challenge_response validation"""
