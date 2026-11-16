@@ -7,6 +7,7 @@ import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import { aki } from "#common/api/client";
+import { docLink } from "#common/global";
 import { userTypeToLabel } from "#common/labels";
 
 import { renderDialog } from "#elements/dialogs";
@@ -284,6 +285,17 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                     "Activity is stored independently of event retention. Preview the effect before changing this setting.",
                     { id: "user-expiration.field.activity-basis.description" },
                 )}
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href=${docLink("/sys-mgmt/user-expiration/#how-activity-is-measured")}
+                    >
+                        ${msg("Learn how activity is measured.", {
+                            id: "user-expiration.field.activity-basis.docs-link",
+                        })}
+                    </a>
+                </p>`}
             ></ak-radio-input>
 
             <ak-form-element-horizontal
