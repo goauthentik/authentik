@@ -4,6 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#components/ak-text-input";
 import { aki } from "#common/api/client";
 import { MessageLevel } from "#common/messages";
+import { plural } from "#common/ui/locale/plurals";
 
 import { ModalForm } from "#elements/forms/ModalForm";
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -104,7 +105,22 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                             .then((res) => {
                                 showMessage({
                                     level: MessageLevel.info,
-                                    message: msg(str`Successfully imported ${res.count} devices.`),
+                                    message: plural(res.count, {
+                                        one: (formattedCount) =>
+                                            msg(
+                                                str`Successfully imported ${formattedCount} device.`,
+                                                {
+                                                    id: "stages.duo.import.success.one",
+                                                },
+                                            ),
+                                        other: (formattedCount) =>
+                                            msg(
+                                                str`Successfully imported ${formattedCount} devices.`,
+                                                {
+                                                    id: "stages.duo.import.success.other",
+                                                },
+                                            ),
+                                    }),
                                 });
 
                                 const modal = this.parentElement as ModalForm;

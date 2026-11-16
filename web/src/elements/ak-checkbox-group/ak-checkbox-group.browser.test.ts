@@ -97,7 +97,7 @@ describe("ak-checkbox-group: events", () => {
             seen.push(`change:${(event as CustomEvent<string[]>).detail.join(",")}`),
         );
 
-        form.addEventListener("input", (event) =>
+        form.addEventListener("input", (event: Event) =>
             seen.push(`input:${(event as CustomEvent<string[]>).detail.join(",")}`),
         );
 

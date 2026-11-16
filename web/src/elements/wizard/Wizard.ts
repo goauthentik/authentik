@@ -94,7 +94,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     public formatHeader(verboseName = this.verboseName): string {
         if (verboseName) {
             return msg(str`Create New ${verboseName}`, {
-                id: "wizard.header.verbose-name.one",
+                id: "wizard.header.verbose-name.label",
                 desc: "Header for the creation wizard, where the entity singular is interpolated.",
             });
         }

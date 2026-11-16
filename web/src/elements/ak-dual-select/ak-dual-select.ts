@@ -11,6 +11,8 @@ import { DualSelectEvent, SearchbarEvent } from "./events.js";
 import { DualSelectEventType, DualSelectPair, SearchbarEventSource } from "./types.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
+import { plural } from "#common/ui/locale/plurals";
+
 import { AKElement } from "#elements/Base";
 import { pageBounds } from "#elements/Paginator";
 
@@ -310,20 +312,39 @@ export class AkDualSelect extends AKElement {
 
         const availableStatus =
             availableCount > 0
-                ? availableCount === 1
-                    ? msg(str`${availableCount} item marked to add.`)
-                    : msg(str`${availableCount} items marked to add.`)
+                ? plural(availableCount, {
+                      one: (formattedCount) =>
+                          msg(str`${formattedCount} item marked to add.`, {
+                              id: "dual-select.status.marked-to-add.one",
+                          }),
+                      other: (formattedCount) =>
+                          msg(str`${formattedCount} items marked to add.`, {
+                              id: "dual-select.status.marked-to-add.other",
+                          }),
+                  })
                 : "&nbsp;";
 
-        const selectedTotalStatus =
-            selectedTotal === 1
-                ? msg(str`${selectedTotal} item selected.`)
-                : msg(str`${selectedTotal} items selected.`);
+        const selectedTotalStatus = plural(selectedTotal, {
+            one: (formattedCount) =>
+                msg(str`${formattedCount} item selected.`, {
+                    id: "dual-select.status.selected.one",
+                }),
+            other: (formattedCount) =>
+                msg(str`${formattedCount} items selected.`, {
+                    id: "dual-select.status.selected.other",
+                }),
+        });
 
-        const selectedCountStatus =
-            selectedCount === 1
-                ? msg(str`${selectedCount} item marked to remove.`)
-                : msg(str`${selectedCount} items marked to remove.`);
+        const selectedCountStatus = plural(selectedCount, {
+            one: (formattedCount) =>
+                msg(str`${formattedCount} item marked to remove.`, {
+                    id: "dual-select.status.marked-to-remove.one",
+                }),
+            other: (formattedCount) =>
+                msg(str`${formattedCount} items marked to remove.`, {
+                    id: "dual-select.status.marked-to-remove.other",
+                }),
+        });
 
         const selectedStatus =
             selectedCount > 0

@@ -1,21 +1,6 @@
-import "#common/sentry/apply";
-import "#elements/messages/MessageContainer";
-import "#elements/ak-drawer/ak-drawer";
-import "#flow/FlowExecutor";
-// Statically import some stages to speed up load speed
-import "#flow/stages/access_denied/AccessDeniedStage";
-// Import webauthn-related stages to prevent issues on safari
-// Which is overly sensitive to allowing things only in the context of a
-// user interaction
-import "#flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import "#flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
-import "#flow/stages/autosubmit/AutosubmitStage";
-import "#flow/stages/captcha/CaptchaStage";
-import "#flow/stages/identification/IdentificationStage";
-import "#flow/stages/password/PasswordStage";
+import { initializeLocale } from "#common/ui/locale/runtime";
 
-// end of stage import
+// The catalog must be active before any module that calls `msg()` at module level loads.
+await initializeLocale();
 
-if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload");
-}
+await import("#flow/boot");

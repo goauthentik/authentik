@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("authentik_core", "0020_source_user_matching_mode"),
+        ("authentik_core", "0018_auto_20210330_1345_squashed_0028_alter_token_intent"),
     ]
 
     operations = [

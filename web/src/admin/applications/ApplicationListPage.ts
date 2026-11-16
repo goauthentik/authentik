@@ -34,6 +34,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
+    public static override verboseName = msg("Application", {
+        id: "applications.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Applications", {
+        id: "applications.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [
         // ---
         ...TablePage.styles,
@@ -101,7 +108,6 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
                 return aki(CoreApi).coreApplicationsUsedByList({

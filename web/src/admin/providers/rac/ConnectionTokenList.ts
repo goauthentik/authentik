@@ -48,7 +48,6 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Connection Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: ConnectionToken) => {
                 return [

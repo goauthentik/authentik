@@ -1,5 +1,3 @@
-import { MessageFormatter } from "#common/ui/locale/format";
-
 import { LoginSource, UserFieldsEnum } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
@@ -16,11 +14,11 @@ export function createOrListFormatter(locale: string): Intl.ListFormat {
     });
 }
 
-export const UIFieldLabels: Record<UserFieldsEnum, MessageFormatter<string>> = {
-    [UserFieldsEnum.Username]: () => msg("Username"),
-    [UserFieldsEnum.Email]: () => msg("Email"),
-    [UserFieldsEnum.Upn]: () => msg("UPN"),
-    [UserFieldsEnum.UnknownDefaultOpenApi]: () => msg("Unknown Field"),
+export const UIFieldLabels: Record<UserFieldsEnum, string> = {
+    [UserFieldsEnum.Username]: msg("Username"),
+    [UserFieldsEnum.Email]: msg("Email"),
+    [UserFieldsEnum.Upn]: msg("UPN"),
+    [UserFieldsEnum.UnknownDefaultOpenApi]: msg("Unknown Field"),
 };
 
 /**
@@ -28,7 +26,7 @@ export const UIFieldLabels: Record<UserFieldsEnum, MessageFormatter<string>> = {
  */
 export function formatUIFieldLabel(fieldLike: UserFieldsEnum | string): string {
     if (Object.hasOwn(UIFieldLabels, fieldLike)) {
-        return UIFieldLabels[fieldLike as UserFieldsEnum]();
+        return UIFieldLabels[fieldLike as UserFieldsEnum];
     }
 
     return msg(str`Unknown Field ${fieldLike}`);

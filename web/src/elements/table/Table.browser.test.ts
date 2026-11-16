@@ -54,7 +54,7 @@ class ControlledTable extends StaticTable<Row> {
         const { search } = this;
 
         const response = createPaginatedResponse(
-            this.items.filter((item) => !search || item.name.includes(search)),
+            this.items?.filter((item) => !search || item.name.includes(search)),
         );
 
         return new Promise((resolve) => {

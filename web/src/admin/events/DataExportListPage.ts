@@ -28,6 +28,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-data-export-list")
 export class DataExportListPage extends TablePage<DataExport> {
+    public static override verboseName = msg("Data export", {
+        id: "data-exports.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Data exports", {
+        id: "data-exports.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
     public pageTitle = msg("Data Exports");
     public pageDescription = msg("Manage past data exports.");
@@ -58,7 +65,6 @@ export class DataExportListPage extends TablePage<DataExport> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Data export(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: DataExport) => {
                 return [

@@ -27,7 +27,7 @@ class AttributesMixinSerializer(ModelSerializer):
             if any(path == key or path.startswith(f"{key}.") for key in hidden):
                 continue
             value = get_path_from_dict(attrs, attr.key)
-            attr.run_validation(value)
+            attr.run_validation(value, instance)
         return data
 
 
