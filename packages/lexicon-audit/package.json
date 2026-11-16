@@ -1,0 +1,67 @@
+{
+    "name": "@goauthentik/lexicon-audit",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Tools for auditing translations for vulgarity, offensive language, and inappropriate content",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/lexicon-audit"
+    },
+    "bin": {
+        "lexicon-audit": "./lib/cli.ts"
+    },
+    "type": "module",
+    "imports": {
+        "#commands/*": "./commands/*.ts",
+        "#test/*": "./test/*.ts",
+        "#*": {
+            "types": "./out/*.d.ts",
+            "node": "./lib/*.ts",
+            "default": "./out/*.js"
+        }
+    },
+    "exports": {
+        "./package.json": "./package.json"
+    },
+    "scripts": {
+        "build": "node ./lib/cli.ts build",
+        "build:types": "tsc -p . --noEmit && tsc -p test",
+        "fix": "run-s lint format",
+        "check": "run-s lint:check build:types format:check",
+        "format": "oxfmt --write .",
+        "format:check": "oxfmt --check .",
+        "lint": "oxlint --fix",
+        "lint:check": "oxlint --max-warnings=0",
+        "test": "vitest run",
+        "test:watch": "vitest"
+    },
+    "dependencies": {
+        "@nodable/sax": "^1.2.2",
+        "gettext-parser": "^10.0.0"
+    },
+    "devDependencies": {
+        "@goauthentik/oxfmt-config": "link:../oxfmt-config",
+        "@goauthentik/oxlint-config": "link:../oxlint-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@types/gettext-parser": "^9.0.0",
+        "@types/node": "catalog:",
+        "npm-run-all": "^4.1.5",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
+        "typescript": "catalog:",
+        "vite": "catalog:",
+        "vitest": "catalog:"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": "^24.22.1 || >=26.12.1",
+            "onFail": "warn"
+        }
+    },
+    "engines": {
+        "node": "^24.22.1 || >=26.12.1"
+    }
+}
