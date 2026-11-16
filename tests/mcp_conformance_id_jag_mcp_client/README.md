@@ -117,3 +117,29 @@ The runner uses throwaway database names, an ephemeral secret key and its own `A
 * `harness.stderr.log`.
 
 Like the other suites, the Python file doesn't match pytest's `python_files`, so `make test` never collects it.
+
+## Interactive e2e stack (Rex)
+
+To keep everything running for manual testing (another MCP client, curl, a debugger), start the stack in a Rex session, one pane per component:
+
+```bash
+tests/mcp_conformance_id_jag_mcp_client/stack/up.sh     # start
+tests/mcp_conformance_id_jag_mcp_client/stack/client.sh # rerun the SDK client (also from the client pane)
+tests/mcp_conformance_id_jag_mcp_client/stack/down.sh   # stop, remove the database, delete credentials
+```
+
+| Pane | What runs |
+| --- | --- |
+| postgres | A disposable PostgreSQL 16 container on a loopback port, removed when the pane stops. |
+| authentik | `lifecycle.migrate`, then `manage.py dev_server` (Django only, no Rust binary or web build). `stack/bootstrap.py` then configures both roles as the acceptance check does. |
+| MCP server | `harness/serve.mjs`: the fixture's `/mcp` (audience-bound) and `/mcp-issuer-bound`, logging every authorization decision. |
+| client | `stack/client.sh`: `harness/run.mjs` end to end, printing each check, then a shell for reruns. It starts its own copy of the MCP server on a second registered port, so the long-running one stays free for other clients. |
+
+Each `up.sh` makes a fresh stack:
+
+* New database, ports, ephemeral secret key, `AUTHENTIK_ENV` and credentials.
+* Its state lives in `.stack/` (gitignored, mode 0700); it never reads `local.env.yml` or uses the developer database.
+* `.stack/config.json` (mode 0600) holds the issuers, client credentials, the test user's login, and an admin API token. Nothing prints them.
+* Client runs write to `results/<timestamp>-stack/`.
+
+The stack expects the `rex` CLI on `PATH`, or the Rex app's bundled one; set `REX` to override.
