@@ -120,26 +120,53 @@ Like the other suites, the Python file doesn't match pytest's `python_files`, so
 
 ## Interactive e2e stack (Rex)
 
-To keep everything running for manual testing (another MCP client, curl, a debugger), start the stack in a Rex session, one pane per component:
+To keep everything running for manual testing (in a browser, with another MCP client, curl or a debugger), start the stack in a Rex session:
 
 ```bash
+make web-build                                          # once per checkout: the login and admin pages need web/dist
 tests/mcp_conformance_id_jag_mcp_client/stack/up.sh     # start
 tests/mcp_conformance_id_jag_mcp_client/stack/client.sh # rerun the SDK client (also from the client pane)
 tests/mcp_conformance_id_jag_mcp_client/stack/down.sh   # stop, remove the database, delete credentials
 ```
 
+The **Stack** tab has one pane per component:
+
 | Pane | What runs |
 | --- | --- |
 | postgres | A disposable PostgreSQL 16 container on a loopback port, removed when the pane stops. |
-| authentik | `lifecycle.migrate`, then `manage.py dev_server` (Django only, no Rust binary or web build). `stack/bootstrap.py` then configures both roles as the acceptance check does. |
+| authentik | `lifecycle.migrate`, then `manage.py dev_server` (Django; no Rust binary). `stack/bootstrap.py` then configures both roles as the acceptance check does, and makes the harness's login flow the default brand's authentication flow so browser sign-ins work. |
 | MCP server | `harness/serve.mjs`: the fixture's `/mcp` (audience-bound) and `/mcp-issuer-bound`, logging every authorization decision. |
-| client | `stack/client.sh`: `harness/run.mjs` end to end, printing each check, then a shell for reruns. It starts its own copy of the MCP server on a second registered port, so the long-running one stays free for other clients. |
+| client | `stack/client.sh`: `harness/run.mjs` end to end, printing each check. It starts its own copy of the MCP server on a second registered port, so the long-running one stays free for other clients. Afterwards it leaves a shell in this directory with `stack/env.sh` loaded. |
+
+The **Walkthrough** tab runs `harness/browser.mjs`, a small web app that plays the MCP client:
+
+1. Open the URL it prints and choose **Sign in with authentik**. That's the OpenID Connect sign-in at the IdP provider, on authentik's own login page.
+2. The app then:
+   * exchanges the ID token for an ID-JAG;
+   * redeems it at the Resource AS provider with the SDK's `CrossAppAccessProvider`;
+   * calls `whoami` on the long-running MCP server.
+3. It shows each token request (grant, client authentication, `resource`, result) and the decoded ID token, ID-JAG and access token. Raw tokens never reach the page.
+4. It then runs the SDK's unmodified flow against the audience-bound endpoint, which fails until the Resource AS supports RFC 8707 (see [Expected red](#expected-red)).
+
+Both the demo user and the admin can sign in to the walkthrough. Get their passwords with `jq '.login, .admin' .stack/config.json`. The admin user also opens the admin UI (`/if/admin/`), with the providers, the OpenID Connect source and the event log.
+
+`stack/env.sh` prints exports for any terminal:
+
+```bash
+eval "$(tests/mcp_conformance_id_jag_mcp_client/stack/env.sh)"
+```
+
+| Variable | Value |
+| --- | --- |
+| `AK`, `MCP`, `DEMO` | Base URLs of authentik, the MCP server and the walkthrough. |
+| `C` | The stack's `config.json`. |
+| `H` | The latest client run's `harness.json`. |
 
 Each `up.sh` makes a fresh stack:
 
 * New database, ports, ephemeral secret key, `AUTHENTIK_ENV` and credentials.
 * Its state lives in `.stack/` (gitignored, mode 0700); it never reads `local.env.yml` or uses the developer database.
-* `.stack/config.json` (mode 0600) holds the issuers, client credentials, the test user's login, and an admin API token. Nothing prints them.
+* `.stack/config.json` (mode 0600) holds the issuers, client credentials, the demo and admin logins, and an admin API token. Nothing prints them.
 * Client runs write to `results/<timestamp>-stack/`.
 
 The stack expects the `rex` CLI on `PATH`, or the Rex app's bundled one; set `REX` to override.

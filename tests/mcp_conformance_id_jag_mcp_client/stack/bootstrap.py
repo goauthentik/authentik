@@ -25,13 +25,22 @@ from django.urls import reverse  # noqa: E402
 
 from authentik.blueprints.models import BlueprintInstance  # noqa: E402
 from authentik.blueprints.v1.importer import Importer  # noqa: E402
+from authentik.brands.models import Brand  # noqa: E402
 from authentik.core.apps import Setup  # noqa: E402
 from authentik.core.models import Token, TokenIntents  # noqa: E402
-from authentik.core.tests.utils import create_test_admin_user, create_test_user  # noqa: E402
+from authentik.core.tests.utils import (  # noqa: E402
+    create_test_admin_user,
+    create_test_brand,
+    create_test_user,
+)
 from authentik.enterprise.agents.models import Agent  # noqa: E402
 from authentik.lib.generators import generate_id  # noqa: E402
 from authentik.providers.oauth2.id_token import IDToken  # noqa: E402
-from authentik.providers.oauth2.models import GrantType  # noqa: E402
+from authentik.providers.oauth2.models import (  # noqa: E402
+    GrantType,
+    RedirectURI,
+    RedirectURIMatchingMode,
+)
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection  # noqa: E402
 from tests.mcp_conformance_id_jag_issuer.acceptance_id_jag import (  # noqa: E402
     IdJagIssuerAcceptance,
@@ -68,6 +77,16 @@ def main():
     idp = IdJagIssuerAcceptance._oauth_client(None, "idjag-mcp-client")
     idp_unlinked = IdJagIssuerAcceptance._oauth_client(None, "idjag-unlinked")
     ras = IdJagIssuerAcceptance._oauth_client(None, "idjag-mcp-server-as")
+    # The browser walkthrough (harness/browser.mjs) is a second redirect URI of the MCP client
+    callback = f"http://localhost:{os.environ['STACK_CALLBACK_PORT']}/callback"
+    idp["provider"].redirect_uris = [
+        *idp["provider"].redirect_uris,
+        RedirectURI(RedirectURIMatchingMode.STRICT, callback),
+    ]
+    idp["provider"].save()
+    # Browser sign-ins (authorize, admin UI) use the same login flow as the harness
+    if not Brand.objects.filter(default=True).update(flow_authentication=login_flow):
+        create_test_brand(flow_authentication=login_flow)
     user = create_test_user()
     admin = create_test_admin_user()
     api_token = Token.objects.create(
@@ -118,9 +137,11 @@ def main():
     agent.id_jag_resources = mcp_resources
     agent.save()
     agent.applications.add(idp["app"])
-    UserOAuthSourceConnection.objects.create(
-        user=user, source=source, identifier=IDToken()._resolve_sub(idp["provider"], user)
-    )
+    # Both users can sign in to the walkthrough, so both are known to the Resource AS
+    for known in (user, admin):
+        UserOAuthSourceConnection.objects.create(
+            user=known, source=source, identifier=IDToken()._resolve_sub(idp["provider"], known)
+        )
 
     config = {
         "authentik": BASE,
@@ -133,6 +154,7 @@ def main():
             "username": user.username,
             "password": user.username,
         },
+        "admin": {"username": admin.username, "password": admin.username},
         "untrusted_audience": f"{BASE}/application/o/not-a-trusted-as/",
         "mcp_resources": mcp_resources,
         "api_token": api_token,
@@ -144,6 +166,8 @@ def main():
     print(f"IdP issuer:         {config['idp']['issuer']}")
     print(f"Resource AS issuer: {config['ras']['issuer']}")
     print(f"MCP resources:      {', '.join(mcp_resources)}")
+    print(f"Admin UI:           {BASE}/if/admin/")
+    print(f"Browser walkthrough: {callback.removesuffix('/callback')}/")
     print(f"Credentials:        {CONFIG}")
 
 

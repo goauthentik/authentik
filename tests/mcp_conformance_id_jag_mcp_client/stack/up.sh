@@ -41,6 +41,7 @@ STACK_CONTAINER=authentik-mcp-idjag-e2e-pg-$$
 STACK_AK_PORT=$(free_port)
 STACK_MCP_PORT=$(free_port)
 STACK_HARNESS_MCP_PORT=$(free_port)
+STACK_CALLBACK_PORT=$(free_port)
 AUTHENTIK_ENV=authentik-mcp-idjag-e2e-$$
 AUTHENTIK_SECRET_KEY=$(token 64)
 AUTHENTIK_DEBUG=true
@@ -63,10 +64,15 @@ ak_block="$("$REX" split -s "$session" -b "$pg_block" --split=right --ratio 60 -
   -c "$ROOT" --keep-open --focus=false --json -- "$STACK/authentik.sh" | jq -er '.block_ids[0]')"
 "$REX" split -s "$session" -b "$ak_block" --split=below --label "MCP server" \
   -c "$ROOT" --keep-open --focus=false --json -- "$STACK/mcp-server.sh" >/dev/null
-# The client runs once, then leaves a shell for reruns
-"$REX" split -s "$session" -b "$pg_block" --split=below --label client -c "$ROOT" --json \
-  -- bash -c '"$0"; exec "${SHELL:-/bin/zsh}" -l' "$STACK/client.sh" >/dev/null
+# The client runs once, then leaves a shell in the suite directory with the stack's URLs
+# and file paths exported (stack/env.sh)
+"$REX" split -s "$session" -b "$pg_block" --split=below --label client -c "$SUITE" --json \
+  -- bash -c '"$0"; eval "$("$1")"; exec "${SHELL:-/bin/zsh}" -l' "$STACK/client.sh" "$STACK/env.sh" >/dev/null
+# The browser walkthrough gets its own tab
+"$REX" window new -s "$session" Walkthrough -c "$ROOT" --keep-open --focus=false --json \
+  -- "$STACK/browser.sh" >/dev/null
 
 echo "== started Rex session $SESSION_LABEL ($session)"
+echo "   browser walkthrough: http://localhost:$(grep '^STACK_CALLBACK_PORT=' "$ENV_FILE" | cut -d= -f2)/ (once authentik is configured)"
 echo "   state:  $STATE (credentials in config.json, mode 0600)"
 echo "   stop:   tests/mcp_conformance_id_jag_mcp_client/stack/down.sh"
