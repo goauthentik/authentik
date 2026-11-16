@@ -7,8 +7,9 @@
 import { type Command, UsageError } from "#command";
 import { audit } from "#commands/audit";
 import { build } from "#commands/build";
+import { text } from "#commands/text";
 
-const COMMANDS: Record<string, Command> = { build, audit };
+const COMMANDS: Record<string, Command> = { build, audit, text };
 
 const USAGE = `Usage: lexicon-audit <command> [options]
 

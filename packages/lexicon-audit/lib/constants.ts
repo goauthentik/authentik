@@ -26,6 +26,12 @@ export const ALLOWLIST_PATH = join(PACKAGE_ROOT, "allowlist.tsv");
  */
 export const SCHEMA_VERSION = 2;
 
+/**
+ * Default minimum length of a lexicon entry, in characters, outside CJK locales. Shorter entries
+ * are mostly abbreviations and letter pairs that collide with codes and identifiers.
+ */
+export const DEFAULT_MIN_LENGTH = 3;
+
 export const TIERS = ["vulgar", "offensive", "sensitive"] as const;
 
 export type Tier = (typeof TIERS)[number];

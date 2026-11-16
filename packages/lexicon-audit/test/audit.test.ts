@@ -112,12 +112,12 @@ describe("audit", () => {
         });
 
         expect(summary).toEqual([
-            // Sorted by side, locale, file, then unit key.
-            "source en-US locale/en/LC_MESSAGES/django.po:15 exact vorpal-blade",
-            "source en-US locale/en/LC_MESSAGES/django.po:12 exact SLITHY",
+            // Sorted by side, locale, file, then line.
             "source en-US locale/en/LC_MESSAGES/django.po:6 exact brillig",
-            "target tok locale/tok/LC_MESSAGES/django.po:12 casefold Ike",
+            "source en-US locale/en/LC_MESSAGES/django.po:12 exact SLITHY",
+            "source en-US locale/en/LC_MESSAGES/django.po:15 exact vorpal-blade",
             "target tok locale/tok/LC_MESSAGES/django.po:6 exact ike",
+            "target tok locale/tok/LC_MESSAGES/django.po:12 casefold Ike",
             "target tok web/xliff/tok.xlf:5 exact ike",
             "target tok web/xliff/tok.xlf:5 exact ike",
         ]);

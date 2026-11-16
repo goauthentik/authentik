@@ -8,11 +8,11 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { parseArgs } from "node:util";
 
-import { renderJSONL, writeMarkdownReports } from "#audit/report";
+import { writeOutputs } from "#audit/report";
 import { scanTranslations } from "#audit/scan";
 import { printScanSummary } from "#audit/summary";
-import { type Command, UsageError, parseLocaleTags } from "#command";
-import { DATABASE_PATH, type Tier } from "#constants";
+import { type Command, UsageError, parseLocaleTags, parseMinLength } from "#command";
+import { DATABASE_PATH, DEFAULT_MIN_LENGTH, type Tier } from "#constants";
 import { Allowlist } from "#lexicon/allowlist";
 import { openLexicon } from "#lexicon/database";
 
@@ -26,6 +26,8 @@ Options:
       --report <dir>     Write per-locale Markdown reports, including matched text, to a directory
       --jsonl            Print findings, including matched text, to stdout as JSON Lines
       --include-sensitive  Include the "sensitive" tier
+      --min-length <n>   Skip lexicon entries shorter than n characters, except in CJK
+                         locales (default: ${DEFAULT_MIN_LENGTH})
       --include-fuzzy    Audit fuzzy PO entries
       --include-obsolete Audit obsolete PO entries
       --source-locale <tag>  Also audit source strings in this locale, e.g. en-US
@@ -43,6 +45,7 @@ Options:
                 "report": { type: "string" },
                 "jsonl": { type: "boolean", default: false },
                 "include-sensitive": { type: "boolean", default: false },
+                "min-length": { type: "string", default: String(DEFAULT_MIN_LENGTH) },
                 "include-fuzzy": { type: "boolean", default: false },
                 "include-obsolete": { type: "boolean", default: false },
                 "source-locale": { type: "string" },
@@ -79,6 +82,7 @@ Options:
             {
                 locales: parseLocaleTags(values.locale),
                 tiers,
+                minLength: parseMinLength(values["min-length"]),
                 includeFuzzy: values["include-fuzzy"],
                 includeObsolete: values["include-obsolete"],
                 sourceLocale,
@@ -97,16 +101,10 @@ Options:
 
         const context = { result, tiers, generatedAt: new Date().toISOString() };
 
-        if (values.report) {
-            const directory = resolve(values.report);
-            const files = await writeMarkdownReports(directory, context);
-
-            console.error(`Wrote ${files.length} files to ${directory}`);
-        }
-
-        if (values.jsonl) {
-            process.stdout.write(renderJSONL(context));
-        }
+        await writeOutputs(context, {
+            report: values.report ? resolve(values.report) : null,
+            jsonl: values.jsonl,
+        });
 
         if (result.findings.length) {
             process.exitCode = 1;

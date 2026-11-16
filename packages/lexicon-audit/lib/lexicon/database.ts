@@ -1,7 +1,8 @@
 import { DatabaseSync } from "node:sqlite";
 
-import { SCHEMA_VERSION, type Tier } from "#constants";
+import { DEFAULT_MIN_LENGTH, SCHEMA_VERSION, type Tier } from "#constants";
 import { LexiconError } from "#lexicon/errors";
+import { isCJKLocale } from "#translation/locale";
 import { normalize, tokenize } from "#translation/tokenize";
 
 //#region Entries
@@ -103,12 +104,21 @@ export function lexiconLocales(db: DatabaseSync): string[] {
         .map((row) => String(row.locale));
 }
 
+export interface LexiconIndexOptions {
+    tiers: readonly Tier[];
+    /**
+     * Skip entries shorter than this many characters. Ignored for CJK locales.
+     */
+    minLength?: number;
+}
+
 export function loadLexiconIndex(
     db: DatabaseSync,
     locale: string,
-    tiers: readonly Tier[],
+    { tiers, minLength = DEFAULT_MIN_LENGTH }: LexiconIndexOptions,
 ): LexiconIndex {
     const index: LexiconIndex = new Map();
+    const shortest = isCJKLocale(locale) ? 1 : minLength;
 
     const rows = db
         .prepare(/* sql */ `
@@ -120,6 +130,11 @@ export function loadLexiconIndex(
 
     for (const row of rows) {
         const word = String(row.word);
+
+        if ([...word].length < shortest) {
+            continue;
+        }
+
         const tokens = tokenize(word, locale);
         const first = tokens[0];
 

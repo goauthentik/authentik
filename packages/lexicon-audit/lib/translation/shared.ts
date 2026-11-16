@@ -2,7 +2,7 @@
  * @file The format-independent shape PO and XLIFF readers produce.
  */
 
-export type TranslationFormat = "po" | "xlf";
+export type TranslationFormat = "po" | "xlf" | "text";
 
 /**
  * One translated string. Plural forms and XLIFF segments are separate entries.
@@ -10,7 +10,7 @@ export type TranslationFormat = "po" | "xlf";
 export interface TranslationEntry {
     format: TranslationFormat;
     /**
-     * PO `msgid` or XLIFF unit ID.
+     * PO `msgid`, XLIFF unit ID, or the line number of a plain-text line.
      */
     id: string;
     /**

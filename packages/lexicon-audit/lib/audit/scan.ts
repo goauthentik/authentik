@@ -22,6 +22,7 @@ import {
     entryKey,
     entryVariant,
 } from "#translation/shared";
+import { readText } from "#translation/text";
 import { readXLIFF } from "#translation/xliff";
 
 //#region Options and results
@@ -30,6 +31,10 @@ export const TRANSLATION_PATTERNS = ["**/*.po", "**/*.xlf", "**/*.xliff"];
 
 export interface ScanOptions extends TranslationReaderOptions, LexiconMatchOptions {
     tiers: readonly Tier[];
+    /**
+     * Skip lexicon entries shorter than this many characters, except in CJK locales.
+     */
+    minLength?: number;
     /**
      * Only scan these canonical locales. Empty scans everything.
      */
@@ -161,7 +166,7 @@ export async function scanTranslations(
         let index = indexes.get(lexicon);
 
         if (!index) {
-            index = loadLexiconIndex(db, lexicon, options.tiers);
+            index = loadLexiconIndex(db, lexicon, options);
             indexes.set(lexicon, index);
         }
 
@@ -271,6 +276,78 @@ export async function scanTranslations(
 
         if (filter && !filter.has(scanned.locale)) {
             continue;
+        }
+
+        result.files.push(scanned);
+    }
+
+    result.findings.sort(compareFindings);
+
+    return result;
+}
+
+export interface TextScanOptions extends LexiconMatchOptions {
+    tiers: readonly Tier[];
+    /**
+     * Skip lexicon entries shorter than this many characters, except in CJK locales.
+     */
+    minLength?: number;
+    /**
+     * Locale of the text.
+     */
+    locale: string;
+    /**
+     * Base for reported paths.
+     */
+    cwd?: string;
+    allowlist?: Allowlist;
+}
+
+/**
+ * Scan plain-text files as-is, line by line, as source strings in one locale.
+ *
+ * @throws {ParseError} When the locale is invalid or has no lexicon.
+ */
+export async function scanTextFiles(
+    db: DatabaseSync,
+    paths: readonly string[],
+    options: TextScanOptions,
+): Promise<ScanResult> {
+    const cwd = options.cwd ?? process.cwd();
+    const locale = canonicalizeLocale(options.locale);
+
+    if (!locale) {
+        throw new ParseError(`invalid locale: ${options.locale}`);
+    }
+
+    const lexicon = matchLexiconLocale(locale, lexiconLocales(db), options);
+
+    if (!lexicon) {
+        throw new ParseError(`no lexicon for ${locale}`);
+    }
+
+    const index = loadLexiconIndex(db, lexicon.lexicon, options);
+    const result: ScanResult = {
+        files: [],
+        sourceLexicon: lexicon,
+        sourceUnits: 0,
+        findings: [],
+        allowed: 0,
+    };
+
+    for (const path of paths) {
+        const file = relative(cwd, path);
+        const scanned: ScannedFile = { file, locale, units: 0, lexicon };
+
+        for await (const unit of readText(path)) {
+            scanned.units++;
+            result.sourceUnits++;
+
+            collectFindings(
+                { side: "source", file, locale, lexicon: lexicon.lexicon, unit, index },
+                result,
+                options.allowlist,
+            );
         }
 
         result.files.push(scanned);
