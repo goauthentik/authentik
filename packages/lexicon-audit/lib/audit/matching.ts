@@ -164,6 +164,7 @@ export function compareFindings(a: Finding, b: Finding): number {
         a.side.localeCompare(b.side, "en") ||
         a.locale.localeCompare(b.locale, "en") ||
         a.file.localeCompare(b.file, "en") ||
+        a.line - b.line ||
         a.key.localeCompare(b.key, "en") ||
         a.variant.localeCompare(b.variant, "en") ||
         a.start - b.start ||

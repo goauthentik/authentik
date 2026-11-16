@@ -31,3 +31,16 @@ export function parseLocaleTags(tags: readonly string[]): string[] {
         return locale;
     });
 }
+
+/**
+ * Parse `--min-length`: a positive integer.
+ */
+export function parseMinLength(value: string): number {
+    const length = Number(value);
+
+    if (!Number.isInteger(length) || length < 1) {
+        throw new UsageError(`Invalid --min-length: ${value}`);
+    }
+
+    return length;
+}

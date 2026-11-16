@@ -119,3 +119,21 @@ export function matchLexiconLocale(
 }
 
 //#endregion
+
+//#region Scripts
+
+/**
+ * Scripts where a word can be one or two characters: Han, Japanese and Korean.
+ */
+const CJK_SCRIPTS = new Set(["Hani", "Hans", "Hant", "Jpan", "Kore"]);
+
+/**
+ * Whether a locale is written in a CJK script, inferring the script when it isn't given.
+ */
+export function isCJKLocale(tag: string): boolean {
+    const script = safeParseLocale(tag)?.maximize().script;
+
+    return Boolean(script && CJK_SCRIPTS.has(script));
+}
+
+//#endregion

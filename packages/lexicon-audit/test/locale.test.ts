@@ -1,4 +1,4 @@
-import { canonicalizeLocale, matchLexiconLocale } from "#translation/locale";
+import { canonicalizeLocale, isCJKLocale, matchLexiconLocale } from "#translation/locale";
 
 import { describe, expect, it } from "vitest";
 
@@ -52,5 +52,22 @@ describe("matchLexiconLocale", () => {
     it("never matches pseudo-locales or other scripts", () => {
         expect(matchLexiconLocale("en-XA", available, { regionFallback: true })).toBeNull();
         expect(matchLexiconLocale("sr-Cyrl", ["sr-Latn-RS"], { regionFallback: true })).toBeNull();
+    });
+});
+
+describe("isCJKLocale", () => {
+    it("infers the script when the tag omits it", () => {
+        expect(["zh-TW", "zh-Hans", "ja", "ko-KR"].map(isCJKLocale)).toEqual([
+            true,
+            true,
+            true,
+            true,
+        ]);
+        expect(["en", "tok", "ru-RU", "sr-Cyrl"].map(isCJKLocale)).toEqual([
+            false,
+            false,
+            false,
+            false,
+        ]);
     });
 });

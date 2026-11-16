@@ -255,7 +255,7 @@ export async function writeMarkdownReports(
             count: sources.length,
             content: renderFile(
                 `Source string lexicon findings (${locale})`,
-                `${sources.length} findings in source strings${via(locale, lexicon)}. Each distinct string is listed once; its location is the first file it appeared in.`,
+                `${sources.length} findings in source strings${via(locale, lexicon)}. A source string shared by several translation catalogs is listed once, under the first catalog it appeared in.`,
                 sources,
                 context,
             ),
@@ -280,6 +280,32 @@ export async function writeMarkdownReports(
     }
 
     return files.map(({ name }) => name);
+}
+
+export interface OutputOptions {
+    /**
+     * Directory for per-locale Markdown reports.
+     */
+    report?: string | null;
+    /**
+     * Print findings to stdout as JSON Lines.
+     */
+    jsonl?: boolean;
+}
+
+/**
+ * Write the outputs a command asked for. Both include matched text, so neither is on by default.
+ */
+export async function writeOutputs(context: ReportContext, options: OutputOptions): Promise<void> {
+    if (options.report) {
+        const files = await writeMarkdownReports(options.report, context);
+
+        console.error(`Wrote ${files.length} files to ${options.report}`);
+    }
+
+    if (options.jsonl) {
+        process.stdout.write(renderJSONL(context));
+    }
 }
 
 //#endregion
