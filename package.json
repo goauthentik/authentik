@@ -22,10 +22,12 @@
         "lint:catalogs": "node ./scripts/node/lint-catalogs.ts",
         "lint:check": "oxlint --max-warnings=0 scripts/node *.config.ts *.json *.jsonc",
         "lint:runtime": "node ./scripts/node/lint-runtime.ts",
-        "lint:spellcheck": "cspell . --config cspell.config.jsonc --no-progress"
+        "lint:spellcheck": "cspell . --config cspell.config.jsonc --no-progress",
+        "lint:lexicon": "lexicon-audit audit --source-locale en-US ./locale ./web/xliff"
     },
     "dependencies": {
         "@goauthentik/docusaurus-config": "workspace:*",
+        "@goauthentik/lexicon-audit": "workspace:*",
         "@goauthentik/logger-js": "workspace:*",
         "@goauthentik/oxfmt-config": "workspace:*",
         "@goauthentik/oxlint-config": "workspace:*",
