@@ -26,7 +26,7 @@ type Chrome = [Level, PFColor, string, string];
 const chromeList: Chrome[] = [
     ["danger", PFColor.Red, "pf-m-red", "fa-times"],
     ["warning", PFColor.Orange, "pf-m-orange", "fa-exclamation-triangle"],
-    ["success", PFColor.Green, "pf-m-green", "fa-check"],
+    ["success", PFColor.Green, "pf-m-green", "fa-check-circle"],
     ["running", PFColor.Blue, "pf-m-blue", "fa-clock"],
     ["info", PFColor.Gray, "pf-m-grey", "fa-info-circle"],
 ];
