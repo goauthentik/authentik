@@ -14,10 +14,6 @@ from django.utils.timezone import now
 from freezegun import freeze_time
 
 from authentik.common.oauth.constants import GRANT_TYPE_REFRESH_TOKEN
-from authentik.core.middleware import (
-    SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
-    SESSION_KEY_IMPERSONATE_USER,
-)
 from authentik.core.models import (
     USER_ACTIVITY_INTERVAL,
     Application,
@@ -34,8 +30,6 @@ from authentik.enterprise.lifecycle.offboarding.tasks import execute_offboarding
 from authentik.enterprise.tests import enterprise_test
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT, get_login_event
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -237,39 +231,24 @@ class TestRefreshActivity(RefreshActivityMixin, OAuthTestCase):
             ).exists()
         )
 
-    def test_refresh_while_impersonating_does_not_record_activity(self):
-        session = self.client.session
-        session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = create_test_user()
-        session[SESSION_KEY_IMPERSONATE_USER] = create_test_user()
-        session.save()
+    def _issue_from_session(self, user: User):
+        store = SessionStore()
+        store.save()
+        self.token.session = AuthenticatedSession.objects.create(
+            session=Session.objects.get(pk=store.session_key), user=user
+        )
+        self.token.save()
+
+    def test_refresh_from_impersonation_does_not_record_activity(self):
+        # During impersonation, the token's session belongs to the admin.
+        self._issue_from_session(create_test_user())
         self.assertEqual(self._refresh().status_code, 200)
         self.assertFalse(UserActivity.objects.all().exists())
 
-    def test_pending_flow_for_another_user_does_not_record_activity(self):
-        self.provider.refresh_token_threshold = "seconds=1"
-        self.provider.save()
-        for pending_user in (create_test_user(), User(username=generate_id())):
-            with self.subTest(saved=pending_user.pk is not None):
-                session = self.client.session
-                plan = FlowPlan(generate_id())
-                plan.context[PLAN_CONTEXT_PENDING_USER] = pending_user
-                session[SESSION_KEY_PLAN] = plan
-                session.save()
-                self.assertEqual(self._refresh().status_code, 200)
-                self.assertFalse(UserActivity.objects.all().exists())
-
-    def test_pending_flow_for_token_user_preserves_recording_and_throttle(self):
-        self.provider.refresh_token_threshold = "seconds=1"
-        self.provider.save()
-        session = self.client.session
-        plan = FlowPlan(generate_id())
-        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+    def test_refresh_from_own_session_records_activity(self):
+        self._issue_from_session(self.user)
         self.assertEqual(self._refresh().status_code, 200)
-        self.assertEqual(self._refresh().status_code, 200)
-        event = UserActivity.objects.get()
-        self.assertEqual(event.user_id, self.user.pk)
+        self.assertEqual(UserActivity.objects.get().user_id, self.user.pk)
 
     def test_invalid_scope_does_not_record_success(self):
         self.token.scope = ["openid"]
