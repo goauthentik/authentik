@@ -4,6 +4,7 @@ from collections.abc import Collection, Iterator
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import StrEnum
+from functools import cached_property
 from itertools import batched
 from uuid import UUID, uuid4
 
@@ -302,7 +303,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         )
         event.set_user(user)
         event.save()
-        transports = list(self.notification_transports.all())
+        transports = self._transports
         if not transports:
             send_notification.send_with_options(
                 args=(None, event.pk, user.pk, NotificationSeverity.NOTICE),
@@ -313,6 +314,10 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 args=(transport.pk, event.pk, user.pk, NotificationSeverity.NOTICE),
                 rel_obj=transport,
             )
+
+    @cached_property
+    def _transports(self) -> list[NotificationTransport]:
+        return list(self.notification_transports.all())
 
     def _pending_due_at(
         self, row: UserOffboarding, *, in_scope: bool | None = None
@@ -350,19 +355,25 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         return True, rewarn
 
     def _revisit_owned_rows(self):
-        rows = UserOffboarding.objects.filter(
-            rule=self, status=OffboardingStatus.PENDING
-        ).select_related("user", "user__activity")
+        rows = UserOffboarding.objects.filter(rule=self, status=OffboardingStatus.PENDING)
+        if not self.enabled:
+            # Lock before deleting, since `delete()` selects the rows first. Rows that were
+            # taken over or executed in the meantime no longer match and are kept.
+            while True:
+                with transaction.atomic():
+                    pks = list(
+                        rows.select_for_update(of=("self",)).values_list("pk", flat=True)[
+                            :CHUNK_SIZE
+                        ]
+                    )
+                    if not pks:
+                        return
+                    UserOffboarding.objects.filter(pk__in=pks).delete()
+        rows = rows.select_related("user", "user__activity")
         for batch in batched(rows.iterator(chunk_size=CHUNK_SIZE), CHUNK_SIZE, strict=False):
-            eligible = (
-                self._eligible_user_ids([row.user_id for row in batch]) if self.enabled else set()
-            )
+            eligible = self._eligible_user_ids([row.user_id for row in batch])
             for row in batch:
-                due_at = (
-                    self._pending_due_at(row, in_scope=row.user_id in eligible)
-                    if self.enabled
-                    else None
-                )
+                due_at = self._pending_due_at(row, in_scope=row.user_id in eligible)
                 if due_at is not None and self._row_matches(row, due_at):
                     continue
                 # Re-read changed rows under the lock before reconciling them.
@@ -445,6 +456,8 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
 
     def apply(self) -> int:
         """Run one sweep. Returns the number of offboardings created."""
+        # Transports don't change during a sweep, so read them once.
+        self.__dict__.pop("_transports", None)
         self._revisit_owned_rows()
         if not self.enabled:
             return 0

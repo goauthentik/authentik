@@ -1,4 +1,5 @@
 from django.contrib.auth.signals import user_logged_in
+from django.db import transaction
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
@@ -33,7 +34,10 @@ def expiration_post_rule_save(sender, instance: UserExpirationRule, **_):
 
     # The schedule may not exist yet when blueprints are applied before schedules.
     schedule = Schedule.objects.filter(actor_name=apply_expiration_rules.actor_name).first()
-    apply_expiration_rule.send_with_options(args=(str(instance.pk),), rel_obj=schedule)
+    # Queue after commit, so the sweep sees the transports saved with the rule.
+    transaction.on_commit(
+        lambda: apply_expiration_rule.send_with_options(args=(str(instance.pk),), rel_obj=schedule)
+    )
 
 
 @receiver(pre_delete, sender=UserExpirationRule)

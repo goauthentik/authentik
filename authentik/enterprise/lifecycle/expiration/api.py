@@ -2,6 +2,7 @@ from copy import copy
 from datetime import timedelta
 from uuid import UUID
 
+from django.db import transaction
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
@@ -67,6 +68,8 @@ class UserExpirationRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
         ]
 
     def validate_user_types(self, value: list[str]) -> list[str]:
+        if not value:
+            raise ValidationError(_("Select at least one user type."))
         if UserTypes.INTERNAL_SERVICE_ACCOUNT in value:
             raise ValidationError(_("Internal service accounts cannot be expired."))
         return value
@@ -108,6 +111,16 @@ class UserExpirationRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
                 {"warn_before": _("Warning period must be shorter than the inactivity duration.")}
             )
         return attrs
+
+    # Save the rule and its transports in one transaction, so the sweep queued on
+    # commit sees both.
+    def create(self, validated_data: dict) -> UserExpirationRule:
+        with transaction.atomic():
+            return super().create(validated_data)
+
+    def update(self, instance: UserExpirationRule, validated_data: dict) -> UserExpirationRule:
+        with transaction.atomic():
+            return super().update(instance, validated_data)
 
 
 class UserExpirationRulePendingPreviewSerializer(PassiveSerializer):

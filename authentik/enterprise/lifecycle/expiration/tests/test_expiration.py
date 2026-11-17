@@ -362,7 +362,7 @@ class TestDisabledRule(ExpirationTestCase):
             )
         before = list(UserOffboarding.objects.exclude(pk=pending.pk).values())
         rule.enabled = False
-        with patch(APPLY_RULE) as dispatch:
+        with patch(APPLY_RULE) as dispatch, self.captureOnCommitCallbacks(execute=True):
             rule.save()
         dispatch.assert_called_once()
         self.assertEqual(dispatch.call_args.kwargs["args"], (str(rule.pk),))
@@ -418,29 +418,26 @@ class TestDisabledRule(ExpirationTestCase):
         user.refresh_from_db()
         self.assertEqual(user.last_login, original_login)
 
-    def test_disabled_cleanup_preserves_a_row_taken_over_before_locking(self):
+    def test_disabled_cleanup_only_deletes_own_pending_rows(self):
         rule = self._rule()
-        row = UserOffboarding.objects.create(
-            user=_dormant_user(), rule=rule, scheduled_at=now() + timedelta(days=1)
-        )
+        own = [
+            UserOffboarding.objects.create(
+                user=_dormant_user(), rule=rule, scheduled_at=now() + timedelta(days=1)
+            )
+            for _ in range(3)
+        ]
         other = self._rule()
+        taken_over = UserOffboarding.objects.create(
+            user=_dormant_user(), rule=other, scheduled_at=now() + timedelta(days=1)
+        )
         rule.enabled = False
         rule.save()
-        original_iterator = QuerySet.iterator
-
-        def transfer_after_discovery(queryset, *args, **kwargs):
-            rows = original_iterator(queryset, *args, **kwargs)
-            if queryset.model is not UserOffboarding:
-                return rows
-            pks = list(rows)
-            UserOffboarding.objects.filter(pk=row.pk).update(rule=other)
-            return iter(pks)
-
-        with patch.object(QuerySet, "iterator", transfer_after_discovery):
+        with patch("authentik.enterprise.lifecycle.expiration.models.CHUNK_SIZE", 2):
             self.assertEqual(rule.apply(), 0)
-        row.refresh_from_db()
-        self.assertEqual(row.rule, other)
-        self.assertEqual(row.status, OffboardingStatus.PENDING)
+        self.assertFalse(UserOffboarding.objects.filter(pk__in=[row.pk for row in own]).exists())
+        taken_over.refresh_from_db()
+        self.assertEqual(taken_over.rule, other)
+        self.assertEqual(taken_over.status, OffboardingStatus.PENDING)
 
 
 class TestOverlapAndChange(ExpirationTestCase):
@@ -1178,13 +1175,39 @@ class TestAPI(ExpirationTestCase):
                 self.assertEqual(response.status_code, 400)
                 self.assertIn(field, response.data)
 
-    def test_internal_service_account_type_rejected(self):
-        response = self.client.post(
-            reverse("authentik_api:userexpirationrule-list"),
-            {"name": generate_id(), "user_types": [UserTypes.INTERNAL_SERVICE_ACCOUNT]},
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn("user_types", response.data)
+    def test_invalid_user_types_rejected(self):
+        for user_types in ([UserTypes.INTERNAL_SERVICE_ACCOUNT], []):
+            with self.subTest(user_types=user_types):
+                response = self.client.post(
+                    reverse("authentik_api:userexpirationrule-list"),
+                    {"name": generate_id(), "user_types": user_types},
+                    format="json",
+                )
+                self.assertEqual(response.status_code, 400)
+                self.assertIn("user_types", response.data)
+
+    def test_save_queues_sweep_that_sees_transports(self):
+        from authentik.events.models import NotificationTransport
+
+        transport = NotificationTransport.objects.create(name=generate_id())
+        seen = []
+
+        def dispatch(args, **_):
+            rule = UserExpirationRule.objects.get(pk=args[0])
+            seen.append(list(rule.notification_transports.all()))
+
+        with patch(APPLY_RULE, side_effect=dispatch), self.captureOnCommitCallbacks(execute=True):
+            response = self.client.post(
+                reverse("authentik_api:userexpirationrule-list"),
+                {
+                    "name": generate_id(),
+                    "warn_before": "days=7",
+                    "notification_transports": [str(transport.pk)],
+                },
+                format="json",
+            )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(seen, [[transport]])
 
     def test_preview(self):
         rule = self._rule()
