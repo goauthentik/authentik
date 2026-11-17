@@ -106,9 +106,8 @@ class FileView(APIView):
             raise ValidationError(
                 {
                     "file": [
-                        _(
-                            f"File size ({file.size}B) exceeds maximum allowed "
-                            f"size ({MAX_FILE_SIZE_BYTES}B)."
+                        _("File size ({size}B) exceeds maximum allowed size ({max_size}B).").format(
+                            size=file.size, max_size=MAX_FILE_SIZE_BYTES
                         )
                     ]
                 }

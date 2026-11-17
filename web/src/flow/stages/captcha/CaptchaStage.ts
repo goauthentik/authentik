@@ -8,7 +8,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import { pluckErrorDetail } from "#common/errors/network";
 
 import { akEmptyState } from "#elements/EmptyState";
-import { ListenerController } from "#elements/utils/listenerController";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 
@@ -31,7 +30,7 @@ import { ConsoleLogger } from "#logger/browser";
 
 import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/api";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -204,7 +203,6 @@ export class CaptchaStage
 
     #container?: HTMLDivElement;
     #frameObserver?: MutationObserver;
-    #listenController = new ListenerController();
 
     /**
      * Guards against a slow script load resolving after the challenge has moved on.
@@ -312,8 +310,6 @@ export class CaptchaStage
     }
 
     public disconnectedCallback(): void {
-        this.#listenController.abort();
-
         this.#loadGeneration++;
         this.#loadedChallenge = null;
         this.#teardown();
@@ -488,34 +484,7 @@ export class CaptchaStage
 
             return;
         }
-
-        // Locale changes are only interesting once the widget is up; reacting earlier
-        // would re-enter the load we are still inside.
-        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener, {
-            signal: this.#listenController.signal,
-        });
     }
-
-    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (!this.activeController) return;
-
-        if (event.detail.status === "error") {
-            this.#logger.debug("Error loading locale:", event.detail);
-
-            return;
-        }
-
-        if (event.detail.status === "loading") return;
-
-        // A rebuilt widget would be unsolved while its token has already been handed on.
-        if (this.#solved) return;
-
-        this.#logger.debug(`Locale changed to \`${event.detail.readyLocale}\``);
-
-        // Providers take their language at render time, so the widget has to be rebuilt
-        // rather than told about the change.
-        this.#load();
-    };
 
     //#endregion
 

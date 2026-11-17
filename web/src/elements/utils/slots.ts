@@ -44,3 +44,21 @@ export function findAssignedSlot(
 
     return assignedSlot.name === name ? assignedSlot : null;
 }
+
+/**
+ * Creates a new slot element with the specified name.
+ *
+ * @param name The name of the slot. Omit or pass `null` for the default slot.
+ * @param ownerDocument The document to create the slot in. Defaults to the current document.
+ *
+ * @returns The created slot element.
+ */
+export function createSlot(name?: string | null, ownerDocument = document): HTMLSlotElement {
+    const slot = ownerDocument.createElement("slot");
+
+    if (name) {
+        slot.setAttribute("name", name);
+    }
+
+    return slot;
+}

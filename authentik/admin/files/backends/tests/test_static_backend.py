@@ -34,9 +34,42 @@ class TestStaticBackend(TestCase):
         self.assertFalse(self.backend.supports_file("test.jpg"))
 
     def test_list_files(self):
-        """Test list_files includes expected files"""
+        """Test list_files lists built-in source icons with a variant per theme"""
         files = list(self.backend.list_files())
 
-        self.assertIn("/static/authentik/sources/ldap.png", files)
-        self.assertIn("/static/authentik/sources/openidconnect.svg", files)
-        self.assertIn("/static/authentik/sources/saml.png", files)
+        self.assertIn("/static/authentik/sources/github/%(theme)s.svg", files)
+        self.assertIn("/static/authentik/sources/kerberos/%(theme)s.png", files)
+        self.assertNotIn("/static/authentik/sources/github/light.svg", files)
+        self.assertNotIn("/static/authentik/sources/github/dark.svg", files)
+
+    def test_themed_urls_source_icon(self):
+        """Test themed_urls of a built-in source icon picked in the file picker"""
+        self.assertEqual(
+            self.backend.themed_urls("/static/authentik/sources/github/%(theme)s.svg"),
+            {
+                "light": "/static/authentik/sources/github/light.svg",
+                "dark": "/static/authentik/sources/github/dark.svg",
+            },
+        )
+
+    def test_themed_urls_source_icon_variant(self):
+        """Test themed_urls of one variant of a built-in source icon, as used by defaults"""
+        github = {
+            "light": "/static/authentik/sources/github/light.svg",
+            "dark": "/static/authentik/sources/github/dark.svg",
+        }
+        self.assertEqual(
+            self.backend.themed_urls("/static/authentik/sources/github/light.svg"), github
+        )
+        self.assertEqual(
+            self.backend.themed_urls("/static/authentik/sources/github/dark.svg"), github
+        )
+
+    def test_themed_urls_other_static_files(self):
+        """Test themed_urls returns None for other static files"""
+        self.assertIsNone(self.backend.themed_urls("/static/dist/assets/icons/icon.svg"))
+        self.assertIsNone(self.backend.themed_urls("/static/dist/assets/icons/light.svg"))
+        self.assertIsNone(self.backend.themed_urls("/static/authentik/sources/github/logo.svg"))
+        self.assertIsNone(
+            self.backend.themed_urls("/static/authentik/sources/github/../github/light.svg")
+        )

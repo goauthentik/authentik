@@ -59,6 +59,16 @@ export function isWebAuthnNotAllowedError(error: unknown): error is DOMException
 }
 
 /**
+ * Predicate to determine if a given error indicates that the authenticator already holds a
+ * credential for this account, and therefore refused to create another one.
+ *
+ * Raised when the authenticator matches one of the entries passed in `excludeCredentials`.
+ */
+export function isWebAuthnInvalidStateError(error: unknown): error is DOMException {
+    return error instanceof DOMException && error.name === "InvalidStateError";
+}
+
+/**
  * Check if the browser supports WebAuthn conditional UI (passkey autofill)
  */
 export async function isConditionalMediationAvailable(): Promise<boolean> {
@@ -90,10 +100,21 @@ export function transformCredentialCreateOptions(
     user.id = u8arr(b64enc(u8arr(stringId)));
     const challenge = u8arr(credentialCreateOptions.challenge.toString());
 
+    // The server sends already-registered credential IDs as base64url strings; the browser
+    // requires byte arrays, otherwise `navigator.credentials.create()` rejects with a TypeError.
+    const excludeCredentials = (credentialCreateOptions.excludeCredentials || []).map(
+        (credentialDescriptor) => {
+            const id = u8arr(credentialDescriptor.id.toString());
+
+            return Object.assign({}, credentialDescriptor, { id });
+        },
+    );
+
     return {
         ...credentialCreateOptions,
         challenge,
         user,
+        excludeCredentials,
     };
 }
 

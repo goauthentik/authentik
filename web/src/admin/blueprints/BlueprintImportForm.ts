@@ -4,6 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/ToggleGroup";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFAlignment from "@patternfly/patternfly/utilities/Alignment/alignment.css";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -33,7 +34,7 @@ import { customElement, state } from "lit/decorators.js";
  */
 @customElement("ak-blueprint-import-form")
 export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateRequest> {
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList, PFBanner];
+    static styles: CSSResult[] = [...super.styles, PFAlignment, PFDescriptionList, PFBanner];
 
     public static override verboseName = msg("Flow Blueprint");
     public static override verboseNamePlural = msg("Flow Blueprints");
@@ -100,16 +101,18 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-toggle-group
-                value=${this.source}
-                @ak-toggle=${(ev: ToggleGroupEvent<BlueprintSource>) => {
-                    this.reset();
-                    this.source = ev.value;
-                }}
-            >
-                <option value=${BlueprintSource.Upload}>${msg("File upload")}</option>
-                <option value=${BlueprintSource.File}>${msg("Local path")}</option>
-            </ak-toggle-group>
+        return html` <div class="pf-u-text-align-center">
+                <ak-toggle-group
+                    value=${this.source}
+                    @ak-toggle=${(ev: ToggleGroupEvent<BlueprintSource>) => {
+                        this.reset();
+                        this.source = ev.value;
+                    }}
+                >
+                    <option value=${BlueprintSource.Upload}>${msg("File upload")}</option>
+                    <option value=${BlueprintSource.File}>${msg("Local path")}</option>
+                </ak-toggle-group>
+            </div>
             ${
                 this.source === BlueprintSource.Upload
                     ? html`

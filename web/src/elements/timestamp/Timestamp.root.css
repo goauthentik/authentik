@@ -1,0 +1,11 @@
+/**
+ * @file Document-level CSS Custom Properties for Timestamp components.
+ */
+
+:root {
+    --ak-timestamp--FontSize: inherit;
+    --ak-timestamp--FontStyle: normal;
+    --ak-timestamp--Color: inherit;
+    --ak-timestamp--BackgroundColor: transparent;
+    --ak-timestamp--WordBreak: normal;
+}

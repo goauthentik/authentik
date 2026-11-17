@@ -1,9 +1,20 @@
 import { PolicyBindingCheckTarget } from "#common/policies/utils";
+import { resolveThemedUrl, ResolvedUITheme } from "#common/theme";
+
+import type { ThemedUrls } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 
-export function renderSourceIcon(name: string, iconUrl: string | undefined | null): TemplateResult {
+/**
+ * Render a source icon, using the variant for the active theme when the icon has one.
+ */
+export function renderSourceIcon(
+    name: string,
+    iconUrl: string | undefined | null,
+    iconThemedUrls: ThemedUrls | undefined | null,
+    theme: ResolvedUITheme,
+): TemplateResult {
     const icon = html`<i
         part="source-icon"
         role="img"
@@ -11,14 +22,16 @@ export function renderSourceIcon(name: string, iconUrl: string | undefined | nul
         title="${name}"
     ></i>`;
 
-    if (iconUrl) {
-        if (iconUrl.startsWith("fa://")) {
-            const url = iconUrl.replaceAll("fa://", "");
+    const resolvedUrl = resolveThemedUrl(theme, iconThemedUrls, iconUrl);
+
+    if (resolvedUrl) {
+        if (resolvedUrl.startsWith("fa://")) {
+            const url = resolvedUrl.replaceAll("fa://", "");
 
             return html`<i part="source-icon" role="img" class="fas ${url}" title="${name}"></i>`;
         }
 
-        return html`<img part="source-icon" src="${iconUrl}" alt="${name}" />`;
+        return html`<img part="source-icon" src="${resolvedUrl}" alt="${name}" />`;
     }
 
     return icon;

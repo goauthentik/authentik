@@ -10,6 +10,8 @@ from msgraph.generated.models.directory_object_collection_response import (
 )
 from msgraph.generated.models.group import Group as MSGroup
 from msgraph.generated.models.group_collection_response import GroupCollectionResponse
+from msgraph.generated.models.o_data_errors.main_error import MainError
+from msgraph.generated.models.o_data_errors.o_data_error import ODataError
 from msgraph.generated.models.organization import Organization
 from msgraph.generated.models.organization_collection_response import OrganizationCollectionResponse
 from msgraph.generated.models.user import User as MSUser
@@ -30,6 +32,7 @@ from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
+from authentik.tasks.models import Task, TaskStatus
 
 
 class MicrosoftEntraGroupTests(TestCase):
@@ -96,6 +99,86 @@ class MicrosoftEntraGroupTests(TestCase):
             self.assertIsNotNone(microsoft_group)
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             group_create.assert_called_once()
+
+    def test_group_create_conflict_unmatched(self):
+        """A group that conflicts with an Entra ID group that can't be found is reported"""
+        conflict = ODataError(error=MainError(code="Request_BadRequest", message="Conflict"))
+        conflict.response_status_code = 409
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.post",
+                AsyncMock(side_effect=conflict),
+            ),
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.get",
+                AsyncMock(return_value=GroupCollectionResponse(value=[])),
+            ),
+        ):
+            group = Group.objects.create(name=generate_id())
+        self.assertFalse(
+            MicrosoftEntraProviderGroup.objects.filter(provider=self.provider, group=group).exists()
+        )
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
+        log = Task.objects.get(
+            _uid=f"{self.provider.name}:group:{group.pk}:direct",
+        ).tasklogs.get(log_level=TaskStatus.WARNING)
+        self.assertIn(f"Failed to sync {group}", log.event)
+        self.assertIn("Delete or rename the conflicting object", log.event)
+
+    def test_group_create_conflict(self):
+        """A group that already exists in Entra ID is linked"""
+        remote_id = generate_id()
+        uid = generate_id()
+        conflict = ODataError(error=MainError(code="Request_BadRequest", message="Conflict"))
+        conflict.response_status_code = 409
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.post",
+                AsyncMock(side_effect=conflict),
+            ),
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.get",
+                AsyncMock(
+                    return_value=GroupCollectionResponse(
+                        value=[MSGroup(id=remote_id, display_name=uid)]
+                    )
+                ),
+            ),
+        ):
+            group = Group.objects.create(name=uid)
+        microsoft_group = MicrosoftEntraProviderGroup.objects.get(
+            provider=self.provider, group=group
+        )
+        self.assertEqual(microsoft_group.microsoft_id, remote_id)
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
 
     def test_group_not_created(self):
         """Test without group property mappings, no group is created"""
@@ -399,6 +482,59 @@ class MicrosoftEntraGroupTests(TestCase):
                 }",
             )
             member_remove.assert_called_once()
+
+    def test_group_member_remove_not_member(self):
+        """Removing a user who isn't a member in Entra ID anymore succeeds"""
+        uid = generate_id()
+        not_found = ODataError(error=MainError(code="Request_ResourceNotFound", message="Gone"))
+        not_found.response_status_code = 404
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ),
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.patch",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ),
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.post",
+                AsyncMock(return_value=MSGroup(id=uid)),
+            ),
+            patch(
+                "msgraph.generated.groups.item.members.ref.ref_request_builder.RefRequestBuilder.post",
+                AsyncMock(),
+            ),
+            patch(
+                "msgraph.generated.groups.item.members.item.ref.ref_request_builder.RefRequestBuilder.delete",
+                AsyncMock(side_effect=not_found),
+            ) as member_remove,
+        ):
+            user = create_test_user(uid)
+            group = Group.objects.create(name=uid)
+            group.users.add(user)
+            group.users.remove(user)
+        member_remove.assert_called_once()
+        self.assertFalse(
+            Task.objects.filter(
+                _uid=f"{self.provider.name}:group:{group.pk}:m2m",
+                tasklogs__log_level__in=[TaskStatus.WARNING, TaskStatus.ERROR],
+            ).exists()
+        )
 
     def test_group_create_delete_do_nothing(self):
         """Test group deletion (delete action = do nothing)"""

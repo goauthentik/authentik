@@ -1,5 +1,5 @@
 import "#components/ak-radio-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 import "#elements/utils/TimeDeltaHelp";
@@ -58,10 +58,10 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         required
                         name="credentials"
                     >
-                        <ak-codemirror
+                        <ak-code-editor
                             mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
-                        ></ak-codemirror>
+                        ></ak-code-editor>
                         <p class="pf-c-form__helper-text">
                             ${msg("Google Cloud credentials file.")}
                         </p>

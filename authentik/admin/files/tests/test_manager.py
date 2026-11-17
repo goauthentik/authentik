@@ -54,6 +54,18 @@ class TestResolveFileUrlBasic(TestCase):
         result = manager.file_url("/static/authentik/sources/icon.svg")
         self.assertEqual(result, "/static/authentik/sources/icon.svg")
 
+    def test_file_url_theme_variable_uses_light(self):
+        """Test file_url resolves %(theme)s to the light variant, never the placeholder"""
+        manager = FileManager(FileUsage.MEDIA)
+        self.assertEqual(
+            manager.file_url("/static/authentik/sources/kerberos/%(theme)s.png"),
+            "/static/authentik/sources/kerberos/light.png",
+        )
+        self.assertEqual(
+            manager.file_url("https://example.com/logo-%(theme)s.png"),
+            "https://example.com/logo-light.png",
+        )
+
     def test_file_url_forwards_use_cache(self):
         """Test file_url forwards use_cache to backend."""
         manager = FileManager(FileUsage.MEDIA)

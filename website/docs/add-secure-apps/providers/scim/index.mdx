@@ -62,7 +62,7 @@ The synchronization process runs in the authentik worker. To improve scalability
 
 Attribute mapping from authentik to SCIM users is done through property mappings, as with other providers. The default mappings for users and groups work for many setups, but you can define custom mappings to add fields.
 
-All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
+All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. Lists are combined without duplicate items; see [Synchronization property mappings](../property-mappings/index.mdx#synchronization-property-mappings) for the merge rules. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
 
 :::warning Property mapping errors
 Property mappings are evaluated in name order. If a property mapping fails to evaluate, authentik stops the synchronization and does not evaluate the remaining mappings.
@@ -99,6 +99,19 @@ Use the schema URN and field names expected by the target SCIM service. If the r
 To exclude specific users or groups from SCIM synchronization, you can create a property mapping that raises the `SkipObject` exception. When this exception is raised during the evaluation of a property mapping, the object is skipped and the sync continues with the next object.
 
 For more information, refer to [Skip objects during synchronization](../property-mappings/#skip-objects-during-synchronization).
+
+### Users and groups that already exist in the remote system
+
+When the remote system rejects a new user or group because an object with the same unique values already exists (HTTP status `409 Conflict`), authentik links the authentik object to the existing remote object. To find that object, the remote system must support [filtering](#remote-service-capabilities). authentik searches for users by `userName` and for groups by `displayName`, and only links an object whose value matches, ignoring case.
+
+If authentik can't link the object, for example because the remote system doesn't support filtering or reports a conflict when authentik updates an object, authentik skips that user or group and continues the sync with the next one. The sync task logs a warning that names the skipped object and includes the response from the remote system. You can view the sync tasks and their logs on the provider's page in the Admin interface.
+
+To resolve the conflict, do one of the following:
+
+- Delete or rename the conflicting object in the remote system.
+- Change the property mappings so that the values that the remote system requires to be unique, such as `userName`, are different from those of the existing object.
+
+authentik tries to sync the object again on the next sync.
 
 ## Filter the sync scope
 

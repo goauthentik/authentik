@@ -215,7 +215,7 @@ def protected_resource_view(scopes: list[str]):
             except BearerTokenError as error:
                 response = HttpResponse(status=error.status)
                 response["WWW-Authenticate"] = (
-                    f'error="{error.code}", error_description="{error.description}"'
+                    f'Bearer error="{error.code}", error_description="{error.description}"'
                 )
                 return response
             kwargs["token"] = token

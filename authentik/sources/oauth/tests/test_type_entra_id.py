@@ -9,7 +9,12 @@ from requests_mock import Mocker
 
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.entra_id import EntraIDClient, EntraIDOAuthCallback, EntraIDType
+from authentik.sources.oauth.types.entra_id import (
+    EntraIDClient,
+    EntraIDOAuthCallback,
+    EntraIDOAuthRedirect,
+    EntraIDType,
+)
 
 # https://docs.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0&tabs=http#response-2
 EID_USER = {
@@ -155,4 +160,98 @@ class TestEntraIDClient(TestCase):
             mocker.get(EntraIDType.profile_url, json=EID_USER)
             self.assertEqual(self.oauth_client.get_profile_info(self.token), EID_USER)
             self.assertEqual(mocker.call_count, 1)
+            graph_request.assert_not_called()
+
+    def test_national_clouds(self):
+        """Use the profile's Graph cloud for scopes and every membership page."""
+        for host in (
+            "graph.microsoft.com",
+            "graph.microsoft.us",
+            "dod-graph.microsoft.us",
+            "microsoftgraph.chinacloudapi.cn",
+        ):
+            for path in ("/v1.0/me", "/oidc/userinfo", "/v1.0/me?$select=id,displayName"):
+                with (
+                    self.subTest(host=host, path=path),
+                    Mocker() as mocker,
+                    patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+                ):
+                    base_url = f"https://{host}"
+                    self.source.profile_url = base_url + path
+                    self.source.additional_scopes = (
+                        f"*openid {base_url}/User.Read {base_url}/GroupMember.Read.All"
+                    )
+                    self.assertEqual(
+                        EntraIDOAuthRedirect().get_additional_parameters(self.source),
+                        {"scope": ["openid", f"{base_url}/User.Read"]},
+                    )
+                    mocker.get(self.source.profile_url, json=EID_USER)
+                    next_url = f"{base_url}/v1.0/me/memberOf?$skiptoken=Opaque%2BOne%3D"
+                    graph_request.side_effect = [
+                        Response(
+                            200,
+                            json={
+                                "value": [{"@odata.type": "#microsoft.graph.group", "id": "first"}],
+                                "@odata.nextLink": next_url,
+                            },
+                        ),
+                        Response(
+                            200,
+                            json={
+                                "value": [
+                                    {"@odata.type": "#microsoft.graph.group", "id": "second"}
+                                ],
+                            },
+                        ),
+                    ]
+                    info = self.oauth_client.get_profile_info(self.token)
+                    self.assertEqual(
+                        EntraIDType().get_base_user_properties(info)["groups"],
+                        ["first", "second"],
+                    )
+                    requests = [call.args[0] for call in graph_request.call_args_list]
+                    self.assertEqual(
+                        [str(request.url) for request in requests],
+                        [f"{base_url}/v1.0/me/memberOf", next_url],
+                    )
+                    for request in requests:
+                        self.assertEqual(
+                            request.headers["Authorization"], f"Bearer {self.token['access_token']}"
+                        )
+
+    def test_default_profile_scope(self):
+        """Unset profile URLs retain the commercial default scope."""
+        for profile_url in (None, ""):
+            with self.subTest(profile_url=profile_url):
+                self.source.profile_url = profile_url
+                self.assertEqual(
+                    EntraIDOAuthRedirect().get_additional_parameters(self.source),
+                    {"scope": ["openid", "https://graph.microsoft.com/User.Read"]},
+                )
+
+    def test_group_scope_must_match(self):
+        """Do not fetch memberships for another cloud or a scope substring."""
+        self.source.profile_url = "https://graph.microsoft.us/v1.0/me"
+        for scope in (
+            "https://graph.microsoft.com/GroupMember.Read.All",
+            "https://graph.microsoft.us/GroupMember.Read.All.extra",
+        ):
+            with (
+                self.subTest(scope=scope),
+                Mocker() as mocker,
+                patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+            ):
+                self.source.additional_scopes = scope
+                mocker.get(self.source.profile_url, json=EID_USER)
+                self.assertEqual(self.oauth_client.get_profile_info(self.token), EID_USER)
+                graph_request.assert_not_called()
+
+    def test_profile_error(self):
+        """A failed profile request must not trigger a membership request."""
+        with (
+            Mocker() as mocker,
+            patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+        ):
+            mocker.get(EntraIDType.profile_url, status_code=403)
+            self.assertIsNone(self.oauth_client.get_profile_info(self.token))
             graph_request.assert_not_called()

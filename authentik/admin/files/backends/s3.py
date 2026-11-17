@@ -1,12 +1,9 @@
 from collections.abc import Generator, Iterator
 from contextlib import contextmanager
 from tempfile import SpooledTemporaryFile
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 from urllib.parse import urlsplit, urlunsplit
 
-import boto3
-from botocore.config import Config
-from botocore.exceptions import ClientError
 from django.db import connection
 from django.http.request import HttpRequest
 
@@ -14,6 +11,9 @@ from authentik.admin.files.backends.base import ManageableBackend, get_content_t
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
+
+if TYPE_CHECKING:
+    import boto3
 
 _ConfigValue = TypeVar("_ConfigValue")
 
@@ -74,6 +74,9 @@ class S3Backend(ManageableBackend):
     @property
     def session(self) -> boto3.Session:
         """Create boto3 session with configured credentials."""
+        # boto3 is heavy, only import it when S3 is used
+        import boto3
+
         session_profile, session_profile_r = self._get_config("session_profile", None)
         if session_profile is not None:
             if session_profile_r or self._session is None:
@@ -100,6 +103,8 @@ class S3Backend(ManageableBackend):
     @property
     def client(self):
         """Create S3 client with configured endpoint and region."""
+        from botocore.config import Config
+
         endpoint_url, endpoint_url_r = self._get_config("endpoint", None)
         session = self.session
         use_ssl, use_ssl_r = self._get_bool_config("use_ssl", True)
@@ -274,6 +279,8 @@ class S3Backend(ManageableBackend):
 
     def file_exists(self, name: str) -> bool:
         """Check if a file exists in S3."""
+        from botocore.exceptions import ClientError
+
         try:
             self.client.head_object(
                 Bucket=self.bucket_name,

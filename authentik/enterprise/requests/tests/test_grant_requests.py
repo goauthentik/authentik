@@ -85,15 +85,22 @@ class GrantRequestsTests(APITestCase):
         self.client.force_login(reviewer)
         res = self.client.patch(
             reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
-            data={"status": "approved", "data": {}},
+            data={"status": "approved", "data": {"note": "approved for the migration"}},
         )
         self.assertEqual(res.status_code, 204, res.content)
-        self.assertTrue(
-            Event.objects.filter(
-                action=EventAction.ACCESS_REQUEST_APPROVED,
-                context__model__pk=req.pk.hex,
-            ).exists()
+        event = Event.objects.get(
+            action=EventAction.ACCESS_REQUEST_APPROVED,
+            context__model__pk=req.pk.hex,
         )
+        self.assertEqual(
+            [
+                (approval["reviewer"]["pk"], approval["status"], approval["data"])
+                for approval in event.context["approvals"]
+            ],
+            [(reviewer.pk, RequestStatus.APPROVED, {"note": "approved for the migration"})],
+        )
+        self.assertEqual(event.context["targets"][0]["model_name"], "application")
+        self.assertEqual(event.context["targets"][0]["name"], app.name)
 
     def test_fulfill_access_group(self):
         reviewer = create_test_user()
@@ -266,23 +273,32 @@ class GrantRequestsTests(APITestCase):
         self.client.force_login(reviewer_a)
         self.client.patch(
             reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
-            data={"status": "approved", "data": {}},
+            data={"status": "approved", "data": {"note": "fine by me"}},
         )
 
         self.client.force_login(reviewer_b)
         res = self.client.patch(
             reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
-            data={"status": "denied", "data": {}},
+            data={"status": "denied", "data": {"note": "no ticket attached"}},
         )
         self.assertEqual(res.status_code, 204, res.content)
         req.refresh_from_db()
         self.assertEqual(req.status, RequestStatus.DENIED)
         self.assertFalse(PolicyBinding.objects.filter(user=requester, target=app).exists())
-        self.assertTrue(
-            Event.objects.filter(
-                action=EventAction.ACCESS_REQUEST_DENIED,
-                context__model__pk=req.pk.hex,
-            ).exists()
+        event = Event.objects.get(
+            action=EventAction.ACCESS_REQUEST_DENIED,
+            context__model__pk=req.pk.hex,
+        )
+        self.assertEqual(event.user["pk"], reviewer_b.pk)
+        self.assertEqual(
+            [
+                (approval["reviewer"]["pk"], approval["status"], approval["data"])
+                for approval in event.context["approvals"]
+            ],
+            [
+                (reviewer_a.pk, RequestStatus.APPROVED, {"note": "fine by me"}),
+                (reviewer_b.pk, RequestStatus.DENIED, {"note": "no ticket attached"}),
+            ],
         )
 
     def test_fulfill_repeated_approval_is_idempotent(self):
@@ -477,12 +493,12 @@ class GrantRequestsTests(APITestCase):
 
         binding = PolicyBinding.objects.including_expired().get(user=requester, target=app)
         self.assertTrue(binding.is_expired)
-        self.assertTrue(
-            Event.objects.filter(
-                action=EventAction.ACCESS_REQUEST_REVOKED,
-                context__model__pk=req.pk.hex,
-            ).exists()
+        event = Event.objects.get(
+            action=EventAction.ACCESS_REQUEST_REVOKED,
+            context__model__pk=req.pk.hex,
         )
+        self.assertEqual(event.context["targets"][0]["model_name"], "application")
+        self.assertEqual(event.context["targets"][0]["name"], app.name)
 
     def test_revoke_requires_reviewer_permission(self):
         """A user who isn't an eligible reviewer for the rule cannot revoke"""

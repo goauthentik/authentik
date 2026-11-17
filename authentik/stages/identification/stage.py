@@ -14,7 +14,7 @@ from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_fiel
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
 from rest_framework.serializers import ValidationError
 
-from authentik.core.api.utils import JSONDictField, PassiveSerializer
+from authentik.core.api.utils import JSONDictField, PassiveSerializer, ThemedUrlsSerializer
 from authentik.core.models import Application, Source, User
 from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_DEVICE_AUTH_TOKEN
 from authentik.endpoints.models import Device
@@ -43,6 +43,7 @@ from authentik.stages.authenticator_validate.challenge import (
     validate_challenge_webauthn,
 )
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.captcha.stage import (
     PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
     PLAN_CONTEXT_CAPTCHA_SITE_KEY,
@@ -51,6 +52,7 @@ from authentik.stages.captcha.stage import (
 )
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
+from authentik.stages.password.lockout import PasswordLockout, PasswordLockoutResult
 from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD,
     PLAN_CONTEXT_METHOD_ARGS,
@@ -103,6 +105,7 @@ class LoginSourceSerializer(PassiveSerializer):
 
     name = CharField()
     icon_url = CharField(required=False, allow_null=True)
+    icon_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     promoted = BooleanField(default=False)
 
     challenge = ChallengeDictWrapper()
@@ -145,6 +148,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     pre_user: User | None = None
     passkey_device: WebAuthnDevice | None = None
+    lockout: PasswordLockoutResult | None = None
 
     def _validate_passkey_response(self, passkey: dict) -> WebAuthnDevice:
         """Validate passkey/WebAuthn response for passwordless authentication"""
@@ -229,11 +233,12 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 raise ValidationError(_("Failed to authenticate.")) from None
 
         # Password check
-        if not current_stage.password_stage:
-            # No password stage select, don't validate the password
-            return attrs
+        if current_stage.password_stage:
+            self._validate_password(current_stage, attrs.get("password", None))
+        return attrs
 
-        password = attrs.get("password", None)
+    def _validate_password(self, current_stage: IdentificationStage, password: str | None):
+        """Authenticate the pre-identified user's password against the embedded stage"""
         if not password:
             self.stage.logger.warning("Password not set for ident+auth attempt")
         try:
@@ -248,18 +253,33 @@ class IdentificationChallengeResponse(ChallengeResponse):
                     username=self.pre_user.username,
                     password=password,
                 )
-            if not user:
-                raise ValidationError(_("Failed to authenticate."))
-            self.pre_user = user
+            result = PasswordLockout(current_stage.password_stage, self.stage.request).apply(
+                self.pre_user, user, self.stage.executor.plan.context
+            )
+            self.lockout = result
+            if not result.user:
+                error = _("Failed to authenticate.")
+                if result.last_attempt:
+                    error = current_stage.password_stage.last_attempt_warning_message or error
+                raise ValidationError(error)
+            self.pre_user = result.user
         except PermissionDenied as exc:
             raise ValidationError(str(exc)) from exc
-        return attrs
 
 
 class IdentificationStageView(ChallengeStageView):
     """Form to identify the user"""
 
     response_class = IdentificationChallengeResponse
+
+    def challenge_invalid(self, response: IdentificationChallengeResponse) -> HttpResponse:
+        """Stop the flow once its embedded password stage reaches its lockout."""
+        current_stage: IdentificationStage = self.executor.current_stage
+        if current_stage.password_stage and response.lockout and response.lockout.lockout_reached:
+            return self.executor.stage_invalid(
+                current_stage.password_stage.lockout_message or _("Failed to authenticate.")
+            )
+        return super().challenge_invalid(response)
 
     def get_user(self, uid_value: str) -> User | None:
         """Find user instance. Returns None if no user was found."""
@@ -428,6 +448,9 @@ class IdentificationStageView(ChallengeStageView):
         return challenge
 
     def challenge_valid(self, response: IdentificationChallengeResponse) -> HttpResponse:
+        # The conditional-UI challenge was answered or is no longer needed. Don't carry it into
+        # a later authenticator validation stage that uses the same plan context key.
+        self.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = response.pre_user
         current_stage: IdentificationStage = self.executor.current_stage
 

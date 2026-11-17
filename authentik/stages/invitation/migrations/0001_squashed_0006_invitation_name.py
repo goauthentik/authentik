@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("authentik_flows", "0001_initial"),
+        ("authentik_flows", "0001_squashed_0007_auto_20200703_2059"),
     ]
 
     operations = [

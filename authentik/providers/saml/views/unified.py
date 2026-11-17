@@ -4,6 +4,7 @@ from base64 import b64decode
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
@@ -84,7 +85,7 @@ class SAMLUnifiedView(View):
         # Check for SAML request
         if REQUEST_KEY_SAML_REQUEST not in data:
             LOGGER.info("SAML payload missing")
-            return bad_request_message(request, "The SAML request payload is missing.")
+            return bad_request_message(request, _("The SAML request payload is missing."))
 
         # Detect message type and delegate
         saml_request = data[REQUEST_KEY_SAML_REQUEST]
@@ -97,7 +98,10 @@ class SAMLUnifiedView(View):
         else:
             LOGGER.warning("Unknown SAML message type", message_type=message_type)
             return bad_request_message(
-                request, f"Unsupported SAML message type: {message_type or 'unknown'}"
+                request,
+                _("Unsupported SAML message type: {message_type}").format(
+                    message_type=message_type or "unknown"
+                ),
             )
 
     def _delegate_to_sso(

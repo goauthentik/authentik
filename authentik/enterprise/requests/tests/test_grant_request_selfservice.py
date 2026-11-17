@@ -11,10 +11,12 @@ from authentik.enterprise.requests.models import (
     RequestRuleBinding,
     RequestStatus,
 )
-from authentik.flows.models import Flow, FlowDesignation
+from authentik.events.models import Event, EventAction
+from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
+from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 
 
 class GrantRequestsSelfServiceTests(APIFlowTestCase):
@@ -56,6 +58,60 @@ class GrantRequestsSelfServiceTests(APIFlowTestCase):
 
         target = GrantRequestTarget.objects.get(target=app)
         self.assertEqual(target.request.created_by, requester)
+
+    def test_create_event_carries_requester_data(self):
+        """Prompt data the requester enters in the request flow is recorded on the
+        access_request_created event, not just on the request itself"""
+        requester = create_test_user()
+        self.client.force_login(requester)
+
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule = RequestRule.objects.create(name=generate_id())
+        rule_binding = RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule_binding, user=requester, order=0)
+
+        flow = Flow.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            designation=FlowDesignation.STAGE_CONFIGURATION,
+        )
+        prompt = Prompt.objects.create(
+            name=generate_id(),
+            field_key="justification",
+            label="Justification",
+            type=FieldTypes.TEXT,
+            required=True,
+        )
+        stage = PromptStage.objects.create(name=generate_id())
+        stage.fields.add(prompt)
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=0)
+        brand, _ = Brand.objects.get_or_create(default=True, defaults={"domain": generate_id()})
+        brand.flow_request = flow
+        brand.save()
+
+        res = self.client.post(
+            reverse("authentik_api:grantrequest-list"),
+            data={"pbms": [str(app.pk)]},
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        executor = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        res = self.client.get(executor)
+        self.assertStageResponse(res, component="ak-stage-prompt")
+        res = self.client.post(
+            executor,
+            data={"component": "ak-stage-prompt", "justification": "on call this week"},
+        )
+        self.assertEqual(res.status_code, 302, res.content)
+        res = self.client.get(executor, follow=True)
+        self.assertStageResponse(res, component="xak-flow-redirect")
+
+        req = GrantRequestTarget.objects.get(target=app).request
+        self.assertEqual(req.requester_data["justification"], "on call this week")
+        event = Event.objects.get(
+            action=EventAction.ACCESS_REQUEST_CREATED,
+            context__model__pk=req.pk.hex,
+        )
+        self.assertEqual(event.context["requester_data"], req.requester_data)
 
     def test_list_only_shows_own_requests(self):
         """A requester only sees requests they created (and were granted

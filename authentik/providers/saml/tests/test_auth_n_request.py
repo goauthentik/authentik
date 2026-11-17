@@ -23,7 +23,11 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
-from authentik.common.saml.exceptions import CannotHandleAssertion
+from authentik.common.saml.exceptions import (
+    ERROR_ACS_URL_MISMATCH,
+    ERROR_CANNOT_DECODE_REQUEST,
+    CannotHandleAssertion,
+)
 from authentik.core.models import Application
 from authentik.core.tests.utils import (
     RequestFactory,
@@ -40,6 +44,7 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
+from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
@@ -783,7 +788,67 @@ class TestAuthNRequest(TestCase):
             'AssertionConsumerServiceURL="http://testserver/source/saml/provider/acs/"/>'
         )
 
-        with self.assertRaisesMessage(
-            CannotHandleAssertion, "XML document contains a DOCTYPE declaration"
-        ):
+        with self.assertRaises(CannotHandleAssertion) as ctx:
             AuthNRequestParser(self.provider).parse(b64encode(request.encode()).decode())
+        # The user-facing message is generic; the parser's reason only goes to the detail
+        self.assertEqual(str(ctx.exception), str(ERROR_CANNOT_DECODE_REQUEST))
+        self.assertIn("XML document contains a DOCTYPE declaration", str(ctx.exception.detail))
+
+    def test_invalid_base64(self):
+        """Test that a SAMLRequest that is not valid base64 is rejected, not a server error"""
+        for parse in (
+            lambda: AuthNRequestParser(self.provider).parse("%%%not-base64%%%"),
+            lambda: AuthNRequestParser(self.provider).parse_detached("%%%not-base64%%%", None),
+        ):
+            with self.assertRaises(CannotHandleAssertion) as ctx:
+                parse()
+            self.assertEqual(str(ctx.exception), str(ERROR_CANNOT_DECODE_REQUEST))
+            self.assertIn("base64", str(ctx.exception.detail))
+
+    def test_acs_url_mismatch(self):
+        """Test that a mismatched ACS URL is rejected without echoing either URL to the user"""
+        # Unsigned request, so the ACS check is reached instead of the signature check
+        self.provider.verification_kp = None
+        self.provider.save()
+        request = (
+            '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'ID="_1" Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z" '
+            'AssertionConsumerServiceURL="https://evil.example.com/acs"/>'
+        )
+
+        with self.assertRaises(CannotHandleAssertion) as ctx:
+            AuthNRequestParser(self.provider).parse(b64encode(request.encode()).decode())
+        self.assertEqual(str(ctx.exception), str(ERROR_ACS_URL_MISMATCH))
+        self.assertNotIn("evil.example.com", str(ctx.exception))
+        self.assertIn("https://evil.example.com/acs", ctx.exception.detail)
+        self.assertIn(self.provider.acs_url, ctx.exception.detail)
+
+    def test_malformed_unsigned(self):
+        """Test that malformed requests to a provider without a verification certificate are
+        rejected with a handled error instead of a server error"""
+        self.provider.verification_kp = None
+        self.provider.save()
+        missing_id = (
+            '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z" '
+            'AssertionConsumerServiceURL="http://testserver/source/saml/provider/acs/"/>'
+        )
+        parser = AuthNRequestParser(self.provider)
+        for payload in ("this is not xml", missing_id):
+            with self.subTest(payload=payload, binding="post"):
+                with self.assertRaisesMessage(
+                    CannotHandleAssertion, str(ERROR_CANNOT_DECODE_REQUEST)
+                ):
+                    parser.parse(b64encode(payload.encode()).decode())
+            with self.subTest(payload=payload, binding="redirect"):
+                with self.assertRaisesMessage(
+                    CannotHandleAssertion, str(ERROR_CANNOT_DECODE_REQUEST)
+                ):
+                    parser.parse_detached(deflate_and_base64_encode(payload), None)
+
+        for binding, method in (("post", parser.parse), ("redirect", parser.parse_detached)):
+            with self.subTest(payload="not base64", binding=binding):
+                with self.assertRaisesMessage(
+                    CannotHandleAssertion, str(ERROR_CANNOT_DECODE_REQUEST)
+                ):
+                    method("%%%not-base64%%%", None)

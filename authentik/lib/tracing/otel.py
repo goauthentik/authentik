@@ -20,7 +20,7 @@ from opentelemetry.propagators.b3 import B3MultiFormat
 from opentelemetry.propagators.composite import CompositePropagator
 from opentelemetry.sdk.resources import HOST_ARCH, HOST_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.sdk.trace.sampling import ParentBased, TraceIdRatioBased
 from opentelemetry.trace import Span as OtelSpan
 from opentelemetry.trace import Status, StatusCode
@@ -119,7 +119,7 @@ class OpenTelemetryTracer(Tracer):
             from pyroscope.otel import PyroscopeSpanProcessor
 
             provider.add_span_processor(PyroscopeSpanProcessor())
-        provider.add_span_processor(SimpleSpanProcessor(exporter))
+        provider.add_span_processor(BatchSpanProcessor(exporter))
         trace.set_tracer_provider(provider)
         LOGGER.info("Enabled Open Telemetry tracing")
 
