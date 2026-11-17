@@ -4,7 +4,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 
 def migrate_acs_url(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    SAMLProvider = apps.get_model("authentik_providers_saml", "samlprovider")
+    SAMLProvider = apps.get_model("authentik_providers_saml", "SAMLProvider")
     db_alias = schema_editor.connection.alias
 
     for provider in SAMLProvider.objects.using(db_alias).all():
@@ -20,7 +20,7 @@ def migrate_acs_url(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 def reverse_migrate_acs_url(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    SAMLProvider = apps.get_model("authentik_providers_saml", "samlprovider")
+    SAMLProvider = apps.get_model("authentik_providers_saml", "SAMLProvider")
     db_alias = schema_editor.connection.alias
 
     for provider in SAMLProvider.objects.using(db_alias).all():
@@ -44,6 +44,7 @@ class Migration(migrations.Migration):
             name="_acs_urls",
             field=models.JSONField(
                 default=list,
+                db_default=[],
                 help_text=(
                     "Assertion Consumer Service URLs the provider may send responses to. The "
                     "default entry is used for IdP-initiated logins and requests without an ACS "
