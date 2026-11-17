@@ -203,9 +203,13 @@ async fn watch_events_inner<O: Outpost>(
     } else {
         let connector =
             insecure.then(|| Connector::Rustls(Arc::new(tls::client::insecure_config())));
-        let (ws_stream, _response) =
-            tokio_tungstenite::connect_async_tls_with_config(request, None, false, connector)
-                .await?;
+        let (ws_stream, _response) = tokio_tungstenite::connect_async_tls_with_config(
+            request,
+            None,
+            false,
+            connector.or(Some(Connector::Rustls(Arc::new(tls::client::config())))),
+        )
+        .await?;
         let (write, read) = ws_stream.split();
         (Box::new(write), Box::new(read))
     };
