@@ -10,6 +10,7 @@ from jwcrypto.jwk import JWK
 from jwt import encode
 
 from authentik.blueprints.tests import reconcile_app
+from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_cert, create_test_user
 from authentik.crypto.builder import PrivateKeyAlg
 from authentik.endpoints.connectors.agent.models import (
@@ -23,9 +24,10 @@ from authentik.endpoints.connectors.agent.models import (
     DeviceToken,
     EnrollmentToken,
 )
-from authentik.endpoints.models import Device
+from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import JWTAlgorithms
 from authentik.stages.password.models import PasswordDevice
 
@@ -175,6 +177,37 @@ class TestAppleToken(TestCase):
         ).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["device"]["name"], self.device.name)
+
+    @reconcile_app("authentik_crypto")
+    def test_token_password_binds_user(self):
+        """Platform SSO requests the user's keys after a password login without registering the
+        user first, so the login binds the user to the device"""
+        AgentDeviceUserBinding.objects.all().delete()
+        # Without a binding of their own, the user needs access through the device's group
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+        self.device.access_group = DeviceAccessGroup.objects.create(name=generate_id())
+        self.device.save()
+        PolicyBinding.objects.create(target=self.device.access_group, group=group, order=0)
+        password = generate_id()
+        PasswordDevice.set_password(self.user, password)
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+
+        res = self._post_password_request(self._password_request(nonce, password=password))
+
+        self.assertEqual(res.status_code, 200)
+        binding = AgentDeviceUserBinding.objects.get(target=self.device, user=self.user)
+        self.assertEqual(binding.connector.pk, self.connector.pk)
+        self.assertTrue(binding.is_primary)
+
+        # A wrong password doesn't bind anyone
+        AgentDeviceUserBinding.objects.all().delete()
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+        res = self._post_password_request(self._password_request(nonce, password=generate_id()))
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(AgentDeviceUserBinding.objects.filter(target=self.device).exists())
 
     @reconcile_app("authentik_crypto")
     def test_token_password_invalid(self):

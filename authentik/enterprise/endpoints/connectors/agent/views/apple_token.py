@@ -383,7 +383,23 @@ class TokenView(View):
                 messages=policy_result.messages,
             )
             raise ValidationError("Invalid request")
+        self.bind_device_user(authenticated)
         return self.login_response(authenticated)
+
+    def bind_device_user(self, user: User):
+        """Bind the user to the device. Platform SSO doesn't call the extension to register the
+        user for password and web logins, and requests the user's keys right after the login,
+        which needs the binding"""
+        device = self.device_connection.device
+        if AgentDeviceUserBinding.objects.filter(target=device, user=user).exists():
+            return
+        AgentDeviceUserBinding.objects.create(
+            target=device,
+            user=user,
+            connector=self.connector,
+            is_primary=not AgentDeviceUserBinding.objects.filter(target=device).exists(),
+            order=0,
+        )
 
     def redeem_authorization_code(self, code: str | None) -> User:
         """Redeem the authorization code of a web login, and return the user it was issued to"""
@@ -400,17 +416,7 @@ class TokenView(View):
             raise ValidationError("Invalid request")
         user = auth_code.user
         auth_code.delete()
-        # Platform SSO doesn't call the extension to register the user for web logins, and
-        # requests the user's keys right after this, which needs the binding
-        device = self.device_connection.device
-        if not AgentDeviceUserBinding.objects.filter(target=device, user=user).exists():
-            AgentDeviceUserBinding.objects.create(
-                target=device,
-                user=user,
-                connector=self.connector,
-                is_primary=not AgentDeviceUserBinding.objects.filter(target=device).exists(),
-                order=0,
-            )
+        self.bind_device_user(user)
         return user
 
     def handle_v1_0_urn_ietf_params_oauth_grant_type_token_exchange(self) -> HttpResponse:
