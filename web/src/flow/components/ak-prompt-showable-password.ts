@@ -53,7 +53,7 @@ export const ShowablePasswordStyles = css`
 /**
  * @element ShowablePassword
  *
- * @summary A passsword field with "showable" options, specifically made to interact with the
+ * @summary A password field with "showable" options, specifically made to interact with the
  * PromptStage.
  */
 
