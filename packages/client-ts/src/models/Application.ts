@@ -39,7 +39,8 @@ export interface Application {
     backchannelProviders?: Array<number>;
     readonly backchannelProvidersObj: Array<Provider>;
     /**
-     * Allow formatting of launch URL
+     * Format the launch URL for the user given as `for_user` in the context, or else the
+     * requesting user
      */
     readonly launchUrl: string | null;
     /**

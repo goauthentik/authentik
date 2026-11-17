@@ -5,8 +5,10 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/tasks/TaskList";
 import "#components/ak-status-label";
+import "#elements/cards/SectionCard";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { aki } from "#common/api/client";
 
@@ -26,6 +28,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-data-export-list")
 export class DataExportListPage extends TablePage<DataExport> {
+    public static override verboseName = msg("Data export", {
+        id: "data-exports.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Data exports", {
+        id: "data-exports.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
     public pageTitle = msg("Data Exports");
     public pageDescription = msg("Manage past data exports.");
@@ -38,7 +47,7 @@ export class DataExportListPage extends TablePage<DataExport> {
     @property({ type: String })
     public order = "-requested_on";
 
-    static styles = [...TablePage.styles, PFDescriptionList];
+    static styles = [...TablePage.styles, PFDescriptionList, PFSpacing];
 
     async apiEndpoint(): Promise<PaginatedResponse<DataExport>> {
         return aki(ReportsApi).reportsExportsList(await this.defaultEndpointConfig());
@@ -56,7 +65,6 @@ export class DataExportListPage extends TablePage<DataExport> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Data export(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: DataExport) => {
                 return [
@@ -101,24 +109,16 @@ export class DataExportListPage extends TablePage<DataExport> {
         ];
     }
 
-    renderExpanded(item: DataExport): TemplateResult {
-        return html` <dl class="pf-c-description-list pf-m-horizontal">
-            <div class="pf-c-card__title">${msg("Query parameters")}</div>
-            <div class="pf-c-card__body">
-                ${renderDescriptionList(
-                    Object.keys(item.queryParams)
-                        .filter((key) => {
-                            if (key === "page" || key === "pageSize") return false;
+    renderExpanded({ queryParams }: DataExport): TemplateResult {
+        const queryParameterPairs: DescriptionPair[] = Object.entries(queryParams)
+            .filter(([key, value]) => !(key === "page" || key === "pageSize") && value)
+            .map(([key, value]) => [key, html`<pre>${value}</pre>`]);
 
-                            return !!item.queryParams[key];
-                        })
-                        .map((key): DescriptionPair => {
-                            return [key, html`<pre>${item.queryParams[key]}</pre>`];
-                        }),
-                    { horizontal: true, compact: true },
-                )}
+        return html`<ak-section-card label=${msg("Query parameters")}>
+            <div class="pf-u-mb-lg pf-u-mx-lg">
+                ${renderDescriptionList(queryParameterPairs, { horizontal: true, compact: true })}
             </div>
-        </dl>`;
+        </ak-section-card>`;
     }
 
     protected renderEmpty(_inner?: TemplateResult): SlottedTemplateResult {

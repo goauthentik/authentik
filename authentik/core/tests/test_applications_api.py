@@ -1,22 +1,30 @@
 """Test Applications API"""
 
 from json import loads
+from unittest.mock import patch
 
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
+from rest_framework.response import Response
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application
+from authentik.core.models import Application, PropertyMapping
 from authentik.core.tests.utils import (
     create_test_admin_user,
     create_test_flow,
     create_test_user,
 )
+from authentik.flows.signals import delete_cache_prefix
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
+from authentik.policies.types import CACHE_PREFIX
+from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
 from authentik.providers.proxy.models import ProxyProvider
 from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.scim.models import SCIMProvider
 
 
 class TestApplicationsAPI(APITestCase):
@@ -58,6 +66,17 @@ class TestApplicationsAPI(APITestCase):
             self.allowed.get_launch_url(self.user),
             f"https://{self.user.username}-test.test.goauthentik.io/{self.user.username}",
         )
+
+    def test_formatted_launch_url_percent_encoding(self):
+        """Only placeholders and `%%` are formatted, percent-encoding is kept as is rather than
+        being filled with the whole user"""
+        self.allowed.meta_launch_url = "https://goauthentik.io/%(username)s/Joe%27s?q=a%20b%%2F%"
+        self.assertEqual(
+            self.allowed.get_launch_url(self.user),
+            f"https://goauthentik.io/{self.user.username}/Joe%27s?q=a%20b%2F%",
+        )
+        self.allowed.meta_launch_url = "https://goauthentik.io/Joe%27s"
+        self.assertEqual(self.allowed.get_launch_url(self.user), "https://goauthentik.io/Joe%27s")
 
     def test_check_access(self):
         """Test check_access operation"""
@@ -221,6 +240,45 @@ class TestApplicationsAPI(APITestCase):
             },
         )
 
+    def test_list_plain_launch_url(self):
+        """A launch URL without placeholders is not formatted, so listing it does not serialize
+        the requesting user, whose avatar lookup can make an HTTP request"""
+        self.allowed.meta_launch_url = "https://goauthentik.io"
+        self.allowed.save()
+        self.client.force_login(self.user)
+        with patch("authentik.core.api.users.get_avatar") as get_avatar:
+            response = self.client.get(reverse("authentik_api:application-list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["results"][0]["launch_url"], "https://goauthentik.io")
+        get_avatar.assert_not_called()
+
+    def test_update_provider(self):
+        """Changing an application's provider returns the new provider"""
+        self.client.force_login(self.user)
+        url = reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug})
+        provider = SAMLProvider.objects.create(name=generate_id())
+        response = self.client.patch(url, {"provider": provider.pk})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["provider_obj"]["pk"], provider.pk)
+        self.assertEqual(response.json()["provider_obj"]["component"], "ak-provider-saml-form")
+        response = self.client.patch(url, {"provider": None}, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.json()["provider_obj"])
+
+    def test_with_provider_combined(self):
+        """with_provider() can be called again, and after lookups through the provider"""
+        provider = SAMLProvider.objects.create(name=generate_id())
+        app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        app = (
+            Application.objects.prefetch_related("provider__property_mappings")
+            .with_provider()
+            .with_provider()
+            .get(pk=app.pk)
+        )
+        with self.assertNumQueries(0):
+            self.assertEqual(app.get_provider(), provider)
+            self.assertEqual(list(app.get_provider().property_mappings.all()), [])
+
     def test_list_rbac_ignores_policies(self):
         """RBAC access and policy access are separate: the list only checks
         permissions, @accessible only checks policies"""
@@ -246,6 +304,9 @@ class TestApplicationsAPI(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual([app["slug"] for app in response.json()["results"]], [self.allowed.slug])
+        self.assertEqual(
+            response.json()["results"][0]["launch_url"], f"https://goauthentik.io/{user.username}"
+        )
 
     def test_get_provider(self):
         """Ensure that proxy providers (at the time of writing that is the only provider
@@ -306,3 +367,117 @@ class TestApplicationsAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("slug", response.data)
         self.assertIn("reserved", response.data["slug"][0])
+
+    def _create_applications(self, count: int, allowed_user, denied_user) -> list[Application]:
+        """Applications with each provider type and a backchannel provider, every other one
+        bound to `allowed_user` and the rest to `denied_user`"""
+        flow = create_test_flow()
+        mapping = PropertyMapping.objects.create(name=generate_id(), expression="return {}")
+        apps = []
+        for index in range(count):
+            model = (OAuth2Provider, SAMLProvider, ProxyProvider, LDAPProvider)[index % 4]
+            provider = model.objects.create(name=generate_id(), authorization_flow=flow)
+            provider.property_mappings.add(mapping)
+            app = Application.objects.create(
+                name=generate_id(),
+                slug=generate_id(),
+                provider=provider,
+                meta_launch_url="https://goauthentik.io",
+            )
+            backchannel = SCIMProvider.objects.create(
+                name=generate_id(), url="https://goauthentik.io", token=generate_id()
+            )
+            backchannel.property_mappings.add(mapping)
+            app.backchannel_providers.add(backchannel)
+            PolicyBinding.objects.create(
+                target=app, user=allowed_user if index % 2 else denied_user, order=0
+            )
+            apps.append(app)
+        return apps
+
+    def _get_queries(self, url: str, cached=False) -> tuple[Response, CaptureQueriesContext]:
+        """Request `url` twice and capture the queries of the second request, as the first one
+        after a change also loads the session and brand. Unless `cached`, both requests evaluate
+        policies; with it, the second request reads the user's application list that the first
+        one cached."""
+        delete_cache_prefix(f"{CACHE_PREFIX}*")
+        self.assertEqual(self.client.get(url).status_code, 200)
+        if not cached:
+            delete_cache_prefix(f"{CACHE_PREFIX}*")
+        with CaptureQueriesContext(connection) as captured:
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        return response, captured
+
+    def _assert_serialized(self, results: list[dict], apps: list[Application]):
+        """`results` are exactly `apps`, with providers serialized as their concrete type and
+        with their applications"""
+        by_slug = {app["slug"]: app for app in results}
+        self.assertCountEqual(by_slug, [app.slug for app in apps])
+        for app in apps:
+            provider = app.provider
+            backchannel = SCIMProvider.objects.get(backchannel_application=app)
+            data = by_slug[app.slug]
+            self.assertEqual(data["provider_obj"]["component"], provider.component)
+            self.assertEqual(data["provider_obj"]["assigned_application_slug"], app.slug)
+            self.assertEqual(
+                data["provider_obj"]["property_mappings"],
+                [str(pk) for pk in provider.property_mappings.values_list("pk", flat=True)],
+            )
+            self.assertEqual(data["backchannel_providers"], [backchannel.pk])
+            self.assertEqual(len(data["backchannel_providers_obj"]), 1)
+            self.assertEqual(
+                data["backchannel_providers_obj"][0]["component"], backchannel.component
+            )
+            self.assertEqual(
+                data["backchannel_providers_obj"][0]["assigned_backchannel_application_slug"],
+                app.slug,
+            )
+            self.assertIsNone(data["backchannel_providers_obj"][0]["assigned_application_slug"])
+            self.assertEqual(
+                data["backchannel_providers_obj"][0]["property_mappings"],
+                [str(pk) for pk in backchannel.property_mappings.values_list("pk", flat=True)],
+            )
+
+    def test_list_queries(self):
+        """Listing applications loads providers in their own queries: joining every provider
+        subclass into the application query made a statement Postgres took over 100ms to plan.
+        The number of queries does not grow with the number of applications."""
+        Application.objects.all().delete()
+        denied_user = create_test_user()
+        apps = self._create_applications(4, self.user, denied_user)
+        self.client.force_login(self.user)
+        url = reverse("authentik_api:application-list")
+        response, small = self._get_queries(url)
+        for query in small.captured_queries:
+            sql = query["sql"]
+            self.assertFalse(
+                'FROM "authentik_core_application"' in sql and "authentik_core_provider" in sql,
+                "The application query joins providers",
+            )
+        self._assert_serialized(response.json()["results"], apps)
+
+        apps += self._create_applications(8, self.user, denied_user)
+        response, large = self._get_queries(url)
+        self._assert_serialized(response.json()["results"], apps)
+        self.assertEqual(len(large), len(small))
+
+    def test_list_accessible_queries(self):
+        """@accessible returns exactly the applications whose policies the user passes, whether
+        it evaluates policies or reads the user's application list from the cache, and the number
+        of queries does not grow with the number of applications."""
+        Application.objects.all().delete()
+        user = create_test_user()
+        allowed = self._create_applications(4, user, self.user)[1::2]
+        self.client.force_login(user)
+        url = reverse("authentik_api:application-accessible") + "?only_with_launch_url=true"
+        small = {}
+        for cached in (False, True):
+            response, small[cached] = self._get_queries(url, cached)
+            self._assert_serialized(response.json()["results"], allowed)
+
+        allowed += self._create_applications(8, user, self.user)[1::2]
+        for cached in (False, True):
+            response, large = self._get_queries(url, cached)
+            self._assert_serialized(response.json()["results"], allowed)
+            self.assertEqual(len(large), len(small[cached]))

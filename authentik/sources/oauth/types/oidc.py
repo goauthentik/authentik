@@ -2,9 +2,10 @@
 
 from typing import Any
 
-from jwt import PyJWKSet, PyJWTError, decode, get_unverified_header
+from jwt import PyJWTError, decode, get_unverified_header
 from requests.auth import AuthBase, HTTPBasicAuth
 
+from authentik.lib.jwt_mldsa import key_from_jwk
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -55,8 +56,10 @@ class OpenIDConnectClient(UserprofileHeaderAuthClient):
         id_token = token["id_token"]
         try:
             raw = get_unverified_header(id_token)
-            jwk = PyJWKSet.from_dict(self.source.oidc_jwks)
-            key = [key for key in jwk.keys if key.key_id == raw["kid"]][0]
+            jwk = [
+                key for key in self.source.oidc_jwks.get("keys", []) if key.get("kid") == raw["kid"]
+            ][0]
+            key, _ = key_from_jwk(jwk)
             return decode(
                 id_token,
                 key=key,

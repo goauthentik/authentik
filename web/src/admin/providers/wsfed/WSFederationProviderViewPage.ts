@@ -2,7 +2,7 @@ import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/wsfed/WSFederationProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/events/ObjectChangelog";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
@@ -421,11 +421,11 @@ export class WSFederationProviderViewPage extends AKElement {
                                       </ak-action-button>
                                   </div>
                                   <div class="pf-c-card__footer">
-                                      <ak-codemirror
+                                      <ak-code-editor
                                           mode="xml"
                                           readonly
                                           value="${ifDefined(this.metadata?.metadata)}"
-                                      ></ak-codemirror>
+                                      ></ak-code-editor>
                                   </div>
                               </div>
                           </div>

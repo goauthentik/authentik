@@ -1,5 +1,5 @@
 import "#components/ak-text-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/Label";
@@ -106,8 +106,8 @@ export class PermissionCheckForm extends ModelForm<PermissionCheck, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Expression")} required name="expression">
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
-                </ak-codemirror>
+                <ak-code-editor mode="python" value="${ifDefined(this.instance?.expression)}">
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg("Python code defining permission checks.")}
                     <a

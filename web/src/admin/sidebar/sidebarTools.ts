@@ -23,7 +23,7 @@ export { type ExtendedSidebarItem };
 export const ENTERPRISE_PATH = "/enterprise/licenses";
 
 const enterpriseOnly = () =>
-    msg("Enterprise only", {
+    msg("Enterprise", {
         id: "sidebar.notice.enterprise-only",
     });
 
@@ -31,6 +31,10 @@ function makeSidebarEntry(entry: SidebarEntry, licensed: boolean, canEnterprise:
     const [path, label, attributes, children]: SidebarEntry = entry;
     const enterprise = Boolean(!licensed && isEnterpriseEntry(attributes));
     const key = isSidebarAttributeObject(attributes) && attributes.key ? attributes.key : path;
+
+    if (!key || key.trim().length === 0) {
+        throw new Error("An entry must have either a path or a key");
+    }
 
     if (!key || key.trim().length === 0) {
         throw new Error("An entry must have either a path or a key");
@@ -47,12 +51,18 @@ function makeSidebarEntry(entry: SidebarEntry, licensed: boolean, canEnterprise:
         item.notice = enterpriseOnly();
     }
 
-    if (children) {
+    if (Array.isArray(children)) {
         item.children = resolveSidebarEntries(children, { licensed, canEnterprise });
     }
 
-    if (isSidebarAttributeObject(attributes) && attributes.expanded !== undefined) {
-        item.expanded = attributes.expanded;
+    if (isSidebarAttributeObject(attributes)) {
+        if (attributes.expanded !== undefined) {
+            item.expanded = attributes.expanded;
+        }
+
+        if (attributes.icon !== undefined) {
+            item.icon = attributes.icon;
+        }
     }
 
     if (Array.isArray(attributes)) {
@@ -88,46 +98,62 @@ export function resolveSidebarEntries(
 // |_| |_|_||_\__,_| |___/_\__,_\___|_.__/\__,_|_|   |___|_||_\__|_| |_\___/__/
 //
 
-function findSidebarEntry(
+/**
+ * Returns the matched entry _and_ all of its parents
+ */
+export function findSidebarEntries(
     entries: readonly ExtendedSidebarItem[],
     predicate: (entry: ExtendedSidebarItem) => boolean,
-): ExtendedSidebarItem | null {
+): ExtendedSidebarItem[] {
     for (const entry of entries) {
         if (predicate(entry)) {
-            return entry;
+            return [entry];
         }
 
-        const found = entry.children ? findSidebarEntry(entry.children, predicate) : null;
+        const found = entry.children ? findSidebarEntries(entry.children, predicate) : [];
 
-        if (found) {
-            return found;
+        if (found.length > 0) {
+            return [entry, ...found];
         }
     }
 
-    return null;
+    return [];
 }
+
+const findSidebarEntry = (
+    entries: readonly ExtendedSidebarItem[],
+    predicate: (entry: ExtendedSidebarItem) => boolean,
+) => findSidebarEntries(entries, predicate).at(-1) ?? null;
+
+export const matchesPath =
+    (path: string, routeName: string | null) =>
+    ({ key, routes }: ExtendedSidebarItem) =>
+        key === path || (!!routeName && !!routes?.includes(routeName));
 
 /**
  * The label of the entry that lists the given route, e.g. "Providers" for `provider-view`.
  */
-export function findSidebarSectionByRoute(
+export const findCurrentSidebarSectionLabel = (
     entries: readonly ExtendedSidebarItem[],
     routeName: string | null,
-) {
-    if (!routeName) {
-        return null;
-    }
+    path: string = "",
+) => findSidebarEntry(entries, matchesPath(path, routeName))?.label ?? null;
 
-    return findSidebarEntry(entries, ({ routes }) => !!routes?.includes(routeName))?.label ?? null;
-}
-
-export function findCurrentSidebarKey(
+/**
+ * The key of the entry that lists the given route
+ */
+export const findCurrentSidebarKey = (
     entries: readonly ExtendedSidebarItem[],
-    path: string,
     routeName: string | null,
-) {
-    const matches = ({ key, routes }: ExtendedSidebarItem) =>
-        key === path || (!!routeName && !!routes?.includes(routeName));
+    path: string = "",
+) => {
+    const entry = findSidebarEntry(entries, matchesPath(path, routeName));
 
-    return findSidebarEntry(entries, matches)?.key ?? null;
-}
+    // Bookmarks will be child entries, and their keys will be more targeted than the entry itself,
+    // so return it instead of the entry if we find one. This is pretty specific to authentik;
+    // the Sidebar is capable of being more general than this; don't take this as a sign the
+    // Sidebar is Admin-specific.
+    const child = entry?.children?.find(({ key }) => path === key || path.startsWith(`${key}/`));
+
+    return (child ?? entry)?.key ?? null;
+};

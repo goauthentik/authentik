@@ -155,7 +155,7 @@ class AuthorizeError(OAuth2Error):
         redirect_uri: str,
         error: str,
         grant_type: str,
-        state: str,
+        state: str | None,
         response_mode: str | None = None,
         description: str | None = None,
     ):
@@ -182,7 +182,7 @@ class AuthorizeError(OAuth2Error):
         # See https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html
         if self.response_mode == ResponseMode.FORM_POST:
             attrs = {"error": self.error, "error_description": self.description}
-            if self.state:
+            if self.state is not None:
                 attrs["state"] = self.state
             return TemplateResponse(
                 request,
@@ -211,7 +211,7 @@ class AuthorizeError(OAuth2Error):
             )
 
         params = {"error": self.error, "error_description": str(self.description)}
-        if self.state:
+        if self.state is not None:
             params["state"] = self.state
 
         encoded = urlencode(params, quote_via=quote)

@@ -146,7 +146,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     const preset = CAPTCHA_PROVIDERS[key];
 
                     return html`<option value=${key} ?selected=${key === this.selectedProvider}>
-                        ${preset.formatDisplayName()}
+                        ${preset.displayName}
                     </option>`;
                 })}
             </select>
@@ -157,14 +157,14 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
             </p>
 
             ${guard([this.#currentPreset], () => {
-                const { formatAPISource, formatDescription, keyURL } = this.#currentPreset;
+                const { apiSourceLabel, description, keyURL } = this.#currentPreset;
 
-                const description = formatDescription
-                    ? html`<p class="pf-c-form__helper-text">${formatDescription()}</p>`
+                const helperText = description
+                    ? html`<p class="pf-c-form__helper-text">${description}</p>`
                     : null;
 
                 const providerLink =
-                    formatAPISource && keyURL
+                    apiSourceLabel && keyURL
                         ? html`<ak-alert level=${Level.Info} icon="fa-key">
                               ${
                                   this.selectedProvider === "cap"
@@ -174,7 +174,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 href=${keyURL}
-                                                >${formatAPISource()}</a
+                                                >${apiSourceLabel}</a
                                             >`}
                                             to self-host Cap and configure the endpoint.`,
                                             {
@@ -188,7 +188,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     href=${keyURL}
-                                                    >${formatAPISource()}</a
+                                                    >${apiSourceLabel}</a
                                                 >.`}`,
                                             {
                                                 id: "captcha.provider-link",
@@ -199,7 +199,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                           </ak-alert>`
                         : null;
 
-                return html`${description} ${providerLink}`;
+                return html`${helperText} ${providerLink}`;
             })}
         </ak-form-element-horizontal>`;
     }
@@ -355,7 +355,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                                     value=${type.value}
                                     ?selected=${type.value === formValues.requestContentType}
                                 >
-                                    ${type.formatDisplayName()}
+                                    ${type.displayName}
                                 </option>`,
                         )}
                     </select>
