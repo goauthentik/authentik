@@ -105,7 +105,3 @@ Settings defined through environment variables take precedence over the values c
 To confirm that authentik is properly configured with Radarr, log out of Radarr. Then, open Radarr and click **Login**. You should be redirected to authentik for authentication and then redirected back to Radarr.
 
 If Radarr shows `Unable to sign in with your identity provider`, check the Radarr logs. A `User '...' is not authorized to access this application` message means that the **OIDC User** value does not match the `sub` claim sent by authentik.
-
-## Resources
-
-- [Servarr Wiki - Radarr settings: Security](https://wiki.servarr.com/radarr/settings#security)
