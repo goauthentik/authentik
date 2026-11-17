@@ -17,6 +17,7 @@ import { classMap } from "lit/directives/class-map.js";
 const statusToDetails = new Map<P4Disposition, [string, string]>([
     [P4Disposition.Error, ["pf-m-red", "fa-times"]],
     [P4Disposition.Warning, ["pf-m-orange", "fa-exclamation-triangle"]],
+    [P4Disposition.Danger, ["pf-m-red", "fa-exclamation-triangle"]],
     [P4Disposition.Info, ["pf-m-gray", "fa-info-circle"]],
     [P4Disposition.Neutral, ["pf-m-gray", "fa-times"]],
 ]);
@@ -24,18 +25,18 @@ const statusToDetails = new Map<P4Disposition, [string, string]>([
 /**
  * A boolean status indicator
  *
- * Based on the Patternfly "label" pattern, this component exists to display "Yes" or "No", but this
- * is configurable.
+ * Based on the Patternfly "label" pattern, this component exists to display a boolean state. By
+ * default it uses "Yes" or "No", but this is configurable.
  *
  * When the boolean attribute `good` is present, the background will be green and the icon will be a
  * ✓. If the `good` attribute is not present, the background will be a warning color and an
  * alternative symbol. Which color and symbol depends on the `type` of the negative status we want
  * to show:
  *
- * - Type="error" (default): A Red ✖
- * - Type="warning" An orange ⚠
- * - Type="info" A gray ⓘ
- * - Type="neutral" A gray ✖
+ * - Type="error": (default): A Red ✖
+ * - Type="warning": An orange ⚠
+ * - Type="info": A gray ⓘ
+ * - Type="neutral": A gray ✖
  *
  * By default, the messages for "good" and "other" are "Yes" and "No" respectively, but these can be
  * customized with the attributes `good-label` and `bad-label`.
@@ -53,9 +54,6 @@ export class AkStatusLabel extends AKElement {
 
     @property({ type: String, attribute: "bad-label" })
     public badLabel = msg("No");
-
-    @property({ type: String, attribute: "neutral-label" })
-    public neutralLabel = msg("-");
 
     @property({ type: Boolean })
     public compact = false;
