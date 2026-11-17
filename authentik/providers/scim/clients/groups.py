@@ -8,7 +8,7 @@ from django.db import transaction
 from django.db.models import QuerySet
 from pydantic import ValidationError
 
-from authentik.core.models import Group
+from authentik.core.models import Group, User
 from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.base import Direction
@@ -60,48 +60,19 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         return member
 
     def _effective_user_pks(self, group: Group) -> list[int]:
-        """Return the user PKs that should be sent as members of `group`.
+        """Return the user PKs that should be sent as members of `group`, ordered by PK.
 
-        When `flatten_nested_groups` is enabled on the provider, this walks all
-        descendant groups (via the `parents` M2M) and unions their direct members.
-        Otherwise the direct M2M membership is returned unchanged. The result is
-        always ordered by PK for stable diffing.
+        When `flatten_nested_groups` is enabled on the provider, this includes the direct
+        members of all descendant groups. Otherwise only the direct members are returned.
         """
         if not self.provider.flatten_nested_groups:
-            return list(group.users.order_by("id").values_list("id", flat=True))
-
-        seen_groups: set = set()
-        user_pks: set[int] = set()
-
-        def walk(g: Group):
-            if g.pk in seen_groups:
-                return
-            seen_groups.add(g.pk)
-            user_pks.update(g.users.values_list("id", flat=True))
-            for child in Group.objects.filter(parents=g):
-                walk(child)
-
-        walk(group)
-        return sorted(user_pks)
-
-    def _collect_ancestors(self, group: Group) -> list[Group]:
-        """Return all transitive ancestors of `group` via the `parents` M2M.
-
-        Used by `update_group` to propagate membership-change signals to all
-        groups whose effective membership depends on `group` when
-        `flatten_nested_groups` is enabled. Cycle-safe.
-        """
-        seen: set = set()
-        ancestors: list[Group] = []
-        frontier = list(group.parents.all())
-        while frontier:
-            current = frontier.pop()
-            if current.pk in seen:
-                continue
-            seen.add(current.pk)
-            ancestors.append(current)
-            frontier.extend(current.parents.all())
-        return ancestors
+            return list(group.users.order_by("pk").values_list("pk", flat=True))
+        return list(
+            User.objects.filter(groups__in=Group.objects.filter(pk=group.pk).with_descendants())
+            .distinct()
+            .order_by("pk")
+            .values_list("pk", flat=True)
+        )
 
     def to_schema(self, obj: Group, connection: SCIMProviderGroup) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
@@ -285,26 +256,32 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 "could not sync group membership, group does not exist", group=group
             )
             return
-        result = self._update_group_self(group, scim_group, action, users_set)
-        # When flattening is enabled, a membership change on `group` also changes the
-        # effective membership of every ancestor — reconcile each via patch_compare_users,
-        # which uses the flattened _effective_user_pks to compute the right diff.
         if self.provider.flatten_nested_groups:
-            for ancestor in self._collect_ancestors(group):
-                ancestor_conn = SCIMProviderGroup.objects.filter(
-                    provider=self.provider, group=ancestor
-                ).first()
-                if not ancestor_conn:
-                    continue
-                try:
-                    self.patch_compare_users(ancestor)
-                except SCIMRequestException as exc:
-                    self.logger.warning(
-                        "failed to propagate membership change to ancestor",
-                        ancestor=ancestor,
-                        exc=exc,
-                    )
-        return result
+            # The effective membership of `group` and all its ancestors may have changed. The
+            # delta in `users_set` can't be applied directly, as a removed user may still be
+            # a member through another descendant group, so reconcile each group in full.
+            for target in (
+                Group.objects.filter(pk=group.pk)
+                .with_ancestors()
+                .filter(scimprovidergroup__provider=self.provider)
+            ):
+                self._reconcile_flattened(target)
+            return
+        return self._update_group_self(group, scim_group, action, users_set)
+
+    def _reconcile_flattened(self, group: Group):
+        """Bring the remote membership of an already-synced `group` in line with its
+        flattened membership."""
+        if self._config.patch.supported:
+            return self.patch_compare_users(group)
+        try:
+            return self.write(group)
+        except SCIMRequestException as exc:
+            if self._config.is_fallback:
+                # Assume that provider does not support PUT and also doesn't support
+                # ServiceProviderConfig, so try PATCH as a fallback
+                return self.patch_compare_users(group)
+            raise exc
 
     def _update_group_self(
         self,
