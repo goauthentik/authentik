@@ -10,7 +10,7 @@ import { customElement, property, state } from "lit/decorators.js";
 interface VisibilityProps {
     kind: "password" | "text";
     icon: string;
-    label: () => string;
+    label: MessageFormatter<string>;
 }
 
 /**
