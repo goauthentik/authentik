@@ -7,7 +7,7 @@ import Styles from "#components/ak-status-label.css";
 
 import { P4Disposition } from "#styles/patternfly/constants";
 
-import { match, P } from "ts-pattern";
+import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -71,7 +71,6 @@ export class AkStatusLabel extends AKElement {
         }
 
         const [label, color, icon] = match(this.good)
-            .with(P.nullish, () => [this.neutralLabel, "pf-m-gray", "fa-question"] as const)
             .with(true, () => [this.goodLabel, "pf-m-green", "fa-check"] as const)
             .with(false, () => [this.badLabel, ...details] as const)
             .exhaustive();
