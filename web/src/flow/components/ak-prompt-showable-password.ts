@@ -1,3 +1,5 @@
+import { MessageFormatter } from "#common/ui/locale/format";
+
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
@@ -20,12 +22,12 @@ interface VisibilityProps {
 const Visibility = {
     Reveal: {
         kind: "password",
-        icon: "fa-eye",
+        icon: "fa-eye-slash",
         label: () => msg("View password", { id: "showable-password.show-password" }),
     },
     Mask: {
         kind: "text",
-        icon: "fa-eye-slash",
+        icon: "fa-eye",
         label: () => msg("Hide password", { id: "showable-password.hide-password" }),
     },
 } as const satisfies Record<string, VisibilityProps>;
@@ -48,10 +50,17 @@ export const ShowablePasswordStyles = css`
     }
 `;
 
+/**
+ * @element ShowablePassword
+ *
+ * @summary A passsword field with "showable" options, specifically made to interact with the
+ * PromptStage.
+ */
+
 @customElement("ak-prompt-showable-password")
 export class ShowablePassword extends AKElement {
-    @property({ type: String, attribute: "field-id" })
-    public fieldID: string | null = null;
+    @property({ type: String, attribute: "fieldid" })
+    public fieldId: string | null = null;
 
     @property({ type: String, attribute: "fieldkey" })
     public fieldKey: string | null = null;
@@ -63,37 +72,47 @@ export class ShowablePassword extends AKElement {
     public required = false;
 
     @state()
-    public passwordVisible = false;
+    public revealed = false;
 
     /* Light DOM */
     protected createRenderRoot() {
         return this;
     }
 
-    willUpdate() {
+    get fieldKeys() {
         // Shouldn't happen in the field; this is a check that the developer got it right.
-        if (!(this.fieldId && this.fieldKey)) {
-            throw new Error("ShowablePassword field missing fieldId or fieldKey");
+        if (!this.fieldId) {
+            throw new Error("ShowablePassword field missing `fieldId`");
         }
+
+        if (!this.fieldKey) {
+            throw new Error("ShowablePassword field missing `fieldKey`");
+        }
+
+        return { id: this.fieldId, key: this.fieldKey };
     }
 
     render() {
-        const { kind, label, icon } = this.passwordVisible ? Visibility.Mask : Visibility.Reveal;
+        const { kind, label, icon } = this.revealed ? Visibility.Mask : Visibility.Reveal;
+        const { placeholder, required } = this;
+        const { id, key } = this.fieldKeys;
+
+        const onClick = () => {
+            this.revealed = !this.revealed;
+        };
 
         return html`<div class="ak-c-visible-password">
             <input
                 type=${kind}
-                id=${this.fieldId}
-                name="${this.fieldKey}"
-                placeholder="${this.placeholder}"
+                id=${id}
+                name="${key}"
+                placeholder="${placeholder}"
                 autocomplete="new-password"
                 class="pf-c-form-control"
-                ?required=${this.required}
+                ?required=${required}
             /><button
                 aria-label=${label()}
-                @click=${() => {
-                    this.passwordVisible = !this.passwordVisible;
-                }}
+                @click=${onClick}
                 class="pf-c-button pf-m-plain"
                 type="button"
             >
