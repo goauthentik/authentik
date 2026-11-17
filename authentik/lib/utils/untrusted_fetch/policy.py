@@ -112,6 +112,7 @@ class DestinationPolicy:
                 networks.append(ip_network(entry, strict=False))
                 continue
             except ValueError:
+                # Not an IP address or CIDR; validate it as a hostname below
                 pass
             if "/" in entry or ":" in entry or not entry.isascii():
                 raise DestinationPolicyError(f"Invalid private destination entry: {entry!r}")

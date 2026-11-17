@@ -85,7 +85,6 @@ class TransportResponse(Protocol):
 
     def read_chunk(self, max_bytes: int, deadline: Deadline) -> bytes:
         """Read up to `max_bytes` of the raw (still content-encoded) body; b"" at EOF"""
-        ...
 
     def close(self) -> None: ...
 
@@ -234,6 +233,7 @@ class _Watchdog:
         try:
             self._sock.shutdown(socket.SHUT_RDWR)
         except OSError:
+            # Already closed or disconnected by the peer; close() below still runs
             pass
         finally:
             self._sock.close()
