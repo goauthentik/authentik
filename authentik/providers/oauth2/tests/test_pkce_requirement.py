@@ -174,6 +174,14 @@ class TestPKCERequirement(OAuthTestCase):
         """The implicit flow issues no authorization code, so PKCE is not required"""
         self.configure(PKCEMode.REQUIRED, False, ClientType.PUBLIC)
         self.authorize(response_type="id_token")
+        # A challenge sent anyway is not checked against the provider's allowed methods
+        self.authorize(response_type="id_token", code_challenge=VERIFIER)
+        self.authorize(response_type="id_token", **challenge_params(PKCE_METHOD_PLAIN))
+        with self.assertRaises(AuthorizeError) as cm:
+            self.authorize(
+                response_type="id_token", code_challenge=VERIFIER, code_challenge_method="S512"
+            )
+        self.assertEqual(cm.exception.cause, "pkce_method_unsupported")
 
     def test_authorize_default_method_is_plain(self):
         """A challenge without a method uses plain (RFC 7636 section 4.3)"""

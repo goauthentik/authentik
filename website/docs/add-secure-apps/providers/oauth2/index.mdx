@@ -160,7 +160,7 @@ The authorization code can be used only once and expires after a short period.
 
 An authorization request that omits a required code challenge, or uses a method the provider does not allow, is returned to the client with an `invalid_request` error. The token endpoint also refuses to redeem an authorization code that doesn't meet the provider's current PKCE settings.
 
-PKCE applies only to flows that issue an authorization code (authorization code and hybrid). The implicit flow is not affected.
+PKCE applies only to flows that issue an authorization code (authorization code and hybrid). The implicit flow is not affected, and a code challenge sent with an implicit request is not checked against these settings.
 
 :::info
 Providers that existed before these settings were introduced keep their previous behavior after upgrading: PKCE is optional and `plain` is allowed. To protect public clients, change these settings after confirming that your clients send an `S256` code challenge.

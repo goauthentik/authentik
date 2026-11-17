@@ -87,6 +87,12 @@ SAML sources now reject assertions whose audience restriction does not include t
 
 Before upgrading, verify that each upstream identity provider sends the source's entity ID as the audience. Logins from a misconfigured identity provider fail with a mismatched audience error after the upgrade. For more details, refer to the [SAML source documentation](../../users-sources/sources/protocols/saml/index.mdx).
 
+### New OAuth2 providers require PKCE for public clients
+
+OAuth2 providers have new **PKCE** and **Allow plain PKCE** settings. Newly created providers require public clients to send a PKCE code challenge, and accept only the `S256` method. Their discovery document advertises only `S256` in `code_challenge_methods_supported`.
+
+Existing providers keep their previous behavior: PKCE is optional and `plain` is allowed. The new defaults apply to providers created after the upgrade, including providers created by blueprints, Terraform, or the API that don't set these fields. A public client that sends no code challenge, or uses `plain`, receives an `invalid_request` error from these providers. To keep such a client working, set **PKCE** to **Optional** or enable **Allow plain PKCE** on its provider. For more details, refer to the [OAuth2 provider documentation](../../add-secure-apps/providers/oauth2/index.mdx#pkce).
+
 ### Property mappings must return a dictionary
 
 Property mappings for sources, OAuth2 scopes, and the SCIM, RAC, Google Workspace, and Microsoft Entra ID providers must now return a dictionary or `None`. Previously, other return values such as `False`, an empty string, or a list were silently ignored.

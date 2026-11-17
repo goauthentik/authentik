@@ -389,48 +389,44 @@ class OAuthAuthorizationParams:
     def check_code_challenge(self):
         """PKCE validation: the transformation method must be allowed by the provider, and
         clients required to use PKCE must send a challenge when requesting a code."""
+
+        def pkce_error(description: str, cause: str) -> AuthorizeError:
+            return AuthorizeError(
+                redirect_uri=self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
+                description=description,
+            ).with_cause(cause)
+
+        if self.code_challenge and self.code_challenge_method not in [
+            PKCE_METHOD_PLAIN,
+            PKCE_METHOD_S256,
+        ]:
+            raise pkce_error(
+                f"Unsupported challenge method {self.code_challenge_method}",
+                "pkce_method_unsupported",
+            )
+        # Only the authorization code is protected by PKCE; the implicit flow issues none,
+        # so the provider's PKCE settings don't apply to it
+        if self.grant_type == GrantType.IMPLICIT:
+            return
         if self.code_challenge:
-            if self.code_challenge_method not in [PKCE_METHOD_PLAIN, PKCE_METHOD_S256]:
-                raise AuthorizeError(
-                    redirect_uri=self.redirect_uri,
-                    error="invalid_request",
-                    grant_type=self.grant_type,
-                    state=self.state,
-                    response_mode=self.response_mode,
-                    description=f"Unsupported challenge method {self.code_challenge_method}",
-                ).with_cause("pkce_method_unsupported")
             allowed_methods = self.provider.pkce_methods
             if self.code_challenge_method not in allowed_methods:
                 LOGGER.warning(
                     "PKCE challenge method not allowed by provider",
                     method=self.code_challenge_method,
                 )
-                raise AuthorizeError(
-                    redirect_uri=self.redirect_uri,
-                    error="invalid_request",
-                    grant_type=self.grant_type,
-                    state=self.state,
-                    response_mode=self.response_mode,
-                    description=(
-                        f"Challenge method {self.code_challenge_method} is not allowed, "
-                        f"use {' or '.join(allowed_methods)}"
-                    ),
-                ).with_cause("pkce_method_not_allowed")
-            return
-        # Only the authorization code is protected by PKCE; the implicit flow issues none
-        if self.provider.pkce_required and self.grant_type in [
-            GrantType.AUTHORIZATION_CODE,
-            GrantType.HYBRID,
-        ]:
+                raise pkce_error(
+                    f"Challenge method {self.code_challenge_method} is not allowed, "
+                    f"use {' or '.join(allowed_methods)}",
+                    "pkce_method_not_allowed",
+                )
+        elif self.provider.pkce_required:
             LOGGER.warning("Missing PKCE code challenge, which the provider requires")
-            raise AuthorizeError(
-                redirect_uri=self.redirect_uri,
-                error="invalid_request",
-                grant_type=self.grant_type,
-                state=self.state,
-                response_mode=self.response_mode,
-                description="code_challenge is required",
-            ).with_cause("pkce_challenge_missing")
+            raise pkce_error("code_challenge is required", "pkce_challenge_missing")
 
     def check_max_age(self, raw_max_age: str | None):
         """max_age is a number of seconds, so it must be a non-negative integer"""
