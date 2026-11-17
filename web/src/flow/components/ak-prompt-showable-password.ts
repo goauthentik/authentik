@@ -50,11 +50,11 @@ export const ShowablePasswordStyles = css`
 
 @customElement("ak-prompt-showable-password")
 export class ShowablePassword extends AKElement {
-    @property({ type: String, attribute: "fieldid" })
-    public fieldId!: string;
+    @property({ type: String, attribute: "field-id" })
+    public fieldID: string | null = null;
 
     @property({ type: String, attribute: "fieldkey" })
-    public fieldKey!: string;
+    public fieldKey: string | null = null;
 
     @property({ type: String })
     public placeholder = "";
