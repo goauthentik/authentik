@@ -270,7 +270,6 @@ authentik now disables PostgreSQL's just-in-time (JIT) compilation for its own d
 
 authentik only changes `jit` while it has PostgreSQL's built-in default, and only for the user that authentik connects as, in the authentik database. If you have set `jit` explicitly, authentik leaves it unchanged. The `/admin/system/` API endpoint reports the PostgreSQL version, the effective `jit` value and where it was set, and the connection's TLS version and cipher. For more details, including how to keep JIT enabled, refer to [authentik disables JIT compilation](../../../troubleshooting/postgres/slow-queries.mdx#authentik-disables-jit-compilation).
 
-
 ### Certificate authentication for LDAP sources
 
 LDAP sources can authenticate to the directory with a TLS client certificate using `SASL EXTERNAL` instead of a bind `DN` and password. For more details, refer to the [LDAP source documentation](../../../users-sources/sources/protocols/ldap/index.mdx).
@@ -324,8 +323,6 @@ The built-in source and provider icons have been refreshed, and each now has a l
 
 If you set a custom source icon that relied on the inversion, such as a black logo, it will be hard to see in dark mode. Upload a version for each theme and use `%(theme)s` in the source's **Icon** field. For more details, refer to [Source icons in light and dark themes](../../../customize/file-picker.mdx#source-icons-in-light-and-dark-themes).
 
-
-
 ## New integration guides
 
 An integration is how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added. A big thanks to our contributors!
@@ -369,7 +366,7 @@ The following source guides were recently added. A big thanks to our contributor
 
 ## Upgrading
 
-This release requires a configured base URL and stops upgrading instances that have additional tenants. Review the [breaking changes](#breaking-changes) before upgrading, in particular [Base URL is required](#base-url-is-required) and [Multi-tenancy has been removed](#multi-tenancy-has-been-removed). For more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../../install-config/upgrade.mdx).
+This release requires a configured base URL and stops upgrading instances that have additional tenants. Review the [breaking changes](#breaking-changes) before upgrading, in particular [Base URL is now required](#base-url-is-now-required) and [Multi-tenancy has been removed](#multi-tenancy-has-been-removed). For more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../../install-config/upgrade.mdx).
 
 The upgrade rebuilds event indexes to speed up event queries. PostgreSQL blocks writes to the events table while the migration runs. In testing, the migration took about 12 seconds with 1 million events and 66 seconds with 10 million events.
 
