@@ -1,6 +1,6 @@
 """Keep both ACS representations usable while old and new instances share the database."""
 
-from django.db import migrations, models
+from django.db import migrations
 
 
 class Migration(migrations.Migration):
@@ -9,20 +9,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name="samlprovider",
-            name="_acs_urls",
-            field=models.JSONField(
-                default=list,
-                db_default=[],
-                help_text=(
-                    "Assertion Consumer Service URLs the provider may send responses to. The "
-                    "default entry is used for IdP-initiated logins and requests without an ACS "
-                    "URL."
-                ),
-                verbose_name="ACS URLs",
-            ),
-        ),
         # Old instances omit `_acs_urls` on INSERT and only write `acs_url` on UPDATE.
         # Synchronize in the database so reads, API serialization, and filters all see the
         # same URLs, even before a new instance has saved the provider.
