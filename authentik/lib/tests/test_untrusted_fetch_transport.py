@@ -200,6 +200,7 @@ class LocalTLSServer:
             self.requests.append(request)
             self.handler(conn, request)
         except OSError:
+            # Clients under test hang up mid-request on purpose (timeouts, size limits)
             pass
         finally:
             conn.close()
