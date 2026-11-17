@@ -87,6 +87,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
                 supported_pub_key_algs=supported_pub_key_algs(),
+                require_user_verification=self.stage.user_verification == "required",
             )
         # py_webauthn does not wrap cryptography's ValueError when an attestation certificate
         # fails to parse, which happens with authenticators that ship non-DER certificates
