@@ -320,6 +320,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
     )
     refresh_token_revoke_family_on_reuse = models.BooleanField(
         default=True,
+        db_default=True,
         help_text=_(
             "When a refresh token which has already been rotated is used again, revoke all "
             "refresh and access tokens issued from the same authorization. Reuse indicates "
@@ -328,6 +329,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
     )
     refresh_token_reuse_grace_period = models.TextField(
         default="seconds=30",
+        db_default="seconds=30",
         validators=[timedelta_string_validator],
         help_text=_(
             "Allow the most recently rotated refresh token to be used again for this duration "

@@ -115,13 +115,15 @@ class Migration(migrations.Migration):
         migrations.RunSQL(
             "ANALYZE authentik_providers_oauth2_refreshtoken", reverse_sql=migrations.RunSQL.noop
         ),
-        # Existing providers keep the previous behaviour (reuse is only logged), new providers
-        # revoke the family on reuse
+        # Existing providers keep the previous behavior (reuse is only logged), new providers
+        # revoke the family on reuse. The columns keep a database default so that instances
+        # still running the previous version can insert providers during a rolling upgrade.
         migrations.AddField(
             model_name="oauth2provider",
             name="refresh_token_revoke_family_on_reuse",
             field=models.BooleanField(
                 default=False,
+                db_default=False,
                 help_text=(
                     "When a refresh token which has already been rotated is used again, revoke "
                     "all refresh and access tokens issued from the same authorization. Reuse "
@@ -134,6 +136,7 @@ class Migration(migrations.Migration):
             name="refresh_token_revoke_family_on_reuse",
             field=models.BooleanField(
                 default=True,
+                db_default=True,
                 help_text=(
                     "When a refresh token which has already been rotated is used again, revoke "
                     "all refresh and access tokens issued from the same authorization. Reuse "
@@ -146,6 +149,7 @@ class Migration(migrations.Migration):
             name="refresh_token_reuse_grace_period",
             field=models.TextField(
                 default="seconds=30",
+                db_default="seconds=30",
                 help_text=(
                     "Allow the most recently rotated refresh token to be used again for this "
                     "duration without revoking its family, for clients which retry or send "
