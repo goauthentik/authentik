@@ -27,7 +27,7 @@ def version_below(version: dict[str, Any], minimum: tuple[int, int]) -> bool:
     try:
         major = int(version["major"])
         minor = int(version["minor"] or 0)
-    except KeyError, TypeError, ValueError:
+    except (KeyError, TypeError, ValueError):
         return False
     return (major, minor) < minimum
 
@@ -45,7 +45,7 @@ class FlowInterfaceView(InterfaceView):
         # otherwise inline the dict's repr
         try:
             return (flow.title % defaultdict(str)).strip()
-        except TypeError, ValueError:
+        except (TypeError, ValueError):
             # If title formatting is invalid, keep the original title unchanged.
             pass
         return flow.title

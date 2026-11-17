@@ -69,7 +69,7 @@ const { flow } = globalAK();
 const DefaultFlowMeta: FlowMeta = {
     ...flow,
     layout: flow?.layout || FlowLayoutEnum.Stacked,
-    title: flow?.title ?? "",
+    title: (flow?.title ?? "").replace(/%\(\w+\)s/g, "").trim(),
 };
 
 /**

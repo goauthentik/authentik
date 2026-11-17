@@ -171,6 +171,17 @@ class TestFlowInterfaceTitle(APIFlowTestCase):
         )
         self.assertContains(response, '<meta name="ak-flow-title" content="Hello %(foo)s">')
 
+    def test_title_redirecting_placeholder(self):
+        """Test default provider authorization title without plan leaves no dangling %(app)s"""
+        flow = create_test_flow()
+        flow.title = "Redirecting to %(app)s"
+        flow.save()
+        response = self.client.get(
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<meta name="ak-flow-title" content="Redirecting to">')
+
 
 class TestFlowInterfaceBackground(APIFlowTestCase):
     """Test the flow background on the interface page"""
