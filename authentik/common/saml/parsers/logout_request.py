@@ -5,13 +5,10 @@ from dataclasses import dataclass
 from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml import ElementTree
-from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import NS_SAML_ASSERTION, NS_SAML_PROTOCOL
 from authentik.common.saml.exceptions import ERROR_CANNOT_DECODE_REQUEST, CannotHandleAssertion
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
-
-LOGGER = get_logger()
 
 
 @dataclass(slots=True)
@@ -38,12 +35,12 @@ class LogoutRequestParser:
         try:
             root = ElementTree.fromstring(decoded_xml)
         except (ParseError, ValueError) as exc:
-            LOGGER.warning("Failed to parse SAML logout request", exc=exc)
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from exc
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from exc
         # `ID` is a required attribute of every SAML request (SAML 2.0 core §3.2.1)
         if "ID" not in root.attrib:
-            LOGGER.warning("SAML logout request is missing the ID attribute")
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
+            raise CannotHandleAssertion(
+                ERROR_CANNOT_DECODE_REQUEST, detail="Request is missing the ID attribute"
+            )
         request = LogoutRequest(
             id=root.attrib["ID"],
         )
@@ -79,8 +76,8 @@ class LogoutRequestParser:
         try:
             decoded_xml = b64decode(saml_request.encode())
         except ValueError as exc:
-            LOGGER.warning("Failed to decode SAML logout request", exc=exc)
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from exc
+            # covers binascii.Error (invalid base64) and UnicodeDecodeError (not UTF-8)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from None
         return self._parse_xml(decoded_xml, relay_state)
 
     def parse_detached(
@@ -92,7 +89,7 @@ class LogoutRequestParser:
         try:
             decoded_xml = decode_base64_and_inflate(saml_request)
         except ValueError as exc:
-            LOGGER.warning("Failed to decode SAML logout request", exc=exc)
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from exc
+            # covers binascii.Error (invalid base64) and UnicodeDecodeError (not UTF-8)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from None
 
         return self._parse_xml(decoded_xml, relay_state)

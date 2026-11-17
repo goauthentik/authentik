@@ -5,13 +5,18 @@ from dataclasses import dataclass
 from xml.etree.ElementTree import ParseError  # nosec
 
 from defusedxml import ElementTree
+from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
     NS_SAML_PROTOCOL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
-from authentik.common.saml.exceptions import ERROR_CANNOT_DECODE_REQUEST, CannotHandleAssertion
+from authentik.common.saml.exceptions import (
+    ERROR_ACS_URL_MISMATCH,
+    ERROR_CANNOT_DECODE_REQUEST,
+    CannotHandleAssertion,
+)
 from authentik.common.saml.parsers.verify import (
     verify_detached_signature,
     verify_enveloped_signature,
@@ -47,12 +52,12 @@ class AuthNRequestParser:
         try:
             root = ElementTree.fromstring(decoded_xml)
         except (ParseError, ValueError) as exc:
-            self.logger.warning("Failed to parse SAML request", exc=exc)
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from exc
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from exc
         # `ID` is a required attribute of every SAML request (SAML 2.0 core §3.2.1)
         if "ID" not in root.attrib:
-            self.logger.warning("SAML request is missing the ID attribute")
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST)
+            raise CannotHandleAssertion(
+                ERROR_CANNOT_DECODE_REQUEST, detail="Request is missing the ID attribute"
+            )
 
         # http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
         # `AssertionConsumerServiceURL` can be omitted, and we should fallback to the
@@ -69,8 +74,11 @@ class AuthNRequestParser:
                 provider_acs_url=self.provider.acs_url,
             )
             raise CannotHandleAssertion(
-                f"ACS URL of {request_acs_url} doesn't match Provider "
-                f"ACS URL of {self.provider.acs_url}."
+                ERROR_ACS_URL_MISMATCH,
+                detail=_(
+                    "ACS URL of {request_acs_url} doesn't match Provider "
+                    "ACS URL of {provider_acs_url}."
+                ).format(request_acs_url=request_acs_url, provider_acs_url=self.provider.acs_url),
             )
 
         # `ForceAuthn` is an optional attribute. When true, the SP requires the IdP to
@@ -97,8 +105,8 @@ class AuthNRequestParser:
         try:
             decoded_xml = b64decode(saml_request.encode())
         except ValueError as exc:
-            self.logger.warning("Failed to decode SAML request", exc=exc)
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from exc
+            # covers binascii.Error (invalid base64) and UnicodeDecodeError (not UTF-8)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from None
 
         verifier = self.provider.verification_kp
         if not verifier:
@@ -119,8 +127,8 @@ class AuthNRequestParser:
         try:
             decoded_xml = decode_base64_and_inflate(saml_request)
         except ValueError as exc:
-            self.logger.warning("Failed to decode SAML request", exc=exc)
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from exc
+            # covers binascii.Error (invalid base64) and UnicodeDecodeError (not UTF-8)
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST, detail=exc) from None
 
         verifier = self.provider.verification_kp
         if not verifier:
