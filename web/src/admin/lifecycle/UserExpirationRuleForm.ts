@@ -335,6 +335,7 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                 </p>
                 <ak-checkbox-group
                     id="user-expiration-user-types"
+                    required
                     .options=${SELECTABLE_USER_TYPES.map((type) => ({
                         name: type,
                         label: userTypeToLabel(type),

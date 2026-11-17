@@ -54,8 +54,10 @@ export class UserExpirationRulePreviewModal extends ModalButton {
         super.disconnectedCallback();
     }
 
-    #fetchPreview = async (): Promise<void> => {
-        if (!this.rule?.pk) {
+    #fetchPreview = async (event: Event): Promise<void> => {
+        // ModalButton re-dispatches the show event to every descendant, and those bubble
+        // back up here. Only fetch once per open.
+        if (event.target !== this || !this.rule?.pk) {
             return;
         }
 
