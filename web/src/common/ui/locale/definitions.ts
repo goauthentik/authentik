@@ -40,6 +40,7 @@ export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleM
     "bn-BD": () => import("#locales/bn-BD"),
     "cs-CZ": () => import("#locales/cs-CZ"),
     "sk-SK": () => import("#locales/sk-SK"),
+    "da-DK": () => import("#locales/da-DK"),
     "de-DE": () => import("#locales/de-DE"),
     "es-ES": () => import("#locales/es-ES"),
     "fi-FI": () => import("#locales/fi-FI"),
