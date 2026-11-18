@@ -47,7 +47,7 @@ RUN pnpm run build && \
     pnpm run build:sfe
 
 # Stage: download Rust toolchain
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:2c0f8e5bc196cefc854cacc473f93bd3c70806f41068e1bf16b69b8e49508196 AS rust-toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:56dbb468b1d0add9c1fff96593fd6ca2ceb25fcbcb96e07f729cbfcaec82c3a6 AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -70,7 +70,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.13.8@sha256:5cc1805e2426484abca4ad46ea783bab281fdb225fd82d8ce6d66a81254bac85 AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.10-p1-slim-trixie-fips@sha256:4ad62dff1ce1b123de6286b56174c8688eeaf0ed13c119a818f0738610fbf117 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.10-p1-slim-trixie-fips@sha256:96730cd33b9f5d79b9f9614fa0ad584c3378c04aae899e63a52bba9ce26708d6 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
