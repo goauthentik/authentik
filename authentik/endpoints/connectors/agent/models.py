@@ -121,7 +121,7 @@ class AgentConnector(Connector):
     challenge_trigger_check_in = models.BooleanField(default=False)
 
     # See ApplePSSOConfig, read through apple_psso_config to get defaults
-    apple_psso = models.JSONField(default=dict, blank=True)
+    apple_psso = models.JSONField(default=dict, db_default={}, blank=True)
 
     @property
     def apple_psso_config(self) -> ApplePSSOConfig:
