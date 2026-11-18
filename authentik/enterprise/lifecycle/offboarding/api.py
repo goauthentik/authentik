@@ -48,6 +48,7 @@ class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "executed_at",
             "rule",
             "rule_obj",
+            "generated",
         ]
         read_only_fields = [
             "id",
@@ -58,6 +59,7 @@ class UserOffboardingSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "executed_at",
             "rule",
             "rule_obj",
+            "generated",
         ]
 
     def validate_scheduled_at(self, value):
@@ -108,6 +110,7 @@ class UserOffboardingViewSet(
         "status": ["exact"],
         "action": ["exact"],
         "rule": ["exact", "isnull"],
+        "generated": ["exact"],
     }
 
     def perform_create(self, serializer: UserOffboardingSerializer) -> None:

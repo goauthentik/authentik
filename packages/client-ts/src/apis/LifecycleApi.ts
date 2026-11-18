@@ -259,6 +259,7 @@ export interface LifecycleUserOffboardingDestroyRequest {
 
 export interface LifecycleUserOffboardingListRequest {
     action?: OffboardingActionEnum;
+    generated?: boolean;
     /**
      * Which field to use when ordering the results.
      */
@@ -1755,6 +1756,10 @@ export class LifecycleApi extends runtime.BaseAPI {
 
         if (requestParameters["action"] != null) {
             queryParameters["action"] = requestParameters["action"];
+        }
+
+        if (requestParameters["generated"] != null) {
+            queryParameters["generated"] = requestParameters["generated"];
         }
 
         if (requestParameters["ordering"] != null) {

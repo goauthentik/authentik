@@ -53,6 +53,7 @@ export interface UserOffboarding {
     readonly executedAt: Date | null;
     readonly rule: string | null;
     readonly ruleObj: PartialUserExpirationRule;
+    readonly generated: boolean;
 }
 
 /**
@@ -105,6 +106,7 @@ export function instanceOfUserOffboarding(value: object): value is UserOffboardi
             (value as Record<string, any>)["rule_obj"] === undefined)
     )
         return false;
+    if (!("generated" in value) || value["generated"] === undefined) return false;
     return true;
 }
 
@@ -137,6 +139,7 @@ export function UserOffboardingFromJSONTyped(
         executedAt: json["executed_at"] == null ? null : parseDateTime(json["executed_at"]),
         rule: json["rule"],
         ruleObj: PartialUserExpirationRuleFromJSON(json["rule_obj"]),
+        generated: json["generated"],
     };
 }
 
@@ -155,6 +158,7 @@ export function UserOffboardingToJSONTyped(
         | "executedAt"
         | "rule"
         | "ruleObj"
+        | "generated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

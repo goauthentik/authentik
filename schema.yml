@@ -10658,6 +10658,10 @@ paths:
         name: action
         schema:
           $ref: '#/components/schemas/OffboardingActionEnum'
+      - in: query
+        name: generated
+        schema:
+          type: boolean
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -62736,10 +62740,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUserExpirationRule'
           readOnly: true
+        generated:
+          type: boolean
+          readOnly: true
       required:
       - created_at
       - created_by_obj
       - executed_at
+      - generated
       - id
       - rule
       - rule_obj

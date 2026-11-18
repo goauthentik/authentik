@@ -548,3 +548,28 @@ class TestOffboardingAPI(APITestCase):
             self.assertEqual(response.status_code, 405)
         offboarding.refresh_from_db()
         self.assertEqual(offboarding.action, OffboardingAction.DEACTIVATE)
+
+    def test_generated_filter_keeps_rows_of_deleted_rules(self):
+        from authentik.enterprise.lifecycle.expiration.models import UserExpirationRule
+
+        with patch(
+            "authentik.enterprise.lifecycle.expiration.tasks.apply_expiration_rule.send_with_options"
+        ):
+            rule = UserExpirationRule.objects.create(name=generate_id())
+        generated = UserOffboarding.objects.create(
+            user=create_test_user(),
+            rule=rule,
+            scheduled_at=now(),
+            status=OffboardingStatus.COMPLETED,
+        )
+        manual = UserOffboarding.objects.create(user=self.user, scheduled_at=now())
+        rule.delete()
+        url = reverse("authentik_api:useroffboarding-list")
+        for value, expected in (("true", generated), ("false", manual)):
+            with self.subTest(generated=value):
+                response = self.client.get(url, {"generated": value})
+                self.assertEqual(response.status_code, 200)
+                results = response.json()["results"]
+                self.assertEqual([row["id"] for row in results], [str(expected.pk)])
+                self.assertEqual(results[0]["generated"], value == "true")
+                self.assertIsNone(results[0]["rule"])
