@@ -11557,6 +11557,11 @@
                     "type": "boolean",
                     "title": "Sign logout response"
                 },
+                "ignore_force_authn": {
+                    "type": "boolean",
+                    "title": "Ignore force authn",
+                    "description": "When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate."
+                },
                 "sp_binding": {
                     "type": "string",
                     "enum": [
