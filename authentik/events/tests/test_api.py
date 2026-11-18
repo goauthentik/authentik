@@ -204,6 +204,16 @@ class TestEventsAPI(APITestCase):
         fields = response.json()["autocomplete"]["models"]["authentik_events.event"]
         self.assertEqual(fields["app"]["options"], ["a", "b"])
 
+    def test_filter_action_unicode(self):
+        """Match custom actions with Unicode case folding."""
+        event = Event.new("straße")
+        event.save()
+        response = self.client.get(reverse("authentik_api:event-list"), data={"action": "STRAẞE"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [result["action"] for result in response.json()["results"]], [event.action]
+        )
+
     def test_actions(self):
         """Test actions"""
         response = self.client.get(

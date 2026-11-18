@@ -3,7 +3,7 @@
 import gc
 from collections.abc import Generator
 
-from django.core.exceptions import EmptyResultSet
+from django.core.exceptions import EmptyResultSet, FullResultSet
 from django.db import connections, reset_queries, transaction
 from django.db.models import Model, QuerySet
 
@@ -85,6 +85,8 @@ def distinct_values(queryset: QuerySet, field: str) -> list:
         where, params = queryset.query.get_compiler(using=queryset.db).compile(queryset.query.where)
     except EmptyResultSet:
         return []
+    except FullResultSet:
+        where, params = "", ()
     where = f"AND {where}" if where else ""
     with db.cursor() as cursor:
         cursor.execute(
@@ -103,3 +105,9 @@ def distinct_values(queryset: QuerySet, field: str) -> list:
             (*params, *params),
         )
         return [value for (value,) in cursor.fetchall()]
+
+
+def distinct_values_containing(queryset: QuerySet, field: str, needle: str) -> list[str]:
+    """Return distinct strings containing the substring, ignoring case."""
+    needle = needle.casefold()
+    return [value for value in distinct_values(queryset, field) if needle in value.casefold()]

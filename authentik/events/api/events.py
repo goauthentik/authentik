@@ -36,7 +36,7 @@ from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.lib.utils.db import distinct_values
+from authentik.lib.utils.db import distinct_values_containing
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 
@@ -131,12 +131,7 @@ class EventsFilter(django_filters.FilterSet):
         """Match actions containing `value`, ignoring case. A substring match cannot use the
         action index, so find the few distinct actions that contain `value` and filter on
         those instead."""
-        value = value.upper()
-        actions = [
-            action
-            for action in distinct_values(Event.objects.all(), "action")
-            if value in action.upper()
-        ]
+        actions = distinct_values_containing(Event.objects.all(), "action", value)
         return queryset.filter(action__in=actions)
 
     def filter_username(self, queryset, name, value):
