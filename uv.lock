@@ -418,7 +418,7 @@ requires-dist = [
     { name = "ak-guardian", editable = "packages/ak-guardian" },
     { name = "argon2-cffi", specifier = "==25.1.0" },
     { name = "bcrypt", specifier = "==5.0.0" },
-    { name = "cachetools", specifier = "==7.3.1" },
+    { name = "cachetools", specifier = "==7.3.2" },
     { name = "certifi", specifier = "==2026.10.23" },
     { name = "channels", specifier = "==4.3.2" },
     { name = "cryptography", specifier = "==50.0.2" },
@@ -800,11 +800,11 @@ wheels = [
 
 [[package]]
 name = "cachetools"
-version = "7.3.1"
+version = "7.3.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/04/d7/c2d7834f49eb10ba2eb55797a8a2e64c03679ec82cce58cfe1f03bb55024/cachetools-7.3.1.tar.gz", hash = "sha256:32e20b38b9cb7ff8d9fa7692e2f8969be3010083e6e7eac54226d51a91425d15", size = 49536, upload-time = "2026-11-12T21:25:12.764Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0a/d6/3b2743ae0662528e36b1002074909e4e73dc7407f1fc7da0d6a1b7401e72/cachetools-7.3.2.tar.gz", hash = "sha256:43e5db663b58c4337a9959069d93f54dd2e065fdd0438a504cd1100fbeb48beb", size = 50520, upload-time = "2026-11-14T21:19:07.523Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/ba/8f2b8d09957f8e8fed09236f22f7737b812bed5939cc6e2f5d9e77b0d71b/cachetools-7.3.1-py3-none-any.whl", hash = "sha256:0a2c9cfc6c6556161570c06d52b8939734d316ccf7ecad158fdb34b300808fce", size = 19785, upload-time = "2026-11-12T21:25:10.989Z" },
+    { url = "https://files.pythonhosted.org/packages/ed/8f/9d90e713bdaf06316184c7214a23177e0fe7b9a287932a5dcce643f6fd58/cachetools-7.3.2-py3-none-any.whl", hash = "sha256:afb4b563cb37e7a121a6ea45a0deec42916c64eed58875cc15d8cf9eaca89fb2", size = 19956, upload-time = "2026-11-14T21:19:05.777Z" },
 ]
 
 [[package]]
