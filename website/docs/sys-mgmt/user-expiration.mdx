@@ -41,7 +41,7 @@ Activity is stored independently of audit events, so event retention does not af
 9. Leave **Exclude superusers** enabled unless you want to include members of superuser groups.
 10. Leave **Enabled** off and click **Create** to save the rule. A disabled rule does not schedule any offboardings, so you can bind policies and preview it before it takes effect.
 11. Optionally bind policies to the rule. Expand the rule's row to manage its policy bindings. The rule expires only users who pass the bound policies, so you can exempt users based on attributes or other criteria.
-12. Click **Preview** to see how many users the first run would schedule for offboarding. Users who have already exceeded the inactivity duration are offboarded shortly after you enable the rule, [without a warning period](#how-rules-run).
+12. Click **Preview** to see how many users the first run would schedule for offboarding. Users who have already exceeded the inactivity duration are scheduled on the first run. With a [warning period](#how-rules-run), they are warned and offboarded when the warning period ends. Without one, they are offboarded within five minutes.
 13. To enable the rule, edit it, turn on **Enabled**, and click **Update**. For **Delete** rules, confirm with **Save delete rule**. The rule runs immediately and then [on a schedule](#how-rules-run).
 
 ## Preview changes to a rule
@@ -58,11 +58,11 @@ Enabled rules run every 12 hours by default. To change the interval, edit the `a
 
 When a user reaches the inactivity threshold, the rule schedules an offboarding for the time of their last activity plus the configured inactivity duration. Like a [manually scheduled offboarding](./user-offboarding.mdx), it appears under **Events** > **Offboardings**. You can cancel it, and the offboarding is retried after a failure. The user's overview page shows **Cancel Expiration** and the rule that scheduled the offboarding.
 
-If you configure a **Warning period**, the rule creates the offboarding that long before it is due, generates a **User Expiration Warning** event, and delivers the warning through the selected notification transports. If you select no transports, the warning appears as an in-app notification. With the default schedule, the warning can arrive up to 12 hours after the warning period starts, but the offboarding still runs at its scheduled time.
+If you configure a **Warning period**, the rule creates the offboarding that long before it is due, generates a **User Expiration Warning** event, and delivers the warning through the selected notification transports. If you select no transports, the warning appears as an in-app notification. The offboarding runs at least one full warning period after the warning, so with the default schedule it can run up to 12 hours after it is due.
 
-Without a warning period, the rule creates the offboarding at its first run after the offboarding is due and runs it within five minutes, so with the default schedule it can run up to 12 hours late. Configure a warning period if offboardings need to run at their exact time.
+Without a warning period, the rule creates the offboarding at its first run after the offboarding is due and runs it within five minutes, so with the default schedule it can also run up to 12 hours late.
 
-The warning period does not apply to users who have already been inactive for longer than the inactivity duration when you enable a rule. Their offboarding is due immediately, so it runs within five minutes of the first run, at the same time the warning is sent. Use **Preview** before you enable a rule to see which users the first run would schedule.
+Users who have already been inactive for longer than the inactivity duration when you enable a rule also get the full warning period. They are warned on the first run and offboarded when the warning period ends. Without a warning period, their offboarding runs within five minutes of the first run. Use **Preview** before you enable a rule to see which users the first run would schedule.
 
 A login before the scheduled time removes the pending offboarding and resets the inactivity clock. Before execution, a final check confirms that the rule still applies and that the user has reached the inactivity threshold. These checks prevent offboarding if the rule is disabled, the user's group membership changes, or the user logs in. For **Last activity** rules, new recorded activity also prevents offboarding. Increasing the inactivity duration also postpones execution, even if the task is already queued.
 
@@ -91,9 +91,9 @@ If two rules expire the user at the same time, a deactivation rule takes precede
 
 ### Change or delete a rule
 
-Editing a rule updates its pending offboardings to use the current activity basis, inactivity duration, action, and session and token revocation settings. Preview the effect before changing the activity basis. Moving expiration earlier or changing the action sends a new warning. Delaying expiration reschedules the offboarding without another warning.
+Editing a rule updates its pending offboardings to use the current activity basis, inactivity duration, action, and session and token revocation settings. Preview the effect before changing the activity basis. Moving expiration earlier or changing the action sends a new warning. Expiration never moves earlier than one warning period after the offboarding was first scheduled. Delaying expiration reschedules the offboarding without another warning.
 
-Execution uses the current settings even if the next rule evaluation has not run. If a change makes the expiration immediately due, the offboarding proceeds without another warning.
+Execution uses the current settings even if the next rule evaluation has not run. If a change makes the expiration due right away, for example after the warning period has ended, the offboarding proceeds without another warning.
 
 Disabling a rule stops expiration and removes its pending offboardings shortly after saving. Users are not notified when these offboardings are removed. Re-enabling the rule can schedule eligible users again and send warnings according to its warning settings.
 
