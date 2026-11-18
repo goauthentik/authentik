@@ -157,12 +157,19 @@ class LDAPOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         """Check access to a single application by slug"""
         provider = get_object_or_404(LDAPProvider, pk=pk)
         application = get_object_or_404(Application, slug=request.query_params["app_slug"])
-        engine = PolicyEngine(application, request.user, request)
-        engine.empty_result = AppAccessWithoutBindings.get()
-        engine.use_cache = False
-        engine.build()
-        result = engine.result
-        access_response = PolicyResult(result.passing)
+        
+        # Only check access if the application is the one directly linked to the LDAP provider
+        # Backchannel applications are not used for LDAP bind authorization
+        if provider.application == application:
+            engine = PolicyEngine(application, request.user, request)
+            engine.empty_result = AppAccessWithoutBindings.get()
+            engine.use_cache = False
+            engine.build()
+            result = engine.result
+            access_response = PolicyResult(result.passing)
+        else:
+            access_response = PolicyResult(True)
+
         response = self.LDAPCheckAccessSerializer(
             instance={
                 "has_search_permission": (
