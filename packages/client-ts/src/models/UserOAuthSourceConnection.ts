@@ -22,7 +22,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface UserOAuthSourceConnection {
     readonly pk: number;
-    readonly user: number;
+    user: number;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -90,10 +90,7 @@ export function UserOAuthSourceConnectionToJSON(json: any): UserOAuthSourceConne
 }
 
 export function UserOAuthSourceConnectionToJSONTyped(
-    value?: Omit<
-        UserOAuthSourceConnection,
-        "pk" | "user" | "sourceObj" | "created" | "lastUpdated"
-    > | null,
+    value?: Omit<UserOAuthSourceConnection, "pk" | "sourceObj" | "created" | "lastUpdated"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -101,6 +98,7 @@ export function UserOAuthSourceConnectionToJSONTyped(
     }
 
     return {
+        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),

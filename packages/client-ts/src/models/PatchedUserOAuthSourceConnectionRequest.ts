@@ -18,6 +18,7 @@ import { parseDateTime, serializeDateTime } from "../runtime.js";
  * @interface PatchedUserOAuthSourceConnectionRequest
  */
 export interface PatchedUserOAuthSourceConnectionRequest {
+    user?: number;
     source?: string;
     identifier?: string;
     accessToken?: string | null;
@@ -47,6 +48,7 @@ export function PatchedUserOAuthSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
+        user: json["user"] == null ? undefined : json["user"],
         source: json["source"] == null ? undefined : json["source"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
         accessToken:
@@ -74,6 +76,7 @@ export function PatchedUserOAuthSourceConnectionRequestToJSONTyped(
     }
 
     return {
+        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
         access_token: value["accessToken"],

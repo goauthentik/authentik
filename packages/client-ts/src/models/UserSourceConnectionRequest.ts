@@ -17,6 +17,7 @@
  * @interface UserSourceConnectionRequest
  */
 export interface UserSourceConnectionRequest {
+    user: number;
     source: string;
     identifier: string;
 }
@@ -27,6 +28,7 @@ export interface UserSourceConnectionRequest {
 export function instanceOfUserSourceConnectionRequest(
     value: object,
 ): value is UserSourceConnectionRequest {
+    if (!("user" in value) || value["user"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
@@ -44,6 +46,7 @@ export function UserSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
+        user: json["user"],
         source: json["source"],
         identifier: json["identifier"],
     };
@@ -62,6 +65,7 @@ export function UserSourceConnectionRequestToJSONTyped(
     }
 
     return {
+        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };

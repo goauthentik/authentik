@@ -22,7 +22,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface UserPlexSourceConnection {
     readonly pk: number;
-    readonly user: number;
+    user: number;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -88,10 +88,7 @@ export function UserPlexSourceConnectionToJSON(json: any): UserPlexSourceConnect
 }
 
 export function UserPlexSourceConnectionToJSONTyped(
-    value?: Omit<
-        UserPlexSourceConnection,
-        "pk" | "user" | "sourceObj" | "created" | "lastUpdated"
-    > | null,
+    value?: Omit<UserPlexSourceConnection, "pk" | "sourceObj" | "created" | "lastUpdated"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -99,6 +96,7 @@ export function UserPlexSourceConnectionToJSONTyped(
     }
 
     return {
+        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };

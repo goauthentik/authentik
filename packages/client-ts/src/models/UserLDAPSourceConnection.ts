@@ -24,7 +24,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface UserLDAPSourceConnection {
     readonly pk: number;
-    readonly user: number;
+    user: number;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -101,7 +101,7 @@ export function UserLDAPSourceConnectionToJSON(json: any): UserLDAPSourceConnect
 export function UserLDAPSourceConnectionToJSONTyped(
     value?: Omit<
         UserLDAPSourceConnection,
-        "pk" | "user" | "sourceObj" | "created" | "lastUpdated" | "userObj"
+        "pk" | "sourceObj" | "created" | "lastUpdated" | "userObj"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -110,6 +110,7 @@ export function UserLDAPSourceConnectionToJSONTyped(
     }
 
     return {
+        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };

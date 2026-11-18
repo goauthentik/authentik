@@ -22,7 +22,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface GroupPlexSourceConnection {
     readonly pk: number;
-    readonly group: string;
+    group: string;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -88,10 +88,7 @@ export function GroupPlexSourceConnectionToJSON(json: any): GroupPlexSourceConne
 }
 
 export function GroupPlexSourceConnectionToJSONTyped(
-    value?: Omit<
-        GroupPlexSourceConnection,
-        "pk" | "group" | "sourceObj" | "created" | "lastUpdated"
-    > | null,
+    value?: Omit<GroupPlexSourceConnection, "pk" | "sourceObj" | "created" | "lastUpdated"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -99,6 +96,7 @@ export function GroupPlexSourceConnectionToJSONTyped(
     }
 
     return {
+        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

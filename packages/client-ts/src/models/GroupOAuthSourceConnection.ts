@@ -22,7 +22,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface GroupOAuthSourceConnection {
     readonly pk: number;
-    readonly group: string;
+    group: string;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -88,10 +88,7 @@ export function GroupOAuthSourceConnectionToJSON(json: any): GroupOAuthSourceCon
 }
 
 export function GroupOAuthSourceConnectionToJSONTyped(
-    value?: Omit<
-        GroupOAuthSourceConnection,
-        "pk" | "group" | "sourceObj" | "created" | "lastUpdated"
-    > | null,
+    value?: Omit<GroupOAuthSourceConnection, "pk" | "sourceObj" | "created" | "lastUpdated"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -99,6 +96,7 @@ export function GroupOAuthSourceConnectionToJSONTyped(
     }
 
     return {
+        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

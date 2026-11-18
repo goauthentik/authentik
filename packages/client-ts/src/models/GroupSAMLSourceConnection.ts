@@ -22,7 +22,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface GroupSAMLSourceConnection {
     readonly pk: number;
-    readonly group: string;
+    group: string;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -88,10 +88,7 @@ export function GroupSAMLSourceConnectionToJSON(json: any): GroupSAMLSourceConne
 }
 
 export function GroupSAMLSourceConnectionToJSONTyped(
-    value?: Omit<
-        GroupSAMLSourceConnection,
-        "pk" | "group" | "sourceObj" | "created" | "lastUpdated"
-    > | null,
+    value?: Omit<GroupSAMLSourceConnection, "pk" | "sourceObj" | "created" | "lastUpdated"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -99,6 +96,7 @@ export function GroupSAMLSourceConnectionToJSONTyped(
     }
 
     return {
+        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

@@ -22,7 +22,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface UserSAMLSourceConnection {
     readonly pk: number;
-    readonly user: number;
+    user: number;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -88,10 +88,7 @@ export function UserSAMLSourceConnectionToJSON(json: any): UserSAMLSourceConnect
 }
 
 export function UserSAMLSourceConnectionToJSONTyped(
-    value?: Omit<
-        UserSAMLSourceConnection,
-        "pk" | "user" | "sourceObj" | "created" | "lastUpdated"
-    > | null,
+    value?: Omit<UserSAMLSourceConnection, "pk" | "sourceObj" | "created" | "lastUpdated"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -99,6 +96,7 @@ export function UserSAMLSourceConnectionToJSONTyped(
     }
 
     return {
+        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };

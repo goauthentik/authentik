@@ -22,7 +22,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface GroupSourceConnection {
     readonly pk: number;
-    readonly group: string;
+    group: string;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -86,10 +86,7 @@ export function GroupSourceConnectionToJSON(json: any): GroupSourceConnection {
 }
 
 export function GroupSourceConnectionToJSONTyped(
-    value?: Omit<
-        GroupSourceConnection,
-        "pk" | "group" | "sourceObj" | "created" | "lastUpdated"
-    > | null,
+    value?: Omit<GroupSourceConnection, "pk" | "sourceObj" | "created" | "lastUpdated"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -97,6 +94,7 @@ export function GroupSourceConnectionToJSONTyped(
     }
 
     return {
+        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

@@ -22,7 +22,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface UserTelegramSourceConnection {
     readonly pk: number;
-    readonly user: number;
+    user: number;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -90,7 +90,7 @@ export function UserTelegramSourceConnectionToJSON(json: any): UserTelegramSourc
 export function UserTelegramSourceConnectionToJSONTyped(
     value?: Omit<
         UserTelegramSourceConnection,
-        "pk" | "user" | "sourceObj" | "created" | "lastUpdated"
+        "pk" | "sourceObj" | "created" | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -99,6 +99,7 @@ export function UserTelegramSourceConnectionToJSONTyped(
     }
 
     return {
+        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };

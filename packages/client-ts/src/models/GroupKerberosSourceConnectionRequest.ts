@@ -17,6 +17,7 @@
  * @interface GroupKerberosSourceConnectionRequest
  */
 export interface GroupKerberosSourceConnectionRequest {
+    group: string;
     source: string;
     identifier: string;
 }
@@ -27,6 +28,7 @@ export interface GroupKerberosSourceConnectionRequest {
 export function instanceOfGroupKerberosSourceConnectionRequest(
     value: object,
 ): value is GroupKerberosSourceConnectionRequest {
+    if (!("group" in value) || value["group"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
@@ -46,6 +48,7 @@ export function GroupKerberosSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
+        group: json["group"],
         source: json["source"],
         identifier: json["identifier"],
     };
@@ -66,6 +69,7 @@ export function GroupKerberosSourceConnectionRequestToJSONTyped(
     }
 
     return {
+        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

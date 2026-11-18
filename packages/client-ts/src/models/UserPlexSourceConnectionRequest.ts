@@ -17,6 +17,7 @@
  * @interface UserPlexSourceConnectionRequest
  */
 export interface UserPlexSourceConnectionRequest {
+    user: number;
     source: string;
     identifier: string;
     plexToken: string;
@@ -28,6 +29,7 @@ export interface UserPlexSourceConnectionRequest {
 export function instanceOfUserPlexSourceConnectionRequest(
     value: object,
 ): value is UserPlexSourceConnectionRequest {
+    if (!("user" in value) || value["user"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     if (
@@ -54,6 +56,7 @@ export function UserPlexSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
+        user: json["user"],
         source: json["source"],
         identifier: json["identifier"],
         plexToken: json["plex_token"],
@@ -73,6 +76,7 @@ export function UserPlexSourceConnectionRequestToJSONTyped(
     }
 
     return {
+        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
         plex_token: value["plexToken"],

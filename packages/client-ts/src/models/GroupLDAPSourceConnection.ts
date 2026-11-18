@@ -24,7 +24,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface GroupLDAPSourceConnection {
     readonly pk: number;
-    readonly group: string;
+    group: string;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -101,7 +101,7 @@ export function GroupLDAPSourceConnectionToJSON(json: any): GroupLDAPSourceConne
 export function GroupLDAPSourceConnectionToJSONTyped(
     value?: Omit<
         GroupLDAPSourceConnection,
-        "pk" | "group" | "sourceObj" | "created" | "lastUpdated" | "groupObj"
+        "pk" | "sourceObj" | "created" | "lastUpdated" | "groupObj"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -110,6 +110,7 @@ export function GroupLDAPSourceConnectionToJSONTyped(
     }
 
     return {
+        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

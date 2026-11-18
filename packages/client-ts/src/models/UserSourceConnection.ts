@@ -22,7 +22,7 @@ import { SourceFromJSON } from "./Source.js";
  */
 export interface UserSourceConnection {
     readonly pk: number;
-    readonly user: number;
+    user: number;
     source: string;
     readonly sourceObj: Source;
     identifier: string;
@@ -86,10 +86,7 @@ export function UserSourceConnectionToJSON(json: any): UserSourceConnection {
 }
 
 export function UserSourceConnectionToJSONTyped(
-    value?: Omit<
-        UserSourceConnection,
-        "pk" | "user" | "sourceObj" | "created" | "lastUpdated"
-    > | null,
+    value?: Omit<UserSourceConnection, "pk" | "sourceObj" | "created" | "lastUpdated"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -97,6 +94,7 @@ export function UserSourceConnectionToJSONTyped(
     }
 
     return {
+        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };

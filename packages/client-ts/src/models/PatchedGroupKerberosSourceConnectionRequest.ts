@@ -17,6 +17,7 @@
  * @interface PatchedGroupKerberosSourceConnectionRequest
  */
 export interface PatchedGroupKerberosSourceConnectionRequest {
+    group?: string;
     source?: string;
     identifier?: string;
 }
@@ -44,6 +45,7 @@ export function PatchedGroupKerberosSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
+        group: json["group"] == null ? undefined : json["group"],
         source: json["source"] == null ? undefined : json["source"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
@@ -64,6 +66,7 @@ export function PatchedGroupKerberosSourceConnectionRequestToJSONTyped(
     }
 
     return {
+        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

@@ -17,6 +17,7 @@
  * @interface GroupLDAPSourceConnectionRequest
  */
 export interface GroupLDAPSourceConnectionRequest {
+    group: string;
     source: string;
     identifier: string;
 }
@@ -27,6 +28,7 @@ export interface GroupLDAPSourceConnectionRequest {
 export function instanceOfGroupLDAPSourceConnectionRequest(
     value: object,
 ): value is GroupLDAPSourceConnectionRequest {
+    if (!("group" in value) || value["group"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
@@ -46,6 +48,7 @@ export function GroupLDAPSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
+        group: json["group"],
         source: json["source"],
         identifier: json["identifier"],
     };
@@ -66,6 +69,7 @@ export function GroupLDAPSourceConnectionRequestToJSONTyped(
     }
 
     return {
+        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

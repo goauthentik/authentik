@@ -17,6 +17,7 @@
  * @interface PatchedGroupSAMLSourceConnectionRequest
  */
 export interface PatchedGroupSAMLSourceConnectionRequest {
+    group?: string;
     source?: string;
     identifier?: string;
 }
@@ -44,6 +45,7 @@ export function PatchedGroupSAMLSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
+        group: json["group"] == null ? undefined : json["group"],
         source: json["source"] == null ? undefined : json["source"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
@@ -64,6 +66,7 @@ export function PatchedGroupSAMLSourceConnectionRequestToJSONTyped(
     }
 
     return {
+        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

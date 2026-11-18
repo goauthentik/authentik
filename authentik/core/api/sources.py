@@ -133,10 +133,17 @@ class UserSourceConnectionSerializer(SourceSerializer):
             "last_updated",
         ]
         extra_kwargs = {
-            "user": {"read_only": True},
             "created": {"read_only": True},
             "last_updated": {"read_only": True},
         }
+
+    def get_extra_kwargs(self):
+        """The user is set when the connection is created, for example to link an existing
+        user to their subject at a source, and can't be changed afterwards."""
+        kwargs = super().get_extra_kwargs()
+        if self.instance is not None:
+            kwargs["user"] = {**kwargs.get("user", {}), "read_only": True}
+        return kwargs
 
 
 class UserSourceConnectionViewSet(
@@ -174,10 +181,16 @@ class GroupSourceConnectionSerializer(SourceSerializer):
             "last_updated",
         ]
         extra_kwargs = {
-            "group": {"read_only": True},
             "created": {"read_only": True},
             "last_updated": {"read_only": True},
         }
+
+    def get_extra_kwargs(self):
+        """The group is set when the connection is created and can't be changed afterwards."""
+        kwargs = super().get_extra_kwargs()
+        if self.instance is not None:
+            kwargs["group"] = {**kwargs.get("group", {}), "read_only": True}
+        return kwargs
 
 
 class GroupSourceConnectionViewSet(
