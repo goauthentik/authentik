@@ -385,7 +385,7 @@ class TestApplicationsAPI(APITestCase):
                 slug=generate_id(),
                 provider=provider,
                 meta_launch_url="https://goauthentik.io",
-                meta_icon=f"{generate_id()}{'-%(theme)s' if index % 3 else ''}.svg",
+                meta_icon=f"{generate_id()}{'-%(theme)s' if index % 3 == 0 else ''}.svg",
             )
             backchannel = SCIMProvider.objects.create(
                 name=generate_id(), url="https://goauthentik.io", token=generate_id()
