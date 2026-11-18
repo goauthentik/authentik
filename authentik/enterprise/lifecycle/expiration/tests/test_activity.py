@@ -268,7 +268,7 @@ class TestActivity(ExpirationTestCase):
         user = User.objects.select_related("activity").get(pk=user.pk)
         with self.assertNumQueries(0):
             for rule in rules:
-                rule.rank(user)
+                rule.due_at(user)
 
     def test_activity_survives_event_pruning(self):
         user = _dormant_user()

@@ -413,7 +413,7 @@ class TestDisabledRule(ExpirationTestCase):
         replacement = _pending(user)
         self.assertIsNotNone(replacement)
         self.assertNotEqual(replacement.pk, original.pk)
-        self.assertEqual(replacement.scheduled_at, original.scheduled_at)
+        self.assertEqual(replacement.scheduled_at, replacement.created_at + timedelta(days=14))
         self.assertEqual(warnings.count(), 2)
         user.refresh_from_db()
         self.assertEqual(user.last_login, original_login)
@@ -446,16 +446,48 @@ class TestOverlapAndChange(ExpirationTestCase):
         user = _dormant_user(85)
         rule.apply()
         first = _pending(user)
-        rule.inactivity_duration = "days=80"
+        # Push it past the warning period silently, then bring it back in.
+        rule.inactivity_duration = "days=120"
+        rule.save()
+        rule.apply()
+        rule.inactivity_duration = "days=110"
         rule.save()
         rule.apply()
         pending = _pending(user)
         self.assertEqual(pending.pk, first.pk)
-        self.assertEqual(pending.scheduled_at, user.last_login + timedelta(days=80))
+        self.assertEqual(pending.scheduled_at, user.last_login + timedelta(days=110))
         rule.apply()
         self.assertEqual(
             Event.objects.filter(action=EventAction.USER_EXPIRATION_WARNING).count(), 2
         )
+
+    def test_shortened_duration_keeps_the_warning_period(self):
+        rule = self._rule(warn_before="days=14")
+        user = _dormant_user(85)
+        rule.apply()
+        first = _pending(user)
+        rule.inactivity_duration = "days=80"
+        rule.save()
+        rule.apply()
+        pending = _pending(user)
+        self.assertEqual(pending.scheduled_at, first.created_at + timedelta(days=14))
+        self.assertEqual(
+            Event.objects.filter(action=EventAction.USER_EXPIRATION_WARNING).count(), 1
+        )
+
+    def test_overdue_user_gets_the_full_warning_period(self):
+        rule = self._rule(warn_before="days=7")
+        user = _dormant_user(200)
+        rule.apply()
+        row = _pending(user)
+        self.assertEqual(row.scheduled_at, row.created_at + timedelta(days=7))
+        execute_offboarding(str(row.pk))
+        user.refresh_from_db()
+        self.assertTrue(user.is_active)
+        with freeze_time(row.scheduled_at):
+            execute_offboarding(str(row.pk))
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
 
     def test_changed_action_and_revocations_update_owned_row(self):
         rule = self._rule(action=OffboardingAction.DELETE, warn_before="days=7")
@@ -473,7 +505,8 @@ class TestOverlapAndChange(ExpirationTestCase):
         self.assertEqual(
             Event.objects.filter(action=EventAction.USER_EXPIRATION_WARNING).count(), 2
         )
-        execute_offboarding(str(pending.pk))
+        with freeze_time(pending.scheduled_at):
+            execute_offboarding(str(pending.pk))
         user.refresh_from_db()
         self.assertFalse(user.is_active)
 
@@ -481,7 +514,7 @@ class TestOverlapAndChange(ExpirationTestCase):
         rule = self._rule(warn_before="days=14")
         _dormant_user(85)
         rule.apply()
-        rule.inactivity_duration = "days=80"
+        rule.action = OffboardingAction.DELETE
         rule.save()
         outer_savepoints = len(connection.savepoint_ids)
 
@@ -533,7 +566,7 @@ class TestOverlapAndChange(ExpirationTestCase):
                 row.refresh_from_db()
                 if change == "cancel":
                     self.assertEqual(row.status, OffboardingStatus.CANCELED)
-                    self.assertEqual(row.scheduled_at, user.last_login + timedelta(days=180))
+                    self.assertEqual(row.scheduled_at, row.created_at + timedelta(days=14))
                 else:
                     self.assertEqual(row.rule, tight)
                     self.assertEqual(row.status, OffboardingStatus.PENDING)
@@ -553,7 +586,7 @@ class TestOverlapAndChange(ExpirationTestCase):
         self.assertEqual(pending.pk, first.pk)
         self.assertEqual(pending.rule, tight)
         self.assertEqual(pending.action, OffboardingAction.DELETE)
-        self.assertEqual(pending.scheduled_at, user.last_login + timedelta(days=90))
+        self.assertEqual(pending.scheduled_at, first.created_at + timedelta(days=7))
         self.assertEqual(
             Event.objects.filter(action=EventAction.USER_EXPIRATION_WARNING).count(), 2
         )
@@ -610,7 +643,7 @@ class TestOverlapAndChange(ExpirationTestCase):
                 pending = _pending(user)
                 self.assertEqual(pending.rule, deactivate)
                 self.assertEqual(pending.action, OffboardingAction.DEACTIVATE)
-                self.assertEqual(pending.scheduled_at, user.last_login + timedelta(days=90))
+                self.assertEqual(pending.scheduled_at, pending.created_at + timedelta(days=14))
 
     def test_full_tie_prefers_lowest_rule_id_and_its_settings(self):
         for backwards in (False, True):
@@ -840,7 +873,8 @@ class TestExecution(ExpirationTestCase):
                 user.groups.add(group)
                 rule.apply()
                 row = _pending(user)
-                rule.inactivity_duration = "days=105"
+                # Past the end of the warning period.
+                rule.inactivity_duration = "days=120"
                 rule.save()
                 if sweep:
                     rule.apply()
@@ -849,8 +883,8 @@ class TestExecution(ExpirationTestCase):
                 row.refresh_from_db()
                 self.assertTrue(user.is_active)
                 self.assertEqual(row.status, OffboardingStatus.PENDING)
-                self.assertEqual(row.scheduled_at, user.last_login + timedelta(days=105))
-                clock.tick(timedelta(days=5))
+                self.assertEqual(row.scheduled_at, user.last_login + timedelta(days=120))
+                clock.tick(timedelta(days=20))
                 execute_offboarding(str(row.pk))
                 user.refresh_from_db()
                 self.assertFalse(user.is_active)
@@ -879,9 +913,16 @@ class TestExecution(ExpirationTestCase):
         user = _dormant_user(100)
         rule.apply()
         row = _pending(user)
-        rule.inactivity_duration = "days=90"
+        rule.inactivity_duration = "days=150"
         rule.save()
-        with patch.object(UserExpirationRule, "_warn") as warn:
+        rule.apply()
+        # After the warning period, an earlier date is due right away.
+        rule.inactivity_duration = "days=120"
+        rule.save()
+        with (
+            patch.object(UserExpirationRule, "_warn") as warn,
+            freeze_time(row.created_at + timedelta(days=35)),
+        ):
             execute_offboarding(str(row.pk))
         warn.assert_not_called()
         user.refresh_from_db()

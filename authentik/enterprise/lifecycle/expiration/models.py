@@ -153,8 +153,20 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                 )
         return last_activity + self.inactivity_timedelta
 
-    def rank(self, user: User) -> Rank:
-        return Rank(self.due_at(user), ACTION_SEVERITY[self.action], self.pk)
+    def scheduled_at(self, due_at: datetime, created_at: datetime) -> datetime:
+        """When to run an offboarding due at `due_at`. Users always get the full warning
+        period after it's created, even if they were already overdue."""
+        if not self.warn_before:
+            return due_at
+        return max(due_at, created_at + timedelta_from_string(self.warn_before))
+
+    def rank(self, row: UserOffboarding) -> Rank:
+        """How this rule would rank the user's pending row if it owned it."""
+        return Rank(
+            self.scheduled_at(self.due_at(row.user), row.created_at),
+            ACTION_SEVERITY[self.action],
+            self.pk,
+        )
 
     @staticmethod
     def row_rank(row: UserOffboarding) -> Rank:
@@ -196,7 +208,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         best: UserExpirationRule | None = None
         best_rank = cls.row_rank(row)
         for rule in cls.objects.filter(enabled=True).exclude(pk=row.rule_id):
-            rank = rule.rank(row.user)
+            rank = rule.rank(row)
             if rank < best_rank and rule._in_scope(row.user):
                 best, best_rank = rule, rank
         if best is None:
@@ -338,7 +350,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             or event_after_creation
         ):
             return None
-        return self.due_at(row.user)
+        return self.scheduled_at(self.due_at(row.user), row.created_at)
 
     def reconcile_offboarding(
         self, row: UserOffboarding, *, in_scope: bool | None = None
@@ -422,7 +434,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
             CHUNK_SIZE,
             strict=False,
         ):
-            ranked = [(row, self.rank(row.user)) for row in batch]
+            ranked = [(row, self.rank(row)) for row in batch]
             ranked = [(row, rank) for row, rank in ranked if rank < self.row_rank(row)]
             if not ranked:
                 continue
@@ -435,7 +447,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
         """Take over other rules' pending rows that this rule outranks."""
         rows = self._foreign_rows().select_related("user", "user__activity")
         for batch in batched(rows.iterator(chunk_size=CHUNK_SIZE), CHUNK_SIZE, strict=False):
-            ranked = [(row, self.rank(row.user)) for row in batch]
+            ranked = [(row, self.rank(row)) for row in batch]
             ranked = [(row, rank) for row, rank in ranked if rank < self.row_rank(row)]
             if not ranked:
                 continue
@@ -476,14 +488,20 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                     continue
                 try:
                     with transaction.atomic():
+                        due_at = self.due_at(user)
                         offboarding = UserOffboarding.objects.create(
                             user=user,
                             rule=self,
-                            scheduled_at=self.due_at(user),
+                            scheduled_at=due_at,
                             action=self.action,
                             revoke_sessions=self.revoke_sessions,
                             revoke_tokens=self.revoke_tokens,
                         )
+                        # `created_at` is only known after the insert.
+                        scheduled_at = self.scheduled_at(due_at, offboarding.created_at)
+                        if scheduled_at != due_at:
+                            offboarding.scheduled_at = scheduled_at
+                            offboarding.save(update_fields=["scheduled_at"])
                 except IntegrityError:
                     # Another offboarding was scheduled since selection.
                     continue
