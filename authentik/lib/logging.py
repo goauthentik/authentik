@@ -1,11 +1,14 @@
 """logging helpers"""
 
 import logging
+from contextvars import ContextVar
 from logging import Logger
 from os import getpid
+from typing import Any
 
 import structlog
 from django.db import connection
+from structlog.types import EventDict
 
 from authentik.lib.config import CONFIG
 
@@ -17,6 +20,19 @@ LOG_PRE_CHAIN = [
     structlog.processors.TimeStamper(fmt="iso", utc=False),
     structlog.processors.StackInfoRenderer(),
 ]
+
+
+# Entries of the innermost active `capture_logs()` in the current context, if any
+CAPTURED_LOGS: ContextVar[list[EventDict] | None] = ContextVar("captured_logs", default=None)
+
+
+def capture_processor(_: Any, __: str, event_dict: EventDict) -> EventDict:
+    """Divert log entries into the active `capture_logs()` of the current context"""
+    entries = CAPTURED_LOGS.get()
+    if entries is None:
+        return event_dict
+    entries.append(event_dict)
+    raise structlog.DropEvent
 
 
 def get_log_level():
@@ -46,6 +62,7 @@ def structlog_configure():
             structlog.processors.ExceptionRenderer(
                 structlog.tracebacks.ExceptionDictTransformer(show_locals=CONFIG.get_bool("debug"))
             ),
+            capture_processor,
             structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
         logger_factory=structlog.stdlib.LoggerFactory(),

@@ -337,7 +337,21 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
             if status == RequestStatus.APPROVED
             else EventAction.ACCESS_REQUEST_DENIED
         )
-        Event.new(action, model=self, targets=list(self.targets.all())).from_http(request, user)
+        Event.new(
+            action,
+            model=self,
+            targets=list(self.targets.all().select_subclasses()),
+            # Every reviewer's decision so far, not just the one that finalized the request, so
+            # notes left by earlier approvers of a multi-reviewer rule are kept with it too.
+            approvals=[
+                {
+                    "reviewer": approval.reviewer,
+                    "status": approval.status,
+                    "data": approval.attributes,
+                }
+                for approval in self.approvals.select_related("reviewer").order_by("created")
+            ],
+        ).from_http(request, user)
         if status != RequestStatus.APPROVED:
             return
         grant_expires = now() + timedelta_from_string(self.requested_expiry)
@@ -387,7 +401,9 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         self.status = RequestStatus.REVOKED
         self.save()
         Event.new(
-            EventAction.ACCESS_REQUEST_REVOKED, model=self, targets=list(self.targets.all())
+            EventAction.ACCESS_REQUEST_REVOKED,
+            model=self,
+            targets=list(self.targets.all().select_subclasses()),
         ).from_http(request, user)
 
     class Meta(ExpiringModel.Meta):

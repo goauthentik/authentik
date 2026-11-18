@@ -26,7 +26,7 @@
     window.authentik.flow = {
         "layout": "{{ flow.layout }}",
         "background": "{{ flow.background }}",
-        "title": "{{ flow.title }}",
+        "title": "{{ flow_title }}",
     };
 </script>
 {% endblock %}
@@ -54,10 +54,10 @@
         loading
     >
         {% include "base/placeholder.html" %}
-        
+
         <ak-brand-links name="flow-links" slot="footer"></ak-brand-links>
     </ak-flow-executor>
-    
+
     <ak-flow-inspector
         slot="panel"
         id="flow-inspector"
