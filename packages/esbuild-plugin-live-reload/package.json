@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "keywords": [
         "authentik",
