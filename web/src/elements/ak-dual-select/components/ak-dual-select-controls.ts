@@ -35,14 +35,9 @@ export class AkDualSelectControls extends AKElement {
                 height: 100%;
             }
 
-            .pf-c-button {
-                --pf-c-button--m-plain--Color: var(--pf-global--Color--300) !important;
-
-                &.pf-m-plain {
-                    --pf-c-button--m-plain--disabled--Color: var(
-                        --pf-global--Color--400
-                    ) !important;
-                }
+            /* The dark theme's global disabled color matches the plain button color. */
+            .pf-c-button.pf-m-plain:disabled {
+                color: var(--pf-c-button--m-plain--disabled--Color);
             }
         `,
     ];
