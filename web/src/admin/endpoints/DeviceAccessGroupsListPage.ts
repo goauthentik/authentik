@@ -20,6 +20,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-endpoints-device-access-groups-list")
 export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
+    public static override verboseName = msg("Device Group", {
+        id: "device-access-groups.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Device Groups", {
+        id: "device-access-groups.verbose-name-plural.label",
+    });
+
     protected searchEnabled: boolean = true;
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
@@ -62,7 +69,6 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Device Group(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: DeviceAccessGroup) => {
                 return [{ key: msg("Name"), value: item.name }];

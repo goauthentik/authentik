@@ -1,5 +1,6 @@
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
+import "#elements/cards/SectionCard";
 import "#elements/events/LogViewer";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";

@@ -8,16 +8,15 @@ from lxml.etree import Element, SubElement, _Element  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
-    DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_SIGNATURE,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
-from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLPropertyMapping
 from authentik.providers.saml.processors.assertion import AssertionProcessor
+from authentik.providers.saml.processors.signature import sign_xml_element
 from authentik.sources.saml.exceptions import InvalidSignature
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD
 
@@ -183,36 +182,8 @@ class SAML11AssertionProcessor(AssertionProcessor):
 
         return assertion
 
-    def _sign(self, element: _Element):
-        # same as AssertionProcessor._sign, but referencing AssertionID instead of ID
-        digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
-            self.provider.digest_algorithm, xmlsec.constants.TransformSha1
-        )
-        xmlsec.tree.add_ids(element, ["AssertionID"])
-        signature_node = xmlsec.tree.find_node(element, xmlsec.constants.NodeSignature)
-        ref = xmlsec.template.add_reference(
-            signature_node,
-            digest_algorithm_transform,
-            uri="#" + element.attrib["AssertionID"],
-        )
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)
-        key_info = xmlsec.template.ensure_key_info(signature_node)
-        xmlsec.template.add_x509_data(key_info)
-
-        ctx = xmlsec.SignatureContext()
-
-        key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-            None,
-        )
-        key.load_cert_from_memory(
-            self.provider.signing_kp.certificate_data,
-            xmlsec.constants.KeyDataFormatCertPem,
-        )
-        ctx.key = key
+    def _sign(self, element: _Element) -> None:
         try:
-            ctx.sign(remove_xml_newlines(element, signature_node))
+            sign_xml_element(element, self.provider, id_attribute="AssertionID")
         except xmlsec.Error as exc:
             raise InvalidSignature() from exc

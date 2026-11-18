@@ -167,7 +167,7 @@ jobs:
           container=$(docker container create "$image")
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
-        uses: getsentry/action-release@e6703d0b00208e0b3687ba660d18ab5af7892821 # v3
+        uses: getsentry/action-release@d55c8c3b7375607e972b710f12926b676d89d7d2 # v3
         continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -233,7 +233,7 @@ jobs:
           sed -E -i 's/[0-9]{4}\.[0-9]{1,2}\.[0-9]+$/${{ needs.metadata.outputs.version }}/' charts/authentik/Chart.yaml
           ./scripts/helm-docs.sh
       - name: Create pull request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v7
         with:
           token: "${{ steps.app-token.outputs.token }}"
           branch: bump-${{ needs.metadata.outputs.version }}

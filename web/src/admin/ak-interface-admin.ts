@@ -45,11 +45,11 @@ import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
+import { renderNotificationDrawerPanel } from "#components/notifications/panel";
 import {
     DrawerState,
     persistDrawerParams,
     readDrawerParams,
-    renderNotificationDrawerPanel,
 } from "#components/notifications/utils";
 
 import Styles from "#admin/ak-interface-admin.css";
@@ -176,7 +176,7 @@ export class AdminInterface extends WithLicenseSummary(
 
         WebsocketClient.connect();
 
-        this.#sidebarMatcher = window.matchMedia("(width > 1210px)");
+        this.#sidebarMatcher = matchMedia("(width > 1210px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
 

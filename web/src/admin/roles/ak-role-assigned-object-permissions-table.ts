@@ -14,6 +14,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-role-assigned-object-permissions-table")
 export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPermission> {
+    public static override verboseName = msg("Permission", {
+        id: "permissions.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Permissions", {
+        id: "permissions.verbose-name-plural.label",
+    });
+
     @property({ type: String, attribute: "role-uuid" })
     public roleUUID: string | null = null;
 
@@ -48,7 +55,6 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: ExtraRoleObjectPermission) => {
                 return [
