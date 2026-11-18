@@ -234,6 +234,48 @@ class TestAgentConnector(APITestCase):
         self.assertEqual(psso["NonPlatformSSOAccounts"], ["breakglass", "localadmin"])
         self.assertTrue(psso["EnableCreateUserAtLogin"])
 
+    def test_generate_mdm_macos_web(self):
+        """The web method supports the offline grace period and exempt accounts, and none of
+        the password-only keys"""
+        self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.WEB
+        self.connector.apple_psso["non_platform_sso_accounts"] = ["breakglass"]
+        self.connector.apple_psso["offline_grace_period"] = 7200
+        self.connector.apple_psso["authentication_grace_period"] = 3600
+        self.connector.apple_psso["enable_create_user_at_login"] = True
+        self.connector.apple_psso["login_policy"] = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.save()
+        request = self.factory.get("/")
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        self.assertEqual(psso["AuthenticationMethod"], "OpenID")
+        self.assertEqual(psso["WebLoginURLAllowList"], ["http://testserver/"])
+        self.assertEqual(psso["NonPlatformSSOAccounts"], ["breakglass"])
+        self.assertEqual(psso["OfflineGracePeriod"], 7200)
+        for key in ("LoginPolicy", "UnlockPolicy", "FileVaultPolicy"):
+            self.assertEqual(psso[key], ["AllowOfflineGracePeriod"])
+        self.assertNotIn("AuthenticationGracePeriod", psso)
+        self.assertNotIn("EnableCreateUserAtLogin", psso)
+
+    def test_generate_mdm_macos_web_defaults(self):
+        """Without an offline grace period the web method sends no policies"""
+        self.connector.apple_psso["authentication_method"] = ApplePSSOAuthenticationMethod.WEB
+        self.connector.save()
+        request = self.factory.get("/")
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        for key in (
+            "LoginPolicy",
+            "UnlockPolicy",
+            "FileVaultPolicy",
+            "OfflineGracePeriod",
+            "NonPlatformSSOAccounts",
+        ):
+            self.assertNotIn(key, psso)
+
     def test_generate_mdm_macos_password_only_keys_omitted_in_secure_enclave_mode(self):
         """Password-only keys are omitted for the Secure Enclave key method"""
         self.connector.apple_psso["non_platform_sso_accounts"] = ["breakglass"]

@@ -101,15 +101,24 @@ class AgentConnectorController(BaseController[AgentConnector]):
         }[self.connector.apple_psso_config.authentication_method]
 
     def _psso_method_specific(self, request: HttpRequest) -> dict:
-        """Login, unlock and FileVault policies of the Platform SSO payload, which Apple only
-        applies to the password method"""
+        """Keys of the Platform SSO payload that depend on the authentication method. Apple
+        only applies the attempt and require policies and the authentication grace period to
+        the password method. The web method always authenticates online, and supports the
+        offline grace period and exempt accounts."""
         config = self.connector.apple_psso_config
         if config.authentication_method == ApplePSSOAuthenticationMethod.WEB:
-            return {
+            web: dict = {
                 "WebLoginURLAllowList": [
                     request.build_absolute_uri(reverse("authentik_core:root-redirect"))
                 ]
             }
+            if config.offline_grace_period:
+                for payload_key in ("LoginPolicy", "UnlockPolicy", "FileVaultPolicy"):
+                    web[payload_key] = ["AllowOfflineGracePeriod"]
+                web["OfflineGracePeriod"] = config.offline_grace_period
+            if config.non_platform_sso_accounts:
+                web["NonPlatformSSOAccounts"] = config.non_platform_sso_accounts
+            return web
         if config.authentication_method != ApplePSSOAuthenticationMethod.PASSWORD:
             return {}
         mapping = {

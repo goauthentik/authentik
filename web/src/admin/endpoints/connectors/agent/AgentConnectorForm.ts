@@ -294,14 +294,68 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                             "How users prove who they are at the macOS login window. Changing this only affects devices enrolled after the change.",
                         )}
                     ></ak-radio-input>
-                    ${
-                        this.selectedAuthenticationMethod ===
-                        ApplePSSOAuthenticationMethodEnum.Password
-                            ? this.renderPasswordModeOptions(pssoPolicyOptions)
-                            : this.renderSecureEnclaveModeOptions(pssoBiometricOptions)
-                    }
+                    ${this.renderAuthenticationMethodOptions(
+                        pssoPolicyOptions,
+                        pssoBiometricOptions,
+                    )}
                 </div>
             </ak-form-group>`;
+    }
+
+    protected renderAuthenticationMethodOptions(
+        pssoPolicyOptions: RadioOption<string>[],
+        pssoBiometricOptions: RadioOption<string>[],
+    ) {
+        switch (this.selectedAuthenticationMethod) {
+            case ApplePSSOAuthenticationMethodEnum.Password:
+                return this.renderPasswordModeOptions(pssoPolicyOptions);
+            case ApplePSSOAuthenticationMethodEnum.Web:
+                return this.renderWebModeOptions();
+            default:
+                return this.renderSecureEnclaveModeOptions(pssoBiometricOptions);
+        }
+    }
+
+    protected renderWebModeOptions() {
+        return html`${this.renderOfflineGracePeriod()}
+        ${this.renderExemptAccounts(
+            msg(
+                "Local accounts that sign in without Platform SSO and are never prompted to register. Add a break-glass administrator here, otherwise an unreachable authentik can lock every account out of the Mac.",
+                { id: "endpoints.agent.psso.exempt-accounts.web.description" },
+            ),
+        )}`;
+    }
+
+    protected renderOfflineGracePeriod() {
+        return html`<ak-number-input
+            name="applePsso.offlineGracePeriod"
+            label=${msg("Offline grace period")}
+            value="${this.instance?.applePsso?.offlineGracePeriod ?? 0}"
+            help=${msg(
+                "Seconds after the last successful Platform SSO login that the local account password keeps working while the Mac is offline. 0 disables the grace period.",
+            )}
+        ></ak-number-input>`;
+    }
+
+    protected renderExemptAccounts(help: string) {
+        return html`<ak-form-element-horizontal
+            label=${msg("Exempt local accounts")}
+            name="applePsso.nonPlatformSsoAccounts"
+        >
+            <ak-array-input
+                .items=${this.instance?.applePsso?.nonPlatformSsoAccounts ?? []}
+                .newItem=${() => ""}
+                .row=${(item?: string) =>
+                    html`<ak-text-input
+                        name="non-platform-sso-account"
+                        style="width: 100%"
+                        value=${ifDefined(item)}
+                        required
+                    ></ak-text-input>`}
+            >
+            </ak-array-input>
+            <p class="pf-c-form__helper-text">${help}</p>
+        </ak-form-element-horizontal>`;
     }
 
     protected renderPasswordModeOptions(pssoPolicyOptions: RadioOption<string>[]) {
@@ -364,36 +418,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     "Seconds after a policy is applied during which accounts that have not yet registered with Platform SSO can still sign in. 0 disables the grace period.",
                 )}
             ></ak-number-input>
-            <ak-number-input
-                name="applePsso.offlineGracePeriod"
-                label=${msg("Offline grace period")}
-                value="${this.instance?.applePsso?.offlineGracePeriod ?? 0}"
-                help=${msg(
-                    "Seconds after the last successful Platform SSO login that the local account password keeps working while the Mac is offline. 0 disables the grace period.",
-                )}
-            ></ak-number-input>
-            <ak-form-element-horizontal
-                label=${msg("Exempt local accounts")}
-                name="applePsso.nonPlatformSsoAccounts"
-            >
-                <ak-array-input
-                    .items=${this.instance?.applePsso?.nonPlatformSsoAccounts ?? []}
-                    .newItem=${() => ""}
-                    .row=${(item?: string) =>
-                        html`<ak-text-input
-                            name="non-platform-sso-account"
-                            style="width: 100%"
-                            value=${ifDefined(item)}
-                            required
-                        ></ak-text-input>`}
-                >
-                </ak-array-input>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Local accounts that the policies above do not apply to, and that are never prompted to register. Add a break-glass administrator here before requiring authentication, otherwise an unreachable authentik locks every account out of the Mac.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+            ${this.renderOfflineGracePeriod()}
+            ${this.renderExemptAccounts(
+                msg(
+                    "Local accounts that the policies above do not apply to, and that are never prompted to register. Add a break-glass administrator here before requiring authentication, otherwise an unreachable authentik locks every account out of the Mac.",
+                ),
+            )}`;
     }
 
     protected renderSecureEnclaveModeOptions(pssoBiometricOptions: RadioOption<string>[]) {
