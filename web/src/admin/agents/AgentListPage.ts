@@ -19,6 +19,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-agent-list")
 export class AgentListPage extends TablePage<Agent> {
+    public static override verboseName = msg("Agent", { id: "agent.verbose-name.label" });
+    public static override verboseNamePlural = msg("Agents", {
+        id: "agent.verbose-name-plural.label",
+    });
+
     public override checkbox = true;
     public override clearOnRefresh = true;
     public override searchPlaceholder = msg("Search for a agent...");
@@ -46,7 +51,6 @@ export class AgentListPage extends TablePage<Agent> {
         const disabled = this.selectedElements.length < 1;
 
         return html` <ak-forms-delete-bulk
-            object-label=${msg("Agent(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Agent) => {
                 return aki(AgentsApi).agentsAgentsDestroy({

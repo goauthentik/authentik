@@ -11,18 +11,18 @@ import { kebabCase } from "change-case";
  */
 export type RouteInterfaceName = "user" | "admin" | "flow" | "unknown";
 
+export type URLContext = Pick<URL, "pathname">;
+
 /**
  * Read the current interface route parameter from the URL.
  *
  * @category Routing
- * @param location The location object to read the pathname from. Defaults to `window.location`.
+ * @param context The URL-like object to read the pathname from. Defaults to `window.location`.
  *
  * @returns The name of the current interface, or "unknown" if not found.
  */
-export function readInterfaceRouteParam(
-    location: Pick<URL, "pathname"> = window.location,
-): RouteInterfaceName {
-    const [, currentInterface = "unknown"] = location.pathname.match(/.+if\/(\w+)\//) || [];
+export function readInterfaceRouteParam(context: URLContext = window.location): RouteInterfaceName {
+    const [, currentInterface = "unknown"] = context.pathname.match(/.+if\/(\w+)\//) || [];
 
     return currentInterface.toLowerCase() as RouteInterfaceName;
 }
@@ -32,8 +32,8 @@ export function readInterfaceRouteParam(
  *
  * @category Routing
  */
-export function isAdminRoute(location: Pick<URL, "pathname"> = window.location): boolean {
-    return readInterfaceRouteParam(location) === "admin";
+export function isAdminRoute(context: URLContext = window.location): boolean {
+    return readInterfaceRouteParam(context) === "admin";
 }
 
 /**
@@ -41,8 +41,8 @@ export function isAdminRoute(location: Pick<URL, "pathname"> = window.location):
  *
  * @category Routing
  */
-export function isUserRoute(location: Pick<URL, "pathname"> = window.location): boolean {
-    return readInterfaceRouteParam(location) === "user";
+export function isUserRoute(context: URLContext = window.location): boolean {
+    return readInterfaceRouteParam(context) === "user";
 }
 
 /**

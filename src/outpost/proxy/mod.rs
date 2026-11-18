@@ -152,7 +152,7 @@ impl Outpost for ProxyOutpost {
         for (i, provider) in providers.iter().enumerate() {
             debug!(
                 index = i,
-                name = provider.name,
+                provider = provider.name,
                 external_host = provider.external_host,
                 assigned_to_app = provider.assigned_application_name,
                 "provider details"
@@ -162,14 +162,20 @@ impl Outpost for ProxyOutpost {
         let mut apps = HashMap::with_capacity(providers.len());
 
         for provider in providers {
-            let name = provider.name.clone();
+            let provider_name = provider.name.clone();
             let Ok(application) = Application::new(self, provider)
                 .await
                 .inspect_err(|err| warn!(?err, "failed to setup application, skipping provider"))
             else {
                 continue;
             };
-            info!(name, host = application.host, "loaded application");
+            // Don't log this as `name`: the JSON log layer flattens the current span onto the top
+            // level, and the span's own name is already emitted under `name`.
+            info!(
+                provider = provider_name,
+                host = application.host,
+                "loaded application"
+            );
 
             apps.insert(application.host.clone(), Arc::new(application));
         }

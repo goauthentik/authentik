@@ -2,6 +2,7 @@
 
 from dataclasses import asdict
 from datetime import datetime, timedelta
+from uuid import uuid4
 
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
@@ -9,7 +10,7 @@ from channels.routing import URLRouter
 from channels.testing import WebsocketCommunicator
 from django.test import TransactionTestCase
 from django.utils.timezone import now
-from django_channels_postgres.models import GroupChannel
+from django_channels_postgres.models import GroupChannel, Message
 
 from authentik import authentik_version
 from authentik.core.tests.utils import create_test_flow
@@ -161,6 +162,69 @@ class TestOutpostWS(TransactionTestCase):
             ),
         )
         await communicator.disconnect()
+
+    def create_group_channel(self, group: str, expires: datetime) -> str:
+        """Add a new channel to the selected channel group with the given expiry."""
+        channel = f"asgi.specific.{uuid4().hex}"
+        GroupChannel.objects.create(
+            group_key=f"asgi.group.{group}",
+            channel=channel,
+            expires=expires,
+        )
+        return channel
+
+    def message_channels(self, channels: list[str]) -> list[str]:
+        """Get the channels with pending messages, out of the selected channels."""
+        return list(Message.objects.filter(channel__in=channels).values_list("channel", flat=True))
+
+    async def test_group_send_skips_expired_memberships(self):
+        """Test that group_send only sends to unexpired group memberships."""
+        group = f"test-{uuid4().hex}"
+        create_group_channel = database_sync_to_async(self.create_group_channel)
+        live = await create_group_channel(group, now() + timedelta(hours=1))
+        expired = await create_group_channel(group, now() - timedelta(seconds=1))
+
+        await get_channel_layer().group_send(group, {"type": "event.update"})
+
+        self.assertEqual(
+            await database_sync_to_async(self.message_channels)([live, expired]),
+            [live],
+        )
+
+    async def test_group_send_only_expired_memberships(self):
+        """Test that group_send to a group with only expired memberships sends nothing."""
+        group = f"test-{uuid4().hex}"
+        create_group_channel = database_sync_to_async(self.create_group_channel)
+        expired = [
+            await create_group_channel(group, now() - timedelta(seconds=1)),
+            await create_group_channel(group, now() - timedelta(days=1)),
+        ]
+
+        await get_channel_layer().group_send(group, {"type": "event.update"})
+
+        self.assertEqual(await database_sync_to_async(self.message_channels)(expired), [])
+
+    def test_group_send_blocking_skips_expired_memberships(self):
+        """Test that group_send_blocking only sends to unexpired group memberships."""
+        group = f"test-{uuid4().hex}"
+        live = self.create_group_channel(group, now() + timedelta(hours=1))
+        expired = self.create_group_channel(group, now() - timedelta(seconds=1))
+
+        get_channel_layer().group_send_blocking(group, {"type": "event.update"})
+
+        self.assertEqual(self.message_channels([live, expired]), [live])
+
+    def test_group_send_blocking_only_expired_memberships(self):
+        """Test that group_send_blocking to a group with only expired memberships sends nothing."""
+        group = f"test-{uuid4().hex}"
+        expired = [
+            self.create_group_channel(group, now() - timedelta(seconds=1)),
+            self.create_group_channel(group, now() - timedelta(days=1)),
+        ]
+
+        get_channel_layer().group_send_blocking(group, {"type": "event.update"})
+
+        self.assertEqual(self.message_channels(expired), [])
 
     async def test_send_ack(self):
         """Test sending of ACK"""

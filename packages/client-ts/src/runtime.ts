@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-export const BASE_PATH = "/api/v3".replace(/\/+$/, "");
+export const BASE_PATH: string = "/api/v3".replace(/\/+$/, "");
 
 export interface ConfigurationParameters {
     basePath?: string; // override base path
@@ -86,7 +86,7 @@ export class Configuration {
     }
 }
 
-export const DefaultConfig = new Configuration();
+export const DefaultConfig: Configuration = new Configuration();
 
 /**
  * This is the base class for all generated API classes.
@@ -96,22 +96,25 @@ export class BaseAPI {
         /^(:?application\/json|[^;/ \t]+\/[^;/ \t]+[+]json)[ \t]*(:?;.*)?$/i;
     private middleware: Middleware[];
 
-    constructor(protected configuration = DefaultConfig) {
+    constructor(protected configuration: Configuration = DefaultConfig) {
         this.middleware = configuration.middleware;
     }
 
-    withMiddleware<T extends BaseAPI>(this: T, ...middlewares: Middleware[]) {
+    withMiddleware<T extends BaseAPI>(this: T, ...middlewares: Middleware[]): T {
         const next = this.clone<T>();
         next.middleware = next.middleware.concat(...middlewares);
         return next;
     }
 
-    withPreMiddleware<T extends BaseAPI>(this: T, ...preMiddlewares: Array<Middleware["pre"]>) {
+    withPreMiddleware<T extends BaseAPI>(this: T, ...preMiddlewares: Array<Middleware["pre"]>): T {
         const middlewares = preMiddlewares.map((pre) => ({ pre }));
         return this.withMiddleware<T>(...middlewares);
     }
 
-    withPostMiddleware<T extends BaseAPI>(this: T, ...postMiddlewares: Array<Middleware["post"]>) {
+    withPostMiddleware<T extends BaseAPI>(
+        this: T,
+        ...postMiddlewares: Array<Middleware["post"]>
+    ): T {
         const middlewares = postMiddlewares.map((post) => ({ post }));
         return this.withMiddleware<T>(...middlewares);
     }
@@ -415,7 +418,7 @@ function querystringSingleKey(
     return `${encodeURIComponent(fullKey)}=${encodeURIComponent(String(value))}`;
 }
 
-export function exists(json: any, key: string) {
+export function exists(json: any, key: string): boolean {
     const value = json[key];
     return value !== null && value !== undefined;
 }
@@ -470,7 +473,7 @@ export function parseDateTime(value: any): Date {
     return new Date(value);
 }
 
-export function mapValues(data: any, fn: (item: any) => any) {
+export function mapValues(data: any, fn: (item: any) => any): { [key: string]: any } {
     const result: { [key: string]: any } = {};
     for (const key of Object.keys(data)) {
         result[key] = fn(data[key]);
