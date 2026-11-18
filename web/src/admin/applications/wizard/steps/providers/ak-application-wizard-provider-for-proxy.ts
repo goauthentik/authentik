@@ -32,7 +32,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
             this.dispatchEvent(new WizardUpdateEvent({ ...this.wizard, proxyMode: ev.value }));
             // We deliberately chose not to make the forms "controlled," but we do need this form to
             // respond immediately to a state change in the wizard.
-            window.setTimeout(() => this.requestUpdate(), 0);
+            requestAnimationFrame(() => this.requestUpdate());
         };
 
         const onSetShowHttpBasic: SetShowHttpBasic = (ev: Event) => {

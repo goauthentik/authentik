@@ -1,0 +1,107 @@
+---
+title: Integrate with Radarr
+sidebar_label: Radarr
+support_level: community
+---
+
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
+## What is Radarr?
+
+> Radarr is a movie collection manager for Usenet and BitTorrent users. It monitors RSS feeds for new movies, grabs them, sorts them, and renames them.
+>
+> -- https://radarr.video/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `radarr.company` is the FQDN of the Radarr installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info Radarr version
+OpenID Connect authentication is available in Radarr 7.0 and later.
+:::
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of Radarr with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add two **Redirect URIs**:
+            - `Strict` `Authorization` `https://radarr.company/signin-oidc`
+            - `Strict` `Post Logout` `https://radarr.company/signout-callback-oidc`
+        - Select any available signing key.
+        - Under **Advanced protocol settings**, set **Subject mode** to **Based on the User's Email**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+:::info Why the subject mode matters
+Radarr authorizes a single OIDC user. It compares the configured user to the `email` claim only when the `email_verified` claim is `true`, and otherwise to the `sub` claim. Since authentik 2025.10, the default `email` scope mapping returns `email_verified` as `False`, so setting **Subject mode** to **Based on the User's Email** lets Radarr match the user's email address through the `sub` claim.
+
+Alternatively, keep the default subject mode and [configure the `email_verified` claim](/docs/add-secure-apps/providers/oauth2/verify-email-address/).
+:::
+
+## Radarr configuration
+
+1. Log in to Radarr as an administrator.
+2. Navigate to **Settings** > **General** and locate the **Security** section.
+3. Configure the following settings:
+    - **Authentication**: select **OIDC**.
+    - **Authentication Required**: select **Enabled**.
+    - **OIDC Authority**: `https://authentik.company/application/o/<application_slug>/`
+    - **OIDC Client ID**: enter the **Client ID** from authentik.
+    - **OIDC Client Secret**: enter the **Client Secret** from authentik.
+    - **OIDC User**: enter the email address of the authentik user who is allowed to log in to Radarr.
+    - **OIDC Scopes**: keep the default value, `openid profile email`.
+4. Click **Save Changes**.
+
+:::warning Single user
+Radarr allows only one OIDC user to log in. Any other authentik user who is authorized for the application is rejected by Radarr after authenticating to authentik.
+:::
+
+:::info Fallback to forms authentication
+If any of the OIDC settings are missing, or if **OIDC Authority** does not start with `https://`, Radarr falls back to forms authentication and reports an error on the **System** > **Status** page.
+:::
+
+### URL base _(optional)_
+
+If Radarr is served from a subpath by setting **URL Base** under **Settings** > **General** > **Host**, include that subpath in the redirect URIs of the authentik provider. For example, with a URL base of `/radarr`, use `https://radarr.company/radarr/signin-oidc` and `https://radarr.company/radarr/signout-callback-oidc`.
+
+### Environment variables _(optional)_
+
+Radarr can also read the authentication settings from environment variables, for example in a Docker Compose deployment:
+
+```yaml title="compose.yaml"
+services:
+    radarr:
+        environment:
+            RADARR__AUTH__METHOD: Oidc
+            RADARR__AUTH__REQUIRED: Enabled
+            RADARR__AUTH__OIDCAUTHORITY: https://authentik.company/application/o/<application_slug>/
+            RADARR__AUTH__OIDCCLIENTID: <client_id>
+            RADARR__AUTH__OIDCCLIENTSECRET: <client_secret>
+            RADARR__AUTH__OIDCUSERIDENTIFIER: <user_email>
+```
+
+Settings defined through environment variables take precedence over the values configured in the Radarr web interface.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Radarr, log out of Radarr. Then, open Radarr and click **Login**. You should be redirected to authentik for authentication and then redirected back to Radarr.
+
+If Radarr shows `Unable to sign in with your identity provider`, check the Radarr logs. A `User '...' is not authorized to access this application` message means that the **OIDC User** value does not match the `sub` claim sent by authentik.

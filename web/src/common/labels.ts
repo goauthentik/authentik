@@ -3,8 +3,6 @@
  *   UI.
  */
 
-import { MessageFormatter } from "#common/ui/locale/format";
-
 import {
     Device,
     DeviceChallenge,
@@ -17,12 +15,12 @@ import {
 
 import { msg, str } from "@lit/localize";
 
-const IntentLabelRecord: Record<IntentEnum, MessageFormatter<string>> = {
-    [IntentEnum.Api]: () => msg("API Access"),
-    [IntentEnum.AppPassword]: () => msg("App password"),
-    [IntentEnum.Recovery]: () => msg("Recovery"),
-    [IntentEnum.Verification]: () => msg("Verification"),
-    [IntentEnum.UnknownDefaultOpenApi]: () => msg("Unknown intent"),
+const IntentLabelRecord: Record<IntentEnum, string> = {
+    [IntentEnum.Api]: msg("API Access"),
+    [IntentEnum.AppPassword]: msg("App password"),
+    [IntentEnum.Recovery]: msg("Recovery"),
+    [IntentEnum.Verification]: msg("Verification"),
+    [IntentEnum.UnknownDefaultOpenApi]: msg("Unknown intent"),
 };
 
 const defaultIntent = IntentLabelRecord[IntentEnum.Api];
@@ -30,70 +28,73 @@ const defaultIntent = IntentLabelRecord[IntentEnum.Api];
 export function formatIntentLabel(intent: IntentEnum | string | null | undefined): string {
     const label = IntentLabelRecord[intent as IntentEnum];
 
-    return label?.() ?? intent ?? defaultIntent();
+    return label ?? intent ?? defaultIntent;
 }
 
-export const EventActionLabelRecord: Record<EventActions, MessageFormatter<string>> = {
-    [EventActions.Login]: () => msg("Login"),
-    [EventActions.LoginFailed]: () => msg("Failed login"),
-    [EventActions.Logout]: () => msg("Logout"),
-    [EventActions.UserWrite]: () => msg("User was written to"),
-    [EventActions.UserOffboarded]: () => msg("User was offboarded"),
-    [EventActions.SuspiciousRequest]: () => msg("Suspicious request"),
-    [EventActions.PasswordSet]: () => msg("Password set"),
-    [EventActions.AuthenticatorLocked]: () =>
-        msg("Authenticator locked", { id: "events.authenticator-locked.label" }),
-    [EventActions.AuthenticatorUnlocked]: () =>
-        msg("Authenticator unlocked", { id: "events.authenticator-unlocked.label" }),
-    [EventActions.SecretView]: () => msg("Secret was viewed"),
-    [EventActions.SecretRotate]: () => msg("Secret was rotated"),
-    [EventActions.InvitationUsed]: () => msg("Invitation used"),
-    [EventActions.AuthorizeApplication]: () => msg("Application authorized"),
-    [EventActions.SourceLinked]: () => msg("Source linked"),
-    [EventActions.ImpersonationStarted]: () => msg("Impersonation started"),
-    [EventActions.ImpersonationEnded]: () => msg("Impersonation ended"),
-    [EventActions.FlowExecution]: () => msg("Flow execution"),
+export const EventActionLabelRecord: Record<EventActions, string> = {
+    [EventActions.Login]: msg("Login"),
+    [EventActions.LoginFailed]: msg("Failed login"),
+    [EventActions.Logout]: msg("Logout"),
+    [EventActions.UserWrite]: msg("User was written to"),
+    [EventActions.UserOffboarded]: msg("User was offboarded"),
+    [EventActions.SuspiciousRequest]: msg("Suspicious request"),
+    [EventActions.PasswordSet]: msg("Password set"),
+    [EventActions.AuthenticatorLocked]: msg("Authenticator locked", {
+        id: "events.authenticator-locked.label",
+    }),
+    [EventActions.AuthenticatorUnlocked]: msg("Authenticator unlocked", {
+        id: "events.authenticator-unlocked.label",
+    }),
+    [EventActions.SecretView]: msg("Secret was viewed"),
+    [EventActions.SecretRotate]: msg("Secret was rotated"),
+    [EventActions.InvitationUsed]: msg("Invitation used"),
+    [EventActions.AuthorizeApplication]: msg("Application authorized"),
+    [EventActions.SourceLinked]: msg("Source linked"),
+    [EventActions.ImpersonationStarted]: msg("Impersonation started"),
+    [EventActions.ImpersonationEnded]: msg("Impersonation ended"),
+    [EventActions.FlowExecution]: msg("Flow execution"),
     // These are different: look closely.
-    [EventActions.PolicyExecution]: () => msg("Policy execution"),
-    [EventActions.PolicyException]: () => msg("Policy exception"),
-    [EventActions.PropertyMappingException]: () => msg("Property Mapping exception"),
+    [EventActions.PolicyExecution]: msg("Policy execution"),
+    [EventActions.PolicyException]: msg("Policy exception"),
+    [EventActions.PropertyMappingException]: msg("Property Mapping exception"),
     // These are different: look closely.
-    [EventActions.SystemTaskExecution]: () => msg("System task execution"),
-    [EventActions.SystemTaskException]: () => msg("System task exception"),
-    [EventActions.SystemException]: () => msg("General system exception"),
-    [EventActions.ConfigurationError]: () => msg("Configuration error"),
-    [EventActions.ConfigurationWarning]: () => msg("Configuration warning"),
-    [EventActions.ModelCreated]: () => msg("Model created"),
-    [EventActions.ModelUpdated]: () => msg("Model updated"),
-    [EventActions.ModelDeleted]: () => msg("Model deleted"),
-    [EventActions.EmailSent]: () => msg("Email sent"),
-    [EventActions.UpdateAvailable]: () => msg("Update available"),
-    [EventActions.ExportReady]: () => msg("Data export ready"),
-    [EventActions.ReviewInitiated]: () => msg("Review initiated"),
-    [EventActions.ReviewOverdue]: () => msg("Review overdue"),
-    [EventActions.ReviewAttested]: () => msg("Review attested"),
-    [EventActions.ReviewCompleted]: () => msg("Review completed"),
-    [EventActions.AccessRequestCreated]: () => msg("Access request created"),
-    [EventActions.AccessRequestApproved]: () => msg("Access request approved"),
-    [EventActions.AccessRequestDenied]: () => msg("Access request denied"),
-    [EventActions.AccessRequestRevoked]: () => msg("Access request revoked"),
-    [EventActions.RequiredActionCompleted]: () =>
-        msg("Required action completed", { id: "events.action.required-action-completed.label" }),
-    [EventActions.UnknownDefaultOpenApi]: () => msg("Unknown action"),
-    [EventActions.Custom]: () => msg("Custom action"),
+    [EventActions.SystemTaskExecution]: msg("System task execution"),
+    [EventActions.SystemTaskException]: msg("System task exception"),
+    [EventActions.SystemException]: msg("General system exception"),
+    [EventActions.ConfigurationError]: msg("Configuration error"),
+    [EventActions.ConfigurationWarning]: msg("Configuration warning"),
+    [EventActions.ModelCreated]: msg("Model created"),
+    [EventActions.ModelUpdated]: msg("Model updated"),
+    [EventActions.ModelDeleted]: msg("Model deleted"),
+    [EventActions.EmailSent]: msg("Email sent"),
+    [EventActions.UpdateAvailable]: msg("Update available"),
+    [EventActions.ExportReady]: msg("Data export ready"),
+    [EventActions.ReviewInitiated]: msg("Review initiated"),
+    [EventActions.ReviewOverdue]: msg("Review overdue"),
+    [EventActions.ReviewAttested]: msg("Review attested"),
+    [EventActions.ReviewCompleted]: msg("Review completed"),
+    [EventActions.AccessRequestCreated]: msg("Access request created"),
+    [EventActions.AccessRequestApproved]: msg("Access request approved"),
+    [EventActions.AccessRequestDenied]: msg("Access request denied"),
+    [EventActions.AccessRequestRevoked]: msg("Access request revoked"),
+    [EventActions.RequiredActionCompleted]: msg("Required action completed", {
+        id: "events.action.required-action-completed.label",
+    }),
+    [EventActions.UnknownDefaultOpenApi]: msg("Unknown action"),
+    [EventActions.Custom]: msg("Custom action"),
 };
 
 export function actionToLabel(action?: string): string {
     const formatter = action ? EventActionLabelRecord[action as EventActions] : null;
 
-    return formatter?.() ?? action ?? "";
+    return formatter ?? action ?? "";
 }
 
-const SeverityEnumLabelRecord: Record<SeverityEnum, MessageFormatter<string>> = {
-    [SeverityEnum.Alert]: () => msg("Alert"),
-    [SeverityEnum.Notice]: () => msg("Notice"),
-    [SeverityEnum.Warning]: () => msg("Warning"),
-    [SeverityEnum.UnknownDefaultOpenApi]: () => msg("Unknown severity"),
+const SeverityEnumLabelRecord: Record<SeverityEnum, string> = {
+    [SeverityEnum.Alert]: msg("Alert"),
+    [SeverityEnum.Notice]: msg("Notice"),
+    [SeverityEnum.Warning]: msg("Warning"),
+    [SeverityEnum.UnknownDefaultOpenApi]: msg("Unknown severity"),
 };
 
 const defaultSeverityLabel = SeverityEnumLabelRecord[SeverityEnum.UnknownDefaultOpenApi];
@@ -101,7 +102,7 @@ const defaultSeverityLabel = SeverityEnumLabelRecord[SeverityEnum.UnknownDefault
 export function severityToLabel(severity: SeverityEnum | null | undefined): string {
     const formatter = severity ? SeverityEnumLabelRecord[severity] : null;
 
-    return formatter?.() ?? severity ?? defaultSeverityLabel();
+    return formatter ?? severity ?? defaultSeverityLabel;
 }
 
 export function severityToLevel(severity?: SeverityEnum | null): string {
@@ -147,12 +148,12 @@ export function formatDeviceChallengeMessage(deviceChallenge?: DeviceChallenge |
     return msg("Enter the code from your authenticator device.");
 }
 
-const UserTypeLabelRecord: Record<UserTypeEnum, MessageFormatter<string>> = {
-    [UserTypeEnum.Internal]: () => msg("Internal"),
-    [UserTypeEnum.External]: () => msg("External"),
-    [UserTypeEnum.ServiceAccount]: () => msg("Service account"),
-    [UserTypeEnum.InternalServiceAccount]: () => msg("Service account (internal)"),
-    [UserTypeEnum.UnknownDefaultOpenApi]: () => msg("Unknown user type"),
+const UserTypeLabelRecord: Record<UserTypeEnum, string> = {
+    [UserTypeEnum.Internal]: msg("Internal"),
+    [UserTypeEnum.External]: msg("External"),
+    [UserTypeEnum.ServiceAccount]: msg("Service account"),
+    [UserTypeEnum.InternalServiceAccount]: msg("Service account (internal)"),
+    [UserTypeEnum.UnknownDefaultOpenApi]: msg("Unknown user type"),
 };
 
 const defaultUserTypeLabel = UserTypeLabelRecord[UserTypeEnum.UnknownDefaultOpenApi];
@@ -160,5 +161,5 @@ const defaultUserTypeLabel = UserTypeLabelRecord[UserTypeEnum.UnknownDefaultOpen
 export function userTypeToLabel(type?: UserTypeEnum): string {
     const formatter = type ? UserTypeLabelRecord[type] : null;
 
-    return formatter?.() ?? type ?? defaultUserTypeLabel();
+    return formatter ?? type ?? defaultUserTypeLabel;
 }

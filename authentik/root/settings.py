@@ -585,9 +585,9 @@ try:
 except ImportError:
     pass
 
-
 if DEBUG:
     INSTALLED_APPS.insert(INSTALLED_APPS.index("django.contrib.staticfiles"), "daphne")
+    INSTALLED_APPS.append("django_migration_linter")
     from xmlsec import enable_debug_trace
 
     enable_debug_trace(True)

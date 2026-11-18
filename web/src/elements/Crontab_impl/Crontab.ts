@@ -57,7 +57,7 @@ export class Crontab extends WithLocale(LitElement) {
     static readonly styles = [styles];
 
     @property({ attribute: "cron" })
-    private cronString = "* * * * *";
+    public cronString = "* * * * *";
 
     @property({ type: Boolean, attribute: "hide-crontab" })
     public hideCrontab = false;

@@ -35,7 +35,7 @@ export function persistLocale(languageTag: TargetLanguageTag): void {
         path,
         maxAge,
         sameSite: "lax",
-        secure: location.protocol === "https:",
+        secure: window.location.protocol === "https:",
     });
 }
 

@@ -1,16 +1,6 @@
-import "#admin/admin-overview/AdminOverviewPage";
-import "#common/sentry/apply";
-import "#elements/messages/MessageContainer";
-import "#admin/ak-interface-admin";
-import { globalAK } from "#common/global";
+import { initializeLocale } from "#common/ui/locale/runtime";
 
-import { initRouter } from "#elements/router/core/config";
+// The catalog must be active before any module that calls `msg()` at module level loads.
+await initializeLocale();
 
-initRouter({
-    base: globalAK().api.relBase,
-    interfaceName: "admin",
-});
-
-if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload");
-}
+await import("#admin/boot");

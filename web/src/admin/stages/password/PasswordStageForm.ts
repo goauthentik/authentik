@@ -111,7 +111,9 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
         ];
 
         return html` <span>
-                ${msg("Validate the user's password against the selected backend(s).")}
+                ${msg("Validate the user's password against the selected backends.", {
+                    id: "stages.password.backends.description",
+                })}
             </span>
             <ak-text-input
                 label=${msg("Stage Name", {
