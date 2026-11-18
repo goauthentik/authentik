@@ -61,9 +61,8 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         return aki(LifecycleApi).lifecycleUserOffboardingList({
             ...(await this.defaultEndpointConfig()),
             status: this.showOnlyPending ? OffboardingStatusEnum.Pending : undefined,
-            // `rule` is null on an offboarding an administrator scheduled by hand, and
-            // set on one an expiration rule scheduled.
-            ruleIsnull: this.source,
+            // `generated` stays set after the rule that scheduled the offboarding is deleted.
+            generated: this.source,
         });
     }
 
@@ -103,11 +102,11 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
                         },
                         {
                             label: msg("Manual", { id: "offboarding.source.manual" }),
-                            value: true,
+                            value: false,
                         },
                         {
                             label: msg("Expiration rule", { id: "offboarding.source.automatic" }),
-                            value: false,
+                            value: true,
                         },
                     ]}
                     group=${msg("Scheduled by", { id: "offboarding.column.scheduled-by" })}
@@ -144,7 +143,8 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
 
     /**
      * An offboarding is either scheduled by an administrator or by an expiration rule;
-     * `createdBy` is only set in the first case, and `rule` only in the second.
+     * `createdBy` is only set in the first case, and `generated` only in the second.
+     * `rule` is cleared when the rule is deleted.
      */
     protected renderScheduledBy(item: UserOffboarding): SlottedTemplateResult {
         if (item.rule) {
@@ -154,6 +154,10 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
                     msg("Expiration rule", { id: "offboarding.source.rule-fallback" })
                 }</a
             >`;
+        }
+
+        if (item.generated) {
+            return msg("Expiration rule (deleted)", { id: "offboarding.source.rule-deleted" });
         }
 
         return item.createdByObj?.username ?? msg("-");
