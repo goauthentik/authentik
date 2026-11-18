@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
             model_name="samlprovider",
             name="ignore_force_authn",
             field=models.BooleanField(
+                db_default=False,
                 default=False,
                 help_text="When enabled, the ForceAuthn attribute set by the Service Provider on an AuthnRequest is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.",
             ),

@@ -268,6 +268,7 @@ class SAMLProvider(Provider):
 
     ignore_force_authn = models.BooleanField(
         default=False,
+        db_default=False,
         help_text=_(
             "When enabled, the ForceAuthn attribute set by the Service Provider on an "
             "AuthnRequest is ignored and an existing session is used. When disabled, "
