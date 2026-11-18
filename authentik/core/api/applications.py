@@ -66,7 +66,7 @@ class ApplicationListSerializer(ListSerializer):
     """Applications, with the cached URLs of all their icons read in one query"""
 
     def to_representation(self, data):
-        applications = data.all() if isinstance(data, BaseManager) else data
+        applications = list(data.all() if isinstance(data, BaseManager) else data)
         with get_file_manager(FileUsage.MEDIA).prefetch_urls(
             application.meta_icon for application in applications
         ):
