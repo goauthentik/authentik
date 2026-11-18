@@ -154,7 +154,7 @@ class FileManager:
                 backend = next((b for b in self.backends if b.supports_file(variant)), None)
                 # Only the manageable backends cache their URLs
                 if isinstance(backend, ManageableBackend):
-                    keys.append(backend._cache_key(variant, None))
+                    keys.append(backend.cache_key(variant, None))
         try:
             prefetched = cache.get_many(keys)
         except DatabaseError:

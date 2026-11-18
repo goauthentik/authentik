@@ -197,7 +197,7 @@ class ManageableBackend(Backend):
         """
         raise NotImplementedError
 
-    def _cache_key(self, name: str, request: HttpRequest | None) -> str:
+    def cache_key(self, name: str, request: HttpRequest | None) -> str:
         request_key = "None"
         if request is not None:
             request_key = f"{request.build_absolute_uri('/')}"
@@ -215,7 +215,7 @@ class ManageableBackend(Backend):
         if timeout < timeout_ignore:
             timeout = 0
 
-        cache_key = self._cache_key(name, request)
+        cache_key = self.cache_key(name, request)
         prefetched = PREFETCHED_URLS.get()
         if prefetched is not None and cache_key in prefetched:
             return prefetched[cache_key]
