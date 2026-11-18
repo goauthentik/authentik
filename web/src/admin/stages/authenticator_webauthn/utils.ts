@@ -8,6 +8,19 @@ import { WebAuthnDeviceType } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 
+/**
+ * `ak-array-input` reads an edited row from the element that fires `change`, but the native
+ * `<input>` inside `ak-text-input` fires it. Re-dispatch it from the `ak-text-input` instead.
+ */
+function forwardOriginChange(event: Event) {
+    const host = event.currentTarget as HTMLElement;
+
+    if (event.target === host) return;
+
+    event.stopPropagation();
+    host.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
+}
+
 export function additionalAcceptedOriginsField(name: string, origins: string[] = []) {
     return html`<ak-form-element-horizontal
         label=${msg("Additional accepted origins", { id: "webauthn.additional-origins.label" })}
@@ -21,6 +34,7 @@ export function additionalAcceptedOriginsField(name: string, origins: string[] =
                     name="origin"
                     label=${msg("Origin", { id: "webauthn.additional-origins.entry.label" })}
                     .value=${origin}
+                    @change=${forwardOriginChange}
                     input-hint="code"
                     required
                     style="width: 100%"
