@@ -260,7 +260,7 @@ See [Upgrading](#upgrading) for the event-index migration timings.
 
 #### Caching and background tasks
 
-Most requests make fewer database queries. Each authentik process keeps brands, system settings, and the license summary in memory. A change to a brand or a system setting reaches other processes after about 15 seconds. [`AUTHENTIK_CACHE__TIMEOUT_BRANDS`](../../install-config/configuration/configuration.mdx#authentik_cache__timeout_brands) and [`AUTHENTIK_CACHE__TIMEOUT_SYSTEM_SETTINGS`](../../install-config/configuration/configuration.mdx#authentik_cache__timeout_system_settings) set that delay. The PostgreSQL cache backend uses plain SQL again, and cache reads are more than twice as fast. Flow cache statistics are counted in the database. Each event's notification rules run in one task instead of one task per rule.
+Most requests make fewer database queries. Each authentik process keeps brands, system settings, and the license summary in memory. A change to a brand or a system setting reaches other processes after about 15 seconds. [`AUTHENTIK_CACHE__TIMEOUT_BRANDS`](../../../install-config/configuration/configuration.mdx#authentik_cache__timeout_brands) and [`AUTHENTIK_CACHE__TIMEOUT_SYSTEM_SETTINGS`](../../../install-config/configuration/configuration.mdx#authentik_cache__timeout_system_settings) set that delay. The PostgreSQL cache backend uses plain SQL again, and cache reads are more than twice as fast. Flow cache statistics are counted in the database. Each event's notification rules run in one task instead of one task per rule.
 
 Expired cache entries are deleted in batches. In a test with 2,000 expired entries and added database latency, cleanup dropped from 25.6 seconds to 70 ms.
 
