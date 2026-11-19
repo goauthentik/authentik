@@ -334,6 +334,8 @@ The following source guides were recently added. A big thanks to our contributor
 
 This release requires a configured base URL and stops upgrading instances that have additional tenants. Review the [breaking changes](#breaking-changes) before upgrading, in particular [Base URL is required](#base-url-is-required) and [Multi-tenancy has been removed](#multi-tenancy-has-been-removed). For more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
 
+The upgrade rebuilds event indexes to speed up event queries. PostgreSQL blocks writes to the events table while the migration runs. In testing with 10 million events, the migration took 66 seconds.
+
 :::warning Upgrade in order and upgrade all components
 Upgrades MUST be performed sequentially by major version. If you are two or more major releases behind, you must first upgrade to each intermediate major release before upgrading to this one. Refer to our [Upgrade documentation](../../install-config/upgrade.mdx) for more information on upgrade sequence.
 
