@@ -17,23 +17,18 @@ For information about creating and managing applications, refer to [Manage appli
 
 ## Appearance
 
-Applications are displayed to users when:
+authentik shows an application on the **Application Dashboard** when the user has access, the application has a supported launch URL, and **Hide from Application Dashboard** is off. Users have access by default when the application has no policies bound.
 
-- The user has access defined via policies (or the application has no policies bound)
-- A valid Launch URL is configured/could be guessed, this consists of URLs starting with http:// and https://, and paths relative to the current host
+For details on hiding an application without changing who can access it, see [Hide applications](./manage_apps.mdx#hide-applications).
 
 The following options can be configured:
 
 - _Name_: This is the name shown for the application card
-- _Launch URL_: The URL that is opened when a user clicks on the application. When left empty, authentik tries to guess it based on the provider
+- **Launch URL** is where authentik sends users when they open the application. If you leave it empty, authentik tries to determine the URL from the provider.
 
-    You can use placeholders in the launch URL to build them dynamically based on the logged-in user. For example, you can set the Launch URL to `https://goauthentik.io/%(username)s`, which will be replaced with the currently logged-in user's username.
+    Use an absolute `https://` or `http://` URL. If authentik and the application share an origin, you can also use a path beginning with a single `/`, such as `/grafana/`. The browser uses the scheme, hostname, and port of the authentik page. This works when a reverse proxy serves both services, even if users reach it under different hostnames.
 
-    For a reference of all fields available, see [the API schema for the User object](https://api.goauthentik.io/reference/core-users-retrieve/).
-
-    A Launch URL can also be a path relative to the current host, such as `/grafana/`. The browser opens it on the host the user is currently using, which helps when authentik and the application share one origin that is reachable under several hostnames.
-
-    Only apps with launch URLs that begin with `http://` or `https://`, or that use relative paths, appear on the user's **Application Dashboard** page. To keep an app accessible but remove it from that page, use the **Hide from Application Dashboard** option (see [Hide applications](./manage_apps.mdx#hide-applications)).
+    You can include placeholders in either form. For example, authentik replaces `%(username)s` in `/grafana/%(username)s` with the signed-in user's username. Relative launch URLs must stay on the same origin after substitution. For available fields, see the [User API schema](https://api.goauthentik.io/reference/core-users-retrieve/).
 
 - _Icon (URL)_: Optionally configure an icon for the application. You can select from files uploaded to the [Files](../../customize/files.mdx) library or enter an absolute URL.
 
