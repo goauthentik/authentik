@@ -8,10 +8,10 @@ from lxml.etree import XMLSyntaxError  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.metadata import MetadataFetchError, fetch_metadata
+from authentik.common.saml.parsers.logout_request import LogoutRequest
 from authentik.events.models import Event, EventAction
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
-from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
 from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 from authentik.tasks.middleware import CurrentTask

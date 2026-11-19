@@ -29,7 +29,7 @@ class SCIMSource(Source):
 
     @property
     def icon_url(self) -> str:
-        return static("authentik/sources/scim.png")
+        return static("authentik/sources/scim/light.svg")
 
     @property
     def serializer(self) -> BaseSerializer:
@@ -83,6 +83,8 @@ class SCIMSource(Source):
 
 class SCIMSourcePropertyMapping(PropertyMapping):
     """Map SCIM properties to User or Group object attributes"""
+
+    expression_allowed_types = [dict]
 
     @property
     def component(self) -> str:

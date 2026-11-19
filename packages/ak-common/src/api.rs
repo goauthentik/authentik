@@ -39,6 +39,13 @@ impl ServerConfig {
             insecure,
         })
     }
+
+    /// HTTP transport settings shared by API and OAuth backchannel clients.
+    pub fn client_builder(&self) -> reqwest::ClientBuilder {
+        reqwest::ClientBuilder::new()
+            .tls_danger_accept_invalid_hostnames(self.insecure)
+            .tls_danger_accept_invalid_certs(self.insecure)
+    }
 }
 
 /// Return a [`Configuration`] object based on external environment variables.
@@ -47,10 +54,7 @@ pub fn make_config() -> Result<Configuration> {
 
     let base_path = server_config.host.join("api/v3")?.into();
 
-    let client = reqwest::ClientBuilder::new()
-        .tls_danger_accept_invalid_hostnames(server_config.insecure)
-        .tls_danger_accept_invalid_certs(server_config.insecure)
-        .build()?;
+    let client = server_config.client_builder().build()?;
     let client = reqwest_middleware::ClientBuilder::new(client).build();
 
     Ok(Configuration {

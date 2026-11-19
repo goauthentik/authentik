@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { Provider } from "./Provider";
-import { ProviderFromJSON } from "./Provider";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { Provider } from "./Provider.js";
+import { ProviderFromJSON } from "./Provider.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON } from "./ThemedUrls.js";
 
 /**
  * Application Serializer
@@ -39,7 +39,8 @@ export interface Application {
     backchannelProviders?: Array<number>;
     readonly backchannelProvidersObj: Array<Provider>;
     /**
-     * Allow formatting of launch URL
+     * Format the launch URL for the user given as `for_user` in the context, or else the
+     * requesting user
      */
     readonly launchUrl: string | null;
     /**

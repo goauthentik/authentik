@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { InvitationStage } from "./InvitationStage";
-import { InvitationStageFromJSON, InvitationStageToJSON } from "./InvitationStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { InvitationStage } from "./InvitationStage.js";
+import { InvitationStageFromJSON, InvitationStageToJSON } from "./InvitationStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

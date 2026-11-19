@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
 /**
  * Payload to create a service account
  *

@@ -10,17 +10,28 @@
  * Do not edit the class manually.
  */
 
-import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
-import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
-import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
-import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
+import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum.js";
+import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum.js";
+import type { EncryptionAlgorithmEnum } from "./EncryptionAlgorithmEnum.js";
+import {
+    EncryptionAlgorithmEnumFromJSON,
+    EncryptionAlgorithmEnumToJSON,
+} from "./EncryptionAlgorithmEnum.js";
+import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum.js";
+import {
+    SAMLNameIDPolicyEnumFromJSON,
+    SAMLNameIDPolicyEnumToJSON,
+} from "./SAMLNameIDPolicyEnum.js";
+import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum.js";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
-} from "./SignatureAlgorithmEnum";
-import type { WSFedSAMLVersionEnum } from "./WSFedSAMLVersionEnum";
-import { WSFedSAMLVersionEnumFromJSON, WSFedSAMLVersionEnumToJSON } from "./WSFedSAMLVersionEnum";
+} from "./SignatureAlgorithmEnum.js";
+import type { WSFedSAMLVersionEnum } from "./WSFedSAMLVersionEnum.js";
+import {
+    WSFedSAMLVersionEnumFromJSON,
+    WSFedSAMLVersionEnumToJSON,
+} from "./WSFedSAMLVersionEnum.js";
 
 /**
  * WSFederationProvider Serializer
@@ -121,6 +132,10 @@ export interface WSFederationProvider {
      * encryption keypair. The assertion is decrypted by the SP using the the private key.
      */
     encryptionKp?: string | null;
+    /**
+     * Block cipher used to encrypt the assertion.
+     */
+    encryptionAlgorithm?: EncryptionAlgorithmEnum;
     signAssertion?: boolean;
     signLogoutRequest?: boolean;
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
@@ -321,6 +336,10 @@ export function WSFederationProviderFromJSONTyped(
                 : json["encryption_kp"] === null
                   ? null
                   : json["encryption_kp"],
+        encryptionAlgorithm:
+            json["encryption_algorithm"] == null
+                ? undefined
+                : EncryptionAlgorithmEnumFromJSON(json["encryption_algorithm"]),
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signLogoutRequest:
             json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
@@ -378,6 +397,7 @@ export function WSFederationProviderToJSONTyped(
         signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
         signing_kp: value["signingKp"],
         encryption_kp: value["encryptionKp"],
+        encryption_algorithm: EncryptionAlgorithmEnumToJSON(value["encryptionAlgorithm"]),
         sign_assertion: value["signAssertion"],
         sign_logout_request: value["signLogoutRequest"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),

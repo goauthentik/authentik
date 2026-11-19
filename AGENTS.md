@@ -52,7 +52,7 @@ go.mod              # Go module (module path: goauthentik.io)
 - **`sources/`** — inbound identity (LDAP, OAuth, SAML, SCIM, Kerberos source).
 - **`providers/`** — outbound protocols authentik exposes (SAML, OAuth2/OIDC, Proxy, LDAP, RADIUS, SCIM, RAC).
 - **`outposts/`** — management/coordination of the Go outposts.
-- **`brands/`** + **`tenants/`** — branding/theming and multi-tenancy (`django-tenants`).
+- **`brands/`** — branding/theming per domain.
 - **`blueprints/`** — the engine that applies the YAML under the top-level `blueprints/` directory.
 - **`rbac/`**, **`crypto/`**, **`events/`** (audit log), **`enterprise/`** (EE-licensed features), **`api/`** - **`admin/`** (REST surfaces), **`root/`** (Django project: settings, URLs, ASGI/WSGI).
 
@@ -64,7 +64,7 @@ Most tasks land in one subtree and have one follow-up step. Find the row, then r
 | ------------------------------------------------------------------ | ------------------------------ | ------------------------------------------------------------------------------------ |
 | Add or change a REST endpoint, model field, or serializer          | `authentik/` (Python)          | `make gen` to refresh `schema.yml` + clients, and commit the generated migration     |
 | Change UI behavior, a flow screen, or an admin page                | `web/`                         | [`web/AGENTS.md`](web/AGENTS.md) — call the API only through `@goauthentik/api`       |
-| Write or edit docs, an integration guide, or a glossary term       | `website/`                     | [`website/AGENTS.md`](website/AGENTS.md), then `make docs` / `make integrations`      |
+| Write or edit docs or an integration guide                         | `website/`                     | [`website/AGENTS.md`](website/AGENTS.md), then `make docs` / `make integrations`      |
 | Change an outpost (LDAP, proxy, RAC, RADIUS) or the front proxy    | `cmd/` + `internal/` (Go)      | `make go-test`                                                                       |
 | Change a native server/worker component or shared crate            | `src/` + `packages/ak-*` (Rust)| `make rust-test`                                                                     |
 | Seed or reconcile a managed object (flow, stage, policy, brand)    | `blueprints/` (YAML)           | prefer a blueprint over an ad-hoc data migration                                     |
@@ -108,6 +108,7 @@ make lint-fix          # Auto-fix: black + ruff (Python) and rustfmt (Rust)
 make lint              # Check: bandit, mypy --strict, golangci-lint, cargo deny/machete
 make lint-spellcheck   # cspell across the repo (typo-only mode: reports known misspellings and forbidden British spellings, not unknown words)
 make lint-catalogs     # pnpm catalog pins in sync across the root/web/website workspaces
+make lint-locales      # translation files + generated locale lists match locales.yaml (`make gen-locales` regenerates)
 ```
 
 CI mirrors these as `ci-lint-*` / `ci-test` targets. Run the matching `make lint` / `make test` (plus `make web` / `make docs` for those subtrees) before pushing — CI runs the same checks.
@@ -154,7 +155,7 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 | --------------- | ------------------------------------------------------------------------ |
 | Core server     | Python 3.14, Django 5.2 + Django REST Framework, Channels (ASGI)         |
 | Background work | Dramatiq (Postgres broker)                                               |
-| Datastore       | PostgreSQL (multi-tenant via `django-tenants`)                           |
+| Datastore       | PostgreSQL                                                               |
 | Outposts        | Go 1.26 (`goauthentik.io` module) — LDAP, proxy, RAC, RADIUS             |
 | Native services | Rust (2024 edition, `axum`) — server/worker components + shared crates   |
 | Web UI          | TypeScript, Lit 3, PatternFly 4 (see `web/`)                             |

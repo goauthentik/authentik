@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import { type DeliveryMethodEnum } from "../models/DeliveryMethodEnum";
+import { type DeliveryMethodEnum } from "../models/DeliveryMethodEnum.js";
 import {
     type PaginatedSSFStreamList,
     PaginatedSSFStreamListFromJSON,
-} from "../models/PaginatedSSFStreamList";
-import { type SSFStream, SSFStreamFromJSON } from "../models/SSFStream";
-import * as runtime from "../runtime";
+} from "../models/PaginatedSSFStreamList.js";
+import { type SSFStream, SSFStreamFromJSON } from "../models/SSFStream.js";
+import * as runtime from "../runtime.js";
 
 export interface SsfStreamsDestroyRequest {
     /**

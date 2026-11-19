@@ -1,5 +1,6 @@
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { serializeForm } from "#elements/forms/serialization";
+import { settleFormFields } from "#elements/forms/settle-form-fields";
 
 import {
     NavigationEventInit,
@@ -46,6 +47,12 @@ export abstract class ApplicationWizardStep<T = Partial<ApplicationRequest>> ext
     // This should be overridden in the children for more precise targeting.
     public get form(): HTMLFormElement | null {
         return this.renderRoot.querySelector("form");
+    }
+
+    public override settled(): Promise<void> {
+        const { form } = this;
+
+        return form ? settleFormFields(form) : Promise.resolve();
     }
 
     /**

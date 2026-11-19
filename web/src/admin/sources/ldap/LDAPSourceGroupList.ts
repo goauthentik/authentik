@@ -27,7 +27,10 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("LDAP Group(s)")}
+            verbose-name=${msg("LDAP Group", { id: "ldap.groups.verbose-name.label" })}
+            verbose-name-plural=${msg("LDAP Groups", {
+                id: "ldap.groups.verbose-name-plural.label",
+            })}
             .objects=${this.selectedElements}
             .delete=${(item: GroupLDAPSourceConnection) => {
                 return aki(SourcesApi).sourcesGroupConnectionsLdapDestroy({

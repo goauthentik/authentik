@@ -12,10 +12,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
+from structlog.stdlib import get_logger
 
 from authentik.common.saml.metadata import MetadataFetchError, fetch_metadata
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.providers.saml.api.providers import SAMLMetadataSerializer
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
@@ -24,23 +26,7 @@ from authentik.sources.saml.processors.metadata_parser import (
     IdentityProviderMetadataParser,
 )
 
-
-def fetch_and_parse_metadata(url: str) -> IdentityProviderMetadata:
-    """Download and parse IdP metadata from `url`, converting errors to validation errors"""
-    try:
-        raw_metadata = fetch_metadata(url)
-    except MetadataFetchError as exc:
-        raise ValidationError({"metadata_url": str(exc)}) from None
-    try:
-        fromstring(raw_metadata)
-    except ParseError:
-        raise ValidationError({"metadata_url": _("Invalid XML Syntax")}) from None
-    try:
-        return IdentityProviderMetadataParser().parse(raw_metadata)
-    except (ValueError, KeyError) as exc:
-        raise ValidationError(
-            {"metadata_url": _("Failed to parse metadata: {message}").format(message=str(exc))}
-        ) from None
+LOGGER = get_logger()
 
 
 class SAMLSourceSerializer(SourceSerializer):
@@ -56,6 +42,23 @@ class SAMLSourceSerializer(SourceSerializer):
             return instance.issuer_override or ""
         return instance.get_issuer(self._context["request"]._request)
 
+    def _fetch_and_parse_metadata(self, url: str) -> IdentityProviderMetadata:
+        """Download and parse IdP metadata from `url`, converting errors to validation errors"""
+        try:
+            raw_metadata = fetch_metadata(url)
+        except MetadataFetchError as exc:
+            LOGGER.warning("Failed to download SAML metadata", url=url, exc=exc)
+            raise ValidationError({"metadata_url": _("Failed to download metadata.")}) from None
+        try:
+            fromstring(raw_metadata)
+        except ParseError:
+            raise ValidationError({"metadata_url": _("Invalid XML Syntax")}) from None
+        try:
+            return IdentityProviderMetadataParser().parse(raw_metadata)
+        except (ValueError, KeyError) as exc:
+            LOGGER.warning("Failed to parse SAML metadata", url=url, exc=exc)
+            raise ValidationError({"metadata_url": _("Failed to parse metadata.")}) from None
+
     def validate(self, attrs: dict):
         if attrs.get("verification_kp"):
             if not attrs.get("signed_assertion") and not attrs.get("signed_response"):
@@ -69,7 +72,7 @@ class SAMLSourceSerializer(SourceSerializer):
         metadata_url = attrs.get("metadata_url", "")
         previous_url = self.instance.metadata_url if self.instance else ""
         if metadata_url and metadata_url != previous_url:
-            self._metadata = fetch_and_parse_metadata(metadata_url)
+            self._metadata = self._fetch_and_parse_metadata(metadata_url)
         has_sso_url = bool(attrs.get("sso_url") or (self.instance and self.instance.sso_url))
         if not has_sso_url and not metadata_url:
             raise ValidationError(
@@ -114,6 +117,9 @@ class SAMLSourceSerializer(SourceSerializer):
         extra_kwargs = {
             # Filled in from the metadata when a metadata URL is given
             "sso_url": {"required": False, "allow_blank": True},
+            "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "verification_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "encryption_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
         }
 
 

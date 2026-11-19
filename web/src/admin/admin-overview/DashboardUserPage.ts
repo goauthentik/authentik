@@ -7,8 +7,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { AKElement } from "#elements/Base";
-
-import { setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails } from "#elements/router/meta";
 
 import { EventActions, EventsEventsVolumeListRequest } from "@goauthentik/api";
 

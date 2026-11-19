@@ -9,12 +9,11 @@ import { aki } from "#common/api/client";
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
+import { setPageDetails } from "#elements/router/meta";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { setPageDetails } from "#components/ak-page-navbar";
 
 import { RoleForm } from "#admin/roles/ak-role-form";
 
@@ -26,6 +25,11 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-role-list")
 export class RoleListPage extends TablePage<Role> {
+    public static override verboseName = msg("Role", { id: "roles.verbose-name.label" });
+    public static override verboseNamePlural = msg("Roles", {
+        id: "roles.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override checkbox = true;
@@ -59,7 +63,6 @@ export class RoleListPage extends TablePage<Role> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Role(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Role) => {
                 return aki(RbacApi).rbacRolesUsedByList({

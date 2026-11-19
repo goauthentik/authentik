@@ -1,0 +1,57 @@
+---
+title: Autoscaling with the Helm chart HPA
+sidebar_label: Helm chart HPA
+sidebar_position: 2
+---
+
+The authentik [Helm chart](../../../install-config/install/kubernetes.mdx) can create a Horizontal Pod Autoscaler (HPA) for either the server or worker Deployment. This guide configures server scaling based on average CPU utilization. For queue-based worker scaling, see [KEDA](./keda.mdx).
+
+## Prerequisites
+
+- An existing authentik Helm chart installation and its `values.yaml` file.
+- A working [resource-metrics API](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-metrics-apis) (`metrics.k8s.io`), usually provided by [Metrics Server](https://kubernetes-sigs.github.io/metrics-server/). Every container in the server pods needs a CPU request for pod CPU utilization to be defined.
+
+## Configure the Helm chart
+
+Add the following settings to the `server` section of your existing `values.yaml`. Preserve your other settings.
+
+```yaml title="values.yaml (excerpt)"
+server:
+    autoscaling:
+        enabled: true
+        minReplicas: 2
+        maxReplicas: 5
+        targetCPUUtilizationPercentage: 75
+        behavior:
+            scaleDown:
+                stabilizationWindowSeconds: 300
+    resources:
+        requests:
+            cpu: 500m
+```
+
+The HPA targets an average CPU utilization of 75% across server pods, measured against their CPU requests. With the single-container pods shown here, each requesting 500m CPU, that is an average of 375m per pod. Adjust the CPU request, replica limits, and target for your workload.
+
+With chart autoscaling enabled, the server Deployment omits `spec.replicas`. When switching from a fixed replica count, [this can briefly reduce the Deployment to one replica](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#migrating-deployments-and-statefulsets-to-horizontal-autoscaling) before the HPA reconciles it. Account for this temporary capacity reduction when planning the upgrade.
+
+## Deploy and verify
+
+If switching from KEDA, remove the server ScaledObject before enabling the chart's HPA. Make the change during a quiet period and check the replica count afterward.
+
+These commands assume a Helm release named `authentik` and a server Deployment and HPA named `authentik-server`, all in the current namespace. Adjust the names and namespace to match your installation.
+
+Upgrade the release with your updated `values.yaml`, then inspect the HPA:
+
+```shell
+helm upgrade authentik authentik/authentik -f values.yaml
+kubectl get hpa authentik-server
+kubectl describe hpa authentik-server
+kubectl get deployment authentik-server --watch
+```
+
+## Capacity and tuning
+
+- Run server replicas on different nodes to maintain [availability](../../../install-config/high-availability.mdx) if a node fails.
+- Additional replicas increase PostgreSQL connection demand. They do not resolve bottlenecks in the database or external services. Server capacity also depends on [`AUTHENTIK_WEB__WORKERS`](../../../install-config/configuration/configuration.mdx#authentik_web__workers) and [`AUTHENTIK_WEB__THREADS`](../../../install-config/configuration/configuration.mdx#authentik_web__threads).
+- Tune `behavior.scaleDown.stabilizationWindowSeconds` to avoid frequent changes in replica count. The chart also supports a worker HPA with `worker.autoscaling.enabled: true`, but CPU usage alone can miss a task backlog when workers wait on external services.
+- To scale on other signals, set `server.autoscaling.metrics` or `worker.autoscaling.metrics` and provide the corresponding Kubernetes metrics API. A nonempty `metrics` list replaces the chart-generated CPU and memory metrics, so include a CPU resource metric if you also want CPU-based scaling.

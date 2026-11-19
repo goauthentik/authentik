@@ -2,11 +2,13 @@
 
 from time import sleep
 
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.virtual_authenticator import (
     Protocol,
     Transport,
     VirtualAuthenticatorOptions,
 )
+from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
@@ -25,7 +27,9 @@ class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):
 
     host = "localhost"
 
-    def register(self):
+    def add_virtual_authenticator(self):
+        """Attach a new virtual authenticator. Each one has its own credential store, so
+        attaching a second one models plugging in a second, distinct security key."""
         options = VirtualAuthenticatorOptions(
             protocol=Protocol.CTAP2,
             transport=Transport.INTERNAL,
@@ -35,18 +39,25 @@ class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):
         )
         self.driver.add_virtual_authenticator(options)
 
-        self.driver.get(self.url("authentik_core:if-flow", flow_slug="default-authentication-flow"))
-        self.login()
-
-        self.wait_for_url(self.if_user_url("/library"))
-        self.assert_user(self.user)
-
+    def start_enrollment(self):
+        """Navigate to the WebAuthn setup stage's configuration flow"""
         self.driver.get(
             self.url(
                 "authentik_flows:configure",
                 stage_uuid=AuthenticatorWebAuthnStage.objects.first().stage_uuid,
             )
         )
+
+    def register(self):
+        self.add_virtual_authenticator()
+
+        self.driver.get(self.url("authentik_core:if-flow", flow_slug="default-authentication-flow"))
+        self.login()
+
+        self.wait_for_url(self.if_user_url("/library"))
+        self.assert_user(self.user)
+
+        self.start_enrollment()
 
         self.wait_for_url(self.if_user_url("/library"))
         self.assertTrue(WebAuthnDevice.objects.filter(user=self.user, confirmed=True).exists())
@@ -60,6 +71,50 @@ class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):
     def test_webauthn_setup(self):
         """Test WebAuthn setup"""
         self.register()
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint("default/flow-default-authenticator-webauthn-setup.yaml")
+    def test_webauthn_setup_duplicate_denied(self):
+        """Test that the same authenticator can't be enrolled twice.
+
+        The already-registered credential is sent in excludeCredentials, so the authenticator
+        itself refuses to create a second credential and the browser raises InvalidStateError."""
+        self.register()
+
+        self.start_enrollment()
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        stage = self.get_shadow_root("ak-stage-authenticator-webauthn", flow_executor)
+        WebDriverWait(stage, 10).until(
+            lambda s: "already registered" in s.find_element(By.CSS_SELECTOR, "ak-empty-state").text
+        )
+        self.assertEqual(WebAuthnDevice.objects.filter(user=self.user).count(), 1)
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint("default/flow-default-authenticator-webauthn-setup.yaml")
+    def test_webauthn_setup_second_authenticator(self):
+        """Test that a second, distinct authenticator can be enrolled on the same account.
+
+        This is the case that the removed `prevent_duplicate_devices` option broke, as two
+        security keys from the same batch share an attestation certificate."""
+        self.register()
+
+        # Swap in a different virtual authenticator, i.e. a second physical key
+        self.driver.remove_virtual_authenticator()
+        self.add_virtual_authenticator()
+
+        self.start_enrollment()
+
+        self.wait_for_url(self.if_user_url("/library"))
+        self.assertEqual(WebAuthnDevice.objects.filter(user=self.user).count(), 2)
 
     @retry()
     @apply_blueprint(

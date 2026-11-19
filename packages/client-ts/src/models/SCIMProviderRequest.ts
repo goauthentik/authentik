@@ -10,16 +10,16 @@
  * Do not edit the class manually.
  */
 
-import type { CompatibilityModeEnum } from "./CompatibilityModeEnum";
+import type { CompatibilityModeEnum } from "./CompatibilityModeEnum.js";
 import {
     CompatibilityModeEnumFromJSON,
     CompatibilityModeEnumToJSON,
-} from "./CompatibilityModeEnum";
-import type { SCIMAuthenticationModeEnum } from "./SCIMAuthenticationModeEnum";
+} from "./CompatibilityModeEnum.js";
+import type { SCIMAuthenticationModeEnum } from "./SCIMAuthenticationModeEnum.js";
 import {
     SCIMAuthenticationModeEnumFromJSON,
     SCIMAuthenticationModeEnumToJSON,
-} from "./SCIMAuthenticationModeEnum";
+} from "./SCIMAuthenticationModeEnum.js";
 
 /**
  * SCIMProvider Serializer

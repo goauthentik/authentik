@@ -4,6 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/ToggleGroup";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFAlignment from "@patternfly/patternfly/utilities/Alignment/alignment.css";
 
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -13,11 +14,11 @@ import { PreventFormSubmit } from "#elements/forms/helpers";
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { AKLabel } from "#components/ak-label";
+import { AKSearchSelect } from "#components/ak-search-select-field";
 
-import { BlueprintSource } from "#admin/blueprints/BlueprintForm";
+import { BlueprintSource, blueprintFileSource } from "#admin/blueprints/BlueprintForm";
 
 import {
-    BlueprintFile,
     BlueprintImportResult,
     ManagedApi,
     ManagedBlueprintsImportCreateRequest,
@@ -33,7 +34,7 @@ import { customElement, state } from "lit/decorators.js";
  */
 @customElement("ak-blueprint-import-form")
 export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateRequest> {
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList, PFBanner];
+    static styles: CSSResult[] = [...super.styles, PFAlignment, PFDescriptionList, PFBanner];
 
     public static override verboseName = msg("Flow Blueprint");
     public static override verboseNamePlural = msg("Flow Blueprints");
@@ -100,16 +101,18 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-toggle-group
-                value=${this.source}
-                @ak-toggle=${(ev: ToggleGroupEvent<BlueprintSource>) => {
-                    this.reset();
-                    this.source = ev.value;
-                }}
-            >
-                <option value=${BlueprintSource.Upload}>${msg("File upload")}</option>
-                <option value=${BlueprintSource.File}>${msg("Local path")}</option>
-            </ak-toggle-group>
+        return html` <div class="pf-u-text-align-center">
+                <ak-toggle-group
+                    value=${this.source}
+                    @ak-toggle=${(ev: ToggleGroupEvent<BlueprintSource>) => {
+                        this.reset();
+                        this.source = ev.value;
+                    }}
+                >
+                    <option value=${BlueprintSource.Upload}>${msg("File upload")}</option>
+                    <option value=${BlueprintSource.File}>${msg("Local path")}</option>
+                </ak-toggle-group>
+            </div>
             ${
                 this.source === BlueprintSource.Upload
                     ? html`
@@ -161,31 +164,13 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
             ${
                 this.source === BlueprintSource.File
                     ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
-                          <ak-search-select
-                              placeholder=${msg("Select a blueprint...")}
-                              .fetchObjects=${async (query?: string): Promise<BlueprintFile[]> => {
-                                  const items =
-                                      await aki(ManagedApi).managedBlueprintsAvailableList();
-
-                                  return items.filter((item) =>
-                                      query ? item.path.includes(query) : true,
-                                  );
-                              }}
-                              .renderElement=${(item: BlueprintFile): string => {
-                                  const name = item.path;
-
-                                  if (item.meta && item.meta.name) {
-                                      return `${name} (${item.meta.name})`;
-                                  }
-
-                                  return name;
-                              }}
-                              .value=${(item: BlueprintFile | null) => {
-                                  return item?.path;
-                              }}
-                              blankable
-                          >
-                          </ak-search-select>
+                          ${AKSearchSelect({
+                              name: "path",
+                              emptyValue: "",
+                              source: blueprintFileSource,
+                              placeholder: msg("Select a blueprint..."),
+                              blankable: true,
+                          })}
                       </ak-form-element-horizontal>`
                     : nothing
             }

@@ -46,6 +46,9 @@ def generate_local_config() -> dict[str, Any]:
             "enabled": False,
             "api_key": generate_id(),
         },
+        "web": {
+            "base_url": "http://localhost:9000",
+        },
         "worker": {
             "processes": 1,
             "threads": 1,

@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { ProxyMode } from "./ProxyMode";
-import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode";
+import type { ProxyMode } from "./ProxyMode.js";
+import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode.js";
 
 /**
  * ProxyProvider Serializer

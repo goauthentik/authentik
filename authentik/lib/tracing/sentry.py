@@ -70,30 +70,41 @@ def _before_send(event: dict, hint: dict) -> dict | None:
 
 
 class SentryTracer(Tracer):
-    """Tracer backed by the Sentry SDK, reporting crashes to error_reporting.sentry_dsn"""
+    """Tracer backed by the Sentry SDK, reporting crashes to error_reporting.sentry_dsn.
+    With `tracing=False` Sentry only reports errors, leaving tracing to another backend"""
+
+    def __init__(self, tracing: bool = True) -> None:
+        self.tracing = tracing
 
     def setup_pre_fork(self) -> None:
         """Configure and initialize the Sentry SDK"""
+        tracing_args: dict[str, Any] = {}
+        if self.tracing:
+            tracing_args = {
+                "traces_sampler": _traces_sampler,
+                "profiles_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.1)),
+            }
         sentry_sdk.init(
             dsn=CONFIG.get("error_reporting.sentry_dsn"),
             environment=CONFIG.get("error_reporting.environment", "customer"),
             send_default_pii=CONFIG.get_bool("error_reporting.send_pii", False),
-            _experiments={
-                "profiles_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.1)),
-            },
-            spotlight=settings.DEBUG,
             integrations=[
                 ArgvIntegration(),
-                DjangoIntegration(transaction_style="function_name", cache_spans=True),
+                DjangoIntegration(
+                    transaction_style="url",
+                    cache_spans=self.tracing,
+                    middleware_spans=self.tracing,
+                    signals_spans=self.tracing,
+                ),
                 DramatiqIntegration(),
                 SocketIntegration(),
                 StdlibIntegration(),
                 ThreadingIntegration(propagate_hub=True),
             ],
             before_send=_before_send,
-            traces_sampler=_traces_sampler,
             release=f"authentik@{authentik_version()}",
             transport=_SentryTransport,
+            **tracing_args,
             **CONFIG.get_dict_from_b64_json("error_reporting.extra_args", {}),
         )
         sentry_sdk.set_tag("authentik.build_hash", authentik_build_hash("tagged"))

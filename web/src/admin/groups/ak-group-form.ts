@@ -1,7 +1,7 @@
 import "#admin/groups/ak-group-member-table";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";

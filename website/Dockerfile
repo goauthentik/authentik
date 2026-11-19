@@ -1,8 +1,8 @@
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.4.0@sha256:4fcb6db39468ecafef34f3e866730df106f7639ba4512e42885d80f868ccb257 AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.22.0@sha256:81346f048d668195928d441b80efc0df300474ed8bf81789e4554ec0079079d0 AS pnpm
 
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.8.2-trixie@sha256:fb192b8ad31841aadc4bb79c44ae0f59d193a798ffbc9fdce37ba6ecb20c2236 AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.13.1-trixie@sha256:e18c3ccdf7d71619990b0e85639f506e2028a95410999cab24cc373cbd10e0ac AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -62,7 +62,7 @@ COPY ./SECURITY.md /work/
 
 RUN pnpm run build
 
-FROM docker.io/library/nginx:1.31.6-trixie@sha256:908dc23e643a1447dbfb2e189ed268bfde6a51a5bf9a34d3dd3440a24f58ccf7
+FROM docker.io/library/nginx:1.31.8-trixie@sha256:165ddde8751e75a1c907d24ef10d9f6deb08b57e0fe56caf67512486aff76d82
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \

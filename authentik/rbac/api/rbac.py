@@ -3,10 +3,13 @@
 from django.apps import apps
 from django.contrib.auth.models import Permission
 from django.db.models import QuerySet
+from django.utils.translation import gettext_lazy as _
 from django_filters.filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
+    CharField,
     ReadOnlyField,
     SerializerMethodField,
 )
@@ -16,6 +19,19 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from authentik.core.api.utils import ModelSerializer
 from authentik.rbac.models import Role
+
+
+class PermissionField(CharField):
+    """An existing permission, as `app_label.codename`"""
+
+    def to_internal_value(self, data) -> str:
+        permission = super().to_internal_value(data)
+        app_label, _sep, codename = permission.partition(".")
+        if not Permission.objects.filter(
+            content_type__app_label=app_label, codename=codename
+        ).exists():
+            raise ValidationError(_("Unknown permission {name}").format(name=permission))
+        return permission
 
 
 class PermissionSerializer(ModelSerializer):

@@ -4,11 +4,11 @@ from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.stages.dummy.models import DummyStage
 
 
-class TestDummyStage(FlowTestCase):
+class TestDummyStage(APIFlowTestCase):
     """Dummy tests"""
 
     def setUp(self):

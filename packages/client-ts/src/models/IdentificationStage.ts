@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
-import type { UserFieldsEnum } from "./UserFieldsEnum";
-import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
+import type { UserFieldsEnum } from "./UserFieldsEnum.js";
+import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum.js";
 
 /**
  * IdentificationStage Serializer

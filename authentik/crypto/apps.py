@@ -1,6 +1,7 @@
 """authentik crypto app config"""
 
 from dramatiq.broker import get_broker
+from prometheus_client import Gauge
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.generators import generate_id
@@ -8,6 +9,13 @@ from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
 
 MANAGED_KEY = "goauthentik.io/crypto/jwt-managed"
+
+GAUGE_CERTIFICATE_EXPIRY = Gauge(
+    "authentik_crypto_certificate_expiry_timestamp_seconds",
+    "Certificate expiry of each certificate-key pair as a Unix timestamp, NaN once deleted.",
+    ["name", "kp_uuid"],
+    multiprocess_mode="livemostrecent",
+)
 
 
 class AuthentikCryptoConfig(ManagedAppConfig):
@@ -37,7 +45,7 @@ class AuthentikCryptoConfig(ManagedAppConfig):
             },
         )
 
-    @ManagedAppConfig.reconcile_tenant
+    @ManagedAppConfig.reconcile
     def managed_jwt_cert(self):
         """Ensure managed JWT certificate"""
         from authentik.crypto.models import CertificateKeyPair
@@ -48,7 +56,7 @@ class AuthentikCryptoConfig(ManagedAppConfig):
         if not cert:
             self._create_update_cert()
 
-    @ManagedAppConfig.reconcile_tenant
+    @ManagedAppConfig.reconcile
     def self_signed(self):
         """Create self-signed keypair"""
         from authentik.crypto.builder import CertificateBuilder
@@ -67,14 +75,14 @@ class AuthentikCryptoConfig(ManagedAppConfig):
             },
         )
 
-    @ManagedAppConfig.reconcile_global
+    @ManagedAppConfig.reconcile
     def tasks_middlewares(self):
         from authentik.crypto.tasks import CertificateWatcherMiddleware
 
         get_broker().add_middleware(CertificateWatcherMiddleware())
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.crypto.tasks import certificate_discovery
 
         return [

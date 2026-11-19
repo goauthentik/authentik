@@ -1,6 +1,7 @@
 packages:
   - "packages/oxlint-config"
   - "packages/oxfmt-config"
+  - "packages/client-ts"
   - "packages/docusaurus-config"
   - "packages/esbuild-plugin-live-reload"
   - "packages/fonts"
@@ -19,8 +20,8 @@ catalog:
   "@vitest/browser": "^4.1.10"
   "@vitest/browser-playwright": "^4.1.10"
   esbuild: "^0.28.1"
-  oxfmt: "0.68.0"
-  oxlint: "^1.82.0"
+  oxfmt: "0.70.0"
+  oxlint: "^1.85.0"
   playwright: "^1.62.1"
   typescript: "^6.0.3"
   vite: "^8.2.0"

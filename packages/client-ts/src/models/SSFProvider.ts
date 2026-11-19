@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Provider } from "./Provider";
-import { ProviderFromJSON } from "./Provider";
-import type { Token } from "./Token";
-import { TokenFromJSON } from "./Token";
+import type { Provider } from "./Provider.js";
+import { ProviderFromJSON } from "./Provider.js";
+import type { Token } from "./Token.js";
+import { TokenFromJSON } from "./Token.js";
 
 /**
  * SSFProvider Serializer

@@ -8,6 +8,7 @@ import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { renderSourceIcon } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { WizardPage } from "#elements/wizard/WizardPage";
@@ -63,9 +64,6 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 max-height: 2em;
                 min-height: 2em;
             }
-            :host([theme="dark"]) .pf-c-card__header-main img {
-                filter: invert(1);
-            }
 
             :host([theme="dark"]) .pf-c-card {
                 --pf-c-card--BackgroundColor: var(--pf-global--BackgroundColor--150);
@@ -97,13 +95,18 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         this.formRef.value?.reset();
     };
 
+    public override get canAdvance(): boolean {
+        return !!this.selectedType;
+    }
+
     public override activeCallback = (): void => {
-        this.host.valid = !!this.selectedType;
+        this.host.requestUpdate();
     };
 
     protected override updated(changedProperties: PropertyValues<this>): void {
         if (changedProperties.has("selectedType")) {
             this.#selectDispatch(this.selectedType);
+            this.host?.requestUpdate();
         }
     }
 
@@ -162,12 +165,17 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 ${
                     type.iconUrl
                         ? html`<div role="presentation" class="pf-c-card__header">
-                              <div role="presentation" class="pf-c-card__header-main">
-                                  <img
-                                      aria-hidden="true"
-                                      src=${type.iconUrl}
-                                      alt=${msg(str`${type.name} Icon`)}
-                                  />
+                              <div
+                                  role="presentation"
+                                  aria-hidden="true"
+                                  class="pf-c-card__header-main"
+                              >
+                                  ${renderSourceIcon(
+                                      msg(str`${type.name} Icon`),
+                                      type.iconUrl,
+                                      type.iconThemedUrls,
+                                      this.activeTheme,
+                                  )}
                               </div>
                           </div>`
                         : null
@@ -292,9 +300,9 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     //#endregion
 
     protected override render(): SlottedTemplateResult {
-        const { layout, types, selectedType } = this;
+        const { layout, types, selectedType, activeTheme } = this;
 
-        const content = guard([layout, types, selectedType], () => {
+        const content = guard([layout, types, selectedType, activeTheme], () => {
             switch (layout) {
                 case TypeCreateWizardPageLayouts.grid:
                     return this.renderGrid();

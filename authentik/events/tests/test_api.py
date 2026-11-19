@@ -1,6 +1,6 @@
 """Event API tests"""
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from json import loads
 
 from django.urls import reverse
@@ -9,6 +9,7 @@ from django.utils.http import urlencode
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
+from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.events.models import (
     Event,
@@ -19,6 +20,8 @@ from authentik.events.models import (
 )
 from authentik.events.utils import model_to_dict
 from authentik.lib.generators import generate_id
+from authentik.policies.dummy.models import DummyPolicy
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
@@ -89,6 +92,38 @@ class TestEventsAPI(APITestCase):
                 self.assertEqual(body["pagination"]["count"], 1)
                 self.assertEqual(body["results"][0]["context"]["model"]["pk"], target_user.pk)
 
+    def test_search_policy_binding(self):
+        """Policy execution events can be searched by binding UUID."""
+        policy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        binding = PolicyBinding.objects.create(
+            target=Application.objects.create(name=generate_id(), slug=generate_id()),
+            policy=policy,
+            order=0,
+        )
+        Event.new(
+            EventAction.POLICY_EXECUTION,
+            binding=binding,
+            dry_run=True,
+        ).save()
+        Event.new(EventAction.POLICY_EXECUTION, dry_run=True).save()
+
+        response = self.client.get(
+            reverse("authentik_api:event-list"),
+            data={
+                "search": (
+                    'action = "policy_execution" and context.dry_run = True and '
+                    "context.binding.pk = "
+                    f'"{binding.policy_binding_uuid.hex}"'
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content)
+        self.assertEqual(body["pagination"]["count"], 1)
+
     def test_top_n(self):
         """Test top_per_user"""
         event = Event.new(EventAction.AUTHORIZE_APPLICATION)
@@ -102,6 +137,81 @@ class TestEventsAPI(APITestCase):
         self.assertJSONEqual(
             response.content,
             [{"application": {"name": "foo"}, "counted_events": 1, "unique_users": 0}],
+        )
+
+    def test_top_n_counts(self):
+        """Test top_per_user counts events and distinct users per application"""
+        Event.objects.all().delete()
+        other = create_test_user()
+        first = {"pk": generate_id(), "name": "first"}
+        second = {"pk": generate_id(), "name": "second"}
+        for user, application in (
+            (self.user, first),
+            (self.user, first),
+            (other, first),
+            (other, second),
+        ):
+            Event.new(
+                EventAction.AUTHORIZE_APPLICATION, authorized_application=application
+            ).set_user(user).save()
+        Event.new(EventAction.LOGIN).set_user(self.user).save()
+        response = self.client.get(
+            reverse("authentik_api:event-top-per-user"),
+            data={"action": EventAction.AUTHORIZE_APPLICATION},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            response.content,
+            [
+                {"application": first, "counted_events": 3, "unique_users": 2},
+                {"application": second, "counted_events": 1, "unique_users": 1},
+            ],
+        )
+
+    def test_top_n_no_match(self):
+        """Test top_per_user returns nothing when no action matches the filter"""
+        Event.objects.all().delete()
+        Event.new(EventAction.LOGIN).set_user(self.user).save()
+        response = self.client.get(
+            reverse("authentik_api:event-top-per-user"),
+            data={"action": EventAction.AUTHORIZE_APPLICATION},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, [])
+
+    def test_filter_action(self):
+        """Test the action filter matches actions containing the value, ignoring case"""
+        Event.objects.all().delete()
+        for action in (EventAction.LOGIN, EventAction.LOGIN_FAILED, EventAction.LOGOUT, "my_login"):
+            Event.new(action).save()
+        response = self.client.get(reverse("authentik_api:event-list"), data={"action": "LOGIN"})
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(
+            [event["action"] for event in response.json()["results"]],
+            [EventAction.LOGIN, EventAction.LOGIN_FAILED, "custom_my_login"],
+        )
+
+    def test_search_app_options(self):
+        """Test search autocomplete suggests the apps of events that have not expired"""
+        Event.objects.all().delete()
+        for app in ("b", "a", "a"):
+            Event.new(EventAction.LOGIN, app=app).save()
+        expired = Event.new(EventAction.LOGIN, app="c")
+        expired.expires = now() - timedelta(hours=1)
+        expired.save()
+        response = self.client.get(reverse("authentik_api:event-list"))
+        self.assertEqual(response.status_code, 200)
+        fields = response.json()["autocomplete"]["models"]["authentik_events.event"]
+        self.assertEqual(fields["app"]["options"], ["a", "b"])
+
+    def test_filter_action_unicode(self):
+        """Match custom actions with Unicode case folding."""
+        event = Event.new("straße")
+        event.save()
+        response = self.client.get(reverse("authentik_api:event-list"), data={"action": "STRAẞE"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [result["action"] for result in response.json()["results"]], [event.action]
         )
 
     def test_actions(self):
@@ -182,6 +292,21 @@ class TestEventsAPI(APITestCase):
         self.assertEqual(res.status_code, 200)
         data = loads(res.content)
         self.assertEqual(len(data), 1)
+
+    def test_volume_buckets(self):
+        """Test volume counts events in six hour buckets starting at midnight UTC"""
+        Event.objects.all().delete()
+        event = Event.new(EventAction.LOGIN)
+        event.save()
+        created = (now() - timedelta(days=1)).replace(hour=13, minute=30, second=0, microsecond=0)
+        Event.objects.filter(pk=event.pk).update(created=created)
+        response = self.client.get(
+            reverse("authentik_api:event-volume"), data={"action": EventAction.LOGIN}
+        )
+        self.assertEqual(response.status_code, 200)
+        [volume] = response.json()
+        self.assertEqual(volume["count"], 1)
+        self.assertEqual(datetime.fromisoformat(volume["time"]), created.replace(hour=12, minute=0))
 
     def test_stats(self):
         Event.objects.all().delete()

@@ -5,7 +5,7 @@ import "#components/ak-object-attributes-card";
 import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/ak-status-label";
 import "#admin/events/ObjectChangelog";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
@@ -27,9 +27,9 @@ import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { toAdminInterface } from "#elements/router/core/interfaces";
+import { setPageDetails } from "#elements/router/meta";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
 
 import { GroupForm } from "#admin/groups/ak-group-form";

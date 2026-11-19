@@ -1,12 +1,10 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/rac/ConnectionTokenList";
-import "#admin/providers/rac/EndpointForm";
-import "#admin/providers/rac/EndpointList";
 import "#admin/providers/rac/RACProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#components/ak-status-label";
 import "#admin/events/ObjectChangelog";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
@@ -90,20 +88,6 @@ export class RACProviderViewPage extends AKElement {
                     aria-label="${msg("Overview")}"
                 >
                     ${this.renderTabOverview()}
-                </div>
-                <div
-                    role="tabpanel"
-                    tabindex="0"
-                    slot="page-connections"
-                    id="page-connections"
-                    aria-label="${msg("Connections")}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-c-card">
-                        <ak-rac-connection-token-list
-                            .provider=${this.provider}
-                        ></ak-rac-connection-token-list>
-                    </div>
                 </div>
                 <div
                     role="tabpanel"
@@ -196,8 +180,12 @@ export class RACProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">${msg("Endpoints")}</div>
-                    <ak-rac-endpoint-list .provider=${this.provider}> </ak-rac-endpoint-list>
+                    <div class="pf-c-card__title">${msg("Connections")}</div>
+                    <div class="pf-c-card">
+                        <ak-rac-connection-token-list
+                            .provider=${this.provider}
+                        ></ak-rac-connection-token-list>
+                    </div>
                 </div>
             </div>`;
     }

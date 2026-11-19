@@ -15,7 +15,6 @@
  */
 export const AppEnum = {
     AuthentikCommands: "authentik.commands",
-    AuthentikTenants: "authentik.tenants",
     AuthentikTasks: "authentik.tasks",
     AuthentikAdmin: "authentik.admin",
     AuthentikApi: "authentik.api",
@@ -75,6 +74,7 @@ export const AppEnum = {
     AuthentikStagesUserLogout: "authentik.stages.user_logout",
     AuthentikStagesUserWrite: "authentik.stages.user_write",
     AuthentikTasksSchedules: "authentik.tasks.schedules",
+    AuthentikTenants: "authentik.tenants",
     AuthentikBrands: "authentik.brands",
     AuthentikBlueprints: "authentik.blueprints",
     AuthentikEnterpriseAgents: "authentik.enterprise.agents",
@@ -83,6 +83,8 @@ export const AppEnum = {
     AuthentikEnterpriseEndpointsConnectorsFleet: "authentik.enterprise.endpoints.connectors.fleet",
     AuthentikEnterpriseEndpointsConnectorsGoogleChrome:
         "authentik.enterprise.endpoints.connectors.google_chrome",
+    AuthentikEnterpriseEndpointsConnectorsMicrosoftIntune:
+        "authentik.enterprise.endpoints.connectors.microsoft_intune",
     AuthentikEnterpriseLifecycle: "authentik.enterprise.lifecycle",
     AuthentikEnterprisePoliciesUniquePassword: "authentik.enterprise.policies.unique_password",
     AuthentikEnterpriseProvidersGoogleWorkspace: "authentik.enterprise.providers.google_workspace",

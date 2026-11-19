@@ -9,7 +9,10 @@ from rest_framework.fields import (
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.admin.files.backends.static import static_url_name
+from authentik.admin.files.manager import get_file_manager
+from authentik.admin.files.usage import FileUsage
+from authentik.core.api.utils import PassiveSerializer, ThemedUrlsSerializer
 from authentik.lib.models import DeprecatedMixin
 from authentik.lib.utils.reflection import all_subclasses
 
@@ -23,6 +26,7 @@ class TypeCreateSerializer(PassiveSerializer):
     model_name = CharField(required=True)
 
     icon_url = CharField(required=False)
+    icon_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     requires_enterprise = BooleanField(default=False)
     deprecated = BooleanField(default=False)
 
@@ -60,12 +64,17 @@ class TypesMixin:
                     continue
                 instance = subclass()
             try:
+                icon_url = getattr(instance, "icon_url", None)
                 type_signature = {
                     "name": subclass._meta.verbose_name,
                     "description": subclass.__doc__,
                     "component": instance.component,
                     "model_name": subclass._meta.model_name,
-                    "icon_url": getattr(instance, "icon_url", None),
+                    "icon_url": icon_url,
+                    # Types only have their built-in default icons, from static()
+                    "icon_themed_urls": get_file_manager(FileUsage.MEDIA).themed_urls(
+                        static_url_name(icon_url)
+                    ),
                     "requires_enterprise": False,
                     "deprecated": isinstance(instance, DeprecatedMixin),
                 }

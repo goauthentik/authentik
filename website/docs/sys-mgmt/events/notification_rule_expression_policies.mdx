@@ -1,6 +1,7 @@
 ---
 title: Notification Rule Expression Policies
-sidebar_label: Expression Policies
+
+sidebar_position: 6
 ---
 
 [Notification rules](./notifications.mdx) with [bound expression policies](./notifications.mdx#3-create-a-notification-rule-and-bind-it-to-the-policy) can match event context, update related objects, and send custom messages. The following examples show common event-driven automation patterns.
@@ -15,7 +16,7 @@ authentik must be able to send email before you can use `ak_send_email`. Either 
 
 ### Create the expression policy
 
-1. Log in as an administrator, open the authentik Admin interface, and navigate to **Customization > Policies**.
+1. Log in as an administrator, open the authentik Admin interface, and navigate to **Customization** > **Policies**.
 2. Click **Create**, select **Expression Policy**, and click **Next**.
 3. Give the policy a name, such as `send-welcome-email`.
 4. Paste the expression below into the **Expression** field.

@@ -1,13 +1,11 @@
+import type { NamedEntityElementConstructor } from "#common/api/entities";
+
 import {
     defaultIconEditOptions,
     IconEditButton,
 } from "#elements/dialogs/components/IconEditButton";
 import { lookupElementConstructor } from "#elements/dialogs/directives";
-import type {
-    IconEditButtonOptions,
-    NamedEntityElementConstructor,
-    SplitIconName,
-} from "#elements/dialogs/shared";
+import type { IconEditButtonOptions, SplitIconName } from "#elements/dialogs/shared";
 import type { SlottedTemplateResult } from "#elements/types";
 
 /**

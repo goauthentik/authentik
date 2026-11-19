@@ -6,11 +6,10 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { setPageDetails } from "#elements/router/meta";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { setPageDetails } from "#components/ak-page-navbar";
 
 import { InitialPermissionsForm } from "#admin/rbac/ak-initial-permissions-form";
 
@@ -22,6 +21,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-initial-permissions-list")
 export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
+    public static override verboseName = msg("Initial Permissions", {
+        id: "initial-permissions.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Initial Permissions", {
+        id: "initial-permissions.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override checkbox = true;
@@ -49,7 +55,6 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Initial Permissions")}
             .objects=${this.selectedElements}
             .usedBy=${(item: InitialPermissions) => {
                 return aki(RbacApi).rbacInitialPermissionsUsedByList({

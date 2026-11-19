@@ -27,6 +27,11 @@ export type FileListOrderKey = "name" | "mimeType";
 
 @customElement("ak-files-list")
 export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>) {
+    public static override verboseName = msg("File", { id: "files.verbose-name.label" });
+    public static override verboseNamePlural = msg("Files", {
+        id: "files.verbose-name-plural.label",
+    });
+
     public override checkbox = true;
     public override clearOnRefresh = true;
 
@@ -64,10 +69,8 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>
         }
 
         const disabled = !this.selectedElements.length;
-        const count = this.selectedElements.length;
 
         return html`<ak-forms-delete-bulk
-            object-label=${count === 1 ? msg("file") : msg("files")}
             .objects=${this.selectedElements}
             .metadata=${(item: FileListItem) => {
                 return [
@@ -136,6 +139,10 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
+        if (!this.can(CapabilitiesEnum.CanSaveMedia)) {
+            return null;
+        }
+
         return ModalInvokerButton(FileUploadForm);
     }
 }

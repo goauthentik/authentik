@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { LDAPProvider } from "./LDAPProvider";
-import { LDAPProviderFromJSON, LDAPProviderToJSON } from "./LDAPProvider";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { LDAPProvider } from "./LDAPProvider.js";
+import { LDAPProviderFromJSON, LDAPProviderToJSON } from "./LDAPProvider.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

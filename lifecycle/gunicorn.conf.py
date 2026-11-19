@@ -20,7 +20,6 @@ from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
 from authentik.root.setup import setup
-from lifecycle.migrate import run_migrations
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
@@ -64,6 +63,10 @@ max_requests_jitter = CONFIG.get_int("web.max_requests_jitter", 50)
 timeout = 30
 graceful_timeout = 30
 dirty_graceful_timeout = 30
+
+# Uvicorn closes idle upstream connections after this many seconds. The server's upstream
+# client must drop them first, see GUNICORN_KEEPALIVE in src/server/mod.rs
+keepalive = 5
 
 logconfig_dict = get_logger_config()
 
@@ -185,4 +188,3 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
             pass
 
 start_debug_server()
-run_migrations()

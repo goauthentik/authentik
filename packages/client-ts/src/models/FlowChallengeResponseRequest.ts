@@ -10,136 +10,136 @@
  * Do not edit the class manually.
  */
 
-import type { AppleChallengeResponseRequest } from "./AppleChallengeResponseRequest";
+import type { AppleChallengeResponseRequest } from "./AppleChallengeResponseRequest.js";
 import {
     AppleChallengeResponseRequestFromJSONTyped,
     AppleChallengeResponseRequestToJSON,
-} from "./AppleChallengeResponseRequest";
-import type { AuthenticatorDuoChallengeResponseRequest } from "./AuthenticatorDuoChallengeResponseRequest";
+} from "./AppleChallengeResponseRequest.js";
+import type { AuthenticatorDuoChallengeResponseRequest } from "./AuthenticatorDuoChallengeResponseRequest.js";
 import {
     AuthenticatorDuoChallengeResponseRequestFromJSONTyped,
     AuthenticatorDuoChallengeResponseRequestToJSON,
-} from "./AuthenticatorDuoChallengeResponseRequest";
-import type { AuthenticatorEmailChallengeResponseRequest } from "./AuthenticatorEmailChallengeResponseRequest";
+} from "./AuthenticatorDuoChallengeResponseRequest.js";
+import type { AuthenticatorEmailChallengeResponseRequest } from "./AuthenticatorEmailChallengeResponseRequest.js";
 import {
     AuthenticatorEmailChallengeResponseRequestFromJSONTyped,
     AuthenticatorEmailChallengeResponseRequestToJSON,
-} from "./AuthenticatorEmailChallengeResponseRequest";
-import type { AuthenticatorSMSChallengeResponseRequest } from "./AuthenticatorSMSChallengeResponseRequest";
+} from "./AuthenticatorEmailChallengeResponseRequest.js";
+import type { AuthenticatorSMSChallengeResponseRequest } from "./AuthenticatorSMSChallengeResponseRequest.js";
 import {
     AuthenticatorSMSChallengeResponseRequestFromJSONTyped,
     AuthenticatorSMSChallengeResponseRequestToJSON,
-} from "./AuthenticatorSMSChallengeResponseRequest";
-import type { AuthenticatorStaticChallengeResponseRequest } from "./AuthenticatorStaticChallengeResponseRequest";
+} from "./AuthenticatorSMSChallengeResponseRequest.js";
+import type { AuthenticatorStaticChallengeResponseRequest } from "./AuthenticatorStaticChallengeResponseRequest.js";
 import {
     AuthenticatorStaticChallengeResponseRequestFromJSONTyped,
     AuthenticatorStaticChallengeResponseRequestToJSON,
-} from "./AuthenticatorStaticChallengeResponseRequest";
-import type { AuthenticatorTOTPChallengeResponseRequest } from "./AuthenticatorTOTPChallengeResponseRequest";
+} from "./AuthenticatorStaticChallengeResponseRequest.js";
+import type { AuthenticatorTOTPChallengeResponseRequest } from "./AuthenticatorTOTPChallengeResponseRequest.js";
 import {
     AuthenticatorTOTPChallengeResponseRequestFromJSONTyped,
     AuthenticatorTOTPChallengeResponseRequestToJSON,
-} from "./AuthenticatorTOTPChallengeResponseRequest";
-import type { AuthenticatorValidationChallengeResponseRequest } from "./AuthenticatorValidationChallengeResponseRequest";
+} from "./AuthenticatorTOTPChallengeResponseRequest.js";
+import type { AuthenticatorValidationChallengeResponseRequest } from "./AuthenticatorValidationChallengeResponseRequest.js";
 import {
     AuthenticatorValidationChallengeResponseRequestFromJSONTyped,
     AuthenticatorValidationChallengeResponseRequestToJSON,
-} from "./AuthenticatorValidationChallengeResponseRequest";
-import type { AuthenticatorWebAuthnChallengeResponseRequest } from "./AuthenticatorWebAuthnChallengeResponseRequest";
+} from "./AuthenticatorValidationChallengeResponseRequest.js";
+import type { AuthenticatorWebAuthnChallengeResponseRequest } from "./AuthenticatorWebAuthnChallengeResponseRequest.js";
 import {
     AuthenticatorWebAuthnChallengeResponseRequestFromJSONTyped,
     AuthenticatorWebAuthnChallengeResponseRequestToJSON,
-} from "./AuthenticatorWebAuthnChallengeResponseRequest";
-import type { AutoSubmitChallengeResponseRequest } from "./AutoSubmitChallengeResponseRequest";
+} from "./AuthenticatorWebAuthnChallengeResponseRequest.js";
+import type { AutoSubmitChallengeResponseRequest } from "./AutoSubmitChallengeResponseRequest.js";
 import {
     AutoSubmitChallengeResponseRequestFromJSONTyped,
     AutoSubmitChallengeResponseRequestToJSON,
-} from "./AutoSubmitChallengeResponseRequest";
-import type { CaptchaChallengeResponseRequest } from "./CaptchaChallengeResponseRequest";
+} from "./AutoSubmitChallengeResponseRequest.js";
+import type { CaptchaChallengeResponseRequest } from "./CaptchaChallengeResponseRequest.js";
 import {
     CaptchaChallengeResponseRequestFromJSONTyped,
     CaptchaChallengeResponseRequestToJSON,
-} from "./CaptchaChallengeResponseRequest";
-import type { ConsentChallengeResponseRequest } from "./ConsentChallengeResponseRequest";
+} from "./CaptchaChallengeResponseRequest.js";
+import type { ConsentChallengeResponseRequest } from "./ConsentChallengeResponseRequest.js";
 import {
     ConsentChallengeResponseRequestFromJSONTyped,
     ConsentChallengeResponseRequestToJSON,
-} from "./ConsentChallengeResponseRequest";
-import type { DummyChallengeResponseRequest } from "./DummyChallengeResponseRequest";
+} from "./ConsentChallengeResponseRequest.js";
+import type { DummyChallengeResponseRequest } from "./DummyChallengeResponseRequest.js";
 import {
     DummyChallengeResponseRequestFromJSONTyped,
     DummyChallengeResponseRequestToJSON,
-} from "./DummyChallengeResponseRequest";
-import type { EmailChallengeResponseRequest } from "./EmailChallengeResponseRequest";
+} from "./DummyChallengeResponseRequest.js";
+import type { EmailChallengeResponseRequest } from "./EmailChallengeResponseRequest.js";
 import {
     EmailChallengeResponseRequestFromJSONTyped,
     EmailChallengeResponseRequestToJSON,
-} from "./EmailChallengeResponseRequest";
-import type { EndpointAgentChallengeResponseRequest } from "./EndpointAgentChallengeResponseRequest";
+} from "./EmailChallengeResponseRequest.js";
+import type { EndpointAgentChallengeResponseRequest } from "./EndpointAgentChallengeResponseRequest.js";
 import {
     EndpointAgentChallengeResponseRequestFromJSONTyped,
     EndpointAgentChallengeResponseRequestToJSON,
-} from "./EndpointAgentChallengeResponseRequest";
-import type { FrameChallengeResponseRequest } from "./FrameChallengeResponseRequest";
+} from "./EndpointAgentChallengeResponseRequest.js";
+import type { FrameChallengeResponseRequest } from "./FrameChallengeResponseRequest.js";
 import {
     FrameChallengeResponseRequestFromJSONTyped,
     FrameChallengeResponseRequestToJSON,
-} from "./FrameChallengeResponseRequest";
-import type { IdentificationChallengeResponseRequest } from "./IdentificationChallengeResponseRequest";
+} from "./FrameChallengeResponseRequest.js";
+import type { IdentificationChallengeResponseRequest } from "./IdentificationChallengeResponseRequest.js";
 import {
     IdentificationChallengeResponseRequestFromJSONTyped,
     IdentificationChallengeResponseRequestToJSON,
-} from "./IdentificationChallengeResponseRequest";
-import type { IframeLogoutChallengeResponseRequest } from "./IframeLogoutChallengeResponseRequest";
+} from "./IdentificationChallengeResponseRequest.js";
+import type { IframeLogoutChallengeResponseRequest } from "./IframeLogoutChallengeResponseRequest.js";
 import {
     IframeLogoutChallengeResponseRequestFromJSONTyped,
     IframeLogoutChallengeResponseRequestToJSON,
-} from "./IframeLogoutChallengeResponseRequest";
-import type { NativeLogoutChallengeResponseRequest } from "./NativeLogoutChallengeResponseRequest";
+} from "./IframeLogoutChallengeResponseRequest.js";
+import type { NativeLogoutChallengeResponseRequest } from "./NativeLogoutChallengeResponseRequest.js";
 import {
     NativeLogoutChallengeResponseRequestFromJSONTyped,
     NativeLogoutChallengeResponseRequestToJSON,
-} from "./NativeLogoutChallengeResponseRequest";
-import type { OAuthDeviceCodeChallengeResponseRequest } from "./OAuthDeviceCodeChallengeResponseRequest";
+} from "./NativeLogoutChallengeResponseRequest.js";
+import type { OAuthDeviceCodeChallengeResponseRequest } from "./OAuthDeviceCodeChallengeResponseRequest.js";
 import {
     OAuthDeviceCodeChallengeResponseRequestFromJSONTyped,
     OAuthDeviceCodeChallengeResponseRequestToJSON,
-} from "./OAuthDeviceCodeChallengeResponseRequest";
-import type { OAuthDeviceCodeFinishChallengeResponseRequest } from "./OAuthDeviceCodeFinishChallengeResponseRequest";
+} from "./OAuthDeviceCodeChallengeResponseRequest.js";
+import type { OAuthDeviceCodeFinishChallengeResponseRequest } from "./OAuthDeviceCodeFinishChallengeResponseRequest.js";
 import {
     OAuthDeviceCodeFinishChallengeResponseRequestFromJSONTyped,
     OAuthDeviceCodeFinishChallengeResponseRequestToJSON,
-} from "./OAuthDeviceCodeFinishChallengeResponseRequest";
-import type { PasswordChallengeResponseRequest } from "./PasswordChallengeResponseRequest";
+} from "./OAuthDeviceCodeFinishChallengeResponseRequest.js";
+import type { PasswordChallengeResponseRequest } from "./PasswordChallengeResponseRequest.js";
 import {
     PasswordChallengeResponseRequestFromJSONTyped,
     PasswordChallengeResponseRequestToJSON,
-} from "./PasswordChallengeResponseRequest";
-import type { PlexAuthenticationChallengeResponseRequest } from "./PlexAuthenticationChallengeResponseRequest";
+} from "./PasswordChallengeResponseRequest.js";
+import type { PlexAuthenticationChallengeResponseRequest } from "./PlexAuthenticationChallengeResponseRequest.js";
 import {
     PlexAuthenticationChallengeResponseRequestFromJSONTyped,
     PlexAuthenticationChallengeResponseRequestToJSON,
-} from "./PlexAuthenticationChallengeResponseRequest";
-import type { PromptChallengeResponseRequest } from "./PromptChallengeResponseRequest";
+} from "./PlexAuthenticationChallengeResponseRequest.js";
+import type { PromptChallengeResponseRequest } from "./PromptChallengeResponseRequest.js";
 import {
     PromptChallengeResponseRequestFromJSONTyped,
     PromptChallengeResponseRequestToJSON,
-} from "./PromptChallengeResponseRequest";
-import type { RedirectChallengeResponseRequest } from "./RedirectChallengeResponseRequest";
+} from "./PromptChallengeResponseRequest.js";
+import type { RedirectChallengeResponseRequest } from "./RedirectChallengeResponseRequest.js";
 import {
     RedirectChallengeResponseRequestFromJSONTyped,
     RedirectChallengeResponseRequestToJSON,
-} from "./RedirectChallengeResponseRequest";
-import type { TelegramChallengeResponseRequest } from "./TelegramChallengeResponseRequest";
+} from "./RedirectChallengeResponseRequest.js";
+import type { TelegramChallengeResponseRequest } from "./TelegramChallengeResponseRequest.js";
 import {
     TelegramChallengeResponseRequestFromJSONTyped,
     TelegramChallengeResponseRequestToJSON,
-} from "./TelegramChallengeResponseRequest";
-import type { UserLoginChallengeResponseRequest } from "./UserLoginChallengeResponseRequest";
+} from "./TelegramChallengeResponseRequest.js";
+import type { UserLoginChallengeResponseRequest } from "./UserLoginChallengeResponseRequest.js";
 import {
     UserLoginChallengeResponseRequestFromJSONTyped,
     UserLoginChallengeResponseRequestToJSON,
-} from "./UserLoginChallengeResponseRequest";
+} from "./UserLoginChallengeResponseRequest.js";
 
 /**
  * @type FlowChallengeResponseRequest

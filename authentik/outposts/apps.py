@@ -1,5 +1,7 @@
 """authentik outposts app config"""
 
+from urllib.parse import urlparse
+
 from prometheus_client import Gauge
 from structlog.stdlib import get_logger
 
@@ -13,17 +15,38 @@ LOGGER = get_logger()
 GAUGE_OUTPOSTS_CONNECTED = Gauge(
     "authentik_outposts_connected",
     "Currently connected outposts",
-    ["tenant", "outpost", "uid", "expected"],
+    ["outpost", "uid", "expected"],
     multiprocess_mode="livesum",
 )
 GAUGE_OUTPOSTS_LAST_UPDATE = Gauge(
     "authentik_outposts_last_update",
     "Last update from any outpost",
-    ["tenant", "outpost", "uid", "version"],
+    ["outpost", "uid", "version"],
     multiprocess_mode="livemax",
 )
 MANAGED_OUTPOST = "goauthentik.io/outposts/embedded"
 MANAGED_OUTPOST_NAME = "authentik Embedded Outpost"
+
+
+def set_outpost_host(base_url: str):
+    """Set the outpost's authentik_host from base_url"""
+    from authentik.outposts.models import Outpost
+
+    if not base_url:
+        return
+
+    outpost = Outpost.objects.filter(managed=MANAGED_OUTPOST).first()
+    if not outpost:
+        return
+
+    config = outpost.config
+    if urlparse(config.authentik_host).scheme in ["http", "https"]:
+        return
+
+    config.authentik_host = base_url
+    outpost.config = config
+    outpost.save()
+    LOGGER.info("Set outpost host", authentik_host=base_url)
 
 
 class AuthentikOutpostConfig(ManagedAppConfig):
@@ -34,9 +57,10 @@ class AuthentikOutpostConfig(ManagedAppConfig):
     verbose_name = "authentik Outpost"
     default = True
 
-    @ManagedAppConfig.reconcile_tenant
+    @ManagedAppConfig.reconcile
     def embedded_outpost(self):
         """Ensure embedded outpost"""
+        from authentik.admin.utils import get_system_settings
         from authentik.outposts.models import (
             DockerServiceConnection,
             KubernetesServiceConnection,
@@ -62,25 +86,22 @@ class AuthentikOutpostConfig(ManagedAppConfig):
                 elif DockerServiceConnection.objects.exists():
                     outpost.service_connection = DockerServiceConnection.objects.first()
                 outpost.save()
+            # Note: Because this needs a setting from `authentik.admin`, this only works if
+            # `authentik.outposts` comes *after* `authentik.admin` in INSTALLED_APPS. It's unclear
+            # if (or how) that can be enforced.
+            set_outpost_host(get_system_settings().base_url)
         else:
             Outpost.objects.filter(managed=MANAGED_OUTPOST).delete()
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
-        from authentik.outposts.tasks import outpost_token_ensurer
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.outposts.tasks import outpost_connection_discovery, outpost_token_ensurer
 
         return [
             ScheduleSpec(
                 actor=outpost_token_ensurer,
                 crontab=f"{fqdn_rand('outpost_token_ensurer')} */8 * * *",
             ),
-        ]
-
-    @property
-    def global_schedule_specs(self) -> list[ScheduleSpec]:
-        from authentik.outposts.tasks import outpost_connection_discovery
-
-        return [
             ScheduleSpec(
                 actor=outpost_connection_discovery,
                 crontab=f"{fqdn_rand('outpost_connection_discovery')} */8 * * *",

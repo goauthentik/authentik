@@ -3,10 +3,16 @@ import { renderForm } from "./WSFederationProviderFormForm.js";
 
 import { aki } from "#common/api/client";
 
-import AkCryptoCertificateSearch from "#admin/common/ak-crypto-certificate-search";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
-import { KeyTypeEnum, ProvidersApi, WSFederationProvider } from "@goauthentik/api";
+import {
+    KeyTypeEnum,
+    ProvidersApi,
+    WSFederationProvider,
+    CertificateKeyPair,
+} from "@goauthentik/api";
 
 import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
@@ -17,6 +23,9 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
     protected hasSigningKp = false;
 
     @state()
+    protected hasEncryptionKp = false;
+
+    @state()
     protected signingKeyType: KeyTypeEnum | null = null;
 
     async loadInstance(pk: number): Promise<WSFederationProvider> {
@@ -25,6 +34,7 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
         });
 
         this.hasSigningKp = !!provider.signingKp;
+        this.hasEncryptionKp = !!provider.encryptionKp;
 
         return provider;
     }
@@ -43,12 +53,13 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
     }
 
     renderForm(): TemplateResult {
-        const setHasSigningKp = (ev: InputEvent) => {
-            const target = ev.target as AkCryptoCertificateSearch;
+        const setHasSigningKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasSigningKp = !!detail.value;
+            this.signingKeyType = detail.value?.keyType ?? KeyTypeEnum.Rsa;
+        };
 
-            if (!target) return;
-            this.hasSigningKp = !!target.selectedKeypair;
-            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
+        const setHasEncryptionKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasEncryptionKp = !!detail.value;
         };
 
         return html`${renderForm({
@@ -56,6 +67,8 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
             setHasSigningKp,
             hasSigningKp: this.hasSigningKp,
             signingKeyType: this.signingKeyType,
+            setHasEncryptionKp,
+            hasEncryptionKp: this.hasEncryptionKp,
         })}`;
     }
 }

@@ -15,7 +15,7 @@ use url::Url;
 
 use crate::outpost::proxy::{
     ProxyOutpost, allowlist,
-    backchannel::TokenHost,
+    backchannel::{BackchannelClient, TokenHost},
     claims::Claims,
     cookie::SessionCookie,
     endpoint::OidcEndpoint,
@@ -35,8 +35,9 @@ pub(crate) struct Application {
     pub(super) endpoint: OidcEndpoint,
     pub(super) session_store: SessionStore,
     pub(super) session_cookie: SessionCookie,
-    /// Authenticated API client configuration (backchannel calls + events API).
+    /// Authenticated API client configuration for events.
     pub(super) api_config: Configuration,
+    pub(super) backchannel_client: BackchannelClient,
     /// Host and scheme to claim on backchannel token requests, if rewriting applies.
     pub(super) token_host: Option<TokenHost>,
     /// Short-lived cache of claims keyed by the `Authorization` header.
@@ -173,6 +174,7 @@ impl Application {
             session_store,
             session_cookie,
             api_config: outpost.controller.api_config.clone(),
+            backchannel_client: outpost.backchannel_client.clone(),
             token_host,
             auth_cache: Cache::builder()
                 .time_to_live(Duration::from_mins(1))

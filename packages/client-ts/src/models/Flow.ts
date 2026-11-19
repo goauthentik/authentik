@@ -10,18 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { AuthenticationEnum } from "./AuthenticationEnum";
-import { AuthenticationEnumFromJSON, AuthenticationEnumToJSON } from "./AuthenticationEnum";
-import type { DeniedActionEnum } from "./DeniedActionEnum";
-import { DeniedActionEnumFromJSON, DeniedActionEnumToJSON } from "./DeniedActionEnum";
-import type { FlowDesignationEnum } from "./FlowDesignationEnum";
-import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum";
-import type { FlowLayoutEnum } from "./FlowLayoutEnum";
-import { FlowLayoutEnumFromJSON, FlowLayoutEnumToJSON } from "./FlowLayoutEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON } from "./ThemedUrls";
+import type { AuthenticationEnum } from "./AuthenticationEnum.js";
+import { AuthenticationEnumFromJSON, AuthenticationEnumToJSON } from "./AuthenticationEnum.js";
+import type { DeniedActionEnum } from "./DeniedActionEnum.js";
+import { DeniedActionEnumFromJSON, DeniedActionEnumToJSON } from "./DeniedActionEnum.js";
+import type { FlowDesignationEnum } from "./FlowDesignationEnum.js";
+import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum.js";
+import type { FlowLayoutEnum } from "./FlowLayoutEnum.js";
+import { FlowLayoutEnumFromJSON, FlowLayoutEnumToJSON } from "./FlowLayoutEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON } from "./ThemedUrls.js";
 
 /**
  * Flow Serializer

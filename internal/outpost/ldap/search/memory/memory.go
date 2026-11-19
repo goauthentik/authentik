@@ -62,15 +62,27 @@ func NewMemorySearcher(si server.LDAPServerInstance, existing search.Searcher) *
 }
 
 func (ms *MemorySearcher) fetch() {
-	// Error is not handled here, we get an empty/truncated list and the error is logged
-	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
+	users, usersErr := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
 		PageSize: config.Get().LDAP.PageSize,
 		Logger:   ms.log,
 	})
-	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true).IncludeParents(true), ak.PaginatorOptions{
+	groups, groupsErr := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true).IncludeParents(true), ak.PaginatorOptions{
 		PageSize: config.Get().LDAP.PageSize,
 		Logger:   ms.log,
 	})
+	if err := errors.Join(usersErr, groupsErr); err != nil {
+		// A failed fetch may be empty or incomplete. Keep serving the
+		// previous snapshot rather than replacing it; users and groups are
+		// kept together so the two never come from different fetches. The
+		// next refresh tries again.
+		if ms.cache.Load() != nil {
+			ms.log.WithError(err).Warning("failed to refresh directory, keeping previous data")
+			return
+		}
+		// There is nothing to fall back to on the first fetch, so serve
+		// whatever was returned until a refresh succeeds.
+		ms.log.WithError(err).Warning("failed to fetch directory, data may be incomplete")
+	}
 	usersByPk := make(map[int32]int, len(users))
 	for i, u := range users {
 		usersByPk[u.Pk] = i

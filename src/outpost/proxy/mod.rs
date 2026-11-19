@@ -4,7 +4,7 @@ use ak_axum::router::{make_request_body_limit_layer, wrap_router};
 use ak_client::{apis::outposts_api::outposts_proxy_list, models::ProxyMode};
 use ak_common::{
     Tasks,
-    api::fetch_all,
+    api::{ServerConfig as ApiServerConfig, fetch_all},
     config,
     tls::{self, store::CertificateStore},
 };
@@ -20,6 +20,7 @@ use rustls::{
 };
 use tracing::{debug, error, info, instrument, warn};
 
+use self::backchannel::BackchannelClient;
 use crate::outpost::{Outpost, OutpostController, proxy::application::Application};
 
 mod allowlist;
@@ -52,6 +53,7 @@ pub(crate) struct Cli {}
 #[derive(Debug)]
 pub(crate) struct ProxyOutpost {
     controller: Arc<OutpostController>,
+    backchannel_client: BackchannelClient,
     apps: ArcSwap<HashMap<String, Arc<Application>>>,
     certificate_store: CertificateStore,
     default_cert: Arc<CertifiedKey>,
@@ -64,8 +66,18 @@ impl Outpost for ProxyOutpost {
 
     #[instrument(skip_all)]
     async fn new(controller: Arc<OutpostController>) -> Result<Self> {
+        #[cfg(feature = "core")]
+        let builder = if controller.is_embedded() {
+            reqwest::ClientBuilder::new().unix_socket(crate::server::socket_path())
+        } else {
+            ApiServerConfig::new()?.client_builder()
+        };
+        #[cfg(not(feature = "core"))]
+        let builder = ApiServerConfig::new()?.client_builder();
+
         Ok(Self {
             controller,
+            backchannel_client: BackchannelClient::new(builder)?,
             apps: ArcSwap::from_pointee(HashMap::new()),
             certificate_store: CertificateStore::new(),
             default_cert: Arc::new(tls::self_signed::generate_certifiedkey()?),
@@ -140,7 +152,7 @@ impl Outpost for ProxyOutpost {
         for (i, provider) in providers.iter().enumerate() {
             debug!(
                 index = i,
-                name = provider.name,
+                provider = provider.name,
                 external_host = provider.external_host,
                 assigned_to_app = provider.assigned_application_name,
                 "provider details"
@@ -150,14 +162,20 @@ impl Outpost for ProxyOutpost {
         let mut apps = HashMap::with_capacity(providers.len());
 
         for provider in providers {
-            let name = provider.name.clone();
+            let provider_name = provider.name.clone();
             let Ok(application) = Application::new(self, provider)
                 .await
                 .inspect_err(|err| warn!(?err, "failed to setup application, skipping provider"))
             else {
                 continue;
             };
-            info!(name, host = application.host, "loaded application");
+            // Don't log this as `name`: the JSON log layer flattens the current span onto the top
+            // level, and the span's own name is already emitted under `name`.
+            info!(
+                provider = provider_name,
+                host = application.host,
+                "loaded application"
+            );
 
             apps.insert(application.host.clone(), Arc::new(application));
         }

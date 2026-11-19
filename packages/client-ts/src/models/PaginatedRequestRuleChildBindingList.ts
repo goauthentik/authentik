@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RequestRuleChildBinding } from "./RequestRuleChildBinding";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { RequestRuleChildBinding } from "./RequestRuleChildBinding.js";
 import {
     RequestRuleChildBindingFromJSON,
     RequestRuleChildBindingToJSON,
-} from "./RequestRuleChildBinding";
+} from "./RequestRuleChildBinding.js";
 
 /**
  * @export

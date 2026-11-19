@@ -39,8 +39,8 @@ class TestUpdateSAMLSourceMetadata(TestCase):
 
     @Mocker()
     def test_updates_all_sources(self, mock: Mocker):
-        """Test that the task handles every source with a metadata URL when run without
-        arguments, and leaves sources without a URL alone"""
+        """Test that the task handles every enabled source with a metadata URL when run
+        without arguments, and leaves disabled sources and sources without a URL alone"""
         other_url = "http://idp2.example.com/saml/metadata"
         other = SAMLSource.objects.create(
             name=generate_id(),
@@ -55,15 +55,25 @@ class TestUpdateSAMLSourceMetadata(TestCase):
             sso_url="https://plain.company/sso",
             pre_authentication_flow=create_test_flow(),
         )
+        disabled = SAMLSource.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            sso_url="https://disabled.company/sso",
+            pre_authentication_flow=create_test_flow(),
+            metadata_url=other_url,
+            enabled=False,
+        )
         mock.get(self.url, text=load_fixture("fixtures/idp_metadata.xml"))
         mock.get(other_url, text=load_fixture("fixtures/idp_metadata_simple.xml"))
         update_saml_source_metadata.send()
         self.source.refresh_from_db()
         other.refresh_from_db()
         plain.refresh_from_db()
+        disabled.refresh_from_db()
         self.assertEqual(self.source.sso_url, "https://saml.company/login/saml/")
         self.assertEqual(other.sso_url, "https://other.company/sso")
         self.assertEqual(plain.sso_url, "https://plain.company/sso")
+        self.assertEqual(disabled.sso_url, "https://disabled.company/sso")
 
     @Mocker()
     def test_unchanged(self, mock: Mocker):

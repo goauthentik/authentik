@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { SCIMSourcePropertyMapping } from "./SCIMSourcePropertyMapping";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { SCIMSourcePropertyMapping } from "./SCIMSourcePropertyMapping.js";
 import {
     SCIMSourcePropertyMappingFromJSON,
     SCIMSourcePropertyMappingToJSON,
-} from "./SCIMSourcePropertyMapping";
+} from "./SCIMSourcePropertyMapping.js";
 
 /**
  * @export

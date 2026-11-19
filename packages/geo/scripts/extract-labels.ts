@@ -3,7 +3,7 @@ import { type FileHandle, open } from "node:fs/promises";
 import { dedupePlaces, normalizePlace, type PlaceLabel } from "../src/labels.ts";
 
 import { VectorTile } from "@mapbox/vector-tile";
-import Pbf from "pbf";
+import { PbfReader } from "pbf";
 import { PMTiles, type RangeResponse } from "pmtiles";
 
 const MAX_ZOOM = 8;
@@ -34,7 +34,7 @@ export class NodeFileSource {
 }
 
 function decodeTile(tile: RangeResponse, x: number, y: number, z: number, places: PlaceLabel[]) {
-    const layer = new VectorTile(new Pbf(tile.data)).layers.places;
+    const layer = new VectorTile(new PbfReader(tile.data)).layers.places;
 
     if (!layer) return;
 

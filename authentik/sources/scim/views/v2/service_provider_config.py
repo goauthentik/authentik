@@ -4,6 +4,7 @@ from django.conf import settings
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from authentik.admin.utils import get_system_settings
 from authentik.sources.scim.views.v2.base import SCIMView
 
 
@@ -37,7 +38,7 @@ class ServiceProviderConfigView(SCIMView):
                 "bulk": {"supported": False, "maxOperations": 0, "maxPayloadSize": 0},
                 "filter": {
                     "supported": True,
-                    "maxResults": request.tenant.pagination_default_page_size,
+                    "maxResults": get_system_settings().pagination_default_page_size,
                 },
                 "changePassword": {"supported": False},
                 "sort": {"supported": False},

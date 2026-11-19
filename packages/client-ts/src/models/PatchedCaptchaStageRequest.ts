@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { RequestContentTypeEnum } from "./RequestContentTypeEnum";
+import type { RequestContentTypeEnum } from "./RequestContentTypeEnum.js";
 import {
     RequestContentTypeEnumFromJSON,
     RequestContentTypeEnumToJSON,
-} from "./RequestContentTypeEnum";
+} from "./RequestContentTypeEnum.js";
 
 /**
  * CaptchaStage Serializer

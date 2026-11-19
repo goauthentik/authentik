@@ -1,16 +1,16 @@
-import type { SearchbarEventDetail, SearchbarEventSource } from "../types.ts";
+import { SearchbarEvent } from "../events.ts";
+import type { SearchbarEventSource } from "../types.ts";
 import { globalVariables, searchStyles } from "./search.styles.js";
 
 import { AKElement } from "#elements/Base";
 import { ifPresent } from "#elements/utils/attributes";
-import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 @customElement("ak-search-bar")
-export class AkSearchbar extends CustomEmitterElement(AKElement) {
+export class AkSearchbar extends AKElement {
     static styles = [globalVariables, searchStyles];
 
     @property({ type: String, reflect: true })
@@ -41,10 +41,7 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
             return;
         }
 
-        this.dispatchCustomEvent<SearchbarEventDetail>("ak-search", {
-            source: this.name,
-            value: this.value,
-        });
+        this.dispatchEvent(new SearchbarEvent({ source: this.name, value: this.value }));
     };
 
     render() {

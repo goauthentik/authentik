@@ -3,14 +3,13 @@
 from django.utils.translation import gettext_lazy as _
 from prometheus_client import Gauge, Histogram
 
+from authentik.admin.flags import Flag
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.utils.reflection import all_subclasses
-from authentik.tenants.flags import Flag
 
 GAUGE_FLOWS_CACHED = Gauge(
     "authentik_flows_cached",
     "Cached flows",
-    ["tenant"],
     multiprocess_mode="livemostrecent",
 )
 HIST_FLOW_EXECUTION_STAGE_TIME = Histogram(

@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { ModelEnum } from "./ModelEnum";
-import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
+import type { ModelEnum } from "./ModelEnum.js";
+import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum.js";
 
 /**
  * Request to assign a new permission

@@ -19,9 +19,9 @@ import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
+import { setPageDetails } from "#elements/router/meta";
 import { Timestamp } from "#elements/table/shared";
 
-import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList, { DescriptionPair } from "#components/DescriptionList";
 
 import { EndpointDeviceForm } from "#admin/endpoints/devices/DeviceForm";
@@ -93,6 +93,23 @@ export class DeviceViewPage extends AKElement {
             rootDisk = _rootDisk[0];
         }
 
+        const localIP = this.device?.facts?.data.network?.interfaces
+            .map((intf) => intf.ipAddresses || [])
+            .flat()
+            .map((ip) => ip.split("/")[0])
+            .filter((ip) => {
+                if (
+                    ip?.startsWith("127.") ||
+                    ip?.startsWith("::1") ||
+                    ip?.startsWith("169.254.") ||
+                    ip?.startsWith("fe80:")
+                ) {
+                    return false;
+                }
+
+                return true;
+            });
+
         return html`<div class="pf-l-stack pf-m-gutter">
             <div class="pf-l-stack__item pf-c-card">
                 <div class="pf-c-card__title">${msg("Device details")}</div>
@@ -115,6 +132,7 @@ export class DeviceViewPage extends AKElement {
                                       ].join(" ")
                                     : "-",
                             ],
+                            [msg("Local IP"), localIP && localIP.length > 0 ? localIP[0] : "-"],
                             [
                                 msg("Firewall enabled"),
                                 html`<ak-status-label

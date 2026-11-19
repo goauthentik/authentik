@@ -10,15 +10,20 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceAccessGroup } from "./DeviceAccessGroup";
-import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
-import type { DeviceConnection } from "./DeviceConnection";
-import { DeviceConnectionFromJSON, DeviceConnectionToJSON } from "./DeviceConnection";
-import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
-import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
-import type { DeviceUserBinding } from "./DeviceUserBinding";
-import { DeviceUserBindingFromJSON } from "./DeviceUserBinding";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceAccessGroup } from "./DeviceAccessGroup.js";
+import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup.js";
+import type { DeviceConnection } from "./DeviceConnection.js";
+import { DeviceConnectionFromJSON, DeviceConnectionToJSON } from "./DeviceConnection.js";
+import type { DeviceFactSnapshot } from "./DeviceFactSnapshot.js";
+import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot.js";
+import type { DeviceUserBinding } from "./DeviceUserBinding.js";
+import { DeviceUserBindingFromJSON } from "./DeviceUserBinding.js";
+import type { RACConnectionOverride } from "./RACConnectionOverride.js";
+import {
+    RACConnectionOverrideFromJSON,
+    RACConnectionOverrideToJSON,
+} from "./RACConnectionOverride.js";
 
 /**
  * @export
@@ -35,6 +40,7 @@ export interface EndpointDeviceDetails {
     readonly facts: DeviceFactSnapshot | null;
     attributes?: { [key: string]: any };
     readonly primaryBindingObj: DeviceUserBinding | null;
+    rac: RACConnectionOverride | null;
     connectionsObj: Array<DeviceConnection>;
     readonly policies: Array<string>;
     readonly connections: Array<string>;
@@ -60,6 +66,7 @@ export function instanceOfEndpointDeviceDetails(value: object): value is Endpoin
             (value as Record<string, any>)["primary_binding_obj"] === undefined)
     )
         return false;
+    if (!("rac" in value) || value["rac"] === undefined) return false;
     if (
         (!("connectionsObj" in (value as Record<string, any>)) &&
             !("connections_obj" in (value as Record<string, any>))) ||
@@ -107,6 +114,7 @@ export function EndpointDeviceDetailsFromJSONTyped(
         facts: DeviceFactSnapshotFromJSON(json["facts"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         primaryBindingObj: DeviceUserBindingFromJSON(json["primary_binding_obj"]),
+        rac: RACConnectionOverrideFromJSON(json["rac"]),
         connectionsObj: (json["connections_obj"] as Array<any>).map(DeviceConnectionFromJSON),
         policies: json["policies"],
         connections: json["connections"],
@@ -136,6 +144,7 @@ export function EndpointDeviceDetailsToJSONTyped(
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
+        rac: RACConnectionOverrideToJSON(value["rac"]),
         connections_obj: (value["connectionsObj"] as Array<any>).map(DeviceConnectionToJSON),
     };
 }

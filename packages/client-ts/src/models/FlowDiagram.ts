@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { DiagramEdge } from "./DiagramEdge";
-import { DiagramEdgeFromJSON } from "./DiagramEdge";
-import type { DiagramNode } from "./DiagramNode";
-import { DiagramNodeFromJSON } from "./DiagramNode";
+import type { DiagramEdge } from "./DiagramEdge.js";
+import { DiagramEdgeFromJSON } from "./DiagramEdge.js";
+import type { DiagramNode } from "./DiagramNode.js";
+import { DiagramNodeFromJSON } from "./DiagramNode.js";
 
 /**
  * Base serializer class which doesn't implement create/update methods

@@ -1,0 +1,118 @@
+---
+title: Integrate with CH-UI
+sidebar_label: CH-UI
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is CH-UI?
+
+> CH-UI is the open-source control plane for ClickHouse: SQL editor, dashboards, pipelines, query analytics, cluster monitoring, governance, and an AI copilot.
+>
+> -- https://ch-ui.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `ch-ui.company` is the FQDN of the CH-UI installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info CH-UI Pro
+SSO is a CH-UI Pro feature and requires a Pro license.
+:::
+
+## authentik configuration
+
+To support the integration of CH-UI with authentik, you need to create an email [scope mapping](/docs/add-secure-apps/providers/oauth2/#scope-mappings), an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) and [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) in authentik.
+
+### Create an email scope mapping
+
+CH-UI identifies each user by their email address and refuses SSO logins when the `email_verified` claim is `False`, which the default authentik email scope mapping always returns. Create a custom email scope mapping as described in [Email scope verification](/docs/add-secure-apps/providers/oauth2/#email-scope-verification).
+
+If authentik cannot vouch for your users' email addresses, use this expression, which omits the claim, and set `OIDC_ACCEPT_UNVERIFIED_EMAIL=true` when you [configure SSO](#configure-sso) in CH-UI:
+
+```python
+return {"email": request.user.email}
+```
+
+### Create an application and provider
+
+<RedirectURI20265Note />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Set a `Strict` `Authorization` redirect URI to `https://ch-ui.company/api/auth/oidc/callback`.
+        - Select any available signing key.
+        - **Advanced protocol settings** > **Scopes**:
+            - Add the email scope mapping that you created and `authentik default OAuth Mapping: Application Entitlements` to **Selected Scopes**.
+            - Remove `authentik default OAuth Mapping: OpenID 'email'` from **Selected Scopes**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Create application entitlements
+
+CH-UI gives users with the `ch-ui-admin` entitlement the `admin` role and users with the `ch-ui-analyst` entitlement the `analyst` role. Users with neither entitlement get the `viewer` role.
+
+1. Navigate to **Applications** > **Applications** and open the CH-UI application.
+2. Click the **Application entitlements** tab.
+3. Click **New Entitlement**, set the name to `ch-ui-admin`, and then click **Create**.
+4. Repeat the previous step to create an entitlement named `ch-ui-analyst`.
+5. Bind the users or groups that need each role to its entitlement.
+
+## CH-UI configuration
+
+CH-UI identifies each user by the email address that authentik sends, so every user who logs in to CH-UI needs an email address in authentik. Queries do not run as that user: CH-UI runs them through a ClickHouse service account that is set on each CH-UI connection.
+
+### Configure SSO
+
+Add the following environment variables to the CH-UI server, then restart it:
+
+```env title=".env"
+OIDC_ISSUER_URL=https://authentik.company/application/o/<application_slug>/
+OIDC_CLIENT_ID=<Client ID from authentik>
+OIDC_CLIENT_SECRET=<Client Secret from authentik>
+OIDC_REDIRECT_URL=https://ch-ui.company/api/auth/oidc/callback
+OIDC_GROUPS_CLAIM=entitlements
+OIDC_ADMIN_GROUPS=ch-ui-admin
+OIDC_ANALYST_GROUPS=ch-ui-analyst
+```
+
+If your email scope mapping omits `email_verified`, also set `OIDC_ACCEPT_UNVERIFIED_EMAIL=true`.
+
+Keep the trailing slash on `OIDC_ISSUER_URL`. CH-UI checks that the issuer it discovers matches this value exactly, and logs `OIDC SSO disabled — provider discovery failed` at startup if it does not.
+
+### Set the ClickHouse service account
+
+SSO logins fail until the connection that SSO users land on has a ClickHouse service account. By default, this is the embedded connection, or the oldest connection if there is no embedded one. Set `OIDC_CONNECTION_ID` to use a different connection.
+
+1. Create a ClickHouse user with only the privileges that your CH-UI users need. Every SSO user queries ClickHouse as this account.
+2. Log in to CH-UI with the ClickHouse credentials of a CH-UI administrator, and copy the value of the `chui_session` cookie from your browser.
+3. Find the connection ID in the response of `https://ch-ui.company/api/connections`.
+4. Store the service account on the connection:
+
+    ```shell
+    curl -X PUT https://ch-ui.company/api/connections/<connection_id>/sso-account \
+        -H 'Content-Type: application/json' \
+        --cookie 'chui_session=<admin session cookie>' \
+        -d '{"username": "<ClickHouse username>", "password": "<ClickHouse password>"}'
+    ```
+
+## Configuration verification
+
+To confirm that authentik is properly configured with CH-UI, log out of CH-UI and click **Sign in with SSO** on the login page. You should be redirected to authentik, then returned to CH-UI after a successful login. In CH-UI, navigate to **Admin** > **Users** and confirm that your account is listed by email with an **SSO** badge and the role that matches your entitlement.
+
+## Resources
+
+- [CH-UI documentation - Single Sign-On (SSO)](https://ch-ui.com/docs/sso)
+- [CH-UI documentation - Configuration](https://ch-ui.com/docs/configuration)

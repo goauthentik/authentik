@@ -5,6 +5,7 @@ from pickle import dumps, loads  # nosec
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from django.conf import settings
 from django.core.validators import validate_slug
 from django.db import models
 from django.http import HttpRequest
@@ -127,7 +128,7 @@ def in_memory_stage(view: type[StageView], **kwargs) -> Stage:
     # we set the view as a separate property and reference a generic function
     # that returns that member
     setattr(stage, "__in_memory_type", view)
-    stage.name = _("Dynamic In-memory stage: {doc}".format_map({"doc": view.__doc__}))
+    stage.name = _("Dynamic In-memory stage: {doc}").format(doc=view.__doc__)
     stage._meta.verbose_name = class_to_path(view)
     for key, value in kwargs.items():
         setattr(stage, key, value)
@@ -235,6 +236,16 @@ class Flow(SerializerModel, PolicyBindingModel):
         from authentik.flows.api.flows import FlowSerializer
 
         return FlowSerializer
+
+    def inspector_accessible(self, request: HttpRequest) -> bool:
+        """Check if the flow inspector is accessible for this flow, permission-wise"""
+        if settings.DEBUG:
+            return True
+        if not request.user.is_authenticated or not request.user.pk:
+            return False
+        return request.user.has_perm("authentik_flows.inspect_flow", self) or request.user.has_perm(
+            "authentik_flows.inspect_flow"
+        )
 
     def __str__(self) -> str:
         return f"Flow {self.name} ({self.slug})"

@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { GoogleWorkspaceProviderGroup } from "./GoogleWorkspaceProviderGroup";
+import type { GoogleWorkspaceProviderGroup } from "./GoogleWorkspaceProviderGroup.js";
 import {
     GoogleWorkspaceProviderGroupFromJSON,
     GoogleWorkspaceProviderGroupToJSON,
-} from "./GoogleWorkspaceProviderGroup";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./GoogleWorkspaceProviderGroup.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

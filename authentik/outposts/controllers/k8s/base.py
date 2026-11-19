@@ -15,7 +15,6 @@ from kubernetes.client import ApiClient, V1ObjectMeta
 from kubernetes.client.exceptions import ApiException, OpenApiException
 from kubernetes.client.models.v1_deployment import V1Deployment
 from kubernetes.client.models.v1_pod import V1Pod
-from requests import Response
 from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
@@ -108,11 +107,12 @@ class KubernetesObjectReconciler[T]:
                 ref = apply_patch(json, patch)
         except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
             raise ControllerException(f"JSON Patch failed: {exc}") from exc
-        mock_response = Response()
-        mock_response.data = dumps(ref)
+        response_text = dumps(ref)
 
         try:
-            result = self.api_client.deserialize(mock_response, reference.__class__.__name__)
+            result = self.api_client.deserialize(
+                response_text, reference.__class__.__name__, content_type=None
+            )
         # Custom objects will not be known to the clients openapi types
         except AttributeError:
             result = from_dict(reference.__class__, data=ref)

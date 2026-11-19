@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * Application Serializer

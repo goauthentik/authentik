@@ -10,15 +10,15 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { Connector } from "./Connector";
-import { ConnectorFromJSON } from "./Connector";
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { Policy } from "./Policy";
-import { PolicyFromJSON } from "./Policy";
+import { parseDateTime } from "../runtime.js";
+import type { Connector } from "./Connector.js";
+import { ConnectorFromJSON } from "./Connector.js";
+import type { PartialGroup } from "./PartialGroup.js";
+import { PartialGroupFromJSON } from "./PartialGroup.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { Policy } from "./Policy.js";
+import { PolicyFromJSON } from "./Policy.js";
 
 /**
  * PolicyBinding Serializer
@@ -40,6 +40,10 @@ export interface DeviceUserBinding {
      */
     negate?: boolean;
     enabled?: boolean;
+    /**
+     * Execute the policy but ignore its result.
+     */
+    dryRun?: boolean;
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
@@ -125,6 +129,7 @@ export function DeviceUserBindingFromJSONTyped(
         target: json["target"],
         negate: json["negate"] == null ? undefined : json["negate"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
@@ -165,6 +170,7 @@ export function DeviceUserBindingToJSONTyped(
         target: value["target"],
         negate: value["negate"],
         enabled: value["enabled"],
+        dry_run: value["dryRun"],
         order: value["order"],
         timeout: value["timeout"],
         failure_result: value["failureResult"],

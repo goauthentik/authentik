@@ -1,6 +1,5 @@
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/HorizontalFormElement";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-number-input";
@@ -11,6 +10,7 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKFlowSearch } from "#admin/common/ak-flow-search/AKFlowSearch";
 import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
 
 import {
@@ -107,10 +107,7 @@ export class RequestRuleForm extends ModelForm<RequestRule, string> {
             ${this.renderTransportsSelection()}
 
             <ak-form-element-horizontal label=${msg("Request flow")} name="requestFlow">
-                <ak-flow-search
-                    flowType=${FlowDesignationEnum.StageConfiguration}
-                    .currentFlow=${this.instance?.requestFlow}
-                ></ak-flow-search>
+                ${AKFlowSearch({ name: "requestFlow", flowType: FlowDesignationEnum.StageConfiguration, value: this.instance?.requestFlow })}
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Optional flow to use when a user requests access to a target bound to this rule.",

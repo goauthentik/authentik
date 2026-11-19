@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { KubernetesServiceConnection } from "./KubernetesServiceConnection";
+import type { KubernetesServiceConnection } from "./KubernetesServiceConnection.js";
 import {
     KubernetesServiceConnectionFromJSON,
     KubernetesServiceConnectionToJSON,
-} from "./KubernetesServiceConnection";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+} from "./KubernetesServiceConnection.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

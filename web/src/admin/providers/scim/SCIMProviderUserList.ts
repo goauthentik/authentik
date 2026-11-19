@@ -1,7 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
-import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 import { aki } from "#common/api/client";
 import { formatUserDisplayName } from "#common/users";
 
@@ -53,7 +52,10 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("SCIM User(s)")}
+            verbose-name=${msg("SCIM User", { id: "scim.users.verbose-name.label" })}
+            verbose-name-plural=${msg("SCIM Users", {
+                id: "scim.users.verbose-name-plural.label",
+            })}
             .objects=${this.selectedElements}
             .delete=${(item: SCIMProviderUser) => {
                 return aki(ProvidersApi).providersScimUsersDestroy({

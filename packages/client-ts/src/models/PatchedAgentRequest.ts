@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object

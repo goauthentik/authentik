@@ -1,5 +1,6 @@
 """Interface views"""
 
+from collections import defaultdict
 from typing import Any
 
 from django.shortcuts import get_object_or_404
@@ -7,12 +8,18 @@ from ua_parser.user_agent_parser import Parse
 
 from authentik.core.views.interface import InterfaceView
 from authentik.flows.models import Flow
+from authentik.flows.stage import format_flow_title
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 
 # Oldest WebKit that can parse the default flow executor bundle. Earlier versions
 # fail to parse it and render an empty page, so they are sent to the simplified
 # flow executor instead.
 MIN_WEBKIT_VERSION = (16, 4)
 MIN_EDGE_VERSION = (19,)
+# Based off of https://web-platform-dx.github.io/supported-browsers/?target=widelyAvailable
+# We don't know the exact version of chrome which is too old to render the standard flow executor
+# instead we base it off of the baseline
+MIN_CHROME_VERSION = (123, 0)
 
 
 def version_below(version: dict[str, Any], minimum: tuple[int, int]) -> bool:
@@ -28,10 +35,27 @@ def version_below(version: dict[str, Any], minimum: tuple[int, int]) -> bool:
 class FlowInterfaceView(InterfaceView):
     """Flow interface"""
 
+    def get_formatted_flow_title(self, flow: Flow) -> str:
+        if "%(" not in flow.title:
+            return flow.title
+        if plan := self.request.session.get(SESSION_KEY_PLAN):
+            return format_flow_title(plan, flow, self.request)
+        # Fallback if we don't have a flow plan yet, format the title with an empty defaultdict
+        # Only format titles with named placeholders, as a bare "% s" would
+        # otherwise inline the dict's repr
+        try:
+            return (flow.title % defaultdict(str)).strip()
+        except TypeError, ValueError:
+            # If title formatting is invalid, keep the original title unchanged.
+            pass
+        return flow.title
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
         kwargs["flow"] = flow
+        kwargs["flow_title"] = self.get_formatted_flow_title(flow)
         kwargs["flow_background_url"] = flow.background_url(self.request)
+        kwargs["flow_background_themed_urls"] = flow.background_themed_urls(self.request)
         kwargs["inspector"] = "inspector" in self.request.GET
         return super().get_context_data(**kwargs)
 
@@ -59,6 +83,12 @@ class FlowInterfaceView(InterfaceView):
         # above does not cover.
         if ua["user_agent"]["family"] in ("Safari", "Mobile Safari") and version_below(
             ua["user_agent"], MIN_WEBKIT_VERSION
+        ):
+            return True
+        # Chrome versions behind the baseline get the SFE too, at least one reported case
+        # of the default flow executor not working in chrome 83
+        if ua["user_agent"]["family"] in ("Chrome", "Chrome Mobile") and version_below(
+            ua["user_agent"], MIN_CHROME_VERSION
         ):
             return True
         return False

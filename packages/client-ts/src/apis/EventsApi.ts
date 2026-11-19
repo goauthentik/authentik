@@ -10,63 +10,72 @@
  * Do not edit the class manually.
  */
 
-import { type DataExport, DataExportFromJSON } from "../models/DataExport";
-import { type Event, EventFromJSON } from "../models/Event";
-import { type EventActions } from "../models/EventActions";
-import { type EventRequest, EventRequestToJSON } from "../models/EventRequest";
-import { type EventStats, EventStatsFromJSON } from "../models/EventStats";
-import { type EventTopPerUser, EventTopPerUserFromJSON } from "../models/EventTopPerUser";
-import { type EventVolume, EventVolumeFromJSON } from "../models/EventVolume";
-import { type Notification, NotificationFromJSON } from "../models/Notification";
-import { type NotificationRequest, NotificationRequestToJSON } from "../models/NotificationRequest";
-import { type NotificationRule, NotificationRuleFromJSON } from "../models/NotificationRule";
+import { type DataExport, DataExportFromJSON } from "../models/DataExport.js";
+import { type Event, EventFromJSON } from "../models/Event.js";
+import { type EventActions } from "../models/EventActions.js";
+import { type EventRequest, EventRequestToJSON } from "../models/EventRequest.js";
+import { type EventStats, EventStatsFromJSON } from "../models/EventStats.js";
+import { type EventTopPerUser, EventTopPerUserFromJSON } from "../models/EventTopPerUser.js";
+import { type EventVolume, EventVolumeFromJSON } from "../models/EventVolume.js";
+import { type Notification, NotificationFromJSON } from "../models/Notification.js";
+import {
+    type NotificationRequest,
+    NotificationRequestToJSON,
+} from "../models/NotificationRequest.js";
+import { type NotificationRule, NotificationRuleFromJSON } from "../models/NotificationRule.js";
 import {
     type NotificationRuleRequest,
     NotificationRuleRequestToJSON,
-} from "../models/NotificationRuleRequest";
+} from "../models/NotificationRuleRequest.js";
 import {
     type NotificationTransport,
     NotificationTransportFromJSON,
-} from "../models/NotificationTransport";
+} from "../models/NotificationTransport.js";
 import {
     type NotificationTransportRequest,
     NotificationTransportRequestToJSON,
-} from "../models/NotificationTransportRequest";
+} from "../models/NotificationTransportRequest.js";
 import {
     type NotificationTransportTest,
     NotificationTransportTestFromJSON,
-} from "../models/NotificationTransportTest";
-import { type PaginatedEventList, PaginatedEventListFromJSON } from "../models/PaginatedEventList";
+} from "../models/NotificationTransportTest.js";
+import {
+    type PaginatedEventList,
+    PaginatedEventListFromJSON,
+} from "../models/PaginatedEventList.js";
 import {
     type PaginatedNotificationList,
     PaginatedNotificationListFromJSON,
-} from "../models/PaginatedNotificationList";
+} from "../models/PaginatedNotificationList.js";
 import {
     type PaginatedNotificationRuleList,
     PaginatedNotificationRuleListFromJSON,
-} from "../models/PaginatedNotificationRuleList";
+} from "../models/PaginatedNotificationRuleList.js";
 import {
     type PaginatedNotificationTransportList,
     PaginatedNotificationTransportListFromJSON,
-} from "../models/PaginatedNotificationTransportList";
-import { type PatchedEventRequest, PatchedEventRequestToJSON } from "../models/PatchedEventRequest";
+} from "../models/PaginatedNotificationTransportList.js";
+import {
+    type PatchedEventRequest,
+    PatchedEventRequestToJSON,
+} from "../models/PatchedEventRequest.js";
 import {
     type PatchedNotificationRequest,
     PatchedNotificationRequestToJSON,
-} from "../models/PatchedNotificationRequest";
+} from "../models/PatchedNotificationRequest.js";
 import {
     type PatchedNotificationRuleRequest,
     PatchedNotificationRuleRequestToJSON,
-} from "../models/PatchedNotificationRuleRequest";
+} from "../models/PatchedNotificationRuleRequest.js";
 import {
     type PatchedNotificationTransportRequest,
     PatchedNotificationTransportRequestToJSON,
-} from "../models/PatchedNotificationTransportRequest";
-import { type SeverityEnum } from "../models/SeverityEnum";
-import { type TransportModeEnum } from "../models/TransportModeEnum";
-import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/PatchedNotificationTransportRequest.js";
+import { type SeverityEnum } from "../models/SeverityEnum.js";
+import { type TransportModeEnum } from "../models/TransportModeEnum.js";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface EventsEventsCreateRequest {
     eventRequest: EventRequest;

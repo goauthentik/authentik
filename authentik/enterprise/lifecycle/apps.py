@@ -10,7 +10,7 @@ class LifecycleConfig(EnterpriseConfig):
     default = True
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.enterprise.lifecycle.offboarding.tasks import execute_due_offboardings
         from authentik.enterprise.lifecycle.review.tasks import apply_lifecycle_rules
 

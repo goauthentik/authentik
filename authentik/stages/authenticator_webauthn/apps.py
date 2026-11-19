@@ -14,7 +14,7 @@ class AuthentikStageAuthenticatorWebAuthnConfig(ManagedAppConfig):
     default = True
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
 
         return [

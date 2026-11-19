@@ -3,12 +3,14 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 
 import { isAPIResultReady } from "#common/api/responses";
 import { pluckErrorDetail } from "#common/errors/network";
 import { actionToLabel, severityToLevel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
+import { plural } from "#common/ui/locale/plurals";
 
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
@@ -19,13 +21,14 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
 
-import { Notification } from "@goauthentik/api";
+import { EventActions, Notification } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { repeat } from "lit/directives/repeat.js";
+import "#elements/Expand";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends WithNotifications(WithSession(AKElement)) {
@@ -34,6 +37,7 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
         PFNotificationDrawer,
         PFContent,
         PFDropdown,
+        PFList,
         css`
             .pf-c-drawer__body {
                 height: 100%;
@@ -52,10 +56,6 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
             .pf-c-notification-drawer__header-action-close,
             .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
                 height: 100%;
-            }
-
-            .pf-c-notification-drawer__list-item-description {
-                white-space: pre-wrap;
             }
 
             .pf-c-notification-drawer__list-item-action {
@@ -80,10 +80,6 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
     #renderItem = (item: Notification): TemplateResult => {
         const label = actionToLabel(item.event?.action);
         const level = severityToLevel(item.severity);
-
-        // There's little information we can have to determine if the body
-        // contains code, but if it looks like JSON, we can at least style it better.
-        const code = item.body.includes("{");
 
         return html`<li
             class="pf-c-notification-drawer__list-item"
@@ -119,14 +115,7 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                     <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
-            ${
-                code && item.event?.context
-                    ? html`<pre class="pf-c-notification-drawer__list-item-description">
-${JSON.stringify(item.event.context, null, 2)}</pre>`
-                    : html`<p class="pf-c-notification-drawer__list-item-description">
-                          ${item.body}
-                      </p>`
-            }
+            ${this.renderNotificationBody(item)}
             <small class="pf-c-notification-drawer__list-item-timestamp"
                 ><pf-tooltip position="top" .content=${item.created?.toLocaleString()}>
                     ${formatElapsedTime(item.created!)}
@@ -135,6 +124,33 @@ ${JSON.stringify(item.event.context, null, 2)}</pre>`
             ${this.renderHyperlink(item)}
         </li>`;
     };
+
+    protected renderNotificationBody(item: Notification) {
+        if (item.event?.action === EventActions.AccessRequestCreated) {
+            const targets: { name: string }[] = item.event.context?.targets;
+
+            return html`<div class="pf-c-notification-drawer__list-item-description">
+                ${msg("You've successfully requested access to:")}
+                <ul class="pf-c-list">
+                    ${targets.map((t) => html` <li>${t.name}</li> `)}
+                </ul>
+            </div>`;
+        }
+
+        // There's little information we can have to determine if the body
+        // contains code, but if it looks like JSON, we can at least style it better.
+        if (!item.body.includes("{")) {
+            return html`<p class="pf-c-notification-drawer__list-item-description">
+                ${item.body}
+            </p>`;
+        }
+
+        return html`<div class="pf-c-notification-drawer__list-item-description">
+            <ak-expand text-open=${msg("Hide details")} text-closed=${msg("Show details")}>
+                <pre>${JSON.stringify(item.event?.context, null, 2)}</pre>
+            </ak-expand>
+        </div>`;
+    }
 
     protected renderEmpty() {
         return html`<ak-empty-state
@@ -187,9 +203,17 @@ ${JSON.stringify(item.event.context, null, 2)}</pre>`
                             ${msg("Notifications")}
                         </h2>
                         <span aria-live="polite" aria-atomic="true">
-                            ${msg(str`${unreadCount} unread`, {
-                                id: "notification-unread-count",
-                                desc: "Indicates the number of unread notifications in the notification drawer",
+                            ${plural(unreadCount, {
+                                one: (formattedCount) =>
+                                    msg(str`${formattedCount} unread`, {
+                                        id: "notifications.unread-count.label.one",
+                                        desc: "Indicates the number of unread notifications in the notification drawer",
+                                    }),
+                                other: (formattedCount) =>
+                                    msg(str`${formattedCount} unread`, {
+                                        id: "notifications.unread-count.label.other",
+                                        desc: "Indicates the number of unread notifications in the notification drawer",
+                                    }),
                             })}
                         </span>
                     </div>

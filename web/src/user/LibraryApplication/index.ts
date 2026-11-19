@@ -1,5 +1,5 @@
 import "#elements/AppIcon";
-import "#user/LibraryApplication/RACLaunchEndpointModal";
+import "#user/LibraryApplication/RACLaunchDeviceModal";
 import { PFSize } from "#common/enums";
 
 import { modalInvoker } from "#elements/dialogs";
@@ -8,7 +8,7 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { CardHeader } from "#user/LibraryApplication/CardHeader";
 import { CardMenu } from "#user/LibraryApplication/CardMenu";
-import { RACLaunchEndpointLaunch } from "#user/LibraryApplication/RACLaunchEndpointModal";
+import { RACLaunchDeviceLaunch } from "#user/LibraryApplication/RACLaunchDeviceModal";
 
 import { Application } from "@goauthentik/api";
 
@@ -89,7 +89,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
             ${primaryRef}
             role="button"
             aria-describedby=${descriptionID}
-            ${modalInvoker(RACLaunchEndpointLaunch, { app: application })}
+            ${modalInvoker(RACLaunchDeviceLaunch, { app: application })}
             ${spread(extendedProps)}
         >
             ${cardHeader}

@@ -2,7 +2,7 @@
 
 from django.core.checks import Warning
 from django.db.backends.base.validation import BaseDatabaseValidation
-from django_tenants.postgresql_backend.base import DatabaseWrapper as BaseDatabaseWrapper
+from django_prometheus.db.backends.postgresql.base import DatabaseWrapper as BaseDatabaseWrapper
 
 from authentik.lib.config import CONFIG, DIRECT_DB_ALIAS
 
@@ -47,6 +47,10 @@ class DatabaseWrapper(BaseDatabaseWrapper):
     """database backend which supports rotating credentials"""
 
     validation_class = DatabaseValidation
+
+    @property
+    def schema_name(self) -> str:
+        return CONFIG.get("postgresql.default_schema")
 
     def get_connection_params(self):
         """Refresh host/port/user/password from CONFIG on each connection open.

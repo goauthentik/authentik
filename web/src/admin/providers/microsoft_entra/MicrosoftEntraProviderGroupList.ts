@@ -49,7 +49,12 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Microsoft Entra Group(s)")}
+            verbose-name=${msg("Microsoft Entra Group", {
+                id: "microsoft-entra.groups.verbose-name.label",
+            })}
+            verbose-name-plural=${msg("Microsoft Entra Groups", {
+                id: "microsoft-entra.groups.verbose-name-plural.label",
+            })}
             .objects=${this.selectedElements}
             .delete=${(item: MicrosoftEntraProviderGroup) => {
                 return aki(ProvidersApi).providersMicrosoftEntraGroupsDestroy({

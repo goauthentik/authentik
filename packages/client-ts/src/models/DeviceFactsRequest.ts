@@ -10,25 +10,25 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceGroupRequest } from "./DeviceGroupRequest";
-import { DeviceGroupRequestFromJSON, DeviceGroupRequestToJSON } from "./DeviceGroupRequest";
-import type { DeviceUserRequest } from "./DeviceUserRequest";
-import { DeviceUserRequestFromJSON, DeviceUserRequestToJSON } from "./DeviceUserRequest";
-import type { DiskRequest } from "./DiskRequest";
-import { DiskRequestFromJSON, DiskRequestToJSON } from "./DiskRequest";
-import type { HardwareRequest } from "./HardwareRequest";
-import { HardwareRequestFromJSON, HardwareRequestToJSON } from "./HardwareRequest";
-import type { NetworkRequest } from "./NetworkRequest";
-import { NetworkRequestFromJSON, NetworkRequestToJSON } from "./NetworkRequest";
-import type { OperatingSystemRequest } from "./OperatingSystemRequest";
+import type { DeviceGroupRequest } from "./DeviceGroupRequest.js";
+import { DeviceGroupRequestFromJSON, DeviceGroupRequestToJSON } from "./DeviceGroupRequest.js";
+import type { DeviceUserRequest } from "./DeviceUserRequest.js";
+import { DeviceUserRequestFromJSON, DeviceUserRequestToJSON } from "./DeviceUserRequest.js";
+import type { DiskRequest } from "./DiskRequest.js";
+import { DiskRequestFromJSON, DiskRequestToJSON } from "./DiskRequest.js";
+import type { HardwareRequest } from "./HardwareRequest.js";
+import { HardwareRequestFromJSON, HardwareRequestToJSON } from "./HardwareRequest.js";
+import type { NetworkRequest } from "./NetworkRequest.js";
+import { NetworkRequestFromJSON, NetworkRequestToJSON } from "./NetworkRequest.js";
+import type { OperatingSystemRequest } from "./OperatingSystemRequest.js";
 import {
     OperatingSystemRequestFromJSON,
     OperatingSystemRequestToJSON,
-} from "./OperatingSystemRequest";
-import type { ProcessRequest } from "./ProcessRequest";
-import { ProcessRequestFromJSON, ProcessRequestToJSON } from "./ProcessRequest";
-import type { SoftwareRequest } from "./SoftwareRequest";
-import { SoftwareRequestFromJSON, SoftwareRequestToJSON } from "./SoftwareRequest";
+} from "./OperatingSystemRequest.js";
+import type { ProcessRequest } from "./ProcessRequest.js";
+import { ProcessRequestFromJSON, ProcessRequestToJSON } from "./ProcessRequest.js";
+import type { SoftwareRequest } from "./SoftwareRequest.js";
+import { SoftwareRequestFromJSON, SoftwareRequestToJSON } from "./SoftwareRequest.js";
 
 /**
  * @export

@@ -39,7 +39,9 @@ export class NavTabs extends AKElement {
     public synchronize = (): void => {
         const activePath = window.location.pathname;
 
-        this.currentItem = this.items.find((item) => item.link === activePath);
+        this.currentItem = this.items
+            .filter((item) => activePath === item.link || activePath.startsWith(`${item.link}/`))
+            .sort((a, b) => b.link.length - a.link.length)[0];
     };
 
     public override connectedCallback(): void {

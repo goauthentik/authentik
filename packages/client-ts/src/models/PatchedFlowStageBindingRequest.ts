@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { InvalidResponseActionEnum } from "./InvalidResponseActionEnum";
+import type { InvalidResponseActionEnum } from "./InvalidResponseActionEnum.js";
 import {
     InvalidResponseActionEnumFromJSON,
     InvalidResponseActionEnumToJSON,
-} from "./InvalidResponseActionEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+} from "./InvalidResponseActionEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * FlowStageBinding Serializer

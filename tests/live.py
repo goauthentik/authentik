@@ -30,7 +30,7 @@ class E2ETestMixin(DockerTestCase):
     def setUp(self):
         if IS_CI:
             print("::group::authentik Logs", file=stderr)
-        apps.get_app_config("authentik_tenants").ready()
+        apps.get_app_config("authentik_admin").ready()
         self.wait_timeout = 60
         self.logger = get_logger()
         self.user = create_test_admin_user()

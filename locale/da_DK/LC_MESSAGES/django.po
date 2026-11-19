@@ -265,14 +265,47 @@ msgstr ""
 "Baseret på brugerens UPN; virker kun, hvis brugeren har attributten 'upn'. "
 "Brug kun denne metode, hvis du har forskellige UPN- og maildomæner."
 
+#: authentik/common/saml/exceptions.py
+msgid "Cannot decode SAML request."
+msgstr "Kunne ikke læse SAML-anmodningen."
+
+#: authentik/common/saml/exceptions.py
+msgid "Verification Certificate configured, but request is not signed."
+msgstr ""
+"Verifikationscertifikat er konfigureret, men anmodningen er ikke signeret."
+
+#: authentik/common/saml/exceptions.py
+msgid "Failed to verify signature"
+msgstr "Kunne ikke verificere signaturen"
+
+#: authentik/common/saml/parsers/logout_response.py
+msgid "Cannot decode SAML response."
+msgstr "Kunne ikke læse SAML-svaret."
+
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr "Brugeren har ikke adgang til applikationen."
+
+#: authentik/core/api/application_entitlements.py
+msgid ""
+"Entitlements assigned to this user, directly or through a group, regardless "
+"of the user's access to the application."
+msgstr ""
+"Rettigheder tildelt denne bruger, direkte eller via en gruppe, uanset "
+"brugerens adgang til applikationen."
 
 #: authentik/core/api/applications.py
 #, python-brace-format
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr "Sluggen '{slug}' er reserveret og kan ikke bruges til applikationer."
+
+#: authentik/core/api/groups.py
+#, python-brace-format
+msgid ""
+"User does not have permission to set superuser status to {superuser_status}."
+msgstr ""
+"Brugeren har ikke tilladelse til at sætte superbrugerstatus til "
+"{superuser_status}."
 
 #: authentik/core/api/groups.py
 msgid "User does not have permission to add members to this group."
@@ -335,6 +368,19 @@ msgstr "Brugere med interne servicekonti kan ikke ændres"
 #: authentik/core/api/users.py
 msgid "This field is required."
 msgstr "Dette felt er påkrævet."
+
+#: authentik/core/api/users.py
+msgid ""
+"Import a valid password hash even when its parameters do not match "
+"authentik's current password hashing settings."
+msgstr ""
+"Importer en gyldig adgangskodehash, selvom dens parametre ikke matcher "
+"authentiks aktuelle indstillinger for adgangskodehashing."
+
+#: authentik/core/api/users.py
+#, python-format
+msgid "%(reason)s Set \"override\" to true to import it anyway."
+msgstr "%(reason)s Sæt \"override\" til true for at importere den alligevel."
 
 #: authentik/core/api/users.py
 msgid "filter: failed to parse JSON"
@@ -740,6 +786,10 @@ msgid "Policy behavior cannot be changed after creation."
 msgstr "Policyens adfærd kan ikke ændres efter oprettelsen."
 
 #: authentik/core/sources/flow_manager.py
+msgid "New users can't enroll while adding a user."
+msgstr "Nye brugere kan ikke registrere sig, mens en bruger tilføjes."
+
+#: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid ""
 "Request to authenticate with {source} has been denied. Please authenticate "
@@ -778,9 +828,31 @@ msgstr "Fjern udløbne objekter."
 msgid "Remove temporary users created by SAML Sources."
 msgstr "Fjern midlertidige brugere oprettet af SAML-kilder."
 
+#: authentik/core/templates/base/noscript.html
+msgid "Cannot load this page without JavaScript"
+msgstr "Siden kan ikke indlæses uden JavaScript"
+
+#: authentik/core/templates/base/noscript.html
+msgid ""
+"This application requires JavaScript to function. JavaScript may be\n"
+"                disabled in your browser settings or blocked by a browser\n"
+"                extension."
+msgstr ""
+"Denne applikation kræver JavaScript for at fungere. JavaScript kan være\n"
+"                deaktiveret i dine browserindstillinger eller blokeret af\n"
+"                en browserudvidelse."
+
+#: authentik/core/templates/base/noscript.html
+msgid "Learn more &rsaquo;"
+msgstr "Læs mere &rsaquo;"
+
 #: authentik/core/templates/base/skeleton.html
 msgid "Recovery session is active. Custom branding is disabled."
 msgstr "Gendannelsessession er aktiv. Tilpasset branding er slået fra."
+
+#: authentik/core/templates/base/spinner.html
+msgid "Loading..."
+msgstr "Indlæser..."
 
 #: authentik/core/templates/if/error.html
 #: authentik/policies/templates/policies/denied.html
@@ -825,6 +897,10 @@ msgstr "Brugerskift er slået fra"
 msgid "Subject-alt name"
 msgstr "Alternativt emnenavn"
 
+#: authentik/crypto/api.py
+msgid "The selected algorithm is not supported in the current configuration."
+msgstr "Den valgte algoritme understøttes ikke i den aktuelle konfiguration."
+
 #: authentik/crypto/builder.py
 msgid "rsa"
 msgstr "rsa"
@@ -840,6 +916,18 @@ msgstr "Ed25519"
 #: authentik/crypto/builder.py authentik/crypto/models.py
 msgid "Ed448"
 msgstr "Ed448"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "ML-DSA-44"
+msgstr "ML-DSA-44"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "ML-DSA-65"
+msgstr "ML-DSA-65"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "ML-DSA-87"
+msgstr "ML-DSA-87"
 
 #: authentik/crypto/models.py
 msgid "RSA"
@@ -1001,6 +1089,22 @@ msgid "Apple Nonces"
 msgstr "Apple-noncer"
 
 #: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Authorization Code"
+msgstr "Apple-autorisationskode"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Authorization Codes"
+msgstr "Apple-autorisationskoder"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Unlock Key"
+msgstr "Apple-oplåsningsnøgle"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Unlock Keys"
+msgstr "Apple-oplåsningsnøgler"
+
+#: authentik/endpoints/connectors/agent/models.py
 msgid "Apple Independent Secure Enclave"
 msgstr "Apple Independent Secure Enclave"
 
@@ -1104,6 +1208,22 @@ msgstr "Enterprise er påkrævet for at oprette/opdatere dette objekt."
 msgid "Enterprise is required to use this endpoint."
 msgstr "Enterprise er påkrævet for at bruge dette endpoint."
 
+#: authentik/enterprise/api.py
+msgid "Count steps must have a positive duration."
+msgstr "Tællertrin skal have en positiv varighed."
+
+#: authentik/enterprise/api.py
+msgid "Start and end must be specified together."
+msgstr "Start og slut skal angives sammen."
+
+#: authentik/enterprise/api.py
+msgid "Start must be earlier than end."
+msgstr "Start skal være før slut."
+
+#: authentik/enterprise/api.py
+msgid "Specify at least one count step or an absolute range."
+msgstr "Angiv mindst ét tællertrin eller et absolut interval."
+
 #: authentik/enterprise/audit/apps.py
 msgid ""
 "Include additional information in audit logs, may incur a performance "
@@ -1140,6 +1260,34 @@ msgstr "Google Device Trust-connectors"
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
 msgid "Verifying your browser..."
 msgstr "Bekræfter din browser..."
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid ""
+"Certificate authorities which issue device certificates via Intune (Cloud "
+"PKI, SCEP or PKCS profiles), used by the endpoint stage to validate "
+"certificates. This option has a higher priority than the "
+"`client_certificate` option on `Brand`."
+msgstr ""
+"Certifikatudstedere, der udsteder enhedscertifikater via Intune (Cloud PKI, "
+"SCEP eller PKCS-profiler), og som bruges af endpoint-trinnet til at validere"
+" certifikater. Denne indstilling har højere prioritet end indstillingen "
+"`client_certificate` på `Brand`."
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector"
+msgstr "Microsoft Intune-connector"
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connectors"
+msgstr "Microsoft Intune-connectorer"
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector Certificate Authority"
+msgstr "Certifikatudsteder til Microsoft Intune-connector"
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector Certificate Authorities"
+msgstr "Certifikatudstedere til Microsoft Intune-connector"
 
 #: authentik/enterprise/lifecycle/offboarding/actions.py
 #, python-format
@@ -1284,6 +1432,31 @@ msgstr "Behandlet"
 #: authentik/enterprise/lifecycle/review/models.py
 msgid "Overdue"
 msgstr "Overskredet"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Go to {model_name}"
+msgstr "Gå til {model_name}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review is due for {model_name} {object_label}"
+msgstr "Adgangsgennemgang forfalder for {model_name} {object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review is overdue for {model_name} {object_label}"
+msgstr "Adgangsgennemgang er forfalden for {model_name} {object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review completed for {model_name} {object_label}"
+msgstr "Adgangsgennemgang er gennemført for {model_name} {object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review attested for {model_name} {object_label}"
+msgstr "Adgangsgennemgang er attesteret for {model_name} {object_label}"
 
 #: authentik/enterprise/lifecycle/review/models.py
 msgid "Go to {self._get_model_name()}"
@@ -1662,6 +1835,14 @@ msgid "WS-Federation Providers"
 msgstr "WS-Federation-udbydere"
 
 #: authentik/enterprise/providers/ws_federation/views.py
+msgid "Invalid WS-Federation action"
+msgstr "Ugyldig WS-Federation-handling"
+
+#: authentik/enterprise/providers/ws_federation/views.py
+msgid "Invalid WS-Federation request"
+msgstr "Ugyldig WS-Federation-anmodning"
+
+#: authentik/enterprise/providers/ws_federation/views.py
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
 #, python-brace-format
@@ -1690,6 +1871,10 @@ msgid "Generate data export."
 msgstr "Generér dataeksport."
 
 #: authentik/enterprise/requests/api/grant_requests.py
+msgid "Successfully requested access!"
+msgstr "Adgang er blevet anmodet!"
+
+#: authentik/enterprise/requests/api/grant_requests.py
 msgid "Only agents can request access through this endpoint."
 msgstr "Kun agenter kan anmode om adgang via dette endpoint."
 
@@ -1700,6 +1885,11 @@ msgstr "Denne agent har ingen ejer, der kan godkende dens anmodning."
 #: authentik/enterprise/requests/api/grant_requests.py
 msgid "Only agents with an expiry can request access."
 msgstr "Kun agenter med en udløbsdato kan anmode om adgang."
+
+#: authentik/enterprise/requests/api/request_rules.py
+msgid "A request flow must either be set on this rule, or on the brand."
+msgstr ""
+"Der skal angives et request-flow enten på denne regel eller på brandet."
 
 #: authentik/enterprise/requests/models.py
 msgid "Everyone who can approve"
@@ -1799,6 +1989,22 @@ msgstr "Godkendelser af adgangsanmodninger"
 #: authentik/enterprise/requests/tasks.py
 msgid "Send access-request review notification."
 msgstr "Send notifikation om gennemgang af adgangsanmodning."
+
+#: authentik/enterprise/required_actions/api.py
+msgid ""
+"Required actions must reference existing flows that a logged-in user can "
+"run, other than authentication or invalidation flows."
+msgstr ""
+"Påkrævede handlinger skal referere til eksisterende flows, som en indlogget "
+"bruger kan køre, bortset fra autentificerings- og invalideringsflows."
+
+#: authentik/enterprise/required_actions/middleware.py
+msgid "The required actions are invalid. Contact your administrator."
+msgstr "De påkrævede handlinger er ugyldige. Kontakt din administrator."
+
+#: authentik/enterprise/required_actions/middleware.py
+msgid "Complete the required actions before continuing."
+msgstr "Gennemfør de påkrævede handlinger, før du fortsætter."
 
 #: authentik/enterprise/stages/account_lockdown/api.py
 msgid "User to lock. If omitted, locks the current user (self-service)."
@@ -1932,6 +2138,10 @@ msgstr "Der kræves et certifikat, men der blev ikke angivet noget."
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "No user found for certificate."
 msgstr "Der blev ikke fundet nogen bruger til certifikatet."
+
+#: authentik/enterprise/stages/password/api.py
+msgid "A service account's password cannot be locked."
+msgstr "En servicekontos adgangskode kan ikke låses."
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -2300,6 +2510,10 @@ msgstr ""
 msgid "The fields {field_names} must be used together."
 msgstr "Felterne {field_names} skal bruges sammen."
 
+#: authentik/lib/views.py
+msgid "Bad Request"
+msgstr "Ugyldig anmodning"
+
 #: authentik/outposts/api/service_connections.py
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
@@ -2479,6 +2693,26 @@ msgstr ""
 "netværksmatchning)"
 
 #: authentik/policies/event_matcher/models.py
+msgid "Query matched."
+msgstr "Forespørgsel matchede."
+
+#: authentik/policies/event_matcher/models.py
+msgid "Action matched."
+msgstr "Handling matchede."
+
+#: authentik/policies/event_matcher/models.py
+msgid "Client IP matched."
+msgstr "Klient-IP matchede."
+
+#: authentik/policies/event_matcher/models.py
+msgid "App matched."
+msgstr "App matchede."
+
+#: authentik/policies/event_matcher/models.py
+msgid "Model matched."
+msgstr "Model matchede."
+
+#: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policy"
 msgstr "Policy for hændelsesmatchning"
 
@@ -2558,6 +2792,10 @@ msgstr "Model for policy-binding"
 #: authentik/policies/models.py
 msgid "Policy Binding Models"
 msgstr "Modeller for policy-binding"
+
+#: authentik/policies/models.py
+msgid "Execute the policy but ignore its result."
+msgstr "Kør policyen, men ignorer dens resultat."
 
 #: authentik/policies/models.py
 msgid "Negates the outcome of the policy. Messages are unaffected."
@@ -2661,6 +2899,10 @@ msgstr "Adgang nægtet"
 #: authentik/policies/templates/policies/denied.html
 msgid "User's avatar"
 msgstr "Brugerens avatar"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Username"
+msgstr "Brugernavn"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
@@ -2841,6 +3083,18 @@ msgstr "ES512 (asymmetrisk kryptering)"
 #: authentik/providers/oauth2/models.py
 msgid "EdDSA (Asymmetric Encryption)"
 msgstr "EdDSA (asymmetrisk kryptering)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-44 (Post-quantum, Asymmetric Encryption)"
+msgstr "ML-DSA-44 (Post-kvantum, asymmetrisk kryptering)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-65 (Post-quantum, Asymmetric Encryption)"
+msgstr "ML-DSA-65 (Post-kvantum, asymmetrisk kryptering)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-87 (Post-quantum, Asymmetric Encryption)"
+msgstr "ML-DSA-87 (Post-kvantum, asymmetrisk kryptering)"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
@@ -3053,6 +3307,14 @@ msgid "OAuth2 Refresh Tokens"
 msgstr "OAuth2-refresh-tokens"
 
 #: authentik/providers/oauth2/models.py
+msgid "OAuth2 Session Login"
+msgstr "OAuth2-sessionlogin"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Session Logins"
+msgstr "OAuth2-sessionlogins"
+
+#: authentik/providers/oauth2/models.py
 msgid "Provider"
 msgstr "Udbyder"
 
@@ -3263,6 +3525,22 @@ msgstr "Proxy-udbyder"
 msgid "Proxy Providers"
 msgstr "Proxy-udbydere"
 
+#: authentik/providers/rac/models.py
+msgid ""
+"Only devices in this access group can be accessed through this provider. "
+"When left empty, every device the user has access to can be accessed."
+msgstr ""
+"Kun enheder i denne adgangsgruppe kan tilgås via denne udbyder. Hvis feltet "
+"er tomt, kan alle enheder brugeren har adgang til tilgås."
+
+#: authentik/providers/rac/models.py
+msgid ""
+"Maximum concurrent connections to a single device. Can be set to -1 to "
+"disable the limit."
+msgstr ""
+"Maksimalt antal samtidige forbindelser til en enkelt enhed. Kan sættes til "
+"-1 for at deaktivere grænsen."
+
 #: authentik/providers/rac/models.py authentik/stages/user_login/models.py
 msgid ""
 "Determines how long a session lasts. Default of 0 means that the sessions "
@@ -3307,6 +3585,18 @@ msgstr "Egenskabstilknytning for RAC-udbyder"
 #: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mappings"
 msgstr "Egenskabstilknytninger for RAC-udbydere"
+
+#: authentik/providers/rac/models.py
+msgid "Hostname/IP to connect to. Optionally specify the port."
+msgstr "Værtsnavn/IP at forbinde til. Angiv eventuelt porten."
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection override"
+msgstr "RAC-forbindelsesoverskrivning"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection overrides"
+msgstr "RAC-forbindelsesoverskrivninger"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Connection token"
@@ -3575,8 +3865,36 @@ msgid "Encryption Keypair"
 msgstr "Krypteringsnøglepar"
 
 #: authentik/providers/saml/models.py
+msgid "AES128-CBC"
+msgstr "AES128-CBC"
+
+#: authentik/providers/saml/models.py
+msgid "AES256-CBC"
+msgstr "AES256-CBC"
+
+#: authentik/providers/saml/models.py
+msgid "AES128-GCM"
+msgstr "AES128-GCM"
+
+#: authentik/providers/saml/models.py
+msgid "AES256-GCM"
+msgstr "AES256-GCM"
+
+#: authentik/providers/saml/models.py
+msgid "Block cipher used to encrypt the assertion."
+msgstr "Blokchifre der bruges til at kryptere assertionen."
+
+#: authentik/providers/saml/models.py
 msgid "Default relay_state value for IDP-initiated logins"
 msgstr "Standardværdi for relay_state ved IDP-initierede logins"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"OAuth2 providers which can exchange their JWTs for a SAML Response of this "
+"provider via token exchange."
+msgstr ""
+"OAuth2-udbydere, der kan udveksle deres JWT'er til et SAML-svar fra denne "
+"udbyder via token-udveksling."
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider"
@@ -3585,6 +3903,14 @@ msgstr "SAML-udbyder"
 #: authentik/providers/saml/models.py
 msgid "SAML Providers"
 msgstr "SAML-udbydere"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider JWT Federation Provider"
+msgstr "SAML-udbyder JWT-federationsudbyder"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider JWT Federation Providers"
+msgstr "SAML-udbyder JWT-federationsudbydere"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider Property Mapping"
@@ -3629,6 +3955,25 @@ msgstr "SAML-session"
 #: authentik/providers/saml/models.py
 msgid "SAML Sessions"
 msgstr "SAML-sessioner"
+
+#: authentik/providers/saml/views/flows.py
+msgid "Invalid sp_binding specified"
+msgstr "Ugyldig sp_binding angivet"
+
+#: authentik/providers/saml/views/sp_slo.py
+#: authentik/providers/saml/views/sso.py
+#: authentik/providers/saml/views/unified.py
+msgid "The SAML request payload is missing."
+msgstr "SAML-anmodningens payload mangler."
+
+#: authentik/providers/saml/views/unified.py
+#, python-brace-format
+msgid "Unsupported SAML message type: {message_type}"
+msgstr "Ikke-understøttet SAML-beskedtype: {message_type}"
+
+#: authentik/providers/scim/models.py
+msgid "Basic"
+msgstr "Basic"
 
 #: authentik/providers/scim/models.py
 msgid "OAuth (Silent)"
@@ -3677,6 +4022,14 @@ msgstr "Basis-URL til SCIM-anmodninger; slutter som regel på /v2"
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
 msgstr "Godkendelsestoken"
+
+#: authentik/providers/scim/models.py
+msgid "Username used for Basic authentication"
+msgstr "Brugernavn til Basic-autentificering"
+
+#: authentik/providers/scim/models.py
+msgid "Password used for Basic authentication"
+msgstr "Adgangskode til Basic-autentificering"
 
 #: authentik/providers/scim/models.py
 msgid "OAuth Source used for authentication"
@@ -3771,6 +4124,65 @@ msgstr ""
 "Udsend synkroniseringer for et relateret objekt (medlemskaber) til SCIM-"
 "udbydere."
 
+#: authentik/rbac/api/custom_permissions.py
+msgid "Unknown model."
+msgstr "Ukendt model."
+
+#: authentik/rbac/api/custom_permissions.py
+msgid "This cannot change."
+msgstr "Dette kan ikke ændres."
+
+#: authentik/rbac/api/custom_permissions.py
+msgid ""
+"Start with custom_, followed by lowercase letters, digits, and underscores."
+msgstr ""
+"Start med custom_, efterfulgt af små bogstaver, cifre og understregninger."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Define at least one of {functions}."
+msgstr "Definer mindst én af {functions}."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Unknown endpoint {id}."
+msgstr "Ukendt endpoint {id}."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Already bound to another check: {ids}."
+msgstr "Allerede bundet til et andet check: {ids}."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "{id} runs no functions defined for it."
+msgstr "{id} kører ingen funktioner, der er defineret for det."
+
+#: authentik/rbac/api/rbac.py
+#, python-brace-format
+msgid "Unknown permission {name}"
+msgstr "Ukendt tilladelse {name}"
+
+#: authentik/rbac/apps.py
+msgid ""
+"Let permission checks decide API access. While enabled, every API request "
+"costs an additional database query."
+msgstr ""
+"Lad tilladelseskontroller afgøre API-adgang. Mens dette er aktiveret, koster"
+" hver API-forespørgsel en ekstra databaseforespørgsel."
+
+#: authentik/rbac/endpoint_checks.py
+msgid "A permission check failed."
+msgstr "En tilladelseskontrol fejlede."
+
+#: authentik/rbac/field_rules.py
+msgid "You cannot change this value."
+msgstr "Du kan ikke ændre denne værdi."
+
+#: authentik/rbac/field_rules.py
+msgid "This field is hidden from you."
+msgstr "Dette felt er skjult for dig."
+
 #: authentik/rbac/models.py
 msgid "Role"
 msgstr "Rolle"
@@ -3830,6 +4242,22 @@ msgstr "Kan se mediefiler"
 #: authentik/rbac/models.py
 msgid "Can manage media files"
 msgstr "Kan administrere mediefiler"
+
+#: authentik/rbac/models.py
+msgid "Custom permission"
+msgstr "Brugerdefineret tilladelse"
+
+#: authentik/rbac/models.py
+msgid "Custom permissions"
+msgstr "Brugerdefinerede tilladelser"
+
+#: authentik/rbac/models.py
+msgid "Permission check"
+msgstr "Tilladelseskontrol"
+
+#: authentik/rbac/models.py
+msgid "Permission checks"
+msgstr "Tilladelseskontroller"
 
 #: authentik/rbac/tasks.py
 msgid "Remove object-level permissions whose object no longer exists."
@@ -3978,6 +4406,14 @@ msgstr ""
 #: authentik/sources/ldap/api/sources.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr "Der må kun være én LDAP-kilde med adgangskodesynkronisering"
+
+#: authentik/sources/ldap/api/sources.py
+#, python-brace-format
+msgid ""
+"When 'Sync {type}s' is enabled, '{type}s property mappings' cannot be empty."
+msgstr ""
+"Når 'Synkroniser {type}s' er aktiveret, må '{type}s egenskabstilknytninger' "
+"ikke være tomme."
 
 #: authentik/sources/ldap/api/sources.py
 msgid "SASL EXTERNAL requires a client certificate with a private key."
@@ -4534,6 +4970,14 @@ msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid ""
+"Format of the NameID Policy sent to the IdP. Select Unspecified to let the "
+"IdP choose the format of the NameID it returns."
+msgstr ""
+"Format for NameID-politikken, der sendes til IdP'en. Vælg Unspecified for at"
+" lade IdP'en bestemme NameID-formatet i svaret."
+
+#: authentik/sources/saml/models.py
+msgid ""
 "NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
 "sent."
 msgstr ""
@@ -4593,9 +5037,17 @@ msgid "Group SAML Source Connections"
 msgstr "Gruppeforbindelser for SAML-kilder"
 
 #: authentik/sources/saml/views.py
+msgid "Failed to build the SAML request."
+msgstr "Kunne ikke opbygge SAML-anmodningen."
+
+#: authentik/sources/saml/views.py
 #, python-brace-format
 msgid "Continue to {source_name}"
 msgstr "Fortsæt til {source_name}"
+
+#: authentik/sources/saml/views.py
+msgid "Failed to process the SAML response."
+msgstr "Kunne ikke behandle SAML-svaret."
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
@@ -4732,6 +5184,10 @@ msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
 msgstr ""
 "Den tid det afsendte token er gyldigt (format: "
 "hours=3,minutes=17,seconds=300)."
+
+#: authentik/stages/authenticator_email/models.py
+msgid "authentik Sign-in code"
+msgstr "authentik-loginkode"
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stage"
@@ -4926,6 +5382,15 @@ msgid "Invalid device type. Contact your {brand} administrator for help."
 msgstr ""
 "Ugyldig enhedstype. Kontakt din {brand}-administrator for at få hjælp."
 
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Assertion failed"
+msgstr "Assertion fejlede"
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Invalid security key. Please re-register or contact an administrator."
+msgstr ""
+"Ugyldig sikkerhedsnøgle. Registrer den igen, eller kontakt en administrator."
+
 #: authentik/stages/authenticator_validate/models.py
 msgid "Static"
 msgstr "Statisk"
@@ -5031,6 +5496,14 @@ msgstr "Enhedstypebegrænsning for WebAuthn-trin"
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "Authenticator WebAuthn Stage Device Type Restrictions"
 msgstr "Enhedstypebegrænsninger for WebAuthn-trin"
+
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid ""
+"Exceeded maximum attempts. Contact your {brand} administrator for help."
+msgstr ""
+"Maksimalt antal forsøg overskredet. Kontakt din {brand}-administrator for "
+"hjælp."
 
 #: authentik/stages/authenticator_webauthn/tasks.py
 msgid ""
@@ -5558,6 +6031,39 @@ msgstr "Udvalg af backends som adgangskoden skal testes op imod."
 
 #: authentik/stages/password/models.py
 msgid ""
+"How many attempts a user has before the flow is canceled. This only cancels "
+"the flow, it does not lock the user's password."
+msgstr ""
+"Hvor mange forsøg en bruger har, før flowet annulleres. Dette annullerer kun"
+" flowet og låser ikke brugerens adgangskode."
+
+#: authentik/stages/password/models.py
+msgid ""
+"How many consecutive failed attempts lock the user's password until an "
+"administrator unlocks it. Set to 0 to never lock."
+msgstr ""
+"Hvor mange på hinanden følgende mislykkede forsøg der låser brugerens "
+"adgangskode, indtil en administrator låser den op. Sæt til 0 for aldrig at "
+"låse."
+
+#: authentik/stages/password/models.py
+msgid ""
+"Warning shown when the user has one password attempt remaining. Leave blank "
+"to show no warning."
+msgstr ""
+"Advarsel, der vises, når brugeren har ét adgangskodeforsøg tilbage. Lad "
+"feltet være tomt for ingen advarsel."
+
+#: authentik/stages/password/models.py
+msgid ""
+"Message shown when the user's password has been locked. Leave blank to show "
+"a generic authentication error."
+msgstr ""
+"Besked, der vises, når brugerens adgangskode er låst. Lad feltet være tomt "
+"for en generisk autentificeringsfejl."
+
+#: authentik/stages/password/models.py
+msgid ""
 "How many attempts a user has before the flow is canceled. To lock the user "
 "out, use a reputation policy and a user_write stage."
 msgstr ""
@@ -5579,6 +6085,14 @@ msgstr "Adgangskodetrin"
 #: authentik/stages/password/models.py
 msgid "Password Stages"
 msgstr "Adgangskodetrin"
+
+#: authentik/stages/password/models.py
+msgid "Password Device"
+msgstr "Adgangskodeenhed"
+
+#: authentik/stages/password/models.py
+msgid "Password Devices"
+msgstr "Adgangskodeenheder"
 
 #: authentik/stages/password/stage.py
 msgid "Invalid password"
@@ -5802,6 +6316,10 @@ msgstr "Ingen ventende bruger at logge ind."
 msgid "The selected session is no longer available. Please try again."
 msgstr "Den valgte session er ikke længere tilgængelig. Prøv igen."
 
+#: authentik/stages/user_login/stage.py
+msgid "Only internal users can be added to user switching."
+msgstr "Kun interne brugere kan tilføjes til brugerskifte."
+
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"
 msgstr "Trin for brugerlogout"
@@ -5897,6 +6415,13 @@ msgstr "Fjern gamle worker-statusser."
 msgid "Value for flag {flag_key} needs to be of type {type}."
 msgstr "Værdien for flaget {flag_key} skal være af typen {type}."
 
+#: authentik/admin/files/api.py
+#, python-brace-format
+msgid "File size ({size}B) exceeds maximum allowed size ({max_size}B)."
+msgstr ""
+"Filstørrelsen ({size}B) overskrider den maksimalt tilladte størrelse "
+"({max_size}B)."
+
 #: authentik/tenants/models.py
 msgid ""
 "Schema name must start with t_, only contain lowercase letters and numbers "
@@ -5989,6 +6514,10 @@ msgstr ""
 msgid "Maximum page size"
 msgstr "Maksimal sidestørrelse"
 
+#: authentik/admin/models.py
+msgid "System settings"
+msgstr "Systemindstillinger"
+
 #: authentik/tenants/models.py
 msgid "Tenant"
 msgstr "Tenant"
@@ -6000,6 +6529,11 @@ msgstr "Tenants"
 #: authentik/tenants/models.py
 msgid "Domain"
 msgstr "Domæne"
+
+#: authentik/stages/authenticator_validate/challenge.py
+#, python-brace-format
+msgid "{brand_name} Login request"
+msgstr "{brand_name}-loginanmodning"
 
 #: authentik/tenants/models.py
 msgid "Domains"

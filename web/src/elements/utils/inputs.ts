@@ -29,7 +29,7 @@ const NameableElements = new Set([
     "INPUT",
     "TEXTAREA",
     "SELECT",
-    "AK-CODEMIRROR",
+    "AK-CODE-EDITOR",
     "AK-CHIP-GROUP",
     "AK-SEARCH-SELECT",
     "AK-RADIO",

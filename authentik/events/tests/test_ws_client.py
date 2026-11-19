@@ -2,6 +2,7 @@ from asgiref.sync import sync_to_async
 from channels.routing import URLRouter
 from channels.testing import WebsocketCommunicator
 from django.test import TransactionTestCase
+from structlog.testing import capture_logs
 
 from authentik.core.tests.utils import create_test_user
 from authentik.events.models import (
@@ -25,6 +26,22 @@ class TestClientWS(TransactionTestCase):
         )
         connected, _ = await communicator.connect()
         self.assertFalse(connected)
+
+    async def test_non_utf8_headers(self):
+        """Header values that aren't valid UTF-8 don't break the connection"""
+        communicator = WebsocketCommunicator(
+            URLRouter(websocket.websocket_urlpatterns),
+            "/ws/client/",
+            headers=[(b"user-agent", b"Mozilla/5.0 Meta\xa0AI"), (b"x-forwarded-for", b"\xff")],
+        )
+        communicator.scope["user"] = self.user
+        with capture_logs() as logs:
+            connected, _ = await communicator.connect()
+        self.assertTrue(connected)
+        log = next(log for log in logs if log.get("scheme") == "ws")
+        self.assertEqual(log["user_agent"], "Mozilla/5.0 Meta\\xa0AI")
+        self.assertEqual(log["remote"], "\\xff")
+        await communicator.disconnect()
 
     async def test_notification(self):
         communicator = WebsocketCommunicator(

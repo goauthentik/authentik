@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { BlueprintInstance } from "./BlueprintInstance";
-import { BlueprintInstanceFromJSON, BlueprintInstanceToJSON } from "./BlueprintInstance";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { BlueprintInstance } from "./BlueprintInstance.js";
+import { BlueprintInstanceFromJSON, BlueprintInstanceToJSON } from "./BlueprintInstance.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

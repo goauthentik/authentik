@@ -295,15 +295,18 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signing_kp",
             "verification_kp",
             "encryption_kp",
+            "encryption_algorithm",
             "sign_assertion",
             "sign_response",
             "sign_logout_request",
             "sign_logout_response",
+            "ignore_force_authn",
             "sp_binding",
             "sls_binding",
             "logout_method",
             "default_relay_state",
             "default_name_id_policy",
+            "jwt_federation_providers",
             "url_download_metadata",
             "metadata_url",
             "url_issuer",
@@ -320,6 +323,8 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
             # Filled in from the metadata when a metadata URL is given
             "acs_url": {"required": False, "allow_blank": True},
+            "verification_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "encryption_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
         }
 
 

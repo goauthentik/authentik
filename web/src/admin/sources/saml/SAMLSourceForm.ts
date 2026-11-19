@@ -1,5 +1,3 @@
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
@@ -8,21 +6,30 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
+import "#elements/ToggleGroup";
 import "#elements/utils/TimeDeltaHelp";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
 
-import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
+
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { XMLSigningKeyTypes } from "#admin/common/certificate-key-types";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import {
+    AKSourceAuthenticationFlowField,
+    AKSourceEnrollmentFlowField,
+    AKSourcePreAuthenticationFlowField,
+} from "#admin/sources/components/flow-fields";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
     BindingTypeEnum,
     DigestAlgorithmEnum,
-    FlowDesignationEnum,
     GroupMatchingModeEnum,
     SAMLNameIDPolicyEnum,
     SAMLSource,
@@ -30,12 +37,18 @@ import {
     SourcesApi,
     UsageEnum,
     UserMatchingModeEnum,
+    CertificateKeyPair,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+enum ConfigurationMode {
+    Manual = "manual",
+    Metadata = "metadata",
+}
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
@@ -50,17 +63,36 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     @state()
     protected hasSigningCert = false;
 
+    @state()
+    protected configurationMode: ConfigurationMode = ConfigurationMode.Manual;
+
     public override reset(): void {
         super.reset();
 
         this.hasSigningCert = false;
+        this.configurationMode = ConfigurationMode.Manual;
     }
 
-    setHasSigningCert(ev: InputEvent): void {
-        const target = ev.target as AkCryptoCertificateSearch;
+    protected override assignInstance(instance: SAMLSource | null): void {
+        super.assignInstance(instance);
 
-        if (!target) return;
-        this.hasSigningCert = !!target.selectedKeypair;
+        this.configurationMode = instance?.metadataUrl
+            ? ConfigurationMode.Metadata
+            : ConfigurationMode.Manual;
+    }
+
+    protected override send(data: SAMLSource) {
+        // Only the fields of the active mode are rendered, so the metadata URL has to be
+        // cleared explicitly, otherwise the manual settings would keep being overwritten.
+        if (this.configurationMode === ConfigurationMode.Manual) {
+            data.metadataUrl = "";
+        }
+
+        return super.send(data);
+    }
+
+    setHasSigningCert({ detail }: SearchSelectChangeEvent<CertificateKeyPair>): void {
+        this.hasSigningCert = !!detail.value;
     }
 
     renderHasSigningCert(): TemplateResult {
@@ -80,6 +112,82 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                     "When enabled, authentik will look for a Signature inside of the Response element.",
                 )}
             ></ak-switch-input>`;
+    }
+
+    protected renderManualSettings(): TemplateResult {
+        return html`<ak-form-element-horizontal label=${msg("SSO URL")} required name="ssoUrl">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.ssoUrl)}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg("URL that the initial Login request is sent to.")}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("SLO URL")} name="sloUrl">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.sloUrl || "")}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg("Optional URL if the IDP supports Single-Logout.")}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("Binding Type")} required name="bindingType">
+                <ak-radio
+                    .options=${[
+                        {
+                            label: msg("Redirect binding"),
+                            value: BindingTypeEnum.Redirect,
+                            default: true,
+                        },
+                        {
+                            label: msg("Post-auto binding"),
+                            value: BindingTypeEnum.PostAuto,
+                            description: html`${msg(
+                                "Post binding but the request is automatically sent and the user doesn't have to confirm.",
+                            )}`,
+                        },
+                        {
+                            label: msg("Post binding"),
+                            value: BindingTypeEnum.Post,
+                        },
+                    ]}
+                    .value=${this.instance?.bindingType}
+                >
+                </ak-radio>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Verification Certificate")}
+                name="verificationKp"
+            >
+                ${AKCertificateSearch({ name: "verificationKp", value: this.instance?.verificationKp, noKey: true, allowedKeyTypes: XMLSigningKeyTypes, onChange: this.setHasSigningCert })}
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            ${this.hasSigningCert ? this.renderHasSigningCert() : nothing}`;
+    }
+
+    protected renderMetadataSettings(): TemplateResult {
+        return html`<ak-text-input
+                name="metadataUrl"
+                label=${msg("Metadata URL")}
+                placeholder=${msg("https://...")}
+                input-hint="code"
+                inputmode="url"
+                required
+                value="${ifDefined(this.instance?.metadataUrl)}"
+                help=${msg(
+                    "URL of the Identity Provider's metadata. The SSO URL, SLO URL, binding, NameID policy and verification certificate are filled in from it and periodically updated.",
+                )}
+            ></ak-text-input>
+            ${this.renderHasSigningCert()}`;
     }
 
     protected override renderForm(): TemplateResult {
@@ -202,93 +310,40 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-text-input
-                        name="metadataUrl"
-                        label=${msg("Metadata URL")}
-                        placeholder=${msg("https://...")}
-                        input-hint="code"
-                        inputmode="url"
-                        value="${ifDefined(this.instance?.metadataUrl)}"
-                        help=${msg(
-                            "Optional URL of the Identity Provider's metadata. When set, the SSO URL, SLO URL, binding and verification certificate are filled in from it and periodically updated.",
-                        )}
-                    ></ak-text-input>
-                    <ak-form-element-horizontal label=${msg("SSO URL")} name="ssoUrl">
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.ssoUrl)}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "URL that the initial Login request is sent to. Required unless a metadata URL is set.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("SLO URL")} name="sloUrl">
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.sloUrl || "")}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Optional URL if the IDP supports Single-Logout.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Binding Type")}
-                        required
-                        name="bindingType"
-                    >
-                        <ak-radio
-                            .options=${[
-                                {
-                                    label: msg("Redirect binding"),
-                                    value: BindingTypeEnum.Redirect,
-                                    default: true,
-                                },
-                                {
-                                    label: msg("Post-auto binding"),
-                                    value: BindingTypeEnum.PostAuto,
-                                    description: html`${msg(
-                                        "Post binding but the request is automatically sent and the user doesn't have to confirm.",
-                                    )}`,
-                                },
-                                {
-                                    label: msg("Post binding"),
-                                    value: BindingTypeEnum.Post,
-                                },
-                            ]}
-                            .value=${this.instance?.bindingType}
-                        >
-                        </ak-radio>
-                    </ak-form-element-horizontal>
+                    <div class="pf-c-card pf-m-selectable pf-m-selected">
+                        <div class="pf-c-card__body">
+                            <ak-toggle-group
+                                value=${this.configurationMode}
+                                @ak-toggle=${(ev: ToggleGroupEvent<ConfigurationMode>) => {
+                                    this.configurationMode = ev.value;
+                                }}
+                            >
+                                <option value=${ConfigurationMode.Manual}>
+                                    ${msg("Manual configuration")}
+                                </option>
+                                <option value=${ConfigurationMode.Metadata}>
+                                    ${msg("Metadata URL")}
+                                </option>
+                            </ak-toggle-group>
+                        </div>
+                        <div class="pf-c-card__footer">
+                            <div class="pf-c-form">
+                                ${
+                                    this.configurationMode === ConfigurationMode.Metadata
+                                        ? this.renderMetadataSettings()
+                                        : this.renderManualSettings()
+                                }
+                            </div>
+                        </div>
+                    </div>
                     <ak-form-element-horizontal label=${msg("Signing keypair")} name="signingKp">
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.signingKp}
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "signingKp", value: this.instance?.signingKp, allowedKeyTypes: XMLSigningKeyTypes })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Keypair which is used to sign outgoing requests. Leave empty to disable signing.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Verification Certificate")}
-                        name="verificationKp"
-                    >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.verificationKp}
-                            @input=${this.setHasSigningCert}
-                            nokey
-                        ></ak-crypto-certificate-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    ${this.hasSigningCert ? this.renderHasSigningCert() : nothing}
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Advanced protocol settings")}">
@@ -372,6 +427,15 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                                 }
                             >
                                 ${msg("Transient")}
+                            </option>
+                            <option
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified}
+                                ?selected=${
+                                    this.instance?.nameIdPolicy ===
+                                    SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified
+                                }
+                            >
+                                ${msg("Unspecified")}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
@@ -469,9 +533,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         label=${msg("Encryption Certificate")}
                         name="encryptionKp"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.encryptionKp}
-                        ></ak-crypto-certificate-search>
+                        ${AKCertificateSearch({ name: "encryptionKp", value: this.instance?.encryptionKp, allowedKeyTypes: XMLSigningKeyTypes })}
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, encrypted assertions will be decrypted using this keypair.",
@@ -518,49 +580,9 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Pre-authentication flow")}
-                        required
-                        name="preAuthenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.StageConfiguration}
-                            .currentFlow=${this.instance?.preAuthenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-pre-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow used before authentication.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication Flow")}
-                        name="authenticationFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.authenticationFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-authentication"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when authenticating existing users.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
-                        <ak-source-flow-search
-                            flowType=${FlowDesignationEnum.Enrollment}
-                            .currentFlow=${this.instance?.enrollmentFlow}
-                            .instanceId=${this.instance?.pk}
-                            fallback="default-source-enrollment"
-                        ></ak-source-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow to use when enrolling new users.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${AKSourcePreAuthenticationFlowField({ value: this.instance?.preAuthenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceAuthenticationFlowField({ value: this.instance?.authenticationFlow, sourcePk: this.instance?.pk })}
+                    ${AKSourceEnrollmentFlowField({ value: this.instance?.enrollmentFlow, sourcePk: this.instance?.pk })}
                 </div>
             </ak-form-group>
             <ak-form-group label=${msg("Advanced settings")}>

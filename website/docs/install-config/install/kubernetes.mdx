@@ -85,6 +85,8 @@ If your cluster or controller does not support the Gateway API, use the `server.
 
 See all configurable values on [ArtifactHub](https://artifacthub.io/packages/helm/goauthentik/authentik).
 
+The chart does not mount storage for uploaded files by default. Configure `global.volumes` and `global.volumeMounts`, or use S3, as described in [File storage requirements](../../customize/files.mdx#storage-requirements).
+
 ## PostgreSQL production setup
 
 The PostgreSQL database installed by default with the Helm chart is intended for demonstration and test environments.
@@ -115,6 +117,8 @@ helm upgrade --install authentik authentik/authentik -f values.yaml
 ```
 
 During the installation process, the database migrations will be applied automatically on startup.
+
+To adjust the number of server or worker replicas automatically, see [Autoscaling on Kubernetes](../../sys-mgmt/ops/autoscaling/index.mdx).
 
 ## Access authentik
 

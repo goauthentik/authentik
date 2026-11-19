@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { EmailStage } from "./EmailStage";
-import { EmailStageFromJSON, EmailStageToJSON } from "./EmailStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { EmailStage } from "./EmailStage.js";
+import { EmailStageFromJSON, EmailStageToJSON } from "./EmailStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

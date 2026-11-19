@@ -227,7 +227,13 @@ export class RewriteIndex {
 
             if (!match) continue;
 
-            addAlias(match.groups ? expandTemplate(fromTemplate, match.groups) : fromTemplate);
+            if (match.groups) {
+                addAlias(expandTemplate(fromTemplate, match.groups));
+            } else if (!fromTemplate.includes(":splat")) {
+                // A splat source redirecting to a fixed destination, such as
+                // `/old/*  /`, has no single source path to recreate.
+                addAlias(fromTemplate);
+            }
         }
 
         return Array.from(aliases.values());

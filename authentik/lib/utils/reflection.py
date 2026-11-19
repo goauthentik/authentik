@@ -67,11 +67,6 @@ def get_env() -> str:
     return "custom"
 
 
-class _dummy:
-    """Dummy class used for conditional inheritance as a placeholder when the specified
-    class is not available"""
-
-
 def ConditionalInheritance(path: str):
     """Conditionally inherit from a class, intended for things like authentik.enterprise,
     without which authentik should still be able to run"""
@@ -80,4 +75,4 @@ def ConditionalInheritance(path: str):
         return cls
     except ModuleNotFoundError:
         LOGGER.warning("Unable to import", path=path)
-        return _dummy
+        return type(path.rsplit(".", 1)[-1], (), {})

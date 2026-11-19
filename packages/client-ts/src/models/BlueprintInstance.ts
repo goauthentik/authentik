@@ -10,9 +10,9 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { BlueprintInstanceStatusEnum } from "./BlueprintInstanceStatusEnum";
-import { BlueprintInstanceStatusEnumFromJSON } from "./BlueprintInstanceStatusEnum";
+import { parseDateTime } from "../runtime.js";
+import type { BlueprintInstanceStatusEnum } from "./BlueprintInstanceStatusEnum.js";
+import { BlueprintInstanceStatusEnumFromJSON } from "./BlueprintInstanceStatusEnum.js";
 
 /**
  * Info about a single blueprint instance file

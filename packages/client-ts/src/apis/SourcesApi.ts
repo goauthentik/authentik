@@ -10,360 +10,363 @@
  * Do not edit the class manually.
  */
 
-import { type BindingTypeEnum } from "../models/BindingTypeEnum";
-import { type DigestAlgorithmEnum } from "../models/DigestAlgorithmEnum";
+import { type BindingTypeEnum } from "../models/BindingTypeEnum.js";
+import { type DigestAlgorithmEnum } from "../models/DigestAlgorithmEnum.js";
 import {
     type GroupKerberosSourceConnection,
     GroupKerberosSourceConnectionFromJSON,
-} from "../models/GroupKerberosSourceConnection";
+} from "../models/GroupKerberosSourceConnection.js";
 import {
     type GroupKerberosSourceConnectionRequest,
     GroupKerberosSourceConnectionRequestToJSON,
-} from "../models/GroupKerberosSourceConnectionRequest";
+} from "../models/GroupKerberosSourceConnectionRequest.js";
 import {
     type GroupLDAPSourceConnection,
     GroupLDAPSourceConnectionFromJSON,
-} from "../models/GroupLDAPSourceConnection";
+} from "../models/GroupLDAPSourceConnection.js";
 import {
     type GroupLDAPSourceConnectionRequest,
     GroupLDAPSourceConnectionRequestToJSON,
-} from "../models/GroupLDAPSourceConnectionRequest";
-import { type GroupMatchingModeEnum } from "../models/GroupMatchingModeEnum";
+} from "../models/GroupLDAPSourceConnectionRequest.js";
+import { type GroupMatchingModeEnum } from "../models/GroupMatchingModeEnum.js";
 import {
     type GroupOAuthSourceConnection,
     GroupOAuthSourceConnectionFromJSON,
-} from "../models/GroupOAuthSourceConnection";
+} from "../models/GroupOAuthSourceConnection.js";
 import {
     type GroupOAuthSourceConnectionRequest,
     GroupOAuthSourceConnectionRequestToJSON,
-} from "../models/GroupOAuthSourceConnectionRequest";
+} from "../models/GroupOAuthSourceConnectionRequest.js";
 import {
     type GroupPlexSourceConnection,
     GroupPlexSourceConnectionFromJSON,
-} from "../models/GroupPlexSourceConnection";
+} from "../models/GroupPlexSourceConnection.js";
 import {
     type GroupPlexSourceConnectionRequest,
     GroupPlexSourceConnectionRequestToJSON,
-} from "../models/GroupPlexSourceConnectionRequest";
+} from "../models/GroupPlexSourceConnectionRequest.js";
 import {
     type GroupSAMLSourceConnection,
     GroupSAMLSourceConnectionFromJSON,
-} from "../models/GroupSAMLSourceConnection";
+} from "../models/GroupSAMLSourceConnection.js";
 import {
     type GroupSAMLSourceConnectionRequest,
     GroupSAMLSourceConnectionRequestToJSON,
-} from "../models/GroupSAMLSourceConnectionRequest";
+} from "../models/GroupSAMLSourceConnectionRequest.js";
 import {
     type GroupSourceConnection,
     GroupSourceConnectionFromJSON,
-} from "../models/GroupSourceConnection";
+} from "../models/GroupSourceConnection.js";
 import {
     type GroupSourceConnectionRequest,
     GroupSourceConnectionRequestToJSON,
-} from "../models/GroupSourceConnectionRequest";
+} from "../models/GroupSourceConnectionRequest.js";
 import {
     type GroupTelegramSourceConnection,
     GroupTelegramSourceConnectionFromJSON,
-} from "../models/GroupTelegramSourceConnection";
+} from "../models/GroupTelegramSourceConnection.js";
 import {
     type GroupTelegramSourceConnectionRequest,
     GroupTelegramSourceConnectionRequestToJSON,
-} from "../models/GroupTelegramSourceConnectionRequest";
-import { type KadminTypeEnum } from "../models/KadminTypeEnum";
-import { type KerberosSource, KerberosSourceFromJSON } from "../models/KerberosSource";
+} from "../models/GroupTelegramSourceConnectionRequest.js";
+import { type KadminTypeEnum } from "../models/KadminTypeEnum.js";
+import { type KerberosSource, KerberosSourceFromJSON } from "../models/KerberosSource.js";
 import {
     type KerberosSourceRequest,
     KerberosSourceRequestToJSON,
-} from "../models/KerberosSourceRequest";
-import { type LDAPDebug, LDAPDebugFromJSON } from "../models/LDAPDebug";
-import { type LDAPSource, LDAPSourceFromJSON } from "../models/LDAPSource";
-import { type LDAPSourceRequest, LDAPSourceRequestToJSON } from "../models/LDAPSourceRequest";
-import { type OAuthSource, OAuthSourceFromJSON } from "../models/OAuthSource";
-import { type OAuthSourceRequest, OAuthSourceRequestToJSON } from "../models/OAuthSourceRequest";
+} from "../models/KerberosSourceRequest.js";
+import { type LDAPDebug, LDAPDebugFromJSON } from "../models/LDAPDebug.js";
+import { type LDAPSource, LDAPSourceFromJSON } from "../models/LDAPSource.js";
+import { type LDAPSourceRequest, LDAPSourceRequestToJSON } from "../models/LDAPSourceRequest.js";
+import { type OAuthSource, OAuthSourceFromJSON } from "../models/OAuthSource.js";
+import { type OAuthSourceRequest, OAuthSourceRequestToJSON } from "../models/OAuthSourceRequest.js";
 import {
     type PaginatedGroupKerberosSourceConnectionList,
     PaginatedGroupKerberosSourceConnectionListFromJSON,
-} from "../models/PaginatedGroupKerberosSourceConnectionList";
+} from "../models/PaginatedGroupKerberosSourceConnectionList.js";
 import {
     type PaginatedGroupLDAPSourceConnectionList,
     PaginatedGroupLDAPSourceConnectionListFromJSON,
-} from "../models/PaginatedGroupLDAPSourceConnectionList";
+} from "../models/PaginatedGroupLDAPSourceConnectionList.js";
 import {
     type PaginatedGroupOAuthSourceConnectionList,
     PaginatedGroupOAuthSourceConnectionListFromJSON,
-} from "../models/PaginatedGroupOAuthSourceConnectionList";
+} from "../models/PaginatedGroupOAuthSourceConnectionList.js";
 import {
     type PaginatedGroupPlexSourceConnectionList,
     PaginatedGroupPlexSourceConnectionListFromJSON,
-} from "../models/PaginatedGroupPlexSourceConnectionList";
+} from "../models/PaginatedGroupPlexSourceConnectionList.js";
 import {
     type PaginatedGroupSAMLSourceConnectionList,
     PaginatedGroupSAMLSourceConnectionListFromJSON,
-} from "../models/PaginatedGroupSAMLSourceConnectionList";
+} from "../models/PaginatedGroupSAMLSourceConnectionList.js";
 import {
     type PaginatedGroupSourceConnectionList,
     PaginatedGroupSourceConnectionListFromJSON,
-} from "../models/PaginatedGroupSourceConnectionList";
+} from "../models/PaginatedGroupSourceConnectionList.js";
 import {
     type PaginatedGroupTelegramSourceConnectionList,
     PaginatedGroupTelegramSourceConnectionListFromJSON,
-} from "../models/PaginatedGroupTelegramSourceConnectionList";
+} from "../models/PaginatedGroupTelegramSourceConnectionList.js";
 import {
     type PaginatedKerberosSourceList,
     PaginatedKerberosSourceListFromJSON,
-} from "../models/PaginatedKerberosSourceList";
+} from "../models/PaginatedKerberosSourceList.js";
 import {
     type PaginatedLDAPSourceList,
     PaginatedLDAPSourceListFromJSON,
-} from "../models/PaginatedLDAPSourceList";
+} from "../models/PaginatedLDAPSourceList.js";
 import {
     type PaginatedOAuthSourceList,
     PaginatedOAuthSourceListFromJSON,
-} from "../models/PaginatedOAuthSourceList";
+} from "../models/PaginatedOAuthSourceList.js";
 import {
     type PaginatedPlexSourceList,
     PaginatedPlexSourceListFromJSON,
-} from "../models/PaginatedPlexSourceList";
+} from "../models/PaginatedPlexSourceList.js";
 import {
     type PaginatedSAMLSourceList,
     PaginatedSAMLSourceListFromJSON,
-} from "../models/PaginatedSAMLSourceList";
+} from "../models/PaginatedSAMLSourceList.js";
 import {
     type PaginatedSCIMSourceGroupList,
     PaginatedSCIMSourceGroupListFromJSON,
-} from "../models/PaginatedSCIMSourceGroupList";
+} from "../models/PaginatedSCIMSourceGroupList.js";
 import {
     type PaginatedSCIMSourceList,
     PaginatedSCIMSourceListFromJSON,
-} from "../models/PaginatedSCIMSourceList";
+} from "../models/PaginatedSCIMSourceList.js";
 import {
     type PaginatedSCIMSourceUserList,
     PaginatedSCIMSourceUserListFromJSON,
-} from "../models/PaginatedSCIMSourceUserList";
+} from "../models/PaginatedSCIMSourceUserList.js";
 import {
     type PaginatedSourceList,
     PaginatedSourceListFromJSON,
-} from "../models/PaginatedSourceList";
+} from "../models/PaginatedSourceList.js";
 import {
     type PaginatedTelegramSourceList,
     PaginatedTelegramSourceListFromJSON,
-} from "../models/PaginatedTelegramSourceList";
+} from "../models/PaginatedTelegramSourceList.js";
 import {
     type PaginatedUserKerberosSourceConnectionList,
     PaginatedUserKerberosSourceConnectionListFromJSON,
-} from "../models/PaginatedUserKerberosSourceConnectionList";
+} from "../models/PaginatedUserKerberosSourceConnectionList.js";
 import {
     type PaginatedUserLDAPSourceConnectionList,
     PaginatedUserLDAPSourceConnectionListFromJSON,
-} from "../models/PaginatedUserLDAPSourceConnectionList";
+} from "../models/PaginatedUserLDAPSourceConnectionList.js";
 import {
     type PaginatedUserOAuthSourceConnectionList,
     PaginatedUserOAuthSourceConnectionListFromJSON,
-} from "../models/PaginatedUserOAuthSourceConnectionList";
+} from "../models/PaginatedUserOAuthSourceConnectionList.js";
 import {
     type PaginatedUserPlexSourceConnectionList,
     PaginatedUserPlexSourceConnectionListFromJSON,
-} from "../models/PaginatedUserPlexSourceConnectionList";
+} from "../models/PaginatedUserPlexSourceConnectionList.js";
 import {
     type PaginatedUserSAMLSourceConnectionList,
     PaginatedUserSAMLSourceConnectionListFromJSON,
-} from "../models/PaginatedUserSAMLSourceConnectionList";
+} from "../models/PaginatedUserSAMLSourceConnectionList.js";
 import {
     type PaginatedUserSourceConnectionList,
     PaginatedUserSourceConnectionListFromJSON,
-} from "../models/PaginatedUserSourceConnectionList";
+} from "../models/PaginatedUserSourceConnectionList.js";
 import {
     type PaginatedUserTelegramSourceConnectionList,
     PaginatedUserTelegramSourceConnectionListFromJSON,
-} from "../models/PaginatedUserTelegramSourceConnectionList";
+} from "../models/PaginatedUserTelegramSourceConnectionList.js";
 import {
     type PatchedGroupKerberosSourceConnectionRequest,
     PatchedGroupKerberosSourceConnectionRequestToJSON,
-} from "../models/PatchedGroupKerberosSourceConnectionRequest";
+} from "../models/PatchedGroupKerberosSourceConnectionRequest.js";
 import {
     type PatchedGroupLDAPSourceConnectionRequest,
     PatchedGroupLDAPSourceConnectionRequestToJSON,
-} from "../models/PatchedGroupLDAPSourceConnectionRequest";
+} from "../models/PatchedGroupLDAPSourceConnectionRequest.js";
 import {
     type PatchedGroupOAuthSourceConnectionRequest,
     PatchedGroupOAuthSourceConnectionRequestToJSON,
-} from "../models/PatchedGroupOAuthSourceConnectionRequest";
+} from "../models/PatchedGroupOAuthSourceConnectionRequest.js";
 import {
     type PatchedGroupPlexSourceConnectionRequest,
     PatchedGroupPlexSourceConnectionRequestToJSON,
-} from "../models/PatchedGroupPlexSourceConnectionRequest";
+} from "../models/PatchedGroupPlexSourceConnectionRequest.js";
 import {
     type PatchedGroupSAMLSourceConnectionRequest,
     PatchedGroupSAMLSourceConnectionRequestToJSON,
-} from "../models/PatchedGroupSAMLSourceConnectionRequest";
+} from "../models/PatchedGroupSAMLSourceConnectionRequest.js";
 import {
     type PatchedGroupSourceConnectionRequest,
     PatchedGroupSourceConnectionRequestToJSON,
-} from "../models/PatchedGroupSourceConnectionRequest";
+} from "../models/PatchedGroupSourceConnectionRequest.js";
 import {
     type PatchedGroupTelegramSourceConnectionRequest,
     PatchedGroupTelegramSourceConnectionRequestToJSON,
-} from "../models/PatchedGroupTelegramSourceConnectionRequest";
+} from "../models/PatchedGroupTelegramSourceConnectionRequest.js";
 import {
     type PatchedKerberosSourceRequest,
     PatchedKerberosSourceRequestToJSON,
-} from "../models/PatchedKerberosSourceRequest";
+} from "../models/PatchedKerberosSourceRequest.js";
 import {
     type PatchedLDAPSourceRequest,
     PatchedLDAPSourceRequestToJSON,
-} from "../models/PatchedLDAPSourceRequest";
+} from "../models/PatchedLDAPSourceRequest.js";
 import {
     type PatchedOAuthSourceRequest,
     PatchedOAuthSourceRequestToJSON,
-} from "../models/PatchedOAuthSourceRequest";
+} from "../models/PatchedOAuthSourceRequest.js";
 import {
     type PatchedPlexSourceRequest,
     PatchedPlexSourceRequestToJSON,
-} from "../models/PatchedPlexSourceRequest";
+} from "../models/PatchedPlexSourceRequest.js";
 import {
     type PatchedSAMLSourceRequest,
     PatchedSAMLSourceRequestToJSON,
-} from "../models/PatchedSAMLSourceRequest";
+} from "../models/PatchedSAMLSourceRequest.js";
 import {
     type PatchedSCIMSourceGroupRequest,
     PatchedSCIMSourceGroupRequestToJSON,
-} from "../models/PatchedSCIMSourceGroupRequest";
+} from "../models/PatchedSCIMSourceGroupRequest.js";
 import {
     type PatchedSCIMSourceRequest,
     PatchedSCIMSourceRequestToJSON,
-} from "../models/PatchedSCIMSourceRequest";
+} from "../models/PatchedSCIMSourceRequest.js";
 import {
     type PatchedSCIMSourceUserRequest,
     PatchedSCIMSourceUserRequestToJSON,
-} from "../models/PatchedSCIMSourceUserRequest";
+} from "../models/PatchedSCIMSourceUserRequest.js";
 import {
     type PatchedTelegramSourceRequest,
     PatchedTelegramSourceRequestToJSON,
-} from "../models/PatchedTelegramSourceRequest";
+} from "../models/PatchedTelegramSourceRequest.js";
 import {
     type PatchedUserKerberosSourceConnectionRequest,
     PatchedUserKerberosSourceConnectionRequestToJSON,
-} from "../models/PatchedUserKerberosSourceConnectionRequest";
+} from "../models/PatchedUserKerberosSourceConnectionRequest.js";
 import {
     type PatchedUserLDAPSourceConnectionRequest,
     PatchedUserLDAPSourceConnectionRequestToJSON,
-} from "../models/PatchedUserLDAPSourceConnectionRequest";
+} from "../models/PatchedUserLDAPSourceConnectionRequest.js";
 import {
     type PatchedUserOAuthSourceConnectionRequest,
     PatchedUserOAuthSourceConnectionRequestToJSON,
-} from "../models/PatchedUserOAuthSourceConnectionRequest";
+} from "../models/PatchedUserOAuthSourceConnectionRequest.js";
 import {
     type PatchedUserPlexSourceConnectionRequest,
     PatchedUserPlexSourceConnectionRequestToJSON,
-} from "../models/PatchedUserPlexSourceConnectionRequest";
+} from "../models/PatchedUserPlexSourceConnectionRequest.js";
 import {
     type PatchedUserSAMLSourceConnectionRequest,
     PatchedUserSAMLSourceConnectionRequestToJSON,
-} from "../models/PatchedUserSAMLSourceConnectionRequest";
+} from "../models/PatchedUserSAMLSourceConnectionRequest.js";
 import {
     type PatchedUserSourceConnectionRequest,
     PatchedUserSourceConnectionRequestToJSON,
-} from "../models/PatchedUserSourceConnectionRequest";
+} from "../models/PatchedUserSourceConnectionRequest.js";
 import {
     type PatchedUserTelegramSourceConnectionRequest,
     PatchedUserTelegramSourceConnectionRequestToJSON,
-} from "../models/PatchedUserTelegramSourceConnectionRequest";
-import { type PlexSource, PlexSourceFromJSON } from "../models/PlexSource";
-import { type PlexSourceRequest, PlexSourceRequestToJSON } from "../models/PlexSourceRequest";
+} from "../models/PatchedUserTelegramSourceConnectionRequest.js";
+import { type PlexSource, PlexSourceFromJSON } from "../models/PlexSource.js";
+import { type PlexSourceRequest, PlexSourceRequestToJSON } from "../models/PlexSourceRequest.js";
 import {
     type PlexTokenRedeemRequest,
     PlexTokenRedeemRequestToJSON,
-} from "../models/PlexTokenRedeemRequest";
-import { type PolicyEngineMode } from "../models/PolicyEngineMode";
-import { type RedirectChallenge, RedirectChallengeFromJSON } from "../models/RedirectChallenge";
-import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata";
-import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum";
-import { type SAMLSource, SAMLSourceFromJSON } from "../models/SAMLSource";
-import { type SAMLSourceRequest, SAMLSourceRequestToJSON } from "../models/SAMLSourceRequest";
-import { type SCIMSource, SCIMSourceFromJSON } from "../models/SCIMSource";
-import { type SCIMSourceGroup, SCIMSourceGroupFromJSON } from "../models/SCIMSourceGroup";
+} from "../models/PlexTokenRedeemRequest.js";
+import { type PolicyEngineMode } from "../models/PolicyEngineMode.js";
+import { type RedirectChallenge, RedirectChallengeFromJSON } from "../models/RedirectChallenge.js";
+import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata.js";
+import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum.js";
+import { type SAMLSource, SAMLSourceFromJSON } from "../models/SAMLSource.js";
+import { type SAMLSourceRequest, SAMLSourceRequestToJSON } from "../models/SAMLSourceRequest.js";
+import { type SCIMSource, SCIMSourceFromJSON } from "../models/SCIMSource.js";
+import { type SCIMSourceGroup, SCIMSourceGroupFromJSON } from "../models/SCIMSourceGroup.js";
 import {
     type SCIMSourceGroupRequest,
     SCIMSourceGroupRequestToJSON,
-} from "../models/SCIMSourceGroupRequest";
-import { type SCIMSourceRequest, SCIMSourceRequestToJSON } from "../models/SCIMSourceRequest";
-import { type SCIMSourceUser, SCIMSourceUserFromJSON } from "../models/SCIMSourceUser";
+} from "../models/SCIMSourceGroupRequest.js";
+import { type SCIMSourceRequest, SCIMSourceRequestToJSON } from "../models/SCIMSourceRequest.js";
+import { type SCIMSourceUser, SCIMSourceUserFromJSON } from "../models/SCIMSourceUser.js";
 import {
     type SCIMSourceUserRequest,
     SCIMSourceUserRequestToJSON,
-} from "../models/SCIMSourceUserRequest";
-import { type ServiceBindMethodEnum } from "../models/ServiceBindMethodEnum";
-import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum";
-import { type Source, SourceFromJSON } from "../models/Source";
-import { type SourceType, SourceTypeFromJSON } from "../models/SourceType";
-import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus";
-import { type TelegramAuthRequest, TelegramAuthRequestToJSON } from "../models/TelegramAuthRequest";
-import { type TelegramSource, TelegramSourceFromJSON } from "../models/TelegramSource";
+} from "../models/SCIMSourceUserRequest.js";
+import { type ServiceBindMethodEnum } from "../models/ServiceBindMethodEnum.js";
+import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum.js";
+import { type Source, SourceFromJSON } from "../models/Source.js";
+import { type SourceType, SourceTypeFromJSON } from "../models/SourceType.js";
+import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus.js";
+import {
+    type TelegramAuthRequest,
+    TelegramAuthRequestToJSON,
+} from "../models/TelegramAuthRequest.js";
+import { type TelegramSource, TelegramSourceFromJSON } from "../models/TelegramSource.js";
 import {
     type TelegramSourceRequest,
     TelegramSourceRequestToJSON,
-} from "../models/TelegramSourceRequest";
-import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+} from "../models/TelegramSourceRequest.js";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
 import {
     type UserKerberosSourceConnection,
     UserKerberosSourceConnectionFromJSON,
-} from "../models/UserKerberosSourceConnection";
+} from "../models/UserKerberosSourceConnection.js";
 import {
     type UserKerberosSourceConnectionRequest,
     UserKerberosSourceConnectionRequestToJSON,
-} from "../models/UserKerberosSourceConnectionRequest";
+} from "../models/UserKerberosSourceConnectionRequest.js";
 import {
     type UserLDAPSourceConnection,
     UserLDAPSourceConnectionFromJSON,
-} from "../models/UserLDAPSourceConnection";
+} from "../models/UserLDAPSourceConnection.js";
 import {
     type UserLDAPSourceConnectionRequest,
     UserLDAPSourceConnectionRequestToJSON,
-} from "../models/UserLDAPSourceConnectionRequest";
-import { type UserMatchingModeEnum } from "../models/UserMatchingModeEnum";
+} from "../models/UserLDAPSourceConnectionRequest.js";
+import { type UserMatchingModeEnum } from "../models/UserMatchingModeEnum.js";
 import {
     type UserOAuthSourceConnection,
     UserOAuthSourceConnectionFromJSON,
-} from "../models/UserOAuthSourceConnection";
+} from "../models/UserOAuthSourceConnection.js";
 import {
     type UserOAuthSourceConnectionRequest,
     UserOAuthSourceConnectionRequestToJSON,
-} from "../models/UserOAuthSourceConnectionRequest";
+} from "../models/UserOAuthSourceConnectionRequest.js";
 import {
     type UserPlexSourceConnection,
     UserPlexSourceConnectionFromJSON,
-} from "../models/UserPlexSourceConnection";
+} from "../models/UserPlexSourceConnection.js";
 import {
     type UserPlexSourceConnectionRequest,
     UserPlexSourceConnectionRequestToJSON,
-} from "../models/UserPlexSourceConnectionRequest";
+} from "../models/UserPlexSourceConnectionRequest.js";
 import {
     type UserSAMLSourceConnection,
     UserSAMLSourceConnectionFromJSON,
-} from "../models/UserSAMLSourceConnection";
+} from "../models/UserSAMLSourceConnection.js";
 import {
     type UserSAMLSourceConnectionRequest,
     UserSAMLSourceConnectionRequestToJSON,
-} from "../models/UserSAMLSourceConnectionRequest";
-import { type UserSetting, UserSettingFromJSON } from "../models/UserSetting";
+} from "../models/UserSAMLSourceConnectionRequest.js";
+import { type UserSetting, UserSettingFromJSON } from "../models/UserSetting.js";
 import {
     type UserSourceConnection,
     UserSourceConnectionFromJSON,
-} from "../models/UserSourceConnection";
+} from "../models/UserSourceConnection.js";
 import {
     type UserSourceConnectionRequest,
     UserSourceConnectionRequestToJSON,
-} from "../models/UserSourceConnectionRequest";
+} from "../models/UserSourceConnectionRequest.js";
 import {
     type UserTelegramSourceConnection,
     UserTelegramSourceConnectionFromJSON,
-} from "../models/UserTelegramSourceConnection";
+} from "../models/UserTelegramSourceConnection.js";
 import {
     type UserTelegramSourceConnectionRequest,
     UserTelegramSourceConnectionRequestToJSON,
-} from "../models/UserTelegramSourceConnectionRequest";
-import * as runtime from "../runtime";
+} from "../models/UserTelegramSourceConnectionRequest.js";
+import * as runtime from "../runtime.js";
 
 export interface SourcesAllDestroyRequest {
     slug: string;

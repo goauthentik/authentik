@@ -4,10 +4,8 @@ import uuid
 
 import django.db.models.deletion
 from django.db import migrations, models
-from django_tenants.utils import get_tenant_base_schema
 
 import authentik.lib.utils.time
-import authentik.tenants.models
 from authentik.lib.config import CONFIG
 
 
@@ -44,7 +42,6 @@ class Migration(migrations.Migration):
                         db_index=True,
                         max_length=63,
                         unique=True,
-                        validators=[authentik.tenants.models._validate_schema_name],
                     ),
                 ),
                 (
@@ -143,8 +140,4 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunPython(code=create_default_tenant, reverse_code=migrations.RunPython.noop),
-        migrations.RunSQL(
-            sql=f"CREATE SCHEMA IF NOT EXISTS {get_tenant_base_schema()};",
-            reverse_sql=f"DROP SCHEMA IF EXISTS {get_tenant_base_schema()};",
-        ),
     ]

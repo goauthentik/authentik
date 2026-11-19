@@ -24,16 +24,18 @@ import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { formatInterfacePrefix, toUserInterface } from "#elements/router/core/interfaces";
+import { PageDetailsUpdate } from "#elements/router/meta";
+import { ActiveTabChangeEvent } from "#elements/tabs/tab-events";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
+import { renderNotificationDrawerPanel } from "#components/notifications/panel";
 import {
     DrawerState,
     persistDrawerParams,
     readDrawerParams,
-    renderNotificationDrawerPanel,
 } from "#components/notifications/utils";
 
 import Styles from "#user/ak-interface-user.css";
@@ -73,6 +75,24 @@ class UserInterface extends WithLicenseSummary(
 
     @property({ attribute: false, useDefault: true })
     public drawer: DrawerState = readDrawerParams();
+
+    #pageHeader: string | null = null;
+    #activeTabLabel: string | null = null;
+
+    @listen(PageDetailsUpdate, { target: window })
+    protected pageDetailsListener = (event: PageDetailsUpdate) => {
+        // A page announces its header before its tabs render, so a new page
+        // starts without the previous page's tab.
+        this.#pageHeader = event.header.header ?? null;
+        this.#activeTabLabel = null;
+        this.setTitle(this.#activeTabLabel, this.#pageHeader);
+    };
+
+    @listen(ActiveTabChangeEvent, { target: window })
+    protected activeTabListener = (event: ActiveTabChangeEvent) => {
+        this.#activeTabLabel = event.label;
+        this.setTitle(this.#activeTabLabel, this.#pageHeader);
+    };
 
     @listen(AKDrawerChangeEvent, { target: window })
     protected drawerListener = (event: AKDrawerChangeEvent) => {
@@ -116,7 +136,10 @@ class UserInterface extends WithLicenseSummary(
     }
 
     protected renderNavTabs(): SlottedTemplateResult {
-        const licensed = this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+        const licensed =
+            this.licenseSummary &&
+            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+
         const { requests, agents } = this.uiConfig.enabledFeatures;
 
         // Capabilities can resolve after the feature flags settle, so they must be part of the guard's dependencies.
@@ -125,7 +148,7 @@ class UserInterface extends WithLicenseSummary(
         const canAgentSelfService = this.can(CapabilitiesEnum.CanAgentSelfService);
 
         return guard([licensed, requests, agents, canRequest, canAgentSelfService], () => {
-            if (licensed) return null;
+            if (!licensed) return null;
 
             const navItems = [];
 

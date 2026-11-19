@@ -14,6 +14,13 @@
     :root {
         --ak-global--background-image: url("{{ request.brand.branding_default_flow_background_url|iriencode|safe }}");
     }
+    {% with themed=request.brand.branding_default_flow_background_themed_urls %}
+    {% if themed %}
+    :root[data-theme="dark"] {
+        --ak-global--background-image: url("{{ themed.dark|iriencode|safe }}");
+    }
+    {% endif %}
+    {% endwith %}
     :root[data-theme="dark"] .branding-logo--light,
     :root:not([data-theme="dark"]) .branding-logo--dark {
         display: none;
