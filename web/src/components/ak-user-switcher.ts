@@ -78,20 +78,18 @@ export class UserSwitcher extends WithSession(AKElement) {
     };
 
     protected renderAvatar(user?: { avatar?: string }): SlottedTemplateResult {
-        if (user?.avatar && !isDefaultAvatar(user.avatar)) {
-            return html`<div part="avatar">
-                <img
-                    part="avatar-image"
-                    src=${user.avatar}
-                    alt=${msg("User avatar", { id: "user-switcher.avatar.alt" })}
-                />
-                <div part="avatar-overlay" data-tooltip-target></div>
-            </div>`;
-        }
-
-        return html`<div part="avatar">
-            <i class="fas fa-user" aria-hidden="true"></i>
-        </div>`;
+        return user?.avatar && !isDefaultAvatar(user.avatar)
+            ? html`<div part="avatar">
+                  <img
+                      part="avatar-image"
+                      src=${user.avatar}
+                      alt=${msg("User avatar", { id: "user-switcher.avatar.alt" })}
+                  />
+                  <div part="avatar-overlay" data-tooltip-target></div>
+              </div>`
+            : html`<div part="avatar">
+                  <i class="pf-icon pf-icon-user" aria-hidden="true"></i>
+              </div>`;
     }
 
     protected renderUser(user: UserSelf): SlottedTemplateResult {
