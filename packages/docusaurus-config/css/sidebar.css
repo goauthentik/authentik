@@ -1,3 +1,7 @@
+.theme-doc-sidebar-menu {
+    font-size: 0.9375rem;
+}
+
 .theme-doc-sidebar-menu .dropdown {
     display: block;
     padding: 0;
