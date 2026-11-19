@@ -276,7 +276,7 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                         value: ActivityBasisEnum.SuccessfulEvents,
                         default: true,
                         description: html`${msg(
-                            "Also count successful authentication, application authorization, and OAuth refreshes. Failed requests and API-token requests do not count. Recorded activity includes a five-minute allowance before expiration.",
+                            "Also count successful authentication, application authorization, and OAuth refreshes. OAuth grants using an app password count as activity. Failed requests and requests using a static API token do not count. Recorded activity includes a five-minute allowance before expiration.",
                             { id: "user-expiration.activity-basis.successful-events.description" },
                         )}`,
                     },
@@ -329,7 +329,7 @@ export class UserExpirationRuleForm extends ModelForm<UserExpirationRule, string
                 )}
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Only expire users of these types. Service accounts are excluded by default. API-token requests do not count as activity.",
+                        "Only expire users of these types. Service accounts are excluded by default.",
                         { id: "user-expiration.field.user-types.description" },
                     )}
                 </p>
