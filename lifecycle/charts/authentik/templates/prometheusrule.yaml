@@ -1,0 +1,195 @@
+{{- if .Values.prometheus.rules.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ template "authentik.fullname" . }}
+  namespace: {{ .Values.prometheus.rules.namespace | default (include "authentik.namespace" .) | quote }}
+  labels:
+    {{- include "authentik.labels" (dict "context" .) | nindent 4 }}
+    {{- if .Values.prometheus.rules.selector }}
+    {{- toYaml .Values.prometheus.rules.selector | nindent 4 }}
+    {{- end }}
+    {{- if .Values.prometheus.rules.labels }}
+    {{- toYaml .Values.prometheus.rules.labels | nindent 4 }}
+    {{- end }}
+  {{- with .Values.prometheus.rules.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  groups:
+    - name: authentik Aggregate request counters
+      {{- if .Values.prometheus.rules.additionalRuleGroupAnnotations }}
+      annotations:
+        {{- toYaml .Values.prometheus.rules.additionalRuleGroupAnnotations | nindent 8 }}
+      {{- end }}
+      rules:
+        - record: job:django_http_requests_before_middlewares_total:sum_rate30s
+          expr: sum(rate(django_http_requests_before_middlewares_total[30s])) by (job)
+        - record: job:django_http_requests_unknown_latency_total:sum_rate30s
+          expr: sum(rate(django_http_requests_unknown_latency_total[30s])) by (job)
+        - record: job:django_http_ajax_requests_total:sum_rate30s
+          expr: sum(rate(django_http_ajax_requests_total[30s])) by (job)
+        - record: job:django_http_responses_before_middlewares_total:sum_rate30s
+          expr: sum(rate(django_http_responses_before_middlewares_total[30s])) by (job)
+        - record: job:django_http_requests_unknown_latency_including_middlewares_total:sum_rate30s
+          expr: sum(rate(django_http_requests_unknown_latency_including_middlewares_total[30s])) by (job)
+        - record: job:django_http_requests_body_total_bytes:sum_rate30s
+          expr: sum(rate(django_http_requests_body_total_bytes[30s])) by (job)
+        - record: job:django_http_responses_streaming_total:sum_rate30s
+          expr: sum(rate(django_http_responses_streaming_total[30s])) by (job)
+        - record: job:django_http_responses_body_total_bytes:sum_rate30s
+          expr: sum(rate(django_http_responses_body_total_bytes[30s])) by (job)
+        - record: job:django_http_requests_total:sum_rate30s
+          expr: sum(rate(django_http_requests_total_by_method[30s])) by (job)
+        - record: job:django_http_requests_total_by_method:sum_rate30s
+          expr: sum(rate(django_http_requests_total_by_method[30s])) by (job,method)
+        - record: job:django_http_requests_total_by_transport:sum_rate30s
+          expr: sum(rate(django_http_requests_total_by_transport[30s])) by (job,transport)
+        - record: job:django_http_requests_total_by_view:sum_rate30s
+          expr: sum(rate(django_http_requests_total_by_view_transport_method[30s])) by (job,view)
+        - record: job:django_http_requests_total_by_view_transport_method:sum_rate30s
+          expr: sum(rate(django_http_requests_total_by_view_transport_method[30s])) by (job,view,transport,method)
+        - record: job:django_http_responses_total_by_templatename:sum_rate30s
+          expr: sum(rate(django_http_responses_total_by_templatename[30s])) by (job,templatename)
+        - record: job:django_http_responses_total_by_status:sum_rate30s
+          expr: sum(rate(django_http_responses_total_by_status[30s])) by (job,status)
+        - record: job:django_http_responses_total_by_status_name_method:sum_rate30s
+          expr: sum(rate(django_http_responses_total_by_status_name_method[30s])) by (job,status,name,method)
+        - record: job:django_http_responses_total_by_charset:sum_rate30s
+          expr: sum(rate(django_http_responses_total_by_charset[30s])) by (job,charset)
+        - record: job:django_http_exceptions_total_by_type:sum_rate30s
+          expr: sum(rate(django_http_exceptions_total_by_type[30s])) by (job,type)
+        - record: job:django_http_exceptions_total_by_view:sum_rate30s
+          expr: sum(rate(django_http_exceptions_total_by_view[30s])) by (job,view)
+
+    - name: authentik Aggregate latency histograms
+      {{- if .Values.prometheus.rules.additionalRuleGroupAnnotations }}
+      annotations:
+        {{- toYaml .Values.prometheus.rules.additionalRuleGroupAnnotations | nindent 8 }}
+      {{- end }}
+      rules:
+        - record: job:django_http_requests_latency_including_middlewares_seconds:quantile_rate30s
+          expr: histogram_quantile(0.50, sum(rate(django_http_requests_latency_including_middlewares_seconds_bucket[30s])) by (job, le))
+          labels:
+            quantile: "50"
+        - record: job:django_http_requests_latency_including_middlewares_seconds:quantile_rate30s
+          expr: histogram_quantile(0.95, sum(rate(django_http_requests_latency_including_middlewares_seconds_bucket[30s])) by (job, le))
+          labels:
+            quantile: "95"
+        - record: job:django_http_requests_latency_including_middlewares_seconds:quantile_rate30s
+          expr: histogram_quantile(0.99, sum(rate(django_http_requests_latency_including_middlewares_seconds_bucket[30s])) by (job, le))
+          labels:
+            quantile: "99"
+        - record: job:django_http_requests_latency_including_middlewares_seconds:quantile_rate30s
+          expr: histogram_quantile(0.999, sum(rate(django_http_requests_latency_including_middlewares_seconds_bucket[30s])) by (job, le))
+          labels:
+            quantile: "99.9"
+        - record: job:django_http_requests_latency_seconds:quantile_rate30s
+          expr: histogram_quantile(0.50, sum(rate(django_http_requests_latency_seconds_bucket[30s])) by (job, le))
+          labels:
+            quantile: "50"
+        - record: job:django_http_requests_latency_seconds:quantile_rate30s
+          expr: histogram_quantile(0.95, sum(rate(django_http_requests_latency_seconds_bucket[30s])) by (job, le))
+          labels:
+            quantile: "95"
+        - record: job:django_http_requests_latency_seconds:quantile_rate30s
+          expr: histogram_quantile(0.99, sum(rate(django_http_requests_latency_seconds_bucket[30s])) by (job, le))
+          labels:
+            quantile: "99"
+        - record: job:django_http_requests_latency_seconds:quantile_rate30s
+          expr: histogram_quantile(0.999, sum(rate(django_http_requests_latency_seconds_bucket[30s])) by (job, le))
+          labels:
+            quantile: "99.9"
+
+    - name: authentik Aggregate model operations
+      {{- if .Values.prometheus.rules.additionalRuleGroupAnnotations }}
+      annotations:
+        {{- toYaml .Values.prometheus.rules.additionalRuleGroupAnnotations | nindent 8 }}
+      {{- end }}
+      rules:
+        - record: job:django_model_inserts_total:sum_rate1m
+          expr: sum(rate(django_model_inserts_total[1m])) by (job, model)
+        - record: job:django_model_updates_total:sum_rate1m
+          expr: sum(rate(django_model_updates_total[1m])) by (job, model)
+        - record: job:django_model_deletes_total:sum_rate1m
+          expr: sum(rate(django_model_deletes_total[1m])) by (job, model)
+    - name: authentik Aggregate database operations
+      {{- if .Values.prometheus.rules.additionalRuleGroupAnnotations }}
+      annotations:
+        {{- toYaml .Values.prometheus.rules.additionalRuleGroupAnnotations | nindent 8 }}
+      {{- end }}
+      rules:
+        - record: job:django_db_new_connections_total:sum_rate30s
+          expr: sum(rate(django_db_new_connections_total[30s])) by (alias, vendor)
+        - record: job:django_db_new_connection_errors_total:sum_rate30s
+          expr: sum(rate(django_db_new_connection_errors_total[30s])) by (alias, vendor)
+        - record: job:django_db_execute_total:sum_rate30s
+          expr: sum(rate(django_db_execute_total[30s])) by (alias, vendor)
+        - record: job:django_db_execute_many_total:sum_rate30s
+          expr: sum(rate(django_db_execute_many_total[30s])) by (alias, vendor)
+        - record: job:django_db_errors_total:sum_rate30s
+          expr: sum(rate(django_db_errors_total[30s])) by (alias, vendor, type)
+
+    - name: authentik Aggregate migrations
+      {{- if .Values.prometheus.rules.additionalRuleGroupAnnotations }}
+      annotations:
+        {{- toYaml .Values.prometheus.rules.additionalRuleGroupAnnotations | nindent 8 }}
+      {{- end }}
+      rules:
+        - record: job:django_migrations_applied_total:max
+          expr: max(django_migrations_applied_total) by (job, connection)
+        - record: job:django_migrations_unapplied_total:max
+          expr: max(django_migrations_unapplied_total) by (job, connection)
+
+    - name: authentik Alerts
+      {{- if .Values.prometheus.rules.additionalRuleGroupAnnotations }}
+      annotations:
+        {{- toYaml .Values.prometheus.rules.additionalRuleGroupAnnotations | nindent 8 }}
+      {{- end }}
+      rules:
+        - alert: NoWorkersConnected
+          labels:
+            severity: critical
+          expr: max (authentik_tasks_workers) < 1
+          for: 10m
+          annotations:
+            {{`
+            summary: No workers connected
+            message: authentik instance {{ $labels.instance }}'s worker are either not running or not connected.
+            `}}
+
+
+        - alert: PendingMigrations
+          labels:
+            severity: critical
+          expr: max without (pid) (django_migrations_unapplied_total) > 0
+          for: 10m
+          annotations:
+            {{`
+            summary: Pending database migrations
+            message: authentik instance {{ $labels.instance }} has pending database migrations
+            `}}
+
+        - alert: FailedSystemTasks
+          labels:
+            severity: critical
+          expr: sum(increase(authentik_tasks_errors_total[2h])) by (actor_name) > 0
+          for: 2h
+          annotations:
+            {{`
+            summary: Failed system tasks
+            message: System task {{ $labels.actor_name }} has failed on authentik instance {{ $labels.instance }}
+            `}}
+
+        - alert: DisconnectedOutposts
+          labels:
+            severity: critical
+          expr: sum by (outpost) (max without (pid) (authentik_outposts_connected{uid!~"specific.*"}))  < 1
+          for: 30m
+          annotations:
+            {{`
+            summary: Disconnected outpost
+            message: Outpost {{ $labels.outpost }} has at least 1 disconnected instance
+            `}}
+{{- end }}
