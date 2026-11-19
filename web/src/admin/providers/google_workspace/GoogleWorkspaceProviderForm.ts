@@ -59,7 +59,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         name="credentials"
                     >
                         <ak-code-editor
-                            mode="javascript"
+                            mode="json"
                             .value="${this.instance?.credentials ?? {}}"
                         ></ak-code-editor>
                         <p class="pf-c-form__helper-text">

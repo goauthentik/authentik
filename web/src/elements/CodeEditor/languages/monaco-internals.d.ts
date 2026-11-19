@@ -74,3 +74,27 @@ declare module "monaco-editor/languages/definitions/python/python" {
      */
     export const language: languages.IMonarchLanguage & { keywords: string[] };
 }
+
+declare module "monaco-editor/languages/features/json/jsonWorker" {
+    import type { CSSWorkerContext } from "monaco-editor/languages/features/css/cssWorker";
+
+    export interface JSONWorkerCreateData {
+        languageId: "json";
+        enableSchemaRequest: boolean;
+        languageSettings: {
+            validate?: boolean;
+            allowComments?: boolean;
+            schemas?: { uri: string; fileMatch?: string[]; schema?: object }[];
+        };
+    }
+
+    export class JSONWorker {
+        constructor(ctx: CSSWorkerContext, createData: JSONWorkerCreateData);
+    }
+}
+
+declare module "monaco-editor/languages/features/json/tokenization" {
+    import type { languages } from "monaco-editor/editor/editor.api";
+
+    export function createTokenizationSupport(supportComments: boolean): languages.TokensProvider;
+}

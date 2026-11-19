@@ -62,7 +62,7 @@ export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, 
                         name="credentials"
                     >
                         <ak-code-editor
-                            mode="javascript"
+                            mode="json"
                             .value="${this.instance?.credentials ?? {}}"
                         ></ak-code-editor>
                         <p class="pf-c-form__helper-text">
