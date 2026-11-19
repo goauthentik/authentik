@@ -1,6 +1,6 @@
 import { pluckErrorDetail } from "#common/errors/network";
 
-import type { CodeMirrorEditor } from "#elements/CodeEditor/editor";
+import type { MonacoEditor } from "#elements/CodeEditor/editor";
 import {
     CodeEditorMode,
     parseCodeEditorSource,
@@ -8,11 +8,10 @@ import {
 } from "#elements/CodeEditor/shared";
 import { FormAssociatedElement } from "#elements/forms/form-associated-element";
 
-import type { EditorState } from "@codemirror/state";
 import type { Jsonifiable } from "type-fest";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult } from "lit";
+import { css, CSSResult, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-code-editor")
@@ -20,17 +19,22 @@ export class CodeEditor<T extends Jsonifiable = Jsonifiable> extends FormAssocia
     //#region Styles
 
     public static styles: CSSResult[] = [
-        // Better alignment with patternfly components
         css`
-            .cm-editor {
-                padding-top: calc(
-                    var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
-                );
-                padding-bottom: calc(
-                    var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
-                );
-                padding-right: var(--pf-c-form-control--inset--base);
-                padding-left: var(--pf-c-form-control--inset--base);
+            :host {
+                display: block;
+                /* Holds the field's place until the editor loads. */
+                min-height: 3rem;
+                border-radius: var(--pf-global--BorderRadius--sm);
+                background-color: var(--pf-global--BackgroundColor--light-300);
+            }
+
+            :host([theme="dark"]) {
+                background-color: #282c34;
+            }
+
+            .ak-c-code-editor {
+                min-height: 3rem;
+                max-height: 50vh;
             }
         `,
     ];
@@ -51,22 +55,20 @@ export class CodeEditor<T extends Jsonifiable = Jsonifiable> extends FormAssocia
             return;
         }
 
-        this.#parsedValue = stringifyCodeEditorSource(nextValue, this.mode);
+        this.#source = stringifyCodeEditorSource(nextValue, this.mode);
 
         this.#syncValidity();
 
         // This is only relevant when a value has been set after the editor has been created.
-        this.#editor?.view?.dispatch({
-            changes: {
-                from: 0,
-                to: this.#editor.view?.state.doc.length,
-                insert: this.#parsedValue,
-            },
-        });
+        this.#editor?.editor.setValue(this.#source);
     }
 
     public get value(): string {
-        return this.#parse(this.#editor?.view?.state);
+        if (typeof this.#source === "undefined") {
+            return "";
+        }
+
+        return this.#parseSource(this.#source);
     }
 
     public toJSON(): string {
@@ -74,44 +76,35 @@ export class CodeEditor<T extends Jsonifiable = Jsonifiable> extends FormAssocia
     }
 
     #syncValidity() {
-        this.internals.setFormValue(this.#parsedValue || "");
+        this.internals.setFormValue(this.#source || "");
 
         let message: string | undefined;
         const flags: ValidityStateFlags = {};
 
-        if (this.required && !this.#parsedValue) {
+        if (this.required && !this.#source) {
             message = msg("This field is required.");
             flags.valueMissing = true;
         }
 
-        this.internals.setValidity(flags, message, this.#editor?.view?.dom);
+        this.internals.setValidity(flags, message, this.#editor?.editor.getDomNode() ?? undefined);
     }
 
     //#endregion
 
-    //#region CodeMirror Internals
+    //#region Monaco Internals
 
-    #editor?: CodeMirrorEditor;
+    #editor?: MonacoEditor;
 
     //#region Value State
 
-    #parsedValue?: string;
-
-    #parse(editorState?: EditorState): string {
-        if (editorState) {
-            return this.#parseSource(editorState.doc.toString());
-        }
-
-        // The editor module is imported lazily.
-        // A form submitted before that import resolves has no editor state to read.
-        // So we fall back to the pending value stored in `#parsedValue`.
-
-        if (typeof this.#parsedValue === "undefined") {
-            return "";
-        }
-
-        return this.#parseSource(this.#parsedValue);
-    }
+    /**
+     * The editor's text.
+     *
+     * @remarks
+     *   The editor is created once the element is shown, from a lazily imported module,
+     *   so a form submitted before then still reads the value that was set on the element.
+     */
+    #source?: string;
 
     #parseSource(innerValue: string): string {
         if (this.raw) {
@@ -133,65 +126,74 @@ export class CodeEditor<T extends Jsonifiable = Jsonifiable> extends FormAssocia
 
     //#region Lifecycle
 
-    async #initialize(root: ShadowRoot | Document) {
+    async #initialize(root: ShadowRoot) {
         console.debug("ak-code-editor: initializing editor...");
 
-        const { CodeMirrorEditor } = await import("#elements/CodeEditor/editor");
+        const { MonacoEditor } = await import("#elements/CodeEditor/editor");
 
-        this.#editor = new CodeMirrorEditor({
+        // The element may have been removed while the editor module was loading.
+        if (!this.isConnected || this.#editor) {
+            return;
+        }
+
+        this.#editor = new MonacoEditor({
             root,
             mode: this.mode,
             theme: this.activeTheme,
-            readOnly: this.disabled,
-            value: this.#parsedValue || "",
-            onUpdate: (view) => {
-                if (!view.docChanged) {
-                    return;
-                }
-
-                this.#parsedValue = this.#parse(view.state);
+            readOnly: this.readOnly || this.disabled,
+            value: this.#source || "",
+            onChange: (source) => {
+                this.#source = source;
                 this.#syncValidity();
 
-                this.dispatchEvent(
-                    new CustomEvent("change", {
-                        detail: view,
-                    }),
-                );
+                this.dispatchEvent(new Event("change"));
             },
         });
-
-        this.#editor.view.contentDOM.tabIndex = 0;
-        root.appendChild(this.#editor.view.dom);
     }
+
+    /**
+     * Defers loading Monaco until the element is shown, since many forms keep their code
+     * field in a collapsed group that is usually never opened.
+     */
+    #visibilityObserver = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+
+        this.#visibilityObserver.disconnect();
+        this.#initialize(this.renderRoot as ShadowRoot);
+    });
 
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        if (this.getAttribute("tabindex") === null) {
-            this.setAttribute("tabindex", "0");
+        this.#visibilityObserver.observe(this);
+    }
+
+    protected override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
+        if (!this.#editor) return;
+
+        if (changedProperties.has("mode")) {
+            this.#editor.setMode(this.mode);
         }
 
-        this.addEventListener("focus", this.#focusListener);
-
-        this.role ||= "combobox";
-        this.#initialize(this.shadowRoot || document);
+        if (changedProperties.has("readOnly") || changedProperties.has("disabled")) {
+            this.#editor.setReadOnly(this.readOnly || this.disabled);
+        }
     }
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
 
-        this.removeEventListener("focus", this.#focusListener);
+        this.#visibilityObserver.disconnect();
 
         if (this.#editor) {
             console.debug("ak-code-editor: destroying editor");
 
             this.#editor.dispose();
+            this.#editor = undefined;
         }
     }
-
-    #focusListener = () => {
-        this.#editor?.view?.contentDOM?.focus();
-    };
 
     //#endregion
 }

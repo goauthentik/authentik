@@ -1,5 +1,8 @@
 import { parse as parseYAML, stringify as stringifyYAML } from "yaml";
 
+/**
+ * The languages the code editor highlights, named by their Monaco language ID.
+ */
 export const CodeEditorMode = {
     XML: "xml",
     JavaScript: "javascript",
