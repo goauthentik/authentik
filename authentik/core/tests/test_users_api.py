@@ -428,6 +428,37 @@ class TestUsersAPI(APITestCase):
         expected_expires = now() + timedelta(days=66)
         self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
 
+    def test_recovery_expired_token(self):
+        """Test user recovery link when the previous token expired but wasn't cleaned up"""
+        Token.objects.all().delete()
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        )
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
+        self.client.force_login(self.admin)
+        url = reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
+        identifier = f"{self.user.uid}-password-reset"
+
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        key = Token.objects.get(identifier=identifier).key
+
+        # A token that hasn't expired keeps its key, so links already sent keep working
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Token.objects.get(identifier=identifier).key, key)
+
+        # An expired token is replaced with a new one
+        Token.objects.filter(identifier=identifier).update(expires=now() - timedelta(minutes=1))
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        token = Token.objects.get(identifier=identifier)
+        self.assertFalse(token.is_expired)
+        self.assertNotEqual(token.key, key)
+
     def test_recovery_email_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
