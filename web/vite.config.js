@@ -30,6 +30,8 @@ const resolve = {
 export default defineConfig({
     define: createBundleDefinitions(),
     resolve,
+    // The code editor starts its workers as modules.
+    worker: { format: "es" },
     optimizeDeps: {
         // Fixes dependency resolution issue associated with `npm link`ed packages.
         include: ["@goauthentik/api"],

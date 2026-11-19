@@ -49,7 +49,10 @@ import { OneDark } from "#elements/CodeEditor/themes/one-dark";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
-import { languages, editor as monaco, Uri } from "monaco-editor/editor/editor.api";
+import { type IPosition, languages, editor as monaco, Uri } from "monaco-editor/editor/editor.api";
+import { parseDocument, stringify as stringifyYAML } from "yaml";
+
+import { msg } from "@lit/localize";
 
 const $MonacoStyles = createStyleSheetUnsafe(MonacoStyles);
 
@@ -106,6 +109,7 @@ const LanguageServices: Partial<Record<CodeEditorMode, () => Promise<LanguageSer
     [CodeEditorMode.CSS]: () => import("#elements/CodeEditor/languages/css-service"),
     [CodeEditorMode.JSON]: () => import("#elements/CodeEditor/languages/json-service"),
     [CodeEditorMode.Python]: () => import("#elements/CodeEditor/languages/python-service"),
+    [CodeEditorMode.YAML]: () => import("#elements/CodeEditor/languages/yaml-service"),
 };
 
 function loadLanguageService(mode: string): Promise<LanguageService | null> {
@@ -132,6 +136,13 @@ function themeName(theme: ResolvedUITheme): string {
 }
 
 let modelCount = 0;
+
+/**
+ * Shows a short message at a position, as Monaco does for edits to read-only content.
+ */
+interface MessageController extends monaco.IEditorContribution {
+    showMessage(message: string, position: IPosition | null): void;
+}
 
 export interface MonacoEditorInit {
     mode?: CodeEditorMode;
@@ -203,6 +214,7 @@ export class MonacoEditor implements Disposable {
 
         this.#schema = schema;
         this.#loadLanguage();
+        this.#addConvertActions();
 
         // Monaco needs an explicit height. Following the content keeps short values compact,
         // and the container's CSS `max-height` caps long ones, which then scroll.
@@ -271,6 +283,68 @@ export class MonacoEditor implements Disposable {
             this.#model.uri.toString(),
             this.#schema,
         );
+    }
+
+    //#endregion
+
+    //#region Conversion
+
+    #addConvertActions() {
+        const precondition = "editorLangId == yaml || editorLangId == json";
+
+        this.editor.addAction({
+            id: "authentik.convertToJSON",
+            label: msg("Convert to JSON", { id: "code-editor.convert-to-json.label" }),
+            precondition,
+            contextMenuGroupId: "1_modification",
+            run: () => this.#convert(CodeEditorMode.JSON),
+        });
+
+        this.editor.addAction({
+            id: "authentik.convertToYAML",
+            label: msg("Convert to YAML", { id: "code-editor.convert-to-yaml.label" }),
+            precondition,
+            contextMenuGroupId: "1_modification",
+            run: () => this.#convert(CodeEditorMode.YAML),
+        });
+    }
+
+    /**
+     * Rewrites the content in the other format, keeping it undoable.
+     *
+     * @remarks
+     *   Both formats parse to the same value, so the field still submits what it did before.
+     */
+    #convert(mode: typeof CodeEditorMode.JSON | typeof CodeEditorMode.YAML) {
+        const parsed = parseDocument(this.#model.getValue());
+
+        // Custom tags, such as a blueprint's `!Find`, have no JSON equivalent and would be lost.
+        if (parsed.errors.length || parsed.warnings.length) {
+            const message = msg("This content can't be converted without losing information.", {
+                id: "code-editor.convert.error",
+            });
+
+            this.editor
+                .getContribution<MessageController>("editor.contrib.messageController")
+                ?.showMessage(message, this.editor.getPosition());
+
+            return;
+        }
+
+        const data = parsed.toJS();
+
+        const text =
+            mode === CodeEditorMode.JSON ? JSON.stringify(data, null, 2) : stringifyYAML(data);
+
+        this.editor.pushUndoStop();
+
+        this.editor.executeEdits("authentik.convert", [
+            { range: this.#model.getFullModelRange(), text },
+        ]);
+
+        this.editor.pushUndoStop();
+
+        this.setMode(mode);
     }
 
     //#endregion

@@ -5,6 +5,8 @@
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 
+import { PackageRoot } from "#paths/node";
+
 import { NodeEnvironment, serializeEnvironmentVars } from "@goauthentik/core/environment/node";
 import {
     AuthentikVersion,
@@ -43,15 +45,48 @@ export function createBundleDefinitions() {
  */
 export function createBundleAliases(): Record<string, string> {
     const require = createRequire(import.meta.url);
+    // `require` resolves the package to `min/vs/index.js`.
+    const monacoRoot = join(dirname(require.resolve("monaco-editor")), "..", "..");
 
     return {
         // Monaco's `exports` map covers only its modules. The editor renders in a shadow root,
         // so it needs the stylesheet that its modules would otherwise inject into the document.
-        // `require` resolves the package to `min/vs/index.js`, next to that stylesheet.
         "monaco-editor/min/vs/editor/editor.main.css": join(
-            dirname(require.resolve("monaco-editor")),
+            monacoRoot,
+            "min",
+            "vs",
             "editor",
             "editor.main.css",
         ),
+        // `monaco-yaml`'s worker imports Monaco from a path its current `exports` map no longer covers.
+        "monaco-editor/esm/vs/editor/editor.worker.js": join(
+            monacoRoot,
+            "esm",
+            "vs",
+            "editor",
+            "editor.worker.js",
+        ),
+    };
+}
+
+/**
+ * Creates the aliases for code that only runs in web workers.
+ */
+export function createWorkerBundleAliases(): Record<string, string> {
+    const stub = join(
+        PackageRoot,
+        "src",
+        "elements",
+        "CodeEditor",
+        "languages",
+        "prettier-stub.ts",
+    );
+
+    return {
+        ...createBundleAliases(),
+        // `monaco-yaml`'s worker imports Prettier for a formatter the code editor turns off.
+        "prettier/standalone": stub,
+        "prettier/plugins/yaml": stub,
+        "prettier/plugins/estree": stub,
     };
 }
