@@ -9,6 +9,7 @@ import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import { aki } from "#common/api/client";
 import { AndNext } from "#common/api/config";
 import { isResponseErrorLike } from "#common/errors/network";
+import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
@@ -124,7 +125,8 @@ export class FlowViewPage extends AKElement {
                                                 )}
                                                 class="pf-c-button pf-m-block pf-m-primary"
                                                 @click=${() => {
-                                                    const finalURL = `${window.location.origin}/if/flow/${this.flow.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+                                                    const finalURL = `${globalAK().api.base}if/flow/${this.flow.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+
                                                     window.open(finalURL, "_blank");
                                                 }}
                                             >

@@ -2,6 +2,7 @@ import "#elements/Progress";
 
 import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
+import { staticURL } from "#common/urls";
 
 import { asInvoker } from "#elements/dialogs";
 import { AKModal } from "#elements/dialogs/ak-modal";
@@ -184,7 +185,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
             ${ref(this.scrollContainerRef)}
             class="pf-c-about-modal-box"
             style=${styleMap({
-                "--pf-c-about-modal-box__hero--sm--BackgroundImage": `url(${DefaultFlowBackground})`,
+                "--pf-c-about-modal-box__hero--sm--BackgroundImage": `url(${staticURL(DefaultFlowBackground)})`,
             })}
             part="box"
         >
