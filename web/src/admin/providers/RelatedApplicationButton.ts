@@ -1,5 +1,5 @@
 import "#admin/applications/ApplicationForm";
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import "#elements/forms/ModalForm";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 

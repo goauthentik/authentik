@@ -1,5 +1,4 @@
-import "#elements/Spinner";
-import { PFSize } from "#common/enums";
+import "#elements/ak-spinner";
 
 import { AggregateCard, type IAggregateCard } from "#elements/cards/AggregateCard";
 
@@ -62,7 +61,7 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
 
     renderInner(): TemplateResult {
         return html`
-            ${until(this.promiseProxy(), html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`)}
+            ${until(this.promiseProxy(), html`<ak-spinner size="lg"></ak-spinner>`)}
         `;
     }
 }

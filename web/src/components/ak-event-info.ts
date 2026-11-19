@@ -1,6 +1,6 @@
 import "#elements/Expand";
 import "#elements/Label";
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import "#elements/ak-attribute-view";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -11,7 +11,6 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 
 import { aki } from "#common/api/client";
-import { PFSize } from "#common/enums";
 import { EventContext, EventContextProperty, EventModel, EventWithContext } from "#common/events";
 import { staticURL } from "#common/urls";
 
@@ -189,7 +188,7 @@ export class EventInfo extends AKElement {
 
     render(): TemplateResult {
         if (!this.event) {
-            return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
+            return html`<ak-spinner size="md"></ak-spinner>`;
         }
 
         switch (this.event?.action) {
@@ -357,7 +356,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre>`;
                                             >${resp.results[0].name}</a
                                         >`;
                                     }),
-                                html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`,
+                                html`<ak-spinner size="md"></ak-spinner>`,
                             )}
                         </span>
                     </div>

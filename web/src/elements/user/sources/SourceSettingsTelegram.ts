@@ -1,4 +1,4 @@
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import { loadTelegramWidget, TelegramUserResponse } from "../../../flow/sources/telegram/utils";
 
 import { aki } from "#common/api/client";

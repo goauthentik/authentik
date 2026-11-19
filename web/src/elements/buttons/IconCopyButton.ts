@@ -1,4 +1,4 @@
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { ClipboardItemSource, writeToClipboard } from "#common/clipboard";
 import { PFSize } from "#common/enums";
