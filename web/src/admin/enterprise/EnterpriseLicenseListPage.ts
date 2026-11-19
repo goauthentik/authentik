@@ -1,7 +1,7 @@
 import "#admin/enterprise/EnterpriseLicenseForm";
 import "#admin/enterprise/EnterpriseStatusCard";
 import "#admin/rbac/ObjectPermissionModal";
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/cards/AggregateCard";
 import "#elements/forms/DeleteBulkForm";

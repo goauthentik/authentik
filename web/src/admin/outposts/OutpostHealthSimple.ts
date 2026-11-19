@@ -1,4 +1,4 @@
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import { aki } from "#common/api/client";
 import { formatElapsedTime } from "#common/temporal";
 
