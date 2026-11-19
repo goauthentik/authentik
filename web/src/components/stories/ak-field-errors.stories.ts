@@ -1,4 +1,4 @@
-import { AKFormErrors, AKFormErrorsProps } from "#components/ak-field-errors";
+import { AKFormErrors, AKFormErrorsProps } from "#components/renderFormErrors";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 
