@@ -110,7 +110,10 @@ class DomainlessURLValidator(URLValidator):
 
 
 class DomainlessFormattedURLValidator(DomainlessURLValidator):
-    """URL validator which allows for python format strings"""
+    """URL validator which allows for python format strings and paths relative to the
+    current host. Browsers treat a leading `//` or `/\\` as another host, so those are rejected."""
+
+    relative_re = _lazy_re_compile(r"^/(?![/\\])[^\s\\]*\Z")
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -126,6 +129,11 @@ class DomainlessFormattedURLValidator(DomainlessURLValidator):
             re.IGNORECASE,
         )
         self.schemes = ["http", "https", "blank", "ssh", "sftp"] + list(self.schemes)
+
+    def __call__(self, value: str):
+        if self.relative_re.match(value):
+            return
+        super().__call__(value)
 
 
 class ExpiringManager(Manager):
