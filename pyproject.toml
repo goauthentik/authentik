@@ -8,7 +8,7 @@ dependencies = [
   "ak-guardian==3.2.0",
   "argon2-cffi==25.1.0",
   "bcrypt==5.0.0",
-  "cachetools==7.3.1",
+  "cachetools==7.3.2",
   "certifi==2026.10.23",
   "channels==4.3.2",
   "cryptography==50.0.2",
@@ -36,10 +36,10 @@ dependencies = [
   "fido2==2.2.1",
   "geoip2==5.3.0",
   "geopy==2.5.0",
-  "google-api-python-client==2.201.0",
+  "google-api-python-client==2.202.0",
   "gssapi==1.12.0",
   "gunicorn==26.2.0",
-  "jsonpatch==1.44",
+  "jsonpatch==1.46",
   "jwcrypto==1.6.1",
   "kubernetes==37.0.1",
   "ldap3==2.9.1",
@@ -89,7 +89,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.275.0",
+  "aws-cdk-lib==2.276.0",
   "bandit==1.9.4",
   "black==26.10.1",
   "bpython==0.26",
