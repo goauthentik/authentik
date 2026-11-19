@@ -1,5 +1,7 @@
 from typing import Self
 
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
@@ -8,10 +10,13 @@ from authentik.core.models import (
     USERNAME_MAX_LENGTH,
     Actor,
     ActorPolicyInheritance,
+    Application,
     User,
     UserTypes,
 )
 from authentik.lib.generators import generate_id
+from authentik.lib.models import InternallyManagedMixin, SimpleThroughModel
+from authentik.policies.models import PolicyBindingModel
 
 USER_PATH_AGENTS = f"{USER_PATH_SYSTEM_PREFIX}/agents"
 
@@ -29,6 +34,43 @@ class AgentUserQuerySet(QuerySet):
 
 
 class Agent(Actor):
+
+    # Applications that may use this agent
+    applications = models.ManyToManyField(
+        Application,
+        blank=True,
+        related_name="agents",
+        through="AgentApplication",
+        verbose_name=_("Applications"),
+        help_text=_("Applications that may use this agent."),
+    )
+
+    # ID-JAG (draft-ietf-oauth-identity-assertion-authz-grant), system agents only: the
+    # external authorization server the applications above may get ID-JAGs for via token
+    # exchange. Admin-controlled, as minting a signed assertion for an arbitrary audience
+    # would be a confused-deputy risk.
+    id_jag_audience = models.TextField(
+        blank=True,
+        default="",
+        db_default="",
+        verbose_name=_("ID-JAG audience"),
+        help_text=_("Issuer of the authorization server ID-JAGs are minted for."),
+    )
+    id_jag_client_id = models.TextField(
+        blank=True,
+        default="",
+        db_default="",
+        verbose_name=_("ID-JAG client ID"),
+        help_text=_("Identifier of the client at that authorization server."),
+    )
+    id_jag_resources = ArrayField(
+        models.TextField(),
+        default=list,
+        db_default=[],
+        blank=True,
+        verbose_name=_("ID-JAG resources"),
+        help_text=_("Resources an ID-JAG may be requested for at that server."),
+    )
 
     class Meta(Actor.Meta):
         verbose_name = _("Agent")
@@ -77,3 +119,36 @@ class Agent(Actor):
 
     def __str__(self):
         return f"Agent {self.username} for {self.parent_id}"
+
+
+class AgentApplication(SimpleThroughModel):
+    """Applications authorized to use an agent"""
+
+    agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("agent", "application"),)
+        verbose_name = _("Agent Application")
+        verbose_name_plural = _("Agent Applications")
+
+    def __str__(self):
+        return f"AgentApplication for Agent {self.agent_id} and Application {self.application_id}."
+
+
+class AgentPolicyTarget(InternallyManagedMixin, PolicyBindingModel):
+    """Policies a system agent's ID-JAGs are subject to.
+
+    Bound policies are evaluated before an ID-JAG is minted for the agent's audience, with
+    the user the ID-JAG is for and the requested `audience` in the request context; whether
+    an application may use its OAuth client at all is still decided by the application's
+    own policies. Every system agent has one."""
+
+    agent = models.OneToOneField(Agent, on_delete=models.CASCADE, related_name="policy_target")
+
+    class Meta:
+        verbose_name = _("Agent Policy Target")
+        verbose_name_plural = _("Agent Policy Targets")
+
+    def __str__(self):
+        return f"Agent Policy Target for Agent {self.agent_id}"
