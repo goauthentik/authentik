@@ -8,6 +8,7 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { aki } from "#common/api/client";
+import { globalAK } from "#common/global";
 import { PlexAPIClient, popupCenterScreen } from "#common/helpers/plex";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
@@ -55,7 +56,7 @@ export class PlexLoginInit extends BaseStage<
                 .catch(async (error: unknown) => {
                     return showAPIErrorMessage(error).then(() => {
                         setTimeout(() => {
-                            window.location.assign("/");
+                            window.location.assign(globalAK().api.base);
                         }, 5000);
                     });
                 });

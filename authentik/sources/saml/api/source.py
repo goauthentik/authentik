@@ -17,6 +17,7 @@ from structlog.stdlib import get_logger
 from authentik.common.saml.metadata import MetadataFetchError, fetch_metadata
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.providers.saml.api.providers import SAMLMetadataSerializer
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
@@ -116,6 +117,9 @@ class SAMLSourceSerializer(SourceSerializer):
         extra_kwargs = {
             # Filled in from the metadata when a metadata URL is given
             "sso_url": {"required": False, "allow_blank": True},
+            "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "verification_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            "encryption_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
         }
 
 

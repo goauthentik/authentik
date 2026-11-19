@@ -115,6 +115,14 @@ export abstract class WizardStep extends AKElement {
     public abstract checkValidity(): boolean;
 
     /**
+     * Resolves once the step's fields have final values and are safe to validate, e.g. after a
+     * search select has preselected its default. Steps with such fields override this.
+     */
+    public settled(): Promise<void> {
+        return Promise.resolve();
+    }
+
+    /**
      * The ID of the current step.
      */
     declare public id: string;
@@ -190,6 +198,11 @@ export abstract class WizardStep extends AKElement {
 
     //#endregion
 
+    /**
+     * The in-flight forward navigation, so repeated clicks while the fields settle are ignored.
+     */
+    #pendingForward: Promise<void> | null = null;
+
     protected navigateWizardStep(button: WizardButton, event?: Event) {
         event?.stopPropagation();
 
@@ -197,12 +210,23 @@ export abstract class WizardStep extends AKElement {
             throw new Error("Non-navigable button sent to handleNavigationEvent");
         }
 
-        if (button.kind === "next" || button.kind === "finish") {
-            // Check and report form validation to the user before allowing navigation to proceed.
-            if (!this.reportValidity()) {
-                return;
-            }
+        if (button.kind !== "next" && button.kind !== "finish") {
+            return this.handleButton(button);
         }
+
+        if (this.#pendingForward) return;
+
+        this.#pendingForward = this.#navigateForward(button).finally(() => {
+            this.#pendingForward = null;
+        });
+    }
+
+    async #navigateForward(button: WizardButton): Promise<void> {
+        // Validating before the fields settle would reject a value that is still loading.
+        await this.settled();
+
+        // Check and report form validation to the user before allowing navigation to proceed.
+        if (!this.reportValidity()) return;
 
         if (button.kind === "finish") {
             this.requestClose("finish");
@@ -210,7 +234,7 @@ export abstract class WizardStep extends AKElement {
             return;
         }
 
-        return this.handleButton(button);
+        await this.handleButton(button);
     }
 
     public requestClose = (returnValue?: string) => {

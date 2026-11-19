@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { Application } from "./Application";
-import { ApplicationFromJSON } from "./Application";
+import type { Application } from "./Application.js";
+import { ApplicationFromJSON } from "./Application.js";
 
 /**
  * Generic representation of a single request target: whatever was actually

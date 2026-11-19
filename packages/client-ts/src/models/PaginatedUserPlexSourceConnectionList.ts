@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserPlexSourceConnection } from "./UserPlexSourceConnection";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { UserPlexSourceConnection } from "./UserPlexSourceConnection.js";
 import {
     UserPlexSourceConnectionFromJSON,
     UserPlexSourceConnectionToJSON,
-} from "./UserPlexSourceConnection";
+} from "./UserPlexSourceConnection.js";
 
 /**
  * @export

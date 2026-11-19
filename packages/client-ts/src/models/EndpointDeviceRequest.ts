@@ -10,17 +10,17 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest.js";
 import {
     DeviceAccessGroupRequestFromJSON,
     DeviceAccessGroupRequestToJSON,
-} from "./DeviceAccessGroupRequest";
-import type { RACConnectionOverrideRequest } from "./RACConnectionOverrideRequest";
+} from "./DeviceAccessGroupRequest.js";
+import type { RACConnectionOverrideRequest } from "./RACConnectionOverrideRequest.js";
 import {
     RACConnectionOverrideRequestFromJSON,
     RACConnectionOverrideRequestToJSON,
-} from "./RACConnectionOverrideRequest";
+} from "./RACConnectionOverrideRequest.js";
 
 /**
  * @export

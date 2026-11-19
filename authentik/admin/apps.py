@@ -12,9 +12,6 @@ from authentik.tasks.schedules.common import ScheduleSpec
 
 PROM_INFO = Info("authentik_version", "Currently running authentik version")
 
-# Deprecation identifier for the configuration warning surfaced when no base URL is configured.
-BASE_URL_UNSET_DEPRECATION = "authentik.admin.base_url_unset"
-
 
 def ensure_system_settings(*args, using=DEFAULT_DB_ALIAS, **kwargs):
     """Make sure the system settings exist"""
@@ -40,14 +37,11 @@ class AuthentikAdminConfig(ManagedAppConfig):
 
     def _backfill_base_url(self):
         """Backfill base_url when it hasn't been set yet. Sources: AUTHENTIK_WEB__BASE_URL config
-        value, then the embedded outpost's configured host. When neither is available, warn that
-        the base URL must be set before it becomes required in a future release."""
+        value, then the embedded outpost's configured host."""
         from django.core.exceptions import ValidationError
 
         from authentik.admin.models import SystemSettings
         from authentik.admin.utils import get_system_settings, normalize_base_url
-        from authentik.core.apps import Setup
-        from authentik.events.models import Event
         from authentik.outposts.models import Outpost
 
         settings = get_system_settings()
@@ -65,14 +59,6 @@ class AuthentikAdminConfig(ManagedAppConfig):
                 self.logger.warning("Discarding invalid base_url", base_url=base_url)
                 base_url = ""
         if not base_url:  # No source available
-            if Setup.get():  # Only nag instances that have finished setup
-                self.logger.warning("Base URL is not configured")
-                Event.log_deprecation(
-                    BASE_URL_UNSET_DEPRECATION,
-                    "No base URL is configured. A configured base URL will be required "
-                    "in a future release. Set it in the system settings or via the "
-                    "AUTHENTIK_WEB__BASE_URL environment variable.",
-                )
             return
         SystemSettings.objects.filter(pk=settings.pk).update(base_url=base_url)
         self.logger.info("Backfilled base_url", base_url=base_url)

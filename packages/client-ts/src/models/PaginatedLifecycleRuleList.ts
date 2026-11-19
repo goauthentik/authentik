@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { LifecycleRule } from "./LifecycleRule";
-import { LifecycleRuleFromJSON, LifecycleRuleToJSON } from "./LifecycleRule";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { LifecycleRule } from "./LifecycleRule.js";
+import { LifecycleRuleFromJSON, LifecycleRuleToJSON } from "./LifecycleRule.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

@@ -10,10 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { WSFederationProvider } from "./WSFederationProvider";
-import { WSFederationProviderFromJSON, WSFederationProviderToJSON } from "./WSFederationProvider";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { WSFederationProvider } from "./WSFederationProvider.js";
+import {
+    WSFederationProviderFromJSON,
+    WSFederationProviderToJSON,
+} from "./WSFederationProvider.js";
 
 /**
  * @export

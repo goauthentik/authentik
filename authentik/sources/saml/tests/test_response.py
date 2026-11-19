@@ -21,6 +21,7 @@ from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
     MismatchedAudience,
+    UnsuccessfulStatus,
 )
 from authentik.sources.saml.models import (
     GroupSAMLSourceConnection,
@@ -36,7 +37,7 @@ SHIBBOLETH_ACS_URL = "https://sp.example.org:9443/source/saml/shibboleth-post/ac
 SHIBBOLETH_TRANSIENT_ACS_URL = "https://sp.example.org:10443/Shibboleth.sso/SAML2/POST"
 
 
-@patch.object(SAMLSource, "build_full_url", MagicMock(return_value=DEMO_ACS_URL))
+@patch("authentik.sources.saml.processors.response.reverse", MagicMock(return_value=DEMO_ACS_URL))
 class TestResponseProcessor(TestCase):
     """Test ResponseProcessor"""
 
@@ -62,7 +63,7 @@ class TestResponseProcessor(TestCase):
         )
 
         with self.assertRaisesMessage(
-            ValueError,
+            UnsuccessfulStatus,
             (
                 "Invalid request, ACS Url in request http://localhost:9000/source/saml/google/acs/ "
                 "doesn't match configured ACS Url https://127.0.0.1:9443/source/saml/google/acs/."
@@ -84,7 +85,9 @@ class TestResponseProcessor(TestCase):
 
         self.source.issuer_override = "https://accounts.google.com/o/saml2?idpid="
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
             parser.parse()
         sfm = parser.prepare_flow_manager()
         self.assertEqual(
@@ -112,7 +115,9 @@ class TestResponseProcessor(TestCase):
         )
 
         self.source.issuer_override = "https://accounts.google.com/o/saml2?idpid="
-        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
             parser = ResponseProcessor(self.source, request)
             parser.parse()
             sfm = parser.prepare_flow_manager()
@@ -151,7 +156,9 @@ class TestResponseProcessor(TestCase):
         request = self._audience_request("")
 
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
             parser.parse()
 
     @freeze_time("2022-10-14T14:15:00")
@@ -165,7 +172,9 @@ class TestResponseProcessor(TestCase):
         )
 
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
             parser.parse()
 
     @freeze_time("2022-10-14T14:15:00")
@@ -198,7 +207,9 @@ class TestResponseProcessor(TestCase):
         )
 
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
             parser.parse()
 
     @freeze_time("2022-10-14T14:16:40Z")
@@ -215,7 +226,9 @@ class TestResponseProcessor(TestCase):
 
         self.source.issuer_override = "https://accounts.google.com/o/saml2?idpid="
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=GOOGLE_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
             parser.parse()
         sfm = parser.prepare_flow_manager()
         self.assertEqual(sfm.user_properties["username"], "jens@goauthentik.io")
@@ -232,7 +245,7 @@ class TestResponseProcessor(TestCase):
             },
         )
 
-        with self.assertRaises(ValueError) as ctx:
+        with self.assertRaises(UnsuccessfulStatus) as ctx:
             ResponseProcessor(self.source, request).parse()
         # Should contain both detail and message
         self.assertIn("User account is disabled", str(ctx.exception))
@@ -258,7 +271,9 @@ class TestResponseProcessor(TestCase):
 
         self.source.issuer_override = "authentik-saml-encrypt"
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=KEYCLOAK_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=KEYCLOAK_ACS_URL
+        ):
             parser.parse()
 
     def test_encrypted_incorrect_key(self):
@@ -685,7 +700,9 @@ class TestResponseProcessor(TestCase):
 
         self.source.issuer_override = "https://sp.example.org/shibboleth/POST"
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=SHIBBOLETH_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=SHIBBOLETH_ACS_URL
+        ):
             parser.parse()
 
     @freeze_time("2026-01-21T14:23")
@@ -710,7 +727,10 @@ class TestResponseProcessor(TestCase):
 
         self.source.issuer_override = "https://sp.example.org/shibboleth"
         parser = ResponseProcessor(self.source, request)
-        with patch.object(SAMLSource, "build_full_url", return_value=SHIBBOLETH_TRANSIENT_ACS_URL):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse",
+            return_value=SHIBBOLETH_TRANSIENT_ACS_URL,
+        ):
             parser.parse()
         parser.prepare_flow_manager()
 

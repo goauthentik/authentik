@@ -10,22 +10,22 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { AuthenticatedSessionAsn } from "./AuthenticatedSessionAsn";
+import { parseDateTime } from "../runtime.js";
+import type { AuthenticatedSessionAsn } from "./AuthenticatedSessionAsn.js";
 import {
     AuthenticatedSessionAsnFromJSON,
     AuthenticatedSessionAsnToJSON,
-} from "./AuthenticatedSessionAsn";
-import type { AuthenticatedSessionGeoIp } from "./AuthenticatedSessionGeoIp";
+} from "./AuthenticatedSessionAsn.js";
+import type { AuthenticatedSessionGeoIp } from "./AuthenticatedSessionGeoIp.js";
 import {
     AuthenticatedSessionGeoIpFromJSON,
     AuthenticatedSessionGeoIpToJSON,
-} from "./AuthenticatedSessionGeoIp";
-import type { AuthenticatedSessionUserAgent } from "./AuthenticatedSessionUserAgent";
+} from "./AuthenticatedSessionGeoIp.js";
+import type { AuthenticatedSessionUserAgent } from "./AuthenticatedSessionUserAgent.js";
 import {
     AuthenticatedSessionUserAgentFromJSON,
     AuthenticatedSessionUserAgentToJSON,
-} from "./AuthenticatedSessionUserAgent";
+} from "./AuthenticatedSessionUserAgent.js";
 
 /**
  * AuthenticatedSession Serializer

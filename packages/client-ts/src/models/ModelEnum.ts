@@ -68,6 +68,8 @@ export const ModelEnum = {
     AuthentikProvidersScimScimmapping: "authentik_providers_scim.scimmapping",
     AuthentikRbacRole: "authentik_rbac.role",
     AuthentikRbacInitialpermissions: "authentik_rbac.initialpermissions",
+    AuthentikRbacCustompermission: "authentik_rbac.custompermission",
+    AuthentikRbacPermissioncheck: "authentik_rbac.permissioncheck",
     AuthentikSourcesKerberosKerberossource: "authentik_sources_kerberos.kerberossource",
     AuthentikSourcesKerberosKerberossourcepropertymapping:
         "authentik_sources_kerberos.kerberossourcepropertymapping",
@@ -158,6 +160,8 @@ export const ModelEnum = {
         "authentik_endpoints_connectors_fleet.fleetconnector",
     AuthentikEndpointsConnectorsGoogleChromeGooglechromeconnector:
         "authentik_endpoints_connectors_google_chrome.googlechromeconnector",
+    AuthentikEndpointsConnectorsMicrosoftIntuneMicrosoftintuneconnector:
+        "authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector",
     AuthentikLifecycleLifecyclerule: "authentik_lifecycle.lifecyclerule",
     AuthentikLifecycleLifecycleiteration: "authentik_lifecycle.lifecycleiteration",
     AuthentikLifecycleReview: "authentik_lifecycle.review",

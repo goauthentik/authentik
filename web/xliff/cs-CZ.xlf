@@ -16,27 +16,28 @@
 </trans-unit>
 <trans-unit id="zh-Hans">
   <source>Chinese (Simplified)</source>
-  <target>Čínština</target>
+  <target>Čínština (zjednodušená)</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
   <source>Chinese (Traditional)</source>
-  <target>Čínština</target>
+  <target>Čínština (tradiční)</target>
 </trans-unit>
 <!-- #endregion -->
 
 <!-- #region Locale selector  -->
 <trans-unit id="locale-auto-detect-option">
   <source>Auto-detect</source>
-  <target>Automatická detekce</target>
+  <target>Rozpoznat</target>
   <note from="lit-localize">Label for the auto-detect locale option in language selection dropdown</note>
 </trans-unit>
 <trans-unit id="language-selector-label">
   <source>Select language</source>
-  <target>Vybrat jazyk</target>
+  <target>Vyberte jazyk</target>
   <note from="lit-localize">Label for the language selection dropdown</note>
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
   <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <target><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</target>
   <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
 </trans-unit>
 <!-- #endregion -->
@@ -462,15 +463,19 @@
 </trans-unit>
 <trans-unit id="s482bc55a78891ef7">
   <source>A code has been sent to your address: <x id="0" equiv-text="${email}"/></source>
+  <target>Na vaši emailovou adresu <x id="0" equiv-text="${email}"/> byl odeslán kód</target>
 </trans-unit>
 <trans-unit id="s5afa3fc77ce8d94d">
   <source>A code has been sent to your email address.</source>
+  <target>Na vaši emailovou adresu byl odeslán kód.</target>
 </trans-unit>
 <trans-unit id="s37f47fa981493c3b">
   <source>A one-time use code has been sent to you via SMS text message.</source>
+  <target>Na vaše telefonní číslo byla odeslána SMS zpráva s jednorázovým kódem.</target>
 </trans-unit>
 <trans-unit id="sc92a7248dba5f388">
   <source>Open your authenticator app to retrieve a one-time use code.</source>
+  <target>Otevřete aplikaci dvoufázového ověření k získání jednorázového ověřovacího kódu.</target>
 </trans-unit>
 <trans-unit id="s21d95b4651ad7a1e">
   <source>Enter a one-time recovery code for this user.</source>
@@ -518,6 +523,7 @@
 </trans-unit>
 <trans-unit id="sf6e7447df476939f">
   <source>Query input</source>
+  <target>Dotaz</target>
 </trans-unit>
 <trans-unit id="s5638954badbd5b21">
   <source>Table Search</source>
@@ -529,6 +535,7 @@
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
   <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
+  <target>Řadit dle &amp;quot;<x id="0" equiv-text="${label}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sfd44ce578f643145">
   <source>Failed to fetch objects.</source>
@@ -536,6 +543,7 @@
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
   <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
+  <target>Vybrat řádku &amp;quot;<x id="0" equiv-text="${rowLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
@@ -553,11 +561,9 @@
   <source><x id="0" equiv-text="${this.label ?? &quot;Table&quot;}"/> actions</source>
   <target><x id="0" equiv-text="${this.label ?? &quot;Table&quot;}"/> akcí</target>
 </trans-unit>
-<trans-unit id="sd09354b0220a13ce">
-  <source>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
-</trans-unit>
 <trans-unit id="s76ef34813bff563f">
   <source>Last refreshed</source>
+  <target>Naposledy obnoveno</target>
 </trans-unit>
 <trans-unit id="s59c9e8f57e3a0075">
   <source><x id="0" equiv-text="${this.label}"/> table</source>
@@ -569,6 +575,7 @@
 </trans-unit>
 <trans-unit id="s15a7e4227737b7c4">
   <source>Column actions</source>
+  <target>Akce sloupce</target>
 </trans-unit>
 <trans-unit id="sa65e7bc7ddd3484d">
   <source>Anonymous user</source>
@@ -613,6 +620,7 @@
 </trans-unit>
 <trans-unit id="sd2fa988f1774cfde">
   <source>System Status</source>
+  <target>Stav systému</target>
 </trans-unit>
 <trans-unit id="s113c05ef9996ca4b">
   <source>Embedded outpost is not configured correctly.</source>
@@ -644,7 +652,7 @@
         <x id="0" equiv-text="${value.versionCurrent}"/></target>
 </trans-unit>
 <trans-unit id="s68a50b1ee6efee7b">
-  <source><x id="0" equiv-text="${value.versionLatest}"/> is available!</source>
+  <source><x id="0" equiv-text="${upstreamVersion}"/> is available!</source>
   <target>
         <x id="0" equiv-text="${value.versionLatest}"/>je k dispozici!</target>
 </trans-unit>
@@ -678,9 +686,11 @@
 </trans-unit>
 <trans-unit id="s66f26fdcbe2101eb">
   <source>Chart</source>
+  <target>Graf</target>
 </trans-unit>
 <trans-unit id="s7b58d033cc5112ab">
   <source>Event volume chart</source>
+  <target>Graf množství událostí</target>
 </trans-unit>
 <trans-unit id="s11bc220e8fa9d797">
   <source>Authorizations</source>
@@ -700,6 +710,7 @@
 </trans-unit>
 <trans-unit id="s0914f91b3f985f0f">
   <source>Synchronization status chart</source>
+  <target>Graf statusu synchronizace</target>
 </trans-unit>
 <trans-unit id="s477de089b505a6ea">
   <source>SCIM Provider</source>
@@ -735,6 +746,7 @@
 </trans-unit>
 <trans-unit id="s3f01dbc864d2a8b9">
   <source>Outpost status chart</source>
+  <target>Graf statusu outpostů</target>
 </trans-unit>
 <trans-unit id="sfeb82261bcf99edd">
   <source>Healthy outposts</source>
@@ -903,26 +915,9 @@
   <source>Delete</source>
   <target>Smazat</target>
 </trans-unit>
-<trans-unit id="s1f25e1e20469a9ea">
-  <source>deleted</source>
-  <target>smazáno</target>
-</trans-unit>
 <trans-unit id="s09240e07b5b8d640">
   <source>ID</source>
   <target>ID</target>
-</trans-unit>
-<trans-unit id="se33b158a1ec02a09">
-  <source>Successfully deleted <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/></source>
-  <target>Úspěšně smazáno <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/></target>
-</trans-unit>
-<trans-unit id="s039b6434e8a75560">
-  <source>Delete <x id="0" equiv-text="${this.objectLabel}"/></source>
-  <target>Smazat
-        <x id="0" equiv-text="${this.objectLabel}"/></target>
-</trans-unit>
-<trans-unit id="s5819a49638f6d7cb">
-  <source>Are you sure you want to delete <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>?</source>
-  <target>Jste si jisti, že chcete smazat <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>?</target>
 </trans-unit>
 <trans-unit id="sd5903cc8de68b3fc">
   <source>No form found</source>
@@ -930,12 +925,15 @@
 </trans-unit>
 <trans-unit id="s7f073c746d0f6324">
   <source>Form actions</source>
+  <target>Akce formuláře</target>
 </trans-unit>
 <trans-unit id="sfd81bd296e2f7585">
   <source>Submit action</source>
+  <target>Potvrdit akci</target>
 </trans-unit>
 <trans-unit id="s5baec8151f4a4433">
   <source>Cancel action</source>
+  <target>Zrušit akci</target>
 </trans-unit>
 <trans-unit id="sbcdf61483337948a">
   <source>Successfully updated schedule.</source>
@@ -953,13 +951,9 @@
   <source>Pause this schedule</source>
   <target>Pozastavit tento plán</target>
 </trans-unit>
-<trans-unit id="sc0448bc8a76227cb">
-  <source>Failed to fetch objects: </source>
-  <target>Nezdařilo se načíst objekty: </target>
-</trans-unit>
 <trans-unit id="sf485014051ad0cf7">
   <source>Successfully assigned permission.</source>
-  <target>Oprávnění bylo úspěšně přiřazeno.</target>
+  <target>Oprávnění bylo úspěšně přiděleno.</target>
 </trans-unit>
 <trans-unit id="sca7fed2bef53cb99">
   <source>Role</source>
@@ -967,15 +961,11 @@
 </trans-unit>
 <trans-unit id="sc92c1a54034e21cc">
   <source>Assign</source>
-  <target>Přiřadit</target>
+  <target>Přidělit</target>
 </trans-unit>
 <trans-unit id="scd84d10ee9137070">
   <source>Assign permission to role</source>
-  <target>Přiřadit oprávnění k roli</target>
-</trans-unit>
-<trans-unit id="sb923723d27df40ba">
-  <source>Permission(s)</source>
-  <target>Oprávnění</target>
+  <target>Přidělit oprávnění k roli</target>
 </trans-unit>
 <trans-unit id="sc5fb00b25c7f5a02">
   <source>Permission</source>
@@ -991,7 +981,7 @@
 </trans-unit>
 <trans-unit id="s0ca04e397298bc43">
   <source>Select permissions to assign</source>
-  <target>Vyberte oprávnění k přiřazení</target>
+  <target>Vyberte oprávnění k přidělení</target>
 </trans-unit>
 <trans-unit id="sf9aee319a006c9b4">
   <source>Add</source>
@@ -1007,6 +997,7 @@
 </trans-unit>
 <trans-unit id="s7753c012594cc69e">
   <source>Assigned to role</source>
+  <target>Přiděleno k roli</target>
 </trans-unit>
 <trans-unit id="s67e136af8fc1107b">
   <source>Assign permission</source>
@@ -1022,15 +1013,15 @@
 </trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
-  <target>Přiřazená globální oprávnění</target>
+  <target>Přidělená globální oprávnění</target>
 </trans-unit>
 <trans-unit id="s8f85a0e678846080">
   <source>Assigned object permissions</source>
-  <target>Přiřazená oprávnění objektu</target>
+  <target>Přidělená oprávnění objektu</target>
 </trans-unit>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
-  <target>Oprávnění přiřazená této roli, která ovlivňují všechny instance objektů daného typu.</target>
+  <target>Oprávnění přidělená této roli, která ovlivňují všechny instance objektů daného typu.</target>
 </trans-unit>
 <trans-unit id="s5e8250fb85d64c23">
   <source>Close</source>
@@ -1071,15 +1062,19 @@
 </trans-unit>
 <trans-unit id="s94f08f46277af7d6">
   <source>Running tasks</source>
+  <target>Probíhající úlohy</target>
 </trans-unit>
 <trans-unit id="s8b551364b894d1ee">
   <source>Queued tasks</source>
+  <target>Úlohy čekající na zpracování</target>
 </trans-unit>
 <trans-unit id="s2139d19009989a19">
   <source>Successful tasks</source>
+  <target>Dokončené úlohy</target>
 </trans-unit>
 <trans-unit id="s0787cd9eab5aa6e3">
   <source>Error tasks</source>
+  <target>Úlohy skončené chybou</target>
 </trans-unit>
 <trans-unit id="s03ee3cfb0919c62c">
   <source>Task</source>
@@ -1091,9 +1086,11 @@
 </trans-unit>
 <trans-unit id="s84fb675fb17d4455">
   <source>Retries</source>
+  <target>Opakování</target>
 </trans-unit>
 <trans-unit id="s1d300a2f13c19ab4">
   <source>Planned execution time</source>
+  <target>Plánovaný čas spuštění</target>
 </trans-unit>
 <trans-unit id="sb91d1be10eb2c7da">
   <source>Last updated</source>
@@ -1109,6 +1106,7 @@
 </trans-unit>
 <trans-unit id="sa3242c7021e01280">
   <source>Row Actions</source>
+  <target>Akce řádku</target>
 </trans-unit>
 <trans-unit id="s911c2c952e64b223">
   <source>Show only standalone tasks</source>
@@ -1121,14 +1119,6 @@
 <trans-unit id="s8ff646d0515aab2a">
   <source>Retry task</source>
   <target>Zopakovat úlohu</target>
-</trans-unit>
-<trans-unit id="sac44b0f4dc14c227">
-  <source>Current execution logs</source>
-  <target>Aktuální logy běhu</target>
-</trans-unit>
-<trans-unit id="s5e13dff03b580216">
-  <source>Previous executions logs</source>
-  <target>Předešlé logy běhu</target>
 </trans-unit>
 <trans-unit id="s9b8dccb514a0e34c">
   <source>Schedule</source>
@@ -1184,9 +1174,11 @@
 </trans-unit>
 <trans-unit id="s56e7ff6cc2abeb0d">
   <source>Wizard steps</source>
+  <target>Kroky průvodce</target>
 </trans-unit>
 <trans-unit id="s04e09c193d15e4b4">
   <source>Wizard navigation</source>
+  <target>Navigace průvodce</target>
 </trans-unit>
 <trans-unit id="s0c9670f429e74283">
   <source>New application</source>
@@ -1218,12 +1210,15 @@
 </trans-unit>
 <trans-unit id="s0268ce9f2abb84de">
   <source>Configure the Application</source>
+  <target>Konfigurovat aplikaci</target>
 </trans-unit>
 <trans-unit id="s07b0bf005510fe29">
   <source>Type an application name...</source>
+  <target>Napište jméno aplikace...</target>
 </trans-unit>
 <trans-unit id="s972540f502b0f4dc">
   <source>Application Name</source>
+  <target>Jméno aplikace</target>
 </trans-unit>
 <trans-unit id="s91f70424f5d5d23e">
   <source>Slug</source>
@@ -1259,6 +1254,7 @@
 </trans-unit>
 <trans-unit id="s71e967b36e080e3c">
   <source>https://...</source>
+  <target>https://...</target>
 </trans-unit>
 <trans-unit id="s992f8d1a776e763c">
   <source>If left empty, authentik will try to extract the launch URL based on the selected provider.</source>
@@ -1373,9 +1369,11 @@
 </trans-unit>
 <trans-unit id="s498d08fb8f63727f">
   <source>UNNAMED</source>
+  <target>NEPOJMENOVÁNO</target>
 </trans-unit>
 <trans-unit id="s74b47e964bb82e5f">
   <source>Wizard content</source>
+  <target>Obsah průvodce</target>
 </trans-unit>
 <trans-unit id="sad59707375956ad2">
   <source>Finish</source>
@@ -1559,6 +1557,7 @@
 </trans-unit>
 <trans-unit id="s96dc816b1d1c3be0">
   <source>Type a provider name...</source>
+  <target>Napište název poskytovatele...</target>
 </trans-unit>
 <trans-unit id="scef3f4ad80abbd22">
   <source>Configure how the outpost authenticates requests.</source>
@@ -1642,15 +1641,19 @@
 </trans-unit>
 <trans-unit id="sa3056b3252b4b52c">
   <source>Back-channel</source>
+  <target>Back-channel</target>
 </trans-unit>
 <trans-unit id="saa3d821fc889a636">
   <source>Server-to-server logout notifications</source>
+  <target>Oznámení o odhlášení server-server</target>
 </trans-unit>
 <trans-unit id="s9f448d01a0354e8e">
   <source>Front-channel</source>
+  <target>Front-channel</target>
 </trans-unit>
 <trans-unit id="s83ba71823baf9a51">
   <source>Browser iframe logout notifications</source>
+  <target>Oznámení o odhlášení v iframe prohlížeče</target>
 </trans-unit>
 <trans-unit id="sccc47f82044453f9">
   <source>Based on the User's hashed ID</source>
@@ -1696,10 +1699,6 @@
   <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
   <target>Chcete-li povolit jakékoli přesměrovací URI, nastavte režim na Regex a hodnotu na ".*". Buďte si vědomi možných bezpečnostních důsledků, které to může mít.</target>
 </trans-unit>
-<trans-unit id="s62f7c59b0606a8d6">
-  <source>Authorization flow</source>
-  <target>Autorizační tok</target>
-</trans-unit>
 <trans-unit id="s69d33a50b908b96f">
   <source>Select an authorization flow...</source>
   <target>Vyberte autorizační tok...</target>
@@ -1722,15 +1721,19 @@
 </trans-unit>
 <trans-unit id="s145480489b87a109">
   <source>Logout URI</source>
+  <target>URI pro odhlášení</target>
 </trans-unit>
 <trans-unit id="s37018999e29f65b3">
   <source>URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.</source>
+  <target>URI pro zaslání oznámení při odhlášení uživatele. Vyžadováno pro funkcionalitu odhlášení protokolu OpenID Connect.</target>
 </trans-unit>
 <trans-unit id="s2dcb6d1fd145b834">
   <source>Logout Method</source>
+  <target>Metoda odhlášení</target>
 </trans-unit>
 <trans-unit id="s2e527acc2a73da87">
   <source>The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).</source>
+  <target>Metoda odhlášení určuje, jak je URI pro odhlášení voláno – back-channel (server-server) nebo front-channel (ifame v prohlížeči).</target>
 </trans-unit>
 <trans-unit id="s55787f4dfcdce52b">
   <source>Signing Key</source>
@@ -1738,6 +1741,7 @@
 </trans-unit>
 <trans-unit id="s9139b576e9944704">
   <source>Select a signing key...</source>
+  <target>Vyberte podepisovací klíč...</target>
 </trans-unit>
 <trans-unit id="s4347135696fc7cde">
   <source>Advanced flow settings</source>
@@ -1745,6 +1749,7 @@
 </trans-unit>
 <trans-unit id="s91675ea72a0ebe3e">
   <source>Select an authentication flow...</source>
+  <target>Vyberte autentizační tok...</target>
 </trans-unit>
 <trans-unit id="sa72a3bd1e7e89926">
   <source>Flow used when a user access this provider and is not authenticated.</source>
@@ -1776,6 +1781,7 @@
 </trans-unit>
 <trans-unit id="sdff424992223a264">
   <source>When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</source>
+  <target>Pokud je při obnovování refresh tokenu vypršení tokenu pod touto hranicí, refresh token bude obnoven. Refresh token bude vždy obnoven při nastavení seconds=0.</target>
 </trans-unit>
 <trans-unit id="s2e3ef41a0edd8608">
   <source>Scopes</source>
@@ -1803,9 +1809,11 @@
 </trans-unit>
 <trans-unit id="sbdab4eb1812adc78">
   <source>Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.</source>
+  <target>Klíč používaný k šifrování tokenů. Povolte pouze pokud aplikace využívající tohoto poskytovatele podporuje JWE tokeny.</target>
 </trans-unit>
 <trans-unit id="s998fea0fa7bb4188">
   <source>authentik only supports RSA-OAEP-256 for encryption.</source>
+  <target>Authentik pro šifrování podporuje pouze RSA-OAEP-256.</target>
 </trans-unit>
 <trans-unit id="s9f23ed1799b4d49a">
   <source>Configure what data should be used as unique User Identifier. For most cases, the default should be fine.</source>
@@ -1925,6 +1933,7 @@
 </trans-unit>
 <trans-unit id="sd144a9315e8f87c1">
   <source>http(s)://...</source>
+  <target>http(s)://...</target>
 </trans-unit>
 <trans-unit id="sf05e384059a0a7c1">
   <source>Upstream host that the requests are forwarded to.</source>
@@ -1976,6 +1985,7 @@
 </trans-unit>
 <trans-unit id="sf8633bb541bfb123">
   <source>domain.tld</source>
+  <target>doména.tld</target>
 </trans-unit>
 <trans-unit id="s211b75e868072162">
   <source>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.</source>
@@ -2071,6 +2081,7 @@
 </trans-unit>
 <trans-unit id="sd5746b2550ac4852">
   <source>Certificate used for EAP-TLS. Requires Mutual TLS Stage in authentication flow.</source>
+  <target>Certifikát používaný pro EAP-TLS. Vyžaduje Mutual TLS Stage v autentižačním toku.</target>
 </trans-unit>
 <trans-unit id="s2c8c6f89089b31d4">
   <source>Configure Radius Provider</source>
@@ -2102,27 +2113,35 @@
 </trans-unit>
 <trans-unit id="sa4bd902fbc432ab8">
   <source>Sign logout requests</source>
+  <target>Podepisovat požadavky na odhlášení</target>
 </trans-unit>
 <trans-unit id="sb1e6dc6d91ce352e">
   <source>When enabled, SAML logout requests will be signed.</source>
+  <target>Pokud je povoleno, SAML požadavky na odhlášení budou podepisovány.</target>
 </trans-unit>
 <trans-unit id="sd1ab93a011b2f1f5">
   <source>Front-channel (Iframe)</source>
+  <target>Front-channel (Iframe)</target>
 </trans-unit>
 <trans-unit id="s885ea9abccda30d8">
   <source>Front-channel (Native)</source>
+  <target>Front-channel (Nativní)</target>
 </trans-unit>
 <trans-unit id="s34cd8ae3ee828045">
   <source>Back-channel (POST)</source>
+  <target>Back-channel (POST)</target>
 </trans-unit>
 <trans-unit id="s7f7be294b1bef506">
   <source>SLS Binding</source>
+  <target>Vazby SLS</target>
 </trans-unit>
 <trans-unit id="s9104cd1063aa6a4a">
   <source>Determines how authentik sends the logout response back to the Service Provider.</source>
+  <target>Určuje, jak authentik posílá odhlašovací odpověď zpět poskytovateli služeb.</target>
 </trans-unit>
 <trans-unit id="sd1fba3c745c016a8">
   <source>Method to use for logout when SLS URL is configured.</source>
+  <target>Metoda použitá pro odhlášení, pokud je nastavené SLS URL.</target>
 </trans-unit>
 <trans-unit id="s11204eeb1e27ea8f">
   <source>ACS URL</source>
@@ -2146,9 +2165,11 @@
 </trans-unit>
 <trans-unit id="sc71892084574cf32">
   <source>SLS URL</source>
+  <target>SLS URL</target>
 </trans-unit>
 <trans-unit id="s21658078c6fdf964">
   <source>Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.</source>
+  <target>Nepovinná URL Single Logout Service, kam se pošle odpověď na odhlášení. Pokud není vyplněno, odpověď na odhlášení nebude poslána.</target>
 </trans-unit>
 <trans-unit id="sc741d9ebe07ad103">
   <source>Signing Certificate</source>
@@ -2276,18 +2297,23 @@
 </trans-unit>
 <trans-unit id="seb250c3885733522">
   <source>Token to authenticate with.</source>
+  <target>Token pro autentizaci</target>
 </trans-unit>
 <trans-unit id="scdafec223d3840e9">
   <source>OAuth Source</source>
+  <target>Zdroj OAuth</target>
 </trans-unit>
 <trans-unit id="s2111b3384e12349c">
   <source>Specify OAuth source used for authentication.</source>
+  <target>Specifikujte zdroj OAuth pro autentizaci.</target>
 </trans-unit>
 <trans-unit id="s1876401267e31dd0">
   <source>OAuth Parameters</source>
+  <target>Parametry OAuth</target>
 </trans-unit>
 <trans-unit id="sc5ca1b55a5391535">
   <source>Additional OAuth parameters, such as grant_type.</source>
+  <target>Dodatečné parametry OAuth, například grant_type</target>
 </trans-unit>
 <trans-unit id="sb21f33b039c86322">
   <source>SCIM base url, usually ends in /v2.</source>
@@ -2299,12 +2325,15 @@
 </trans-unit>
 <trans-unit id="s6e4af789dec357dc">
   <source>Authentication Mode</source>
+  <target>Autentizační mód</target>
 </trans-unit>
 <trans-unit id="s24d7ac2fc280ca5e">
   <source>Authenticate SCIM requests using a static token.</source>
+  <target>Autentizovat SCIM požadavky pomocí statického tokenu.</target>
 </trans-unit>
 <trans-unit id="s1c34cb0a4cccc041">
   <source>Authenticate SCIM requests using OAuth.</source>
+  <target>Autentizovat SCIM požadavky pomocí OAuth.</target>
 </trans-unit>
 <trans-unit id="s3483d693c72e412e">
   <source>Compatibility Mode</source>
@@ -2336,9 +2365,11 @@
 </trans-unit>
 <trans-unit id="s2ce58eab7841b342">
   <source>Salesforce</source>
+  <target>Salesforce</target>
 </trans-unit>
 <trans-unit id="s7392b5925a4803af">
   <source>Altered behavior for usage with Salesforce.</source>
+  <target>Změněné chování pro použití se Salesforce.</target>
 </trans-unit>
 <trans-unit id="s054cb3c0a84eefe5">
   <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
@@ -2394,18 +2425,23 @@
 </trans-unit>
 <trans-unit id="s25afe36fa73d2e5b">
   <source>Sync settings</source>
+  <target>Synchronizovat nastavení</target>
 </trans-unit>
 <trans-unit id="s2c859e13e182be6b">
   <source>Page size</source>
+  <target>Velikost stránky</target>
 </trans-unit>
 <trans-unit id="sb984354bb46c8bed">
   <source>Controls the number of objects synced in a single task.</source>
+  <target>Určuje počet objektů synchronizovaných během jedné úlohy.</target>
 </trans-unit>
 <trans-unit id="sc24408fbc7ff26b5">
   <source>Page timeout</source>
+  <target>Časový limit stránky</target>
 </trans-unit>
 <trans-unit id="s7faa17601278029a">
   <source>Timeout for synchronization of a single page.</source>
+  <target>Časový limit synchronizace jedné stránky.</target>
 </trans-unit>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
@@ -2519,10 +2555,6 @@
   <source>authentik was unable to complete this process.</source>
   <target>authentik nebyl schopný dokončit tento proces.</target>
 </trans-unit>
-<trans-unit id="s71c5d51d5a357dbd">
-  <source>Don't show this message again.</source>
-  <target>Tuto zprávu již nezobrazovat.</target>
-</trans-unit>
 <trans-unit id="sd1a5560fde6f2271">
   <source>Successfully imported provider.</source>
   <target>Poskytovatel byl úspěšně importován.</target>
@@ -2541,6 +2573,7 @@
 </trans-unit>
 <trans-unit id="sf397c39bda7abfc6">
   <source>Open the wizard to create a new provider.</source>
+  <target>Otevřete průvodce pro vytvoření nového poskytovatele.</target>
 </trans-unit>
 <trans-unit id="sa817aa9f6f88a991">
   <source>Credentials</source>
@@ -2658,10 +2691,6 @@
   <source>Provider Search</source>
   <target>Hledání poskytovatele</target>
 </trans-unit>
-<trans-unit id="s10929ca568ae10bc">
-  <source>Provider(s)</source>
-  <target>Poskytovatel(é)</target>
-</trans-unit>
 <trans-unit id="sb2b3b281954752c4">
   <source>Assigned to application </source>
   <target>Přiřazeno k aplikaci</target>
@@ -2698,17 +2727,9 @@
   <source>Sync Group</source>
   <target>Synchronizovat skupinu</target>
 </trans-unit>
-<trans-unit id="s7d2d3d298fdccfc8">
-  <source>Google Workspace Group(s)</source>
-  <target>Google Workspace Skupina(y)</target>
-</trans-unit>
 <trans-unit id="se9da93aa2e6cce21">
   <source>Sync User</source>
   <target>Synchronizovat uživatele</target>
-</trans-unit>
-<trans-unit id="s8c9cf2c004755526">
-  <source>Google Workspace User(s)</source>
-  <target>Google Workspace Uživatel(é)</target>
 </trans-unit>
 <trans-unit id="s03f42eea72154959">
   <source>Username</source>
@@ -2862,14 +2883,6 @@
   <source>Search base</source>
   <target>Základ vyhledávání</target>
 </trans-unit>
-<trans-unit id="s10092327ad833090">
-  <source>Microsoft Entra Group(s)</source>
-  <target>Microsoft Entra Skupina(y)</target>
-</trans-unit>
-<trans-unit id="s811c45ad24a5feae">
-  <source>Microsoft Entra User(s)</source>
-  <target>Microsoft Entra Uživatel(é)</target>
-</trans-unit>
 <trans-unit id="s79dd6df244c05ae9">
   <source>Update Microsoft Entra Provider</source>
   <target>Aktualizovat poskytovatele Microsoft Entra</target>
@@ -2966,10 +2979,6 @@
   <source>No additional setup is required.</source>
   <target>Žádné další nastavení není vyžadováno.</target>
 </trans-unit>
-<trans-unit id="sc93712b5fbdc6810">
-  <source>Connection Token(s)</source>
-  <target>Tokeny připojení</target>
-</trans-unit>
 <trans-unit id="s526a525cdc79bbdc">
   <source>Endpoint</source>
   <target>Endpoint</target>
@@ -3004,12 +3013,15 @@
 </trans-unit>
 <trans-unit id="s1ec022562e3d515b">
   <source>Search for users by username or display name...</source>
+  <target>Filtrujte uživatele pomocí uživatelského jména nebo zobrazovaného jména...</target>
 </trans-unit>
 <trans-unit id="s65f6a2f5e2b848e1">
   <source>Search Users</source>
+  <target>Hledat uživatele</target>
 </trans-unit>
 <trans-unit id="sd416adae573583d5">
   <source>Select Users</source>
+  <target>Vybrat uživatele</target>
 </trans-unit>
 <trans-unit id="sa45a194b58837e4f">
   <source>Active</source>
@@ -3021,9 +3033,11 @@
 </trans-unit>
 <trans-unit id="s93d69514c94ad635">
   <source>Select users</source>
+  <target>Vybrat uživatele</target>
 </trans-unit>
 <trans-unit id="sb85774dc5d18ff0f">
   <source>Confirm</source>
+  <target>Potvrdit</target>
 </trans-unit>
 <trans-unit id="s75d5ff5dd8d3c6d2">
   <source>Successfully updated group.</source>
@@ -3035,15 +3049,19 @@
 </trans-unit>
 <trans-unit id="s9436f1bf4400f6a6">
   <source>Type a group name...</source>
+  <target>Napište jméno skupiny...</target>
 </trans-unit>
 <trans-unit id="s2d9356347ff7c77f">
   <source>Group Name</source>
+  <target>Jméno skupiny</target>
 </trans-unit>
 <trans-unit id="sf45dac7c571f18bd">
   <source>Superuser Privileges</source>
+  <target>Práva správce</target>
 </trans-unit>
 <trans-unit id="sbf8a7af4eafa87f8">
   <source>Whether users added to this group will have superuser privileges.</source>
+  <target>Uživatelé přidaní do této skupiny budou správci.</target>
 </trans-unit>
 <trans-unit id="s6b2beba7ab637e9e">
   <source>Roles</source>
@@ -3373,15 +3391,13 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Members</source>
   <target>Členové</target>
 </trans-unit>
-<trans-unit id="sec5cdfa358f9dbf7">
-  <source>Warning: Adding the user to the selected group(s) will give them superuser permissions.</source>
-  <target>Upozornění: Přidání uživatele do vybraných skupin jim poskytne oprávnění superuživatele.</target>
-</trans-unit>
 <trans-unit id="sb3087c7347bed341">
   <source>Company employees with access to the full enterprise feature set.</source>
+  <target>Zaměstnanci společnosti s přístupem k plné sadě funkcí Enterprise.</target>
 </trans-unit>
 <trans-unit id="sc7266f960c466de6">
   <source>External consultants or B2C customers without access to enterprise features.</source>
+  <target>Externí konzultanti nebo B2C zákazníci bez přístupu k Enterprise funkcím.</target>
 </trans-unit>
 <trans-unit id="sf4ad4d9f8a5c868b">
   <source>Machine-to-machine authentication or other automations.</source>
@@ -3419,6 +3435,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s1e2e135dac5ba993">
   <source>Email Address</source>
+  <target>E-mailová adresa</target>
 </trans-unit>
 <trans-unit id="s9fd0516c9193c73e">
   <source>Type an optional email address...</source>
@@ -3442,10 +3459,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s5cd31f4a88adf180">
   <source>Edit User</source>
   <target>Upravit uživatele</target>
-</trans-unit>
-<trans-unit id="se291dfd2a59d7842">
-  <source>Policy binding(s)</source>
-  <target>Vazba(y) zásady</target>
 </trans-unit>
 <trans-unit id="sbad5b96fb855ef36">
   <source>No Policies bound.</source>
@@ -3514,14 +3527,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>NameID attribute</source>
   <target>Atribut NameID</target>
 </trans-unit>
-<trans-unit id="sd000b42fea07c34a">
-  <source>SCIM Group(s)</source>
-  <target>SCIM skupina(y)</target>
-</trans-unit>
-<trans-unit id="s146769fb55f1ee50">
-  <source>SCIM User(s)</source>
-  <target>SCIM uživatel(é)</target>
-</trans-unit>
 <trans-unit id="sc6c575c5ff64cdb1">
   <source>Update SCIM Provider</source>
   <target>Aktualizovat SCIM poskytovatele</target>
@@ -3561,10 +3566,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s0a3fdba3a68a2730">
   <source>Applications Documentation</source>
   <target>Dokumentace aplikací</target>
-</trans-unit>
-<trans-unit id="sd20f6cd02c90867f">
-  <source>Application(s)</source>
-  <target>Aplikace</target>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
   <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
@@ -3614,10 +3615,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s86bee999b735111f">
   <source>Successfully created entitlement.</source>
   <target>Úspěšně vytvořeno oprávnění.</target>
-</trans-unit>
-<trans-unit id="s8a48455905fc14e6">
-  <source>Application entitlement(s)</source>
-  <target>Oprávnění aplikace(í)</target>
 </trans-unit>
 <trans-unit id="sae971cbff672090b">
   <source>Update Entitlement</source>
@@ -3688,7 +3685,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s64330d6dc06337c9">
   <source>Loading application...</source>
-  <target>Načítání aplikací...</target>
+  <target>Načítání aplikace…</target>
 </trans-unit>
 <trans-unit id="sea2f00b34b385a43">
   <source>Successfully updated device.</source>
@@ -3727,6 +3724,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s3624e780118ae113">
   <source>No connectors configured. Navigate to connectors in the sidebar and create a connector.</source>
+  <target>Nejsou nastaveny žádné konektory. Přejděte do konektorů v postranním panelu a vytvořte konektor.</target>
 </trans-unit>
 <trans-unit id="s8f26d4f086cc1323">
   <source>Unix</source>
@@ -3748,37 +3746,42 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s150cf10289852e4a">
   <source>Endpoint Devices are in preview.</source>
+  <target>Koncová zařízení jsou v náhledu.</target>
 </trans-unit>
 <trans-unit id="s672b3d1982f585fa">
   <source>Total devices</source>
+  <target>Celkový počet zařízení</target>
 </trans-unit>
 <trans-unit id="sf3a81f931deb9f96">
   <source>Total count of devices across all groups</source>
+  <target>Celkový počet zařízení ve všech skupinách</target>
 </trans-unit>
 <trans-unit id="sd4566519aa4dbd8e">
   <source>Unreachable devices</source>
+  <target>Nedostupná zařízení</target>
 </trans-unit>
 <trans-unit id="sf1580fcb88cbcfd8">
   <source>Devices that authentik hasn't received information about in 24h.</source>
+  <target>Zařízení, o kterých authentik neobdržel informace během posledních 24h</target>
 </trans-unit>
 <trans-unit id="s303ef08d87cd21fd">
   <source>Outdated agents</source>
+  <target>Zastaralí agenti</target>
 </trans-unit>
 <trans-unit id="s0a5821461d41f627">
   <source>Devices running an outdated version of an agent</source>
+  <target>Zařízení s zastaralou verzí agenta</target>
 </trans-unit>
 <trans-unit id="sabb56f74492e7e96">
   <source>Update Device</source>
   <target>Aktualizovat zařízení</target>
-</trans-unit>
-<trans-unit id="sf655f75d8e14d5fe">
-  <source>Endpoint Device(s)</source>
 </trans-unit>
 <trans-unit id="sd667856c73082c35">
   <source>Device <x id="0" equiv-text="${this.device?.name}"/></source>
 </trans-unit>
 <trans-unit id="s6d4cc88f2426efaf">
   <source>Loading device...</source>
+  <target>Načítání zařízení…</target>
 </trans-unit>
 <trans-unit id="s2addf9fd0d89ba11">
   <source>Device details</source>
@@ -3841,6 +3844,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="sf4372a571ffb02cd">
   <source>Refresh interval</source>
+  <target>Obnovit interval</target>
 </trans-unit>
 <trans-unit id="s3f009bda38b93134">
   <source>Interval how frequently the agent tries to update its config.</source>
@@ -3859,9 +3863,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s80b0feb2a6b98ef9">
   <source>Connectors</source>
-</trans-unit>
-<trans-unit id="s06b8c7e7fb99c1d8">
-  <source>Connector(s)</source>
+  <target>Konektory</target>
 </trans-unit>
 <trans-unit id="s476ffc07e6d66f18">
   <source>Successfully updated token.</source>
@@ -3890,9 +3892,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Expiry date</source>
   <target>Datum expirace</target>
 </trans-unit>
-<trans-unit id="se85e2f1923fd96ac">
-  <source>Enrollment Token(s)</source>
-</trans-unit>
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
   <target>Kopírovat token</target>
@@ -3902,12 +3901,11 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s3a38fceae14534dd">
   <source>Device access groups</source>
+  <target>Přístup skupin zařízení</target>
 </trans-unit>
 <trans-unit id="sbe0fb540e9dee187">
   <source>Create groups of devices to manage access.</source>
-</trans-unit>
-<trans-unit id="s7924cdccf3592aa8">
-  <source>Device Group(s)</source>
+  <target>Vytvořte skupiny zařízení pro správu přístupu.</target>
 </trans-unit>
 <trans-unit id="s24875d5475e82526">
   <source>Successfully updated source.</source>
@@ -4335,10 +4333,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Consumer secret</source>
   <target>Spotřebitelský secret</target>
 </trans-unit>
-<trans-unit id="sd46fd9b647cfea10">
-  <source>Also known as Client Secret.</source>
-  <target>Známý také jako Secret klienta.</target>
-</trans-unit>
 <trans-unit id="sa61966cd83b4924c">
   <source>Additional scopes to be passed to the OAuth Provider, separated by space. To replace existing scopes, prefix with *.</source>
   <target>Další scopes, které mají být předány poskytovateli OAuth, oddělené mezerou. Chcete-li nahradit stávající scopes, použijte předponu *.</target>
@@ -4488,10 +4482,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s6152026c364ad974">
   <source>Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.</source>
   <target>Zdroje identit, které mohou být buď synchronizovány s databází authentik, nebo je mohou uživatelé používat k ověřování a registraci.</target>
-</trans-unit>
-<trans-unit id="s0a0ca63b967f1630">
-  <source>Source(s)</source>
-  <target>Zdroj(e)</target>
 </trans-unit>
 <trans-unit id="s66722bc2ea775e05">
   <source>Disabled</source>
@@ -4674,10 +4664,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Control how authentik exposes and interprets information.</source>
   <target>Ovládejte, jak authentik zpřístupňuje a interpretuje informace.</target>
 </trans-unit>
-<trans-unit id="s59dc0eda07f9e2b6">
-  <source>Property Mapping(s)</source>
-  <target>Mapování vlastností</target>
-</trans-unit>
 <trans-unit id="s7468e87263dfff7e">
   <source>Identifier</source>
   <target>Identifikátor</target>
@@ -4713,10 +4699,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="sdcc7b2c109ce9775">
   <source>Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.</source>
   <target>Tokeny se používají v celém systému authentik pro fáze ověřování e-mailů, klíčů pro obnovení a přístupu k rozhraní API.</target>
-</trans-unit>
-<trans-unit id="s71dcd9cf808449aa">
-  <source>Token(s)</source>
-  <target>Token(y)</target>
 </trans-unit>
 <trans-unit id="sb15e8daacf26bdfc">
   <source>Create Token</source>
@@ -4907,10 +4889,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Default?</source>
   <target>Výchozí?</target>
 </trans-unit>
-<trans-unit id="s02774bc46a167346">
-  <source>Brand(s)</source>
-  <target>Značka(y)</target>
-</trans-unit>
 <trans-unit id="s8cb7bb82e96d5d77">
   <source>Policies</source>
   <target>Zásady</target>
@@ -4919,18 +4897,9 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.</source>
   <target>Umožněte uživatelům používat aplikace na základě vlastností, vynucovat kritéria pro hesla a selektivně aplikovat Kroky.</target>
 </trans-unit>
-<trans-unit id="se16ac750b81fa93d">
-  <source>Assigned to <x id="0" equiv-text="${item.boundTo}"/> object(s).</source>
-  <target>Přiřazeno k
-        <x id="0" equiv-text="${item.boundTo}"/>objektu(ům).</target>
-</trans-unit>
 <trans-unit id="s5a48d5171e1a1522">
   <source>Warning: Policy is not assigned.</source>
   <target>Upozornění: Zásada není přiřazena.</target>
-</trans-unit>
-<trans-unit id="s00c8354318addfa0">
-  <source>Policy / Policies</source>
-  <target>Zásada / Zásady</target>
 </trans-unit>
 <trans-unit id="s76da2c978dcc5ef4">
   <source>Successfully cleared policy cache</source>
@@ -4968,10 +4937,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Updated</source>
   <target>Aktualizováno</target>
 </trans-unit>
-<trans-unit id="sa33d061d2ade20aa">
-  <source>Reputation</source>
-  <target>Reputace</target>
-</trans-unit>
 <trans-unit id="sf0d94539428a0900">
   <source>Search for a group by name…</source>
 </trans-unit>
@@ -4989,10 +4954,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s62f93cfcb45d5a06">
   <source>Superuser privileges?</source>
   <target>Práva superuživatele?</target>
-</trans-unit>
-<trans-unit id="s9fdda7ea4642306c">
-  <source>Group(s)</source>
-  <target>Skupiny</target>
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
   <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
@@ -5047,10 +5008,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Email stage</source>
   <target>Krok e-mailu</target>
 </trans-unit>
-<trans-unit id="sdb53ccdd6174e6e3">
-  <source>Successfully added user(s).</source>
-  <target>Uživatel(é) byl(i) úspěšně přidán(i).</target>
-</trans-unit>
 <trans-unit id="s586d6bd2eca2da93">
   <source>Users</source>
   <target>Uživatelé</target>
@@ -5061,14 +5018,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s424f57afae0caac4">
   <source>Add users</source>
   <target>Přidat uživatele</target>
-</trans-unit>
-<trans-unit id="s7d499be3b781a3ca">
-  <source>User(s)</source>
-  <target>Uživatel(é)</target>
-</trans-unit>
-<trans-unit id="s10154dbd4fbc697b">
-  <source>removed</source>
-  <target>odstraněno</target>
 </trans-unit>
 <trans-unit id="sf466142da6a65052">
   <source>Impersonate</source>
@@ -5173,6 +5122,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s3ef09dfdd0568b6e">
   <source>Search by username, email, etc...</source>
+  <target> Filtrujte pomocí uživatelského jména, emailu, atd....</target>
 </trans-unit>
 <trans-unit id="sd65f96914ccbeb76">
   <source>User Search</source>
@@ -5192,10 +5142,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s441f155311f1748a">
   <source>User paths</source>
 </trans-unit>
-<trans-unit id="sa982875b258fea07">
-  <source>Successfully added user to group(s).</source>
-  <target>Uživatel byl úspěšně přidán do skupin(y)</target>
-</trans-unit>
 <trans-unit id="s1bd5920d8adf2bd5">
   <source>Groups to add</source>
   <target>Skupiny k přidání</target>
@@ -5203,10 +5149,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="sd9f67fbf3f86efcf">
   <source>Add group</source>
   <target>Přidat skupinu</target>
-</trans-unit>
-<trans-unit id="s5f71fa3c53828e30">
-  <source>Remove from Group(s)</source>
-  <target>Odebrat ze skupin(y)</target>
 </trans-unit>
 <trans-unit id="sb4c9ed2a487b238f">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following groups?</source>
@@ -5237,14 +5179,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>ID Token</source>
   <target>ID tokenu</target>
 </trans-unit>
-<trans-unit id="s4a799b4562ab2051">
-  <source>Access Tokens(s)</source>
-  <target>Přístupové tokeny</target>
-</trans-unit>
-<trans-unit id="s90760e5e02e95dfe">
-  <source>Refresh Tokens(s)</source>
-  <target>Obnovit token(y)</target>
-</trans-unit>
 <trans-unit id="s1b88fa3df4423292">
   <source>Last IP</source>
   <target>Poslední IP</target>
@@ -5253,10 +5187,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Last used</source>
   <target>Naposledy použito</target>
 </trans-unit>
-<trans-unit id="se63f9d833700af49">
-  <source>Session(s)</source>
-  <target>Relace</target>
-</trans-unit>
 <trans-unit id="sf679b7a62808287e">
   <source>Expiry</source>
   <target>Expirace</target>
@@ -5264,14 +5194,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="sde1907073fd96017">
   <source>(Current session)</source>
   <target>(Aktuální relace)</target>
-</trans-unit>
-<trans-unit id="s76881c01b6a3a8c7">
-  <source>Consent(s)</source>
-  <target>Souhlas(y)</target>
-</trans-unit>
-<trans-unit id="s23446284b56ca0cc">
-  <source>Reputation score(s)</source>
-  <target>Reputační skóre</target>
 </trans-unit>
 <trans-unit id="sd2208cd1a767644b">
   <source>Disconnect</source>
@@ -5322,10 +5244,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="sbfee780fa0a2c83e">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
   <target>Typ zařízení <x id="0" equiv-text="${device.verboseName}"/> nelze smazat</target>
-</trans-unit>
-<trans-unit id="sa0b01f479f40c52d">
-  <source>Device(s)</source>
-  <target>Zařízení</target>
 </trans-unit>
 <trans-unit id="sd1f44f1a8bc20e67">
   <source>Email</source>
@@ -5398,10 +5316,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s3484b1e6d0b5335f">
   <source>Manage roles which grant permissions to objects within authentik.</source>
   <target>Spravujte role, které udělují oprávnění objektům v rámci authentiku.</target>
-</trans-unit>
-<trans-unit id="s259de999919316db">
-  <source>Role(s)</source>
-  <target>Role</target>
 </trans-unit>
 <trans-unit id="s6ea6a64acb45dfdf">
   <source>Successfully updated initial permissions.</source>
@@ -5494,10 +5408,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s4aee34a672e5cfc0">
   <source>Created by</source>
   <target>Vytvořil</target>
-</trans-unit>
-<trans-unit id="sd5ba2d61ee4796fe">
-  <source>Invitation(s)</source>
-  <target>Pozvánky</target>
 </trans-unit>
 <trans-unit id="s96dcf7ec8342c335">
   <source>Invitation not limited to any flow, and can be used with any enrollment flow.</source>
@@ -5699,10 +5609,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Stages</source>
   <target>Kroky</target>
 </trans-unit>
-<trans-unit id="sec7443a45fd141e5">
-  <source>Prompt(s)</source>
-  <target>Výzva(y)</target>
-</trans-unit>
 <trans-unit id="s61b6f3e6bc59c6dd">
   <source>Create Prompt</source>
   <target>Vytvořit výzvu</target>
@@ -5825,7 +5731,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s503217f10ebdc63e">
   <source>Loading templates...</source>
-  <target>Načítám šablony...</target>
+  <target>Načítání šablon…</target>
 </trans-unit>
 <trans-unit id="s6891d230751dd7bf">
   <source>Template used for the verification email.</source>
@@ -6367,10 +6273,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>User database + Kerberos password</source>
   <target>Uživatelská databáze + heslo Kerberos</target>
 </trans-unit>
-<trans-unit id="sdc30bddeda2f0225">
-  <source>Validate the user's password against the selected backend(s).</source>
-  <target>Ověřte heslo uživatele proti vybraným backendům.</target>
-</trans-unit>
 <trans-unit id="sb8d4f44a1d5b9a14">
   <source>Backends</source>
   <target>Backendy</target>
@@ -6385,10 +6287,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s77994108c886b965">
   <source>Failed attempts before cancel</source>
   <target>Neúspěšné pokusy před zrušením</target>
-</trans-unit>
-<trans-unit id="sa9020b93c3bd7235">
-  <source>How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.</source>
-  <target>Kolik pokusů má uživatel, než je tok zrušen. Pro uzamčení uživatele použijte zásadu reputace a fázi user_write.</target>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
@@ -6688,10 +6586,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Automatic import</source>
   <target>Automatický import</target>
 </trans-unit>
-<trans-unit id="s77299a9d3dd932cd">
-  <source>Successfully imported <x id="0" equiv-text="${res.count}"/> devices.</source>
-  <target>Úspěšně importováno <x id="0" equiv-text="${res.count}"/> zařízení.</target>
-</trans-unit>
 <trans-unit id="s6a615f6165ef01c9">
   <source>Start automatic import</source>
   <target>Zahájit automatický import</target>
@@ -6719,10 +6613,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="sb69a4b0acd0895f2">
   <source>Flows</source>
   <target>Toky</target>
-</trans-unit>
-<trans-unit id="s0eaf755fa88c8d97">
-  <source>Stage(s)</source>
-  <target>Krok(y)</target>
 </trans-unit>
 <trans-unit id="s3914cb410fca44d4">
   <source>Import</source>
@@ -6831,10 +6721,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
   <target>Toky popisují řetězec Kroků pro ověření, registraci nebo obnovení uživatele. Kroky jsou vybírány na základě zásad, které jsou na ně aplikovány.</target>
 </trans-unit>
-<trans-unit id="s6f857299d5db1ecf">
-  <source>Flow(s)</source>
-  <target>Tok(y)</target>
-</trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
   <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
@@ -6866,10 +6752,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
             This will cause all flows to be re-evaluated on their next usage.</source>
   <target>Opravdu chcete vymazat mezipaměť toku?
             To způsobí, že všechny toky budou znovu vyhodnoceny při jejich dalším použití.</target>
-</trans-unit>
-<trans-unit id="sbe47a5bdeec19ab0">
-  <source>Stage binding(s)</source>
-  <target>Vazba(y) kroku</target>
 </trans-unit>
 <trans-unit id="sfa88f413e287bb0f">
   <source>Stage type</source>
@@ -7015,10 +6897,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Define how notifications are sent to users, like Email or Webhook.</source>
   <target>Definujte, jak jsou oznámení odesílána uživatelům, například e-mailem nebo webhookem.</target>
 </trans-unit>
-<trans-unit id="s624256f8a4bb4c89">
-  <source>Notification transport(s)</source>
-  <target>Transport(y) oznámení</target>
-</trans-unit>
 <trans-unit id="s0a39e4f61ccafacb">
   <source>Successfully updated rule.</source>
   <target>Pravidlo bylo úspěšně aktualizováno.</target>
@@ -7066,16 +6944,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="sf3f9a0feaf083207">
   <source>Sent to group</source>
   <target>Odesláno skupině</target>
-</trans-unit>
-<trans-unit id="sc92ed9d5e01d3f24">
-  <source>Notification rule(s)</source>
-  <target>Pravidla oznámení</target>
-</trans-unit>
-<trans-unit id="s5795b310ab271d20">
-  <source>These bindings control upon which events this rule triggers.
-Bindings to groups/users are checked against the user of the event.</source>
-  <target>Tyto vazby určují, při jakých událostech se toto pravidlo spustí.
-Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</target>
 </trans-unit>
 <trans-unit id="s90c3b62194fe8508">
   <source>Outpost Deployment Info</source>
@@ -7184,10 +7052,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>No integration active</source>
   <target>Žádná aktivní integrace</target>
 </trans-unit>
-<trans-unit id="s1d49ec5030447643">
-  <source>Outpost(s)</source>
-  <target>Outposty</target>
-</trans-unit>
 <trans-unit id="sdc1ef94016f0d855">
   <source>Successfully updated integration.</source>
   <target>Integrace byla úspěšně aktualizována.</target>
@@ -7251,10 +7115,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="sb96629f50f2e7fab">
   <source>Unhealthy</source>
   <target>Nezdravý</target>
-</trans-unit>
-<trans-unit id="sa8e255492bb6ae0d">
-  <source>Outpost integration(s)</source>
-  <target>Integrace outpostu/ů</target>
 </trans-unit>
 <trans-unit id="s9d18948d25c68d66">
   <source>Successfully generated certificate-key pair.</source>
@@ -7595,12 +7455,8 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Last applied</source>
   <target>Naposledy použito</target>
 </trans-unit>
-<trans-unit id="s2708cac1f4942708">
-  <source>Blueprint(s)</source>
-  <target>Plán(y)</target>
-</trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+  <source>Apply "<x id="0" equiv-text="${name}"/>" blueprint</source>
 </trans-unit>
 <trans-unit id="sb8f855b49234b81b">
   <source>Apply</source>
@@ -7661,10 +7517,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="sf9ebf11ac2645820">
   <source>No licenses found.</source>
   <target>Nebyly nalezeny žádné licence.</target>
-</trans-unit>
-<trans-unit id="sd49099e9522635f4">
-  <source>License(s)</source>
-  <target>Licence</target>
 </trans-unit>
 <trans-unit id="sd22bd01bdf28c548">
   <source>Cumulative license expiry</source>
@@ -7733,24 +7585,13 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Enterprise</source>
   <target>Podnik</target>
 </trans-unit>
-<trans-unit id="sd51d6a39208696cc">
-  <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
-  <target>Sbalit <x id="0" equiv-text="${this.label}"/></target>
-</trans-unit>
-<trans-unit id="scce64bcfb0a73ad7">
-  <source>Expand <x id="0" equiv-text="${this.label}"/></source>
-  <target>Rozbalit <x id="0" equiv-text="${this.label}"/></target>
-</trans-unit>
-<trans-unit id="sfe1fb536cab6c0f5">
-  <source><x id="0" equiv-text="${this.label}"/> navigation</source>
-  <target><x id="0" equiv-text="${this.label}"/> navigace</target>
-</trans-unit>
 <trans-unit id="s8849ece8c65e3a18">
   <source>Dashboards</source>
   <target>Ovládací panely</target>
 </trans-unit>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
+  <target> Koncová zařízení</target>
 </trans-unit>
 <trans-unit id="s4f1ad6b48a5df506">
   <source>Logs</source>
@@ -7788,14 +7629,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Warning: The current user count has exceeded the configured licenses.</source>
   <target>Upozornění: Aktuální počet uživatelů překročil načtené licence.</target>
 </trans-unit>
-<trans-unit id="s9f4d6296b906d591">
-  <source>Warning: One or more license(s) have expired.</source>
-  <target>Upozornění: Jedné nebo více licencím vypršela platnost.</target>
-</trans-unit>
-<trans-unit id="s3b016caea59af3ef">
-  <source>Warning: One or more license(s) will expire within the next 2 weeks.</source>
-  <target>Upozornění: Jedné nebo více licencím vyprší platnost během následujících 2 týdnů.</target>
-</trans-unit>
 <trans-unit id="sd8a5f7269b7ac7a3">
   <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
   <target>Pozor: Tato instance authentik přešla do režimu pouze pro čtení kvůli vypršeným/překročeným licencím.</target>
@@ -7818,6 +7651,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sf6707428adeba590">
   <source>API drawer</source>
+  <target>Panel API</target>
 </trans-unit>
 <trans-unit id="s32a3efa23718e713">
   <source>API Requests</source>
@@ -7829,6 +7663,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sf3b5b13c6b55eb4c">
   <source>Close API drawer</source>
+  <target>Zavřít panel API</target>
 </trans-unit>
 <trans-unit id="sfa991acd65f738bf">
   <source>View details for <x id="0" equiv-text="${displayName}"/></source>
@@ -7852,20 +7687,8 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Notifications</source>
   <target>Oznámení</target>
 </trans-unit>
-<trans-unit id="sf1a3d030efd11f28">
-  <source>Open about dialog</source>
-  <target>Otevřít dialog O programu</target>
-</trans-unit>
-<trans-unit id="s95b96d7ead27527f">
-  <source>Product name</source>
-  <target>Název produktu</target>
-</trans-unit>
-<trans-unit id="s68b6d404c3349b18">
-  <source>Product version</source>
-  <target>Verze produktu</target>
-</trans-unit>
 <trans-unit id="s358e08de4fbebf51">
-  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent}"/></source>
   <target>Verze <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="se0d7715f3211d220">
@@ -8328,10 +8151,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
   <target>Připojení selhalo po <x id="0" equiv-text="${this.connectionAttempt}"/> pokusech.</target>
 </trans-unit>
-<trans-unit id="s7c7d956418e1c8c8">
-  <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
-  <target>Opětovné připojení za <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> sekund.</target>
-</trans-unit>
 <trans-unit id="sfc003381f593d943">
   <source>Connecting...</source>
   <target>Připojování...</target>
@@ -8347,6 +8166,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
+  <target>Upravit aplikaci…</target>
 </trans-unit>
 <trans-unit id="s3fb39fc45e840f78">
   <source>Refer to documentation</source>
@@ -8365,6 +8185,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
+  <target>Vyhledat aplikaci podle názvu...</target>
 </trans-unit>
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
@@ -8448,12 +8269,14 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s8015ac3b47172dc8">
   <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
+  <target>Vyberte z nahraných souborů nebo zadejte ikonu Font Awesome (fa://fa-icon-name) nebo URL.</target>
 </trans-unit>
 <trans-unit id="s87616130c08b117c">
   <source>This type is deprecated.</source>
 </trans-unit>
 <trans-unit id="s40f4c2223ce87751">
   <source>No connectors configured. Navigate to Connectors in the sidebar and first create a connector.</source>
+  <target>Nejsou nastaveny žádné konektory. Přejděte do konektorů v postranním panelu a vytvořte konektor.</target>
 </trans-unit>
 <trans-unit id="s70c2cd89201ecca9">
   <source>Home directory</source>
@@ -8481,6 +8304,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="se0a747f4db08e87f">
   <source>Configure how devices connect with authentik and ingest external device data.</source>
+  <target>Nastavte způsob připojení zařízení k autentizaci a načítání dat z externích zařízení.</target>
 </trans-unit>
 <trans-unit id="s114f2b310ef163ff">
   <source>Stage which associates the currently used device with the current session.</source>
@@ -8502,15 +8326,10 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
+  <target>Soubory</target>
 </trans-unit>
 <trans-unit id="s42d82601762f5321">
   <source>Manage uploaded files.</source>
-</trans-unit>
-<trans-unit id="saad01178f02a6a23">
-  <source>file</source>
-</trans-unit>
-<trans-unit id="s69f800801812a5f0">
-  <source>files</source>
 </trans-unit>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
@@ -8590,38 +8409,31 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
 </trans-unit>
-<trans-unit id="s11a2ac9f2bd811d8">
-  <source>Delete Object Permission</source>
-</trans-unit>
-<trans-unit id="s78aa910bcb26034d">
-  <source>Global and object permission</source>
-</trans-unit>
-<trans-unit id="sc8f73affccb6ae4d">
-  <source>Global permission</source>
-</trans-unit>
-<trans-unit id="scf9ebad133d2d561">
-  <source>Object permission</source>
-</trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
+  <target>Oprávnění k tomuto objektu</target>
 </trans-unit>
 <trans-unit id="s4d83e4891c19ff14">
   <source>Permissions assigned to this role affecting specific object instances.</source>
+  <target>Oprávnění přiřazená této roli, která ovlivňují konkrétní instance objektů.</target>
 </trans-unit>
 <trans-unit id="s3e07daaacb10f38a">
   <source>Parents</source>
 </trans-unit>
 <trans-unit id="s74636eae90c1a208">
   <source>Available Groups</source>
+  <target>Dostupné skupiny</target>
 </trans-unit>
 <trans-unit id="s66d795717763ca54">
   <source>Selected Groups</source>
+  <target>Vybrané skupiny</target>
 </trans-unit>
 <trans-unit id="sab46a062a503d9bb">
   <source>A group recursively inherits every role from its ancestors.</source>
 </trans-unit>
 <trans-unit id="sb75f1413fcfbd4bd">
   <source>User updated.</source>
+  <target>Uživatel aktualizován.</target>
 </trans-unit>
 <trans-unit id="s13625030f6501a5f">
   <source>User created and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
@@ -8631,6 +8443,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sd1d84a93a9a8dd44">
   <source>User created.</source>
+  <target>Uživatel vytvořen.</target>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
   <source>Successfully downloaded <x id="0" equiv-text="${this.config.filename}"/>!</source>
@@ -8643,12 +8456,11 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s4a7ec7687e560e6a">
   <source>Is Primary user</source>
+  <target>Je primární uživatel</target>
 </trans-unit>
 <trans-unit id="se14ede3bc78d9599">
   <source>Primary</source>
-</trans-unit>
-<trans-unit id="sc67ff7b2278e81e4">
-  <source>Remove User(s)</source>
+  <target>Primární</target>
 </trans-unit>
 <trans-unit id="s76e10cbcb80c3a64">
   <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
@@ -8659,26 +8471,25 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
 </trans-unit>
-<trans-unit id="sed582fb69fd1eed8">
-  <source>Successfully added user to role(s).</source>
-</trans-unit>
 <trans-unit id="s78daaa3ef4325cac">
   <source>Roles to add</source>
+  <target>Role k přidání</target>
 </trans-unit>
 <trans-unit id="sca5f586369a597a4">
   <source>Add role</source>
-</trans-unit>
-<trans-unit id="sd8b8f59ad30971f7">
-  <source>Remove from Role(s)</source>
+  <target>Přdat roli</target>
 </trans-unit>
 <trans-unit id="s5fcb76c89d17698c">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following roles?</source>
+  <target>Opravdu chcete odstranit uživatele <x id="0" equiv-text="${this.targetUser?.username}"/> z následujících rolí?</target>
 </trans-unit>
 <trans-unit id="s1d6a69c054342126">
   <source>Add to existing role</source>
+  <target>Přidat k existující roli</target>
 </trans-unit>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
+  <target>Přidat novou roli</target>
 </trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
@@ -8697,15 +8508,14 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s2d119c0d85bde088">
   <source>Creation date</source>
+  <target>Datum vytvoření</target>
 </trans-unit>
 <trans-unit id="s5033dab8c17f05f2">
   <source>Completed</source>
+  <target>Dokončeno</target>
 </trans-unit>
 <trans-unit id="s21c76a0f6cae7920">
   <source>Row actions</source>
-</trans-unit>
-<trans-unit id="s97aa774d38013957">
-  <source>Data export(s)</source>
 </trans-unit>
 <trans-unit id="s694b2e2c53d2d85d">
   <source>Query parameters</source>
@@ -8751,15 +8561,19 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s51610dc462a5a034">
   <source>Pagination: default page size</source>
+  <target>Stránkování: výchozí velikost stránky</target>
 </trans-unit>
 <trans-unit id="s05d8a93b0de05ad4">
   <source>Default page size for API requests not specifying a page size.</source>
+  <target>Výchozí velikost stránky pro API požadavky, které nespecifikují velikost stránky.</target>
 </trans-unit>
 <trans-unit id="s41dac4f4d7caffa7">
   <source>Pagination: maximum page size</source>
+  <target>Stránkování: maximální velikost stránky</target>
 </trans-unit>
 <trans-unit id="s567c5a6e42cc5036">
   <source>Maximum page size for API requests.</source>
+  <target>Maximální velikost stránky pro API požadavky.</target>
 </trans-unit>
 <trans-unit id="s9864bd5cd7bb4bd0">
   <source>Local connection</source>
@@ -8814,6 +8628,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sbb99d4ec27fbb263">
   <source>Finished</source>
+  <target>Dokončeno</target>
 </trans-unit>
 <trans-unit id="s3ec4da71c1a62754">
   <source>Queued</source>
@@ -8848,9 +8663,11 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sb6650552aaaf5da0">
   <source>Assigned Roles</source>
+  <target>Přiřazené role</target>
 </trans-unit>
 <trans-unit id="s5cbf3cbb4cf38b05">
   <source>All Roles</source>
+  <target>Všechny role</target>
 </trans-unit>
 <trans-unit id="s6a850cd00064d6e6">
   <source>Inherited from parent group</source>
@@ -8866,12 +8683,15 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s355e4737a0286070">
   <source>API Drawer</source>
+  <target>Přihrádka API</target>
 </trans-unit>
 <trans-unit id="drawer-toggle-button-notifications">
   <source>Toggle notifications drawer</source>
+  <target>Přepnout oznamovací panel</target>
 </trans-unit>
 <trans-unit id="drawer-invoker-tooltip-notifications">
   <source>Notification Drawer</source>
+  <target>Oznamovací panel</target>
 </trans-unit>
 <trans-unit id="s5fa7f18dcfc98131">
   <source>Failed to fetch notifications.</source>
@@ -8881,19 +8701,18 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="notification-drawer-close">
   <source>Close notification drawer</source>
+  <target>Zavřít oznamovací panel</target>
 </trans-unit>
 <trans-unit id="s54e4d61fc46a14be">
   <source>No MFA devices enrolled.</source>
+  <target>Není zapsáno žádné MFA zařízení.</target>
 </trans-unit>
 <trans-unit id="s227aacd5a7fc6f50">
   <source>User Tokens</source>
 </trans-unit>
 <trans-unit id="sea858aeacf6ae9b0">
   <source>No User Tokens enrolled.</source>
-</trans-unit>
-<trans-unit id="notification-unread-count">
-  <source><x id="0" equiv-text="${unreadCount}"/> unread</source>
-  <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+  <target>Není zapsán žádný uživatelský token.</target>
 </trans-unit>
 <trans-unit id="s42636dae6e29892e">
   <source>Agent version: <x id="0" equiv-text="${vendorData.agent_version ?? &quot;-&quot;}"/></source>
@@ -8918,6 +8737,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="avatar.alt-text-for-user">
   <source>Avatar for <x id="0" equiv-text="${this.username}"/></source>
+  <target>Avatar pro <x id="0" equiv-text="${this.username}"/></target>
 </trans-unit>
 <trans-unit id="avatar.alt-text">
   <source>User avatar</source>
@@ -8932,18 +8752,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="stage.authenticator.email.sent">
   <source>A verification token has been sent to your email address.</source>
   <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
-</trans-unit>
-<trans-unit id="user.library.application-count-singular-with-query">
-  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="user.library.application-count-plural-with-query">
-  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="user.library.application-count-singular">
-  <source><x id="0" equiv-text="${count}"/> application available</source>
-</trans-unit>
-<trans-unit id="user.library.application-count-plural">
-  <source><x id="0" equiv-text="${count}"/> applications available</source>
 </trans-unit>
 <trans-unit id="user.library.search.type-to-filter-hint">
   <source>Type to filter applications</source>
@@ -8964,17 +8772,11 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="sc1e9c9bab6765c74">
   <source>Active Sessions</source>
 </trans-unit>
-<trans-unit id="s83991563e9d607ac">
-  <source>Successfully revoked <x id="0" equiv-text="${this.revokedCount}"/> session(s) for <x id="1" equiv-text="${this.users.length}"/> user(s)</source>
-</trans-unit>
 <trans-unit id="s4b004192e4d6ab2e">
   <source>Failed to revoke sessions: <x id="0" equiv-text="${e.toString()}"/></source>
 </trans-unit>
 <trans-unit id="sb458ffb37cbde768">
   <source>Revoke Sessions</source>
-</trans-unit>
-<trans-unit id="s1bd2d0f088b75b92">
-  <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${this.users.length}"/> user(s)?</source>
 </trans-unit>
 <trans-unit id="s5c5e74eabcb9eba1">
   <source>This will force the selected users to re-authenticate on all their devices.</source>
@@ -9092,26 +8894,8 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="captcha.provider-link">
   <source>API keys can be obtained from the
-                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${formatAPISource()}&lt;/a&#10;                                                &gt;.`}"/></source>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                    target=&quot;_blank&quot;&#10;                                                    rel=&quot;noopener noreferrer&quot;&#10;                                                    href=${keyURL}&#10;                                                    &gt;${apiSourceLabel}&lt;/a&#10;                                                &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
-</trans-unit>
-<trans-unit id="s3934affe32f6a454">
-  <source><x id="0" equiv-text="${availableCount}"/> item marked to add.</source>
-</trans-unit>
-<trans-unit id="s8b68948382758d57">
-  <source><x id="0" equiv-text="${availableCount}"/> items marked to add.</source>
-</trans-unit>
-<trans-unit id="s3a482e34c3713e41">
-  <source><x id="0" equiv-text="${selectedTotal}"/> item selected.</source>
-</trans-unit>
-<trans-unit id="s726a7342e18dc660">
-  <source><x id="0" equiv-text="${selectedTotal}"/> items selected.</source>
-</trans-unit>
-<trans-unit id="s403a360d48a11d5f">
-  <source><x id="0" equiv-text="${selectedCount}"/> item marked to remove.</source>
-</trans-unit>
-<trans-unit id="s2e92b61847f32e72">
-  <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
 </trans-unit>
 <trans-unit id="sa5d4a82c5daae3de">
   <source>Reply URL</source>
@@ -9302,9 +9086,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s24cc4e5aa6446401">
   <source>Schedule periodic reviews for objects in authentik.</source>
 </trans-unit>
-<trans-unit id="s468f705986fff045">
-  <source>Lifecycle rule(s)</source>
-</trans-unit>
 <trans-unit id="s9279704dfc98cdf9">
   <source>No reviews yet.</source>
 </trans-unit>
@@ -9319,18 +9100,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s5754eb43287dd6e5">
   <source>No review iteration found for this object.</source>
-</trans-unit>
-<trans-unit id="s68ea8ed25680242f">
-  <source>At least <x id="0" equiv-text="${minReviewers}"/> user from this group: <x id="1" equiv-text="${groupList}"/>.</source>
-</trans-unit>
-<trans-unit id="sd9e03fcf99724085">
-  <source>At least <x id="0" equiv-text="${minReviewers}"/> user from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
-</trans-unit>
-<trans-unit id="sbbaa87f8826a0756">
-  <source>At least <x id="0" equiv-text="${minReviewers}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
-</trans-unit>
-<trans-unit id="s79ef398b6e3e2c44">
-  <source>At least <x id="0" equiv-text="${minReviewers}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
 </trans-unit>
 <trans-unit id="s33d20c1a2e0bf773">
   <source>Review opened on</source>
@@ -9429,9 +9198,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="safcbc1ba006eba57">
   <source>Please enter at least one email address</source>
-</trans-unit>
-<trans-unit id="s0f957a7b0725a6dd">
-  <source>Invitation emails queued for sending to <x id="0" equiv-text="${addresses.length}"/> recipient(s). Check the System Tasks for more information.</source>
 </trans-unit>
 <trans-unit id="s27c34847aec88ec6">
   <source>Failed to queue invitation emails: <x id="0" equiv-text="${error}"/></source>
@@ -9687,6 +9453,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s74cb3d66f6a668e1">
   <source>Documentation</source>
+  <target>Dokumentace</target>
 </trans-unit>
 <trans-unit id="sdf1d745af5aa858f">
   <source>Release notes</source>
@@ -9720,9 +9487,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="command-palette.prefix.reloads-page">
   <source>Reloads page</source>
-</trans-unit>
-<trans-unit id="s35ed5cf95b0c7262">
-  <source>authentik information</source>
 </trans-unit>
 <trans-unit id="s55402a876309f95b">
   <source>Landmark: <x id="0" equiv-text="${capitalCase(this.pageIdentifier)}"/></source>
@@ -9820,9 +9584,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="sa79a733d1d6ea7ca">
   <source>When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.</source>
 </trans-unit>
-<trans-unit id="sd70c33ce20f4221f">
-  <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${totalCount}"/> instances are healthy.</source>
-</trans-unit>
 <trans-unit id="sc1006ec5976bf600">
   <source>Federated OAuth2/OpenID Providers</source>
 </trans-unit>
@@ -9831,9 +9592,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s83cb0a6bd0b57d0c">
   <source>Verify Push stream endpoints' certificate</source>
-</trans-unit>
-<trans-unit id="s2044fd89e1e779ff">
-  <source>Stream(s)</source>
 </trans-unit>
 <trans-unit id="sdbfc37eb5da37686">
   <source>Delivery method</source>
@@ -9865,9 +9623,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s0e1a87cb82be68ac">
   <source>No connectivity status available.</source>
 </trans-unit>
-<trans-unit id="sf053496846861a89">
-  <source>LDAP Group(s)</source>
-</trans-unit>
 <trans-unit id="s08d22cb65d51ec12">
   <source>Connect Group</source>
 </trans-unit>
@@ -9876,9 +9631,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sf5c3def20e22e0ac">
   <source>The unique identifier of this object in LDAP, the value of the '<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>' attribute.</source>
-</trans-unit>
-<trans-unit id="s6e982a7b2b65c859">
-  <source>LDAP User(s)</source>
 </trans-unit>
 <trans-unit id="s37d7a0b00f4f6378">
   <source>Connect User</source>
@@ -10182,6 +9934,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s8489d5559dda260c">
   <source>Role Object Permissions</source>
+  <target>Oprávnění objektu role</target>
 </trans-unit>
 <trans-unit id="se84477a0cb9d8781">
   <source>Object Permission</source>
@@ -10191,6 +9944,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s8b0432eecbd8b034">
   <source>Update</source>
+  <target>Aktualizovat</target>
 </trans-unit>
 <trans-unit id="sa6f726a43ec55a63">
   <source>Search for a role...</source>
@@ -10348,9 +10102,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="se0bf7f662ec09302">
   <source>An error occurred while loading <x id="0" equiv-text="${this.verboseName}"/>.</source>
 </trans-unit>
-<trans-unit id="s4fd2fe9adfd426e9">
-  <source>Select an option...</source>
-</trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
 </trans-unit>
@@ -10495,9 +10246,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="used-by.consequence.unrecognized">
   <source><x id="0" equiv-text="${verboseName}"/> has an unrecognized relationship (check logs)</source>
 </trans-unit>
-<trans-unit id="s539942ab7cc7210e">
-  <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/></source>
-</trans-unit>
 <trans-unit id="sc420894701de5ea3">
   <source>Modify</source>
 </trans-unit>
@@ -10527,14 +10275,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Unknown user</source>
   <note from="lit-localize">Placeholder for an unknown user, in the format 'Unknown user'.</note>
 </trans-unit>
-<trans-unit id="usedBy.count.other">
-  <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${usedByList.length}"/> objects.</source>
-  <note from="lit-localize">Plural: N objects use this entity.</note>
-</trans-unit>
-<trans-unit id="usedBy.count.one">
-  <source><x id="0" equiv-text="${verboseName}"/> is associated with one object.</source>
-  <note from="lit-localize">Singular: exactly one object uses this entity.</note>
-</trans-unit>
 <trans-unit id="table.empty">
   <source>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</source>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
@@ -10546,10 +10286,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="used-by-list-item">
   <source><x id="0" equiv-text="${formattedName}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
   <note from="lit-localize">Used in list item, showing the name of the object and the consequence of deletion.</note>
-</trans-unit>
-<trans-unit id="usedBy.count.zero">
-  <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
-  <note from="lit-localize">Zero: no objects use this entity.</note>
 </trans-unit>
 <trans-unit id="s78a13f8f08d3a317">
   <source>Authorization Code</source>
@@ -10620,6 +10356,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>Pokud je povoleno, oznámení se kromě uživatelů ve skupině výše odešle také původci události. Uživatel, který událost vyvolal, je vždy prvním příjemcem; pokud má být oznámení doručeno pouze jednou, je třeba v transportu notifikací zapnout volbu ‘Poslat jednou’.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -10912,7 +10649,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="captcha.provider-link.cap">
   <source>Use the
-                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;`}"/>
+                                            <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${apiSourceLabel}&lt;/a&#10;                                            &gt;`}"/>
                                             to self-host Cap and configure the endpoint.</source>
   <note from="lit-localize">Supplementary help text with link to Cap documentation.</note>
 </trans-unit>
@@ -10970,10 +10707,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="table.emptyState.search">
   <source>No <x id="0" equiv-text="${singularNoun}"/> matches "<x id="1" equiv-text="${truncateWords(this.search, 50)}"/>"</source>
   <note from="lit-localize">Empty state message when no objects match the search query, where the entity singular is interpolated, followed by the search query truncated to 50 characters.</note>
-</trans-unit>
-<trans-unit id="wizard.header.verbose-name.one">
-  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
-  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
 </trans-unit>
 <trans-unit id="tokens.copy-button.label">
   <source>Copy token</source>
@@ -11075,9 +10808,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s82c71ab0a2d18257">
   <source>Type a name for the stage...</source>
 </trans-unit>
-<trans-unit id="s10dd794d4839378e">
-  <source>Select an enrollment flow.</source>
-</trans-unit>
 <trans-unit id="sece0e7e9d7ad08bf">
   <source>e.g. my-invite</source>
 </trans-unit>
@@ -11168,9 +10898,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s0b9470a6fac5a80b">
   <source>Object attributes</source>
 </trans-unit>
-<trans-unit id="s25fb1e88492eba62">
-  <source>Object Attribute(s)</source>
-</trans-unit>
 <trans-unit id="sc8d9d9b824e7e8e9">
   <source>New Attribute</source>
 </trans-unit>
@@ -11179,9 +10906,11 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
+  <target>Použití interních uživatelů</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+  <target>Použití externích uživatelů</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>
@@ -11225,12 +10954,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="banner.dismiss.aria-label">
   <source>Dismiss banner</source>
 </trans-unit>
-<trans-unit id="settings.base-url.banner.action">
-  <source>Configure it in the system settings</source>
-</trans-unit>
-<trans-unit id="settings.base-url.banner.label">
-  <source>The base URL has not been configured.</source>
-</trans-unit>
 <trans-unit id="sf993bb199fefbe04">
   <source>All</source>
 </trans-unit>
@@ -11252,17 +10975,8 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="scae52d94b155a605">
   <source>Scheduled by</source>
 </trans-unit>
-<trans-unit id="s116de51b09153006">
-  <source>Offboarding(s)</source>
-</trans-unit>
-<trans-unit id="see8b386a20d5d43a">
-  <source>canceled</source>
-</trans-unit>
 <trans-unit id="sdaf25bddf0323e13">
   <source>Cancel Offboardings</source>
-</trans-unit>
-<trans-unit id="s3dfc819b4986e252">
-  <source>Cancel Offboarding</source>
 </trans-unit>
 <trans-unit id="s78636b92c1a3909c">
   <source>Pending</source>
@@ -11377,6 +11091,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sb3d4f79d9d8b71e5">
   <source>Submit</source>
+  <target>Odeslat</target>
 </trans-unit>
 <trans-unit id="sd348917df892e7a5">
   <source>Requester</source>
@@ -11429,17 +11144,8 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s312cccc7c299a685">
   <source>Are you sure you want to revoke this grant? Access will be removed immediately.</source>
 </trans-unit>
-<trans-unit id="sf4cfca0c6dcd5cc8">
-  <source>Entitlement(s)</source>
-</trans-unit>
-<trans-unit id="s98b0bb374889b323">
-  <source>Request rule binding(s)</source>
-</trans-unit>
 <trans-unit id="sd700d2a7e8fe68e7">
   <source>Bind existing rule</source>
-</trans-unit>
-<trans-unit id="s84d52a11b0a6dbd2">
-  <source>These bindings control which users/groups can request access to this object.</source>
 </trans-unit>
 <trans-unit id="s3c7ee40c88248316">
   <source>No request rules bound.</source>
@@ -11521,12 +11227,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s5b612c6c619807b0">
   <source>Bound to</source>
-</trans-unit>
-<trans-unit id="s0a6c5f79e64745b8">
-  <source>Request rule(s)</source>
-</trans-unit>
-<trans-unit id="s569fd8461083ddc0">
-  <source><x id="0" equiv-text="${item.targets.length}"/> object(s)</source>
 </trans-unit>
 <trans-unit id="s2479a752090884e8">
   <source>These bindings control which users/groups can approve requests.</source>
@@ -11830,9 +11530,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s4eb514ebcb80553d">
   <source>Parent</source>
 </trans-unit>
-<trans-unit id="s9e5233ef650728d6">
-  <source>Agent(s)</source>
-</trans-unit>
 <trans-unit id="user.activation.confirm.deactivate">
   <source>Are you sure you want to deactivate <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</source>
 </trans-unit>
@@ -11848,17 +11545,11 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="agent.column.actions">
   <source>Actions</source>
 </trans-unit>
-<trans-unit id="agent.delete.object-label">
-  <source>Agent(s)</source>
-</trans-unit>
 <trans-unit id="agent.delete.trigger">
   <source>Delete</source>
 </trans-unit>
 <trans-unit id="agent.expires.never">
   <source>-</source>
-</trans-unit>
-<trans-unit id="agent.delete.object-label-single">
-  <source>Agent</source>
 </trans-unit>
 <trans-unit id="agent.delete.tooltip">
   <source>Delete</source>
@@ -12193,6 +11884,1442 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="sd685c85b245c6e9f">
   <source>Hide details</source>
 </trans-unit>
+<trans-unit id="s8e4a12c5930cf212">
+  <source>Also known as Client Secret. Can be left empty for public clients using PKCE.</source>
+</trans-unit>
+<trans-unit id="sfd44da578f6445a9">
+  <source>Failed to fetch objects:</source>
+</trans-unit>
+<trans-unit id="sa81413e2e309b882">
+  <source>No results found.</source>
+</trans-unit>
+<trans-unit id="s976733698fe1b0fe">
+  <source>No change vs previous week</source>
+</trans-unit>
+<trans-unit id="s7f4f31965f7198d7">
+  <source><x id="0" equiv-text="${diff &gt; 0 ? &quot;+&quot; : &quot;&quot;}${diff}"/> vs previous week</source>
+</trans-unit>
+<trans-unit id="s1c4aaab60097f5d0">
+  <source><x id="0" equiv-text="${diff &gt; 0 ? &quot;+&quot; : &quot;&quot;}${Math.round((diff / previous) * 100)}"/>% vs previous week</source>
+</trans-unit>
+<trans-unit id="sab5ab8f14efd1dbf">
+  <source>Successful logins</source>
+</trans-unit>
+<trans-unit id="sb7a30bbc1dcf6de9">
+  <source>Issues</source>
+</trans-unit>
+<trans-unit id="s07463520e4c6f064">
+  <source>A new version is available!</source>
+</trans-unit>
+<trans-unit id="s809b66661523bd3e">
+  <source>Danger banner:</source>
+</trans-unit>
+<trans-unit id="se9caa2b970300b67">
+  <source>Warning banner:</source>
+</trans-unit>
+<trans-unit id="sfd32828882e09561">
+  <source>Security release <x id="0" equiv-text="${v.version}"/> of <x id="1" equiv-text="${this.brandingTitle}"/> is available. Update now.</source>
+</trans-unit>
+<trans-unit id="s6bce0c6466a2cf53">
+  <source>Version <x id="0" equiv-text="${v.version}"/> of <x id="1" equiv-text="${this.brandingTitle}"/> is available.</source>
+</trans-unit>
+<trans-unit id="sbf0ff47d8bff9545">
+  <source>Click here for the changelog.</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-44.label">
+  <source>ML-DSA-44</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-65.label">
+  <source>ML-DSA-65</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-87.label">
+  <source>ML-DSA-87</source>
+</trans-unit>
+<trans-unit id="sfdcaa7f363be0c81">
+  <source>Encryption algorithm</source>
+</trans-unit>
+<trans-unit id="s53b68dd0954af12d">
+  <source>Block cipher used to encrypt the assertion.</source>
+</trans-unit>
+<trans-unit id="permissions.aria.universal">
+  <source>Global and object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.universal">
+  <source>object + global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.global">
+  <source>Global permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.global">
+  <source>global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.object">
+  <source>Object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.object">
+  <source>object</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.role">
+  <source>Role</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.permissions">
+  <source>Permissions</source>
+</trans-unit>
+<trans-unit id="permission.sort.by-name">
+  <source>By name</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-first">
+  <source>Assigned first</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-only">
+  <source>Assigned only</source>
+</trans-unit>
+<trans-unit id="permissions.filter.show-assigned">
+  <source>Sort and filter</source>
+</trans-unit>
+<trans-unit id="permissions.delete.meta-data">
+  <source>Permission</source>
+</trans-unit>
+<trans-unit id="permissions.delete.button">
+  <source>Delete object permission</source>
+</trans-unit>
+<trans-unit id="s679140171e483ff5">
+  <source>Changes to system settings will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="se7820c791adf0953">
+  <source>Changes to brands will take up to <x id="0" equiv-text="${formatted}"/> to become effective.</source>
+</trans-unit>
+<trans-unit id="sde7cf26113f800fb">
+  <source>Selected providers can exchange their JWTs for a SAML Response of this provider via token exchange.</source>
+</trans-unit>
+<trans-unit id="s42cebc8c4e28982e">
+  <source>This security key is already registered on your account. Touch a different key to add it.</source>
+</trans-unit>
+<trans-unit id="sidebar.notice.enterprise-only">
+  <source>Enterprise</source>
+</trans-unit>
+<trans-unit id="array-input.validation.invalid-entry">
+  <source>One or more entries are invalid.</source>
+</trans-unit>
+<trans-unit id="array-input.remove.aria-label">
+  <source>Remove entry</source>
+</trans-unit>
+<trans-unit id="sa3b6915ea75108da">
+  <source>Custom permissions</source>
+</trans-unit>
+<trans-unit id="s485485e456e22baa">
+  <source>Let custom permission checks override access control decisions made by authentik.</source>
+</trans-unit>
+<trans-unit id="applications.verbose-name.label">
+  <source>Application</source>
+</trans-unit>
+<trans-unit id="applications.verbose-name-plural.label">
+  <source>Applications</source>
+</trans-unit>
+<trans-unit id="application-entitlements.verbose-name.label">
+  <source>Application entitlement</source>
+</trans-unit>
+<trans-unit id="application-entitlements.verbose-name-plural.label">
+  <source>Application entitlements</source>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.outpost.description">
+  <source>This provider must be assigned to an outpost before users can access the application.</source>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.view-provider.label">
+  <source>View Provider</source>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.outposts.label">
+  <source>Go to Outposts</source>
+</trans-unit>
+<trans-unit id="blueprints.verbose-name.label">
+  <source>Blueprint</source>
+</trans-unit>
+<trans-unit id="blueprints.verbose-name-plural.label">
+  <source>Blueprints</source>
+</trans-unit>
+<trans-unit id="s97cc54c7d1813837">
+  <source>OCI manifest</source>
+</trans-unit>
+<trans-unit id="brands.verbose-name.label">
+  <source>Brand</source>
+</trans-unit>
+<trans-unit id="brands.verbose-name-plural.label">
+  <source>Brands</source>
+</trans-unit>
+<trans-unit id="certificate-key-pairs.verbose-name.label">
+  <source>Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="certificate-key-pairs.verbose-name-plural.label">
+  <source>Certificate-Key Pairs</source>
+</trans-unit>
+<trans-unit id="s6ad8e2906d8a7153">
+  <source>Successfully updated Microsoft Intune connector.</source>
+</trans-unit>
+<trans-unit id="scb7bb1ca1fa8bd20">
+  <source>Successfully created Microsoft Intune connector.</source>
+</trans-unit>
+<trans-unit id="s7b847d8e57e7e115">
+  <source>Microsoft Intune settings</source>
+</trans-unit>
+<trans-unit id="sa95334c5ec254a2c">
+  <source>ID of the tenant.</source>
+</trans-unit>
+<trans-unit id="s42c83d9f0cb85542">
+  <source>Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. If none are selected, the client certificates configured on the brand are used.</source>
+</trans-unit>
+<trans-unit id="device-access-groups.verbose-name.label">
+  <source>Device Group</source>
+</trans-unit>
+<trans-unit id="device-access-groups.verbose-name-plural.label">
+  <source>Device Groups</source>
+</trans-unit>
+<trans-unit id="endpoint-devices.verbose-name.label">
+  <source>Endpoint Device</source>
+</trans-unit>
+<trans-unit id="endpoint-devices.verbose-name-plural.label">
+  <source>Endpoint Devices</source>
+</trans-unit>
+<trans-unit id="enterprise-licenses.verbose-name.label">
+  <source>License</source>
+</trans-unit>
+<trans-unit id="enterprise-licenses.verbose-name-plural.label">
+  <source>Licenses</source>
+</trans-unit>
+<trans-unit id="data-exports.verbose-name.label">
+  <source>Data export</source>
+</trans-unit>
+<trans-unit id="data-exports.verbose-name-plural.label">
+  <source>Data exports</source>
+</trans-unit>
+<trans-unit id="notification-rules.verbose-name.label">
+  <source>Notification rule</source>
+</trans-unit>
+<trans-unit id="notification-rules.verbose-name-plural.label">
+  <source>Notification rules</source>
+</trans-unit>
+<trans-unit id="s84eec986af7ea820">
+  <source>These bindings control upon which events this rule triggers.
+                Bindings to groups/users are checked against the user of the event.</source>
+</trans-unit>
+<trans-unit id="notification-transports.verbose-name.label">
+  <source>Notification transport</source>
+</trans-unit>
+<trans-unit id="notification-transports.verbose-name-plural.label">
+  <source>Notification transports</source>
+</trans-unit>
+<trans-unit id="files.verbose-name.label">
+  <source>File</source>
+</trans-unit>
+<trans-unit id="files.verbose-name-plural.label">
+  <source>Files</source>
+</trans-unit>
+<trans-unit id="stage-bindings.verbose-name.label">
+  <source>Stage binding</source>
+</trans-unit>
+<trans-unit id="stage-bindings.verbose-name-plural.label">
+  <source>Stage bindings</source>
+</trans-unit>
+<trans-unit id="flows.verbose-name.label">
+  <source>Flow</source>
+</trans-unit>
+<trans-unit id="flows.verbose-name-plural.label">
+  <source>Flows</source>
+</trans-unit>
+<trans-unit id="groups.verbose-name.label">
+  <source>Group</source>
+</trans-unit>
+<trans-unit id="groups.verbose-name-plural.label">
+  <source>Groups</source>
+</trans-unit>
+<group id="groups.add-user.success" restype="x-gettext-plurals">
+</group>
+<group id="users.add-related.success" restype="x-gettext-plurals">
+</group>
+<trans-unit id="users.verbose-name.label">
+  <source>User</source>
+</trans-unit>
+<trans-unit id="users.verbose-name-plural.label">
+  <source>Users</source>
+</trans-unit>
+<trans-unit id="lifecycle-rules.verbose-name.label">
+  <source>Lifecycle rule</source>
+</trans-unit>
+<trans-unit id="lifecycle-rules.verbose-name-plural.label">
+  <source>Lifecycle rules</source>
+</trans-unit>
+<group id="lifecycle.review.min-reviewers.single-group" restype="x-gettext-plurals">
+</group>
+<group id="lifecycle.review.min-reviewers.multiple-groups" restype="x-gettext-plurals">
+</group>
+<trans-unit id="offboarding.verbose-name.label">
+  <source>Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.verbose-name-plural.label">
+  <source>Offboardings</source>
+</trans-unit>
+<trans-unit id="object-attributes.verbose-name.label">
+  <source>Object Attribute</source>
+</trans-unit>
+<trans-unit id="object-attributes.verbose-name-plural.label">
+  <source>Object Attributes</source>
+</trans-unit>
+<trans-unit id="outposts.verbose-name.label">
+  <source>Outpost</source>
+</trans-unit>
+<trans-unit id="outposts.verbose-name-plural.label">
+  <source>Outposts</source>
+</trans-unit>
+<group id="outposts.health.summary" restype="x-gettext-plurals">
+</group>
+<trans-unit id="outpost-integrations.verbose-name.label">
+  <source>Outpost integration</source>
+</trans-unit>
+<trans-unit id="outpost-integrations.verbose-name-plural.label">
+  <source>Outpost integrations</source>
+</trans-unit>
+<trans-unit id="policy-bindings.verbose-name.label">
+  <source>Policy binding</source>
+</trans-unit>
+<trans-unit id="policy-bindings.verbose-name-plural.label">
+  <source>Policy bindings</source>
+</trans-unit>
+<trans-unit id="policies.bindings.mode.label">
+  <source>Mode</source>
+</trans-unit>
+<trans-unit id="policies.bindings.dry-run.view-results.label">
+  <source>View dry-run results</source>
+</trans-unit>
+<trans-unit id="policies.bindings.enforced.label">
+  <source>Enforced</source>
+</trans-unit>
+<trans-unit id="policies.verbose-name.label">
+  <source>Policy</source>
+</trans-unit>
+<trans-unit id="policies.verbose-name-plural.label">
+  <source>Policies</source>
+</trans-unit>
+<group id="policies.bound-to.label" restype="x-gettext-plurals">
+</group>
+<trans-unit id="policies.bindings.dry-run.description">
+  <source>Evaluate this binding without including its result or messages in the final decision.
+            Results are recorded in the <x id="0" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;events/log&quot;)}&quot;&gt;"/>Event Log<x id="1" equiv-text="&lt;/a&gt;"/>.
+            Expression policies can still make network requests, create events, or modify data.</source>
+</trans-unit>
+<trans-unit id="policy-bindings.label">
+  <source>Policy bindings</source>
+</trans-unit>
+<trans-unit id="reputation-scores.verbose-name.label">
+  <source>Reputation score</source>
+</trans-unit>
+<trans-unit id="reputation-scores.verbose-name-plural.label">
+  <source>Reputation scores</source>
+</trans-unit>
+<trans-unit id="property-mappings.verbose-name.label">
+  <source>Property Mapping</source>
+</trans-unit>
+<trans-unit id="property-mappings.verbose-name-plural.label">
+  <source>Property Mappings</source>
+</trans-unit>
+<trans-unit id="google-workspace.groups.verbose-name.label">
+  <source>Google Workspace Group</source>
+</trans-unit>
+<trans-unit id="google-workspace.groups.verbose-name-plural.label">
+  <source>Google Workspace Groups</source>
+</trans-unit>
+<trans-unit id="google-workspace.users.verbose-name.label">
+  <source>Google Workspace User</source>
+</trans-unit>
+<trans-unit id="google-workspace.users.verbose-name-plural.label">
+  <source>Google Workspace Users</source>
+</trans-unit>
+<trans-unit id="microsoft-entra.groups.verbose-name.label">
+  <source>Microsoft Entra Group</source>
+</trans-unit>
+<trans-unit id="microsoft-entra.groups.verbose-name-plural.label">
+  <source>Microsoft Entra Groups</source>
+</trans-unit>
+<trans-unit id="microsoft-entra.users.verbose-name.label">
+  <source>Microsoft Entra User</source>
+</trans-unit>
+<trans-unit id="microsoft-entra.users.verbose-name-plural.label">
+  <source>Microsoft Entra Users</source>
+</trans-unit>
+<trans-unit id="providers.verbose-name.label">
+  <source>Provider</source>
+</trans-unit>
+<trans-unit id="providers.verbose-name-plural.label">
+  <source>Providers</source>
+</trans-unit>
+<trans-unit id="see7e5431ccf76ccc">
+  <source>Unspecified</source>
+</trans-unit>
+<trans-unit id="scim.groups.verbose-name.label">
+  <source>SCIM Group</source>
+</trans-unit>
+<trans-unit id="scim.groups.verbose-name-plural.label">
+  <source>SCIM Groups</source>
+</trans-unit>
+<trans-unit id="scim.users.verbose-name.label">
+  <source>SCIM User</source>
+</trans-unit>
+<trans-unit id="scim.users.verbose-name-plural.label">
+  <source>SCIM Users</source>
+</trans-unit>
+<trans-unit id="ssf.streams.verbose-name.label">
+  <source>Stream</source>
+</trans-unit>
+<trans-unit id="ssf.streams.verbose-name-plural.label">
+  <source>Streams</source>
+</trans-unit>
+<trans-unit id="s86d385ff812dfced">
+  <source>Custom Permission</source>
+</trans-unit>
+<trans-unit id="s47694f288124407a">
+  <source>Custom Permissions</source>
+</trans-unit>
+<trans-unit id="sbbeccfb40931d00d">
+  <source>Successfully updated custom permission.</source>
+</trans-unit>
+<trans-unit id="s2f7d64e86c256034">
+  <source>Successfully created custom permission.</source>
+</trans-unit>
+<trans-unit id="s149e4dae7751f5a6">
+  <source>Search for a model...</source>
+</trans-unit>
+<trans-unit id="h7caeadd948c6500e">
+  <source>The model the permission applies to. Use
+                            <x id="0" equiv-text="&lt;code&gt;"/>authentik_rbac.systempermission<x id="1" equiv-text="&lt;/code&gt;"/> for permissions about
+                            authentik as a whole. It cannot be changed later.</source>
+</trans-unit>
+<trans-unit id="se74c2ff960282baf">
+  <source>Codename</source>
+</trans-unit>
+<trans-unit id="hfb6ea4f521187709">
+  <source>Starts with <x id="0" equiv-text="&lt;code&gt;"/>custom_<x id="1" equiv-text="&lt;/code&gt;"/>, followed by lowercase letters, digits
+                            and underscores. It cannot be changed later.</source>
+</trans-unit>
+<trans-unit id="custom-permissions.verbose-name.label">
+  <source>Custom Permission</source>
+</trans-unit>
+<trans-unit id="custom-permissions.verbose-name-plural.label">
+  <source>Custom Permissions</source>
+</trans-unit>
+<trans-unit id="sd171577d6e81af69">
+  <source>Search for custom permissions...</source>
+</trans-unit>
+<trans-unit id="s949ee709acee8fde">
+  <source>Create a custom permission to get started.</source>
+</trans-unit>
+<trans-unit id="sb211e62f2c69d795">
+  <source>Define your own permissions on models, assign them to roles, and test them in permission checks.</source>
+</trans-unit>
+<trans-unit id="initial-permissions.verbose-name.label">
+  <source>Initial Permissions</source>
+</trans-unit>
+<trans-unit id="initial-permissions.verbose-name-plural.label">
+  <source>Initial Permissions</source>
+</trans-unit>
+<trans-unit id="s8327938fa76b5c7a">
+  <source>Paths started with fields it lacks: <x id="0" equiv-text="${unknownFields.join(&quot;, &quot;)}"/></source>
+</trans-unit>
+<trans-unit id="sb497ab0f5338b526">
+  <source>Permission Check</source>
+</trans-unit>
+<trans-unit id="s166d000a695c1f6f">
+  <source>Permission Checks</source>
+</trans-unit>
+<trans-unit id="sda9f3bb440258a0c">
+  <source>Successfully updated permission check.</source>
+</trans-unit>
+<trans-unit id="s5f84c961b35b071f">
+  <source>Successfully created permission check.</source>
+</trans-unit>
+<trans-unit id="s8465a2caa2d9ea5d">
+  <source>Endpoints</source>
+</trans-unit>
+<trans-unit id="se275ef18f06cf8eb">
+  <source>Bound</source>
+</trans-unit>
+<trans-unit id="sdf9e135bb3078b00">
+  <source>API endpoints this check decides on, like core/users:list. An endpoint can be bound to one check only.</source>
+</trans-unit>
+<trans-unit id="sff5458d09ac165ce">
+  <source>Python code defining permission checks.</source>
+</trans-unit>
+<trans-unit id="s6a146a1e841d3203">
+  <source>See examples in the documentation.</source>
+</trans-unit>
+<trans-unit id="permission-checks.verbose-name.label">
+  <source>Permission Check</source>
+</trans-unit>
+<trans-unit id="permission-checks.verbose-name-plural.label">
+  <source>Permission Checks</source>
+</trans-unit>
+<trans-unit id="sf3b9adc4507c57bc">
+  <source>Search for permission checks...</source>
+</trans-unit>
+<trans-unit id="sf1355416c3efc50b">
+  <source>Create a permission check to get started.</source>
+</trans-unit>
+<trans-unit id="scaa8455fd5a8fe97">
+  <source>Python code that has the final say on access to API endpoints.</source>
+</trans-unit>
+<trans-unit id="s4c7b85c8ef6f0fc5">
+  <source>No longer exists</source>
+</trans-unit>
+<trans-unit id="permissions.verbose-name.label">
+  <source>Permission</source>
+</trans-unit>
+<trans-unit id="permissions.verbose-name-plural.label">
+  <source>Permissions</source>
+</trans-unit>
+<trans-unit id="request-rule-bindings.verbose-name.label">
+  <source>Request rule binding</source>
+</trans-unit>
+<trans-unit id="request-rule-bindings.verbose-name-plural.label">
+  <source>Request rule bindings</source>
+</trans-unit>
+<trans-unit id="request-rules.bindings.column.entitlements">
+  <source>Entitlements</source>
+</trans-unit>
+<trans-unit id="s5307a13bc1e6634c">
+  <source>These bindings control which users or groups can request access to this object.</source>
+</trans-unit>
+<trans-unit id="request-rules.verbose-name.label">
+  <source>Request rule</source>
+</trans-unit>
+<trans-unit id="request-rules.verbose-name-plural.label">
+  <source>Request rules</source>
+</trans-unit>
+<group id="request-rules.target-count.label" restype="x-gettext-plurals">
+</group>
+<group id="roles.add-user.success" restype="x-gettext-plurals">
+</group>
+<trans-unit id="roles.verbose-name.label">
+  <source>Role</source>
+</trans-unit>
+<trans-unit id="roles.verbose-name-plural.label">
+  <source>Roles</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.label">
+  <source>Show on login page</source>
+</trans-unit>
+<trans-unit id="ldap.groups.verbose-name.label">
+  <source>LDAP Group</source>
+</trans-unit>
+<trans-unit id="ldap.groups.verbose-name-plural.label">
+  <source>LDAP Groups</source>
+</trans-unit>
+<trans-unit id="ldap.users.verbose-name.label">
+  <source>LDAP User</source>
+</trans-unit>
+<trans-unit id="ldap.users.verbose-name-plural.label">
+  <source>LDAP Users</source>
+</trans-unit>
+<trans-unit id="sources.verbose-name.label">
+  <source>Source</source>
+</trans-unit>
+<trans-unit id="sources.verbose-name-plural.label">
+  <source>Sources</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.stage.flows.description">
+  <source>Used in: <x id="0" equiv-text="${flows}"/></source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.stage.unbound.description">
+  <source>Not bound to any flow</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.description">
+  <source>Add this source to an Identification stage if you want it displayed on the login page. Otherwise, you can skip this step.</source>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.empty">
+  <source>No identification stages exist yet.</source>
+</trans-unit>
+<group id="stages.duo.import.success" restype="x-gettext-plurals">
+</group>
+<trans-unit id="invitations.verbose-name.label">
+  <source>Invitation</source>
+</trans-unit>
+<trans-unit id="invitations.verbose-name-plural.label">
+  <source>Invitations</source>
+</trans-unit>
+<group id="invitations.send-email.success" restype="x-gettext-plurals">
+</group>
+<trans-unit id="password-stage.lockout-threshold.label">
+  <source>Failed attempts before lockout</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-threshold.enterprise.description">
+  <source>Password lockout requires an Enterprise license.</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-threshold.description">
+  <source>Lock password login after this many consecutive failed attempts, until an administrator unlocks it. LDAP users are exempt while any LDAP source is enabled; Kerberos users are exempt when linked to an enabled source. The corresponding backend must be selected. Set to 0 to never lock.</source>
+</trans-unit>
+<trans-unit id="password-stage.last-attempt-warning-message.label">
+  <source>Last-attempt warning message</source>
+</trans-unit>
+<trans-unit id="password-stage.last-attempt-warning-message.description">
+  <source>Warning shown when the user has one password attempt remaining. Leave blank to show no warning.</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-message.label">
+  <source>Lockout message</source>
+</trans-unit>
+<trans-unit id="password-stage.lockout-message.description">
+  <source>Message shown when the user's password has been locked. Leave blank to show a generic authentication error.</source>
+</trans-unit>
+<trans-unit id="stages.password.backends.description">
+  <source>Validate the user's password against the selected backends.</source>
+</trans-unit>
+<trans-unit id="password-stage.failed-attempts-before-cancel.description">
+  <source>How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.</source>
+</trans-unit>
+<trans-unit id="prompts.verbose-name.label">
+  <source>Prompt</source>
+</trans-unit>
+<trans-unit id="prompts.verbose-name-plural.label">
+  <source>Prompts</source>
+</trans-unit>
+<trans-unit id="stages.verbose-name.label">
+  <source>Stage</source>
+</trans-unit>
+<trans-unit id="stages.verbose-name-plural.label">
+  <source>Stages</source>
+</trans-unit>
+<trans-unit id="stage.list.unbound.label">
+  <source>Not bound to any flow</source>
+</trans-unit>
+<trans-unit id="tokens.verbose-name.label">
+  <source>Token</source>
+</trans-unit>
+<trans-unit id="tokens.verbose-name-plural.label">
+  <source>Tokens</source>
+</trans-unit>
+<trans-unit id="users.add-to-groups.superuser.warning">
+  <source>Warning: Adding the user to the selected groups will give them superuser permissions.</source>
+</trans-unit>
+<trans-unit id="user.entitlements.empty.label">
+  <source>No application entitlements.</source>
+</trans-unit>
+<trans-unit id="user.entitlements.empty.description">
+  <source>This user has not been granted any application entitlements.</source>
+</trans-unit>
+<group id="users.revoke-sessions.user-count" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.confirmation" restype="x-gettext-plurals">
+</group>
+<trans-unit id="user-required-actions.card.title">
+  <source>Required actions</source>
+</trans-unit>
+<trans-unit id="user-required-actions.card.description">
+  <source>The user must complete these flows in order before they can continue. Changes apply on their next request.</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.label">
+  <source>Unlock password login</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock.label">
+  <source>Lock password login</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.pending">
+  <source>Unlocking password login...</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock.pending">
+  <source>Locking password login...</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.success">
+  <source>Password login unlocked</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock.success">
+  <source>Password login locked</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock-review.label">
+  <source>Review password unlock</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock-review.label">
+  <source>Review password lock</source>
+</trans-unit>
+<trans-unit id="user.display.unknown.label">
+  <source>Unknown user</source>
+</trans-unit>
+<trans-unit id="user.action.password-unlock-confirm.description">
+  <source>Allow <x id="0" equiv-text="${displayName}"/> to authenticate with a password again?</source>
+</trans-unit>
+<trans-unit id="user.action.password-lock-confirm.description">
+  <source>Prevent <x id="0" equiv-text="${displayName}"/> from authenticating through password stages, including with app passwords? Existing sessions and passwordless authentication are not affected.</source>
+</trans-unit>
+<group id="user-required-actions.object.label" restype="x-gettext-plurals">
+</group>
+<trans-unit id="user-required-actions.column.flow.label">
+  <source>Flow</source>
+</trans-unit>
+<trans-unit id="user-required-actions.column.slug.label">
+  <source>Slug</source>
+</trans-unit>
+<trans-unit id="user-required-actions.column.actions.label">
+  <source>Actions</source>
+</trans-unit>
+<trans-unit id="user-required-actions.select.placeholder">
+  <source>Select a flow...</source>
+</trans-unit>
+<trans-unit id="user-required-actions.add.label">
+  <source>Add</source>
+</trans-unit>
+<trans-unit id="user-required-actions.remove.label">
+  <source>Remove</source>
+</trans-unit>
+<trans-unit id="events.authenticator-locked.label">
+  <source>Authenticator locked</source>
+</trans-unit>
+<trans-unit id="events.authenticator-unlocked.label">
+  <source>Authenticator unlocked</source>
+</trans-unit>
+<trans-unit id="events.action.required-action-completed.label">
+  <source>Required action completed</source>
+</trans-unit>
+<trans-unit id="policies.bindings.dry-run.label">
+  <source>Dry-run</source>
+</trans-unit>
+<trans-unit id="events.policy-execution.raw-result.label">
+  <source>Raw result</source>
+</trans-unit>
+<trans-unit id="events.policy-execution.cached.label">
+  <source>Cached</source>
+</trans-unit>
+<trans-unit id="tasks.execution-logs.current">
+  <source>Current execution logs</source>
+</trans-unit>
+<trans-unit id="tasks.execution-logs.previous">
+  <source>Previous executions logs</source>
+</trans-unit>
+<group id="dual-select.status.marked-to-add" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.selected" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.marked-to-remove" restype="x-gettext-plurals">
+</group>
+<trans-unit id="data-view.format.yaml.label">
+  <source>YAML</source>
+</trans-unit>
+<trans-unit id="data-view.format.json.label">
+  <source>JSON</source>
+</trans-unit>
+<trans-unit id="data-view.copy.yaml.label">
+  <source>Copy YAML to clipboard</source>
+</trans-unit>
+<trans-unit id="data-view.copy.json.label">
+  <source>Copy JSON to clipboard</source>
+</trans-unit>
+<trans-unit id="data-view.format.tree.label">
+  <source>Tree</source>
+</trans-unit>
+<trans-unit id="enterprise.license.banner.expired">
+  <source>Warning: One or more licenses have expired.</source>
+</trans-unit>
+<trans-unit id="enterprise.license.banner.expiry-soon">
+  <source>Warning: One or more licenses will expire within the next 2 weeks.</source>
+</trans-unit>
+<trans-unit id="s3b8a6245b12fa2ad">
+  <source>Breadcrumbs</source>
+</trans-unit>
+<trans-unit id="crontab.parse-failed">
+  <source>Cron string does not parse.</source>
+</trans-unit>
+<group id="bulk-action.delete.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.error" restype="x-gettext-plurals">
+</group>
+<trans-unit id="bulk-action.delete.submit.label">
+  <source>Delete</source>
+</trans-unit>
+<group id="bulk-action.remove.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.error" restype="x-gettext-plurals">
+</group>
+<trans-unit id="bulk-action.remove.submit.label">
+  <source>Remove</source>
+</trans-unit>
+<group id="bulk-action.cancel.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.error" restype="x-gettext-plurals">
+</group>
+<trans-unit id="bulk-action.verbose-name.default.label">
+  <source>Object</source>
+</trans-unit>
+<trans-unit id="bulk-action.verbose-name-plural.default.label">
+  <source>Objects</source>
+</trans-unit>
+<trans-unit id="sidebar.toggle.aria-label">
+  <source>Toggle <x id="0" equiv-text="${label}"/></source>
+</trans-unit>
+<trans-unit id="data-view.summary.unknown-type.label">
+  <source>Unknown JSON type</source>
+</trans-unit>
+<group id="data-view.summary.item-count" restype="x-gettext-plurals">
+</group>
+<group id="data-view.summary.key-count" restype="x-gettext-plurals">
+</group>
+<trans-unit id="data-view.value.unrepresentable.label">
+  <source>Unrepresentable</source>
+</trans-unit>
+<group id="table.select-all.aria-label" restype="x-gettext-plurals">
+</group>
+<group id="rac.connection.failed" restype="x-gettext-plurals">
+</group>
+<group id="rac.connection.reconnecting" restype="x-gettext-plurals">
+</group>
+<group id="user.library.application-count.search-result" restype="x-gettext-plurals">
+</group>
+<group id="user.library.application-count.available" restype="x-gettext-plurals">
+</group>
+<trans-unit id="mfa-devices.verbose-name.label">
+  <source>Device</source>
+</trans-unit>
+<trans-unit id="mfa-devices.verbose-name-plural.label">
+  <source>Devices</source>
+</trans-unit>
+<trans-unit id="wizard.header.verbose-name.label">
+  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
+  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
+</trans-unit>
+<group id="notifications.unread-count.label" restype="x-gettext-plurals">
+</group>
+<trans-unit id="used-by.count.none">
+  <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
+  <note from="lit-localize">No objects use this entity.</note>
+</trans-unit>
+<group id="used-by.count" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.success" restype="x-gettext-plurals">
+</group>
+<group id="groups.add-user.success" restype="x-gettext-plurals">
+</group>
+<group id="users.add-related.success" restype="x-gettext-plurals">
+</group>
+<group id="lifecycle.review.min-reviewers.single-group" restype="x-gettext-plurals">
+</group>
+<group id="lifecycle.review.min-reviewers.multiple-groups" restype="x-gettext-plurals">
+</group>
+<group id="outposts.health.summary" restype="x-gettext-plurals">
+</group>
+<group id="policies.bound-to.label" restype="x-gettext-plurals">
+</group>
+<group id="request-rules.target-count.label" restype="x-gettext-plurals">
+</group>
+<group id="roles.add-user.success" restype="x-gettext-plurals">
+</group>
+<group id="stages.duo.import.success" restype="x-gettext-plurals">
+</group>
+<group id="invitations.send-email.success" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.user-count" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="user-required-actions.object.label" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.marked-to-add" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.selected" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.marked-to-remove" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.error" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.error" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.error" restype="x-gettext-plurals">
+</group>
+<group id="data-view.summary.item-count" restype="x-gettext-plurals">
+</group>
+<group id="data-view.summary.key-count" restype="x-gettext-plurals">
+</group>
+<group id="table.select-all.aria-label" restype="x-gettext-plurals">
+</group>
+<group id="rac.connection.failed" restype="x-gettext-plurals">
+</group>
+<group id="rac.connection.reconnecting" restype="x-gettext-plurals">
+</group>
+<group id="user.library.application-count.search-result" restype="x-gettext-plurals">
+</group>
+<group id="user.library.application-count.available" restype="x-gettext-plurals">
+</group>
+<group id="notifications.unread-count.label" restype="x-gettext-plurals">
+</group>
+<group id="used-by.count" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.success" restype="x-gettext-plurals">
+</group>
+<group id="groups.add-user.success" restype="x-gettext-plurals">
+  <trans-unit id="groups.add-user.success[0]" xml:space="preserve">
+    <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> group.</source>
+  </trans-unit>
+  <trans-unit id="groups.add-user.success[1]" xml:space="preserve">
+    <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> groups.</source>
+  </trans-unit>
+  <trans-unit id="groups.add-user.success[2]" xml:space="preserve">
+    <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> groups.</source>
+  </trans-unit>
+  <trans-unit id="groups.add-user.success[3]" xml:space="preserve">
+    <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> groups.</source>
+  </trans-unit>
+</group>
+<group id="users.add-related.success" restype="x-gettext-plurals">
+  <trans-unit id="users.add-related.success[0]" xml:space="preserve">
+    <source>Successfully added <x id="0" equiv-text="${formattedCount}"/> user.</source>
+  </trans-unit>
+  <trans-unit id="users.add-related.success[1]" xml:space="preserve">
+    <source>Successfully added <x id="0" equiv-text="${formattedCount}"/> users.</source>
+  </trans-unit>
+  <trans-unit id="users.add-related.success[2]" xml:space="preserve">
+    <source>Successfully added <x id="0" equiv-text="${formattedCount}"/> users.</source>
+  </trans-unit>
+  <trans-unit id="users.add-related.success[3]" xml:space="preserve">
+    <source>Successfully added <x id="0" equiv-text="${formattedCount}"/> users.</source>
+  </trans-unit>
+</group>
+<group id="lifecycle.review.min-reviewers.single-group" restype="x-gettext-plurals">
+  <trans-unit id="lifecycle.review.min-reviewers.single-group[0]" xml:space="preserve">
+    <source>At least <x id="0" equiv-text="${formattedCount}"/> user from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+  </trans-unit>
+  <trans-unit id="lifecycle.review.min-reviewers.single-group[1]" xml:space="preserve">
+    <source>At least <x id="0" equiv-text="${formattedCount}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+  </trans-unit>
+  <trans-unit id="lifecycle.review.min-reviewers.single-group[2]" xml:space="preserve">
+    <source>At least <x id="0" equiv-text="${formattedCount}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+  </trans-unit>
+  <trans-unit id="lifecycle.review.min-reviewers.single-group[3]" xml:space="preserve">
+    <source>At least <x id="0" equiv-text="${formattedCount}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+  </trans-unit>
+</group>
+<group id="lifecycle.review.min-reviewers.multiple-groups" restype="x-gettext-plurals">
+  <trans-unit id="lifecycle.review.min-reviewers.multiple-groups[0]" xml:space="preserve">
+    <source>At least <x id="0" equiv-text="${formattedCount}"/> user from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+  </trans-unit>
+  <trans-unit id="lifecycle.review.min-reviewers.multiple-groups[1]" xml:space="preserve">
+    <source>At least <x id="0" equiv-text="${formattedCount}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+  </trans-unit>
+  <trans-unit id="lifecycle.review.min-reviewers.multiple-groups[2]" xml:space="preserve">
+    <source>At least <x id="0" equiv-text="${formattedCount}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+  </trans-unit>
+  <trans-unit id="lifecycle.review.min-reviewers.multiple-groups[3]" xml:space="preserve">
+    <source>At least <x id="0" equiv-text="${formattedCount}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+  </trans-unit>
+</group>
+<group id="outposts.health.summary" restype="x-gettext-plurals">
+  <trans-unit id="outposts.health.summary[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${formattedCount}"/> instance is healthy.</source>
+  </trans-unit>
+  <trans-unit id="outposts.health.summary[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${formattedCount}"/> instances are healthy.</source>
+  </trans-unit>
+  <trans-unit id="outposts.health.summary[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${formattedCount}"/> instances are healthy.</source>
+  </trans-unit>
+  <trans-unit id="outposts.health.summary[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${formattedCount}"/> instances are healthy.</source>
+  </trans-unit>
+</group>
+<group id="policies.bound-to.label" restype="x-gettext-plurals">
+  <trans-unit id="policies.bound-to.label[0]" xml:space="preserve">
+    <source>Assigned to <x id="0" equiv-text="${formattedCount}"/> object.</source>
+  </trans-unit>
+  <trans-unit id="policies.bound-to.label[1]" xml:space="preserve">
+    <source>Assigned to <x id="0" equiv-text="${formattedCount}"/> objects.</source>
+  </trans-unit>
+  <trans-unit id="policies.bound-to.label[2]" xml:space="preserve">
+    <source>Assigned to <x id="0" equiv-text="${formattedCount}"/> objects.</source>
+  </trans-unit>
+  <trans-unit id="policies.bound-to.label[3]" xml:space="preserve">
+    <source>Assigned to <x id="0" equiv-text="${formattedCount}"/> objects.</source>
+  </trans-unit>
+</group>
+<group id="request-rules.target-count.label" restype="x-gettext-plurals">
+  <trans-unit id="request-rules.target-count.label[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> object</source>
+  </trans-unit>
+  <trans-unit id="request-rules.target-count.label[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> objects</source>
+  </trans-unit>
+  <trans-unit id="request-rules.target-count.label[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> objects</source>
+  </trans-unit>
+  <trans-unit id="request-rules.target-count.label[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> objects</source>
+  </trans-unit>
+</group>
+<group id="roles.add-user.success" restype="x-gettext-plurals">
+  <trans-unit id="roles.add-user.success[0]" xml:space="preserve">
+    <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> role.</source>
+  </trans-unit>
+  <trans-unit id="roles.add-user.success[1]" xml:space="preserve">
+    <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> roles.</source>
+  </trans-unit>
+  <trans-unit id="roles.add-user.success[2]" xml:space="preserve">
+    <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> roles.</source>
+  </trans-unit>
+  <trans-unit id="roles.add-user.success[3]" xml:space="preserve">
+    <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> roles.</source>
+  </trans-unit>
+</group>
+<group id="stages.duo.import.success" restype="x-gettext-plurals">
+  <trans-unit id="stages.duo.import.success[0]" xml:space="preserve">
+    <source>Successfully imported <x id="0" equiv-text="${formattedCount}"/> device.</source>
+  </trans-unit>
+  <trans-unit id="stages.duo.import.success[1]" xml:space="preserve">
+    <source>Successfully imported <x id="0" equiv-text="${formattedCount}"/> devices.</source>
+  </trans-unit>
+  <trans-unit id="stages.duo.import.success[2]" xml:space="preserve">
+    <source>Successfully imported <x id="0" equiv-text="${formattedCount}"/> devices.</source>
+  </trans-unit>
+  <trans-unit id="stages.duo.import.success[3]" xml:space="preserve">
+    <source>Successfully imported <x id="0" equiv-text="${formattedCount}"/> devices.</source>
+  </trans-unit>
+</group>
+<group id="invitations.send-email.success" restype="x-gettext-plurals">
+  <trans-unit id="invitations.send-email.success[0]" xml:space="preserve">
+    <source>Invitation email queued for sending to <x id="0" equiv-text="${formattedCount}"/> recipient. Check the System Tasks for more information.</source>
+  </trans-unit>
+  <trans-unit id="invitations.send-email.success[1]" xml:space="preserve">
+    <source>Invitation emails queued for sending to <x id="0" equiv-text="${formattedCount}"/> recipients. Check the System Tasks for more information.</source>
+  </trans-unit>
+  <trans-unit id="invitations.send-email.success[2]" xml:space="preserve">
+    <source>Invitation emails queued for sending to <x id="0" equiv-text="${formattedCount}"/> recipients. Check the System Tasks for more information.</source>
+  </trans-unit>
+  <trans-unit id="invitations.send-email.success[3]" xml:space="preserve">
+    <source>Invitation emails queued for sending to <x id="0" equiv-text="${formattedCount}"/> recipients. Check the System Tasks for more information.</source>
+  </trans-unit>
+</group>
+<group id="users.revoke-sessions.user-count" restype="x-gettext-plurals">
+  <trans-unit id="users.revoke-sessions.user-count[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> user</source>
+  </trans-unit>
+  <trans-unit id="users.revoke-sessions.user-count[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> users</source>
+  </trans-unit>
+  <trans-unit id="users.revoke-sessions.user-count[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> users</source>
+  </trans-unit>
+  <trans-unit id="users.revoke-sessions.user-count[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> users</source>
+  </trans-unit>
+</group>
+<group id="users.revoke-sessions.confirmation" restype="x-gettext-plurals">
+  <trans-unit id="users.revoke-sessions.confirmation[0]" xml:space="preserve">
+    <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${formattedCount}"/> user?</source>
+  </trans-unit>
+  <trans-unit id="users.revoke-sessions.confirmation[1]" xml:space="preserve">
+    <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${formattedCount}"/> users?</source>
+  </trans-unit>
+  <trans-unit id="users.revoke-sessions.confirmation[2]" xml:space="preserve">
+    <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${formattedCount}"/> users?</source>
+  </trans-unit>
+  <trans-unit id="users.revoke-sessions.confirmation[3]" xml:space="preserve">
+    <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${formattedCount}"/> users?</source>
+  </trans-unit>
+</group>
+<group id="user-required-actions.object.label" restype="x-gettext-plurals">
+  <trans-unit id="user-required-actions.object.label[0]" xml:space="preserve">
+    <source>Required action</source>
+  </trans-unit>
+  <trans-unit id="user-required-actions.object.label[1]" xml:space="preserve">
+    <source>Required actions</source>
+  </trans-unit>
+  <trans-unit id="user-required-actions.object.label[2]" xml:space="preserve">
+    <source>Required actions</source>
+  </trans-unit>
+  <trans-unit id="user-required-actions.object.label[3]" xml:space="preserve">
+    <source>Required actions</source>
+  </trans-unit>
+</group>
+<group id="dual-select.status.marked-to-add" restype="x-gettext-plurals">
+  <trans-unit id="dual-select.status.marked-to-add[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> item marked to add.</source>
+  </trans-unit>
+  <trans-unit id="dual-select.status.marked-to-add[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items marked to add.</source>
+  </trans-unit>
+  <trans-unit id="dual-select.status.marked-to-add[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items marked to add.</source>
+  </trans-unit>
+  <trans-unit id="dual-select.status.marked-to-add[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items marked to add.</source>
+  </trans-unit>
+</group>
+<group id="dual-select.status.selected" restype="x-gettext-plurals">
+  <trans-unit id="dual-select.status.selected[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> item selected.</source>
+  </trans-unit>
+  <trans-unit id="dual-select.status.selected[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items selected.</source>
+  </trans-unit>
+  <trans-unit id="dual-select.status.selected[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items selected.</source>
+  </trans-unit>
+  <trans-unit id="dual-select.status.selected[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items selected.</source>
+  </trans-unit>
+</group>
+<group id="dual-select.status.marked-to-remove" restype="x-gettext-plurals">
+  <trans-unit id="dual-select.status.marked-to-remove[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> item marked to remove.</source>
+  </trans-unit>
+  <trans-unit id="dual-select.status.marked-to-remove[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items marked to remove.</source>
+  </trans-unit>
+  <trans-unit id="dual-select.status.marked-to-remove[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items marked to remove.</source>
+  </trans-unit>
+  <trans-unit id="dual-select.status.marked-to-remove[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> items marked to remove.</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.delete.heading" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.delete.heading[0]" xml:space="preserve">
+    <source>Delete <x id="0" equiv-text="${formattedCount} ${noun}"/></source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.heading[1]" xml:space="preserve">
+    <source>Delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.heading[2]" xml:space="preserve">
+    <source>Delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.heading[3]" xml:space="preserve">
+    <source>Delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+</group>
+<group id="bulk-action.delete.confirmation" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.delete.confirmation[0]" xml:space="preserve">
+    <source>Are you sure you want to delete <x id="0" equiv-text="${formattedCount} ${noun}"/>?</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.confirmation[1]" xml:space="preserve">
+    <source>Are you sure you want to delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.confirmation[2]" xml:space="preserve">
+    <source>Are you sure you want to delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.confirmation[3]" xml:space="preserve">
+    <source>Are you sure you want to delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.delete.success" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.delete.success[0]" xml:space="preserve">
+    <source>Successfully deleted <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.success[1]" xml:space="preserve">
+    <source>Successfully deleted <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.success[2]" xml:space="preserve">
+    <source>Successfully deleted <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.success[3]" xml:space="preserve">
+    <source>Successfully deleted <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.delete.error" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.delete.error[0]" xml:space="preserve">
+    <source>Failed to delete <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.error[1]" xml:space="preserve">
+    <source>Failed to delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.error[2]" xml:space="preserve">
+    <source>Failed to delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.delete.error[3]" xml:space="preserve">
+    <source>Failed to delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.remove.heading" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.remove.heading[0]" xml:space="preserve">
+    <source>Remove <x id="0" equiv-text="${formattedCount} ${noun}"/></source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.heading[1]" xml:space="preserve">
+    <source>Remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.heading[2]" xml:space="preserve">
+    <source>Remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.heading[3]" xml:space="preserve">
+    <source>Remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+</group>
+<group id="bulk-action.remove.confirmation" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.remove.confirmation[0]" xml:space="preserve">
+    <source>Are you sure you want to remove <x id="0" equiv-text="${formattedCount} ${noun}"/>?</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.confirmation[1]" xml:space="preserve">
+    <source>Are you sure you want to remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.confirmation[2]" xml:space="preserve">
+    <source>Are you sure you want to remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.confirmation[3]" xml:space="preserve">
+    <source>Are you sure you want to remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.remove.success" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.remove.success[0]" xml:space="preserve">
+    <source>Successfully removed <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.success[1]" xml:space="preserve">
+    <source>Successfully removed <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.success[2]" xml:space="preserve">
+    <source>Successfully removed <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.success[3]" xml:space="preserve">
+    <source>Successfully removed <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.remove.error" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.remove.error[0]" xml:space="preserve">
+    <source>Failed to remove <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.error[1]" xml:space="preserve">
+    <source>Failed to remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.error[2]" xml:space="preserve">
+    <source>Failed to remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.remove.error[3]" xml:space="preserve">
+    <source>Failed to remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.cancel.heading" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.cancel.heading[0]" xml:space="preserve">
+    <source>Cancel <x id="0" equiv-text="${formattedCount} ${noun}"/></source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.heading[1]" xml:space="preserve">
+    <source>Cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.heading[2]" xml:space="preserve">
+    <source>Cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.heading[3]" xml:space="preserve">
+    <source>Cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  </trans-unit>
+</group>
+<group id="bulk-action.cancel.confirmation" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.cancel.confirmation[0]" xml:space="preserve">
+    <source>Are you sure you want to cancel <x id="0" equiv-text="${formattedCount} ${noun}"/>?</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.confirmation[1]" xml:space="preserve">
+    <source>Are you sure you want to cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.confirmation[2]" xml:space="preserve">
+    <source>Are you sure you want to cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.confirmation[3]" xml:space="preserve">
+    <source>Are you sure you want to cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.cancel.success" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.cancel.success[0]" xml:space="preserve">
+    <source>Successfully canceled <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.success[1]" xml:space="preserve">
+    <source>Successfully canceled <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.success[2]" xml:space="preserve">
+    <source>Successfully canceled <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.success[3]" xml:space="preserve">
+    <source>Successfully canceled <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<group id="bulk-action.cancel.error" restype="x-gettext-plurals">
+  <trans-unit id="bulk-action.cancel.error[0]" xml:space="preserve">
+    <source>Failed to cancel <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.error[1]" xml:space="preserve">
+    <source>Failed to cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.error[2]" xml:space="preserve">
+    <source>Failed to cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+  <trans-unit id="bulk-action.cancel.error[3]" xml:space="preserve">
+    <source>Failed to cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  </trans-unit>
+</group>
+<group id="data-view.summary.item-count" restype="x-gettext-plurals">
+  <trans-unit id="data-view.summary.item-count[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${count}"/> item</source>
+  </trans-unit>
+  <trans-unit id="data-view.summary.item-count[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${count}"/> items</source>
+  </trans-unit>
+  <trans-unit id="data-view.summary.item-count[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${count}"/> items</source>
+  </trans-unit>
+  <trans-unit id="data-view.summary.item-count[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${count}"/> items</source>
+  </trans-unit>
+</group>
+<group id="data-view.summary.key-count" restype="x-gettext-plurals">
+  <trans-unit id="data-view.summary.key-count[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${count}"/> key</source>
+  </trans-unit>
+  <trans-unit id="data-view.summary.key-count[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${count}"/> keys</source>
+  </trans-unit>
+  <trans-unit id="data-view.summary.key-count[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${count}"/> keys</source>
+  </trans-unit>
+  <trans-unit id="data-view.summary.key-count[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${count}"/> keys</source>
+  </trans-unit>
+</group>
+<group id="table.select-all.aria-label" restype="x-gettext-plurals">
+  <trans-unit id="table.select-all.aria-label[0]" xml:space="preserve">
+    <source>Select all rows on page (<x id="0" equiv-text="${formattedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+  </trans-unit>
+  <trans-unit id="table.select-all.aria-label[1]" xml:space="preserve">
+    <source>Select all rows on page (<x id="0" equiv-text="${formattedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+  </trans-unit>
+  <trans-unit id="table.select-all.aria-label[2]" xml:space="preserve">
+    <source>Select all rows on page (<x id="0" equiv-text="${formattedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+  </trans-unit>
+  <trans-unit id="table.select-all.aria-label[3]" xml:space="preserve">
+    <source>Select all rows on page (<x id="0" equiv-text="${formattedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+  </trans-unit>
+</group>
+<group id="rac.connection.failed" restype="x-gettext-plurals">
+  <trans-unit id="rac.connection.failed[0]" xml:space="preserve">
+    <source>Connection failed after <x id="0" equiv-text="${formattedCount}"/> attempt.</source>
+  </trans-unit>
+  <trans-unit id="rac.connection.failed[1]" xml:space="preserve">
+    <source>Connection failed after <x id="0" equiv-text="${formattedCount}"/> attempts.</source>
+  </trans-unit>
+  <trans-unit id="rac.connection.failed[2]" xml:space="preserve">
+    <source>Connection failed after <x id="0" equiv-text="${formattedCount}"/> attempts.</source>
+  </trans-unit>
+  <trans-unit id="rac.connection.failed[3]" xml:space="preserve">
+    <source>Connection failed after <x id="0" equiv-text="${formattedCount}"/> attempts.</source>
+  </trans-unit>
+</group>
+<group id="rac.connection.reconnecting" restype="x-gettext-plurals">
+  <trans-unit id="rac.connection.reconnecting[0]" xml:space="preserve">
+    <source>Re-connecting in <x id="0" equiv-text="${formattedCount}"/> second.</source>
+  </trans-unit>
+  <trans-unit id="rac.connection.reconnecting[1]" xml:space="preserve">
+    <source>Re-connecting in <x id="0" equiv-text="${formattedCount}"/> seconds.</source>
+  </trans-unit>
+  <trans-unit id="rac.connection.reconnecting[2]" xml:space="preserve">
+    <source>Re-connecting in <x id="0" equiv-text="${formattedCount}"/> seconds.</source>
+  </trans-unit>
+  <trans-unit id="rac.connection.reconnecting[3]" xml:space="preserve">
+    <source>Re-connecting in <x id="0" equiv-text="${formattedCount}"/> seconds.</source>
+  </trans-unit>
+</group>
+<group id="user.library.application-count.search-result" restype="x-gettext-plurals">
+  <trans-unit id="user.library.application-count.search-result[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+  </trans-unit>
+  <trans-unit id="user.library.application-count.search-result[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+  </trans-unit>
+  <trans-unit id="user.library.application-count.search-result[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+  </trans-unit>
+  <trans-unit id="user.library.application-count.search-result[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+  </trans-unit>
+</group>
+<group id="user.library.application-count.available" restype="x-gettext-plurals">
+  <trans-unit id="user.library.application-count.available[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> application available</source>
+  </trans-unit>
+  <trans-unit id="user.library.application-count.available[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> applications available</source>
+  </trans-unit>
+  <trans-unit id="user.library.application-count.available[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> applications available</source>
+  </trans-unit>
+  <trans-unit id="user.library.application-count.available[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> applications available</source>
+  </trans-unit>
+</group>
+<group id="notifications.unread-count.label" restype="x-gettext-plurals">
+  <trans-unit id="notifications.unread-count.label[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> unread</source>
+    <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+  </trans-unit>
+  <trans-unit id="notifications.unread-count.label[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> unread</source>
+    <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+  </trans-unit>
+  <trans-unit id="notifications.unread-count.label[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> unread</source>
+    <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+  </trans-unit>
+  <trans-unit id="notifications.unread-count.label[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${formattedCount}"/> unread</source>
+    <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+  </trans-unit>
+</group>
+<group id="used-by.count" restype="x-gettext-plurals">
+  <trans-unit id="used-by.count[0]" xml:space="preserve">
+    <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${formattedCount}"/> object.</source>
+    <note from="lit-localize">The first placeholder is the entity type, the second the number of objects using it.</note>
+  </trans-unit>
+  <trans-unit id="used-by.count[1]" xml:space="preserve">
+    <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${formattedCount}"/> objects.</source>
+    <note from="lit-localize">The first placeholder is the entity type, the second the number of objects using it.</note>
+  </trans-unit>
+  <trans-unit id="used-by.count[2]" xml:space="preserve">
+    <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${formattedCount}"/> objects.</source>
+    <note from="lit-localize">The first placeholder is the entity type, the second the number of objects using it.</note>
+  </trans-unit>
+  <trans-unit id="used-by.count[3]" xml:space="preserve">
+    <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${formattedCount}"/> objects.</source>
+    <note from="lit-localize">The first placeholder is the entity type, the second the number of objects using it.</note>
+  </trans-unit>
+</group>
+<group id="users.revoke-sessions.success" restype="x-gettext-plurals">
+  <trans-unit id="users.revoke-sessions.success[0]" xml:space="preserve">
+    <source>Successfully revoked <x id="0" equiv-text="${formattedCount}"/> session for <x id="1" equiv-text="${users}"/>.</source>
+    <note from="lit-localize">The second placeholder is a pluralized user count, such as '3 users'.</note>
+  </trans-unit>
+  <trans-unit id="users.revoke-sessions.success[1]" xml:space="preserve">
+    <source>Successfully revoked <x id="0" equiv-text="${formattedCount}"/> sessions for <x id="1" equiv-text="${users}"/>.</source>
+    <note from="lit-localize">The second placeholder is a pluralized user count, such as '3 users'.</note>
+  </trans-unit>
+  <trans-unit id="users.revoke-sessions.success[2]" xml:space="preserve">
+    <source>Successfully revoked <x id="0" equiv-text="${formattedCount}"/> sessions for <x id="1" equiv-text="${users}"/>.</source>
+    <note from="lit-localize">The second placeholder is a pluralized user count, such as '3 users'.</note>
+  </trans-unit>
+  <trans-unit id="users.revoke-sessions.success[3]" xml:space="preserve">
+    <source>Successfully revoked <x id="0" equiv-text="${formattedCount}"/> sessions for <x id="1" equiv-text="${users}"/>.</source>
+    <note from="lit-localize">The second placeholder is a pluralized user count, such as '3 users'.</note>
+  </trans-unit>
+</group>
 </body>
 </file>
 </xliff>

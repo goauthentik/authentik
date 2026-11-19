@@ -16,6 +16,8 @@ GRANT_TYPE_TOKEN_EXCHANGE = "urn:ietf:params:oauth:grant-type:token-exchange"  #
 # https://datatracker.ietf.org/doc/html/rfc8693#section-3
 TOKEN_TYPE_URI_ACCESS_TOKEN = "urn:ietf:params:oauth:token-type:access_token"  # nosec
 TOKEN_TYPE_URI_JWT = "urn:ietf:params:oauth:token-type:jwt"  # nosec
+# Only valid as requested_token_type, with a federated SAML provider as `audience`
+TOKEN_TYPE_URI_SAML2 = "urn:ietf:params:oauth:token-type:saml2"  # nosec
 # authentik's own built-in Token model (e.g. API tokens), not part of RFC 8693 -- only
 # meaningful as an actor_token_type, never as a subject_token/requested_token_type
 TOKEN_TYPE_URI_AUTHENTIK_TOKEN = "goauthentik.io/oauth/token-type/authentik_token"  # nosec

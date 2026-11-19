@@ -215,7 +215,6 @@ impl TestServer {
     }
 }
 
-#[expect(clippy::missing_trait_methods, reason = "We don't use pin drop")]
 impl Drop for TestServer {
     fn drop(&mut self) {
         self.handle.shutdown();
@@ -423,12 +422,12 @@ async fn jwks_fetch_uses_the_internal_authority() {
         &Url::parse(BROWSER).expect("browser URL"),
         false,
     );
-    assert!(
+    assert_eq!(
         fetch_jwks(&client, &ep.jwks_uri)
             .await
             .expect("fetch JWKS")
-            .keys
-            .is_empty()
+            .keys,
+        []
     );
     let request = server.received().await;
     assert_eq!(request.version, Version::HTTP_11);

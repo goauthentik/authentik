@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 
-import type { OutpostTypeEnum } from "./OutpostTypeEnum";
-import { OutpostTypeEnumFromJSON, OutpostTypeEnumToJSON } from "./OutpostTypeEnum";
-import type { Provider } from "./Provider";
-import { ProviderFromJSON } from "./Provider";
-import type { ServiceConnection } from "./ServiceConnection";
-import { ServiceConnectionFromJSON } from "./ServiceConnection";
+import type { OutpostTypeEnum } from "./OutpostTypeEnum.js";
+import { OutpostTypeEnumFromJSON, OutpostTypeEnumToJSON } from "./OutpostTypeEnum.js";
+import type { Provider } from "./Provider.js";
+import { ProviderFromJSON } from "./Provider.js";
+import type { ServiceConnection } from "./ServiceConnection.js";
+import { ServiceConnectionFromJSON } from "./ServiceConnection.js";
 
 /**
  * Outpost Serializer

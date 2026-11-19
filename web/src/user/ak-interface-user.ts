@@ -31,11 +31,11 @@ import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
+import { renderNotificationDrawerPanel } from "#components/notifications/panel";
 import {
     DrawerState,
     persistDrawerParams,
     readDrawerParams,
-    renderNotificationDrawerPanel,
 } from "#components/notifications/utils";
 
 import Styles from "#user/ak-interface-user.css";
@@ -136,7 +136,10 @@ class UserInterface extends WithLicenseSummary(
     }
 
     protected renderNavTabs(): SlottedTemplateResult {
-        const licensed = this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+        const licensed =
+            this.licenseSummary &&
+            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+
         const { requests, agents } = this.uiConfig.enabledFeatures;
 
         // Capabilities can resolve after the feature flags settle, so they must be part of the guard's dependencies.

@@ -12,7 +12,7 @@ from authentik.flows.challenge import PermissionDict
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
@@ -23,7 +23,7 @@ from authentik.stages.consent.stage import (
 )
 
 
-class TestConsentStage(FlowTestCase):
+class TestConsentStage(APIFlowTestCase):
     """Consent tests"""
 
     def setUp(self):
@@ -176,6 +176,67 @@ class TestConsentStage(FlowTestCase):
             clean_expired_models.send()
             self.assertFalse(
                 UserConsent.objects.filter(user=self.user, application=self.application).exists()
+            )
+
+    def test_expire_reconsent(self):
+        """Test consenting again after consent expired but before it was cleaned up"""
+        self.client.force_login(self.user)
+        flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        stage = ConsentStage.objects.create(
+            name=generate_id(), mode=ConsentMode.EXPIRING, consent_expire_in="seconds=1"
+        )
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=2)
+        permissions = [PermissionDict(id="foo", name="foo-desc")]
+
+        def consent():
+            plan = FlowPlan(
+                flow_pk=flow.pk.hex,
+                bindings=[binding],
+                markers=[StageMarker()],
+                context={
+                    PLAN_CONTEXT_APPLICATION: self.application,
+                    PLAN_CONTEXT_CONSENT_PERMISSIONS: permissions,
+                },
+            )
+            session = self.client.session
+            session[SESSION_KEY_PLAN] = plan
+            session.save()
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            )
+            raw_res = self.assertStageResponse(
+                response,
+                flow,
+                self.user,
+                permissions=[{"id": "foo", "name": "foo-desc"}],
+                additional_permissions=[],
+            )
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+                {"token": raw_res["token"]},
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+        consent()
+        with freeze_time() as frozen_time:
+            frozen_time.tick(timedelta(seconds=3))
+            # The expired consent is hidden from the default manager, but still exists
+            # as `clean_expired_models` hasn't run yet
+            self.assertFalse(
+                UserConsent.objects.filter(user=self.user, application=self.application).exists()
+            )
+            consent()
+            self.assertEqual(
+                UserConsent.objects.including_expired()
+                .filter(user=self.user, application=self.application)
+                .count(),
+                1,
+            )
+            self.assertTrue(
+                UserConsent.objects.filter(
+                    user=self.user, application=self.application, permissions="foo"
+                ).exists()
             )
 
     def test_permanent_more_perms(self):

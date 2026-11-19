@@ -2,7 +2,7 @@ import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-number-input";
 import "#elements/forms/FormGroup";
-import "#elements/CodeMirror/ak-codemirror";
+import "#elements/CodeEditor/ak-code-editor";
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
@@ -153,8 +153,8 @@ export abstract class ObjectAttributeModelForm<
                 : html`<ak-form-group label=${msg("Advanced settings")}>
                       <div class="pf-c-form">
                           <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
-                              <ak-codemirror mode="yaml" value="${YAML.stringify(values)}">
-                              </ak-codemirror>
+                              <ak-code-editor mode="yaml" value="${YAML.stringify(values)}">
+                              </ak-code-editor>
                               <p class="pf-c-form__helper-text">
                                   ${msg("Set custom attributes using YAML or JSON.")}
                               </p>

@@ -15,7 +15,7 @@ from django.utils.timezone import now
 
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.models import FlowStageBinding
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.email import mask_email
 from authentik.stages.authenticator.tests import ThrottlingTestMixin
@@ -28,7 +28,7 @@ from authentik.stages.authenticator_email.stage import PLAN_CONTEXT_EMAIL_DEVICE
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
-class TestAuthenticatorEmailStage(FlowTestCase):
+class TestAuthenticatorEmailStage(APIFlowTestCase):
     """Test Email Authenticator stage"""
 
     def setUp(self):

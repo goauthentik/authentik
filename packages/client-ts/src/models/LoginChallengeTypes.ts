@@ -10,20 +10,23 @@
  * Do not edit the class manually.
  */
 
-import type { AppleLoginChallenge } from "./AppleLoginChallenge";
-import { AppleLoginChallengeFromJSONTyped, AppleLoginChallengeToJSON } from "./AppleLoginChallenge";
-import type { PlexAuthenticationChallenge } from "./PlexAuthenticationChallenge";
+import type { AppleLoginChallenge } from "./AppleLoginChallenge.js";
+import {
+    AppleLoginChallengeFromJSONTyped,
+    AppleLoginChallengeToJSON,
+} from "./AppleLoginChallenge.js";
+import type { PlexAuthenticationChallenge } from "./PlexAuthenticationChallenge.js";
 import {
     PlexAuthenticationChallengeFromJSONTyped,
     PlexAuthenticationChallengeToJSON,
-} from "./PlexAuthenticationChallenge";
-import type { RedirectChallenge } from "./RedirectChallenge";
-import { RedirectChallengeFromJSONTyped, RedirectChallengeToJSON } from "./RedirectChallenge";
-import type { TelegramLoginChallenge } from "./TelegramLoginChallenge";
+} from "./PlexAuthenticationChallenge.js";
+import type { RedirectChallenge } from "./RedirectChallenge.js";
+import { RedirectChallengeFromJSONTyped, RedirectChallengeToJSON } from "./RedirectChallenge.js";
+import type { TelegramLoginChallenge } from "./TelegramLoginChallenge.js";
 import {
     TelegramLoginChallengeFromJSONTyped,
     TelegramLoginChallengeToJSON,
-} from "./TelegramLoginChallenge";
+} from "./TelegramLoginChallenge.js";
 
 /**
  * @type LoginChallengeTypes

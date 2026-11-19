@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { TransportModeEnum } from "./TransportModeEnum";
-import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportModeEnum";
+import type { TransportModeEnum } from "./TransportModeEnum.js";
+import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportModeEnum.js";
 
 /**
  * NotificationTransport Serializer

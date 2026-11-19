@@ -1,9 +1,16 @@
 import "#elements/forms/FormGroup";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
+
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
-import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
 
-import { KeyTypeEnum, SAMLBindingsEnum, SAMLLogoutMethods, SAMLProvider } from "@goauthentik/api";
+import {
+    KeyTypeEnum,
+    SAMLBindingsEnum,
+    SAMLLogoutMethods,
+    SAMLProvider,
+    CertificateKeyPair,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
@@ -15,6 +22,9 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
 
     @state()
     protected hasSigningKp = false;
+
+    @state()
+    protected hasEncryptionKp = false;
 
     @state()
     protected hasSlsUrl = false;
@@ -46,12 +56,13 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     }
 
     renderForm() {
-        const setHasSigningKp = (ev: InputEvent) => {
-            const target = ev.target as AkCryptoCertificateSearch;
+        const setHasSigningKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasSigningKp = !!detail.value;
+            this.signingKeyType = detail.value?.keyType ?? KeyTypeEnum.Rsa;
+        };
 
-            if (!target) return;
-            this.hasSigningKp = !!target.selectedKeypair;
-            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
+        const setHasEncryptionKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasEncryptionKp = !!detail.value;
         };
 
         const setHasSlsUrl = (ev: Event) => {
@@ -89,6 +100,8 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
                     setHasSigningKp,
                     hasSigningKp: this.hasSigningKp,
                     signingKeyType: this.signingKeyType,
+                    setHasEncryptionKp,
+                    hasEncryptionKp: this.hasEncryptionKp,
                     setHasSlsUrl,
                     hasSlsUrl: this.hasSlsUrl,
                     setSlsBinding,

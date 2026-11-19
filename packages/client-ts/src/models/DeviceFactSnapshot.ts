@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { DeviceFacts } from "./DeviceFacts";
-import { DeviceFactsFromJSON, DeviceFactsToJSON } from "./DeviceFacts";
-import type { VendorEnum } from "./VendorEnum";
-import { VendorEnumFromJSON } from "./VendorEnum";
+import { parseDateTime } from "../runtime.js";
+import type { DeviceFacts } from "./DeviceFacts.js";
+import { DeviceFactsFromJSON, DeviceFactsToJSON } from "./DeviceFacts.js";
+import type { VendorEnum } from "./VendorEnum.js";
+import { VendorEnumFromJSON } from "./VendorEnum.js";
 
 /**
  * @export

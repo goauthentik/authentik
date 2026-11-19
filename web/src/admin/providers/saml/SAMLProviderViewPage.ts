@@ -2,7 +2,7 @@ import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/saml/SAMLProviderForm";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/events/ObjectChangelog";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
@@ -25,15 +25,17 @@ import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
+import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKSearchSelect } from "#components/ak-search-select-field";
 import renderDescriptionList from "#components/DescriptionList";
+
+import { userSource } from "#admin/common/search-sources";
 
 import {
     CertificateKeyPair,
-    CoreApi,
-    CoreUsersListRequest,
     CryptoApi,
     ModelEnum,
     ProvidersApi,
@@ -503,11 +505,11 @@ export class SAMLProviderViewPage extends AKElement {
                                       </ak-action-button>
                                   </div>
                                   <div class="pf-c-card__footer">
-                                      <ak-codemirror
+                                      <ak-code-editor
                                           mode="xml"
                                           readonly
                                           value="${ifDefined(this.metadata?.metadata)}"
-                                      ></ak-codemirror>
+                                      ></ak-code-editor>
                                   </div>
                               </div>
                           </div>
@@ -532,39 +534,17 @@ export class SAMLProviderViewPage extends AKElement {
                         [
                             msg("Preview for user"),
                             html`
-                                <ak-search-select
-                                    .fetchObjects=${async (query?: string): Promise<User[]> => {
-                                        const args: CoreUsersListRequest = {
-                                            ordering: "username",
-                                        };
-
-                                        if (query !== undefined) {
-                                            args.search = query;
-                                        }
-
-                                        const users = await aki(CoreApi).coreUsersList(args);
-
-                                        return users.results;
-                                    }}
-                                    .renderElement=${(user: User): string => {
-                                        return user.username;
-                                    }}
-                                    .renderDescription=${(user: User): TemplateResult => {
-                                        return html`${user.name}`;
-                                    }}
-                                    .value=${(user: User | undefined): number | undefined => {
-                                        return user?.pk;
-                                    }}
-                                    .selected=${(user: User): boolean => {
-                                        return user.pk === this.previewUser?.pk;
-                                    }}
-                                    blankable
-                                    @ak-change=${(ev: CustomEvent) => {
-                                        this.previewUser = ev.detail.value;
+                                ${AKSearchSelect({
+                                    name: "previewUser",
+                                    source: userSource,
+                                    value: this.previewUser ? String(this.previewUser.pk) : null,
+                                    selectedObject: this.previewUser,
+                                    blankable: true,
+                                    onChange: (event: SearchSelectChangeEvent<User>) => {
+                                        this.previewUser = event.detail.value ?? undefined;
                                         this.fetchPreview();
-                                    }}
-                                >
-                                </ak-search-select>
+                                    },
+                                })}
                             `,
                         ],
                     ])}

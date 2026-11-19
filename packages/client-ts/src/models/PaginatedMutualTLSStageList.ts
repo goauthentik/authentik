@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { MutualTLSStage } from "./MutualTLSStage";
-import { MutualTLSStageFromJSON, MutualTLSStageToJSON } from "./MutualTLSStage";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { MutualTLSStage } from "./MutualTLSStage.js";
+import { MutualTLSStageFromJSON, MutualTLSStageToJSON } from "./MutualTLSStage.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

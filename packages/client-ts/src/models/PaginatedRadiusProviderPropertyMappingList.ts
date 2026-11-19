@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RadiusProviderPropertyMapping } from "./RadiusProviderPropertyMapping";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { RadiusProviderPropertyMapping } from "./RadiusProviderPropertyMapping.js";
 import {
     RadiusProviderPropertyMappingFromJSON,
     RadiusProviderPropertyMappingToJSON,
-} from "./RadiusProviderPropertyMapping";
+} from "./RadiusProviderPropertyMapping.js";
 
 /**
  * @export

@@ -31,7 +31,7 @@ def get_docker_tag() -> str:
     branch_name = os.environ.get(default_branch, "main")
     if os.environ.get(env_pr_branch, "") != "":
         branch_name = os.environ[env_pr_branch]
-    branch_name = re.sub(r"[^a-zA-Z0-9-]", "-", branch_name.replace("refs/heads/", ""))
+    branch_name = re.sub(r"[^a-zA-Z0-9-.]", "-", branch_name.replace("refs/heads/", ""))
     return f"gh-{branch_name}"
 
 
@@ -92,7 +92,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         self.task_broker = use_test_broker()
 
-        freezegun.configure(extend_ignore_list=["cryptography"])
+        # kubernetes>=37 lazily imports pydantic models via module __getattr__, which fails
+        # when freezegun scans module attributes while datetime is patched
+        freezegun.configure(extend_ignore_list=["cryptography", "kubernetes"])
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")

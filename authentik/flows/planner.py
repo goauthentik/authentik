@@ -218,6 +218,8 @@ class FlowPlanner:
         if (
             self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
             and request.user.is_authenticated
+            # Allow re-authenticating the current user (e.g. via a source for prompt=login)
+            and context.get(PLAN_CONTEXT_PENDING_USER) != request.user
         ):
             raise FlowNonApplicableException()
         if (
@@ -338,10 +340,18 @@ class FlowPlanner:
             bindings = list(
                 FlowStageBinding.objects.filter(target__pk=self.flow.pk).order_by("order")
             )
-            stages = Stage.objects.filter(flowstagebinding__in=[binding.pk for binding in bindings])
+            stages = {
+                stage.pk: stage
+                for stage in Stage.objects.filter(
+                    pk__in=[binding.stage_id for binding in bindings]
+                ).select_subclasses()
+            }
             for binding in bindings:
                 binding: FlowStageBinding
-                stage = [stage for stage in stages if stage.pk == binding.stage_id][0]
+                stage = stages[binding.stage_id]
+                # Cache the subclassed stage on the binding so it is pickled with the plan,
+                # otherwise every executor request re-queries it with all subclass joins
+                binding.stage = stage
                 marker = StageMarker()
                 if binding.evaluate_on_plan:
                     self._logger.debug(

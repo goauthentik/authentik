@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { ExpressionPolicy } from "./ExpressionPolicy";
-import { ExpressionPolicyFromJSON, ExpressionPolicyToJSON } from "./ExpressionPolicy";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { ExpressionPolicy } from "./ExpressionPolicy.js";
+import { ExpressionPolicyFromJSON, ExpressionPolicyToJSON } from "./ExpressionPolicy.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

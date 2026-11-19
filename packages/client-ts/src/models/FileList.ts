@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { ThemedUrls } from "./ThemedUrls";
-import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
+import type { ThemedUrls } from "./ThemedUrls.js";
+import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls.js";
 
 /**
  * Base serializer class which doesn't implement create/update methods

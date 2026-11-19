@@ -94,7 +94,7 @@ async function openAdminNavLink(
 
     await test.step(`Open ${linkName} from the admin navigation`, async () => {
         if (!(await link.isVisible())) {
-            await page.getByRole("button", { name: `Expand ${group}` }).click();
+            await page.getByRole("button", { name: group, exact: true }).click();
         }
 
         await expect(link, `${linkName} navigation link is visible`).toBeVisible();
@@ -653,7 +653,7 @@ test.describe("User offboarding", () => {
         await pointer.click("Cancel Offboardings", "button", list);
 
         const bulk = modalContent(page, "ak-forms-delete-bulk").first();
-        const dialog = page.getByRole("dialog").filter({ hasText: "Cancel Offboardings" });
+        const dialog = page.getByRole("dialog").filter({ hasText: "Cancel 2 Offboardings" });
 
         await expect(dialog, "Bulk cancellation dialog opens").toBeVisible();
 
@@ -665,7 +665,7 @@ test.describe("User offboarding", () => {
             users[1].username,
         );
 
-        await bulk.getByRole("button", { name: "Cancel Offboardings" }).last().click();
+        await bulk.getByRole("button", { name: "Cancel 2 Offboardings" }).last().click();
         await expect(dialog, "Bulk cancellation dialog closes").toBeHidden({ timeout: 10_000 });
 
         await expect(rows, "Canceled offboardings leave the pending list").toHaveCount(0, {

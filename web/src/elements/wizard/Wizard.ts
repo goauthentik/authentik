@@ -94,7 +94,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     public formatHeader(verboseName = this.verboseName): string {
         if (verboseName) {
             return msg(str`Create New ${verboseName}`, {
-                id: "wizard.header.verbose-name.one",
+                id: "wizard.header.verbose-name.label",
                 desc: "Header for the creation wizard, where the entity singular is interpolated.",
             });
         }
@@ -158,12 +158,6 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
      */
     @property({ type: String })
     public description: string | null = null;
-
-    /**
-     * Whether the wizard is valid and can proceed to the next step.
-     */
-    @property({ type: Boolean })
-    public valid = false;
 
     /**
      * Actions to display at the end of the wizard.
@@ -326,16 +320,25 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
 
         if (!activeStepElement) return false;
 
+        // A second activation while the step is saving would submit it twice.
+        if (this.loading) return false;
+
         if (activeStepElement.nextCallback) {
             this.loading = true;
 
-            const completedStep = await activeStepElement.nextCallback(event);
+            let completedStep: boolean;
 
-            this.loading = false;
+            try {
+                completedStep = await activeStepElement.nextCallback(event);
+            } finally {
+                this.loading = false;
+            }
 
             if (!completedStep) return false;
 
             if (lastPage) {
+                this.loading = true;
+
                 const promise = this.finalHandler?.() || Promise.resolve();
 
                 return promise
@@ -549,10 +552,19 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
         activeStepIndex,
         lastPage,
     }: StepProgress): SlottedTemplateResult {
-        const { canBack, cancelable, valid, childElementCount } = this;
+        const { canBack, cancelable, loading, childElementCount } = this;
+        const canAdvance = !!this.activeStepElement?.canAdvance;
 
         return guard(
-            [activeStepIndex, lastPage, canBack, cancelable, valid, childElementCount],
+            [
+                activeStepIndex,
+                lastPage,
+                canBack,
+                cancelable,
+                canAdvance,
+                loading,
+                childElementCount,
+            ],
             () => {
                 const customLabel = this.activeStepElement?.formatNextLabel();
 
@@ -590,7 +602,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                     html`<button
                         data-test-id="wizard-navigation-next"
                         class="pf-c-button pf-m-primary"
-                        ?disabled=${!this.valid}
+                        ?disabled=${!canAdvance || loading}
                         type="button"
                         @click=${this.navigateNext}
                     >

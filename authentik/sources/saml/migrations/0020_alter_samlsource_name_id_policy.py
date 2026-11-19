@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                     ("urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", "Unspecified"),
                 ],
                 default="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
-                help_text="NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.",
+                help_text="Format of the NameID Policy sent to the IdP. Select Unspecified to let the IdP choose the format of the NameID it returns.",
             ),
         ),
     ]

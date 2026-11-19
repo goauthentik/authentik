@@ -151,5 +151,5 @@ class PolicyAccessView(AccessMixin, View):
         )
         if not result.passing:
             for message in result.messages:
-                messages.error(self.request, _(message))
+                messages.error(self.request, message)
         return result

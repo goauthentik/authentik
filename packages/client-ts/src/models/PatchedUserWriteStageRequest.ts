@@ -10,10 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { UserCreationModeEnum } from "./UserCreationModeEnum";
-import { UserCreationModeEnumFromJSON, UserCreationModeEnumToJSON } from "./UserCreationModeEnum";
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import type { UserCreationModeEnum } from "./UserCreationModeEnum.js";
+import {
+    UserCreationModeEnumFromJSON,
+    UserCreationModeEnumToJSON,
+} from "./UserCreationModeEnum.js";
+import type { UserTypeEnum } from "./UserTypeEnum.js";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
 /**
  * UserWriteStage Serializer

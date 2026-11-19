@@ -30,4 +30,4 @@ class ReviewViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet):
 
     def perform_create(self, serializer: ReviewSerializer) -> None:
         review = serializer.save(reviewer=self.request.user)
-        review.iteration.on_review(self.request)
+        review.iteration.on_review(review, self.request)

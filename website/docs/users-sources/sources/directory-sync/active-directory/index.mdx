@@ -94,3 +94,17 @@ To support the integration of authentik with Active Directory, create a new LDAP
 6. To finalize the Active Directory setup, enable the `authentik LDAP` backend in the password stage.
 
     ![](./11_ak_stage.png)
+
+## Account expiration
+
+During [LDAP user synchronization](../../protocols/ldap/index.mdx), authentik checks Active Directory's `accountExpires` attribute together with `userAccountControl`. An expired account is deactivated even if `userAccountControl` otherwise allows access. Deactivation deletes the user's authentik sessions.
+
+No additional property mapping is required. The expiration timestamp is interpreted in UTC. Both `0` and `9223372036854775807` mean that the account never expires.
+
+Expiration takes effect on the next successful user synchronization, which runs every two hours by default. It does not schedule deactivation at the exact expiration time.
+
+When `userAccountControl` is available, Active Directory determines the user's active status, overriding an `is_active` property mapping or a manual change in authentik. Extending or removing an expiration date, or setting the account to never expire, reactivates the user on the next synchronization if `userAccountControl` does not mark the account as disabled or locked. Without `userAccountControl`, expiration can deactivate a user, but clearing expiration does not automatically reactivate them.
+
+The service account must be able to read `accountExpires`. This attribute is not included in Active Directory's Global Catalog by default. A missing or empty attribute imposes no expiration restriction; an invalid value stops synchronization of the affected page and is reported in the synchronization task.
+
+Account expiration is separate from password expiration. The `accountExpires` check does not enforce password aging or require password changes.

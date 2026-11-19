@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { OAuth2Provider } from "./OAuth2Provider";
-import { OAuth2ProviderFromJSON, OAuth2ProviderToJSON } from "./OAuth2Provider";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { OAuth2Provider } from "./OAuth2Provider.js";
+import { OAuth2ProviderFromJSON, OAuth2ProviderToJSON } from "./OAuth2Provider.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

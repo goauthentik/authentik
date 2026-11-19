@@ -144,6 +144,8 @@ export class IdentificationStage extends BaseStage<
             this.defaultUserIdentification = pendingUserIdentifier;
 
             if (this.rememberMeController) {
+                // `removeController` does not notify the controller, so unbind its listener here.
+                this.rememberMeController.hostDisconnected();
                 this.removeController(this.rememberMeController);
                 this.rememberMeController = null;
             }
@@ -402,9 +404,9 @@ export class IdentificationStage extends BaseStage<
 
     //#region Render
     protected renderDefaultSource(source: LoginSource, showLabels: boolean) {
-        const { name, iconUrl, challenge } = source;
+        const { name, iconUrl, iconThemedUrls, challenge } = source;
 
-        const icon = renderSourceIcon(name, iconUrl);
+        const icon = renderSourceIcon(name, iconUrl, iconThemedUrls, this.activeTheme);
 
         return html`<button
             type="button"

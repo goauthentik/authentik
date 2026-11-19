@@ -14,12 +14,12 @@ import path, { resolve } from "node:path";
 
 import { generatePseudoLocaleModule } from "./pseudolocalize.ts";
 import { unescapeOverescapedLitTemplates } from "./unescape-locale-entities.ts";
+import { PluralRuntimeLitLocalizer } from "./xliff-plurals.ts";
 
 import { ConsoleLogger } from "#logger/node";
 import { PackageRoot } from "#paths/node";
 
 import { readConfigFileAndWriteSchema } from "@lit/localize-tools/lib/config.js";
-import { RuntimeLitLocalizer } from "@lit/localize-tools/lib/modes/runtime.js";
 
 //#region Setup
 
@@ -189,7 +189,7 @@ export async function generateLocaleModules() {
         initialConsoleWarn(arg0, ...args);
     };
 
-    const localizer = new RuntimeLitLocalizer(localizeRules);
+    const localizer = new PluralRuntimeLitLocalizer(localizeRules);
 
     await localizer.build();
 

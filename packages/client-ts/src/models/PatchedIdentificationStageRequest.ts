@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { UserFieldsEnum } from "./UserFieldsEnum";
-import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
+import type { UserFieldsEnum } from "./UserFieldsEnum.js";
+import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum.js";
 
 /**
  * IdentificationStage Serializer

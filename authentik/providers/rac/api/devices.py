@@ -147,11 +147,6 @@ class RACDeviceViewSet(mixins.ListModelMixin, GenericViewSet):
                 "search",
                 OpenApiTypes.STR,
             ),
-            OpenApiParameter(
-                name="superuser_full_list",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.BOOL,
-            ),
         ],
         responses={
             200: RACDeviceSerializer(many=True),
@@ -168,10 +163,7 @@ class RACDeviceViewSet(mixins.ListModelMixin, GenericViewSet):
         queryset = self._filter_queryset_for_list(provider.devices().select_related("rac_override"))
         self.paginate_queryset(queryset)
 
-        superuser_full_list = str(request.GET.get("superuser_full_list", "false")).lower() == "true"
-        if superuser_full_list and request.user.is_superuser:
-            allowed_devices = list(queryset)
-        elif request.GET.get("search", "") != "":
+        if request.GET.get("search", "") != "":
             allowed_devices = self._get_allowed_devices(provider, queryset)
         else:
             allowed_devices = cache.get(user_device_cache_key(request.user.pk, provider.pk))

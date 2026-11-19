@@ -19,7 +19,7 @@ class TestS3BackendClientCache(TestCase):
     @CONFIG.patch("storage.s3.use_ssl", "true")
     def test_client_reuses_boto_client(self):
         """Test repeated client access reuses the same boto client."""
-        with patch("authentik.admin.files.backends.s3.boto3.Session") as session_cls:
+        with patch("boto3.Session") as session_cls:
             session = session_cls.return_value
             client = Mock()
             session.client.return_value = client
@@ -36,7 +36,7 @@ class TestS3BackendClientCache(TestCase):
     def test_client_refreshes_when_config_changes(self):
         """Test client cache is invalidated when S3 client config changes."""
         with CONFIG.patch("storage.s3.endpoint", "https://s3-1.example.com"):
-            with patch("authentik.admin.files.backends.s3.boto3.Session") as session_cls:
+            with patch("boto3.Session") as session_cls:
                 session = session_cls.return_value
                 first_client = Mock()
                 second_client = Mock()

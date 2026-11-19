@@ -10,15 +10,15 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { Connector } from "./Connector";
-import { ConnectorFromJSON } from "./Connector";
-import type { PartialGroup } from "./PartialGroup";
-import { PartialGroupFromJSON } from "./PartialGroup";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { Policy } from "./Policy";
-import { PolicyFromJSON } from "./Policy";
+import { parseDateTime } from "../runtime.js";
+import type { Connector } from "./Connector.js";
+import { ConnectorFromJSON } from "./Connector.js";
+import type { PartialGroup } from "./PartialGroup.js";
+import { PartialGroupFromJSON } from "./PartialGroup.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { Policy } from "./Policy.js";
+import { PolicyFromJSON } from "./Policy.js";
 
 /**
  * PolicyBinding Serializer

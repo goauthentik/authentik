@@ -71,6 +71,10 @@ Property mappings are evaluated in name order. If a property mapping fails to ev
 
 To handle network interruptions, authentik detects transient request failures and retries sync tasks.
 
+If Google Workspace rejects a user or group, for example because a value is invalid, authentik skips that object and continues the sync with the next one. The sync task logs a warning that names the object and includes the error from Google Workspace. You can view the sync tasks and their logs on the provider's page in the Admin interface.
+
+If the email address of a new user or group is already in use in Google Workspace, authentik links the authentik object to the Google Workspace user or group whose primary address it is. If a different kind of object has the address, or the address is an alias of another user or group, authentik skips the object and logs a warning. To resolve this, remove the address from the other object in Google Workspace, or change the property mappings, or the **Default group email domain** setting for groups, so that the object gets an unused address.
+
 ## Property mapping
 
 There are several considerations regarding how authentik data is mapped to Google Workspace user and group data.

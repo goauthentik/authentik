@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
-import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
+import { parseDateTime } from "../runtime.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { WebAuthnDeviceType } from "./WebAuthnDeviceType.js";
+import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType.js";
 
 /**
  * Serializer for WebAuthn authenticator devices

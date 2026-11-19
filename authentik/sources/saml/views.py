@@ -37,7 +37,7 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
-from authentik.sources.saml.exceptions import SAMLException, UnsupportedNameIDFormat
+from authentik.sources.saml.exceptions import SAMLException
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.processors.request import RequestProcessor
@@ -115,8 +115,8 @@ class InitiateView(View):
         try:
             saml_request = nice64(auth_n_req.build_auth_n())
         except InternalError as exc:
-            LOGGER.warning(str(exc))
-            return bad_request_message(request, str(exc))
+            LOGGER.warning("Failed to build SAML request", source=source.slug, exc=exc)
+            return bad_request_message(request, _("Failed to build the SAML request."))
         injected_stages = []
         plan_kwargs = {
             PLAN_CONTEXT_TITLE: f"Redirecting to {source.name}...",
@@ -130,8 +130,8 @@ class InitiateView(View):
         # otherwise we default to POST_AUTO, with direct redirect
         if source.binding_type == SAMLBindingTypes.POST:
             injected_stages.append(in_memory_stage(ConsentStageView))
-            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = _(
-                "Continue to {source_name}".format(source_name=source.name)
+            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = _("Continue to {source_name}").format(
+                source_name=source.name
             )
         injected_stages.append(in_memory_stage(AutosubmitStageView))
         return self.handle_login_flow(
@@ -144,6 +144,15 @@ class InitiateView(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class ACSView(View):
     """AssertionConsumerService, consume assertion and log user in"""
+
+    def error_response(self, source: SAMLSource, exc: Exception) -> HttpResponse:
+        """Log the full error for administrators and show the user a generic message"""
+        LOGGER.warning("Failed to process SAML response", source=source.slug, exc=exc)
+        if isinstance(exc, SAMLException):
+            message = exc.default_message
+        else:
+            message = _("Failed to process the SAML response.")
+        return bad_request_message(self.request, message)
 
     def post(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Handles a POSTed SSO Assertion and logs the user in."""
@@ -159,7 +168,7 @@ class ACSView(View):
             VerificationError,
             ValueError,
         ) as exc:
-            return bad_request_message(request, str(exc))
+            return self.error_response(source, exc)
 
         try:
             if SESSION_KEY_PLAN in request.session:
@@ -168,8 +177,8 @@ class ACSView(View):
                 if plan_redirect:
                     self.request.session[SESSION_KEY_GET] = {NEXT_ARG_NAME: plan_redirect}
             return processor.prepare_flow_manager().get_flow()
-        except (UnsupportedNameIDFormat, ValueError) as exc:
-            return bad_request_message(request, str(exc))
+        except (SAMLException, ValueError) as exc:
+            return self.error_response(source, exc)
 
 
 class SLOView(LoginRequiredMixin, View):

@@ -10,24 +10,27 @@
  * Do not edit the class manually.
  */
 
-import type { AuthorizationCodeAuthMethodEnum } from "./AuthorizationCodeAuthMethodEnum";
+import type { AuthorizationCodeAuthMethodEnum } from "./AuthorizationCodeAuthMethodEnum.js";
 import {
     AuthorizationCodeAuthMethodEnumFromJSON,
     AuthorizationCodeAuthMethodEnumToJSON,
-} from "./AuthorizationCodeAuthMethodEnum";
-import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum";
+} from "./AuthorizationCodeAuthMethodEnum.js";
+import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum.js";
 import {
     GroupMatchingModeEnumFromJSON,
     GroupMatchingModeEnumToJSON,
-} from "./GroupMatchingModeEnum";
-import type { PKCEMethodEnum } from "./PKCEMethodEnum";
-import { PKCEMethodEnumFromJSON, PKCEMethodEnumToJSON } from "./PKCEMethodEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { ProviderTypeEnum } from "./ProviderTypeEnum";
-import { ProviderTypeEnumFromJSON, ProviderTypeEnumToJSON } from "./ProviderTypeEnum";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+} from "./GroupMatchingModeEnum.js";
+import type { PKCEMethodEnum } from "./PKCEMethodEnum.js";
+import { PKCEMethodEnumFromJSON, PKCEMethodEnumToJSON } from "./PKCEMethodEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { ProviderTypeEnum } from "./ProviderTypeEnum.js";
+import { ProviderTypeEnumFromJSON, ProviderTypeEnumToJSON } from "./ProviderTypeEnum.js";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum.js";
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from "./UserMatchingModeEnum.js";
 
 /**
  * OAuth Source Serializer
@@ -90,7 +93,7 @@ export interface OAuthSourceRequest {
     profileUrl?: string | null;
     pkce?: PKCEMethodEnum;
     consumerKey: string;
-    consumerSecret: string;
+    consumerSecret?: string;
     additionalScopes?: string;
     oidcWellKnownUrl?: string;
     oidcJwksUrl?: string;
@@ -119,13 +122,6 @@ export function instanceOfOAuthSourceRequest(value: object): value is OAuthSourc
             !("consumer_key" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["consumerKey"] === undefined &&
             (value as Record<string, any>)["consumer_key"] === undefined)
-    )
-        return false;
-    if (
-        (!("consumerSecret" in (value as Record<string, any>)) &&
-            !("consumer_secret" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["consumerSecret"] === undefined &&
-            (value as Record<string, any>)["consumer_secret"] === undefined)
     )
         return false;
     return true;
@@ -205,7 +201,7 @@ export function OAuthSourceRequestFromJSONTyped(
                   : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"],
-        consumerSecret: json["consumer_secret"],
+        consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],

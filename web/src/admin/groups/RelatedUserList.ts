@@ -17,6 +17,8 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
+import { APIMessage, MessageLevel } from "#common/messages";
+import { plural } from "#common/ui/locale/plurals";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { IconEditButton, renderModal } from "#elements/dialogs";
@@ -65,11 +67,25 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
     @state()
     usersToAdd: User[] = [];
 
-    public override getSuccessMessage(): string {
-        return msg("Successfully added user(s).");
+    protected override formatAPISuccessMessage(data: { users: number[] }): APIMessage {
+        const count = data.users.length;
+
+        return {
+            level: MessageLevel.success,
+            message: plural(count, {
+                one: (formattedCount) =>
+                    msg(str`Successfully added ${formattedCount} user.`, {
+                        id: "users.add-related.success.one",
+                    }),
+                other: (formattedCount) =>
+                    msg(str`Successfully added ${formattedCount} users.`, {
+                        id: "users.add-related.success.other",
+                    }),
+            }),
+        };
     }
 
-    async send(data: { users: number[] }): Promise<{ users: number[] }> {
+    protected override async send(data: { users: number[] }): Promise<{ users: number[] }> {
         await Promise.all(
             data.users.map((userPk) => {
                 if (this.targetGroup) {
@@ -96,6 +112,16 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
         return data;
     }
 
+    #groupMemberSubmitListener = (event: AKFormSubmitEvent<User[]>) => {
+        const pending = new Map(this.usersToAdd.map((user) => [user.pk, user]));
+
+        for (const user of event.target.toJSON()) {
+            pending.set(user.pk, user);
+        }
+
+        this.usersToAdd = Array.from(pending.values());
+    };
+
     protected openUserSelectionModal = (event?: Event) => {
         if (event?.defaultPrevented) {
             return;
@@ -105,9 +131,7 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
             <ak-form
                 headline=${msg("Select users")}
                 submit-label=${msg("Confirm")}
-                @submit=${(event: AKFormSubmitEvent<User[]>) => {
-                    this.usersToAdd = event.target.toJSON();
-                }}
+                @submit=${this.#groupMemberSubmitListener}
                 ><ak-group-member-table></ak-group-member-table>
             </ak-form>
         `);
@@ -170,6 +194,11 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
 
 @customElement("ak-user-related-list")
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
+    public static override verboseName = msg("User", { id: "users.verbose-name.label" });
+    public static override verboseNamePlural = msg("Users", {
+        id: "users.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [...Table.styles, PFDescriptionList, PFAlert];
 
     public override searchPlaceholder = msg("Search for users by username or display name...");
@@ -232,9 +261,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         const targetLabel = this.targetGroup?.name || this.targetRole?.name;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("User(s)")}
-            submit-label=${msg("Remove User(s)")}
-            action=${msg("removed")}
+            action="remove"
             action-subtext=${
                 targetLabel
                     ? msg(

@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { ObjectAttribute } from "./ObjectAttribute";
-import { ObjectAttributeFromJSON, ObjectAttributeToJSON } from "./ObjectAttribute";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { ObjectAttribute } from "./ObjectAttribute.js";
+import { ObjectAttributeFromJSON, ObjectAttributeToJSON } from "./ObjectAttribute.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

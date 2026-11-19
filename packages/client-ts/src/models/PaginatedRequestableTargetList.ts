@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RequestableTarget } from "./RequestableTarget";
-import { RequestableTargetFromJSON, RequestableTargetToJSON } from "./RequestableTarget";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { RequestableTarget } from "./RequestableTarget.js";
+import { RequestableTargetFromJSON, RequestableTargetToJSON } from "./RequestableTarget.js";
 
 /**
  * @export

@@ -8,9 +8,8 @@ test.describe("Modals", () => {
     });
 
     test("About authentik modal", async ({ page }) => {
-        const aboutButton = page
-            .getByRole("contentinfo", { name: "authentik information" })
-            .getByRole("button", { name: "Open about dialog" });
+        // The footer is slotted into the sidebar, so scope by host rather than by the nav landmark.
+        const aboutButton = page.locator("ak-sidebar").getByRole("button", { name: /Version/ });
 
         await expect(aboutButton, "About button is visible").toBeVisible();
 

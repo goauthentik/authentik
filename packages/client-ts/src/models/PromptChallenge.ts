@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
-import type { StagePrompt } from "./StagePrompt";
-import { StagePromptFromJSON, StagePromptToJSON } from "./StagePrompt";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
+import type { StagePrompt } from "./StagePrompt.js";
+import { StagePromptFromJSON, StagePromptToJSON } from "./StagePrompt.js";
 
 /**
  * Initial challenge being sent, define fields

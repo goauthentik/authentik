@@ -113,7 +113,7 @@ class BoundSessionMiddleware(SessionMiddleware):
         if SESSION_KEY_BINDING_NET in request.session or SESSION_KEY_BINDING_GEO in request.session:
             # Only set the last IP in the session if there's a binding specified
             # (== basically requires the user to be logged in)
-            request.session[Session.Keys.LAST_IP] = new_ip
+            request.session.save_last_ip(new_ip)
 
     @staticmethod
     def recheck_session_net(binding: NetworkBinding, last_ip: str, new_ip: str):

@@ -10,13 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { TelegramSourcePropertyMapping } from "./TelegramSourcePropertyMapping";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { TelegramSourcePropertyMapping } from "./TelegramSourcePropertyMapping.js";
 import {
     TelegramSourcePropertyMappingFromJSON,
     TelegramSourcePropertyMappingToJSON,
-} from "./TelegramSourcePropertyMapping";
+} from "./TelegramSourcePropertyMapping.js";
 
 /**
  * @export

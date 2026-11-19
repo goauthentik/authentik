@@ -38,6 +38,16 @@ class TestBlueprintsV1RBAC(TransactionTestCase):
         self.assertIsNotNone(role)
         self.assertEqual(get_perms(role), {"authentik_blueprints.view_blueprintinstance"})
 
+    def test_role_unknown_permission(self):
+        """Test that an unknown permission fails validation"""
+        uid = generate_id()
+        import_yaml = load_fixture("fixtures/rbac_role.yaml", id=uid).replace(
+            "authentik_blueprints.view_blueprintinstance", "authentik_blueprints.view_nothing"
+        )
+
+        importer = Importer.from_string(import_yaml)
+        self.assertFalse(importer.validate()[0])
+
     def test_object_permission(self):
         """Test permissions"""
         uid = generate_id()

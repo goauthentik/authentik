@@ -1,13 +1,23 @@
 """Event Middleware tests"""
 
+from asyncio import CancelledError
+from unittest.mock import Mock, PropertyMock, patch
+
+from asgiref.sync import async_to_sync
 from django.conf import settings
-from django.test import override_settings
+from django.db.models.signals import m2m_changed, post_init, post_save, pre_delete
+from django.test import RequestFactory, SimpleTestCase, override_settings
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, Group, Token, TokenIntents
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.events.middleware import audit_ignore, audit_overwrite_user
+from authentik.enterprise.audit.middleware import EnterpriseAuditMiddleware
+from authentik.events.middleware import (
+    AuditMiddleware,
+    audit_ignore,
+    audit_overwrite_user,
+)
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 
@@ -145,3 +155,41 @@ class TestEventsMiddleware(APITestCase):
                 "username": self.user.username,
             },
         )
+
+
+class TestAuditMiddlewareLifecycle(SimpleTestCase):
+    """Audit receivers are connected once and scoped to the current request."""
+
+    def test_cancelled_request(self):
+        """Cancellation restores the outer context and doesn't (dis)connect receivers."""
+
+        async def cancelled_response(request):
+            raise CancelledError
+
+        signals = (post_save, pre_delete, m2m_changed, post_init)
+        for middleware_class in (AuditMiddleware, EnterpriseAuditMiddleware):
+            with (
+                self.subTest(middleware=middleware_class),
+                patch.object(
+                    EnterpriseAuditMiddleware,
+                    "enabled",
+                    new_callable=PropertyMock,
+                    return_value=True,
+                ),
+            ):
+                request = RequestFactory().get("/")
+                request.request_id = generate_id()
+                outer = RequestFactory().get("/")
+                token = AuditMiddleware._current.set((Mock(), outer))
+                middleware = middleware_class(async_to_sync(cancelled_response))
+                try:
+                    # The enterprise post_init receiver is connected on first use
+                    with self.assertRaises(CancelledError):
+                        middleware(request)
+                    baseline = [len(signal.receivers) for signal in signals]
+                    with self.assertRaises(CancelledError):
+                        middleware(request)
+                    self.assertEqual([len(signal.receivers) for signal in signals], baseline)
+                    self.assertIs(AuditMiddleware.current_request(), outer)
+                finally:
+                    AuditMiddleware._current.reset(token)

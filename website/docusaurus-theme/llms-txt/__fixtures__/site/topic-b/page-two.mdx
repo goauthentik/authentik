@@ -4,9 +4,22 @@ description: Second page.
 ---
 
 import Shared from "./_partial.mdx";
+import Links from "../topic-a/_links.mdx";
 
 # Page Two
 
 <Shared />
 
 Body of page two.
+
+## Links
+
+- [Overview](../topic-a/index.mdx#intro)
+- [Release](/releases/2026/v2026.5.md)
+- [Sibling](../page-three/)
+- [External](https://example.com/guide.mdx)
+- [Anchor](#links)
+- [Missing](./missing.mdx)
+- [Example](./example.json)
+
+<Links />

@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { CountryCodeEnum } from "./CountryCodeEnum";
-import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum";
-import type { GeoIPPolicyCountriesObjInner } from "./GeoIPPolicyCountriesObjInner";
-import { GeoIPPolicyCountriesObjInnerFromJSON } from "./GeoIPPolicyCountriesObjInner";
+import { parseDateTime } from "../runtime.js";
+import type { CountryCodeEnum } from "./CountryCodeEnum.js";
+import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum.js";
+import type { GeoIPPolicyCountriesObjInner } from "./GeoIPPolicyCountriesObjInner.js";
+import { GeoIPPolicyCountriesObjInnerFromJSON } from "./GeoIPPolicyCountriesObjInner.js";
 
 /**
  * GeoIP Policy Serializer

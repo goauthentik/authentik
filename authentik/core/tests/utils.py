@@ -23,6 +23,7 @@ from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.generators import generate_id
+from authentik.stages.password.models import PasswordDevice
 
 
 def create_test_flow(
@@ -44,8 +45,7 @@ def create_test_user(name: str | None = None, **kwargs) -> User:
         name=uid,
         **kwargs,
     )
-    user.set_password(uid)
-    user.save()
+    PasswordDevice.set_password(user, uid)
     return user
 
 

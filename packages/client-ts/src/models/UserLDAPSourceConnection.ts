@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-import type { Source } from "./Source";
-import { SourceFromJSON } from "./Source";
+import { parseDateTime } from "../runtime.js";
+import type { PartialUser } from "./PartialUser.js";
+import { PartialUserFromJSON } from "./PartialUser.js";
+import type { Source } from "./Source.js";
+import { SourceFromJSON } from "./Source.js";
 
 /**
  * User source connection
