@@ -22,6 +22,7 @@ from django.db import models
 from django.db.models import Prefetch, Q, QuerySet, options
 from django.db.models.functions import Upper
 from django.http import HttpRequest
+from django.utils.encoding import iri_to_uri
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -839,10 +840,17 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
         # it is kept as is instead of being filled with the whole user
         template = re.sub(r"(%%|%\()|%", lambda match: match.group(1) or "%%", url)
         try:
-            return template % (user_data() if user_data else UserSerializer(instance=user).data)
+            data = user_data() if user_data else UserSerializer(instance=user).data
+            launch_url = template % data
         except Exception as exc:  # noqa
             LOGGER.warning("Failed to format launch url", exc=exc)
             return url
+        if url.startswith("/"):
+            launch_url = iri_to_uri(launch_url)
+            # Substitutions must preserve the root-relative URL accepted by the validator.
+            if not DomainlessFormattedURLValidator.relative_re.match(launch_url):
+                return None
+        return launch_url
 
     def get_provider(self) -> Provider | None:
         """Get casted provider instance. Needs Application queryset with_provider"""
