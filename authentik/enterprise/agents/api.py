@@ -1,12 +1,13 @@
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import (
     BooleanField,
     CharField,
     ChoiceField,
     DateTimeField,
     SerializerMethodField,
+    UUIDField,
 )
 from rest_framework.mixins import (
     DestroyModelMixin,
@@ -32,6 +33,9 @@ from authentik.core.models import (
 )
 from authentik.enterprise.agents.models import Agent
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
+from authentik.providers.oauth2.resources import validate_resource_indicator
+
+ID_JAG_FIELDS = ["id_jag_audience", "id_jag_client_id", "id_jag_resources"]
 
 
 class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
@@ -40,11 +44,47 @@ class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
     # Chosen at creation only; immutable afterwards.
     policy_behavior = ChoiceField(choices=ActorPolicyInheritance.choices, read_only=True)
     token_identifier = SerializerMethodField()
+    policy_target = UUIDField(
+        source="policy_target.pbm_uuid",
+        read_only=True,
+        allow_null=True,
+        help_text=_(
+            "Policy binding target of a system agent. Policies bound to it decide which users "
+            "may obtain ID-JAGs for the agent's audience."
+        ),
+    )
 
     def get_token_identifier(self, agent: Agent) -> str | None:
         """Identifier of the agent's API token, so its key can be retrieved/copied later."""
         token = Token.objects.filter(user=agent, intent=TokenIntents.INTENT_API).first()
         return token.identifier if token else None
+
+    def _validate_uri(self, value: str) -> str:
+        try:
+            return validate_resource_indicator(value)
+        except ValueError as exc:
+            raise ValidationError(str(exc)) from None
+
+    def validate_id_jag_audience(self, audience: str) -> str:
+        return self._validate_uri(audience) if audience else audience
+
+    def validate_id_jag_resources(self, resources: list[str]) -> list[str]:
+        return [self._validate_uri(resource) for resource in resources]
+
+    def validate(self, attrs: dict) -> dict:
+        # ID-JAG is for system agents only. An owned agent's owner can edit it, and must
+        # not be able to make authentik mint assertions for an audience of their choosing.
+        parent = self.instance.parent_id if self.instance else None
+        if parent and any(attrs.get(f) for f in ID_JAG_FIELDS):
+            raise ValidationError(_("ID-JAG can only be configured on system agents."))
+        # An ID-JAG names the client it is for at the audience's authorization server
+        audience = attrs.get("id_jag_audience", getattr(self.instance, "id_jag_audience", ""))
+        client_id = attrs.get("id_jag_client_id", getattr(self.instance, "id_jag_client_id", ""))
+        if audience and not client_id:
+            raise ValidationError(
+                {"id_jag_client_id": _("A client ID is required with an ID-JAG audience.")}
+            )
+        return super().validate(attrs)
 
     class Meta:
         model = Agent
@@ -55,6 +95,9 @@ class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
             "parent",
             "policy_behavior",
             "token_identifier",
+            "applications",
+            "policy_target",
+            *ID_JAG_FIELDS,
         ]
 
 

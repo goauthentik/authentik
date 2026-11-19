@@ -13,7 +13,7 @@ from authentik.enterprise.agents.models import Agent
 from authentik.enterprise.tests import enterprise_test
 from authentik.lib.generators import generate_id
 from authentik.policies.engine import PolicyEngine
-from authentik.policies.models import PolicyBinding
+from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 
 @enterprise_test()
@@ -322,6 +322,95 @@ class AgentTests(APITestCase):
         user.delete()
         agent.refresh_from_db()
         self.assertIsNone(agent.parent)
+
+    def test_id_jag_system_agent_only(self):
+        """ID-JAG can be configured on system agents, but not on agents with an owner,
+        whose owner could otherwise point it at any audience"""
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        data = {
+            "id_jag_audience": "https://as.example.com",
+            "id_jag_client_id": generate_id(),
+            "id_jag_resources": ["https://as.example.com/mcp"],
+        }
+
+        system = Agent.create_for_user(None)
+        res = self.client.patch(
+            reverse("authentik_api:agent-detail", kwargs={"pk": system.pk}), data, format="json"
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        system.refresh_from_db()
+        self.assertEqual(system.id_jag_audience, "https://as.example.com")
+
+        owned = Agent.create_for_user(create_test_user())
+        res = self.client.patch(
+            reverse("authentik_api:agent-detail", kwargs={"pk": owned.pk}), data, format="json"
+        )
+        self.assertEqual(res.status_code, 400, res.content)
+
+    def test_id_jag_validation(self):
+        """The ID-JAG audience and resources must be absolute URIs, and an audience needs the
+        client's identifier at its authorization server"""
+        self.client.force_login(create_test_admin_user())
+        agent = Agent.create_for_user(None)
+        url = reverse("authentik_api:agent-detail", kwargs={"pk": agent.pk})
+        for data, field in (
+            ({"id_jag_audience": "https://as.example.com"}, "id_jag_client_id"),
+            (
+                {"id_jag_audience": "https://as.example.com", "id_jag_client_id": ""},
+                "id_jag_client_id",
+            ),
+            ({"id_jag_audience": "as.example.com", "id_jag_client_id": "c"}, "id_jag_audience"),
+            (
+                {"id_jag_audience": "https://as.example.com#f", "id_jag_client_id": "c"},
+                "id_jag_audience",
+            ),
+            ({"id_jag_resources": ["https://as.example.com/mcp", "/mcp"]}, "id_jag_resources"),
+        ):
+            with self.subTest(data=data):
+                res = self.client.patch(url, data, format="json")
+                self.assertEqual(res.status_code, 400, res.content)
+                self.assertIn(field, res.json())
+        res = self.client.patch(
+            url,
+            {"id_jag_audience": "https://as.example.com", "id_jag_client_id": "c"},
+            format="json",
+        )
+        self.assertEqual(res.status_code, 200, res.content)
+        # Partial updates are checked against the stored values
+        res = self.client.patch(url, {"id_jag_client_id": ""}, format="json")
+        self.assertEqual(res.status_code, 400, res.content)
+        res = self.client.patch(url, {"id_jag_audience": ""}, format="json")
+        self.assertEqual(res.status_code, 200, res.content)
+
+    def test_policy_target(self):
+        """System agents get a policy target for their ID-JAG policies, owned agents don't"""
+        self.client.force_login(create_test_admin_user())
+        system = Agent.create_for_user(None)
+        owned = Agent.create_for_user(create_test_user())
+        res = self.client.get(reverse("authentik_api:agent-detail", kwargs={"pk": system.pk}))
+        self.assertEqual(res.json()["policy_target"], str(system.policy_target.pbm_uuid))
+        res = self.client.get(reverse("authentik_api:agent-detail", kwargs={"pk": owned.pk}))
+        self.assertIsNone(res.json()["policy_target"])
+        pbm_uuid = system.policy_target.pbm_uuid
+        system.delete()
+        self.assertFalse(PolicyBindingModel.objects.filter(pbm_uuid=pbm_uuid).exists())
+
+    def test_update_agent_applications(self):
+        """An explicit through model must keep application assignments writable via the API."""
+        self.client.force_login(create_test_admin_user())
+        agent = Agent.create_for_user(None)
+        applications = [
+            Application.objects.create(name=generate_id(), slug=generate_id()) for _ in range(2)
+        ]
+        url = reverse("authentik_api:agent-detail", kwargs={"pk": agent.pk})
+        for assigned in (applications, applications[1:], []):
+            with self.subTest(application_count=len(assigned)):
+                ids = [str(application.pk) for application in assigned]
+                response = self.client.patch(url, {"applications": ids}, format="json")
+                self.assertEqual(response.status_code, 200, response.content)
+                self.assertCountEqual(response.json()["applications"], ids)
+                self.assertCountEqual(agent.applications.all(), assigned)
 
     def test_system_agent(self):
         """Without a parent, an agent is a system agent, which only admins can create"""
