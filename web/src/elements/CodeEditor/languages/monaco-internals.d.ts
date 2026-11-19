@@ -65,3 +65,12 @@ declare module "monaco-editor/languages/features/css/cssWorker" {
         constructor(ctx: CSSWorkerContext, createData: CSSWorkerCreateData);
     }
 }
+
+declare module "monaco-editor/languages/definitions/python/python" {
+    import type { languages } from "monaco-editor/editor/editor.api";
+
+    /**
+     * The Monarch definition Monaco highlights Python with.
+     */
+    export const language: languages.IMonarchLanguage & { keywords: string[] };
+}
