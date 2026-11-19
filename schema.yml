@@ -20271,6 +20271,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: ignore_force_authn
+        schema:
+          type: boolean
+      - in: query
         name: invalidation_flow
         schema:
           type: string
@@ -21445,6 +21449,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: ignore_force_authn
+        schema:
+          type: boolean
       - in: query
         name: invalidation_flow
         schema:
@@ -36730,7 +36738,9 @@ components:
         launch_url:
           type: string
           nullable: true
-          description: Allow formatting of launch URL
+          description: |-
+            Format the launch URL for the user given as `for_user` in the context, or else the
+            requesting user
           readOnly: true
         open_in_new_tab:
           type: boolean
@@ -54087,6 +54097,11 @@ components:
           type: boolean
         sign_logout_response:
           type: boolean
+        ignore_force_authn:
+          type: boolean
+          description: When enabled, the ForceAuthn attribute set by the Service Provider
+            on an AuthnRequest is ignored and an existing session is used. When disabled,
+            ForceAuthn requires the user to re-authenticate.
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -58083,6 +58098,11 @@ components:
           type: boolean
         sign_logout_response:
           type: boolean
+        ignore_force_authn:
+          type: boolean
+          description: When enabled, the ForceAuthn attribute set by the Service Provider
+            on an AuthnRequest is ignored and an existing session is used. When disabled,
+            ForceAuthn requires the user to re-authenticate.
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -58304,6 +58324,11 @@ components:
           type: boolean
         sign_logout_response:
           type: boolean
+        ignore_force_authn:
+          type: boolean
+          description: When enabled, the ForceAuthn attribute set by the Service Provider
+            on an AuthnRequest is ignored and an existing session is used. When disabled,
+            ForceAuthn requires the user to re-authenticate.
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
