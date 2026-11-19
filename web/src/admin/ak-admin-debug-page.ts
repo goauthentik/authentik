@@ -87,7 +87,7 @@ export class DebugPage extends AKElement {
         super.updated(changed);
 
         setPageDetails({
-            icon: "pf-icon pf-icon-user",
+            icon: "fas fa-wrench",
             header: "Debug",
         });
     }
