@@ -20,7 +20,7 @@ from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.http import get_http_session
-from authentik.sources.oauth.models import OAuthSource, PKCEMethod
+from authentik.sources.oauth.models import IdJagUserMatching, OAuthSource, PKCEMethod
 from authentik.sources.oauth.types.registry import SourceType, registry
 
 # A DNS name with at least two labels, lowercase; no wildcards
@@ -83,6 +83,20 @@ class OAuthSourceSerializer(SourceSerializer):
             if domain not in normalized:
                 normalized.append(domain)
         return normalized
+
+    def validate_id_jag_matching(self, attrs: dict):
+        """Matching ID-JAG users by email needs domains to trust the email for"""
+        matching = self._get_value(attrs, "id_jag_user_matching", IdJagUserMatching.IDENTIFIER)
+        if matching == IdJagUserMatching.EMAIL and not self._get_value(
+            attrs, "id_jag_email_domains"
+        ):
+            raise ValidationError(
+                {
+                    "id_jag_user_matching": (
+                        "Matching by email needs at least one ID-JAG email domain."
+                    )
+                }
+            )
 
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
@@ -156,6 +170,7 @@ class OAuthSourceSerializer(SourceSerializer):
                     raise ValidationError(
                         f"{url} is required for provider {source_type.verbose_name}"
                     )
+        self.validate_id_jag_matching(attrs)
         consumer_secret = self._get_value(attrs, "consumer_secret")
         pkce = self._get_value(attrs, "pkce", PKCEMethod.NONE)
         if source_type.requires_client_secret and not consumer_secret:
@@ -185,6 +200,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "authorization_code_auth_method",
             "id_jag_email_domains",
             "id_jag_email_group",
+            "id_jag_user_matching",
         ]
         extra_kwargs = {
             "consumer_secret": {"write_only": True, "allow_blank": True, "required": False},
