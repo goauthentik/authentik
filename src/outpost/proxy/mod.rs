@@ -341,3 +341,38 @@ impl ProxyOutpost {
         outpost
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::sync::Arc;
+
+    use axum::{
+        body::Body,
+        http::{StatusCode, header},
+    };
+    use tower::ServiceExt as _;
+
+    use super::{ProxyOutpost, build_router};
+
+    #[tokio::test]
+    async fn standalone_proxy_accepts_large_request_bodies() {
+        const BODY_SIZE: usize = 32 * 1024 * 1024 + 1;
+        const HOST: &str = "app.example.com";
+
+        ak_common::config::init().expect("init config");
+        let outpost = Arc::new(ProxyOutpost::with_app(HOST).await);
+        let request = axum::extract::Request::builder()
+            .method("POST")
+            .header(header::HOST, HOST)
+            .header(header::CONTENT_LENGTH, BODY_SIZE)
+            .body(Body::from(vec![0_u8; BODY_SIZE]))
+            .expect("build request");
+
+        let response = build_router(outpost)
+            .oneshot(request)
+            .await
+            .expect("infallible");
+        // The request reaches the application and starts its login flow.
+        assert_eq!(response.status(), StatusCode::FOUND);
+    }
+}
