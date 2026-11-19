@@ -14,8 +14,6 @@ from authentik.lib.utils.crypto import get_cookie_signing_key
 from authentik.policies.types import PolicyRequest
 
 TOKEN_LENGTH = 32
-# Set while the browser runs "Add user", so a source login started from that flow adds a user.
-SESSION_KEY_ADD_USER = "authentik/core/user_switching/add_user"
 
 _SIGNING_HASH = get_cookie_signing_key()
 
@@ -32,6 +30,37 @@ def activate_session(session_key: str, token: str) -> None:
         )
         switching_session.current_session_id = session_key
         switching_session.save(update_fields=["current_session"])
+
+
+def _add_user_requests(request: HttpRequest) -> QuerySet[UserSwitchingSession]:
+    """The browser's switching session, if its current login started "Add user"."""
+    token = getattr(request, "user_switching_token", None)
+    session_key = request.session.session_key if hasattr(request, "session") else None
+    if not token or not session_key:
+        return UserSwitchingSession.objects.none()
+    return UserSwitchingSession.objects.filter(token=token, add_user_session_id=session_key)
+
+
+def request_add_user(request: HttpRequest) -> None:
+    """Record that the browser's current login is adding another user."""
+    # Restore the session's existing group if the browser lost its switching cookie.
+    if hasattr(request, "user_switching_token"):
+        reconcile_session(request)
+    token = ensure_request_token(request)
+    if token and request.session.session_key:
+        UserSwitchingSession.objects.filter(token=token).update(
+            add_user_session_id=request.session.session_key
+        )
+
+
+def is_adding_user(request: HttpRequest) -> bool:
+    """Whether the browser's current login started "Add user" and hasn't finished it."""
+    return _add_user_requests(request).exists()
+
+
+def clear_add_user(request: HttpRequest) -> bool:
+    """Finish or abandon "Add user" for the current login, returning whether it was pending."""
+    return _add_user_requests(request).update(add_user_session=None) > 0
 
 
 def encode_cookie(token: str) -> str:

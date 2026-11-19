@@ -196,7 +196,9 @@ class TestSourceFlowManager(TestCase):
     def _add_user_request(self, user: User):
         """Request from a signed-in browser that started a source login from "Add user"."""
         request = self.request_factory.get("/", user=user)
-        request.session[user_switching.SESSION_KEY_ADD_USER] = True
+        request.session.save()
+        request.user_switching_token = None
+        user_switching.request_add_user(request)
         return request
 
     def test_add_user_auth_logs_in_connected_user(self):
@@ -218,7 +220,7 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(flow_plan.flow_pk, self.authentication_flow.pk.hex)
         self.assertEqual(flow_plan.context[PLAN_CONTEXT_PENDING_USER], other_user)
         self.assertTrue(flow_plan.context[PLAN_CONTEXT_USER_SWITCH_ADD_USER])
-        self.assertNotIn(user_switching.SESSION_KEY_ADD_USER, request.session)
+        self.assertFalse(user_switching.is_adding_user(request))
 
     def test_add_user_refuses_enrollment(self):
         """Test "Add user" with a new source identity neither links nor enrolls"""
