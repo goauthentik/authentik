@@ -27,3 +27,22 @@ export const ExistingConsentNewPermissions = flowFactory("ak-stage-consent", {
     ],
     additionalPermissions: [{ name: "Perm 4", id: "perm_4" }],
 });
+
+export const NonRegisteredClient = flowFactory("ak-stage-consent", {
+    headerText: "lorem ipsum",
+    token: "",
+    clientId: "https://client.example.com/oauth/metadata.json",
+    clientName: "Example Client",
+    permissions: [{ name: "Perm 1", id: "perm_1" }],
+    additionalPermissions: [],
+});
+
+export const NonRegisteredClientWithRedirectHost = flowFactory("ak-stage-consent", {
+    headerText: "lorem ipsum",
+    token: "",
+    clientId: "https://client.example.com/oauth/metadata.json",
+    clientName: "Example Client",
+    redirectHost: "app.example.net",
+    permissions: [{ name: "Perm 1", id: "perm_1" }],
+    additionalPermissions: [],
+});

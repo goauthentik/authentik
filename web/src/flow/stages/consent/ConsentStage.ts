@@ -20,7 +20,7 @@ import {
     ConsentPermission,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -52,12 +52,46 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         })}`;
     }
 
+    /**
+     * Name the OAuth client when it is not the application's own provider client.
+     * Both fields are untrusted for dynamically registered clients; they are only
+     * ever rendered as text.
+     */
+    renderClient(): SlottedTemplateResult {
+        const { clientId, clientName, redirectHost } = this.challenge ?? {};
+
+        if (!clientId) {
+            return nothing;
+        }
+
+        const client = clientName || clientId;
+
+        return html`<div class="pf-c-form__group" data-test-id="consent-client">
+            <p class="pf-u-mb-sm pf-u-font-weight-bold">
+                ${msg(str`${client} is requesting access on behalf of this application.`)}
+            </p>
+            ${
+                clientName && clientName !== clientId
+                    ? html`<p class="pf-u-mb-sm">${msg(str`Client ID: ${clientId}`)}</p>`
+                    : nothing
+            }
+            ${
+                redirectHost
+                    ? html`<p class="pf-u-mb-sm">
+                          ${msg(str`You will be redirected to ${redirectHost}.`)}
+                      </p>`
+                    : nothing
+            }
+        </div>`;
+    }
+
     renderNoPrevious(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
                 <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
                     ${this.challenge?.headerText ?? ""}
                 </h3>
+                ${this.renderClient()}
                 ${
                     this.challenge?.permissions.length
                         ? html`
@@ -80,6 +114,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                 <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
                     ${this.challenge?.headerText ?? ""}
                 </h3>
+                ${this.renderClient()}
                 ${
                     this.challenge?.permissions.length
                         ? html`
