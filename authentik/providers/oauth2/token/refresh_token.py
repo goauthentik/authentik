@@ -26,6 +26,11 @@ class RefreshTokenTokenRequest(TokenRequest):
                 token=raw_token,
             )
             raise TokenError("invalid_grant")
+        # Checked before anything else about the token, so that a client cannot learn
+        # about or act on another client's tokens
+        if not self.refresh_token.is_bound_to(self.client):
+            self.logger.warning("Refresh token was issued to a different client")
+            raise TokenError("invalid_grant")
         if self.refresh_token.is_expired:
             self.logger.warning(
                 "Refresh token is expired",
