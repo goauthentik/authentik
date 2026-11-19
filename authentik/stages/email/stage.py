@@ -125,6 +125,7 @@ class EmailStageView(ChallengeStageView):
                 subject=subject,
                 to=[(pending_user.name, email)],
                 language=language,
+                brand_title=self.request.brand.branding_title,
                 template_name=current_stage.template,
                 template_context={
                     "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
