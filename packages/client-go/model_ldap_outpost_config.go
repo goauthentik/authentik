@@ -39,8 +39,10 @@ type LDAPOutpostConfig struct {
 	SearchMode     *LDAPAPIAccessMode `json:"search_mode,omitempty"`
 	BindMode       *LDAPAPIAccessMode `json:"bind_mode,omitempty"`
 	// When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-	MfaSupport           *bool `json:"mfa_support,omitempty"`
-	AdditionalProperties map[string]interface{}
+	MfaSupport *bool `json:"mfa_support,omitempty"`
+	// When enabled, searches only return users who have access to the application according to its policy bindings, and the groups those users are members of.
+	LimitSearchToApplicationAccess *bool `json:"limit_search_to_application_access,omitempty"`
+	AdditionalProperties           map[string]interface{}
 }
 
 type _LDAPOutpostConfig LDAPOutpostConfig
@@ -456,6 +458,38 @@ func (o *LDAPOutpostConfig) SetMfaSupport(v bool) {
 	o.MfaSupport = &v
 }
 
+// GetLimitSearchToApplicationAccess returns the LimitSearchToApplicationAccess field value if set, zero value otherwise.
+func (o *LDAPOutpostConfig) GetLimitSearchToApplicationAccess() bool {
+	if o == nil || IsNil(o.LimitSearchToApplicationAccess) {
+		var ret bool
+		return ret
+	}
+	return *o.LimitSearchToApplicationAccess
+}
+
+// GetLimitSearchToApplicationAccessOk returns a tuple with the LimitSearchToApplicationAccess field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LDAPOutpostConfig) GetLimitSearchToApplicationAccessOk() (*bool, bool) {
+	if o == nil || IsNil(o.LimitSearchToApplicationAccess) {
+		return nil, false
+	}
+	return o.LimitSearchToApplicationAccess, true
+}
+
+// HasLimitSearchToApplicationAccess returns a boolean if a field has been set.
+func (o *LDAPOutpostConfig) HasLimitSearchToApplicationAccess() bool {
+	if o != nil && !IsNil(o.LimitSearchToApplicationAccess) {
+		return true
+	}
+
+	return false
+}
+
+// SetLimitSearchToApplicationAccess gets a reference to the given bool and assigns it to the LimitSearchToApplicationAccess field.
+func (o *LDAPOutpostConfig) SetLimitSearchToApplicationAccess(v bool) {
+	o.LimitSearchToApplicationAccess = &v
+}
+
 func (o LDAPOutpostConfig) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -494,6 +528,9 @@ func (o LDAPOutpostConfig) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MfaSupport) {
 		toSerialize["mfa_support"] = o.MfaSupport
+	}
+	if !IsNil(o.LimitSearchToApplicationAccess) {
+		toSerialize["limit_search_to_application_access"] = o.LimitSearchToApplicationAccess
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -555,6 +592,7 @@ func (o *LDAPOutpostConfig) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "search_mode")
 		delete(additionalProperties, "bind_mode")
 		delete(additionalProperties, "mfa_support")
+		delete(additionalProperties, "limit_search_to_application_access")
 		o.AdditionalProperties = additionalProperties
 	}
 

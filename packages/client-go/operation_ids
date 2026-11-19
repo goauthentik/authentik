@@ -12,6 +12,7 @@ flows_executor_solve
 outposts_instances_list
 outposts_ldap_access_check
 outposts_ldap_list
+outposts_ldap_search_visibility
 outposts_proxy_list
 outposts_radius_access_check
 outposts_radius_list

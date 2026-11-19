@@ -39,6 +39,10 @@ export const mfaSupportHelp = msg(
     "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.",
 );
 
+export const limitSearchToApplicationAccessHelp = msg(
+    "When enabled, searches only return users who have access to this provider's application according to its bindings, and the groups those users are members of. Policy bindings are evaluated without the user's login context, so policies that depend on the client's IP address, location, or time may give different results than at login.",
+);
+
 export const cryptoCertificateHelp = msg(
     "The certificate for the above configured Base DN. As a fallback, the provider uses a self-signed certificate.",
 );
