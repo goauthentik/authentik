@@ -83,11 +83,9 @@ When the managed blueprint is applied during the upgrade, every existing member 
 
 ### SAML sources verify the assertion audience
 
-SAML sources now reject assertions whose _audience_ restriction does not include the source's _entity ID_, which is the **Issuer** override if one is set, or the source's metadata URL otherwise. Previously, the audience was not checked, so an assertion issued for another service provider could be accepted.
+SAML sources now check who an assertion was issued for. If an assertion has an audience restriction, it must list the source's entity ID, or authentik rejects the login. The entity ID is the source's **Issuer** setting if one is set, or the source's metadata URL otherwise. Previously, authentik did not check the audience, so it could accept an assertion that was meant for a different service.
 
-After upgrading, a source or provider mapping that returns any other value fails the login or sync with a configuration error event. OAuth2 scope mappings that return another value are still skipped, but each one now creates an error event. Before upgrading, check that your custom property mappings return `None` when they have nothing to add.
-
-{/* @connor rewrite */}
+**Before upgrading, check that your identity provider uses the source's entity ID as the audience.**
 
 ### Imported password hashes must match the import settings
 
@@ -192,11 +190,15 @@ When a file that a blueprint references with `!File` changes, such as a rotated 
 
 ### Post-quantum cryptography
 
-{/* @connor wordsmith, FIPS, FED-RAMP mention too via Fletcher */}
+authentik now supports ML-DSA, a post-quantum signature algorithm, and stronger SAML encryption:
 
-authentik can generate certificates that use ML-DSA, a post-quantum signature algorithm. Browsers and public certificate authorities do not support ML-DSA yet, so these certificates are limited to TLS between components that you control, such as outposts and mutual TLS with a private certificate authority. Outposts must run authentik 2026.11 or newer to verify them, and key generation is unavailable when FIPS mode is enabled. For more details, refer to [Supported key algorithms](../../../sys-mgmt/certificates.mdx#supported-key-algorithms).
+- **Certificates**: authentik can generate and store ML-DSA certificates for TLS between components that you control, such as outposts and mutual TLS with a private certificate authority. Browsers and public certificate authorities do not accept them yet, and outposts must run authentik 2026.11 or newer to verify them.
+- **OAuth2/OIDC**: Providers can sign tokens with an ML-DSA certificate, and OAuth sources and the proxy outpost can verify them.
+- **Passkeys**: WebAuthn accepts ML-DSA credentials, although no authenticator supports them yet.
+- **SAML**: New SAML and WS-Federation providers encrypt assertions with AES-256-GCM by default. Existing providers keep AES-128-CBC until you change them.
+- **FIPS**: ML-DSA key generation is unavailable when FIPS mode is enabled, because the FIPS-validated modules that FedRAMP deployments require do not include ML-DSA yet.
 
-We've got a [full write-up](https://goauthentik.io/blog/2026-11-03-how-authentik-is-handling-post-quantum-cryptography/) on the post-quantum cryptography support in authentik.
+For more details, refer to [Supported key algorithms](../../../sys-mgmt/certificates.mdx#supported-key-algorithms) and our [full write-up](https://goauthentik.io/blog/2026-11-03-how-authentik-is-handling-post-quantum-cryptography/) on post-quantum cryptography in authentik.
 
 ### Path-based URLs
 
