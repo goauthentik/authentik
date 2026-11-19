@@ -340,7 +340,7 @@ class TestPostgresConsumerAutoPurge(TestCase):
             consumer.logger.info.call_args_list,
             [
                 call("Task purge started"),
-                call("Task purge finished", count=len(expired), took_s=ANY),
+                call("Task purge finished", count=len(expired), duration=ANY),
             ],
         )
 
