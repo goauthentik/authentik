@@ -17,8 +17,18 @@ class AuthentikProviderProxyConfig(ManagedAppConfig):
 
         from authentik.providers.proxy.models import ProxyProvider
 
-        # TODO: figure out if this can be in pre_save + post_save signals
-        with transaction.atomic():
-            for provider in ProxyProvider.objects.all().select_for_update():
+        def snapshot(provider: ProxyProvider):
+            columns = [f.value_from_object(provider) for f in ProxyProvider._meta.concrete_fields]
+            return columns + sorted(provider.property_mappings.values_list("pk", flat=True))
+
+        for pk in ProxyProvider.objects.order_by("pk").values_list("pk", flat=True):
+            with transaction.atomic():
+                provider = (
+                    ProxyProvider.objects.select_for_update(no_key=True).filter(pk=pk).first()
+                )
+                if provider is None:
+                    continue
+                before = snapshot(provider)
                 provider.set_oauth_defaults()
-                provider.save()
+                if snapshot(provider) != before:
+                    provider.save()
