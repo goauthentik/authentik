@@ -17,10 +17,11 @@ def expiration_on_user_logged_in(sender, request: HttpRequest, user: User, **_):
 
 @receiver(post_save, sender=User)
 def expiration_on_user_save(sender, instance: User, created: bool, update_fields, **_):
-    """Fallback for `last_login` writes that bypass `login()`."""
+    """Fallback for explicit `last_login` writes that bypass `login()`. Full saves are
+    skipped, execution rechecks `last_login` anyway."""
     if created or instance.last_login is None:
         return
-    if update_fields is not None and "last_login" not in update_fields:
+    if update_fields is None or "last_login" not in update_fields:
         return
     UserExpirationRule.withdraw_pending(instance, logged_in_at=instance.last_login)
 

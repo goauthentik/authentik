@@ -840,13 +840,18 @@ class TestWithdrawal(ExpirationTestCase):
         user.save(update_fields=["last_login"])
         self.assertFalse(UserOffboarding.objects.filter(user=user).exists())
 
-    def test_full_save_with_new_last_login_withdraws_row(self):
+    def test_full_save_with_new_last_login_withdrawn_at_execution(self):
         rule = self._rule()
         user = _dormant_user()
         rule.apply()
+        row = _pending(user)
         user.last_login = now()
         user.save()
-        self.assertFalse(UserOffboarding.objects.filter(user=user).exists())
+        self.assertTrue(UserOffboarding.objects.filter(pk=row.pk).exists())
+        execute_offboarding(str(row.pk))
+        user.refresh_from_db()
+        self.assertTrue(user.is_active)
+        self.assertFalse(UserOffboarding.objects.filter(pk=row.pk).exists())
 
     def test_unrelated_save_keeps_row(self):
         rule = self._rule()
