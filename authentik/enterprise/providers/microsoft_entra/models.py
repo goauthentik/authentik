@@ -97,7 +97,13 @@ class MicrosoftEntraProvider(
         default=None,
         blank=True,
         help_text=_("Group filters used to define sync-scope for groups."),
+        related_name="+",
         through="MicrosoftEntraProviderGroupFilter",
+    )
+
+    # Keep the legacy field for rolling upgrades and group deletion.
+    filter_group = models.ForeignKey(
+        "authentik_core.group", on_delete=models.SET_DEFAULT, default=None, null=True
     )
 
     property_mappings_group = models.ManyToManyField(

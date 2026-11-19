@@ -20,10 +20,10 @@ def migrate_filter_group(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from authentik.lib.migrations import migration_event
 
     db_alias = schema_editor.connection.alias
-    provider_model = apps.get_model(
-        "authentik_providers_google_workspace", "googleworkspaceprovider"
+    GoogleWorkspaceProvider = apps.get_model(
+        "authentik_providers_google_workspace", "GoogleWorkspaceProvider"
     )
-    for provider in provider_model.objects.using(db_alias).all():
+    for provider in GoogleWorkspaceProvider.objects.using(db_alias).all():
         if not provider.filter_group:
             continue
         provider.group_filters.add(provider.filter_group)
@@ -96,20 +96,6 @@ class Migration(migrations.Migration):
                 to="authentik_core.group",
             ),
         ),
-        migrations.RunPython(migrate_filter_group),
-        migrations.RemoveField(
-            model_name="googleworkspaceprovider",
-            name="filter_group",
-        ),
-        migrations.AlterField(
-            model_name="googleworkspaceprovider",
-            name="group_filters",
-            field=models.ManyToManyField(
-                blank=True,
-                default=None,
-                help_text="Group filters used to define sync-scope for groups.",
-                through="authentik_providers_google_workspace.GoogleWorkspaceProviderGroupFilter",
-                to="authentik_core.group",
-            ),
-        ),
+        # The legacy column still holds the original filter on rollback.
+        migrations.RunPython(migrate_filter_group, migrations.RunPython.noop),
     ]
