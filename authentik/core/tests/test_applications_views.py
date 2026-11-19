@@ -74,6 +74,22 @@ class TestApplicationsViews(APIFlowTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, f"/app/{self.user.username}")
 
+    def test_check_redirect_auth_invalid_rendered_relative_url(self):
+        """A formatted launch URL must still be root-relative."""
+        self.user.name = "/"
+        self.user.save(update_fields=["name"])
+        self.client.force_login(self.user)
+        self.app.meta_launch_url = "/%(name)s"
+        self.app.save(update_fields=["meta_launch_url"])
+
+        response = self.client.get(
+            reverse(
+                "authentik_core:application-launch",
+                kwargs={"application_slug": self.app.slug},
+            ),
+        )
+        self.assertEqual(response.status_code, 404)
+
     def test_redirect_application_auth_flow(self):
         """Test launching an application with a provider and an authentication flow set"""
         self.client.logout()
