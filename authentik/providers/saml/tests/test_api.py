@@ -339,6 +339,40 @@ class TestSAMLProviderAPI(APITestCase):
         provider.refresh_from_db()
         self.assertEqual(provider.metadata_url, url)
 
+    @Mocker()
+    def test_create_metadata_url_without_acs_url(self, mock: Mocker):
+        """Test the ACS URL is taken from the metadata when only a metadata URL is given"""
+        url = "http://sp.example.com/saml/metadata"
+        mock.get(url, text=load_fixture("fixtures/simple.xml"))
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-list"),
+            {
+                "name": generate_id(),
+                "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).pk,
+                "invalidation_flow": create_test_flow(FlowDesignation.INVALIDATION).pk,
+                "metadata_url": url,
+            },
+            format="json",
+        )
+        self.assertEqual(201, response.status_code)
+        provider = SAMLProvider.objects.get(pk=response.json()["pk"])
+        self.assertEqual(provider.metadata_url, url)
+        self.assertEqual(provider.acs_url, "http://localhost:8080/saml/acs")
+
+    def test_create_without_acs_url_or_metadata_url(self):
+        """Test either an ACS URL or a metadata URL is required"""
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-list"),
+            {
+                "name": generate_id(),
+                "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).pk,
+                "invalidation_flow": create_test_flow(FlowDesignation.INVALIDATION).pk,
+            },
+            format="json",
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertIn("acs_url", response.json())
+
     @apply_blueprint("system/providers-saml.yaml")
     def test_preview(self):
         """Test Preview API Endpoint"""

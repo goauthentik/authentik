@@ -8,6 +8,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import "#elements/ToggleGroup";
 import "#elements/utils/TimeDeltaHelp";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
 import {
@@ -21,6 +22,7 @@ import {
 import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { XMLSigningKeyTypes } from "#admin/common/certificate-key-types";
 
@@ -39,6 +41,11 @@ import {
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+export enum SAMLProviderConfigurationMode {
+    Manual = "manual",
+    Metadata = "metadata",
+}
 
 const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
     {
@@ -112,6 +119,103 @@ function renderHasSlsUrl(
         </ak-radio-input>`;
 }
 
+function renderManualSettings({
+    provider,
+    errors,
+    setHasSlsUrl,
+    hasSlsUrl,
+    setSlsBinding,
+    hasPostBinding,
+    logoutMethod,
+    setLogoutMethod,
+}: SAMLProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
+    return html`<ak-text-input
+            name="acsUrl"
+            label=${msg("ACS URL")}
+            placeholder=${msg("https://...")}
+            input-hint="code"
+            inputmode="url"
+            value="${ifDefined(provider.acsUrl)}"
+            required
+            .errorMessages=${errors.acsUrl}
+        ></ak-text-input>
+        <ak-text-input
+            name="audience"
+            label=${msg("Audience")}
+            placeholder="https://..."
+            input-hint="code"
+            inputmode="url"
+            value="${ifDefined(provider.audience)}"
+            .errorMessages=${errors.audience}
+        ></ak-text-input>
+        <ak-text-input
+            name="slsUrl"
+            label=${msg("SLS URL")}
+            placeholder=${msg("https://...")}
+            input-hint="code"
+            inputmode="url"
+            value="${ifDefined(provider.slsUrl)}"
+            .errorMessages=${errors.slsUrl}
+            help=${msg(
+                "Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.",
+            )}
+            @input=${setHasSlsUrl}
+        ></ak-text-input>
+        ${
+            hasSlsUrl
+                ? renderHasSlsUrl(
+                      provider,
+                      hasPostBinding,
+                      setSlsBinding,
+                      logoutMethod,
+                      setLogoutMethod,
+                  )
+                : nothing
+        }`;
+}
+
+function renderMetadataSettings({
+    provider,
+    errors,
+    hasSlsUrl,
+    hasPostBinding,
+    logoutMethod,
+    setLogoutMethod,
+}: SAMLProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
+    return html`<ak-text-input
+            name="metadataUrl"
+            label=${msg("Metadata URL")}
+            placeholder=${msg("https://...")}
+            input-hint="code"
+            inputmode="url"
+            required
+            value="${ifDefined(provider.metadataUrl)}"
+            .errorMessages=${errors.metadataUrl}
+            help=${msg(
+                "URL of the Service Provider's metadata. The ACS URL, audience, SLS URL, bindings, NameID policy and certificates are filled in from it and periodically updated.",
+            )}
+        ></ak-text-input>
+        ${
+            hasSlsUrl
+                ? html`<ak-radio-input
+                      label=${msg("Logout Method")}
+                      name="logoutMethod"
+                      .options=${logoutMethodOptions(hasPostBinding)}
+                      .value=${logoutMethod}
+                      help=${msg("Method to use for logout when SLS URL is configured.")}
+                      @change=${setLogoutMethod}
+                  >
+                  </ak-radio-input>`
+                : nothing
+        }`;
+}
+
 export interface SAMLProviderFormProps {
     provider?: Partial<SAMLProvider> | null;
     errors?: ValidationError | null;
@@ -124,23 +228,21 @@ export interface SAMLProviderFormProps {
     hasPostBinding: boolean;
     logoutMethod: string;
     setLogoutMethod?: (ev: Event) => void;
+    configurationMode: SAMLProviderConfigurationMode;
+    setConfigurationMode: (mode: SAMLProviderConfigurationMode) => void;
 }
 
-export function renderForm({
-    provider,
-    errors,
-    setHasSigningKp,
-    hasSigningKp,
-    signingKeyType,
-    setHasSlsUrl,
-    hasSlsUrl,
-    setSlsBinding,
-    hasPostBinding,
-    logoutMethod,
-    setLogoutMethod,
-}: SAMLProviderFormProps) {
-    provider ||= {};
-    errors ||= {};
+export function renderForm(props: SAMLProviderFormProps) {
+    const {
+        setHasSigningKp,
+        hasSigningKp,
+        signingKeyType,
+        configurationMode,
+        setConfigurationMode,
+    } = props;
+
+    const provider = props.provider ?? {};
+    const errors = props.errors ?? {};
 
     // Get available hash algorithms for the selected key type
     const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
@@ -170,61 +272,32 @@ export function renderForm({
 
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
-                <ak-text-input
-                    name="metadataUrl"
-                    label=${msg("Metadata URL")}
-                    placeholder=${msg("https://...")}
-                    input-hint="code"
-                    inputmode="url"
-                    value="${ifDefined(provider.metadataUrl)}"
-                    .errorMessages=${errors.metadataUrl}
-                    help=${msg(
-                        "Optional URL of the Service Provider's metadata. When set, the ACS URL, audience, bindings, NameID policy and certificates are periodically updated from it.",
-                    )}
-                ></ak-text-input>
-                <ak-text-input
-                    name="acsUrl"
-                    label=${msg("ACS URL")}
-                    placeholder=${msg("https://...")}
-                    input-hint="code"
-                    inputmode="url"
-                    value="${ifDefined(provider.acsUrl)}"
-                    required
-                    .errorMessages=${errors.acsUrl}
-                ></ak-text-input>
-                <ak-text-input
-                    name="audience"
-                    label=${msg("Audience")}
-                    placeholder="https://..."
-                    input-hint="code"
-                    inputmode="url"
-                    value="${ifDefined(provider.audience)}"
-                    .errorMessages=${errors.audience}
-                ></ak-text-input>
-                <ak-text-input
-                    name="slsUrl"
-                    label=${msg("SLS URL")}
-                    placeholder=${msg("https://...")}
-                    input-hint="code"
-                    inputmode="url"
-                    value="${ifDefined(provider.slsUrl)}"
-                    .errorMessages=${errors.slsUrl}
-                    help=${msg(
-                        "Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.",
-                    )}
-                    @input=${setHasSlsUrl}
-                ></ak-text-input>
-                ${
-                    hasSlsUrl
-                        ? renderHasSlsUrl(
-                              provider,
-                              hasPostBinding,
-                              setSlsBinding,
-                              logoutMethod,
-                              setLogoutMethod,
-                          )
-                        : nothing
-                }
+                <div class="pf-c-card pf-m-selectable pf-m-selected">
+                    <div class="pf-c-card__body">
+                        <ak-toggle-group
+                            value=${configurationMode}
+                            @ak-toggle=${(ev: ToggleGroupEvent<SAMLProviderConfigurationMode>) => {
+                                setConfigurationMode(ev.value);
+                            }}
+                        >
+                            <option value=${SAMLProviderConfigurationMode.Manual}>
+                                ${msg("Manual configuration")}
+                            </option>
+                            <option value=${SAMLProviderConfigurationMode.Metadata}>
+                                ${msg("Metadata URL")}
+                            </option>
+                        </ak-toggle-group>
+                    </div>
+                    <div class="pf-c-card__footer">
+                        <div class="pf-c-form">
+                            ${
+                                configurationMode === SAMLProviderConfigurationMode.Metadata
+                                    ? renderMetadataSettings(props)
+                                    : renderManualSettings(props)
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
         </ak-form-group>
 

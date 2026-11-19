@@ -1,4 +1,4 @@
-import { renderForm } from "./SAMLProviderFormForm.js";
+import { renderForm, SAMLProviderConfigurationMode } from "./SAMLProviderFormForm.js";
 
 import { aki } from "#common/api/client";
 
@@ -29,9 +29,13 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     @state()
     protected logoutMethod: SAMLLogoutMethods = SAMLLogoutMethods.FrontchannelIframe;
 
+    @state()
+    protected configurationMode = SAMLProviderConfigurationMode.Manual;
+
     public override reset(): void {
         super.reset();
 
+        this.configurationMode = SAMLProviderConfigurationMode.Manual;
         this.hasSigningKp = false;
         this.hasSlsUrl = false;
         this.hasPostBinding = false;
@@ -51,6 +55,10 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         this.hasPostBinding = provider.slsBinding === SAMLBindingsEnum.Post;
         this.logoutMethod = provider.logoutMethod ?? SAMLLogoutMethods.FrontchannelIframe;
 
+        this.configurationMode = provider.metadataUrl
+            ? SAMLProviderConfigurationMode.Metadata
+            : SAMLProviderConfigurationMode.Manual;
+
         return provider;
     }
 
@@ -61,6 +69,12 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             data.logoutMethod === SAMLLogoutMethods.Backchannel
         ) {
             data.logoutMethod = SAMLLogoutMethods.FrontchannelIframe;
+        }
+
+        // Only the fields of the active mode are rendered, so the metadata URL has to be
+        // cleared explicitly, otherwise the manual settings would keep being overwritten.
+        if (this.configurationMode === SAMLProviderConfigurationMode.Manual) {
+            data.metadataUrl = "";
         }
 
         if (this.instance) {
@@ -122,6 +136,10 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             hasPostBinding: this.hasPostBinding,
             logoutMethod: this.logoutMethod,
             setLogoutMethod,
+            configurationMode: this.configurationMode,
+            setConfigurationMode: (mode) => {
+                this.configurationMode = mode;
+            },
         });
     }
 }

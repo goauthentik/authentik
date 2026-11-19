@@ -53496,7 +53496,6 @@ components:
             format: uuid
         acs_url:
           type: string
-          minLength: 1
           format: uri
         sls_url:
           type: string
@@ -57484,7 +57483,6 @@ components:
           description: Get SLO redirect URL
           readOnly: true
       required:
-      - acs_url
       - assigned_application_name
       - assigned_application_slug
       - assigned_backchannel_application_name
@@ -57557,7 +57555,6 @@ components:
             format: uuid
         acs_url:
           type: string
-          minLength: 1
           format: uri
         sls_url:
           type: string
@@ -57666,7 +57663,6 @@ components:
             settings are periodically updated from this metadata.
           format: uri
       required:
-      - acs_url
       - authorization_flow
       - invalidation_flow
       - name

@@ -79,7 +79,7 @@ export interface SAMLProvider {
      * Return internal model name
      */
     readonly metaModelName: string;
-    acsUrl: string;
+    acsUrl?: string;
     /**
      * Single Logout Service URL where the logout response should be sent.
      */
@@ -274,13 +274,6 @@ export function instanceOfSAMLProvider(value: object): value is SAMLProvider {
     )
         return false;
     if (
-        (!("acsUrl" in (value as Record<string, any>)) &&
-            !("acs_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["acsUrl"] === undefined &&
-            (value as Record<string, any>)["acs_url"] === undefined)
-    )
-        return false;
-    if (
         (!("urlDownloadMetadata" in (value as Record<string, any>)) &&
             !("url_download_metadata" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["urlDownloadMetadata"] === undefined &&
@@ -374,7 +367,7 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         verboseName: json["verbose_name"],
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
-        acsUrl: json["acs_url"],
+        acsUrl: json["acs_url"] == null ? undefined : json["acs_url"],
         slsUrl: json["sls_url"] == null ? undefined : json["sls_url"],
         audience: json["audience"] == null ? undefined : json["audience"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],

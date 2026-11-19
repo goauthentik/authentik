@@ -13142,7 +13142,6 @@
                 },
                 "acs_url": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "ACS URL"
                 },
                 "sls_url": {

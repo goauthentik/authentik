@@ -77,13 +77,15 @@ class SAMLProviderSerializer(ProviderSerializer):
     url_slo_post = SerializerMethodField()
     url_slo_redirect = SerializerMethodField()
 
+    _metadata: ServiceProviderMetadata | None = None
+
     def validate_metadata_url(self, metadata_url: str) -> str:
         """Ensure a newly set metadata URL points at parseable Service Provider metadata"""
         if not metadata_url:
             return metadata_url
         if self.instance and self.instance.metadata_url == metadata_url:
             return metadata_url
-        parse_metadata(fetch_metadata_or_raise(metadata_url))
+        self._metadata = parse_metadata(fetch_metadata_or_raise(metadata_url))
         return metadata_url
 
     def create(self, validated_data: dict) -> SAMLProvider:
@@ -263,6 +265,16 @@ class SAMLProviderSerializer(ProviderSerializer):
             # Auto-correct to frontchannel_iframe
             attrs["logout_method"] = SAMLLogoutMethods.FRONTCHANNEL_IFRAME
 
+        has_acs_url = bool(attrs.get("acs_url") or (self.instance and self.instance.acs_url))
+        if not has_acs_url:
+            if self._metadata:
+                # The remaining settings are applied by `update_saml_provider_metadata`
+                attrs["acs_url"] = self._metadata.acs_location
+            elif not (self.instance and self.instance.metadata_url):
+                raise ValidationError(
+                    {"acs_url": _("Either an ACS URL or a metadata URL is required.")}
+                )
+
         return super().validate(attrs)
 
     class Meta:
@@ -306,6 +318,8 @@ class SAMLProviderSerializer(ProviderSerializer):
         extra_kwargs = {
             **ProviderSerializer.Meta.extra_write_kwargs,
             "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+            # Filled in from the metadata when a metadata URL is given
+            "acs_url": {"required": False, "allow_blank": True},
         }
 
 
