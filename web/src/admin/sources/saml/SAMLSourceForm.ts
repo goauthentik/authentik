@@ -8,10 +8,13 @@ import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
+import "#elements/ToggleGroup";
 import "#elements/utils/TimeDeltaHelp";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
+
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
@@ -37,6 +40,11 @@ import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+enum ConfigurationMode {
+    Manual = "manual",
+    Metadata = "metadata",
+}
+
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     protected endpoints = {
@@ -50,10 +58,32 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     @state()
     protected hasSigningCert = false;
 
+    @state()
+    protected configurationMode: ConfigurationMode = ConfigurationMode.Manual;
+
     public override reset(): void {
         super.reset();
 
         this.hasSigningCert = false;
+        this.configurationMode = ConfigurationMode.Manual;
+    }
+
+    protected override assignInstance(instance: SAMLSource | null): void {
+        super.assignInstance(instance);
+
+        this.configurationMode = instance?.metadataUrl
+            ? ConfigurationMode.Metadata
+            : ConfigurationMode.Manual;
+    }
+
+    protected override send(data: SAMLSource) {
+        // Only the fields of the active mode are rendered, so the metadata URL has to be
+        // cleared explicitly, otherwise the manual settings would keep being overwritten.
+        if (this.configurationMode === ConfigurationMode.Manual) {
+            data.metadataUrl = "";
+        }
+
+        return super.send(data);
     }
 
     setHasSigningCert(ev: InputEvent): void {
@@ -80,6 +110,86 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                     "When enabled, authentik will look for a Signature inside of the Response element.",
                 )}
             ></ak-switch-input>`;
+    }
+
+    protected renderManualSettings(): TemplateResult {
+        return html`<ak-form-element-horizontal label=${msg("SSO URL")} required name="ssoUrl">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.ssoUrl)}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg("URL that the initial Login request is sent to.")}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("SLO URL")} name="sloUrl">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.sloUrl || "")}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg("Optional URL if the IDP supports Single-Logout.")}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("Binding Type")} required name="bindingType">
+                <ak-radio
+                    .options=${[
+                        {
+                            label: msg("Redirect binding"),
+                            value: BindingTypeEnum.Redirect,
+                            default: true,
+                        },
+                        {
+                            label: msg("Post-auto binding"),
+                            value: BindingTypeEnum.PostAuto,
+                            description: html`${msg(
+                                "Post binding but the request is automatically sent and the user doesn't have to confirm.",
+                            )}`,
+                        },
+                        {
+                            label: msg("Post binding"),
+                            value: BindingTypeEnum.Post,
+                        },
+                    ]}
+                    .value=${this.instance?.bindingType}
+                >
+                </ak-radio>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Verification Certificate")}
+                name="verificationKp"
+            >
+                <ak-crypto-certificate-search
+                    .certificate=${this.instance?.verificationKp}
+                    @input=${this.setHasSigningCert}
+                    nokey
+                ></ak-crypto-certificate-search>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            ${this.hasSigningCert ? this.renderHasSigningCert() : nothing}`;
+    }
+
+    protected renderMetadataSettings(): TemplateResult {
+        return html`<ak-text-input
+                name="metadataUrl"
+                label=${msg("Metadata URL")}
+                placeholder=${msg("https://...")}
+                input-hint="code"
+                inputmode="url"
+                required
+                value="${ifDefined(this.instance?.metadataUrl)}"
+                help=${msg(
+                    "URL of the Identity Provider's metadata. The SSO URL, SLO URL, binding, NameID policy and verification certificate are filled in from it and periodically updated.",
+                )}
+            ></ak-text-input>
+            ${this.renderHasSigningCert()}`;
     }
 
     protected override renderForm(): TemplateResult {
@@ -202,67 +312,32 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-text-input
-                        name="metadataUrl"
-                        label=${msg("Metadata URL")}
-                        placeholder=${msg("https://...")}
-                        input-hint="code"
-                        inputmode="url"
-                        value="${ifDefined(this.instance?.metadataUrl)}"
-                        help=${msg(
-                            "Optional URL of the Identity Provider's metadata. When set, the SSO URL, SLO URL, binding and verification certificate are filled in from it and periodically updated.",
-                        )}
-                    ></ak-text-input>
-                    <ak-form-element-horizontal label=${msg("SSO URL")} name="ssoUrl">
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.ssoUrl)}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "URL that the initial Login request is sent to. Required unless a metadata URL is set.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("SLO URL")} name="sloUrl">
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.sloUrl || "")}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Optional URL if the IDP supports Single-Logout.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Binding Type")}
-                        required
-                        name="bindingType"
-                    >
-                        <ak-radio
-                            .options=${[
-                                {
-                                    label: msg("Redirect binding"),
-                                    value: BindingTypeEnum.Redirect,
-                                    default: true,
-                                },
-                                {
-                                    label: msg("Post-auto binding"),
-                                    value: BindingTypeEnum.PostAuto,
-                                    description: html`${msg(
-                                        "Post binding but the request is automatically sent and the user doesn't have to confirm.",
-                                    )}`,
-                                },
-                                {
-                                    label: msg("Post binding"),
-                                    value: BindingTypeEnum.Post,
-                                },
-                            ]}
-                            .value=${this.instance?.bindingType}
-                        >
-                        </ak-radio>
-                    </ak-form-element-horizontal>
+                    <div class="pf-c-card pf-m-selectable pf-m-selected">
+                        <div class="pf-c-card__body">
+                            <ak-toggle-group
+                                value=${this.configurationMode}
+                                @ak-toggle=${(ev: ToggleGroupEvent<ConfigurationMode>) => {
+                                    this.configurationMode = ev.value;
+                                }}
+                            >
+                                <option value=${ConfigurationMode.Manual}>
+                                    ${msg("Manual configuration")}
+                                </option>
+                                <option value=${ConfigurationMode.Metadata}>
+                                    ${msg("Metadata URL")}
+                                </option>
+                            </ak-toggle-group>
+                        </div>
+                        <div class="pf-c-card__footer">
+                            <div class="pf-c-form">
+                                ${
+                                    this.configurationMode === ConfigurationMode.Metadata
+                                        ? this.renderMetadataSettings()
+                                        : this.renderManualSettings()
+                                }
+                            </div>
+                        </div>
+                    </div>
                     <ak-form-element-horizontal label=${msg("Signing keypair")} name="signingKp">
                         <ak-crypto-certificate-search
                             .certificate=${this.instance?.signingKp}
@@ -273,22 +348,6 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Verification Certificate")}
-                        name="verificationKp"
-                    >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.verificationKp}
-                            @input=${this.setHasSigningCert}
-                            nokey
-                        ></ak-crypto-certificate-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    ${this.hasSigningCert ? this.renderHasSigningCert() : nothing}
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Advanced protocol settings")}">
