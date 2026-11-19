@@ -37878,6 +37878,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        webauthn_additional_accepted_origins:
+          type: array
+          items:
+            type: string
+          description: Additional trusted origins for WebAuthn authentication. Matched
+            exactly.
         webauthn_allowed_device_types:
           type: array
           items:
@@ -37944,6 +37950,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        webauthn_additional_accepted_origins:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Additional trusted origins for WebAuthn authentication. Matched
+            exactly.
         webauthn_allowed_device_types:
           type: array
           items:
@@ -38107,6 +38120,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        additional_accepted_origins:
+          type: array
+          items:
+            type: string
+          description: Additional trusted origins for WebAuthn registration. Matched
+            exactly.
         device_type_restrictions:
           type: array
           items:
@@ -38157,6 +38176,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        additional_accepted_origins:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Additional trusted origins for WebAuthn registration. Matched
+            exactly.
         device_type_restrictions:
           type: array
           items:
@@ -51223,6 +51249,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        webauthn_additional_accepted_origins:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Additional trusted origins for WebAuthn authentication. Matched
+            exactly.
         webauthn_allowed_device_types:
           type: array
           items:
@@ -51267,6 +51300,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        additional_accepted_origins:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Additional trusted origins for WebAuthn registration. Matched
+            exactly.
         device_type_restrictions:
           type: array
           items:
