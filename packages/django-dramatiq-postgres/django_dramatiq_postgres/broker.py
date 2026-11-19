@@ -12,6 +12,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import (
     DEFAULT_DB_ALIAS,
     DatabaseError,
+    Error,
     InterfaceError,
     OperationalError,
     connections,
@@ -659,19 +660,28 @@ class _PostgresConsumer(Consumer):
     def _auto_purge(self) -> None:
         if timezone.now() - self.task_purge_last_run < self.task_purge_interval:
             return
-        self.logger.info("Task purge started")
+        self.logger.info("Task purge started", queue=self.queue_name)
         start = time.monotonic()
-        count = delete_in_batches(
-            self.query_set.filter(
-                state__in=(TaskState.DONE, TaskState.REJECTED),
-                mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
-                result_expiry__lte=timezone.now(),
+        try:
+            count = delete_in_batches(
+                self.query_set.filter(
+                    state__in=(TaskState.DONE, TaskState.REJECTED),
+                    mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
+                    result_expiry__lte=timezone.now(),
+                )
             )
-        )
+        except Error:
+            self.logger.warning(
+                "Task purge failed",
+                queue=self.queue_name,
+                duration=round(time.monotonic() - start, 3),
+            )
+            raise
         self.logger.info(
             "Task purge finished",
+            queue=self.queue_name,
             count=count,
-            took_s=round(time.monotonic() - start, 3),
+            duration=round(time.monotonic() - start, 3),
         )
         self.task_purge_last_run = timezone.now()
 
