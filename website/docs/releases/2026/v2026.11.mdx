@@ -16,6 +16,7 @@ draft: true
 - **Dry-run policy bindings**: Test a new access rule against real traffic before it affects any access decision.
 - **Portable blueprint exports**: Exported blueprints and flows reference related objects by stable identifiers, so they can be imported into a different authentik instance.
 - **Post-quantum cryptography**: Generate ML-DSA certificates, and use a hybrid post-quantum key exchange for outpost TLS.
+- **User expiration**: Automatically deactivate or delete users after a configurable period of inactivity and optionally warn them first. :ak-enterprise
 
 ## Breaking changes
 
@@ -238,9 +239,55 @@ LDAP sources can authenticate to the directory with a TLS client certificate usi
 
 ### Performance
 
-The users list loads much faster in large directories; in testing with 10,000 users, pages that previously took more than 20 seconds load in under 100 milliseconds. Filtering users by type, looking up users by email, and listing tokens, OAuth2 providers, notifications, and files are also faster.
+We built [akbench](https://github.com/authentik-labs/akbench), an open-source tool for load testing authentik. We'll cover it in more detail in an upcoming blog post.
 
-Most requests make fewer database queries. Each authentik process now keeps brands, system settings, and the license summary in memory, so changes to brands and system settings take about 15 seconds to reach other processes. The new `AUTHENTIK_CACHE__TIMEOUT_BRANDS` and `AUTHENTIK_CACHE__TIMEOUT_SYSTEM_SETTINGS` settings control this delay. The PostgreSQL cache backend uses plain SQL again, which makes cache reads more than twice as fast, and flow cache statistics are counted in the database. Each event's notification rules are evaluated in a single task instead of one task per rule.
+#### Faster OpenID Connect
+
+The OpenID Connect discovery and JWKS endpoints now respond much faster. This cuts overhead for every application that fetches them during sign-in. With cold caches, a directory with 44 applications and 14 OAuth2 providers using 3072-bit keys gave these results:
+
+- Discovery dropped from 110 ms to 15 ms. With warm caches, discovery takes about 6 ms.
+- JWKS dropped from 100 ms to 3 ms.
+
+#### Faster login flows
+
+Policy evaluation and flow planning make fewer database queries during sign-in. In separate load tests, the changes increased login throughput by 10% and 6%, respectively.
+
+#### Large lists load faster in the UI
+
+With 10,000 users, the last-page database query for the **Users** list dropped from about 190 ms to 70 ms. With stale group ancestry statistics, it dropped from about 20 seconds to 75 ms. Filtering users by type and looking up users by email are also faster.
+
+In a large test deployment, loading a page of 100 applications dropped from 340 ms to 55 ms. In a separate test with added PostgreSQL latency, batching icon lookups cut database queries from 71 to 10 and reduced the time for a 100-application page from 112 ms to 51 ms.
+
+Lists of tokens, notifications, and files are also faster. Loading and serializing 100 OAuth2 providers took 24 ms, down from 305 ms. For 100 flow-stage bindings, the time dropped from 868 ms to 42 ms.
+
+Custom brand CSS is now parsed once per page. In a browser test with about 1 MB of custom CSS, mounting 200 elements took 15 ms, down from 359 ms.
+
+#### Event pages stay responsive at scale
+
+Event queries use indexes to keep pages responsive as the event log grows. At 10 million events:
+
+| Page                         | Before | After  |
+| ---------------------------- | ------ | ------ |
+| Events list                  | 4.7 s  | 426 ms |
+| A user's events              | 8.2 s  | 38 ms  |
+| User changelog               | 12.0 s | 9 ms   |
+| Application changelog        | 11.7 s | 12 ms  |
+| Search by username           | 8.5 s  | 48 ms  |
+| Application statistics       | 839 ms | 20 ms  |
+| Most-used applications chart | 16.1 s | 6.5 s  |
+| Notification drawer          | 139 ms | 8 ms   |
+
+In the same benchmark, the **System Tasks** list dropped from 77 ms to 18 ms, and the schedules list dropped from 192 ms to 21 ms.
+
+See [Upgrading](#upgrading) for the event-index migration timings.
+
+#### Caching and background tasks
+
+Most requests make fewer database queries. Each authentik process keeps brands, system settings, and the license summary in memory. A change to a brand or a system setting reaches other processes after about 15 seconds. [`AUTHENTIK_CACHE__TIMEOUT_BRANDS`](../../install-config/configuration/configuration.mdx#authentik_cache__timeout_brands) and [`AUTHENTIK_CACHE__TIMEOUT_SYSTEM_SETTINGS`](../../install-config/configuration/configuration.mdx#authentik_cache__timeout_system_settings) set that delay. The PostgreSQL cache backend uses plain SQL again, and cache reads are more than twice as fast. Flow cache statistics are counted in the database. Each event's notification rules run in one task instead of one task per rule.
+
+Expired cache entries are deleted in batches. In a test with 2,000 expired entries and added database latency, cleanup dropped from 25.6 seconds to 70 ms.
+
+### Worker stalling fix
 
 A fix to the audit middleware prevents workers from stalling under load, which could cause intermittent `503` errors and failed readiness checks in Kubernetes. When a recycled worker closes an idle connection, the server now retries `GET`, `HEAD`, `OPTIONS`, and `TRACE` requests without a body once on a new connection instead of returning `503`. The `/-/health/live/` endpoint no longer queries the database and is no longer included in access logs and request metrics.
 
@@ -249,6 +296,10 @@ A fix to the audit middleware prevents workers from stalling under load, which c
 authentik now disables PostgreSQL's just-in-time (JIT) compilation for its own database user when it starts. In load tests, disabling JIT resolved a slowdown that built up over several hours. PostgreSQL 19 makes the same change to its default.
 
 authentik only changes `jit` while it has PostgreSQL's built-in default, and only for the user that authentik connects as, in the authentik database. If you have set `jit` explicitly, authentik leaves it unchanged. The `/admin/system/` API endpoint reports the PostgreSQL version, the effective `jit` value and where it was set, and the connection's TLS version and cipher. For more details, including how to keep JIT enabled, refer to [authentik disables JIT compilation](../../troubleshooting/postgres/slow-queries.mdx#authentik-disables-jit-compilation).
+
+### User expiration :ak-enterprise
+
+User expiration rules schedule users for offboarding after a configured period of inactivity. The default **Last activity** basis counts successful authentication and application access, including OAuth refresh grants. Choose **Last login** to measure inactivity using only the recorded last login. A rule can target users by group and user type and warn them before their accounts expire. If a user logs in before the scheduled time, authentik removes the pending offboarding. API token requests do not count as activity, and rules exclude service accounts by default. For more details, see [User expiration](https://docs.goauthentik.io/sys-mgmt/user-expiration/).
 
 ### Distroless server image
 
@@ -267,6 +318,7 @@ Define your own permissions on authentik's models and assign them to roles like 
 - **OAuth2 provider**: CORS checks apply regular-expression redirect URIs to the request's origin, so browser-based applications that use them can call the token endpoint. Authorization errors honor the requested `response_mode`, preserve existing callback query parameters, and correctly encode `state` values that contain special characters.
 - **Token exchange**: An OAuth2 provider's JWT can be exchanged for a SAML response from a SAML provider that lists it under **Federated OAuth2/OpenID Providers**, for example to call AWS `AssumeRoleWithSAML`. Exchanged tokens keep the subject token's chain of `act` claims, up to 10 levels deep.
 - **SAML and WS-Federation providers**: Assertions can be encrypted with AES128-CBC, AES256-CBC, AES128-GCM, or AES256-GCM. New providers default to AES256-GCM, and existing providers keep AES128-CBC. Importing SP metadata selects the first algorithm in the SP's order of preference that authentik supports. For more details, including how to update existing providers, refer to [Encryption algorithm](../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm).
+- **SAML provider**: The new **Ignore ForceAuthn** option lets authentik reuse an existing session for SPs that always request re-authentication. For more details, refer to [Ignoring ForceAuthn](../../add-secure-apps/providers/saml/index.mdx#ignoring-forceauthn).
 - **OpenID Connect sources**: Sources can be configured as public clients without a client secret when PKCE is enabled.
 - **Entra ID source**: Sources in national clouds, such as GCC High, DoD, and China, use the matching Microsoft Graph endpoint for scopes and group memberships, based on the **Profile URL**. For more details, refer to [Configure a source for a national cloud](../../users-sources/sources/social-logins/entra-id/oauth/index.mdx#configure-a-source-for-a-national-cloud).
 - **LDAP source**: Synchronization deactivates users whose Active Directory `accountExpires` date has passed and ends their sessions.
@@ -295,7 +347,7 @@ An integration is how authentik connects to third-party applications, directorie
 - [BuildBuddy](https://integrations.goauthentik.io/development/buildbuddy/)
 - [CalendarBridge](https://integrations.goauthentik.io/chat-communication-collaboration/calendarbridge/)
 - [CH-UI](https://integrations.goauthentik.io/infrastructure/ch-ui/)
-- [Cisco Modeling Labs](https://integrations.goauthentik.io/networking/cisco-modeling-labs/)
+- [Cisco Modeling Labs](https://integrations.goauthentik.io/networking/cisco-modeling-labs/) (Thanks to @KingHenry6666!)
 - [Claude Code (authentik Agent)](https://integrations.goauthentik.io/development/claude-code/)
 - [Everpure FlashArray](https://integrations.goauthentik.io/infrastructure/everpure-flasharray/) (Thanks to @riversdev0!)
 - [filex](https://integrations.goauthentik.io/chat-communication-collaboration/filex/) (Thanks to @brkfun!)
@@ -303,7 +355,7 @@ An integration is how authentik connects to third-party applications, directorie
 - [Google Cloud Workforce Identity Federation](https://integrations.goauthentik.io/cloud-providers/google-cloud-workforce-identity-federation/) (Thanks to @damienjburks!)
 - [JFrog Artifactory](https://integrations.goauthentik.io/infrastructure/jfrog-artifactory/)
 - [Kibana](https://integrations.goauthentik.io/monitoring/kibana/)
-- [Nutanix Prism Central](https://integrations.goauthentik.io/hypervisors-orchestrators/nutanix-pc/)
+- [Nutanix Prism Central](https://integrations.goauthentik.io/hypervisors-orchestrators/nutanix-pc/) (Thanks to @KingHenry6666!)
 - [Nutanix Prism Element](https://integrations.goauthentik.io/hypervisors-orchestrators/nutanix-pe/) (Thanks to @KingHenry6666!)
 - [OneCal](https://integrations.goauthentik.io/chat-communication-collaboration/onecal/)
 - [OpenCode](https://integrations.goauthentik.io/development/opencode/)
@@ -311,6 +363,8 @@ An integration is how authentik connects to third-party applications, directorie
 - [Palo Alto Networks Next-Generation Firewall](https://integrations.goauthentik.io/networking/palo-alto-ngfw/)
 - [PingOne](https://integrations.goauthentik.io/platforms/pingone/)
 - [PostgreSQL](https://integrations.goauthentik.io/infrastructure/postgresql/)
+- [Radarr](https://integrations.goauthentik.io/media/radarr/) (Thanks to @Fredouye!)
+- [Sure](https://integrations.goauthentik.io/miscellaneous/sure/)
 - [VMware Cloud Foundation 9](https://integrations.goauthentik.io/hypervisors-orchestrators/vmware-cloud-foundation-9/)
 - [Wasabi](https://integrations.goauthentik.io/cloud-providers/wasabi/)
 - [wg-easy](https://integrations.goauthentik.io/networking/wg-easy/)
@@ -327,6 +381,8 @@ The following source guides were recently added. A big thanks to our contributor
 ## Upgrading
 
 This release requires a configured base URL and stops upgrading instances that have additional tenants. Review the [breaking changes](#breaking-changes) before upgrading, in particular [Base URL is required](#base-url-is-required) and [Multi-tenancy has been removed](#multi-tenancy-has-been-removed). For more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
+
+The upgrade rebuilds event indexes to speed up event queries. PostgreSQL blocks writes to the events table while the migration runs. In testing, the migration took about 12 seconds with 1 million events and 66 seconds with 10 million events.
 
 :::warning Upgrade in order and upgrade all components
 Upgrades MUST be performed sequentially by major version. If you are two or more major releases behind, you must first upgrade to each intermediate major release before upgrading to this one. Refer to our [Upgrade documentation](../../install-config/upgrade.mdx) for more information on upgrade sequence.
