@@ -336,14 +336,17 @@ class TestDisabledRule(ExpirationTestCase):
     def test_disabled_task_removes_only_owned_pending_rows(self):
         rule = self._rule()
         pending = UserOffboarding.objects.create(
-            user=_dormant_user(), rule=rule, scheduled_at=now() + timedelta(days=1)
+            user=_dormant_user(), rule=rule, generated=True, scheduled_at=now() + timedelta(days=1)
         )
         preserved = [
             UserOffboarding.objects.create(
                 user=_dormant_user(), scheduled_at=now() + timedelta(days=1)
             ),
             UserOffboarding.objects.create(
-                user=_dormant_user(), rule=self._rule(), scheduled_at=now() + timedelta(days=1)
+                user=_dormant_user(),
+                rule=self._rule(),
+                generated=True,
+                scheduled_at=now() + timedelta(days=1),
             ),
         ]
         for status in (
@@ -355,6 +358,7 @@ class TestDisabledRule(ExpirationTestCase):
                 UserOffboarding.objects.create(
                     user=_dormant_user(),
                     rule=rule,
+                    generated=True,
                     scheduled_at=now(),
                     status=status,
                     executed_at=now(),
@@ -422,13 +426,16 @@ class TestDisabledRule(ExpirationTestCase):
         rule = self._rule()
         own = [
             UserOffboarding.objects.create(
-                user=_dormant_user(), rule=rule, scheduled_at=now() + timedelta(days=1)
+                user=_dormant_user(),
+                rule=rule,
+                generated=True,
+                scheduled_at=now() + timedelta(days=1),
             )
             for _ in range(3)
         ]
         other = self._rule()
         taken_over = UserOffboarding.objects.create(
-            user=_dormant_user(), rule=other, scheduled_at=now() + timedelta(days=1)
+            user=_dormant_user(), rule=other, generated=True, scheduled_at=now() + timedelta(days=1)
         )
         rule.enabled = False
         rule.save()

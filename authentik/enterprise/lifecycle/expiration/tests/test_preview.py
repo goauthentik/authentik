@@ -47,6 +47,7 @@ class TestPreview(ExpirationTestCase):
         return UserOffboarding.objects.create(
             user=user,
             rule=self.rule,
+            generated=True,
             scheduled_at=self.rule.due_at(user),
             action=self.rule.action,
             revoke_sessions=self.rule.revoke_sessions,
@@ -177,6 +178,7 @@ class TestPreview(ExpirationTestCase):
         row = UserOffboarding.objects.create(
             user=user,
             rule=owner,
+            generated=True,
             scheduled_at=owner.due_at(user),
             action=owner.action,
             revoke_sessions=False,
@@ -211,7 +213,11 @@ class TestPreview(ExpirationTestCase):
                 user = _dormant_user()
                 user.groups.add(group)
                 row = UserOffboarding.objects.create(
-                    user=user, rule=owner, scheduled_at=owner.due_at(user), action=owner.action
+                    user=user,
+                    rule=owner,
+                    generated=True,
+                    scheduled_at=owner.due_at(user),
+                    action=owner.action,
                 )
                 response = self.client.post(
                     reverse("authentik_api:userexpirationrule-preview", kwargs={"pk": rule.pk}),
@@ -300,7 +306,7 @@ class TestPreview(ExpirationTestCase):
         removed.groups.clear()
         foreign = self._rule(inactivity_duration="days=95")
         UserOffboarding.objects.create(
-            user=taken_over, rule=foreign, scheduled_at=foreign.due_at(taken_over)
+            user=taken_over, rule=foreign, generated=True, scheduled_at=foreign.due_at(taken_over)
         )
         self.rule.action = OffboardingAction.DELETE
         self.rule.save()
@@ -344,6 +350,7 @@ class TestPreview(ExpirationTestCase):
         UserOffboarding.objects.create(
             user=canceled_user,
             rule=self.rule,
+            generated=True,
             scheduled_at=self.rule.due_at(canceled_user),
             status=OffboardingStatus.CANCELED,
             executed_at=now(),
@@ -365,7 +372,7 @@ class TestPreview(ExpirationTestCase):
         foreign_user = self._user()
         owner = self._rule(group=self.group, inactivity_duration="days=120", warn_before="days=30")
         UserOffboarding.objects.create(
-            user=foreign_user, rule=owner, scheduled_at=owner.due_at(foreign_user)
+            user=foreign_user, rule=owner, generated=True, scheduled_at=owner.due_at(foreign_user)
         )
         PolicyBinding.objects.create(
             target=self.rule,

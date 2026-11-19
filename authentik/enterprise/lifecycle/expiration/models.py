@@ -492,6 +492,7 @@ class UserExpirationRule(SerializerModel, PolicyBindingModel):
                         offboarding = UserOffboarding.objects.create(
                             user=user,
                             rule=self,
+                            generated=True,
                             scheduled_at=due_at,
                             action=self.action,
                             revoke_sessions=self.revoke_sessions,

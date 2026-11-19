@@ -559,6 +559,7 @@ class TestOffboardingAPI(APITestCase):
         generated = UserOffboarding.objects.create(
             user=create_test_user(),
             rule=rule,
+            generated=True,
             scheduled_at=now(),
             status=OffboardingStatus.COMPLETED,
         )

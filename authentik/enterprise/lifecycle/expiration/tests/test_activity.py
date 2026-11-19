@@ -329,7 +329,7 @@ class TestActivity(ExpirationTestCase):
                 rule = self._rule()
                 other = self._rule()
                 row = UserOffboarding.objects.create(
-                    user=user, rule=rule, scheduled_at=rule.due_at(user)
+                    user=user, rule=rule, generated=True, scheduled_at=rule.due_at(user)
                 )
                 rule.inactivity_duration = "days=120"
 
@@ -357,7 +357,9 @@ class TestActivity(ExpirationTestCase):
     def test_revisit_reloads_activity_before_updating(self):
         user = _dormant_user()
         rule = self._rule()
-        row = UserOffboarding.objects.create(user=user, rule=rule, scheduled_at=rule.due_at(user))
+        row = UserOffboarding.objects.create(
+            user=user, rule=rule, generated=True, scheduled_at=rule.due_at(user)
+        )
         rule.inactivity_duration = "days=120"
         original_lock = QuerySet.select_for_update
 
@@ -374,7 +376,9 @@ class TestActivity(ExpirationTestCase):
     def test_lower_ranked_rule_skips_foreign_row_policies_and_locks(self):
         user = _dormant_user(200)
         owner = self._rule()
-        row = UserOffboarding.objects.create(user=user, rule=owner, scheduled_at=owner.due_at(user))
+        row = UserOffboarding.objects.create(
+            user=user, rule=owner, generated=True, scheduled_at=owner.due_at(user)
+        )
         rule = self._rule(inactivity_duration="days=180", warn_before="days=7")
         policy = DummyPolicy.objects.create(name=generate_id(), result=True)
         PolicyBinding.objects.create(target=rule, policy=policy, order=0)
@@ -396,7 +400,9 @@ class TestActivity(ExpirationTestCase):
         rule = self._rule(warn_before="days=7")
         policy = DummyPolicy.objects.create(name=generate_id(), result=True)
         PolicyBinding.objects.create(target=rule, policy=policy, order=0)
-        row = UserOffboarding.objects.create(user=user, rule=rule, scheduled_at=now())
+        row = UserOffboarding.objects.create(
+            user=user, rule=rule, generated=True, scheduled_at=now()
+        )
         UserOffboarding.objects.filter(pk=row.pk).update(created_at=now() - timedelta(days=110))
         with patch.object(DummyPolicy, "passes", autospec=True, wraps=None) as passes:
             from authentik.policies.types import PolicyResult
