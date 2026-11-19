@@ -19,6 +19,7 @@ from authentik.tasks.models import Task, TaskDependency, TaskLog, TaskStatus
 
 
 class TestPostgresConsumer(SimpleTestCase):
+
     @staticmethod
     def _consumer():
         consumer = object.__new__(PostgresBroker().consumer_class)
@@ -339,8 +340,8 @@ class TestPostgresConsumerAutoPurge(TestCase):
         self.assertEqual(
             consumer.logger.info.call_args_list,
             [
-                call("Task purge started"),
-                call("Task purge finished", count=len(expired), duration=ANY),
+                call("Task purge started", queue="default"),
+                call("Task purge finished", queue="default", count=len(expired), duration=ANY),
             ],
         )
 
