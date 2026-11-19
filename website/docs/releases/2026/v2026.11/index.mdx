@@ -196,7 +196,7 @@ authentik now supports ML-DSA, a post-quantum signature algorithm, and stronger 
 - **OAuth2/OIDC**: Providers can sign tokens with an ML-DSA certificate, and OAuth sources and the proxy outpost can verify them.
 - **Passkeys**: WebAuthn accepts ML-DSA credentials, although no authenticator supports them yet.
 - **SAML**: New SAML and WS-Federation providers encrypt assertions with AES-256-GCM by default. Existing providers keep AES-128-CBC until you change them.
-- **FIPS**: ML-DSA key generation is unavailable when FIPS mode is enabled, because the FIPS-validated modules that FedRAMP deployments require do not include ML-DSA yet.
+- **FIPS**: authentik's ML-DSA support is ahead of the FIPS-validated modules that FedRAMP environments require, which do not include ML-DSA yet. Until they do, ML-DSA key generation is unavailable when FIPS mode is enabled. As soon as a validated module with ML-DSA is released, we will enable it, and authentik's post-quantum cryptography will be fully FIPS compliant for FedRAMP environments.
 
 For more details, refer to [Supported key algorithms](../../../sys-mgmt/certificates.mdx#supported-key-algorithms) and our [full write-up](https://goauthentik.io/blog/2026-11-03-how-authentik-is-handling-post-quantum-cryptography/) on post-quantum cryptography in authentik.
 
