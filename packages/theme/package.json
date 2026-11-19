@@ -150,12 +150,12 @@
     "devEngines": {
         "runtime": {
             "name": "node",
-            "version": "^24.22.1 || >=26.12.1",
+            "version": "^24.22.3 || >=26.13.1",
             "onFail": "error"
         }
     },
     "engines": {
-        "node": "^24.22.1 || >=26.12.1",
+        "node": "^24.22.3 || >=26.13.1",
         "pnpm": ">=12.4.0"
     },
     "packageManager": "pnpm@12.22.0+sha512.894940a3d9a57dfa6fd373990fb4e41e09c2f2d76d982ed1d75275d39267f988fb4e2d40900cbe9921c68d97c67aa1a1096d276633db248f7b34927ac9ddb7a4",
