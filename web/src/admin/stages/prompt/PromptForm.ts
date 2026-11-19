@@ -11,7 +11,7 @@ import { parseAPIResponseError } from "#common/errors/network";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
+import { AKFormErrors, ErrorProp } from "#components/renderFormErrors";
 
 import type { StageHost } from "#flow/types";
 

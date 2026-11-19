@@ -1,6 +1,6 @@
 import type { ResolvedUITheme } from "#common/theme";
 
-import { ErrorProp } from "#components/ak-field-errors";
+import { ErrorProp } from "#components/renderFormErrors";
 
 import { CaptchaVendor, matchesVendorURL } from "#flow/stages/captcha/shared";
 

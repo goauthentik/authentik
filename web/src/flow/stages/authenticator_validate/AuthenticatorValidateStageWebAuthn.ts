@@ -10,7 +10,7 @@ import {
 
 import { SlottedTemplateResult } from "#elements/types";
 
-import { ErrorProp } from "#components/ak-field-errors";
+import { ErrorProp } from "#components/renderFormErrors";
 
 import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
 

@@ -9,7 +9,7 @@ import { pluckErrorDetail } from "#common/errors/network";
 
 import { akEmptyState } from "#elements/EmptyState";
 
-import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
+import { AKFormErrors, ErrorProp } from "#components/renderFormErrors";
 
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
