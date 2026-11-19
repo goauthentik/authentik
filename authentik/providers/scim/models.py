@@ -197,6 +197,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
         cache_key = f"goauthentik.io/providers/scim/{self.pk}/service_provider_config"
         cache.delete(cache_key)
+        cache.delete(f"goauthentik.io/providers/scim/{self.pk}/resource_types")
         super().save(*args, **kwargs)
 
     def get_object_qs(self, type: type[User | Group], **kwargs) -> QuerySet[User | Group]:
