@@ -91,7 +91,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
     """LDAPProvider Serializer"""
 
     application_slug = SerializerMethodField()
-    bind_flow_slug = CharField(source="authorization_flow.slug")
+    bind_flow_slug = SerializerMethodField()
     unbind_flow_slug = SerializerMethodField()
 
     def get_application_slug(self, instance: LDAPProvider) -> str:
@@ -99,6 +99,10 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
         if instance.backchannel_application:
             return instance.backchannel_application.slug
         return instance.application.slug
+
+    def get_bind_flow_slug(self, instance: LDAPProvider) -> str:
+        brand = self.context["request"].brand
+        return (instance.authorization_flow or brand.flow_provider_authorization).slug
 
     def get_unbind_flow_slug(self, instance: LDAPProvider) -> str | None:
         """Get slug for unbind flow, defaulting to brand's default flow."""

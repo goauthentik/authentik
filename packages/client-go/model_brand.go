@@ -31,16 +31,17 @@ type Brand struct {
 	BrandingCustomCss             *string `json:"branding_custom_css,omitempty"`
 	BrandingDefaultFlowBackground *string `json:"branding_default_flow_background,omitempty"`
 	// URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
-	BrandingMapTiles   *string        `json:"branding_map_tiles,omitempty"`
-	FlowAuthentication NullableString `json:"flow_authentication,omitempty"`
-	FlowUserSwitch     NullableString `json:"flow_user_switch,omitempty"`
-	FlowInvalidation   NullableString `json:"flow_invalidation,omitempty"`
-	FlowRecovery       NullableString `json:"flow_recovery,omitempty"`
-	FlowUnenrollment   NullableString `json:"flow_unenrollment,omitempty"`
-	FlowUserSettings   NullableString `json:"flow_user_settings,omitempty"`
-	FlowDeviceCode     NullableString `json:"flow_device_code,omitempty"`
-	FlowLockdown       NullableString `json:"flow_lockdown,omitempty"`
-	FlowRequest        NullableString `json:"flow_request,omitempty"`
+	BrandingMapTiles          *string        `json:"branding_map_tiles,omitempty"`
+	FlowAuthentication        NullableString `json:"flow_authentication,omitempty"`
+	FlowUserSwitch            NullableString `json:"flow_user_switch,omitempty"`
+	FlowProviderAuthorization string         `json:"flow_provider_authorization"`
+	FlowInvalidation          NullableString `json:"flow_invalidation,omitempty"`
+	FlowRecovery              NullableString `json:"flow_recovery,omitempty"`
+	FlowUnenrollment          NullableString `json:"flow_unenrollment,omitempty"`
+	FlowUserSettings          NullableString `json:"flow_user_settings,omitempty"`
+	FlowDeviceCode            NullableString `json:"flow_device_code,omitempty"`
+	FlowLockdown              NullableString `json:"flow_lockdown,omitempty"`
+	FlowRequest               NullableString `json:"flow_request,omitempty"`
 	// When set, external users will be redirected to this application after authenticating.
 	DefaultApplication NullableString `json:"default_application,omitempty"`
 	// Web Certificate used by the authentik Core webserver.
@@ -57,10 +58,11 @@ type _Brand Brand
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBrand(brandUuid string, domain string) *Brand {
+func NewBrand(brandUuid string, domain string, flowProviderAuthorization string) *Brand {
 	this := Brand{}
 	this.BrandUuid = brandUuid
 	this.Domain = domain
+	this.FlowProviderAuthorization = flowProviderAuthorization
 	return &this
 }
 
@@ -428,6 +430,30 @@ func (o *Brand) SetFlowUserSwitchNil() {
 // UnsetFlowUserSwitch ensures that no value is present for FlowUserSwitch, not even an explicit nil
 func (o *Brand) UnsetFlowUserSwitch() {
 	o.FlowUserSwitch.Unset()
+}
+
+// GetFlowProviderAuthorization returns the FlowProviderAuthorization field value
+func (o *Brand) GetFlowProviderAuthorization() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.FlowProviderAuthorization
+}
+
+// GetFlowProviderAuthorizationOk returns a tuple with the FlowProviderAuthorization field value
+// and a boolean to check if the value has been set.
+func (o *Brand) GetFlowProviderAuthorizationOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.FlowProviderAuthorization, true
+}
+
+// SetFlowProviderAuthorization sets field value
+func (o *Brand) SetFlowProviderAuthorization(v string) {
+	o.FlowProviderAuthorization = v
 }
 
 // GetFlowInvalidation returns the FlowInvalidation field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -920,6 +946,7 @@ func (o Brand) ToMap() (map[string]interface{}, error) {
 	if o.FlowUserSwitch.IsSet() {
 		toSerialize["flow_user_switch"] = o.FlowUserSwitch.Get()
 	}
+	toSerialize["flow_provider_authorization"] = o.FlowProviderAuthorization
 	if o.FlowInvalidation.IsSet() {
 		toSerialize["flow_invalidation"] = o.FlowInvalidation.Get()
 	}
@@ -968,6 +995,7 @@ func (o *Brand) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"brand_uuid",
 		"domain",
+		"flow_provider_authorization",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -1008,6 +1036,7 @@ func (o *Brand) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "branding_map_tiles")
 		delete(additionalProperties, "flow_authentication")
 		delete(additionalProperties, "flow_user_switch")
+		delete(additionalProperties, "flow_provider_authorization")
 		delete(additionalProperties, "flow_invalidation")
 		delete(additionalProperties, "flow_recovery")
 		delete(additionalProperties, "flow_unenrollment")

@@ -129,7 +129,6 @@ class TestTransactionalApplicationsAPI(APITestCase):
             response.content.decode(),
             {
                 "provider": {
-                    "authorization_flow": ["This field may not be null."],
                     "invalidation_flow": ["This field may not be null."],
                 }
             },
