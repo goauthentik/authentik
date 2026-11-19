@@ -60,8 +60,8 @@ export class TableColumn {
     private sortIndicator(orderBy: string) {
         // prettier-ignore
         switch(orderBy) {
-            case this.orderBy:       return "fa-long-arrow-alt-down";
-            case `-${this.orderBy}`: return "fa-long-arrow-alt-up";
+            case this.orderBy:       return "fa-long-arrow-alt-up";
+            case `-${this.orderBy}`: return "fa-long-arrow-alt-down";
             default:                 return "fa-arrows-alt-v";
         }
     }
