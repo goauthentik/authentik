@@ -14,9 +14,9 @@ User expiration rules automatically schedule inactive users for [offboarding](./
 Choose an **Activity basis** for each rule:
 
 - **Last login** uses the last time the user logged in to authentik through a login flow, for example in the browser, through a source, or with an LDAP or RADIUS bind. Accessing an application with an existing session does not update it.
-- **Last activity**, the default, also counts successful authentication and application access: browser, LDAP, RADIUS, and proxy authentication, OAuth client credentials with an app password, password grants, JWT client assertions, token exchanges, application authorizations, and OAuth refresh grants.
+- **Last activity**, the default, also counts successful authentication and application access: browser, LDAP, RADIUS, and proxy authentication, OAuth client credentials with an app password, password grants, JWT client assertions, token exchanges, application authorizations, and OAuth refresh grants. For example, a script that regularly obtains OAuth tokens with a user's app password can keep that account active.
 
-Only the user's own activity counts. When an administrator impersonates a user, activity during the impersonation does not count for that user. Changes that an administrator makes to a user's account, such as editing their groups, are not activity either. Failed requests, expiration warnings, background events, and API token requests also do not count.
+Only the user's own activity counts. When an administrator impersonates a user, activity during the impersonation does not count for that user. Changes that an administrator makes to a user's account, such as editing their groups, are not activity either. Failed requests, expiration warnings, background events, and requests using a static API token also do not count.
 
 By default, rules do not apply to service accounts. To include them, select **Service account** under **User types**. Internal service accounts are always excluded.
 
