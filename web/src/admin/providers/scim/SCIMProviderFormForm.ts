@@ -250,6 +250,11 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                                 "Altered behavior for usage with VMware vCenter.",
                             )}`,
                         },
+                        {
+                            label: msg("Zulip"),
+                            value: CompatibilityModeEnum.Zulip,
+                            description: html`${msg("Altered behavior for usage with Zulip.")}`,
+                        },
                     ]}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
