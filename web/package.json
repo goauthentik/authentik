@@ -213,7 +213,7 @@
         "country-flag-icons": "^1.6.20",
         "cronstrue": "^3.30.0",
         "date-fns": "^4.4.0",
-        "deepmerge-ts": "^8.0.0",
+        "deepmerge-ts": "^8.0.2",
         "dompurify": "^3.4.17",
         "esbuild": "catalog:",
         "eslint-plugin-lit": "^2.3.1",
@@ -253,7 +253,7 @@
         "remark-rehype": "^11.1.2",
         "storybook": "^10.6.2",
         "style-mod": "^4.1.3",
-        "stylelint": "^17.14.1",
+        "stylelint": "^18.0.0",
         "trusted-types": "^2.0.0",
         "ts-pattern": "^5.9.0",
         "turnstile-types": "^1.2.3",
@@ -265,7 +265,7 @@
         "vitest": "catalog:",
         "webcomponent-qr-code": "^2.0.0",
         "wireit": "^0.15.0",
-        "yaml": "^2.9.0"
+        "yaml": "^2.9.1"
     },
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.28.1",
