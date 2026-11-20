@@ -11,6 +11,8 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { EmailAddress } from "./EmailAddress.js";
+import { EmailAddressFromJSON, EmailAddressToJSON } from "./EmailAddress.js";
 import type { PartialGroup } from "./PartialGroup.js";
 import { PartialGroupFromJSON } from "./PartialGroup.js";
 import type { Role } from "./Role.js";
@@ -43,7 +45,7 @@ export interface User {
     readonly groupsObj: Array<PartialGroup> | null;
     roles?: Array<string>;
     readonly rolesObj: Array<Role> | null;
-    email?: string;
+    email?: EmailAddress;
     /**
      * User's avatar, either a http/https URL or a data URI
      */
@@ -161,7 +163,7 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         roles: json["roles"] == null ? undefined : json["roles"],
         rolesObj:
             json["roles_obj"] == null ? null : (json["roles_obj"] as Array<any>).map(RoleFromJSON),
-        email: json["email"] == null ? undefined : json["email"],
+        email: json["email"] == null ? undefined : EmailAddressFromJSON(json["email"]),
         avatar: json["avatar"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],
@@ -215,7 +217,7 @@ export function UserToJSONTyped(
             value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
         groups: value["groups"],
         roles: value["roles"],
-        email: value["email"],
+        email: EmailAddressToJSON(value["email"]),
         attributes: value["attributes"],
         path: value["path"],
         type: UserTypeEnumToJSON(value["type"]),
