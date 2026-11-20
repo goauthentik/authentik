@@ -2848,8 +2848,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Clear this device's Platform SSO registration, used when the configuration profile is removed
-     * from the device. The device stays enrolled otherwise.
+     * Clear this device\'s Platform SSO registration, used when the configuration profile is
+     * removed from the device. The device stays enrolled otherwise.
      */
     async endpointsAgentsPssoRegisterDeviceDestroyRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -2861,8 +2861,8 @@ export class EndpointsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Clear this device's Platform SSO registration, used when the configuration profile is removed
-     * from the device. The device stays enrolled otherwise.
+     * Clear this device\'s Platform SSO registration, used when the configuration profile is
+     * removed from the device. The device stays enrolled otherwise.
      */
     async endpointsAgentsPssoRegisterDeviceDestroy(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,

@@ -62,14 +62,21 @@ export default function brandAssets(
      * @type {ReadonlyArray<AssetEntry>}
      */
     const resolvedEntries = [
-        ...BrandAssets.map(([source, destination]) => /** @type {AssetEntry} */ ([
-            require.resolve(`${SourcePackage}/${source}`),
-            resolve(rootStaticDirectory, destination),
-        ])),
-        ...Array.from(additionalAssets, ([source, destination]) => /** @type {AssetEntry} */ ([
-            siteRequire.resolve(source),
-            resolve(packageStaticDirectory, destination),
-        ])),
+        ...BrandAssets.map(
+            ([source, destination]) =>
+                /** @type {AssetEntry} */ ([
+                    require.resolve(`${SourcePackage}/${source}`),
+                    resolve(rootStaticDirectory, destination),
+                ]),
+        ),
+        ...Array.from(
+            additionalAssets,
+            ([source, destination]) =>
+                /** @type {AssetEntry} */ ([
+                    siteRequire.resolve(source),
+                    resolve(packageStaticDirectory, destination),
+                ]),
+        ),
     ];
 
     const loadContent = async () => {

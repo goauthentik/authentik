@@ -283,10 +283,7 @@
 
 [part="card-header-actions-icon"] {
     font-weight: bold;
-    font-family:
-        system-ui,
-        -apple-system,
-        monospace;
+    font-family: system-ui, -apple-system, monospace;
 }
 
 /* #region List view */
