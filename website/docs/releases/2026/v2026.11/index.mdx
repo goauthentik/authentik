@@ -315,6 +315,14 @@ For advanced access control scenarios, you may need to create custom permissions
 
 **Initial Permissions** has moved from **Directory** to **Customization** in the Admin interface, next to **Custom Permissions** and **Permission Checks**.
 
+<!--
+Uncomment once #26337 is merged.
+
+### User expiration :ak-enterprise
+
+User expiration rules schedule users for offboarding after a configured period of inactivity. The default **Last activity** basis counts successful authentication and application access, including OAuth refresh grants. Choose **Last login** to measure inactivity using only the recorded last login. A rule can target users by group and user type and warn them before their accounts expire. If a user logs in before the scheduled time, authentik removes the pending offboarding. Requests using a static API token do not count as activity, and rules exclude service accounts by default. For more details, see [User expiration](../../../sys-mgmt/user-expiration.mdx).
+-->
+
 ## Small general improvements
 
 - **WebAuthn authenticator setup stage**: The stage sends the user's enrolled credentials in the `excludeCredentials` registration parameter, so an authenticator refuses to enroll the same security key twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8. For more details, refer to the [WebAuthn authenticator setup stage documentation](../../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx).
