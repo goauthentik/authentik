@@ -275,6 +275,12 @@ class TokenExchangeError(TokenError):
     Can also use codes from TokenError
     """
 
+    errors = TokenError.errors | {
+        # draft-ietf-oauth-identity-assertion-authz-grant-06 §4.3.4.3, profiling
+        # RFC 6749 §4.1.2.1 for the token endpoint
+        "access_denied": "The resource owner or authorization server denied the request.",
+    }
+
     def __init__(self, error: str):
         super().__init__(error)
         self.error = error

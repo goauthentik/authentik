@@ -1,25 +1,30 @@
 """Test token exchange view"""
 
+from base64 import urlsafe_b64decode, urlsafe_b64encode
 from datetime import datetime, timedelta
-from json import loads
+from json import dumps, loads
+from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
 from django.http import HttpResponse
 from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.timezone import now
-from jwt import decode
+from jwt import decode, get_unverified_header
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
     GRANT_TYPE_CLIENT_CREDENTIALS,
     GRANT_TYPE_TOKEN_EXCHANGE,
+    JWT_TYPE_ID_JAG,
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
     TOKEN_TYPE,
     TOKEN_TYPE_URI_ACCESS_TOKEN,
     TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
+    TOKEN_TYPE_URI_ID_JAG,
+    TOKEN_TYPE_URI_ID_TOKEN,
     TOKEN_TYPE_URI_JWT,
 )
 from authentik.core.models import (
@@ -32,9 +37,16 @@ from authentik.core.models import (
     User,
 )
 from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
+from authentik.crypto.builder import PrivateKeyAlg
+from authentik.enterprise.agents.models import Agent
+from authentik.enterprise.models import LicenseUsageStatus
+from authentik.enterprise.tests import enterprise_test
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
-from authentik.policies.models import PolicyBinding
+from authentik.policies.expression.models import ExpressionPolicy
+from authentik.policies.models import PolicyBinding, PolicyEngineMode
+from authentik.providers.oauth2.client import OAuthClientContext
+from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     ClientType,
@@ -44,12 +56,14 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     ScopeMapping,
 )
+from authentik.providers.oauth2.tests.test_client_bound_grants import synthetic_client
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.token.token_exchange import MAX_ACT_DEPTH
 
 SCOPES = f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}"
 
 
+@enterprise_test()
 class TestTokenExchange(OAuthTestCase):
     """Test token exchange (RFC 8693) view"""
 
@@ -1084,3 +1098,462 @@ class TestTokenExchange(OAuthTestCase):
         access_token = AccessToken.objects.get(token=body["access_token"])
         self.assertIsNone(access_token.actor_id)
         self.assertEqual(access_token.user_id, self.user.pk)
+
+    ID_JAG_AUDIENCE = "https://as.example.com/application/o/as/"
+    ID_JAG_CLIENT_ID = "client-at-as"
+    ID_JAG_RESOURCE = "https://api.example.com/mcp"
+    ID_JAG_RESOURCE_2 = "https://api.example.com/files"
+
+    def _allow_id_jag(self, parent: User | None = None, app: Application | None = None) -> Agent:
+        """Create a (system, unless `parent` is given) agent with ID-JAG configured, usable
+        by `app` (the exchanging provider's, by default)"""
+        agent = Agent.create_for_user(parent)
+        agent.id_jag_audience = self.ID_JAG_AUDIENCE
+        agent.id_jag_client_id = self.ID_JAG_CLIENT_ID
+        agent.id_jag_resources = [self.ID_JAG_RESOURCE, self.ID_JAG_RESOURCE_2]
+        agent.save()
+        agent.applications.add(app or self.app)
+        return agent
+
+    def _id_jag_exchange(self, **extra) -> HttpResponse:
+        """Run an otherwise-valid id-jag exchange, with `extra` merged into the request.
+        The subject token is an ID token this provider issued to this client, and no
+        `scope` is requested by default."""
+        if "subject_token" not in extra:
+            _, extra["subject_token"] = self._id_token(self.provider)
+        extra.setdefault("subject_token_type", TOKEN_TYPE_URI_ID_TOKEN)
+        extra.setdefault("scope", "")
+        return self._exchange(requested_token_type=TOKEN_TYPE_URI_ID_JAG, **extra)
+
+    def _id_jag_agent_exchange(self, **extra) -> tuple[Agent, HttpResponse]:
+        """Run an id-jag exchange for the audience of a system agent, created on first use"""
+        agent = (
+            Agent.objects.filter(parent__isnull=True, id_jag_audience=self.ID_JAG_AUDIENCE).first()
+            or self._allow_id_jag()
+        )
+        extra.setdefault("audience", self.ID_JAG_AUDIENCE)
+        return agent, self._id_jag_exchange(**extra)
+
+    def _id_token(
+        self, provider: OAuth2Provider, client: OAuthClientContext | None = None
+    ) -> tuple[AccessToken, str]:
+        """Issue an ID token from `provider` for the test user, as the authorization code
+        flow would, optionally to another `client` of the provider"""
+        token = AccessToken(
+            provider=provider,
+            user=self.user,
+            auth_time=now(),
+            expires=now() + timedelta(hours=1),
+        )
+        if client:
+            token.bind_client(client)
+        token.id_token = IDToken.new(provider, token, self.factory.get("/"))
+        token.save()
+        return token, token.id_token.to_jwt(provider)
+
+    def _decode_id_jag(self, response: HttpResponse) -> dict:
+        self.assertEqual(response.status_code, 200, response.content)
+        _, alg = self.provider.jwt_key
+        return decode(
+            loads(response.content.decode())["access_token"],
+            key=self.provider.signing_key.public_key,
+            algorithms=[alg],
+            audience=self.ID_JAG_AUDIENCE,
+        )
+
+    def _assert_error(self, response: HttpResponse, error: str):
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertEqual(loads(response.content.decode())["error"], error)
+
+    def test_id_jag_audience_required(self):
+        """test that requesting an id-jag without an audience, or with an empty one, is
+        rejected, even when an agent without an audience is linked to the application"""
+        self._allow_id_jag()
+        unconfigured = Agent.create_for_user(None)
+        unconfigured.id_jag_client_id = self.ID_JAG_CLIENT_ID
+        unconfigured.save()
+        unconfigured.applications.add(self.app)
+        self.assertTrue(Agent.objects.filter(id_jag_audience="").exists())
+        for extra in ({}, {"audience": ""}):
+            with self.subTest(extra=extra):
+                self._assert_error(self._id_jag_exchange(**extra), "invalid_target")
+
+    def test_id_jag_audience_not_allowed(self):
+        """test that an audience not on the provider's allow-list is rejected"""
+        self._allow_id_jag()
+        response = self._id_jag_exchange(audience="https://not-allowed.example.com/")
+        self._assert_error(response, "invalid_target")
+
+    def test_id_jag_audience_ambiguous(self):
+        """test that an audience configured on two agents the application may use is refused
+        rather than picking one of them"""
+        self._allow_id_jag()
+        self._allow_id_jag()
+        response = self._id_jag_exchange(audience=self.ID_JAG_AUDIENCE)
+        self._assert_error(response, "invalid_target")
+
+    def test_id_jag_disabled_by_default(self):
+        """test that a provider with no id_jag_audiences configured refuses any audience"""
+        self._assert_error(self._id_jag_exchange(audience=self.ID_JAG_AUDIENCE), "invalid_target")
+
+    def test_id_jag_without_license(self):
+        """test that ID-JAG is refused without a valid enterprise license"""
+        self._allow_id_jag()
+        with patch(
+            "authentik.enterprise.license.LicenseKey.cached_summary",
+            MagicMock(return_value=MagicMock(status=LicenseUsageStatus.EXPIRED)),
+        ):
+            response = self._id_jag_exchange(audience=self.ID_JAG_AUDIENCE)
+        self._assert_error(response, "invalid_target")
+
+    def test_id_jag_not_an_internal_target(self):
+        """test that an id-jag audience is never resolved as an internal provider target"""
+        response = self._id_jag_exchange(audience=self.target_provider.client_id)
+        self._assert_error(response, "invalid_target")
+
+    def test_id_jag_resource_not_allowed(self):
+        """test that a `resource` not allow-listed for the audience is rejected, also when
+        requested along with allowed ones, and so is an invalid one"""
+        self._allow_id_jag()
+        for resource in (
+            "https://api.example.com/other",
+            [self.ID_JAG_RESOURCE, "https://api.example.com/other"],
+            "not a uri",
+            "https://api.example.com/mcp#fragment",
+        ):
+            with self.subTest(resource=resource):
+                response = self._id_jag_exchange(audience=self.ID_JAG_AUDIENCE, resource=resource)
+                self._assert_error(response, "invalid_target")
+
+    def test_id_jag_resources(self):
+        """test that one resource is claimed as a string, several as an array"""
+        for resource, claim in (
+            (self.ID_JAG_RESOURCE, self.ID_JAG_RESOURCE),
+            (
+                [self.ID_JAG_RESOURCE, self.ID_JAG_RESOURCE_2],
+                [self.ID_JAG_RESOURCE, self.ID_JAG_RESOURCE_2],
+            ),
+            ([self.ID_JAG_RESOURCE, self.ID_JAG_RESOURCE], self.ID_JAG_RESOURCE),
+        ):
+            with self.subTest(resource=resource):
+                _, response = self._id_jag_agent_exchange(resource=resource)
+                self.assertEqual(self._decode_id_jag(response)["resource"], claim)
+        _, response = self._id_jag_agent_exchange()
+        self.assertNotIn("resource", self._decode_id_jag(response))
+
+    def test_id_token_subject_type_rejected_without_id_jag(self):
+        """test that subject_token_type=id_token is only accepted when requesting an id-jag"""
+        response = self._exchange(subject_token_type=TOKEN_TYPE_URI_ID_TOKEN)
+        self._assert_error(response, "invalid_request")
+
+    def test_id_jag_rejects_actor_token(self):
+        """test that an actor_token is refused, ID-JAGs are only minted for system agents"""
+        actor = Actor.for_user(self.user, ActorPolicyInheritance.NONE)
+        _, response = self._id_jag_agent_exchange(
+            actor_token=self._actor_token_jwt(actor), actor_token_type=TOKEN_TYPE_URI_JWT
+        )
+        self._assert_error(response, "invalid_request")
+
+    def test_id_jag_owned_agent(self):
+        """test that an agent with an owner can't be used for ID-JAG"""
+        self._allow_id_jag(parent=self.user)
+        response = self._id_jag_exchange(audience=self.ID_JAG_AUDIENCE)
+        self._assert_error(response, "invalid_target")
+
+    def test_id_jag_other_application(self):
+        """test that a system agent is only used by the applications it lists"""
+        self._allow_id_jag(app=self.other_app)
+        response = self._id_jag_exchange(audience=self.ID_JAG_AUDIENCE)
+        self._assert_error(response, "invalid_target")
+
+    def test_id_jag_successful(self):
+        """test successful id-jag issuance for an actor and an allow-listed audience"""
+        self.user.email = "Some.User@Example.COM"
+        self.user.save()
+        agent, response = self._id_jag_agent_exchange(resource=self.ID_JAG_RESOURCE)
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content.decode())
+        self.assertEqual(body["issued_token_type"], TOKEN_TYPE_URI_ID_JAG)
+        self.assertEqual(body["token_type"], "N_A")
+
+        header = get_unverified_header(body["access_token"])
+        self.assertEqual(header["typ"], JWT_TYPE_ID_JAG)
+
+        jwt = self._decode_id_jag(response)
+        self.assertEqual(jwt["iss"], self.provider.get_issuer(self.factory.get("/")))
+        # The client's identifier at the target authorization server, not ours
+        self.assertEqual(jwt["client_id"], self.ID_JAG_CLIENT_ID)
+        self.assertEqual(jwt["resource"], self.ID_JAG_RESOURCE)
+        self.assertIn("jti", jwt)
+        self.assertEqual(jwt["email"], "some.user@example.com")
+        self.assertNotIn("acr", jwt)
+        # `sub` stays the human subject, `act` records the system agent
+        self.assertEqual(jwt["sub"], self.user.uid)
+        self.assertEqual(jwt["act"]["sub"], agent.uid)
+        self._assert_exchange_event(agent)
+
+        # No AccessToken row is created for an id-jag -- it's not itself a bearer token
+        self.assertFalse(AccessToken.objects.filter(token=body["access_token"]).exists())
+
+    def test_id_jag_not_encrypted(self):
+        """test that an ID-JAG is only signed, even when the provider encrypts its tokens"""
+        # The client presents the ID token it decrypted
+        _, id_token = self._id_token(self.provider)
+        self.provider.encryption_key = create_test_cert()
+        self.provider.save()
+        _, response = self._id_jag_agent_exchange(subject_token=id_token)
+        self.assertEqual(response.status_code, 200, response.content)
+        id_jag = loads(response.content.decode())["access_token"]
+        self.assertEqual(get_unverified_header(id_jag)["typ"], JWT_TYPE_ID_JAG)
+        self.assertEqual(self._decode_id_jag(response)["client_id"], self.ID_JAG_CLIENT_ID)
+
+    def test_id_jag_lifetime(self):
+        """test that an ID-JAG lives at most ID_JAG_MAX_VALIDITY, or the provider's access
+        token validity when that is shorter"""
+        for validity, expected in (("hours=1", 300), ("seconds=60", 60)):
+            with self.subTest(validity=validity):
+                self.provider.access_token_validity = validity
+                self.provider.save()
+                _, response = self._id_jag_agent_exchange()
+                self.assertEqual(response.status_code, 200, response.content)
+                body = loads(response.content.decode())
+                self.assertEqual(body["expires_in"], expected)
+                jwt = self._decode_id_jag(response)
+                self.assertEqual(jwt["exp"] - jwt["iat"], expected)
+
+    def test_id_jag_es256(self):
+        """test that a provider signing with a P-256 EC key issues ES256 ID-JAGs"""
+        self.provider.signing_key = create_test_cert(PrivateKeyAlg.ECDSA)
+        self.provider.save()
+        _, response = self._id_jag_agent_exchange()
+        self.assertEqual(response.status_code, 200, response.content)
+        header = get_unverified_header(loads(response.content.decode())["access_token"])
+        self.assertEqual(header["alg"], "ES256")
+
+    def test_id_jag_signing_alg_unsupported(self):
+        """test that an ID-JAG is refused when the provider would sign it with anything but
+        RS256 or ES256, such as HS256 without a signing key, and that this is reported once
+        per provider rather than on every request"""
+        self._allow_id_jag()
+        _, subject_token = self._id_token(self.provider)
+        for signing_key in (None, create_test_cert(PrivateKeyAlg.ED25519)):
+            with self.subTest(signing_key=signing_key):
+                self.provider.signing_key = signing_key
+                self.provider.save()
+                self.provider = OAuth2Provider.objects.get(pk=self.provider.pk)
+                response = self._id_jag_exchange(
+                    audience=self.ID_JAG_AUDIENCE, subject_token=subject_token
+                )
+                self._assert_error(response, "invalid_request")
+        self.assertEqual(
+            Event.objects.filter(
+                action=EventAction.CONFIGURATION_ERROR,
+                context__provider__pk=self.provider.pk,
+            ).count(),
+            1,
+        )
+
+    def test_id_jag_access_token_subject_refused(self):
+        """test that only an ID token is accepted as subject_token for an ID-JAG
+        (draft-06 §4.3.3): access tokens and JWTs, even ones any other exchange accepts,
+        are refused"""
+        token, _ = self._id_token(self.provider)
+        for subject_token in (self.subject_token, token.token):
+            for token_type in (TOKEN_TYPE_URI_ACCESS_TOKEN, TOKEN_TYPE_URI_JWT):
+                with self.subTest(token_type=token_type):
+                    _, response = self._id_jag_agent_exchange(
+                        subject_token=subject_token, subject_token_type=token_type
+                    )
+                    self._assert_error(response, "invalid_request")
+
+    def test_id_jag_id_token_other_client(self):
+        """test that an ID token issued to another client is rejected; a subject token
+        failing validation is invalid_request (RFC 8693 §2.2.2, draft-06 §4.3.4.3)"""
+        _, id_token = self._id_token(self.other_provider)
+        _, response = self._id_jag_agent_exchange(subject_token=id_token)
+        self._assert_error(response, "invalid_request")
+
+    def test_id_jag_id_token_other_client_same_provider(self):
+        """test that an ID token this provider issued to another of its clients is
+        rejected, as is one whose grant is bound to another client"""
+        other_client = synthetic_client(self.provider, "client-a")
+        _, id_token = self._id_token(self.provider, client=other_client)
+        self._assert_error(self._id_jag_id_token_exchange(id_token), "invalid_request")
+        # Same audience as the requesting client's, but the grant isn't bound to it
+        token = AccessToken(
+            provider=self.provider,
+            user=self.user,
+            auth_time=now(),
+            expires=now() + timedelta(hours=1),
+        )
+        token.bind_client(other_client)
+        token.id_token = IDToken.new(self.provider, token, self.factory.get("/"))
+        token.id_token.aud = self.provider.client_id
+        token.save()
+        id_token = token.id_token.to_jwt(self.provider)
+        self._assert_error(self._id_jag_id_token_exchange(id_token), "invalid_request")
+
+    def test_id_jag_id_token_revoked(self):
+        """test that an ID token whose access token was revoked is rejected"""
+        token, id_token = self._id_token(self.provider)
+        token.delete()
+        _, response = self._id_jag_agent_exchange(subject_token=id_token)
+        self._assert_error(response, "invalid_request")
+
+    def _id_jag_id_token_exchange(self, subject_token: str) -> HttpResponse:
+        _, response = self._id_jag_agent_exchange(subject_token=subject_token)
+        return response
+
+    def test_id_jag_id_token_subject_issues_bound_assertion(self):
+        """test the ID-JAG minted from an ID token: subject, client binding and no scope"""
+        _, id_token = self._id_token(self.provider)
+        response = self._id_jag_id_token_exchange(id_token)
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content.decode())
+        self.assertNotIn("scope", body)
+        jwt = self._decode_id_jag(response)
+        self.assertEqual(jwt["sub"], self.user.uid)
+        self.assertEqual(jwt["client_id"], self.ID_JAG_CLIENT_ID)
+        self.assertNotIn("scope", jwt)
+
+    def test_id_jag_id_token_subject_implicit_flow(self):
+        """test that an ID token stored by the authorization endpoint (pre-flattened
+        claims) is still recognized"""
+        token, id_token = self._id_token(self.provider)
+        token._id_token = dumps(token.id_token.to_dict())
+        token.save()
+        response = self._id_jag_id_token_exchange(id_token)
+        self.assertEqual(response.status_code, 200, response.content)
+
+    def test_id_jag_access_token_as_id_token(self):
+        """test that the access token issued alongside an ID token is not accepted as that
+        ID token: same key, `jti` and `aud`, but a different purpose (draft-06 §4.3.3)"""
+        token, _ = self._id_token(self.provider)
+        response = self._id_jag_id_token_exchange(token.token)
+        self._assert_error(response, "invalid_request")
+
+    def test_id_jag_foreign_typ_rejected(self):
+        """test that a JWT with the exact claims of an issued ID token is still refused when
+        its `typ` header identifies another kind of token"""
+        token, _ = self._id_token(self.provider)
+        claims = token.id_token.to_dict()
+        for jwt_type in (JWT_TYPE_ID_JAG, "at+jwt"):
+            with self.subTest(jwt_type=jwt_type):
+                forged = self.provider.encode(claims, jwt_type=jwt_type)
+                self._assert_error(self._id_jag_id_token_exchange(forged), "invalid_request")
+
+    def test_id_jag_as_subject(self):
+        """test that an issued ID-JAG is not accepted as an ID token"""
+        _, id_token = self._id_token(self.provider)
+        response = self._id_jag_id_token_exchange(id_token)
+        self.assertEqual(response.status_code, 200, response.content)
+        id_jag = loads(response.content.decode())["access_token"]
+        self._assert_error(self._id_jag_id_token_exchange(id_jag), "invalid_request")
+
+    def test_id_jag_id_token_other_client_shared_key(self):
+        """test that an ID token for another client is rejected even when both providers
+        sign with the same key, so only the audience binding tells them apart"""
+        shared = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            signing_key=self.cert,
+            grant_types=[],
+        )
+        _, id_token = self._id_token(shared)
+        self._assert_error(self._id_jag_id_token_exchange(id_token), "invalid_request")
+
+    def test_id_jag_id_token_tampered(self):
+        """test that an ID token with a modified payload is rejected"""
+        _, id_token = self._id_token(self.provider)
+        header, payload, signature = id_token.split(".")
+        claims = loads(urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+        claims["sub"] = generate_id()
+        payload = urlsafe_b64encode(dumps(claims).encode()).rstrip(b"=").decode()
+        tampered = ".".join((header, payload, signature))
+        self._assert_error(self._id_jag_id_token_exchange(tampered), "invalid_request")
+
+    def test_id_jag_id_token_expired(self):
+        """test that an expired ID token is rejected"""
+        token = AccessToken(
+            provider=self.provider,
+            user=self.user,
+            auth_time=now(),
+            expires=now() - timedelta(minutes=5),
+        )
+        token.id_token = IDToken.new(self.provider, token, self.factory.get("/"))
+        token.save()
+        id_token = token.id_token.to_jwt(self.provider)
+        self._assert_error(self._id_jag_id_token_exchange(id_token), "invalid_request")
+
+    def test_id_jag_id_token_revoked_flag(self):
+        """test that an ID token whose access token is marked revoked is rejected"""
+        token, id_token = self._id_token(self.provider)
+        token.revoked = True
+        token.save()
+        self._assert_error(self._id_jag_id_token_exchange(id_token), "invalid_request")
+
+    def test_id_jag_invalid_id_token_subject(self):
+        """test that unverifiable ID tokens are invalid_request for an ID-JAG"""
+        _, id_token = self._id_token(self.provider)
+        for subject_token in (id_token[:-4] + "AAAA", "not-a-jwt"):
+            with self.subTest(subject_token=subject_token):
+                response = self._id_jag_id_token_exchange(subject_token)
+                self._assert_error(response, "invalid_request")
+
+    def test_id_jag_multiple_audiences(self):
+        """test that more than one audience is invalid_request (draft-06 §4.3.3)"""
+        self._allow_id_jag()
+        response = self._id_jag_exchange(
+            audience=[self.ID_JAG_AUDIENCE, "https://other.example.com/"]
+        )
+        self._assert_error(response, "invalid_request")
+
+    def test_id_jag_scope(self):
+        """test that requested scopes are clamped to the provider's scope mappings, and
+        reported in both the ID-JAG and the response"""
+        self.provider.property_mappings.set(
+            ScopeMapping.objects.filter(scope_name__in=[SCOPE_OPENID, SCOPE_OPENID_EMAIL])
+        )
+        for scope, expected in (
+            (f"{SCOPE_OPENID_EMAIL} mcp:tools {SCOPE_OPENID}", "email openid"),
+            ("mcp:tools", None),
+        ):
+            with self.subTest(scope=scope):
+                _, response = self._id_jag_agent_exchange(scope=scope)
+                jwt = self._decode_id_jag(response)
+                body = loads(response.content.decode())
+                self.assertEqual(jwt.get("scope"), expected)
+                self.assertEqual(body.get("scope"), expected)
+
+    def test_id_jag_agent_policy(self):
+        """test that the agent's policies decide whether the user may get an ID-JAG for the
+        audience, with the audience in the request context"""
+        agent = self._allow_id_jag()
+        policy = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            expression=(
+                f"return request.context['oauth_audience'] == '{self.ID_JAG_AUDIENCE}' "
+                f"and request.user.pk == {self.user.pk}"
+            ),
+        )
+        PolicyBinding.objects.create(policy=policy, target=agent.policy_target, order=0)
+        response = self._id_jag_exchange(audience=self.ID_JAG_AUDIENCE)
+        self.assertEqual(response.status_code, 200, response.content)
+
+        PolicyBinding.objects.create(
+            group=Group.objects.create(name=generate_id()), target=agent.policy_target, order=1
+        )
+        agent.policy_target.policy_engine_mode = PolicyEngineMode.MODE_ALL
+        agent.policy_target.save()
+        response = self._id_jag_exchange(audience=self.ID_JAG_AUDIENCE)
+        self._assert_error(response, "access_denied")
+
+    def test_id_jag_application_policy(self):
+        """test that the application's policies still gate the exchange, denying with
+        access_denied for an ID-JAG"""
+        self._allow_id_jag()
+        PolicyBinding.objects.create(
+            group=Group.objects.create(name=generate_id()), target=self.app, order=0
+        )
+        response = self._id_jag_exchange(audience=self.ID_JAG_AUDIENCE)
+        self._assert_error(response, "access_denied")

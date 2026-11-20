@@ -19,12 +19,15 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_REFRESH_TOKEN,
     GRANT_TYPE_TOKEN_EXCHANGE,
     JWT_TYPE_DPOP_ID_TOKEN,
+    JWT_TYPE_ID_JAG,
     SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
+    TOKEN_TYPE_URI_ID_JAG,
     TOKEN_TYPE_URI_SAML2,
 )
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.events.signals import get_login_event
+from authentik.lib.generators import generate_id
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.client import OAuthClientContext, OAuthClientResolver
@@ -44,6 +47,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.token.base import TokenRequest
 from authentik.providers.oauth2.token.router import parse_token_request
+from authentik.providers.oauth2.token.token_exchange import ID_JAG_MAX_VALIDITY
 from authentik.providers.oauth2.utils import (
     TokenResponse,
     cors_allow,
@@ -388,6 +392,8 @@ class TokenView(View):
 
     def create_token_exchange_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.1"""
+        if self.params.requested_token_type == TOKEN_TYPE_URI_ID_JAG:
+            return self.create_id_jag_response()
         if self.params.saml_provider:
             return self.create_saml_token_exchange_response()
         # Issued on the `audience` target, else on the client's own provider
@@ -427,3 +433,54 @@ class TokenView(View):
                 timedelta_from_string(provider.access_token_validity).total_seconds()
             ),
         }
+
+    def create_id_jag_response(self) -> dict[str, Any]:
+        """Mint an ID-JAG (Identity Assertion JWT Authorization Grant): a short-lived,
+        audience-scoped assertion a *foreign* resource server's authorization server
+        accepts via RFC 7523 JWT-bearer, letting a client obtain an authentik-mediated
+        cross-domain delegation without registering directly with that foreign AS.
+        See https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-assertion-authz-grant
+        """
+        now = timezone.now()
+        validity = min(
+            timedelta_from_string(self.provider.access_token_validity), ID_JAG_MAX_VALIDITY
+        )
+        user = self.params.user
+        # draft-06 §3.1
+        claims: dict[str, Any] = {
+            "iss": self.provider.get_issuer(self.request),
+            "sub": IDToken.resolve_sub(self.provider, user),
+            "aud": self.params.id_jag_audience,
+            # The client's identifier at the target authorization server, not ours
+            "client_id": self.params.id_jag_agent.id_jag_client_id,
+            "jti": generate_id(),
+            "iat": int(now.timestamp()),
+            "exp": int((now + validity).timestamp()),
+        }
+        if user.email:
+            claims["email"] = user.email.lower()
+        resources = self.params.id_jag_resources
+        if resources:
+            claims["resource"] = resources[0] if len(resources) == 1 else list(resources)
+        # Requested scopes this provider has mappings for, reported in both the claim and
+        # the response (draft-06 §4.3.3/§4.3.4)
+        scope = " ".join(sorted(self.params.scope))
+        if scope:
+            claims["scope"] = scope
+        # RFC 8693 §4.1 delegation, same mechanism as create_token_exchange_response:
+        # `sub` above stays the human subject; `act` records the Actor actually
+        # exercising the assertion (the system agent the audience belongs to).
+        claims["act"] = {"sub": IDToken.resolve_sub(self.provider, self.params.actor)}
+
+        response = {
+            # Signed only: the Resource Authorization Server verifies it with this
+            # provider's public keys, and can't decrypt a JWE for this provider's client.
+            "access_token": self.provider.sign(claims, jwt_type=JWT_TYPE_ID_JAG),
+            "issued_token_type": TOKEN_TYPE_URI_ID_JAG,
+            # Per the spec, an ID-JAG is not itself a bearer access token.
+            "token_type": "N_A",
+            "expires_in": int(validity.total_seconds()),
+        }
+        if scope:
+            response["scope"] = scope
+        return response
