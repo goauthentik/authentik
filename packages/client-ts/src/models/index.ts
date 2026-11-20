@@ -256,6 +256,7 @@ export * from "./GroupTelegramSourceConnection.js";
 export * from "./GroupTelegramSourceConnectionRequest.js";
 export * from "./Hardware.js";
 export * from "./HardwareRequest.js";
+export * from "./IdJagUserMatchingEnum.js";
 export * from "./IdentificationChallenge.js";
 export * from "./IdentificationChallengeResponseRequest.js";
 export * from "./IdentificationStage.js";

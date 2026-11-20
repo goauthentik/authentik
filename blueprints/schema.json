@@ -13054,6 +13054,15 @@
                     "format": "uuid",
                     "title": "ID-JAG email group",
                     "description": "ID-JAG email addresses only match users connected to an enabled source, such as a directory, or members of this group, as users who registered themselves may not own their address."
+                },
+                "id_jag_user_matching": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "email"
+                    ],
+                    "title": "ID-JAG user matching",
+                    "description": "How an ID-JAG from this source finds its user: by the issuer's subject, linked by email the first time, or by email on every redemption, for issuers whose subjects aren't stable."
                 }
             },
             "required": []
