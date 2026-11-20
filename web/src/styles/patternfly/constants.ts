@@ -11,6 +11,7 @@ export const P4Disposition = {
     Danger: "danger",
     Info: "info",
     Neutral: "neutral",
+    Success: "success",
 } as const;
 
 export type P4Disposition = (typeof P4Disposition)[keyof typeof P4Disposition];
@@ -21,6 +22,7 @@ export const P4BannerDispositionIconClassName = {
     [P4Disposition.Danger]: "fas fa-exclamation-triangle",
     [P4Disposition.Neutral]: "fas fa-times",
     [P4Disposition.Error]: "fas fa-times",
+    [P4Disposition.Success]: "fas fa-check",
 } as const satisfies Record<P4Disposition, string>;
 
 export const P4BannerDispositionClassName = {
@@ -29,4 +31,5 @@ export const P4BannerDispositionClassName = {
     [P4Disposition.Danger]: "pf-m-danger",
     [P4Disposition.Neutral]: "pf-m-gray",
     [P4Disposition.Error]: "pf-m-error",
+    [P4Disposition.Success]: "pf-m-success",
 } as const satisfies Record<P4Disposition, string>;

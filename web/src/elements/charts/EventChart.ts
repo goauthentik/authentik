@@ -67,6 +67,27 @@ export function actionToColor(action: EventActions): string {
     return "";
 }
 
+// The full list of bucket timestamps spanning the last `days`, spaced `stepHours`
+// apart and aligned to the backend's own bucket boundaries. The API doesn't expose
+// its bucketing directly, so alignment is inferred from an actual data timestamp
+// (falling back to epoch-aligned steps when there's no data to anchor to).
+function buildBucketGrid(data: EventVolume[], days: number, stepHours: number): number[] {
+    const stepMs = stepHours * 60 * 60 * 1000;
+    const now = new Date().getTime();
+    const windowStart = now - days * 24 * 60 * 60 * 1000;
+    const anchor = data.length ? data[0].time.getTime() : Math.ceil(windowStart / stepMs) * stepMs;
+
+    const grid: number[] = [];
+    let t = anchor - Math.ceil((anchor - windowStart) / stepMs) * stepMs;
+
+    while (t <= now) {
+        if (t >= windowStart) grid.push(t);
+        t += stepMs;
+    }
+
+    return grid;
+}
+
 export abstract class EventChart extends AKChart<EventVolume[]> {
     public override ariaLabel = msg("Event volume chart");
 
@@ -75,6 +96,7 @@ export abstract class EventChart extends AKChart<EventVolume[]> {
         options?: {
             optsMap?: Map<EventActions, Partial<ChartDataset>>;
             padToDays?: number;
+            stepHours?: number;
         },
     ): ChartData {
         const datasets: ChartData = {
@@ -91,39 +113,23 @@ export abstract class EventChart extends AKChart<EventVolume[]> {
 
         const actions = new Set(data.map((v) => v.action));
 
+        // Every action's dataset is built against this same fixed grid of bucket
+        // timestamps, rather than just the timestamps that happen to have events,
+        // so bars stay a uniform width even across stretches with no data.
+        const bucketTimes = options.padToDays
+            ? buildBucketGrid(data, options.padToDays, options.stepHours ?? 6)
+            : null;
+
         actions.forEach((action) => {
-            const actionData: { x: number; y: number }[] = [];
+            const countByTime = new Map<number, number>();
 
             data.filter((v) => v.action === action).forEach((v) => {
-                actionData.push({
-                    x: v.time.getTime(),
-                    y: v.count,
-                });
+                countByTime.set(v.time.getTime(), v.count);
             });
 
-            // Check if we need to pad the data to reach a certain time window
-            const earliestDate = data
-                .filter((v) => v.action === action)
-                .map((v) => v.time)
-                .sort((a, b) => b.getTime() - a.getTime())
-                .reverse();
-
-            if (earliestDate.length > 0 && options.padToDays) {
-                const earliestPadded = new Date(
-                    new Date().getTime() - options.padToDays * (1000 * 3600 * 24),
-                );
-
-                const daysDelta = Math.round(
-                    (earliestDate[0].getTime() - earliestPadded.getTime()) / (1000 * 3600 * 24),
-                );
-
-                if (daysDelta > 0) {
-                    actionData.push({
-                        x: earliestPadded.getTime(),
-                        y: 0,
-                    });
-                }
-            }
+            const actionData: { x: number; y: number }[] = bucketTimes
+                ? bucketTimes.map((x) => ({ x, y: countByTime.get(x) ?? 0 }))
+                : Array.from(countByTime, ([x, y]) => ({ x, y }));
 
             datasets.datasets.push({
                 data: actionData,
