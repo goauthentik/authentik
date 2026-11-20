@@ -5,7 +5,6 @@ use std::{
 };
 
 use ak_axum::{
-    accept::tls::TlsState,
     error::Result,
     extract::{client_ip::ClientIp, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
     router::wrap_router,
@@ -25,6 +24,7 @@ use axum::{
     response::{IntoResponse as _, Response},
     routing::any,
 };
+use axum_server::tls::TlsInfo;
 use http_body_util::BodyExt as _;
 use hyper::body::Incoming;
 use serde_json::json;
@@ -150,7 +150,7 @@ async fn forward_request(
     Scheme(scheme): Scheme,
     State(server): State<Arc<Server>>,
     TrustedProxy(trusted_proxy): TrustedProxy,
-    tls_state: Option<Extension<TlsState>>,
+    tls_info: Option<Extension<Arc<TlsInfo>>>,
     OriginalUri(uri): OriginalUri,
     mut request: Request,
 ) -> Result<Response> {
@@ -205,13 +205,14 @@ async fn forward_request(
         return handle_websocket_upgrade(request, &server.socket_path).await;
     }
 
-    if let Some(tls_state) = tls_state
-        && let Some(peer_certificates) = &tls_state.peer_certificates
+    if let Some(Extension(tls_info)) = tls_info
+        && !tls_info.peer_certificates.is_empty()
     {
-        let xfcc = peer_certificates
+        let xfcc = tls_info
+            .peer_certificates
             .iter()
             .map(|cert| {
-                let pem_encoded = pem::encode(&pem::Pem::new("CERTIFICATE", cert.as_ref()));
+                let pem_encoded = pem::encode(&pem::Pem::new("CERTIFICATE", cert.as_slice()));
                 let url_encoded: String =
                     url::form_urlencoded::byte_serialize(pem_encoded.as_bytes()).collect();
                 format!("Cert={url_encoded}")
