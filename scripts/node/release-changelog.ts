@@ -7,7 +7,15 @@
  *     replaces the list of minor changes; a patch release adds or replaces its own `## Fixed in
  *     <version>` section, so regenerating is idempotent.
  *   - `diff` writes the API schema diff against the previous release family into `_api-changes.mdx`.
- *     Usage: release-changelog <changelog|diff> --version <x.y.z>
+ *
+ *   Run it from the release branch (`version-<year>.<minor>`); other branches yield the wrong
+ *   commits. `--review` prints the result instead of writing it.
+ *
+ * @example
+ *
+ * ```sh
+ * release-changelog <changelog|diff> --version <x.y.z> [--review]
+ * ```
  */
 
 import { execFile } from "node:child_process";
@@ -59,6 +67,26 @@ function partialPath(root: string, version: string, name: string): string {
     const [year, minor] = version.split(".");
 
     return join(root, "website/docs/releases", year!, `v${year}.${minor}`, `_${name}.mdx`);
+}
+
+/**
+ * Fails unless HEAD is the release branch for the given version.
+ */
+async function assertReleaseBranch(version: string, cwd: string): Promise<void> {
+    const [year, minor] = version.split(".");
+    const expected = `version-${year}.${minor}`;
+    const branch = await run("git", ["rev-parse", "--abbrev-ref", "HEAD"], cwd);
+
+    if (branch !== expected) {
+        throw new Error(
+            `Check out ${expected} before generating ${version} (on ${branch}). Pass --review to preview anyway.`,
+        );
+    }
+}
+
+interface Generated {
+    output: string;
+    content: string;
 }
 
 //#endregion
@@ -124,7 +152,7 @@ async function collectEntries(previousTag: string, cwd: string): Promise<string>
         .join("\n");
 }
 
-async function writeChangelog(version: string, root: string): Promise<string> {
+async function generateChangelog(version: string, root: string): Promise<Generated> {
     const previousTag = `version/${await previousRelease(version, root)}`;
     const entries = await collectEntries(previousTag, root);
 
@@ -144,17 +172,14 @@ async function writeChangelog(version: string, root: string): Promise<string> {
         partial.patches.set(version, entries);
     }
 
-    await mkdir(dirname(output), { recursive: true });
-    await writeFile(output, renderPartial(partial));
-
-    return output;
+    return { output, content: renderPartial(partial) };
 }
 
 //#endregion
 
 //#region API diff
 
-async function writeDiff(version: string, root: string): Promise<string> {
+async function generateDiff(version: string, root: string): Promise<Generated> {
     const [year, minor] = version.split(".");
     const previousTag = `version/${await previousRelease(`${year}.${minor}.0`, root)}`;
 
@@ -187,12 +212,7 @@ async function writeDiff(version: string, root: string): Promise<string> {
             .replaceAll("{", "&#123;")
             .replaceAll("}", "&#125;");
 
-        const output = partialPath(root, version, "api-changes");
-
-        await mkdir(dirname(output), { recursive: true });
-        await writeFile(output, diff);
-
-        return output;
+        return { output: partialPath(root, version, "api-changes"), content: diff };
     } finally {
         await rm(oldSchema, { force: true });
         await rm(diffPath, { force: true });
@@ -202,21 +222,21 @@ async function writeDiff(version: string, root: string): Promise<string> {
 //#endregion
 
 const COMMANDS = {
-    changelog: writeChangelog,
-    diff: writeDiff,
+    changelog: generateChangelog,
+    diff: generateDiff,
 } as const;
 
 async function main(): Promise<void> {
     const { values, positionals } = parseArgs({
-        options: { version: { type: "string" } },
+        options: { version: { type: "string" }, review: { type: "boolean", default: false } },
         allowPositionals: true,
     });
 
     const [command] = positionals;
-    const { version } = values;
+    const { version, review } = values;
 
     if (!command || !(command in COMMANDS)) {
-        throw new Error("Usage: release-changelog <changelog|diff> --version <x.y.z>");
+        throw new Error("Usage: release-changelog <changelog|diff> --version <x.y.z> [--review]");
     }
 
     if (!version || !/^\d+\.\d+\.\d+$/.test(version)) {
@@ -224,8 +244,18 @@ async function main(): Promise<void> {
     }
 
     const root = await resolveRepoRoot();
-    const output = await COMMANDS[command as keyof typeof COMMANDS](version, root);
 
+    if (!review) await assertReleaseBranch(version, root);
+
+    const { output, content } = await COMMANDS[command as keyof typeof COMMANDS](version, root);
+
+    if (review) {
+        process.stdout.write(content);
+        return;
+    }
+
+    await mkdir(dirname(output), { recursive: true });
+    await writeFile(output, content);
     await run("pnpm", ["exec", "oxfmt", "--write", output], root);
 
     logger.info(`✅ Wrote the ${version} ${command} to ${output}`);

@@ -196,11 +196,11 @@ gen-build:  ## Generate schema.yml and blueprints/schema.json from Django model 
 gen-compose:
 	$(UV) run scripts/generate_compose.py
 
-gen-changelog:  ## (Release) Write commits since the previous release into the release's changelog partial (`version=2026.11.0`)
-	node ./scripts/node/release-changelog.ts changelog --version "$(version)"
+gen-changelog:  ## (Release) Write commits since the previous release into the release's changelog partial (`version=2026.11.0`, `review=1` prints instead)
+	node ./scripts/node/release-changelog.ts changelog --version "$(version)" $(if $(review),--review)
 
-gen-diff:  ## (Release) Write the API schema diff against the previous release family into the release's API changes partial (`version=2026.11.0`)
-	node ./scripts/node/release-changelog.ts diff --version "$(version)"
+gen-diff:  ## (Release) Write the API schema diff against the previous release family into the release's API changes partial (`version=2026.11.0`, `review=1` prints instead)
+	node ./scripts/node/release-changelog.ts diff --version "$(version)" $(if $(review),--review)
 
 gen-client-go:  ## Build and install the authentik API for Golang
 	$(UV) run make -C "${PWD}/packages/client-go" build

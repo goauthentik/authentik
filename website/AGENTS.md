@@ -115,7 +115,7 @@ The one rule the linters and spell checker cannot enforce, and the one most ofte
 
 ### Release notes
 
-Each release has its own directory, `docs/releases/<year>/v<version>/`. Its `index.mdx` holds only hand-written content (start from `docs/releases/_template.mdx`). Its "Minor changes/fixes" and "API Changes" sections import the generated partials `_changelog.mdx` and `_api-changes.mdx` from the same directory, which `make gen-changelog version=<x.y.z>` and `make gen-diff version=<x.y.z>` write. Don't edit the partials by hand; the spell checker skips them. Patch releases add their `## Fixed in <x.y.z>` section to the same changelog partial.
+Each release has its own directory, `docs/releases/<year>/v<version>/`. Its `index.mdx` holds only hand-written content (start from `docs/releases/_template.mdx`). Its "Minor changes/fixes" and "API Changes" sections import the generated partials `_changelog.mdx` and `_api-changes.mdx` from the same directory, which `make gen-changelog version=<x.y.z>` and `make gen-diff version=<x.y.z>` write. Run them on the release branch (`version-<year>.<minor>`); add `review=1` to print the output instead of writing it. Don't edit the partials by hand; the spell checker skips them. Patch releases add their `## Fixed in <x.y.z>` section to the same changelog partial.
 
 ## URLs and redirects
 
