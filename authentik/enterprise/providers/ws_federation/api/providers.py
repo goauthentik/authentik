@@ -11,7 +11,11 @@ from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
 from authentik.enterprise.providers.ws_federation.processors.metadata import MetadataProcessor
-from authentik.providers.saml.api.providers import SAMLProviderSerializer, SAMLProviderViewSet
+from authentik.providers.saml.api.providers import (
+    SAMLProviderFilter,
+    SAMLProviderSerializer,
+    SAMLProviderViewSet,
+)
 
 
 class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerializer):
@@ -108,12 +112,19 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
         }
 
 
+class WSFederationProviderFilter(SAMLProviderFilter):
+    """WSFederationProvider filters"""
+
+    class Meta(SAMLProviderFilter.Meta):
+        model = WSFederationProvider
+
+
 class WSFederationProviderViewSet(SAMLProviderViewSet):
     """WSFederationProvider Viewset"""
 
     queryset = WSFederationProvider.objects.all()
     serializer_class = WSFederationProviderSerializer
-    filterset_fields = "__all__"
+    filterset_class = WSFederationProviderFilter
     ordering = ["name"]
     search_fields = ["name"]
 
