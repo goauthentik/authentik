@@ -10715,6 +10715,17 @@
                     "title": "Refresh token threshold",
                     "description": "When refreshing a token, if the refresh token is valid for less than this duration, it will be renewed. When set to seconds=0, token will always be renewed. (Format: hours=1;minutes=2;seconds=3)."
                 },
+                "refresh_token_revoke_family_on_reuse": {
+                    "type": "boolean",
+                    "title": "Refresh token revoke family on reuse",
+                    "description": "When a refresh token which has already been rotated is used again, revoke all refresh and access tokens issued from the same authorization. Reuse indicates that the token may have been stolen."
+                },
+                "refresh_token_reuse_grace_period": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Refresh token reuse grace period",
+                    "description": "Allow the most recently rotated refresh token to be used again for this duration without revoking its family, for clients which retry or send concurrent refresh requests. Only applies when revoking the family on reuse is enabled. (Format: hours=1;minutes=2;seconds=3)."
+                },
                 "include_claims_in_id_token": {
                     "type": "boolean",
                     "title": "Include claims in id_token",

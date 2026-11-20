@@ -109,6 +109,18 @@ export interface OAuth2Provider {
      */
     refreshTokenThreshold?: string;
     /**
+     * When a refresh token which has already been rotated is used again, revoke all refresh and
+     * access tokens issued from the same authorization. Reuse indicates that the token may have
+     * been stolen.
+     */
+    refreshTokenRevokeFamilyOnReuse?: boolean;
+    /**
+     * Allow the most recently rotated refresh token to be used again for this duration without
+     * revoking its family, for clients which retry or send concurrent refresh requests. Only
+     * applies when revoking the family on reuse is enabled. (Format: hours=1;minutes=2;seconds=3).
+     */
+    refreshTokenReuseGracePeriod?: string;
+    /**
      * Include User claims from scopes in the id_token, for applications that don't access the
      * userinfo endpoint.
      */
@@ -267,6 +279,14 @@ export function OAuth2ProviderFromJSONTyped(
             json["refresh_token_validity"] == null ? undefined : json["refresh_token_validity"],
         refreshTokenThreshold:
             json["refresh_token_threshold"] == null ? undefined : json["refresh_token_threshold"],
+        refreshTokenRevokeFamilyOnReuse:
+            json["refresh_token_revoke_family_on_reuse"] == null
+                ? undefined
+                : json["refresh_token_revoke_family_on_reuse"],
+        refreshTokenReuseGracePeriod:
+            json["refresh_token_reuse_grace_period"] == null
+                ? undefined
+                : json["refresh_token_reuse_grace_period"],
         includeClaimsInIdToken:
             json["include_claims_in_id_token"] == null
                 ? undefined
@@ -339,6 +359,8 @@ export function OAuth2ProviderToJSONTyped(
         access_token_validity: value["accessTokenValidity"],
         refresh_token_validity: value["refreshTokenValidity"],
         refresh_token_threshold: value["refreshTokenThreshold"],
+        refresh_token_revoke_family_on_reuse: value["refreshTokenRevokeFamilyOnReuse"],
+        refresh_token_reuse_grace_period: value["refreshTokenReuseGracePeriod"],
         include_claims_in_id_token: value["includeClaimsInIdToken"],
         signing_key: value["signingKey"],
         encryption_key: value["encryptionKey"],

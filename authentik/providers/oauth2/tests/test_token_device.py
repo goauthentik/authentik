@@ -229,12 +229,17 @@ class TestTokenDeviceCode(OAuthTestCase):
         body = loads(res.content.decode())
         self.assertIn("refresh_token", body)
         access_token = AccessToken.objects.filter(token=body["access_token"]).first()
-        refresh_token = RefreshToken.objects.filter(token=body["refresh_token"]).first()
+        refresh_token = RefreshToken.objects.filter(
+            RefreshToken.token_query(body["refresh_token"])
+        ).first()
         self.assertIsNotNone(refresh_token)
         self.assertEqual(refresh_token.user, self.user)
         self.assertSetEqual(set(refresh_token.scope), {SCOPE_OPENID, SCOPE_OFFLINE_ACCESS})
         # The refresh token's ID Token carries the access token's at_hash
         self.assertEqual(refresh_token.id_token.at_hash, access_token.at_hash)
+        # Both are in the same family, so they're revoked together
+        self.assertIsNotNone(refresh_token.family)
+        self.assertEqual(access_token.family, refresh_token.family)
 
     def test_code_grant_type_not_configured(self):
         """A provider that doesn't allow the device code grant refuses to exchange"""

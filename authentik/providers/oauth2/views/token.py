@@ -3,6 +3,7 @@
 from base64 import b64encode
 from copy import copy
 from typing import Any
+from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
@@ -121,6 +122,8 @@ class TokenView(View):
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        # Shared by the access and refresh token, so both are revoked when reuse is detected
+        family = uuid4() if SCOPE_OFFLINE_ACCESS in self.params.authorization_code.scope else None
         access_token = AccessToken(
             provider=self.provider,
             user=self.params.authorization_code.user,
@@ -129,6 +132,7 @@ class TokenView(View):
             scope=self.params.authorization_code.scope,
             auth_time=self.params.authorization_code.auth_time,
             session=self.params.authorization_code.session,
+            family=family,
         )
         access_id_token = IDToken.new(
             self.provider,
@@ -162,6 +166,7 @@ class TokenView(View):
                 auth_time=self.params.authorization_code.auth_time,
                 session=self.params.authorization_code.session,
                 dpop_jkt=self.params.authorization_code.dpop_jkt,
+                family=family,
             )
             id_token = IDToken.new(
                 self.provider,
@@ -186,16 +191,22 @@ class TokenView(View):
             raise TokenError("invalid_scope")
         if SCOPE_OFFLINE_ACCESS not in self.params.scope:
             raise TokenError("invalid_scope")
+        old_token = self.params.refresh_token
+        if not old_token.family:
+            # Issued before refresh token families existed, start one now
+            old_token.family = uuid4()
+            old_token.save(update_fields=["family", "token_hash"])
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         access_token = AccessToken(
             provider=self.provider,
-            user=self.params.refresh_token.user,
+            user=old_token.user,
             expires=access_token_expiry,
             # Keep same scopes as previous token
-            scope=self.params.refresh_token.scope,
-            auth_time=self.params.refresh_token.auth_time,
-            session=self.params.refresh_token.session,
+            scope=old_token.scope,
+            auth_time=old_token.auth_time,
+            session=old_token.session,
+            family=old_token.family,
         )
         access_id_token = IDToken.new(
             self.provider,
@@ -221,32 +232,37 @@ class TokenView(View):
         refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
         if (
             refresh_token_threshold.total_seconds() == 0
-            or (self.params.refresh_token.expires - now) < refresh_token_threshold
+            or (old_token.expires - now) < refresh_token_threshold
         ):
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(
-                user=self.params.refresh_token.user,
-                scope=self.params.refresh_token.scope,
+                user=old_token.user,
+                scope=old_token.scope,
                 expires=refresh_token_expiry,
                 provider=self.provider,
-                auth_time=self.params.refresh_token.auth_time,
-                session=self.params.refresh_token.session,
-                dpop_jkt=self.params.refresh_token.dpop_jkt,
+                auth_time=old_token.auth_time,
+                session=old_token.session,
+                dpop_jkt=old_token.dpop_jkt,
+                family=old_token.family,
             )
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
                 self.request,
             )
-            id_token.nonce = self.params.refresh_token.id_token.nonce
+            id_token.nonce = old_token.id_token.nonce
             id_token.at_hash = access_token.at_hash
             self._add_cnf_to_id_token(id_token)
             refresh_token.id_token = id_token
             refresh_token.save()
 
-            # Mark old token as revoked
-            self.params.refresh_token.revoked = True
-            self.params.refresh_token.save()
+            # Mark old token as revoked. It is kept so reuse can be detected. When it is reused
+            # within the grace period it is rotated again; keep the original rotation time so
+            # the grace period can't be extended by repeated reuse.
+            old_token.revoked = True
+            if not old_token.rotated_at:
+                old_token.rotated_at = now
+            old_token.save()
             response["refresh_token"] = refresh_token.token
 
         return response
@@ -285,6 +301,8 @@ class TokenView(View):
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         auth_event = get_login_event(self.params.device_code.session)
+        # Shared by the access and refresh token, so both are revoked when reuse is detected
+        family = uuid4() if SCOPE_OFFLINE_ACCESS in self.params.device_code.scope else None
         access_token = AccessToken(
             provider=self.provider,
             user=self.params.device_code.user,
@@ -292,6 +310,7 @@ class TokenView(View):
             scope=self.params.device_code.scope,
             auth_time=auth_event.created if auth_event else now,
             session=self.params.device_code.session,
+            family=family,
         )
         access_id_token = IDToken.new(
             self.provider,
@@ -323,6 +342,7 @@ class TokenView(View):
                 provider=self.provider,
                 auth_time=auth_event.created if auth_event else now,
                 dpop_jkt=self.params.device_code.dpop_jkt,
+                family=family,
             )
             id_token = IDToken.new(
                 self.provider,
