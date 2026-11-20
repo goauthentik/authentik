@@ -23,6 +23,7 @@ export interface AgentPSSODeviceRegistrationResponse {
     jwksEndpoint: string;
     audience: string;
     nonceEndpoint: string;
+    biometricPolicies?: Array<string>;
     authorizationEndpoint: string;
 }
 
@@ -92,6 +93,8 @@ export function AgentPSSODeviceRegistrationResponseFromJSONTyped(
         jwksEndpoint: json["jwks_endpoint"],
         audience: json["audience"],
         nonceEndpoint: json["nonce_endpoint"],
+        biometricPolicies:
+            json["biometric_policies"] == null ? undefined : json["biometric_policies"],
         authorizationEndpoint: json["authorization_endpoint"],
     };
 }
@@ -117,6 +120,7 @@ export function AgentPSSODeviceRegistrationResponseToJSONTyped(
         jwks_endpoint: value["jwksEndpoint"],
         audience: value["audience"],
         nonce_endpoint: value["nonceEndpoint"],
+        biometric_policies: value["biometricPolicies"],
         authorization_endpoint: value["authorizationEndpoint"],
     };
 }
