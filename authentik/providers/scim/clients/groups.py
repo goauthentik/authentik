@@ -8,7 +8,7 @@ from django.db import transaction
 from django.db.models import QuerySet
 from pydantic import ValidationError
 
-from authentik.core.models import Group
+from authentik.core.models import Group, User
 from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.base import Direction
@@ -59,6 +59,21 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             member.type = "user"
         return member
 
+    def _effective_user_pks(self, group: Group) -> list[int]:
+        """Return the user PKs that should be sent as members of `group`, ordered by PK.
+
+        When `flatten_nested_groups` is enabled on the provider, this includes the direct
+        members of all descendant groups. Otherwise only the direct members are returned.
+        """
+        if not self.provider.flatten_nested_groups:
+            return list(group.users.order_by("pk").values_list("pk", flat=True))
+        return list(
+            User.objects.filter(groups__in=Group.objects.filter(pk=group.pk).with_descendants())
+            .distinct()
+            .order_by("pk")
+            .values_list("pk", flat=True)
+        )
+
     def to_schema(self, obj: Group, connection: SCIMProviderGroup) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
         raw_scim_group = super().to_schema(obj, connection)
@@ -75,7 +90,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             scim_group.externalId = str(obj.pk)
 
         if not self._config.patch.supported:
-            users = list(obj.users.order_by("id").values_list("id", flat=True))
+            users = self._effective_user_pks(obj)
             member_ids = SCIMProviderUser.objects.filter(
                 provider=self.provider, user__pk__in=users
             ).values_list("scim_id", flat=True)
@@ -124,7 +139,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         # Members are only sent separately when PATCH is supported, as to_schema otherwise
         # includes them in the request above
         if self._config.patch.supported:
-            users = list(group.users.order_by("id").values_list("id", flat=True))
+            users = self._effective_user_pks(group)
             self._patch_add_users(connection, users)
         return connection
 
@@ -241,6 +256,41 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 "could not sync group membership, group does not exist", group=group
             )
             return
+        if self.provider.flatten_nested_groups:
+            # The effective membership of `group` and all its ancestors may have changed. The
+            # delta in `users_set` can't be applied directly, as a removed user may still be
+            # a member through another descendant group, so reconcile each group in full.
+            for target in (
+                Group.objects.filter(pk=group.pk)
+                .with_ancestors()
+                .filter(scimprovidergroup__provider=self.provider)
+            ):
+                self._reconcile_flattened(target)
+            return
+        return self._update_group_self(group, scim_group, action, users_set)
+
+    def _reconcile_flattened(self, group: Group):
+        """Bring the remote membership of an already-synced `group` in line with its
+        flattened membership."""
+        if self._config.patch.supported:
+            return self.patch_compare_users(group)
+        try:
+            return self.write(group)
+        except SCIMRequestException as exc:
+            if self._config.is_fallback:
+                # Assume that provider does not support PUT and also doesn't support
+                # ServiceProviderConfig, so try PATCH as a fallback
+                return self.patch_compare_users(group)
+            raise exc
+
+    def _update_group_self(
+        self,
+        group: Group,
+        scim_group: SCIMProviderGroup,
+        action: Direction,
+        users_set: set[int],
+    ):
+        """Send the direct membership delta for `group` itself."""
         if self._config.patch.supported:
             if action == Direction.add:
                 return self._patch_add_users(scim_group, users_set)
@@ -309,8 +359,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 "could not sync group membership, group does not exist", group=group
             )
             return
-        # Get a list of all users in the authentik group
-        raw_users_should = list(group.users.order_by("id").values_list("id", flat=True))
+        # Get a list of all users in the authentik group (transitive if flatten enabled)
+        raw_users_should = self._effective_user_pks(group)
         # Lookup the SCIM IDs of the users
         users_should: list[str] = list(
             SCIMProviderUser.objects.filter(
