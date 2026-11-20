@@ -99,7 +99,7 @@ class FederatedTokenRequest(TokenRequest):
         ):
             # Sources that only issue identity assertions (ID-JAGs) aren't trusted for
             # anything else
-            if getattr(source.source_type, "assertion_only", False):
+            if source.source_type.assertion_only:
                 continue
             self.logger.debug("verifying JWT with source", source=source.slug)
             keys = source.oidc_jwks.get("keys", [])

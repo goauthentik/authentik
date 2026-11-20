@@ -20,6 +20,7 @@ export interface SourceType {
     name: string;
     verboseName: string;
     urlsCustomizable: boolean;
+    readonly assertionOnly: boolean;
     readonly requestTokenUrl: string | null;
     readonly authorizationUrl: string | null;
     readonly accessTokenUrl: string | null;
@@ -45,6 +46,13 @@ export function instanceOfSourceType(value: object): value is SourceType {
             !("urls_customizable" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["urlsCustomizable"] === undefined &&
             (value as Record<string, any>)["urls_customizable"] === undefined)
+    )
+        return false;
+    if (
+        (!("assertionOnly" in (value as Record<string, any>)) &&
+            !("assertion_only" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assertionOnly"] === undefined &&
+            (value as Record<string, any>)["assertion_only"] === undefined)
     )
         return false;
     if (
@@ -104,6 +112,7 @@ export function SourceTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         name: json["name"],
         verboseName: json["verbose_name"],
         urlsCustomizable: json["urls_customizable"],
+        assertionOnly: json["assertion_only"],
         requestTokenUrl: json["request_token_url"],
         authorizationUrl: json["authorization_url"],
         accessTokenUrl: json["access_token_url"],
@@ -120,6 +129,7 @@ export function SourceTypeToJSON(json: any): SourceType {
 export function SourceTypeToJSONTyped(
     value?: Omit<
         SourceType,
+        | "assertionOnly"
         | "requestTokenUrl"
         | "authorizationUrl"
         | "accessTokenUrl"

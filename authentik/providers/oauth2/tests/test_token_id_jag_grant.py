@@ -40,6 +40,7 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
+from authentik.crypto.builder import PrivateKeyAlg
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
@@ -74,6 +75,10 @@ IDP_ISSUER = "https://idp.example.com/tenant-a"
 # RFC 8414 path insertion for IDP_ISSUER
 IDP_METADATA_URL = "https://idp.example.com/.well-known/oauth-authorization-server/tenant-a"
 IDP_JWKS_URL = "https://idp.example.com/jwks"
+# An Identity Assertion Issuer, like Claude's: no login endpoints, keys only
+ASSERTION_ISSUER = "https://identity.example.com/issuers/a1b2c3"
+ASSERTION_ISSUER_METADATA_URL = f"{ASSERTION_ISSUER}/.well-known/openid-configuration"
+ASSERTION_ISSUER_JWKS_URL = "https://identity.example.com/issuers/a1b2c3/jwks"
 MCP_RESOURCE = "https://mcp.example.com/mcp"
 OTHER_RESOURCE = "https://api.example.com/"
 
@@ -960,3 +965,98 @@ class TestTokenIdJagGrant(OAuthTestCase):
         )
         self.assertEqual(issuer_metadata_urls("not a url"), set())
         self.assertEqual(issuer_metadata_urls("https://idp.example.com/?tenant=a"), set())
+
+    def assertion_issuer(self) -> tuple[OAuthSource, Any]:
+        """An Identity Assertion Issuer trusted by the provider, signing with ES256 like
+        Claude, and trusted for corp.example emails. Returns it and its signing key."""
+        cert = create_test_cert(PrivateKeyAlg.ECDSA)
+        jwks = {"keys": [JWKSView().get_jwk_for_key(cert, "sig")]}
+        source = OAuthSource.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider_type="idjagissuer",
+            id_jag_issuer=ASSERTION_ISSUER,
+            oidc_well_known_url=ASSERTION_ISSUER_METADATA_URL,
+            id_jag_email_domains=["corp.example"],
+        )
+        self.requests.get(
+            ASSERTION_ISSUER_METADATA_URL,
+            json={"issuer": ASSERTION_ISSUER, "jwks_uri": ASSERTION_ISSUER_JWKS_URL},
+        )
+        self.requests.get(ASSERTION_ISSUER_JWKS_URL, json=jwks)
+        self.provider.jwt_federation_sources.add(source)
+        return source, cert
+
+    def assertion(self, cert, **overrides: Any) -> str:
+        return encode(
+            self.claims(**{"iss": ASSERTION_ISSUER, **overrides}),
+            cert.private_key,
+            algorithm="ES256",
+            headers={"kid": cert.kid, "typ": JWT_TYPE_ID_JAG},
+        )
+
+    def test_assertion_issuer(self):
+        """An Identity Assertion Issuer's `sub` is opaque: users are found by email every
+        time, and no subject is connected, so a changed address or subject never resolves
+        to a previously matched user"""
+        source, cert = self.assertion_issuer()
+        user = self.email_user()
+        response = self.redeem(self.assertion(cert, sub=generate_id(), email="alex@corp.example"))
+        self.assertEqual(response.status_code, 200, response.content)
+        token = decode(
+            loads(response.content)["access_token"],
+            self.provider.signing_key.private_key.public_key(),
+            algorithms=["RS256"],
+            options={"verify_aud": False},
+        )
+        self.assertEqual(token["sub"], user.uid)
+        self.assertFalse(UserOAuthSourceConnection.objects.filter(source=source).exists())
+        # Another subject for the same address is the same user
+        response = self.redeem(self.assertion(cert, sub=generate_id(), email="Alex@corp.example"))
+        self.assertEqual(response.status_code, 200, response.content)
+        # A leftover connection doesn't conflict, and isn't used
+        UserOAuthSourceConnection.objects.create(user=user, source=source, identifier="old")
+        response = self.redeem(self.assertion(cert, sub=generate_id(), email=user.email))
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assert_rejected(
+            self.assertion(cert, sub="old", email="nobody@corp.example"),
+            "access_denied",
+            "subject_not_provisioned",
+        )
+        # The address moved to someone else: they're found, not the previous user
+        user.email = "renamed@corp.example"
+        user.save()
+        other = self.email_user()
+        response = self.redeem(self.assertion(cert, sub=generate_id(), email="alex@corp.example"))
+        self.assertEqual(response.status_code, 200, response.content)
+        token = decode(
+            loads(response.content)["access_token"],
+            self.provider.signing_key.private_key.public_key(),
+            algorithms=["RS256"],
+            options={"verify_aud": False},
+        )
+        self.assertEqual(token["sub"], other.uid)
+
+    def test_assertion_issuer_refused(self):
+        """Without an email in a trusted domain, or with the issuer's identifier not exact,
+        an Identity Assertion Issuer's ID-JAG is refused"""
+        source, cert = self.assertion_issuer()
+        self.email_user()
+        for overrides, error, cause in (
+            ({"email": None}, "access_denied", "subject_not_provisioned"),
+            ({"email": "alex@other.example"}, "access_denied", "email_domain_not_trusted"),
+            (
+                {"email": "alex@corp.example", "iss": f"{ASSERTION_ISSUER}/"},
+                "invalid_grant",
+                "issuer_mismatch",
+            ),
+            (
+                {"email": "alex@corp.example", "iss": "https://identity.example.com/issuers/a1b2"},
+                "invalid_grant",
+                "untrusted_issuer",
+            ),
+        ):
+            with self.subTest(overrides=overrides):
+                # Not throttled by the previous case's fetch
+                cache.delete(CACHE_KEY_ID_JAG_FETCH % source.pk)
+                self.assert_rejected(self.assertion(cert, **overrides), error, cause)

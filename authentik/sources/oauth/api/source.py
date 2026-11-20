@@ -2,6 +2,7 @@
 
 from re import compile as re_compile
 from typing import Any
+from urllib.parse import urlparse
 
 from django.urls.base import reverse_lazy
 from django_filters.filters import BooleanFilter
@@ -21,6 +22,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import IdJagUserMatching, OAuthSource, PKCEMethod
+from authentik.sources.oauth.types.id_jag_issuer import WELL_KNOWN_SUFFIX
 from authentik.sources.oauth.types.registry import SourceType, registry
 
 # A DNS name with at least two labels, lowercase; no wildcards
@@ -35,6 +37,7 @@ class SourceTypeSerializer(PassiveSerializer):
     name = CharField(required=True)
     verbose_name = CharField(required=True)
     urls_customizable = BooleanField()
+    assertion_only = BooleanField(read_only=True)
     request_token_url = CharField(read_only=True, allow_null=True)
     authorization_url = CharField(read_only=True, allow_null=True)
     access_token_url = CharField(read_only=True, allow_null=True)
@@ -98,6 +101,56 @@ class OAuthSourceSerializer(SourceSerializer):
                 }
             )
 
+    def validate_id_jag_issuer_source(self, attrs: dict) -> None:
+        """Needs the issuer, and trusted email domains as users are found by email"""
+        issuer = self._get_value(attrs, "id_jag_issuer", "")
+        parsed = urlparse(issuer)
+        if (
+            parsed.scheme != "https"
+            or not parsed.netloc
+            or "@" in parsed.netloc
+            or parsed.query
+            or parsed.fragment
+            or issuer != issuer.strip()
+            or "/.well-known/" in f"{parsed.path}/"
+        ):
+            raise ValidationError(
+                {
+                    "id_jag_issuer": (
+                        "Enter the issuer's https URL, without credentials or a "
+                        "`/.well-known/` path."
+                    )
+                }
+            )
+        attrs["id_jag_issuer"] = issuer
+        # OpenID Connect Discovery §4: a terminating `/` is dropped to build the URL
+        attrs["oidc_well_known_url"] = issuer.removesuffix("/") + WELL_KNOWN_SUFFIX
+        if not self._get_value(attrs, "id_jag_email_domains", []):
+            raise ValidationError(
+                {
+                    "id_jag_email_domains": (
+                        "At least one email domain is required, as this source's ID-JAGs "
+                        "are matched to users by email."
+                    )
+                }
+            )
+        # Its `sub` is opaque and differs per issuer, so users are only found by email
+        if attrs.get("id_jag_user_matching", IdJagUserMatching.EMAIL) != IdJagUserMatching.EMAIL:
+            raise ValidationError(
+                {"id_jag_user_matching": "This source's ID-JAGs can only match users by email."}
+            )
+        attrs["id_jag_user_matching"] = IdJagUserMatching.EMAIL
+        attrs.setdefault("consumer_key", self._get_value(attrs, "consumer_key", ""))
+
+    def check_id_jag_issuer_metadata(self, attrs: dict, config: dict) -> None:
+        """The metadata must name the issuer exactly, as ID-JAGs are only accepted then"""
+        if config.get("issuer") != attrs["id_jag_issuer"]:
+            raise ValidationError(
+                {"id_jag_issuer": f"The issuer's metadata names {config.get('issuer')!r}."}
+            )
+        if not config.get("jwks_uri"):
+            raise ValidationError({"id_jag_issuer": "The issuer's metadata has no jwks_uri."})
+
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
         provider_type_name = attrs.get(
@@ -105,6 +158,10 @@ class OAuthSourceSerializer(SourceSerializer):
             self.instance.provider_type if self.instance else None,
         )
         source_type = registry.find_type(provider_type_name)
+        if source_type.assertion_only:
+            self.validate_id_jag_issuer_source(attrs)
+        else:
+            attrs.pop("id_jag_issuer", None)
 
         well_known = (
             self._get_value(attrs, "oidc_well_known_url") or source_type.oidc_well_known_url
@@ -122,6 +179,8 @@ class OAuthSourceSerializer(SourceSerializer):
             config = well_known_config.json()
             if "issuer" not in config:
                 raise ValidationError({"oidc_well_known_url": "Invalid well-known configuration"})
+            if source_type.assertion_only:
+                self.check_id_jag_issuer_metadata(attrs, config)
             field_map = {
                 # authentik field to oidc field
                 "authorization_url": "authorization_endpoint",
@@ -160,6 +219,14 @@ class OAuthSourceSerializer(SourceSerializer):
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 
+        if not source_type.assertion_only:
+            self.validate_login_source(attrs, source_type)
+        return attrs
+
+    def validate_login_source(self, attrs: dict, source_type: type[SourceType]) -> None:
+        """A source users sign in through needs a client and login URLs"""
+        if not self._get_value(attrs, "consumer_key"):
+            raise ValidationError({"consumer_key": "Consumer key is required."})
         for url in [
             "authorization_url",
             "access_token_url",
@@ -177,7 +244,6 @@ class OAuthSourceSerializer(SourceSerializer):
             raise ValidationError({"consumer_secret": "Consumer secret is required."})
         if not consumer_secret and pkce == PKCEMethod.NONE:
             raise ValidationError({"pkce": "PKCE is required when no consumer secret is used."})
-        return attrs
 
     class Meta:
         model = OAuthSource
@@ -201,8 +267,10 @@ class OAuthSourceSerializer(SourceSerializer):
             "id_jag_email_domains",
             "id_jag_email_group",
             "id_jag_user_matching",
+            "id_jag_issuer",
         ]
         extra_kwargs = {
+            "consumer_key": {"required": False, "allow_blank": True},
             "consumer_secret": {"write_only": True, "allow_blank": True, "required": False},
             "request_token_url": {"allow_blank": True},
             "authorization_url": {"allow_blank": True},

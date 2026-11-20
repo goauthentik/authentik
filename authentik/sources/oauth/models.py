@@ -70,7 +70,7 @@ class OAuthSource(NonCreatableType, Source):
     additional_scopes = models.TextField(
         default="", blank=True, verbose_name=_("Additional Scopes")
     )
-    consumer_key = models.TextField()
+    consumer_key = models.TextField(blank=True)
     consumer_secret = models.TextField(blank=True, default="")
 
     oidc_well_known_url = models.TextField(default="", blank=True)
@@ -117,6 +117,17 @@ class OAuthSource(NonCreatableType, Source):
             "How an ID-JAG from this source finds its user: by the issuer's subject, linked by "
             "email the first time, or by email on every redemption, for issuers whose subjects "
             "aren't stable."
+        ),
+    )
+
+    id_jag_issuer = models.TextField(
+        default="",
+        db_default="",
+        blank=True,
+        verbose_name=_("ID-JAG issuer"),
+        help_text=_(
+            "Issuer identifier of an Identity Assertion Issuer source, as it publishes it. "
+            "ID-JAGs are accepted when their `iss` equals it exactly."
         ),
     )
 
@@ -177,8 +188,10 @@ class OAuthSource(NonCreatableType, Source):
             icon = provider.icon_url()
         return icon
 
-    def ui_login_button(self, request: HttpRequest) -> UILoginButton:
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
         provider_type = self.source_type
+        if provider_type.assertion_only:
+            return None
         provider = provider_type()
         return UILoginButton(
             name=self.name,
@@ -189,6 +202,8 @@ class OAuthSource(NonCreatableType, Source):
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
+        if self.source_type.assertion_only:
+            return None
         return UserSettingSerializer(
             data={
                 "title": self.name,
@@ -307,6 +322,16 @@ class EntraIDOAuthSource(CreatableType, OAuthSource):
         abstract = True
         verbose_name = _("Entra ID OAuth Source")
         verbose_name_plural = _("Entra ID OAuth Sources")
+
+
+class IdJagIssuerOAuthSource(CreatableType, OAuthSource):
+    """Trust identity assertions (ID-JAGs) from an issuer, such as Claude, that users don't
+    sign in through."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Identity Assertion Issuer")
+        verbose_name_plural = _("Identity Assertion Issuers")
 
 
 class OpenIDConnectOAuthSource(CreatableType, OAuthSource):
