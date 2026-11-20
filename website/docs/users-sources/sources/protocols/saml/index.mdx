@@ -6,14 +6,15 @@ This source allows authentik to act as a SAML service provider. Like the [SAML p
 
 ## Terminology
 
-| Abbreviation | Name                       | Description                                                                                                                                  |
-| ------------ | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| IdP          | Identity provider          | The authoritative SAML authentication source that holds the user database.                                                                   |
-| SP           | Service provider           | The client that is connected to an IdP, usually providing a service, such as a web application. In the current context, authentik is the SP. |
-| -            | Assertion                  | A message sent by the IdP asserting that the user has been identified.                                                                       |
-| ACS          | Assertion Consumer Service | The service on the SP side that consumes the assertion sent from the IdP.                                                                    |
-| SSO URL      | Single sign-on URL         | The URL on the IdP side that the SP calls to initiate an authentication process.                                                             |
-| SLO URL      | Single logout URL          | The URL on the IdP side that the SP calls to invalidate a session and log the user out of the IdP and the SP.                                |
+| Abbreviation  | Name                          | Description                                                                                                                                                                                                                         |
+| ------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| IdP           | Identity provider             | The authoritative SAML authentication source that holds the user database.                                                                                                                                                          |
+| SP            | Service provider              | The client that is connected to an IdP, usually providing a service, such as a web application. In the current context, authentik is the SP.                                                                                        |
+| -             | Assertion                     | A message sent by the IdP asserting that the user has been identified.                                                                                                                                                              |
+| ACS           | Assertion Consumer Service    | The service on the SP side that consumes the assertion sent from the IdP.                                                                                                                                                           |
+| SSO URL       | Single sign-on URL            | The URL on the IdP side that the SP calls to initiate an authentication process.                                                                                                                                                    |
+| IdP Entity ID | https://saml.company/metadata | The identifier (Entity ID) of the IdP, which the IdP sends as the `<Issuer>` of its responses and assertions. This value can be found as the `entityID` in the IdP metadata. This is optional. See [IdP Entity ID](#idp-entity-id). |
+| SLO URL       | Single logout URL             | The URL on the IdP side that the SP calls to invalidate a session and log the user out of the IdP and the SP.                                                                                                                       |
 
 ## Example configuration
 
@@ -32,6 +33,19 @@ If you have the provider metadata, you can extract the values that you need from
 | Issuer override            | `https://authentik.company/source/saml/<source-slug>/metadata/` | The identifier (Entity ID) for the authentik instance in the SAML federation. This is optional and defaults to the metadata URL of the source, as shown in the example. To override it, set any value that the IdP recognizes. This must match what you register on the IdP side. |
 | NameID Policy              | Persistent                                                      | Depending on what the IdP sends as persistent ID, some IdPs use the username or email address while others use a random string or hashed value. If the user in authentik receives a random string as a username, try using **Email address** or **Windows**.                      |
 | Flow settings              | Default                                                         | If there are custom flows in your instance for external authentication, select them here.                                                                                                                                                                                         |
+
+## IdP Entity ID
+
+The **IdP Entity ID** field identifies the IdP that the source accepts logins from. When it is set, authentik compares it against the `<Issuer>` of each SAML response:
+
+- The `<Issuer>` of the assertion must be present and must match the **IdP Entity ID**.
+- The `<Issuer>` of the response may be omitted. If it is present, it must match the **IdP Entity ID**.
+
+A response that fails either check is rejected, and the user is shown an error.
+
+When the **IdP Entity ID** field is empty, the `<Issuer>` isn't verified. Existing sources are not affected until the field is set.
+
+This check complements signature verification. A **Verification Certificate** confirms that a response was signed with the IdP's key, while the **IdP Entity ID** confirms that the response names the expected IdP as its issuer. For the `<Issuer>` to be trustworthy, configure a **Verification Certificate** as well.
 
 ## Transient users and account lifetime
 

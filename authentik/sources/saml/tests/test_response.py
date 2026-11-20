@@ -21,6 +21,7 @@ from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
     MismatchedAudience,
+    MismatchedIssuer,
     UnsuccessfulStatus,
 )
 from authentik.sources.saml.models import (
@@ -160,6 +161,81 @@ class TestResponseProcessor(TestCase):
             "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
         ):
             parser.parse()
+
+    GOOGLE_ISSUER = "https://accounts.google.com/o/saml2?idpid="
+
+    def _issuer_request(self, response_issuer: str | None, assertion_issuer: str | None):
+        """Build a request from the success fixture with the Issuer of the Response and of
+        the assertion replaced, or removed when None. The AudienceRestriction is removed, as
+        the fixture isn't addressed to this source."""
+        fixture = load_fixture("fixtures/response_success.xml")
+        start = fixture.index("<saml2:AudienceRestriction>")
+        end = fixture.index("</saml2:AudienceRestriction>") + len("</saml2:AudienceRestriction>")
+        fixture = fixture[:start] + fixture[end:]
+        response_element = (
+            '<saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">'
+            f"{self.GOOGLE_ISSUER}</saml2:Issuer>"
+        )
+        assertion_element = f"<saml2:Issuer>{self.GOOGLE_ISSUER}</saml2:Issuer>"
+        self.assertEqual(fixture.count(response_element), 1)
+        self.assertEqual(fixture.count(assertion_element), 1)
+        fixture = fixture.replace(
+            response_element,
+            (
+                ""
+                if response_issuer is None
+                else response_element.replace(self.GOOGLE_ISSUER, response_issuer)
+            ),
+        )
+        fixture = fixture.replace(
+            assertion_element,
+            "" if assertion_issuer is None else f"<saml2:Issuer>{assertion_issuer}</saml2:Issuer>",
+        )
+        return self.factory.post(
+            "/",
+            data={"SAMLResponse": b64encode(fixture.encode()).decode()},
+        )
+
+    def _parse(self, request):
+        with patch(
+            "authentik.sources.saml.processors.response.reverse", return_value=GOOGLE_ACS_URL
+        ):
+            ResponseProcessor(self.source, request).parse()
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_issuer_matches(self):
+        """Test that a response issued by the configured identity provider is accepted"""
+        self.source.idp_entity_id = self.GOOGLE_ISSUER
+        self.source.save()
+        self._parse(self._issuer_request(self.GOOGLE_ISSUER, self.GOOGLE_ISSUER))
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_issuer_not_configured(self):
+        """Test that the Issuer isn't verified when the source has no IdP entity ID"""
+        self._parse(self._issuer_request("https://other.example.com", None))
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_issuer_mismatch(self):
+        """Test that a Response or an assertion issued by another entity is rejected"""
+        self.source.idp_entity_id = self.GOOGLE_ISSUER
+        self.source.save()
+        for response_issuer, assertion_issuer in (
+            ("https://other.example.com", self.GOOGLE_ISSUER),
+            (self.GOOGLE_ISSUER, "https://other.example.com"),
+            ("https://other.example.com", "https://other.example.com"),
+        ):
+            with self.subTest(response=response_issuer, assertion=assertion_issuer):
+                with self.assertRaises(MismatchedIssuer):
+                    self._parse(self._issuer_request(response_issuer, assertion_issuer))
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_issuer_missing(self):
+        """Test that the Issuer may be omitted from the Response, but not from the assertion"""
+        self.source.idp_entity_id = self.GOOGLE_ISSUER
+        self.source.save()
+        self._parse(self._issuer_request(None, self.GOOGLE_ISSUER))
+        with self.assertRaises(MismatchedIssuer):
+            self._parse(self._issuer_request(self.GOOGLE_ISSUER, None))
 
     @freeze_time("2022-10-14T14:15:00")
     def test_audience_multiple_in_one_restriction(self):
