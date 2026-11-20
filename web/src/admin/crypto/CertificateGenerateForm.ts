@@ -5,6 +5,7 @@ import "#elements/forms/HorizontalFormElement";
 import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
+import { RadioChangeEventDetail } from "#elements/forms/Radio";
 
 import {
     AlgEnum,
@@ -14,8 +15,8 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
-import { customElement } from "lit/decorators.js";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-crypto-certificate-generate-form")
 export class CryptoCertificateGenerateForm extends Form<CertificateGenerationRequest> {
@@ -23,6 +24,13 @@ export class CryptoCertificateGenerateForm extends Form<CertificateGenerationReq
     public static override verboseNamePlural = msg("Certificate-Key Pairs");
     public static override createLabel = msg("Generate");
     public static override submitVerb = msg("Generate");
+
+    @state()
+    protected alg: AlgEnum = AlgEnum.Rsa;
+
+    #algChangeListener = (event: CustomEvent<RadioChangeEventDetail<AlgEnum>>) => {
+        this.alg = event.detail.value;
+    };
 
     getSuccessMessage(): string {
         return msg("Successfully generated certificate-key pair.");
@@ -62,6 +70,7 @@ export class CryptoCertificateGenerateForm extends Form<CertificateGenerationReq
 
             <ak-form-element-horizontal label=${msg("Private key Algorithm")} required name="alg">
                 <ak-radio
+                    @change=${this.#algChangeListener}
                     .options=${[
                         {
                             label: msg("RSA"),
@@ -98,7 +107,52 @@ export class CryptoCertificateGenerateForm extends Form<CertificateGenerationReq
                 <p class="pf-c-form__helper-text">
                     ${msg("Algorithm used to generate the private key.")}
                 </p>
-            </ak-form-element-horizontal> `;
+            </ak-form-element-horizontal>
+            ${this.renderKeySize()}`;
+    }
+
+    /**
+     * Only RSA and ECDSA have a selectable key size, every other algorithm has a fixed one.
+     *
+     * Each algorithm renders its own template so the selection resets to that algorithm's
+     * default when switching between them.
+     */
+    protected renderKeySize(): TemplateResult | typeof nothing {
+        if (this.alg === AlgEnum.Rsa) {
+            return html`<ak-form-element-horizontal
+                label=${msg("Key size")}
+                required
+                name="keySize"
+            >
+                <ak-radio
+                    .options=${[
+                        { label: msg("2048 bits"), value: 2048 },
+                        { label: msg("3072 bits"), value: 3072 },
+                        { label: msg("4096 bits"), value: 4096, default: true },
+                    ]}
+                >
+                </ak-radio>
+                <p class="pf-c-form__helper-text">${msg("Size of the RSA private key.")}</p>
+            </ak-form-element-horizontal>`;
+        }
+
+        if (this.alg === AlgEnum.Ecdsa) {
+            return html`<ak-form-element-horizontal label=${msg("Curve")} required name="keySize">
+                <ak-radio
+                    .options=${[
+                        { label: msg("P-256"), value: 256, default: true },
+                        { label: msg("P-384"), value: 384 },
+                        { label: msg("P-521"), value: 521 },
+                    ]}
+                >
+                </ak-radio>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Elliptic curve used to generate the ECDSA private key.")}
+                </p>
+            </ak-form-element-horizontal>`;
+        }
+
+        return nothing;
     }
 }
 

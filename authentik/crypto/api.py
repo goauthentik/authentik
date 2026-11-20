@@ -37,6 +37,7 @@ from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import UserTypes
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.builder import (
+    KEY_SIZES,
     CertificateBuilder,
     KeyAlgorithmUnavailableError,
     PrivateKeyAlg,
@@ -165,6 +166,34 @@ class CertificateGenerationSerializer(PassiveSerializer):
     subject_alt_name = CharField(required=False, allow_blank=True, label=_("Subject-alt name"))
     validity_days = IntegerField(initial=365)
     alg = ChoiceField(default=PrivateKeyAlg.RSA, choices=PrivateKeyAlg.choices)
+    key_size = IntegerField(
+        required=False,
+        allow_null=True,
+        help_text=_(
+            "Size of the private key in bits. Supported for RSA (2048, 3072, 4096) and ECDSA "
+            "(256, 384, 521, selecting the curve), defaults to 4096 for RSA and 256 for ECDSA. "
+            "All other algorithms have a fixed key size."
+        ),
+    )
+
+    def validate(self, attrs: dict) -> dict:
+        key_size = attrs.get("key_size")
+        if key_size is None:
+            return attrs
+        sizes = KEY_SIZES.get(PrivateKeyAlg(attrs["alg"]))
+        if sizes is None:
+            raise ValidationError(
+                {"key_size": _("The key size can't be selected for this algorithm.")}
+            )
+        if key_size not in sizes:
+            raise ValidationError(
+                {
+                    "key_size": _("Invalid key size, supported sizes: {sizes}.").format(
+                        sizes=", ".join(str(size) for size in sorted(sizes))
+                    )
+                }
+            )
+        return attrs
 
 
 class CertificateKeyPairFilter(FilterSet):
@@ -250,6 +279,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         sans = raw_san.split(",") if raw_san != "" else []
         builder = CertificateBuilder(body.validated_data["name"])
         builder.alg = body.validated_data["alg"]
+        builder.key_size = body.validated_data.get("key_size")
         try:
             builder.build(
                 subject_alt_names=sans,
