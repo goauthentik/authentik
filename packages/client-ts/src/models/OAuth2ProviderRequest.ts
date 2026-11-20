@@ -103,6 +103,12 @@ export interface OAuth2ProviderRequest {
      * Configure how the issuer field of the ID Token should be filled.
      */
     issuerMode?: IssuerModeEnum;
+    /**
+     * Include the issuer identifier as the iss parameter in authorization responses (RFC 9207), so
+     * that clients can detect mix-up attacks. The issuer must be identical regardless of the URL
+     * authentik is accessed with.
+     */
+    includeIssuerInAuthorizationResponse?: boolean;
     jwtFederationSources?: Array<string>;
     jwtFederationProviders?: Array<number>;
 }
@@ -199,6 +205,10 @@ export function OAuth2ProviderRequestFromJSONTyped(
         subMode: json["sub_mode"] == null ? undefined : SubModeEnumFromJSON(json["sub_mode"]),
         issuerMode:
             json["issuer_mode"] == null ? undefined : IssuerModeEnumFromJSON(json["issuer_mode"]),
+        includeIssuerInAuthorizationResponse:
+            json["include_issuer_in_authorization_response"] == null
+                ? undefined
+                : json["include_issuer_in_authorization_response"],
         jwtFederationSources:
             json["jwt_federation_sources"] == null ? undefined : json["jwt_federation_sources"],
         jwtFederationProviders:
@@ -243,6 +253,7 @@ export function OAuth2ProviderRequestToJSONTyped(
         logout_method: OAuth2ProviderLogoutMethodEnumToJSON(value["logoutMethod"]),
         sub_mode: SubModeEnumToJSON(value["subMode"]),
         issuer_mode: IssuerModeEnumToJSON(value["issuerMode"]),
+        include_issuer_in_authorization_response: value["includeIssuerInAuthorizationResponse"],
         jwt_federation_sources: value["jwtFederationSources"],
         jwt_federation_providers: value["jwtFederationProviders"],
     };
