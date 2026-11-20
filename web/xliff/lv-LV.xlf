@@ -13767,6 +13767,1135 @@ Piesaistes grupām/lietotājiem salīdzina ar notikuma lietotāju.</target>
   <source>Remove entry</source>
   <target>Noņemt ierakstu</target>
 </trans-unit>
+<trans-unit id="sa3b6915ea75108da">
+  <source>Custom permissions</source>
+  <target>Pielāgotas atļaujas</target>
+</trans-unit>
+<trans-unit id="s485485e456e22baa">
+  <source>Let custom permission checks override access control decisions made by authentik.</source>
+  <target>Ļaut pielāgotām atļauju pārbaudēm pārrakstīt authentik pieejas kontroles lēmumus.</target>
+</trans-unit>
+<trans-unit id="applications.verbose-name.label">
+  <source>Application</source>
+  <target>Lietotne</target>
+</trans-unit>
+<trans-unit id="applications.verbose-name-plural.label">
+  <source>Applications</source>
+  <target>Lietotnes</target>
+</trans-unit>
+<trans-unit id="application-entitlements.verbose-name.label">
+  <source>Application entitlement</source>
+  <target>Lietotnes tiesība</target>
+</trans-unit>
+<trans-unit id="application-entitlements.verbose-name-plural.label">
+  <source>Application entitlements</source>
+  <target>Lietotnes tiesības</target>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.outpost.description">
+  <source>This provider must be assigned to an outpost before users can access the application.</source>
+  <target>Pakalpojuma sniedzējs ir jāpiešķir satelītservisam, pirms lietotāji var piekļūt lietotnei.</target>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.view-provider.label">
+  <source>View Provider</source>
+  <target>Skatīt pakalpojuma sniedzēju</target>
+</trans-unit>
+<trans-unit id="application.wizard.next-steps.outposts.label">
+  <source>Go to Outposts</source>
+  <target>Doties uz satelītservisiem</target>
+</trans-unit>
+<trans-unit id="blueprints.verbose-name.label">
+  <source>Blueprint</source>
+  <target>Plāns</target>
+</trans-unit>
+<trans-unit id="blueprints.verbose-name-plural.label">
+  <source>Blueprints</source>
+  <target>Plāni</target>
+</trans-unit>
+<trans-unit id="s97cc54c7d1813837">
+  <source>OCI manifest</source>
+  <target>OCI manifests</target>
+</trans-unit>
+<trans-unit id="brands.verbose-name.label">
+  <source>Brand</source>
+  <target>Zīmols</target>
+</trans-unit>
+<trans-unit id="brands.verbose-name-plural.label">
+  <source>Brands</source>
+  <target>Zīmoli</target>
+</trans-unit>
+<trans-unit id="certificate-key-pairs.verbose-name.label">
+  <source>Certificate-Key Pair</source>
+  <target>Sertifikāta un atslēgas pāris</target>
+</trans-unit>
+<trans-unit id="certificate-key-pairs.verbose-name-plural.label">
+  <source>Certificate-Key Pairs</source>
+  <target>Sertifikātu un atslēgu pāri</target>
+</trans-unit>
+<trans-unit id="s6ad8e2906d8a7153">
+  <source>Successfully updated Microsoft Intune connector.</source>
+  <target>Microsoft Intune savienotājs veiksmīgi atjaunināts.</target>
+</trans-unit>
+<trans-unit id="scb7bb1ca1fa8bd20">
+  <source>Successfully created Microsoft Intune connector.</source>
+  <target>Microsoft Intune savienotājs veiksmīgi izveidots.</target>
+</trans-unit>
+<trans-unit id="s7b847d8e57e7e115">
+  <source>Microsoft Intune settings</source>
+  <target>Microsoft Intune iestatījumi</target>
+</trans-unit>
+<trans-unit id="sa95334c5ec254a2c">
+  <source>ID of the tenant.</source>
+  <target>Nomnieka ID.</target>
+</trans-unit>
+<trans-unit id="s42c83d9f0cb85542">
+  <source>Certificate authorities which issue device certificates via Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage to validate certificates. If none are selected, the client certificates configured on the brand are used.</source>
+  <target>Sertifikācijas iestādes, kas izsniedz ierīču sertifikātus, izmantojot Intune (Cloud PKI, SCEP vai PKCS profilus). Galapunkta posms tās izmanto sertifikātu pārbaudei. Ja nav atlasīta neviena, tiek izmantoti zīmolā konfigurētie klientu sertifikāti.</target>
+</trans-unit>
+<trans-unit id="device-access-groups.verbose-name.label">
+  <source>Device Group</source>
+  <target>Ierīču piekļuves grupa</target>
+</trans-unit>
+<trans-unit id="device-access-groups.verbose-name-plural.label">
+  <source>Device Groups</source>
+  <target>Ierīču piekļuves grupas</target>
+</trans-unit>
+<trans-unit id="endpoint-devices.verbose-name.label">
+  <source>Endpoint Device</source>
+  <target>Galapunkta ierīce</target>
+</trans-unit>
+<trans-unit id="endpoint-devices.verbose-name-plural.label">
+  <source>Endpoint Devices</source>
+  <target>Galapunkta ierīces</target>
+</trans-unit>
+<trans-unit id="enterprise-licenses.verbose-name.label">
+  <source>License</source>
+  <target>Licence</target>
+</trans-unit>
+<trans-unit id="enterprise-licenses.verbose-name-plural.label">
+  <source>Licenses</source>
+  <target>Licences</target>
+</trans-unit>
+<trans-unit id="data-exports.verbose-name.label">
+  <source>Data export</source>
+  <target>Datu eksports</target>
+</trans-unit>
+<trans-unit id="data-exports.verbose-name-plural.label">
+  <source>Data exports</source>
+  <target>Datu eksporti</target>
+</trans-unit>
+<trans-unit id="notification-rules.verbose-name.label">
+  <source>Notification rule</source>
+  <target>Paziņojumu kārtula</target>
+</trans-unit>
+<trans-unit id="notification-rules.verbose-name-plural.label">
+  <source>Notification rules</source>
+  <target>Paziņojumu kārtulas</target>
+</trans-unit>
+<trans-unit id="s84eec986af7ea820">
+  <source>These bindings control upon which events this rule triggers.
+                Bindings to groups/users are checked against the user of the event.</source>
+  <target>Šīs piesaistes nosaka, kuri notikumi aktivizē šo kārtulu.
+Piesaistes grupām/lietotājiem salīdzina ar notikuma lietotāju.</target>
+</trans-unit>
+<trans-unit id="notification-transports.verbose-name.label">
+  <source>Notification transport</source>
+  <target>Paziņojumu kanāls</target>
+</trans-unit>
+<trans-unit id="notification-transports.verbose-name-plural.label">
+  <source>Notification transports</source>
+  <target>Paziņojumu kanāli</target>
+</trans-unit>
+<trans-unit id="files.verbose-name.label">
+  <source>File</source>
+  <target>Fails</target>
+</trans-unit>
+<trans-unit id="files.verbose-name-plural.label">
+  <source>Files</source>
+  <target>Faili</target>
+</trans-unit>
+<trans-unit id="stage-bindings.verbose-name.label">
+  <source>Stage binding</source>
+  <target>Posma piesaiste</target>
+</trans-unit>
+<trans-unit id="stage-bindings.verbose-name-plural.label">
+  <source>Stage bindings</source>
+  <target>Posmu piesaistes</target>
+</trans-unit>
+<trans-unit id="flows.verbose-name.label">
+  <source>Flow</source>
+  <target>Plūsma</target>
+</trans-unit>
+<trans-unit id="flows.verbose-name-plural.label">
+  <source>Flows</source>
+  <target>Plūsmas</target>
+</trans-unit>
+<trans-unit id="groups.verbose-name.label">
+  <source>Group</source>
+  <target>Grupa</target>
+</trans-unit>
+<trans-unit id="groups.verbose-name-plural.label">
+  <source>Groups</source>
+  <target>Grupas</target>
+</trans-unit>
+<trans-unit id="users.verbose-name.label">
+  <source>User</source>
+  <target>Lietotājs</target>
+</trans-unit>
+<trans-unit id="users.verbose-name-plural.label">
+  <source>Users</source>
+  <target>Lietotāji</target>
+</trans-unit>
+<trans-unit id="lifecycle-rules.verbose-name.label">
+  <source>Lifecycle rule</source>
+  <target>Dzīves cikla kārtula</target>
+</trans-unit>
+<trans-unit id="lifecycle-rules.verbose-name-plural.label">
+  <source>Lifecycle rules</source>
+  <target>Dzīves cikla kārtulas</target>
+</trans-unit>
+<trans-unit id="offboarding.verbose-name.label">
+  <source>Offboarding</source>
+  <target>Lietotāja izslēgšana</target>
+</trans-unit>
+<trans-unit id="offboarding.verbose-name-plural.label">
+  <source>Offboardings</source>
+  <target>Lietotāju izslēgšanas</target>
+</trans-unit>
+<trans-unit id="object-attributes.verbose-name.label">
+  <source>Object Attribute</source>
+  <target>Objekta atribūts</target>
+</trans-unit>
+<trans-unit id="object-attributes.verbose-name-plural.label">
+  <source>Object Attributes</source>
+  <target>Objektu atribūti</target>
+</trans-unit>
+<trans-unit id="outposts.verbose-name.label">
+  <source>Outpost</source>
+  <target>Satelītserviss</target>
+</trans-unit>
+<trans-unit id="outposts.verbose-name-plural.label">
+  <source>Outposts</source>
+  <target>Satelītservisi</target>
+</trans-unit>
+<trans-unit id="outpost-integrations.verbose-name.label">
+  <source>Outpost integration</source>
+  <target>Satelītservisa integrācija</target>
+</trans-unit>
+<trans-unit id="outpost-integrations.verbose-name-plural.label">
+  <source>Outpost integrations</source>
+  <target>Satelītservisu integrācijas</target>
+</trans-unit>
+<trans-unit id="policy-bindings.verbose-name.label">
+  <source>Policy binding</source>
+  <target>Politikas piesaiste</target>
+</trans-unit>
+<trans-unit id="policy-bindings.verbose-name-plural.label">
+  <source>Policy bindings</source>
+  <target>Politiku piesaistes</target>
+</trans-unit>
+<trans-unit id="policies.bindings.mode.label">
+  <source>Mode</source>
+  <target>Režīms</target>
+</trans-unit>
+<trans-unit id="policies.bindings.dry-run.view-results.label">
+  <source>View dry-run results</source>
+  <target>Skatīt izmēģinājuma režīma rezultātus</target>
+</trans-unit>
+<trans-unit id="policies.bindings.enforced.label">
+  <source>Enforced</source>
+  <target>Piemērots</target>
+</trans-unit>
+<trans-unit id="policies.verbose-name.label">
+  <source>Policy</source>
+  <target>Politika</target>
+</trans-unit>
+<trans-unit id="policies.verbose-name-plural.label">
+  <source>Policies</source>
+  <target>Politikas</target>
+</trans-unit>
+<trans-unit id="policies.bindings.dry-run.description">
+  <source>Evaluate this binding without including its result or messages in the final decision.
+            Results are recorded in the <x id="0" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;events/log&quot;)}&quot;&gt;"/>Event Log<x id="1" equiv-text="&lt;/a&gt;"/>.
+            Expression policies can still make network requests, create events, or modify data.</source>
+  <target>Novērtēt šo piesaisti, neiekļaujot tās rezultātu vai ziņojumus galīgajā lēmumā.
+            Rezultāti tiek ierakstīti <x id="0" equiv-text="&lt;a href=&quot;${toAdminInterface(&quot;events/log&quot;)}&quot;&gt;"/>Notikumu žurnālā<x id="1" equiv-text="&lt;/a&gt;"/>.
+            Izteiksmju politikas joprojām var veikt tīkla pieprasījumus, izveidot notikumus vai mainīt datus.</target>
+</trans-unit>
+<trans-unit id="policy-bindings.label">
+  <source>Policy bindings</source>
+  <target>Politiku piesaistes</target>
+</trans-unit>
+<trans-unit id="reputation-scores.verbose-name.label">
+  <source>Reputation score</source>
+  <target>Reputācijas rādītājs</target>
+</trans-unit>
+<trans-unit id="reputation-scores.verbose-name-plural.label">
+  <source>Reputation scores</source>
+  <target>Reputācijas rādītāji</target>
+</trans-unit>
+<trans-unit id="property-mappings.verbose-name.label">
+  <source>Property Mapping</source>
+  <target>Rekvizītu kartējums</target>
+</trans-unit>
+<trans-unit id="property-mappings.verbose-name-plural.label">
+  <source>Property Mappings</source>
+  <target>Rekvizītu kartējumi</target>
+</trans-unit>
+<trans-unit id="google-workspace.groups.verbose-name.label">
+  <source>Google Workspace Group</source>
+  <target>Google Workspace grupa</target>
+</trans-unit>
+<trans-unit id="google-workspace.groups.verbose-name-plural.label">
+  <source>Google Workspace Groups</source>
+  <target>Google Workspace grupas</target>
+</trans-unit>
+<trans-unit id="google-workspace.users.verbose-name.label">
+  <source>Google Workspace User</source>
+  <target>Google Workspace lietotājs</target>
+</trans-unit>
+<trans-unit id="google-workspace.users.verbose-name-plural.label">
+  <source>Google Workspace Users</source>
+  <target>Google Workspace lietotāji</target>
+</trans-unit>
+<trans-unit id="microsoft-entra.groups.verbose-name.label">
+  <source>Microsoft Entra Group</source>
+  <target>Microsoft Entra grupa</target>
+</trans-unit>
+<trans-unit id="microsoft-entra.groups.verbose-name-plural.label">
+  <source>Microsoft Entra Groups</source>
+  <target>Microsoft Entra grupas</target>
+</trans-unit>
+<trans-unit id="microsoft-entra.users.verbose-name.label">
+  <source>Microsoft Entra User</source>
+  <target>Microsoft Entra lietotājs</target>
+</trans-unit>
+<trans-unit id="microsoft-entra.users.verbose-name-plural.label">
+  <source>Microsoft Entra Users</source>
+  <target>Microsoft Entra lietotāji</target>
+</trans-unit>
+<trans-unit id="providers.verbose-name.label">
+  <source>Provider</source>
+  <target>Pakalpojuma sniedzējs</target>
+</trans-unit>
+<trans-unit id="providers.verbose-name-plural.label">
+  <source>Providers</source>
+  <target>Pakalpojuma sniedzēji</target>
+</trans-unit>
+<trans-unit id="see7e5431ccf76ccc">
+  <source>Unspecified</source>
+  <target>Nenoteikts</target>
+</trans-unit>
+<trans-unit id="scim.groups.verbose-name.label">
+  <source>SCIM Group</source>
+  <target>SCIM grupa</target>
+</trans-unit>
+<trans-unit id="scim.groups.verbose-name-plural.label">
+  <source>SCIM Groups</source>
+  <target>SCIM grupas</target>
+</trans-unit>
+<trans-unit id="scim.users.verbose-name.label">
+  <source>SCIM User</source>
+  <target>SCIM lietotājs</target>
+</trans-unit>
+<trans-unit id="scim.users.verbose-name-plural.label">
+  <source>SCIM Users</source>
+  <target>SCIM lietotāji</target>
+</trans-unit>
+<trans-unit id="ssf.streams.verbose-name.label">
+  <source>Stream</source>
+  <target>Straume</target>
+</trans-unit>
+<trans-unit id="ssf.streams.verbose-name-plural.label">
+  <source>Streams</source>
+  <target>Straumes</target>
+</trans-unit>
+<trans-unit id="s86d385ff812dfced">
+  <source>Custom Permission</source>
+  <target>Pielāgota atļauja</target>
+</trans-unit>
+<trans-unit id="s47694f288124407a">
+  <source>Custom Permissions</source>
+  <target>Pielāgotas atļaujas</target>
+</trans-unit>
+<trans-unit id="sbbeccfb40931d00d">
+  <source>Successfully updated custom permission.</source>
+  <target>Pielāgota atļauja veiksmīgi atjaunināta.</target>
+</trans-unit>
+<trans-unit id="s2f7d64e86c256034">
+  <source>Successfully created custom permission.</source>
+  <target>Pielāgota atļauja veiksmīgi izveidota.</target>
+</trans-unit>
+<trans-unit id="s149e4dae7751f5a6">
+  <source>Search for a model...</source>
+  <target>Meklēt modeli...</target>
+</trans-unit>
+<trans-unit id="h7caeadd948c6500e">
+  <source>The model the permission applies to. Use
+                            <x id="0" equiv-text="&lt;code&gt;"/>authentik_rbac.systempermission<x id="1" equiv-text="&lt;/code&gt;"/> for permissions about
+                            authentik as a whole. It cannot be changed later.</source>
+  <target>Modelis, uz kuru attiecas atļauja. Atļaujām, kas attiecas uz authentik kopumā, izmantojiet <x id="0" equiv-text="&lt;code&gt;"/>authentik_rbac.systempermission<x id="1" equiv-text="&lt;/code&gt;"/>. To vēlāk nevar mainīt.</target>
+</trans-unit>
+<trans-unit id="se74c2ff960282baf">
+  <source>Codename</source>
+  <target>Kodnosaukums</target>
+</trans-unit>
+<trans-unit id="hfb6ea4f521187709">
+  <source>Starts with <x id="0" equiv-text="&lt;code&gt;"/>custom_<x id="1" equiv-text="&lt;/code&gt;"/>, followed by lowercase letters, digits
+                            and underscores. It cannot be changed later.</source>
+  <target>Sākas ar <x id="0" equiv-text="&lt;code&gt;"/>custom_<x id="1" equiv-text="&lt;/code&gt;"/>, aiz kura seko mazie burti, cipari un apakšsvītras. To vēlāk nevar mainīt.</target>
+</trans-unit>
+<trans-unit id="custom-permissions.verbose-name.label">
+  <source>Custom Permission</source>
+  <target>Pielāgota atļauja</target>
+</trans-unit>
+<trans-unit id="custom-permissions.verbose-name-plural.label">
+  <source>Custom Permissions</source>
+  <target>Pielāgotas atļaujas</target>
+</trans-unit>
+<trans-unit id="sd171577d6e81af69">
+  <source>Search for custom permissions...</source>
+  <target>Meklēt pielāgotās atļaujas...</target>
+</trans-unit>
+<trans-unit id="s949ee709acee8fde">
+  <source>Create a custom permission to get started.</source>
+  <target>Lai sāktu, izveidojiet pielāgotu atļauju.</target>
+</trans-unit>
+<trans-unit id="sb211e62f2c69d795">
+  <source>Define your own permissions on models, assign them to roles, and test them in permission checks.</source>
+  <target>Definējiet savas atļaujas modeļiem, piešķiriet tās lomām un pārbaudiet tās atļauju pārbaudēs.</target>
+</trans-unit>
+<trans-unit id="initial-permissions.verbose-name.label">
+  <source>Initial Permissions</source>
+  <target>Sākotnējās atļaujas</target>
+</trans-unit>
+<trans-unit id="initial-permissions.verbose-name-plural.label">
+  <source>Initial Permissions</source>
+  <target>Sākotnējās atļaujas</target>
+</trans-unit>
+<trans-unit id="s8327938fa76b5c7a">
+  <source>Paths started with fields it lacks: <x id="0" equiv-text="${unknownFields.join(&quot;, &quot;)}"/></source>
+  <target>Ceļi, kas sākas ar laukiem, kurus tam nav: <x id="0" equiv-text="${unknownFields.join(&quot;, &quot;)}"/></target>
+</trans-unit>
+<trans-unit id="sb497ab0f5338b526">
+  <source>Permission Check</source>
+  <target>Atļauju pārbaude</target>
+</trans-unit>
+<trans-unit id="s166d000a695c1f6f">
+  <source>Permission Checks</source>
+  <target>Atļauju pārbaudes</target>
+</trans-unit>
+<trans-unit id="sda9f3bb440258a0c">
+  <source>Successfully updated permission check.</source>
+  <target>Atļauju pārbaude veiksmīgi atjaunināta.</target>
+</trans-unit>
+<trans-unit id="s5f84c961b35b071f">
+  <source>Successfully created permission check.</source>
+  <target>Atļauju pārbaude veiksmīgi izveidota.</target>
+</trans-unit>
+<trans-unit id="s8465a2caa2d9ea5d">
+  <source>Endpoints</source>
+  <target>Galapunkti</target>
+</trans-unit>
+<trans-unit id="se275ef18f06cf8eb">
+  <source>Bound</source>
+  <target>Piesaistīts</target>
+</trans-unit>
+<trans-unit id="sdf9e135bb3078b00">
+  <source>API endpoints this check decides on, like core/users:list. An endpoint can be bound to one check only.</source>
+  <target>API galapunkti, par kuriem šī pārbaude lemj, piemēram, core/users:list. Galapunktu var piesaistīt tikai vienai pārbaudei.</target>
+</trans-unit>
+<trans-unit id="sff5458d09ac165ce">
+  <source>Python code defining permission checks.</source>
+  <target>Python kods, kas definē atļauju pārbaudes.</target>
+</trans-unit>
+<trans-unit id="s6a146a1e841d3203">
+  <source>See examples in the documentation.</source>
+  <target>Piemērus skatiet dokumentācijā.</target>
+</trans-unit>
+<trans-unit id="permission-checks.verbose-name.label">
+  <source>Permission Check</source>
+  <target>Atļauju pārbaude</target>
+</trans-unit>
+<trans-unit id="permission-checks.verbose-name-plural.label">
+  <source>Permission Checks</source>
+  <target>Atļauju pārbaudes</target>
+</trans-unit>
+<trans-unit id="sf3b9adc4507c57bc">
+  <source>Search for permission checks...</source>
+  <target>Meklēt atļauju pārbaudes...</target>
+</trans-unit>
+<trans-unit id="sf1355416c3efc50b">
+  <source>Create a permission check to get started.</source>
+  <target>Lai sāktu, izveidojiet atļauju pārbaudi.</target>
+</trans-unit>
+<trans-unit id="scaa8455fd5a8fe97">
+  <source>Python code that has the final say on access to API endpoints.</source>
+  <target>Python kods, kas galīgi izlemj par piekļuvi API galapunktiem.</target>
+</trans-unit>
+<trans-unit id="s4c7b85c8ef6f0fc5">
+  <source>No longer exists</source>
+  <target>Vairs nepastāv</target>
+</trans-unit>
+<trans-unit id="permissions.verbose-name.label">
+  <source>Permission</source>
+  <target>Atļauja</target>
+</trans-unit>
+<trans-unit id="permissions.verbose-name-plural.label">
+  <source>Permissions</source>
+  <target>Atļaujas</target>
+</trans-unit>
+<trans-unit id="request-rule-bindings.verbose-name.label">
+  <source>Request rule binding</source>
+  <target>Pieprasījumu kārtulas piesaiste</target>
+</trans-unit>
+<trans-unit id="request-rule-bindings.verbose-name-plural.label">
+  <source>Request rule bindings</source>
+  <target>Pieprasījumu kārtulu piesaistes</target>
+</trans-unit>
+<trans-unit id="request-rules.bindings.column.entitlements">
+  <source>Entitlements</source>
+  <target>Tiesības</target>
+</trans-unit>
+<trans-unit id="s5307a13bc1e6634c">
+  <source>These bindings control which users or groups can request access to this object.</source>
+  <target>Šīs piesaistes nosaka, kuri lietotāji vai grupas var pieprasīt piekļuvi šim objektam.</target>
+</trans-unit>
+<trans-unit id="request-rules.verbose-name.label">
+  <source>Request rule</source>
+  <target>Pieprasījumu kārtula</target>
+</trans-unit>
+<trans-unit id="request-rules.verbose-name-plural.label">
+  <source>Request rules</source>
+  <target>Pieprasījumu kārtulas</target>
+</trans-unit>
+<trans-unit id="roles.verbose-name.label">
+  <source>Role</source>
+  <target>Loma</target>
+</trans-unit>
+<trans-unit id="roles.verbose-name-plural.label">
+  <source>Roles</source>
+  <target>Lomas</target>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.label">
+  <source>Show on login page</source>
+  <target>Rādīt pieteikšanās lapā</target>
+</trans-unit>
+<trans-unit id="ldap.groups.verbose-name.label">
+  <source>LDAP Group</source>
+  <target>LDAP grupa</target>
+</trans-unit>
+<trans-unit id="ldap.groups.verbose-name-plural.label">
+  <source>LDAP Groups</source>
+  <target>LDAP grupas</target>
+</trans-unit>
+<trans-unit id="ldap.users.verbose-name.label">
+  <source>LDAP User</source>
+  <target>LDAP lietotājs</target>
+</trans-unit>
+<trans-unit id="ldap.users.verbose-name-plural.label">
+  <source>LDAP Users</source>
+  <target>LDAP lietotāji</target>
+</trans-unit>
+<trans-unit id="sources.verbose-name.label">
+  <source>Source</source>
+  <target>Avots</target>
+</trans-unit>
+<trans-unit id="sources.verbose-name-plural.label">
+  <source>Sources</source>
+  <target>Avoti</target>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.stage.flows.description">
+  <source>Used in: <x id="0" equiv-text="${flows}"/></source>
+  <target>Izmantots: <x id="0" equiv-text="${flows}"/></target>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.stage.unbound.description">
+  <source>Not bound to any flow</source>
+  <target>Nav piesaistīts nevienai plūsmai</target>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.description">
+  <source>Add this source to an Identification stage if you want it displayed on the login page. Otherwise, you can skip this step.</source>
+  <target>Pievienojiet šo avotu identifikācijas posmam, ja vēlaties, lai tas tiktu rādīts pieteikšanās lapā. Pretējā gadījumā šo soli varat izlaist.</target>
+</trans-unit>
+<trans-unit id="source.wizard.login-stages.empty">
+  <source>No identification stages exist yet.</source>
+  <target>Identifikācijas posmu vēl nav.</target>
+</trans-unit>
+<trans-unit id="invitations.verbose-name.label">
+  <source>Invitation</source>
+  <target>Ielūgums</target>
+</trans-unit>
+<trans-unit id="invitations.verbose-name-plural.label">
+  <source>Invitations</source>
+  <target>Ielūgumi</target>
+</trans-unit>
+<trans-unit id="password-stage.lockout-threshold.label">
+  <source>Failed attempts before lockout</source>
+  <target>Neizdevušos mēģinājumu skaits pirms bloķēšanas</target>
+</trans-unit>
+<trans-unit id="password-stage.lockout-threshold.enterprise.description">
+  <source>Password lockout requires an Enterprise license.</source>
+  <target>Paroles bloķēšanai nepieciešama Enterprise licence.</target>
+</trans-unit>
+<trans-unit id="password-stage.lockout-threshold.description">
+  <source>Lock password login after this many consecutive failed attempts, until an administrator unlocks it. LDAP users are exempt while any LDAP source is enabled; Kerberos users are exempt when linked to an enabled source. The corresponding backend must be selected. Set to 0 to never lock.</source>
+  <target>Bloķēt paroles pieteikšanos pēc šāda neveiksmīgu mēģinājumu skaita pēc kārtas, līdz administrators to atbloķē. LDAP lietotāji ir izslēgti, kamēr ir iespējots kāds LDAP avots; Kerberos lietotāji ir izslēgti, ja ir saistīti ar iespējotu avotu. Jāizvēlas atbilstošā aizmugurējā sistēma. Iestatiet 0, lai nekad nebloķētu.</target>
+</trans-unit>
+<trans-unit id="password-stage.last-attempt-warning-message.label">
+  <source>Last-attempt warning message</source>
+  <target>Brīdinājuma ziņojums par pēdējo mēģinājumu</target>
+</trans-unit>
+<trans-unit id="password-stage.last-attempt-warning-message.description">
+  <source>Warning shown when the user has one password attempt remaining. Leave blank to show no warning.</source>
+  <target>Brīdinājums, kas tiek rādīts, ja lietotājam ir atlicis viens paroles mēģinājums. Atstājiet tukšu, ja brīdinājums nav vajadzīgs.</target>
+</trans-unit>
+<trans-unit id="password-stage.lockout-message.label">
+  <source>Lockout message</source>
+  <target>Bloķēšanas ziņojums</target>
+</trans-unit>
+<trans-unit id="password-stage.lockout-message.description">
+  <source>Message shown when the user's password has been locked. Leave blank to show a generic authentication error.</source>
+  <target>Ziņojums, kas tiek rādīts, ja lietotāja parole ir bloķēta. Atstājiet tukšu, lai rādītu vispārīgu autentifikācijas kļūdu.</target>
+</trans-unit>
+<trans-unit id="stages.password.backends.description">
+  <source>Validate the user's password against the selected backends.</source>
+  <target>Pārbaudīt lietotāja paroli ar izvēlētajām aizmugurējām sistēmām.</target>
+</trans-unit>
+<trans-unit id="password-stage.failed-attempts-before-cancel.description">
+  <source>How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.</source>
+  <target>Cik mēģinājumu lietotājam ir, pirms plūsma tiek atcelta. Tas atceļ tikai plūsmu, lietotāja parole netiek bloķēta.</target>
+</trans-unit>
+<trans-unit id="prompts.verbose-name.label">
+  <source>Prompt</source>
+  <target>Uzvedne</target>
+</trans-unit>
+<trans-unit id="prompts.verbose-name-plural.label">
+  <source>Prompts</source>
+  <target>Uzvednes</target>
+</trans-unit>
+<trans-unit id="stages.verbose-name.label">
+  <source>Stage</source>
+  <target>Posms</target>
+</trans-unit>
+<trans-unit id="stages.verbose-name-plural.label">
+  <source>Stages</source>
+  <target>Posmi</target>
+</trans-unit>
+<trans-unit id="stage.list.unbound.label">
+  <source>Not bound to any flow</source>
+  <target>Nav piesaistīts nevienai plūsmai</target>
+</trans-unit>
+<trans-unit id="tokens.verbose-name.label">
+  <source>Token</source>
+  <target>Marķieris</target>
+</trans-unit>
+<trans-unit id="tokens.verbose-name-plural.label">
+  <source>Tokens</source>
+  <target>Marķieri</target>
+</trans-unit>
+<trans-unit id="users.add-to-groups.superuser.warning">
+  <source>Warning: Adding the user to the selected groups will give them superuser permissions.</source>
+  <target>Brīdinājums: lietotāja pievienošana atlasītajām grupām piešķirs viņam superlietotāja tiesības.</target>
+</trans-unit>
+<trans-unit id="user.entitlements.empty.label">
+  <source>No application entitlements.</source>
+  <target>Nav lietotņu tiesību.</target>
+</trans-unit>
+<trans-unit id="user.entitlements.empty.description">
+  <source>This user has not been granted any application entitlements.</source>
+  <target>Šim lietotājam nav piešķirta neviena lietotņu tiesība.</target>
+</trans-unit>
+<trans-unit id="user-required-actions.card.title">
+  <source>Required actions</source>
+  <target>Obligātās darbības</target>
+</trans-unit>
+<trans-unit id="user-required-actions.card.description">
+  <source>The user must complete these flows in order before they can continue. Changes apply on their next request.</source>
+  <target>Lietotājam šīs plūsmas jāpabeidz noteiktā secībā, pirms viņš var turpināt. Izmaiņas stājas spēkā ar nākamo pieprasījumu.</target>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.label">
+  <source>Unlock password login</source>
+  <target>Atbloķēt paroles pieteikšanos</target>
+</trans-unit>
+<trans-unit id="user.action.password-lock.label">
+  <source>Lock password login</source>
+  <target>Bloķēt paroles pieteikšanos</target>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.pending">
+  <source>Unlocking password login...</source>
+  <target>Notiek paroles pieteikšanās atbloķēšana...</target>
+</trans-unit>
+<trans-unit id="user.action.password-lock.pending">
+  <source>Locking password login...</source>
+  <target>Notiek paroles pieteikšanās bloķēšana...</target>
+</trans-unit>
+<trans-unit id="user.action.password-unlock.success">
+  <source>Password login unlocked</source>
+  <target>Paroles pieteikšanās atbloķēta</target>
+</trans-unit>
+<trans-unit id="user.action.password-lock.success">
+  <source>Password login locked</source>
+  <target>Paroles pieteikšanās bloķēta</target>
+</trans-unit>
+<trans-unit id="user.action.password-unlock-review.label">
+  <source>Review password unlock</source>
+  <target>Pārskatīt paroles atbloķēšanu</target>
+</trans-unit>
+<trans-unit id="user.action.password-lock-review.label">
+  <source>Review password lock</source>
+  <target>Pārskatīt paroles bloķēšanu</target>
+</trans-unit>
+<trans-unit id="user.display.unknown.label">
+  <source>Unknown user</source>
+  <target>Nezināms lietotājs</target>
+</trans-unit>
+<trans-unit id="user.action.password-unlock-confirm.description">
+  <source>Allow <x id="0" equiv-text="${displayName}"/> to authenticate with a password again?</source>
+  <target>Vai atļaut <x id="0" equiv-text="${displayName}"/> atkal autentificēties ar paroli?</target>
+</trans-unit>
+<trans-unit id="user.action.password-lock-confirm.description">
+  <source>Prevent <x id="0" equiv-text="${displayName}"/> from authenticating through password stages, including with app passwords? Existing sessions and passwordless authentication are not affected.</source>
+  <target>Vai liegt <x id="0" equiv-text="${displayName}"/> autentificēties, izmantojot paroles posmus, tostarp ar lietotņu parolēm? Esošās sesijas un autentificēšanās bez paroles netiek ietekmētas.</target>
+</trans-unit>
+<trans-unit id="user-required-actions.column.flow.label">
+  <source>Flow</source>
+  <target>Plūsma</target>
+</trans-unit>
+<trans-unit id="user-required-actions.column.slug.label">
+  <source>Slug</source>
+  <target>Īsvārds</target>
+</trans-unit>
+<trans-unit id="user-required-actions.column.actions.label">
+  <source>Actions</source>
+  <target>Darbības</target>
+</trans-unit>
+<trans-unit id="user-required-actions.select.placeholder">
+  <source>Select a flow...</source>
+  <target>Atlasiet plūsmu...</target>
+</trans-unit>
+<trans-unit id="user-required-actions.add.label">
+  <source>Add</source>
+  <target>Pievienot</target>
+</trans-unit>
+<trans-unit id="user-required-actions.remove.label">
+  <source>Remove</source>
+  <target>Noņemt</target>
+</trans-unit>
+<trans-unit id="events.authenticator-locked.label">
+  <source>Authenticator locked</source>
+  <target>Autentifikators bloķēts</target>
+</trans-unit>
+<trans-unit id="events.authenticator-unlocked.label">
+  <source>Authenticator unlocked</source>
+  <target>Autentifikators atbloķēts</target>
+</trans-unit>
+<trans-unit id="events.action.required-action-completed.label">
+  <source>Required action completed</source>
+  <target>Obligātā darbība pabeigta</target>
+</trans-unit>
+<trans-unit id="policies.bindings.dry-run.label">
+  <source>Dry-run</source>
+  <target>Izmēģinājuma režīms</target>
+</trans-unit>
+<trans-unit id="events.policy-execution.raw-result.label">
+  <source>Raw result</source>
+  <target>Neapstrādāts rezultāts</target>
+</trans-unit>
+<trans-unit id="events.policy-execution.cached.label">
+  <source>Cached</source>
+  <target>Kešatmiņā</target>
+</trans-unit>
+<trans-unit id="tasks.execution-logs.current">
+  <source>Current execution logs</source>
+  <target>Pašreizējās izpildes žurnāli</target>
+</trans-unit>
+<trans-unit id="tasks.execution-logs.previous">
+  <source>Previous executions logs</source>
+  <target>Iepriekšējo izpilžu žurnāli</target>
+</trans-unit>
+<trans-unit id="data-view.format.yaml.label">
+  <source>YAML</source>
+  <target>YAML</target>
+</trans-unit>
+<trans-unit id="data-view.format.json.label">
+  <source>JSON</source>
+  <target>JSON</target>
+</trans-unit>
+<trans-unit id="data-view.copy.yaml.label">
+  <source>Copy YAML to clipboard</source>
+  <target>Kopēt YAML starpliktuvē</target>
+</trans-unit>
+<trans-unit id="data-view.copy.json.label">
+  <source>Copy JSON to clipboard</source>
+  <target>Kopēt JSON starpliktuvē</target>
+</trans-unit>
+<trans-unit id="data-view.format.tree.label">
+  <source>Tree</source>
+  <target>Koks</target>
+</trans-unit>
+<trans-unit id="enterprise.license.banner.expired">
+  <source>Warning: One or more licenses have expired.</source>
+  <target>Brīdinājums: viena vai vairākas licences ir beigušās.</target>
+</trans-unit>
+<trans-unit id="enterprise.license.banner.expiry-soon">
+  <source>Warning: One or more licenses will expire within the next 2 weeks.</source>
+  <target>Brīdinājums: viena vai vairākas licences beigsies nākamo 2 nedēļu laikā.</target>
+</trans-unit>
+<trans-unit id="s3b8a6245b12fa2ad">
+  <source>Breadcrumbs</source>
+  <target>Navigācijas ceļš</target>
+</trans-unit>
+<trans-unit id="crontab.parse-failed">
+  <source>Cron string does not parse.</source>
+  <target>Cron virkni nevar nolasīt.</target>
+</trans-unit>
+<trans-unit id="bulk-action.delete.submit.label">
+  <source>Delete</source>
+  <target>Dzēst</target>
+</trans-unit>
+<trans-unit id="bulk-action.remove.submit.label">
+  <source>Remove</source>
+  <target>Noņemt</target>
+</trans-unit>
+<trans-unit id="bulk-action.verbose-name.default.label">
+  <source>Object</source>
+  <target>Objekts</target>
+</trans-unit>
+<trans-unit id="bulk-action.verbose-name-plural.default.label">
+  <source>Objects</source>
+  <target>Objekti</target>
+</trans-unit>
+<trans-unit id="sidebar.toggle.aria-label">
+  <source>Toggle <x id="0" equiv-text="${label}"/></source>
+  <target>Pārslēgt <x id="0" equiv-text="${label}"/></target>
+</trans-unit>
+<trans-unit id="data-view.summary.unknown-type.label">
+  <source>Unknown JSON type</source>
+  <target>Nezināms JSON veids</target>
+</trans-unit>
+<trans-unit id="data-view.value.unrepresentable.label">
+  <source>Unrepresentable</source>
+  <target>Nevar attēlot</target>
+</trans-unit>
+<trans-unit id="mfa-devices.verbose-name.label">
+  <source>Device</source>
+  <target>Ierīce</target>
+</trans-unit>
+<trans-unit id="mfa-devices.verbose-name-plural.label">
+  <source>Devices</source>
+  <target>Ierīces</target>
+</trans-unit>
+<trans-unit id="wizard.header.verbose-name.label">
+  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
+  <target>Izveidot jaunu: <x id="0" equiv-text="${verboseName}"/></target>
+</trans-unit>
+<trans-unit id="used-by.count.none">
+  <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
+  <target><x id="0" equiv-text="${verboseName}"/>: nav saistītu objektu.</target>
+</trans-unit>
+<trans-unit id="groups.add-user.success[0]">
+  <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> group.</source>
+  <target>Lietotājs veiksmīgi pievienots <x id="0" equiv-text="${formattedCount}"/> grupā.</target>
+</trans-unit>
+<trans-unit id="groups.add-user.success[1]">
+  <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> groups.</source>
+  <target>Lietotājs veiksmīgi pievienots <x id="0" equiv-text="${formattedCount}"/> grupās.</target>
+</trans-unit>
+<trans-unit id="users.add-related.success[0]">
+  <source>Successfully added <x id="0" equiv-text="${formattedCount}"/> user.</source>
+  <target>Veiksmīgi pievienots <x id="0" equiv-text="${formattedCount}"/> lietotājs.</target>
+</trans-unit>
+<trans-unit id="users.add-related.success[1]">
+  <source>Successfully added <x id="0" equiv-text="${formattedCount}"/> users.</source>
+  <target>Veiksmīgi pievienoti <x id="0" equiv-text="${formattedCount}"/> lietotāji.</target>
+</trans-unit>
+<trans-unit id="lifecycle.review.min-reviewers.single-group[0]">
+  <source>At least <x id="0" equiv-text="${formattedCount}"/> user from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+  <target>Vismaz <x id="0" equiv-text="${formattedCount}"/> lietotājs no šīs grupas: <x id="1" equiv-text="${groupList}"/>.</target>
+</trans-unit>
+<trans-unit id="lifecycle.review.min-reviewers.single-group[1]">
+  <source>At least <x id="0" equiv-text="${formattedCount}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+  <target>Vismaz <x id="0" equiv-text="${formattedCount}"/> lietotāji no šīs grupas: <x id="1" equiv-text="${groupList}"/>.</target>
+</trans-unit>
+<trans-unit id="lifecycle.review.min-reviewers.multiple-groups[0]">
+  <source>At least <x id="0" equiv-text="${formattedCount}"/> user from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+  <target>Vismaz <x id="0" equiv-text="${formattedCount}"/> lietotājs no šīm grupām: <x id="1" equiv-text="${groupList}"/>.</target>
+</trans-unit>
+<trans-unit id="lifecycle.review.min-reviewers.multiple-groups[1]">
+  <source>At least <x id="0" equiv-text="${formattedCount}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+  <target>Vismaz <x id="0" equiv-text="${formattedCount}"/> lietotāji no šīm grupām: <x id="1" equiv-text="${groupList}"/>.</target>
+</trans-unit>
+<trans-unit id="outposts.health.summary[0]">
+  <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${formattedCount}"/> instance is healthy.</source>
+  <target>Veselīgs ir <x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${formattedCount}"/> satelītserviss.</target>
+</trans-unit>
+<trans-unit id="outposts.health.summary[1]">
+  <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${formattedCount}"/> instances are healthy.</source>
+  <target>Veselīgi ir <x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${formattedCount}"/> satelītservisi.</target>
+</trans-unit>
+<trans-unit id="policies.bound-to.label[0]">
+  <source>Assigned to <x id="0" equiv-text="${formattedCount}"/> object.</source>
+  <target>Piešķirts <x id="0" equiv-text="${formattedCount}"/> objektam.</target>
+</trans-unit>
+<trans-unit id="policies.bound-to.label[1]">
+  <source>Assigned to <x id="0" equiv-text="${formattedCount}"/> objects.</source>
+  <target>Piešķirts <x id="0" equiv-text="${formattedCount}"/> objektiem.</target>
+</trans-unit>
+<trans-unit id="request-rules.target-count.label[0]">
+  <source><x id="0" equiv-text="${formattedCount}"/> object</source>
+  <target><x id="0" equiv-text="${formattedCount}"/> objekts</target>
+</trans-unit>
+<trans-unit id="request-rules.target-count.label[1]">
+  <source><x id="0" equiv-text="${formattedCount}"/> objects</source>
+  <target><x id="0" equiv-text="${formattedCount}"/> objekti</target>
+</trans-unit>
+<trans-unit id="roles.add-user.success[0]">
+  <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> role.</source>
+  <target>Lietotājs veiksmīgi pievienots <x id="0" equiv-text="${formattedCount}"/> lomai.</target>
+</trans-unit>
+<trans-unit id="roles.add-user.success[1]">
+  <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> roles.</source>
+  <target>Lietotājs veiksmīgi pievienots <x id="0" equiv-text="${formattedCount}"/> lomām.</target>
+</trans-unit>
+<trans-unit id="stages.duo.import.success[0]">
+  <source>Successfully imported <x id="0" equiv-text="${formattedCount}"/> device.</source>
+  <target>Veiksmīgi importēta <x id="0" equiv-text="${formattedCount}"/> ierīce.</target>
+</trans-unit>
+<trans-unit id="stages.duo.import.success[1]">
+  <source>Successfully imported <x id="0" equiv-text="${formattedCount}"/> devices.</source>
+  <target>Veiksmīgi importētas <x id="0" equiv-text="${formattedCount}"/> ierīces.</target>
+</trans-unit>
+<trans-unit id="invitations.send-email.success[0]">
+  <source>Invitation email queued for sending to <x id="0" equiv-text="${formattedCount}"/> recipient. Check the System Tasks for more information.</source>
+  <target>Uzaicinājuma e-pasts ievietots sūtīšanas rindā <x id="0" equiv-text="${formattedCount}"/> saņēmējam. Papildinformāciju skatiet sadaļā Sistēmas uzdevumi.</target>
+</trans-unit>
+<trans-unit id="invitations.send-email.success[1]">
+  <source>Invitation emails queued for sending to <x id="0" equiv-text="${formattedCount}"/> recipients. Check the System Tasks for more information.</source>
+  <target>Uzaicinājuma e-pasti ievietoti sūtīšanas rindā <x id="0" equiv-text="${formattedCount}"/> saņēmējiem. Papildinformāciju skatiet sadaļā Sistēmas uzdevumi.</target>
+</trans-unit>
+<trans-unit id="users.revoke-sessions.user-count[0]">
+  <source><x id="0" equiv-text="${formattedCount}"/> user</source>
+  <target><x id="0" equiv-text="${formattedCount}"/> lietotājs</target>
+</trans-unit>
+<trans-unit id="users.revoke-sessions.user-count[1]">
+  <source><x id="0" equiv-text="${formattedCount}"/> users</source>
+  <target><x id="0" equiv-text="${formattedCount}"/> lietotāji</target>
+</trans-unit>
+<trans-unit id="users.revoke-sessions.confirmation[0]">
+  <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${formattedCount}"/> user?</source>
+  <target>Vai tiešām vēlaties atsaukt visas <x id="0" equiv-text="${formattedCount}"/> lietotāja sesijas?</target>
+</trans-unit>
+<trans-unit id="users.revoke-sessions.confirmation[1]">
+  <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${formattedCount}"/> users?</source>
+  <target>Vai tiešām vēlaties atsaukt visas <x id="0" equiv-text="${formattedCount}"/> lietotāju sesijas?</target>
+</trans-unit>
+<trans-unit id="user-required-actions.object.label[0]">
+  <source>Required action</source>
+  <target>Nepieciešamā darbība</target>
+</trans-unit>
+<trans-unit id="user-required-actions.object.label[1]">
+  <source>Required actions</source>
+  <target>Nepieciešamās darbības</target>
+</trans-unit>
+<trans-unit id="dual-select.status.marked-to-add[0]">
+  <source><x id="0" equiv-text="${formattedCount}"/> item marked to add.</source>
+  <target>Pievienošanai atzīmēts <x id="0" equiv-text="${formattedCount}"/> vienums.</target>
+</trans-unit>
+<trans-unit id="dual-select.status.marked-to-add[1]">
+  <source><x id="0" equiv-text="${formattedCount}"/> items marked to add.</source>
+  <target>Pievienošanai atzīmēti <x id="0" equiv-text="${formattedCount}"/> vienumi.</target>
+</trans-unit>
+<trans-unit id="dual-select.status.selected[0]">
+  <source><x id="0" equiv-text="${formattedCount}"/> item selected.</source>
+  <target>Atlasīts <x id="0" equiv-text="${formattedCount}"/> vienums.</target>
+</trans-unit>
+<trans-unit id="dual-select.status.selected[1]">
+  <source><x id="0" equiv-text="${formattedCount}"/> items selected.</source>
+  <target>Atlasīti <x id="0" equiv-text="${formattedCount}"/> vienumi.</target>
+</trans-unit>
+<trans-unit id="dual-select.status.marked-to-remove[0]">
+  <source><x id="0" equiv-text="${formattedCount}"/> item marked to remove.</source>
+  <target>Noņemšanai atzīmēts <x id="0" equiv-text="${formattedCount}"/> vienums.</target>
+</trans-unit>
+<trans-unit id="dual-select.status.marked-to-remove[1]">
+  <source><x id="0" equiv-text="${formattedCount}"/> items marked to remove.</source>
+  <target>Noņemšanai atzīmēti <x id="0" equiv-text="${formattedCount}"/> vienumi.</target>
+</trans-unit>
+<trans-unit id="bulk-action.delete.heading[0]">
+  <source>Delete <x id="0" equiv-text="${formattedCount} ${noun}"/></source>
+  <target>Dzēst: <x id="0" equiv-text="${formattedCount} ${noun}"/></target>
+</trans-unit>
+<trans-unit id="bulk-action.delete.heading[1]">
+  <source>Delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  <target>Dzēst: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></target>
+</trans-unit>
+<trans-unit id="bulk-action.delete.confirmation[0]">
+  <source>Are you sure you want to delete <x id="0" equiv-text="${formattedCount} ${noun}"/>?</source>
+  <target>Vai tiešām vēlaties dzēst: <x id="0" equiv-text="${formattedCount} ${noun}"/>?</target>
+</trans-unit>
+<trans-unit id="bulk-action.delete.confirmation[1]">
+  <source>Are you sure you want to delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  <target>Vai tiešām vēlaties dzēst: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</target>
+</trans-unit>
+<trans-unit id="bulk-action.delete.success[0]">
+  <source>Successfully deleted <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  <target>Veiksmīgi dzēsts: <x id="0" equiv-text="${formattedCount} ${noun}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.delete.success[1]">
+  <source>Successfully deleted <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  <target>Veiksmīgi dzēsti: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.delete.error[0]">
+  <source>Failed to delete <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  <target>Neizdevās dzēst: <x id="0" equiv-text="${formattedCount} ${noun}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.delete.error[1]">
+  <source>Failed to delete <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  <target>Neizdevās dzēst: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.remove.heading[0]">
+  <source>Remove <x id="0" equiv-text="${formattedCount} ${noun}"/></source>
+  <target>Noņemt: <x id="0" equiv-text="${formattedCount} ${noun}"/></target>
+</trans-unit>
+<trans-unit id="bulk-action.remove.heading[1]">
+  <source>Remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  <target>Noņemt: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></target>
+</trans-unit>
+<trans-unit id="bulk-action.remove.confirmation[0]">
+  <source>Are you sure you want to remove <x id="0" equiv-text="${formattedCount} ${noun}"/>?</source>
+  <target>Vai tiešām vēlaties noņemt: <x id="0" equiv-text="${formattedCount} ${noun}"/>?</target>
+</trans-unit>
+<trans-unit id="bulk-action.remove.confirmation[1]">
+  <source>Are you sure you want to remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  <target>Vai tiešām vēlaties noņemt: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</target>
+</trans-unit>
+<trans-unit id="bulk-action.remove.success[0]">
+  <source>Successfully removed <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  <target>Veiksmīgi noņemts: <x id="0" equiv-text="${formattedCount} ${noun}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.remove.success[1]">
+  <source>Successfully removed <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  <target>Veiksmīgi noņemti: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.remove.error[0]">
+  <source>Failed to remove <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  <target>Neizdevās noņemt: <x id="0" equiv-text="${formattedCount} ${noun}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.remove.error[1]">
+  <source>Failed to remove <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  <target>Neizdevās noņemt: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.cancel.heading[0]">
+  <source>Cancel <x id="0" equiv-text="${formattedCount} ${noun}"/></source>
+  <target>Atcelt: <x id="0" equiv-text="${formattedCount} ${noun}"/></target>
+</trans-unit>
+<trans-unit id="bulk-action.cancel.heading[1]">
+  <source>Cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></source>
+  <target>Atcelt: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/></target>
+</trans-unit>
+<trans-unit id="bulk-action.cancel.confirmation[0]">
+  <source>Are you sure you want to cancel <x id="0" equiv-text="${formattedCount} ${noun}"/>?</source>
+  <target>Vai tiešām vēlaties atcelt: <x id="0" equiv-text="${formattedCount} ${noun}"/>?</target>
+</trans-unit>
+<trans-unit id="bulk-action.cancel.confirmation[1]">
+  <source>Are you sure you want to cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</source>
+  <target>Vai tiešām vēlaties atcelt: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>?</target>
+</trans-unit>
+<trans-unit id="bulk-action.cancel.success[0]">
+  <source>Successfully canceled <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  <target>Veiksmīgi atcelts: <x id="0" equiv-text="${formattedCount} ${noun}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.cancel.success[1]">
+  <source>Successfully canceled <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  <target>Veiksmīgi atcelti: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.cancel.error[0]">
+  <source>Failed to cancel <x id="0" equiv-text="${formattedCount} ${noun}"/>.</source>
+  <target>Neizdevās atcelt: <x id="0" equiv-text="${formattedCount} ${noun}"/>.</target>
+</trans-unit>
+<trans-unit id="bulk-action.cancel.error[1]">
+  <source>Failed to cancel <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</source>
+  <target>Neizdevās atcelt: <x id="0" equiv-text="${formattedCount} ${nounPlural}"/>.</target>
+</trans-unit>
+<trans-unit id="data-view.summary.item-count[0]">
+  <source><x id="0" equiv-text="${count}"/> item</source>
+  <target><x id="0" equiv-text="${count}"/> vienums</target>
+</trans-unit>
+<trans-unit id="data-view.summary.item-count[1]">
+  <source><x id="0" equiv-text="${count}"/> items</source>
+  <target><x id="0" equiv-text="${count}"/> vienumi</target>
+</trans-unit>
+<trans-unit id="data-view.summary.key-count[0]">
+  <source><x id="0" equiv-text="${count}"/> key</source>
+  <target><x id="0" equiv-text="${count}"/> atslēga</target>
+</trans-unit>
+<trans-unit id="data-view.summary.key-count[1]">
+  <source><x id="0" equiv-text="${count}"/> keys</source>
+  <target><x id="0" equiv-text="${count}"/> atslēgas</target>
+</trans-unit>
+<trans-unit id="table.select-all.aria-label[0]">
+  <source>Select all rows on page (<x id="0" equiv-text="${formattedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+  <target>Atlasīt visas lapas rindas (atlasītas <x id="0" equiv-text="${formattedCount}"/> no <x id="1" equiv-text="${pageItemCount}"/>)</target>
+</trans-unit>
+<trans-unit id="table.select-all.aria-label[1]">
+  <source>Select all rows on page (<x id="0" equiv-text="${formattedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+  <target>Atlasīt visas lapas rindas (atlasītas <x id="0" equiv-text="${formattedCount}"/> no <x id="1" equiv-text="${pageItemCount}"/>)</target>
+</trans-unit>
+<trans-unit id="rac.connection.failed[0]">
+  <source>Connection failed after <x id="0" equiv-text="${formattedCount}"/> attempt.</source>
+  <target>Savienojums neizdevās pēc <x id="0" equiv-text="${formattedCount}"/> mēģinājuma.</target>
+</trans-unit>
+<trans-unit id="rac.connection.failed[1]">
+  <source>Connection failed after <x id="0" equiv-text="${formattedCount}"/> attempts.</source>
+  <target>Savienojums neizdevās pēc <x id="0" equiv-text="${formattedCount}"/> mēģinājumiem.</target>
+</trans-unit>
+<trans-unit id="rac.connection.reconnecting[0]">
+  <source>Re-connecting in <x id="0" equiv-text="${formattedCount}"/> second.</source>
+  <target>Mēģinās vēlreiz savienoties pēc <x id="0" equiv-text="${formattedCount}"/> sekundes.</target>
+</trans-unit>
+<trans-unit id="rac.connection.reconnecting[1]">
+  <source>Re-connecting in <x id="0" equiv-text="${formattedCount}"/> seconds.</source>
+  <target>Mēģinās vēlreiz savienoties pēc <x id="0" equiv-text="${formattedCount}"/> sekundēm.</target>
+</trans-unit>
+<trans-unit id="user.library.application-count.search-result[0]">
+  <source><x id="0" equiv-text="${formattedCount}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+  <target>Atrasta <x id="0" equiv-text="${formattedCount}"/> lietotne meklējumam "<x id="1" equiv-text="${query}"/>"</target>
+</trans-unit>
+<trans-unit id="user.library.application-count.search-result[1]">
+  <source><x id="0" equiv-text="${formattedCount}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+  <target>Atrastas <x id="0" equiv-text="${formattedCount}"/> lietotnes meklējumam "<x id="1" equiv-text="${query}"/>"</target>
+</trans-unit>
+<trans-unit id="user.library.application-count.available[0]">
+  <source><x id="0" equiv-text="${formattedCount}"/> application available</source>
+  <target><x id="0" equiv-text="${formattedCount}"/> lietotne pieejama</target>
+</trans-unit>
+<trans-unit id="user.library.application-count.available[1]">
+  <source><x id="0" equiv-text="${formattedCount}"/> applications available</source>
+  <target><x id="0" equiv-text="${formattedCount}"/> lietotnes pieejamas</target>
+</trans-unit>
+<trans-unit id="notifications.unread-count.label[0]">
+  <source><x id="0" equiv-text="${formattedCount}"/> unread</source>
+  <target><x id="0" equiv-text="${formattedCount}"/> nelasīts</target>
+</trans-unit>
+<trans-unit id="notifications.unread-count.label[1]">
+  <source><x id="0" equiv-text="${formattedCount}"/> unread</source>
+  <target><x id="0" equiv-text="${formattedCount}"/> nelasīti</target>
+</trans-unit>
+<trans-unit id="used-by.count[0]">
+  <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${formattedCount}"/> object.</source>
+  <target><x id="0" equiv-text="${verboseName}"/> ir saistīts ar <x id="1" equiv-text="${formattedCount}"/> objektu.</target>
+</trans-unit>
+<trans-unit id="used-by.count[1]">
+  <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${formattedCount}"/> objects.</source>
+  <target><x id="0" equiv-text="${verboseName}"/> ir saistīts ar <x id="1" equiv-text="${formattedCount}"/> objektiem.</target>
+</trans-unit>
+<trans-unit id="users.revoke-sessions.success[0]">
+  <source>Successfully revoked <x id="0" equiv-text="${formattedCount}"/> session for <x id="1" equiv-text="${users}"/>.</source>
+  <target>Veiksmīgi atsaukta <x id="0" equiv-text="${formattedCount}"/> sesija: <x id="1" equiv-text="${users}"/>.</target>
+</trans-unit>
+<trans-unit id="users.revoke-sessions.success[1]">
+  <source>Successfully revoked <x id="0" equiv-text="${formattedCount}"/> sessions for <x id="1" equiv-text="${users}"/>.</source>
+  <target>Veiksmīgi atsauktas <x id="0" equiv-text="${formattedCount}"/> sesijas: <x id="1" equiv-text="${users}"/>.</target>
+</trans-unit>
 </body>
 </file>
 </xliff>
