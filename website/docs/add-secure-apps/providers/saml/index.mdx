@@ -62,7 +62,7 @@ When you [import SP metadata](./create-saml-provider.mdx#create-a-saml-provider-
 
 When the **Audience** field is empty, authentik doesn't add an audience restriction to the assertion.
 
-### Issuer verification :ak-version[2026.11]
+### Issuer verification
 
 When the **Audience** field is set, authentik also requires the SP to identify itself with that value. The `<Issuer>` of each of the following messages must match the **Audience**:
 
