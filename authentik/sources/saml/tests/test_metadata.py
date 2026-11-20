@@ -12,10 +12,14 @@ from authentik.common.saml.constants import (
     AES128_GCM,
     AES256_CBC,
     AES256_GCM,
+    KW_AES128,
+    KW_AES192,
+    KW_AES256,
     NS_MAP,
     RSA_OAEP_MGF1P,
 )
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.crypto.builder import PrivateKeyAlg
 from authentik.lib.generators import generate_id
 from authentik.lib.xml import lxml_from_string
 from authentik.sources.saml.models import SAMLSource
@@ -92,6 +96,24 @@ class TestMetadataProcessor(TestCase):
                 namespaces=NS_MAP,
             ),
             [],
+        )
+
+    def test_metadata_encryption_methods_ecdsa(self):
+        """Test that an elliptic curve encryption certificate advertises key wrap algorithms
+        instead of RSA key transport"""
+        self.source.encryption_kp = create_test_cert(PrivateKeyAlg.ECDSA)
+        self.source.save()
+        request = self.factory.get("/")
+        metadata = lxml_from_string(
+            MetadataProcessor(self.source, request).build_entity_descriptor()
+        )
+        self.assertEqual(
+            metadata.xpath(
+                "/md:EntityDescriptor/md:SPSSODescriptor/md:KeyDescriptor[@use='encryption']"
+                "/md:EncryptionMethod/@Algorithm",
+                namespaces=NS_MAP,
+            ),
+            [AES256_GCM, AES128_GCM, AES256_CBC, AES128_CBC, KW_AES256, KW_AES192, KW_AES128],
         )
 
     def test_metadata_without_encryption(self):

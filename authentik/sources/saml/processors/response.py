@@ -29,6 +29,7 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_X509,
     SAML_STATUS_SUCCESS,
 )
+from authentik.common.saml.key_agreement import find_encrypted_key, unwrap_encrypted_key
 from authentik.common.saml.utils import get_element_text
 from authentik.core.models import (
     USER_ATTRIBUTE_DELETE_ON_LOGOUT,
@@ -118,18 +119,27 @@ class ResponseProcessor:
 
     def _decrypt_response(self):
         """Decrypt SAMLResponse EncryptedAssertion Element"""
-        manager = xmlsec.KeysManager()
-        key = xmlsec.Key.from_memory(
-            self._source.encryption_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-        )
-
-        manager.add_key(key)
-        encryption_context = xmlsec.EncryptionContext(manager)
-
         encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         if encrypted_assertion is None:
             raise InvalidEncryption("Response does not contain an EncryptedAssertion element.")
+
+        key_agreement = find_encrypted_key(encrypted_assertion)
+        if key_agreement is not None:
+            # The content encryption key was wrapped for an EC key using key agreement, which
+            # we unwrap ourselves and hand to libxmlsec to decrypt the assertion with
+            encryption_context = xmlsec.EncryptionContext()
+            encryption_context.key = xmlsec.Key.from_binary_data(
+                xmlsec.constants.KeyDataAes,
+                unwrap_encrypted_key(key_agreement, self._source.encryption_kp.private_key),
+            )
+        else:
+            manager = xmlsec.KeysManager()
+            key = xmlsec.Key.from_memory(
+                self._source.encryption_kp.key_data,
+                xmlsec.constants.KeyDataFormatPem,
+            )
+            manager.add_key(key)
+            encryption_context = xmlsec.EncryptionContext(manager)
         # Register Id attributes so a KeyInfo RetrievalMethod referencing a sibling
         # EncryptedKey by #Id can be resolved by xmlsec
         xmlsec.tree.add_ids(encrypted_assertion, ["Id"])

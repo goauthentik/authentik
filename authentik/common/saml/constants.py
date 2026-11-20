@@ -79,6 +79,9 @@ AES256_CBC = "http://www.w3.org/2001/04/xmlenc#aes256-cbc"
 AES128_GCM = "http://www.w3.org/2009/xmlenc11#aes128-gcm"
 AES256_GCM = "http://www.w3.org/2009/xmlenc11#aes256-gcm"
 RSA_OAEP_MGF1P = "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"
+KW_AES128 = "http://www.w3.org/2001/04/xmlenc#kw-aes128"
+KW_AES192 = "http://www.w3.org/2001/04/xmlenc#kw-aes192"
+KW_AES256 = "http://www.w3.org/2001/04/xmlenc#kw-aes256"
 
 # Algorithms advertised in SP metadata as <md:EncryptionMethod>, in order of preference
 ENCRYPTION_METHODS_ADVERTISED = (
@@ -87,6 +90,17 @@ ENCRYPTION_METHODS_ADVERTISED = (
     AES256_CBC,
     AES128_CBC,
     RSA_OAEP_MGF1P,
+)
+# The same for an elliptic curve encryption certificate, which the content encryption key is
+# wrapped for using key agreement instead of RSA key transport
+ENCRYPTION_METHODS_ADVERTISED_EC = (
+    AES256_GCM,
+    AES128_GCM,
+    AES256_CBC,
+    AES128_CBC,
+    KW_AES256,
+    KW_AES192,
+    KW_AES128,
 )
 
 ENCRYPTION_ALGORITHM_TRANSLATION_MAP = {
