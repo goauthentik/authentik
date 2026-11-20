@@ -137,6 +137,53 @@ Administrators can view all access requests via the access requests page (**Appl
 
 If the administrator account is set as a reviewer in the associated request rule, they can click **Fulfill** and approve or deny the access request.
 
+## Application requests :ak-version[2026.11] {#application-requests}
+
+Application requests let users request a new OAuth2/OpenID Connect application instead of access to an existing one. An administrator creates an application template, which fixes the settings every requested application gets, and binds request rules to it. Reviewers approve application requests in the same **For My Review** tab as access requests.
+
+When a request is approved, authentik creates an OAuth2/OpenID Connect provider, an application, and a policy binding for each group the requester selected. The requester can then view the client ID, the client secret, and the provider's URLs.
+
+### What the requester chooses
+
+The requester enters the application's name, and optionally a description and a launch URL. They also choose:
+
+- **Client type**: **Confidential** for applications that can keep a client secret, or **Public** for applications that run in a browser or on a device.
+- **Grant types**: from the grant types the template allows. `client_credentials` requires a confidential client.
+- **Redirect URIs**: one or more URIs, matched exactly. Required when `authorization_code`, `implicit`, or `hybrid` is selected.
+- **Groups given access**: one or more of the template's bindable groups. Only members of these groups get access to the new application; the requester is not given access separately.
+
+Everything else comes from the template. The application's slug and the provider's name are derived from the application name. If either is already taken or reserved, authentik appends a number, for example `grafana-2`.
+
+Requested launch URLs and redirect URIs cannot contain `%(` placeholders such as `%(email)s`. authentik fills these in with the data of each user who opens the application from their library, so a requester could otherwise collect that data.
+
+### Create an application template
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Applications** > **Application Templates** and click **New Application Template**.
+3. Set the following fields:
+    - **Name**: shown to requesters on the **Discover** page.
+    - **Authorization flow** and **Invalidation flow**: used by every provider created from this template.
+    - **Scopes**: the scope mappings of every provider created from this template. Do not select mappings that give the application more than information about the user, such as **authentik default OAuth Mapping: authentik API access**.
+    - **Signing Key** _(optional)_: the key used to sign tokens. Without one, tokens are signed with HS256 using each provider's client secret.
+    - **Allowed grant types**: the grant types requesters can choose from.
+    - **Bindable groups**: the groups requesters can give access to the new application.
+    - **Application group** _(optional)_: the group that created applications are shown under in the user library.
+4. Click **Create Application Template**.
+
+Then expand the template in the list, click **Create or bind...**, and bind a request rule to it. The binding's fields are the same as in [Make an application requestable](#make-an-application-requestable). The request rule binding decides who can request applications from the template, and the request rule decides who approves them. The binding's **Maximum granted expiry** does not apply to application requests, because the created application does not expire.
+
+### Approving an application request
+
+The reviewer sees the requested name, client type, grant types, redirect URIs, groups, launch URL, and description next to any requester notes. Check redirect URIs carefully: authentik sends users' tokens to them.
+
+authentik checks the request against the template again when it is approved. If the template no longer allows something the request asks for, for example a group was removed from **Bindable groups**, approval fails with an error that names the field, nothing is created, and the request stays pending so that it can be denied.
+
+An approved application request cannot be revoked. To remove the application, delete the application and its provider.
+
+### Viewing the client credentials
+
+The requester opens the **My Requests** tab on the **Discover** page and clicks **Credentials** next to the approved request. Only the requester can view the client secret this way. Administrators view it on the provider, as for any other provider.
+
 ## Events and auditing
 
 Each stage of a request is recorded as an event and can be matched in event matcher policies:
@@ -145,6 +192,8 @@ Each stage of a request is recorded as an event and can be matched in event matc
 - `access_request_approved`
 - `access_request_denied`
 - `access_request_revoked`
+
+Events for an application request name the application template as the target. The `access_request_approved` event of an application request also contains the created `application`.
 
 Pair an event matcher policy with a notification rule to alert security teams of access events via Slack, email, or webhooks. See [Events](../../sys-mgmt/events/index.mdx) and [Notifications](../../sys-mgmt/events/notifications.mdx) for more information.
 

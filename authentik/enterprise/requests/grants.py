@@ -15,6 +15,7 @@ from authentik.core.models import User
 from authentik.enterprise.requests.models import (
     GrantRequest,
     GrantRequestTarget,
+    RequestedApplication,
     RequestRule,
     RequestStatus,
 )
@@ -97,9 +98,12 @@ def create_grant_request(
     requester_data: dict[str, Any],
     expiry: GrantExpiry,
     agent_owner: User | None = None,
+    application: dict[str, Any] | None = None,
 ) -> GrantRequest:
     """Persist a grant request against `pbms`, assign the object permissions the requester,
-    reviewers and (for an agent) its owner need to act on it, and notify them."""
+    reviewers and (for an agent) its owner need to act on it, and notify them. `application` is
+    the validated application an application request asks for; its single pbm is then the
+    template."""
     with transaction.atomic(), audit_ignore():
         req = GrantRequest.objects.create(
             created_by=created_by,
@@ -116,6 +120,11 @@ def create_grant_request(
                 target=pbm,
                 binding=None,
             )
+        if application:
+            requested = RequestedApplication.objects.create(
+                request=req, **{k: v for k, v in application.items() if k != "groups"}
+            )
+            requested.groups.set(application["groups"])
         # An agent request is decided by its owner alone, so RequestRules attached to the target
         # play no part: their reviewers must not be handed fulfill/revoke on it, and telling
         # them about a request they have no say in would only leak it.

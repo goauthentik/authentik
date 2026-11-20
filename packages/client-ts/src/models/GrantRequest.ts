@@ -15,6 +15,8 @@ import type { PartialUser } from "./PartialUser.js";
 import { PartialUserFromJSON } from "./PartialUser.js";
 import type { RequestableTarget } from "./RequestableTarget.js";
 import { RequestableTargetFromJSON } from "./RequestableTarget.js";
+import type { RequestedApplication } from "./RequestedApplication.js";
+import { RequestedApplicationFromJSON } from "./RequestedApplication.js";
 import type { RequestStatus } from "./RequestStatus.js";
 import { RequestStatusFromJSON } from "./RequestStatus.js";
 
@@ -37,6 +39,7 @@ export interface GrantRequest {
     readonly status: RequestStatus;
     readonly targets: Array<string>;
     readonly targetObjs: Array<RequestableTarget>;
+    readonly requestedApplication: RequestedApplication | null;
     uuid?: string;
 }
 
@@ -82,6 +85,13 @@ export function instanceOfGrantRequest(value: object): value is GrantRequest {
             (value as Record<string, any>)["target_objs"] === undefined)
     )
         return false;
+    if (
+        (!("requestedApplication" in (value as Record<string, any>)) &&
+            !("requested_application" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["requestedApplication"] === undefined &&
+            (value as Record<string, any>)["requested_application"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -110,6 +120,7 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         status: RequestStatusFromJSON(json["status"]),
         targets: json["targets"],
         targetObjs: (json["target_objs"] as Array<any>).map(RequestableTargetFromJSON),
+        requestedApplication: RequestedApplicationFromJSON(json["requested_application"]),
         uuid: json["uuid"] == null ? undefined : json["uuid"],
     };
 }
@@ -129,6 +140,7 @@ export function GrantRequestToJSONTyped(
         | "status"
         | "targets"
         | "targetObjs"
+        | "requestedApplication"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

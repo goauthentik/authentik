@@ -5,7 +5,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
-import { renderTargetSummary } from "#common/requests/utils";
+import { renderRequestSummary, requestStatusLabel } from "#common/requests/utils";
 
 import { modalInvoker } from "#elements/dialogs";
 import { toAdminInterface } from "#elements/router/core/interfaces";
@@ -23,19 +23,6 @@ import { GrantRequest, RequestsApi, RequestStatus } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit-html";
 import { customElement } from "lit/decorators.js";
-
-function statusLabel(status: RequestStatus): string {
-    switch (status) {
-        case RequestStatus.Approved:
-            return msg("Active");
-        case RequestStatus.Denied:
-            return msg("Denied");
-        case RequestStatus.Revoked:
-            return msg("Revoked");
-        default:
-            return msg("Pending");
-    }
-}
 
 @customElement("ak-access-requests-list")
 export class AccessRequestListPage extends TablePage<GrantRequest> {
@@ -95,7 +82,8 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
             </button>`;
         }
 
-        if (item.isActive) {
+        // An application request has created an application; there is no grant to revoke.
+        if (item.isActive && !item.requestedApplication) {
             return html`<ak-forms-confirm
                 successMessage=${msg("Successfully revoked grant")}
                 errorMessage=${msg("Failed to revoke grant")}
@@ -128,11 +116,11 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
                 <small>${item.createdBy.name}</small>
             </a>`,
             Timestamp(item.created),
-            renderTargetSummary(item.targetObjs),
+            renderRequestSummary(item),
             html`<ak-status-label
                 .good=${item.isActive}
-                good-label=${statusLabel(item.status)}
-                bad-label=${statusLabel(item.status)}
+                good-label=${requestStatusLabel(item)}
+                bad-label=${requestStatusLabel(item)}
                 type="info"
             ></ak-status-label>`,
             this.renderActions(item),

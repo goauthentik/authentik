@@ -12,6 +12,7 @@ PLAN_CONTEXT_GRANT_REQUESTED_PBMS = "goauthentik.io/requests/requested-pbms"
 PLAN_CONTEXT_GRANT_PENDING_EXPIRY = "goauthentik.io/requests/pending-expiry"
 PLAN_CONTEXT_GRANT_MAX_EXPIRY = "goauthentik.io/requests/max-expiry"
 PLAN_CONTEXT_GRANT_REQUESTED_EXPIRY = "goauthentik.io/requests/requested-expiry"
+PLAN_CONTEXT_GRANT_REQUESTED_APPLICATION = "goauthentik.io/requests/requested-application"
 
 
 class GrantRequestFinalStageView(StageView):
@@ -37,6 +38,7 @@ class GrantRequestFinalStageView(StageView):
                 pending=timedelta_from_string(pending_expiry),
                 granted=min(granted_expiry_candidates),
             ),
+            application=self.executor.plan.context.get(PLAN_CONTEXT_GRANT_REQUESTED_APPLICATION),
         )
         return self.executor.stage_ok()
 
