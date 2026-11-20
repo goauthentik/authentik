@@ -34,6 +34,7 @@ import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/source
 import {
     AuthorizationCodeAuthMethodEnum,
     GroupMatchingModeEnum,
+    IdJagUserMatchingEnum,
     OAuthSource,
     OAuthSourceRequest,
     PKCEMethodEnum,
@@ -292,7 +293,112 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         </ak-form-group>`;
     }
 
+    protected renderIdJagEmailDomains(required: boolean, help: string): TemplateResult {
+        return html`<ak-form-element-horizontal
+            label=${msg("ID-JAG email domains", {
+                id: "sources.oauth.id-jag.email-domains.label",
+            })}
+            ?required=${required}
+            name="idJagEmailDomains"
+        >
+            <ak-array-input
+                .items=${this.instance?.idJagEmailDomains ?? []}
+                .newItem=${() => ""}
+                .row=${(domain: string) =>
+                    html`<ak-oauth-source-id-jag-email-domain
+                        name="id-jag-email-domain"
+                        style="width: 100%"
+                        .domain=${domain}
+                    ></ak-oauth-source-id-jag-email-domain>`}
+            ></ak-array-input>
+            <p class="pf-c-form__helper-text">${help}</p>
+        </ak-form-element-horizontal>`;
+    }
+
+    protected renderIdJagEmailGroup(): TemplateResult {
+        return html`<ak-form-element-horizontal
+            label=${msg("ID-JAG email group", {
+                id: "sources.oauth.id-jag.email-group.label",
+            })}
+            name="idJagEmailGroup"
+        >
+            ${AKSearchSelect({
+                name: "idJagEmailGroup",
+                source: groupSource,
+                value: this.instance?.idJagEmailGroup,
+                blankable: true,
+            })}
+            <p class="pf-c-form__helper-text">
+                ${msg(
+                    "ID-JAG email addresses only match users connected to an enabled source, such as a directory, or members of this group, as users who registered themselves may not own their address.",
+                    { id: "sources.oauth.id-jag.email-group.description" },
+                )}
+            </p>
+        </ak-form-element-horizontal>`;
+    }
+
+    /**
+     * An issuer that only signs identity assertions, such as Claude: users never sign in
+     * through it, so it's only identified by its issuer and the email domains it's
+     * trusted for. Matching is by email, which the server enforces.
+     */
+    protected renderAssertionIssuerForm(): TemplateResult {
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
+            <ak-slug-input
+                name="slug"
+                placeholder=${msg("e.g. my-oauth-source")}
+                value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                required
+                input-hint="code"
+            ></ak-slug-input>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            ></ak-switch-input>
+            <ak-form-element-horizontal
+                label=${msg("Issuer", { id: "sources.oauth.id-jag-issuer.issuer.label" })}
+                required
+                name="idJagIssuer"
+            >
+                <input
+                    type="url"
+                    value="${this.instance?.idJagIssuer ?? ""}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    placeholder="https://issuer.example.com/"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "The issuer of the identity assertions (ID-JAGs), such as the Issuer URL in Claude's managed authorization setup. Its signing keys are found from its metadata, at the issuer URL followed by /.well-known/openid-configuration. The issuer in that metadata must equal this URL exactly, including any trailing slash.",
+                        { id: "sources.oauth.id-jag-issuer.issuer.description" },
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            ${this.renderIdJagEmailDomains(
+                true,
+                msg(
+                    "Identity assertions from this issuer are matched to the one active user with their email address, which must be in one of these domains. Only list domains your organization controls, as an issuer can assert any address.",
+                    { id: "sources.oauth.id-jag-issuer.email-domains.description" },
+                ),
+            )}
+            ${this.renderIdJagEmailGroup()}`;
+    }
+
     protected override renderForm(): TemplateResult {
+        if (this.providerType?.assertionOnly) {
+            return this.renderAssertionIssuerForm();
+        }
+
         return html`<ak-text-input
                 label=${msg("Source Name")}
                 placeholder=${msg("Type a name for this source...")}
@@ -509,48 +615,42 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 label=${msg("ID-JAG settings", { id: "sources.oauth.id-jag.group.label" })}
             >
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("ID-JAG email domains", {
-                            id: "sources.oauth.id-jag.email-domains.label",
+                    ${this.renderIdJagEmailDomains(
+                        false,
+                        msg(
+                            "When an ID-JAG from this source names a subject that isn't connected to a user yet, it's connected to the one active user with the ID-JAG's email address, if that address is in one of these domains. Only list domains this source's issuer is authoritative for, as an issuer can assert any address. Leave empty to only accept connected subjects.",
+                            { id: "sources.oauth.id-jag.email-domains.description" },
+                        ),
+                    )}
+                    ${this.renderIdJagEmailGroup()}
+                    <ak-radio-input
+                        label=${msg("ID-JAG user matching", {
+                            id: "sources.oauth.id-jag.user-matching.label",
                         })}
-                        name="idJagEmailDomains"
+                        name="idJagUserMatching"
+                        required
+                        .options=${[
+                            {
+                                label: msg("By subject, connected by email the first time", {
+                                    id: "sources.oauth.id-jag.user-matching.identifier.label",
+                                }),
+                                value: IdJagUserMatchingEnum.Identifier,
+                                default: true,
+                            },
+                            {
+                                label: msg("By email address, every time", {
+                                    id: "sources.oauth.id-jag.user-matching.email.label",
+                                }),
+                                value: IdJagUserMatchingEnum.Email,
+                            },
+                        ]}
+                        .value=${this.instance?.idJagUserMatching}
+                        help=${msg(
+                            "How an ID-JAG from this source finds its user: by the issuer's subject, linked by email the first time, or by email on every redemption, for issuers whose subjects aren't stable.",
+                            { id: "sources.oauth.id-jag.user-matching.description" },
+                        )}
                     >
-                        <ak-array-input
-                            .items=${this.instance?.idJagEmailDomains ?? []}
-                            .newItem=${() => ""}
-                            .row=${(domain: string) =>
-                                html`<ak-oauth-source-id-jag-email-domain
-                                    name="id-jag-email-domain"
-                                    style="width: 100%"
-                                    .domain=${domain}
-                                ></ak-oauth-source-id-jag-email-domain>`}
-                        ></ak-array-input>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When an ID-JAG from this source names a subject that isn't connected to a user yet, it's connected to the one active user with the ID-JAG's email address, if that address is in one of these domains. Only list domains this source's issuer is authoritative for, as an issuer can assert any address. Leave empty to only accept connected subjects.",
-                                { id: "sources.oauth.id-jag.email-domains.description" },
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("ID-JAG email group", {
-                            id: "sources.oauth.id-jag.email-group.label",
-                        })}
-                        name="idJagEmailGroup"
-                    >
-                        ${AKSearchSelect({
-                            name: "idJagEmailGroup",
-                            source: groupSource,
-                            value: this.instance?.idJagEmailGroup,
-                            blankable: true,
-                        })}
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "ID-JAG email addresses only match users connected to an enabled source, such as a directory, or members of this group, as users who registered themselves may not own their address.",
-                                { id: "sources.oauth.id-jag.email-group.description" },
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    </ak-radio-input>
                 </div>
             </ak-form-group>
             <ak-form-group label=${msg("Advanced settings")}>
