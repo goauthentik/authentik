@@ -34,16 +34,22 @@ class TestOAuthSourceTasks(TestCase):
                 "jwks_uri": "http://foo/jwks",
             },
         )
-        mock.get("http://foo/jwks", json={"foo": "bar"})
+        mock.get("http://foo/jwks", json={"keys": []})
         update_well_known_jwks.send()
         self.source.refresh_from_db()
         self.assertEqual(self.source.authorization_url, "foo")
         self.assertEqual(self.source.access_token_url, "foo")
         self.assertEqual(self.source.profile_url, "foo")
         self.assertEqual(self.source.oidc_jwks_url, "http://foo/jwks")
-        self.assertEqual(
-            self.source.oidc_jwks,
-            {
-                "foo": "bar",
-            },
-        )
+        self.assertEqual(self.source.oidc_jwks, {"keys": []})
+
+    @Mocker()
+    def test_jwks_invalid(self, mock: Mocker):
+        """Keys that aren't a JWK Set aren't stored"""
+        self.source.oidc_jwks_url = "http://foo/jwks"
+        self.source.oidc_jwks = {"keys": []}
+        self.source.save()
+        mock.get("http://foo/jwks", json={"foo": "bar"})
+        update_well_known_jwks.send()
+        self.source.refresh_from_db()
+        self.assertEqual(self.source.oidc_jwks, {"keys": []})
