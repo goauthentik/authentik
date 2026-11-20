@@ -28,6 +28,7 @@ export const GrantTypeCheckboxItems: CheckboxItem<GrantTypeEnum>[] = [
     GrantTypeEnum.Password,
     GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode,
     GrantTypeEnum.UrnIetfParamsOauthGrantTypeTokenExchange,
+    GrantTypeEnum.UrnIetfParamsOauthGrantTypeJwtBearer,
 ].map((grantType) => ({
     name: grantType,
     label: GrantTypeLabelRecord[grantType],

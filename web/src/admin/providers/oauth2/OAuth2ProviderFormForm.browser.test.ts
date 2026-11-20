@@ -6,6 +6,7 @@ import { renderForm } from "#admin/providers/oauth2/OAuth2ProviderFormForm";
 import {
     type CertificateKeyPair,
     CertificateKeyPairKeyTypeEnum,
+    GrantTypeEnum,
     type OAuth2Provider,
 } from "@goauthentik/api";
 
@@ -154,5 +155,33 @@ describe("OAuth2 provider allowed resources", () => {
         await Promise.all(Array.from(rows, (row) => row.updateComplete));
 
         expect(element.toJSON()).toEqual(resources);
+    });
+});
+
+describe("OAuth2 provider grant types", () => {
+    it("offers and preserves the JWT bearer grant type", () => {
+        const container = document.createElement("div");
+
+        render(
+            renderForm({
+                provider: {
+                    pk: 1,
+                    grantTypes: [GrantTypeEnum.UrnIetfParamsOauthGrantTypeJwtBearer],
+                },
+                showLogoutMethod: false,
+                showLogoutMethodCallback: () => undefined,
+            }),
+            container,
+        );
+
+        const element = container.querySelector<
+            HTMLElement & { options: unknown[][]; value: string[] }
+        >('ak-form-element-horizontal[name="grantTypes"] ak-checkbox-group')!;
+
+        expect(element.options.map(([name]) => name)).toContain(
+            GrantTypeEnum.UrnIetfParamsOauthGrantTypeJwtBearer,
+        );
+
+        expect(element.value).toEqual([GrantTypeEnum.UrnIetfParamsOauthGrantTypeJwtBearer]);
     });
 });
