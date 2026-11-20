@@ -18,6 +18,7 @@ export const UsedByActionEnum = {
     CascadeMany: "cascade_many",
     SetNull: "set_null",
     SetDefault: "set_default",
+    Protect: "protect",
     LeftDangling: "left_dangling",
     UnknownDefaultOpenApi: "11184809",
 } as const;

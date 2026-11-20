@@ -4,7 +4,7 @@ from enum import Enum
 from inspect import getmembers
 
 from django.db.models.base import Model
-from django.db.models.deletion import SET_DEFAULT, SET_NULL
+from django.db.models.deletion import PROTECT, SET_DEFAULT, SET_NULL
 from django.db.models.manager import Manager
 from drf_spectacular.utils import extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -24,6 +24,7 @@ class DeleteAction(Enum):
     CASCADE_MANY = "cascade_many"
     SET_NULL = "set_null"
     SET_DEFAULT = "set_default"
+    PROTECT = "protect"
     LEFT_DANGLING = "left_dangling"
 
 
@@ -44,6 +45,8 @@ def get_delete_action(manager: Manager) -> str:
             return DeleteAction.SET_NULL.value
         if manager.field.remote_field.on_delete.__name__ == SET_DEFAULT.__name__:
             return DeleteAction.SET_DEFAULT.value
+        if manager.field.remote_field.on_delete.__name__ == PROTECT.__name__:
+            return DeleteAction.PROTECT.value
     if hasattr(manager, "source_field"):
         return DeleteAction.CASCADE_MANY.value
     return DeleteAction.CASCADE.value
