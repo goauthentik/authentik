@@ -75,6 +75,12 @@ After upgrading, a source or provider mapping that returns any other value fails
 
 **Before upgrading, check that your custom property mappings return `None` when they have nothing to add.**
 
+### Entra ID group data uses snake_case keys
+
+The Entra ID OAuth source now retrieves every page of a user's group memberships. Group entries in `info["raw_groups"]` now use snake_case keys, such as `display_name` and `on_premises_sam_account_name`.
+
+Before upgrading, update any group property mappings that read camelCase keys such as `displayName` or `onPremisesSamAccountName`. After the upgrade, those keys no longer return a value.
+
 ### The read-only role can open the Admin interface
 
 The default **authentik Read-only** role now includes the permission to access the Admin interface. Previously, members of the role held view permissions but could not open the Admin interface to use them.
@@ -87,6 +93,10 @@ SAML sources now check who an assertion was issued for. If an assertion has an a
 
 **Before upgrading, check that your identity provider uses the source's entity ID as the audience.**
 
+### SAML providers verify logout signatures
+
+When a SAML provider has a verification certificate, authentik now requires logout requests and responses from the service provider to be signed with the matching key. Before upgrading, verify that each service provider with a configured verification certificate signs its logout messages.
+
 ### Imported password hashes must match the import settings
 
 Password hashes imported with `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH` or the `set_password_hash` API endpoint must now use a supported hasher and match the parameters of this authentik version, as described in [password hash import settings](../../../core/password-hashes.mdx#password-hash-import-settings). Stored hashes and blueprint imports are unaffected.
@@ -98,6 +108,12 @@ If a hash is rejected, [generate a new one](../../../core/password-hashes.mdx#ge
 The `sub` claim in tokens issued for Apple Platform SSO now contains the user's unique ID instead of their authentik username, so renaming a user no longer changes the identifier that macOS receives.
 
 **Review any configuration that expects the `sub` claim to contain the username.**
+
+### Flow messages are no longer sent over WebSockets
+
+Flow API responses now carry messages such as errors and confirmations. The login page no longer opens a WebSocket connection. The `/ws/client/` WebSocket now requires authentication and no longer sends `message` events.
+
+The deprecated **Refresh other tabs after successful authentication** setting (`flows_refresh_others`) has been removed. Other tabs showing a login page no longer reload when you authenticate in one tab.
 
 ### The applications list no longer evaluates policies
 
@@ -293,7 +309,6 @@ For advanced access control scenarios, you may need to create custom permissions
 ## Small general improvements
 
 - **WebAuthn authenticator setup stage**: The stage sends the user's enrolled credentials in the `excludeCredentials` registration parameter, so an authenticator refuses to enroll the same security key twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8. For more details, refer to the [WebAuthn authenticator setup stage documentation](../../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx).
-- **SAML providers verify logout signatures**: When a SAML provider has a verification certificate, logout requests and logout responses from the service provider must now be signed with it.
 - **Certificate key types are validated**: authentik now checks that a certificate's key algorithm is supported wherever the certificate is used. For example, OAuth2 encryption keys must use RSA, and SAML signing keys must use RSA, EC, or DSA. Certificates whose key type cannot be detected are rejected.
 - **SCIM provider**: Providers can authenticate with HTTP Basic authentication. Discovery only links remote users and groups to authentik users and groups that are within the provider's synchronization scope, so cleanup no longer deletes remote accounts that authentik should not manage. For more details, refer to the [SCIM provider documentation](../../../add-secure-apps/providers/scim/index.mdx).
 - **RADIUS provider**: Property mappings can return a dictionary of attributes, and the new `vendor_attribute()` helper defines vendor-specific attributes. A failing mapping is skipped instead of discarding every attribute. For more details, refer to the [RADIUS provider documentation](../../../add-secure-apps/providers/radius/index.mdx).
