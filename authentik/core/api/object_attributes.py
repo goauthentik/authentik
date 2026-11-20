@@ -22,7 +22,7 @@ class AttributesMixinSerializer(ModelSerializer):
         )
         for attr in attributes:
             value = get_path_from_dict(attrs, attr.key)
-            attr.run_validation(value)
+            attr.run_validation(value, instance)
         return data
 
 
