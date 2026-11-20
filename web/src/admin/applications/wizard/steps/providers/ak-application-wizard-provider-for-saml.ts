@@ -2,7 +2,10 @@ import "#elements/forms/FormGroup";
 import type { SearchSelectChangeEvent } from "#elements/forms/SearchSelect/events";
 
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
-import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
+import {
+    renderForm,
+    SAMLProviderConfigurationMode,
+} from "#admin/providers/saml/SAMLProviderFormForm";
 
 import {
     KeyTypeEnum,
@@ -38,8 +41,27 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     @state()
     protected signingKeyType: KeyTypeEnum | null = null;
 
+    @state()
+    protected selectedConfigurationMode: SAMLProviderConfigurationMode | null = null;
+
+    protected get configurationMode(): SAMLProviderConfigurationMode {
+        if (this.selectedConfigurationMode) return this.selectedConfigurationMode;
+
+        return (this.wizard.provider as Partial<SAMLProvider> | undefined)?.metadataUrl
+            ? SAMLProviderConfigurationMode.Metadata
+            : SAMLProviderConfigurationMode.Manual;
+    }
+
     get formValues() {
         const values = super.formValues;
+
+        // Only the fields of the active mode are rendered, so make sure the values of the
+        // other mode don't linger in the wizard state.
+        if (this.configurationMode === SAMLProviderConfigurationMode.Manual) {
+            values.metadataUrl = "";
+        } else {
+            values.acsUrl = "";
+        }
 
         // If SLS binding is redirect, ensure logout method is not backchannel
         if (
@@ -108,6 +130,10 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
                     hasPostBinding: this.hasPostBinding,
                     logoutMethod: this.logoutMethod,
                     setLogoutMethod,
+                    configurationMode: this.configurationMode,
+                    setConfigurationMode: (mode) => {
+                        this.selectedConfigurationMode = mode;
+                    },
                 })}
             </form>`;
     }

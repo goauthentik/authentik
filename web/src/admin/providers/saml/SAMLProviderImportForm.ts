@@ -16,15 +16,16 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         return msg("Successfully imported provider.");
     }
 
-    async send(data: SAMLProvider): Promise<unknown> {
+    async send(data: SAMLProvider & { url?: string }): Promise<unknown> {
         const file = this.files().get("file");
 
-        if (!file) {
+        if (!file && !data.url) {
             throw new SentryIgnoredError("No form data");
         }
 
         return aki(ProvidersApi).providersSamlImportMetadataCreate({
-            file,
+            file: file ?? undefined,
+            url: data.url || undefined,
             name: data.name,
             authorizationFlow: data.authorizationFlow || "",
             invalidationFlow: data.invalidationFlow || "",

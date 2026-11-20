@@ -20588,6 +20588,10 @@ paths:
           description: |+
             Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
 
+      - in: query
+        name: metadata_url
+        schema:
+          type: string
       - $ref: '#/components/parameters/QueryName'
       - in: query
         name: name_id_mapping
@@ -21767,6 +21771,10 @@ paths:
           description: |+
             Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
 
+      - in: query
+        name: metadata_url
+        schema:
+          type: string
       - $ref: '#/components/parameters/QueryName'
       - in: query
         name: name_id_mapping
@@ -54367,7 +54375,6 @@ components:
             format: uuid
         acs_url:
           type: string
-          minLength: 1
           format: uri
         sls_url:
           type: string
@@ -54485,6 +54492,11 @@ components:
             type: integer
           description: OAuth2 providers which can exchange their JWTs for a SAML Response
             of this provider via token exchange.
+        metadata_url:
+          type: string
+          description: URL of the Service Provider's metadata. When set, the provider's
+            settings are periodically updated from this metadata.
+          format: uri
     PatchedSAMLSourcePropertyMappingRequest:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -58553,6 +58565,11 @@ components:
           type: string
           description: Get metadata download URL
           readOnly: true
+        metadata_url:
+          type: string
+          description: URL of the Service Provider's metadata. When set, the provider's
+            settings are periodically updated from this metadata.
+          format: uri
         url_issuer:
           type: string
           description: Get Issuer/EntityID URL
@@ -58586,7 +58603,6 @@ components:
           description: Get SLO redirect URL
           readOnly: true
       required:
-      - acs_url
       - assigned_application_name
       - assigned_application_slug
       - assigned_backchannel_application_name
@@ -58610,7 +58626,8 @@ components:
       - verbose_name_plural
     SAMLProviderImportRequest:
       type: object
-      description: Import saml provider from XML Metadata
+      description: Import saml provider from XML Metadata, either uploaded as a file
+        or fetched from a URL
       properties:
         name:
           type: string
@@ -58624,9 +58641,10 @@ components:
         file:
           type: string
           format: binary
+        url:
+          type: string
       required:
       - authorization_flow
-      - file
       - invalidation_flow
       - name
     SAMLProviderRequest:
@@ -58657,7 +58675,6 @@ components:
             format: uuid
         acs_url:
           type: string
-          minLength: 1
           format: uri
         sls_url:
           type: string
@@ -58775,8 +58792,12 @@ components:
             type: integer
           description: OAuth2 providers which can exchange their JWTs for a SAML Response
             of this provider via token exchange.
+        metadata_url:
+          type: string
+          description: URL of the Service Provider's metadata. When set, the provider's
+            settings are periodically updated from this metadata.
+          format: uri
       required:
-      - acs_url
       - authorization_flow
       - invalidation_flow
       - name

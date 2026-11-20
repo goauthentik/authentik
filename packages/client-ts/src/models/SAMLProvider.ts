@@ -87,7 +87,7 @@ export interface SAMLProvider {
      * Return internal model name
      */
     readonly metaModelName: string;
-    acsUrl: string;
+    acsUrl?: string;
     /**
      * Single Logout Service URL where the logout response should be sent.
      */
@@ -187,6 +187,11 @@ export interface SAMLProvider {
      * Get metadata download URL
      */
     readonly urlDownloadMetadata: string;
+    /**
+     * URL of the Service Provider's metadata. When set, the provider's settings are periodically
+     * updated from this metadata.
+     */
+    metadataUrl?: string;
     /**
      * Get Issuer/EntityID URL
      */
@@ -292,13 +297,6 @@ export function instanceOfSAMLProvider(value: object): value is SAMLProvider {
     )
         return false;
     if (
-        (!("acsUrl" in (value as Record<string, any>)) &&
-            !("acs_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["acsUrl"] === undefined &&
-            (value as Record<string, any>)["acs_url"] === undefined)
-    )
-        return false;
-    if (
         (!("urlDownloadMetadata" in (value as Record<string, any>)) &&
             !("url_download_metadata" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["urlDownloadMetadata"] === undefined &&
@@ -392,7 +390,7 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         verboseName: json["verbose_name"],
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
-        acsUrl: json["acs_url"],
+        acsUrl: json["acs_url"] == null ? undefined : json["acs_url"],
         slsUrl: json["sls_url"] == null ? undefined : json["sls_url"],
         audience: json["audience"] == null ? undefined : json["audience"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
@@ -475,6 +473,7 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         jwtFederationProviders:
             json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
         urlDownloadMetadata: json["url_download_metadata"],
+        metadataUrl: json["metadata_url"] == null ? undefined : json["metadata_url"],
         urlIssuer: json["url_issuer"],
         urlUnified: json["url_unified"],
         urlUnifiedInit: json["url_unified_init"],
@@ -550,5 +549,6 @@ export function SAMLProviderToJSONTyped(
         default_relay_state: value["defaultRelayState"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
         jwt_federation_providers: value["jwtFederationProviders"],
+        metadata_url: value["metadataUrl"],
     };
 }

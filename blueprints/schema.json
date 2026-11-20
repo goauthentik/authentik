@@ -11612,7 +11612,6 @@
                 },
                 "acs_url": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "ACS URL"
                 },
                 "sls_url": {
@@ -11788,6 +11787,11 @@
                     },
                     "title": "Jwt federation providers",
                     "description": "OAuth2 providers which can exchange their JWTs for a SAML Response of this provider via token exchange."
+                },
+                "metadata_url": {
+                    "type": "string",
+                    "title": "Metadata URL",
+                    "description": "URL of the Service Provider's metadata. When set, the provider's settings are periodically updated from this metadata."
                 }
             },
             "required": []
