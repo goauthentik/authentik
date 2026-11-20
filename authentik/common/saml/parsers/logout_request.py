@@ -8,6 +8,7 @@ from defusedxml import ElementTree
 
 from authentik.common.saml.constants import NS_SAML_ASSERTION, NS_SAML_PROTOCOL
 from authentik.common.saml.exceptions import ERROR_CANNOT_DECODE_REQUEST, CannotHandleAssertion
+from authentik.common.saml.utils import get_element_text
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 
 
@@ -42,7 +43,7 @@ class LogoutRequestParser:
                 ERROR_CANNOT_DECODE_REQUEST, detail="Request is missing the ID attribute"
             )
         request = LogoutRequest(
-            id=root.attrib["ID"],
+            id=root.attrib.get("ID"),
         )
         # Try both namespaces for Issuer
         issuers = root.findall(f"{{{NS_SAML_PROTOCOL}}}Issuer")
@@ -56,7 +57,7 @@ class LogoutRequestParser:
         if not name_ids:
             name_ids = root.findall(f"{{{NS_SAML_PROTOCOL}}}NameID")
         if len(name_ids) > 0:
-            request.name_id = name_ids[0].text
+            request.name_id = get_element_text(name_ids[0]) or None
             # Extract NameID Format if present
             if "Format" in name_ids[0].attrib:
                 request.name_id_format = name_ids[0].attrib["Format"]

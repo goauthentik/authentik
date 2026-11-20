@@ -31,6 +31,8 @@ import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
 } from "./SignatureAlgorithmEnum.js";
+import type { SloBindingEnum } from "./SloBindingEnum.js";
+import { SloBindingEnumFromJSON, SloBindingEnumToJSON } from "./SloBindingEnum.js";
 import type { UserMatchingModeEnum } from "./UserMatchingModeEnum.js";
 import {
     UserMatchingModeEnumFromJSON,
@@ -111,6 +113,10 @@ export interface PatchedSAMLSourceRequest {
     nameIdPolicy?: SAMLNameIDPolicyEnum;
     bindingType?: BindingTypeEnum;
     /**
+     * Binding type for Single Logout requests to the IdP.
+     */
+    sloBinding?: SloBindingEnum;
+    /**
      * When selected, incoming assertion's Signatures will be validated against this certificate. To
      * allow unsigned Requests, leave on default.
      */
@@ -134,6 +140,14 @@ export interface PatchedSAMLSourceRequest {
     encryptionKp?: string | null;
     signedAssertion?: boolean;
     signedResponse?: boolean;
+    /**
+     * Whether to sign outgoing AuthnRequests. Requires a Signing Keypair to be set.
+     */
+    signAuthnRequest?: boolean;
+    /**
+     * Whether to sign outgoing LogoutRequests. Requires a Signing Keypair to be set.
+     */
+    signLogoutRequest?: boolean;
 }
 
 /**
@@ -213,6 +227,8 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
             json["binding_type"] == null
                 ? undefined
                 : BindingTypeEnumFromJSON(json["binding_type"]),
+        sloBinding:
+            json["slo_binding"] == null ? undefined : SloBindingEnumFromJSON(json["slo_binding"]),
         verificationKp:
             json["verification_kp"] === undefined
                 ? undefined
@@ -245,6 +261,10 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
                   : json["encryption_kp"],
         signedAssertion: json["signed_assertion"] == null ? undefined : json["signed_assertion"],
         signedResponse: json["signed_response"] == null ? undefined : json["signed_response"],
+        signAuthnRequest:
+            json["sign_authn_request"] == null ? undefined : json["sign_authn_request"],
+        signLogoutRequest:
+            json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
     };
 }
 
@@ -282,6 +302,7 @@ export function PatchedSAMLSourceRequestToJSONTyped(
         force_authn: value["forceAuthn"],
         name_id_policy: SAMLNameIDPolicyEnumToJSON(value["nameIdPolicy"]),
         binding_type: BindingTypeEnumToJSON(value["bindingType"]),
+        slo_binding: SloBindingEnumToJSON(value["sloBinding"]),
         verification_kp: value["verificationKp"],
         signing_kp: value["signingKp"],
         digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
@@ -290,5 +311,7 @@ export function PatchedSAMLSourceRequestToJSONTyped(
         encryption_kp: value["encryptionKp"],
         signed_assertion: value["signedAssertion"],
         signed_response: value["signedResponse"],
+        sign_authn_request: value["signAuthnRequest"],
+        sign_logout_request: value["signLogoutRequest"],
     };
 }

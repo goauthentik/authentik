@@ -835,6 +835,7 @@ export * from "./SettingsRequest.js";
 export * from "./SeverityEnum.js";
 export * from "./ShellChallenge.js";
 export * from "./SignatureAlgorithmEnum.js";
+export * from "./SloBindingEnum.js";
 export * from "./Software.js";
 export * from "./SoftwareRequest.js";
 export * from "./Source.js";
