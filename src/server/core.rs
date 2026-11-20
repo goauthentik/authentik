@@ -157,8 +157,7 @@ async fn forward_request(
     let accept_header = request
         .headers()
         .get(ACCEPT)
-        .map(|v| v.to_str().unwrap_or_default().to_owned())
-        .unwrap_or_default();
+        .map_or_default(|v| v.to_str().unwrap_or_default().to_owned());
 
     if !GUNICORN_READY.load(Ordering::Relaxed) {
         return Ok(startup_response(&accept_header));
@@ -170,7 +169,7 @@ async fn forward_request(
     let uri = Uri::builder()
         .scheme("http")
         .authority("localhost:8000")
-        .path_and_query(uri.path_and_query().map(|x| x.as_str()).unwrap_or_default())
+        .path_and_query(uri.path_and_query().map_or_default(|x| x.as_str()))
         .build()?;
     *request.uri_mut() = uri;
 
@@ -735,8 +734,7 @@ mod websockets {
         let path_q = request
             .uri()
             .path_and_query()
-            .map(|x| x.as_str())
-            .unwrap_or_default();
+            .map_or_default(|x| x.as_str());
         let uri = format!("ws://localhost:8000{path_q}");
 
         let mut ws_request =

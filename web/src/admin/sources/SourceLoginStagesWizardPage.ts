@@ -36,7 +36,6 @@ export class SourceLoginStagesWizardPage extends WizardPage {
     public override activeCallback = async () => {
         // The source already exists at this point, so there is nothing left to cancel.
         this.host.cancelable = false;
-        this.host.valid = true;
 
         // ponytail: first 100 identification stages only, page through if anyone has more.
         const { results } = await aki(StagesApi).stagesIdentificationList({ pageSize: 100 });
