@@ -44,7 +44,7 @@ The **Schedule Offboarding** button changes to **Cancel Offboarding**. You can a
 
 The **Events** > **Offboardings** page shows pending offboardings by default. Disable **Only show pending offboardings** to include available completed, failed, and canceled records.
 
-The **Scheduled by** column identifies the user or [user expiration rule](./user-expiration.mdx) responsible for each offboarding. Use the **Scheduled by** filter beside the search field to select **All**, **Manual**, or **Expiration rule**.
+The **Scheduled by** column shows the administrator or [user expiration rule](./user-expiration.mdx) that scheduled each offboarding. Use the **Scheduled by** filter to see **All**, **Manual**, or **Expiration rule** offboardings.
 
 | State         | Description                                                                                         |
 | ------------- | --------------------------------------------------------------------------------------------------- |
@@ -55,7 +55,7 @@ The **Scheduled by** column identifies the user or [user expiration rule](./user
 
 authentik checks for due offboardings every five minutes. The action normally starts within five minutes after the scheduled time, but a task backlog can delay it further. If an attempt fails, authentik retries the complete offboarding action. After five failed attempts, the offboarding is marked **Failed** and is not retried again.
 
-After an offboarding completes, authentik writes a **User Offboarded** event to the [events log](./events/index.mdx). The event identifies the administrator who scheduled the offboarding, the selected action, and whether session and token revocation were enabled.
+After an offboarding completes, authentik writes a **User Offboarded** event to the [events log](./events/index.mdx). The event identifies the administrator or expiration rule that scheduled the offboarding, the action taken, and whether session and token revocation were enabled.
 
 :::note
 A successful **Delete** action removes the offboarding record with the user account. The **User Offboarded** event remains in the audit log.
