@@ -102,6 +102,17 @@ export interface PatchedOAuthSourceRequest {
      * How to perform authentication during an authorization_code token request flow
      */
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
+    /**
+     * Email domains this source is trusted for when redeeming ID-JAGs. An ID-JAG whose subject
+     * isn't connected to a user yet is connected to the one active user with its email address, if
+     * that address is in one of these domains.
+     */
+    idJagEmailDomains?: Array<string>;
+    /**
+     * ID-JAG email addresses only match users connected to an enabled source, such as a directory,
+     * or members of this group, as users who registered themselves may not own their address.
+     */
+    idJagEmailGroup?: string | null;
 }
 
 /**
@@ -200,6 +211,14 @@ export function PatchedOAuthSourceRequestFromJSONTyped(
             json["authorization_code_auth_method"] == null
                 ? undefined
                 : AuthorizationCodeAuthMethodEnumFromJSON(json["authorization_code_auth_method"]),
+        idJagEmailDomains:
+            json["id_jag_email_domains"] == null ? undefined : json["id_jag_email_domains"],
+        idJagEmailGroup:
+            json["id_jag_email_group"] === undefined
+                ? undefined
+                : json["id_jag_email_group"] === null
+                  ? null
+                  : json["id_jag_email_group"],
     };
 }
 
@@ -244,5 +263,7 @@ export function PatchedOAuthSourceRequestToJSONTyped(
         authorization_code_auth_method: AuthorizationCodeAuthMethodEnumToJSON(
             value["authorizationCodeAuthMethod"],
         ),
+        id_jag_email_domains: value["idJagEmailDomains"],
+        id_jag_email_group: value["idJagEmailGroup"],
     };
 }
