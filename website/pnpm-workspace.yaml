@@ -35,7 +35,7 @@ catalog:
     "@docusaurus/types": "^3.10.2"
     "@docusaurus/utils": "^3.10.2"
     "@types/node": "^26.1.2"
-    esbuild: "^0.28.1"
+    esbuild: "^0.28.2"
     typescript: "^6.0.3"
 
 overrides:
