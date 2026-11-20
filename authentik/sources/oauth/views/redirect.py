@@ -55,6 +55,8 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             raise Http404(f"Unknown OAuth source '{slug}'.") from None
         if not source.enabled:
             raise Http404(f"source {slug} is not enabled.")
+        if source.source_type.assertion_only:
+            raise Http404(f"Source {slug} doesn't offer sign-in.")
         client = self.get_client(source, callback=self.get_callback_url(source))
         params = self.get_additional_parameters(source)
         params.setdefault("scope", [])

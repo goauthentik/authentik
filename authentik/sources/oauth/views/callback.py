@@ -42,6 +42,8 @@ class OAuthCallback(OAuthClientMixin, View):
 
         if not self.source.enabled:
             raise Http404(f"Source {slug} is not enabled.")
+        if self.source.source_type.assertion_only:
+            raise Http404(f"Source {slug} doesn't offer sign-in.")
         client = self.get_client(self.source, callback=self.get_callback_url(self.source))
         # Fetch access token
         self.token = client.get_access_token()

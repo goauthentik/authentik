@@ -443,8 +443,12 @@ class IdJagTokenRequest(TokenRequest):
 
         A source can match by email instead, for issuers whose subjects aren't stable (Claude
         finds the users it issues for by email, and storing `sub` is optional): the user is
-        found by email on every redemption, and connections are neither read nor written."""
-        if self.source.id_jag_user_matching == IdJagUserMatching.EMAIL:
+        found by email on every redemption, and connections are neither read nor written. An
+        assertion-only source (Identity Assertion Issuer) always works this way."""
+        if (
+            self.source.source_type.assertion_only
+            or self.source.id_jag_user_matching == IdJagUserMatching.EMAIL
+        ):
             return self.find_id_jag_user_by_email()
         connection = (
             UserOAuthSourceConnection.objects.filter(

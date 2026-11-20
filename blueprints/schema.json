@@ -12952,6 +12952,7 @@
                         "github",
                         "gitlab",
                         "google",
+                        "idjagissuer",
                         "mailcow",
                         "okta",
                         "patreon",
@@ -13006,7 +13007,6 @@
                 },
                 "consumer_key": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Consumer key"
                 },
                 "consumer_secret": {
@@ -13063,6 +13063,11 @@
                     ],
                     "title": "ID-JAG user matching",
                     "description": "How an ID-JAG from this source finds its user: by the issuer's subject, linked by email the first time, or by email on every redemption, for issuers whose subjects aren't stable."
+                },
+                "id_jag_issuer": {
+                    "type": "string",
+                    "title": "ID-JAG issuer",
+                    "description": "Issuer identifier of an Identity Assertion Issuer source, as it publishes it. ID-JAGs are accepted when their `iss` equals it exactly."
                 }
             },
             "required": []
