@@ -32,7 +32,7 @@ where
     S: Send + 'static,
 {
     type Future = BoxFuture<'static, std::io::Result<(Self::Stream, Self::Service)>>;
-    type Service = AddExtension<A::Service, TlsState>;
+    type Service = AddExtension<axum_server::tls::TlsService<A::Service>, TlsState>;
     type Stream = TlsStream<A::Stream>;
 
     #[instrument(skip_all)]
