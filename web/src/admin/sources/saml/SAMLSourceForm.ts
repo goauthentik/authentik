@@ -216,6 +216,18 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("URL that the initial Login request is sent to.")}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("IdP Entity ID")} name="idpEntityId">
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.idpEntityId)}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "The Entity ID of the identity provider, also known as its Issuer. When set, responses and assertions from the identity provider must be issued by it. When left empty, the Issuer is not verified.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("SLO URL")} name="sloUrl">
                         <input
                             type="text"

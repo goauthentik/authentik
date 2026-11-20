@@ -94,6 +94,16 @@ class SAMLSource(Source):
         default="",
         help_text=_("Also known as Entity ID. Defaults to the Metadata URL."),
     )
+    idp_entity_id = models.TextField(
+        blank=True,
+        default="",
+        verbose_name=_("IdP Entity ID"),
+        help_text=_(
+            "Entity ID of the identity provider. When set, the Issuer of responses and "
+            "assertions from the identity provider must match it. When left empty, the "
+            "Issuer is not verified."
+        ),
+    )
 
     sso_url = models.TextField(
         validators=[DomainlessURLValidator(schemes=("http", "https"))],

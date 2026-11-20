@@ -13735,6 +13735,11 @@
                     "title": "Issuer override",
                     "description": "Also known as Entity ID. Defaults to the Metadata URL."
                 },
+                "idp_entity_id": {
+                    "type": "string",
+                    "title": "IdP Entity ID",
+                    "description": "Entity ID of the identity provider. When set, the Issuer of responses and assertions from the identity provider must match it. When left empty, the Issuer is not verified."
+                },
                 "sso_url": {
                     "type": "string",
                     "minLength": 1,

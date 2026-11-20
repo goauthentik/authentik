@@ -124,6 +124,18 @@ export class SAMLSourceViewPage extends AKElement {
                                             </div>
                                         </dd>
                                     </div>
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${msg("IdP Entity ID")}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.source.idpEntityId || "-"}
+                                            </div>
+                                        </dd>
+                                    </div>
                                 </dl>
                             </div>
                             <div class="pf-c-card__footer">

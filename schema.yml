@@ -27045,6 +27045,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: idp_entity_id
+        schema:
+          type: string
+      - in: query
         name: issuer_override
         schema:
           type: string
@@ -54563,6 +54567,11 @@ components:
         issuer_override:
           type: string
           description: Also known as Entity ID. Defaults to the Metadata URL.
+        idp_entity_id:
+          type: string
+          description: Entity ID of the identity provider. When set, the Issuer of
+            responses and assertions from the identity provider must match it. When
+            left empty, the Issuer is not verified.
         sso_url:
           type: string
           minLength: 1
@@ -58875,6 +58884,11 @@ components:
           description: Get the resolved Issuer, falling back to the metadata URL when
             unset
           readOnly: true
+        idp_entity_id:
+          type: string
+          description: Entity ID of the identity provider. When set, the Issuer of
+            responses and assertions from the identity provider must match it. When
+            left empty, the Issuer is not verified.
         sso_url:
           type: string
           description: URL that the initial Login request is sent to.
@@ -59079,6 +59093,11 @@ components:
         issuer_override:
           type: string
           description: Also known as Entity ID. Defaults to the Metadata URL.
+        idp_entity_id:
+          type: string
+          description: Entity ID of the identity provider. When set, the Issuer of
+            responses and assertions from the identity provider must match it. When
+            left empty, the Issuer is not verified.
         sso_url:
           type: string
           minLength: 1
