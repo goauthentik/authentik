@@ -1,0 +1,8 @@
+{
+    "extends": "@goauthentik/tsconfig/node",
+    "compilerOptions": {
+        "rootDir": ".."
+    },
+    "include": ["./**/*.ts"],
+    "exclude": ["./**/out/**", "./**/node_modules/**"]
+}

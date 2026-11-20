@@ -1,0 +1,9 @@
+{
+    "extends": "@goauthentik/tsconfig/node",
+    "compilerOptions": {
+        "emitDeclarationOnly": false,
+        "erasableSyntaxOnly": true
+    },
+    "include": ["lib/**/*.ts", "commands/**/*.ts"],
+    "exclude": ["out", "node_modules", "test"]
+}
