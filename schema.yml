@@ -54372,8 +54372,10 @@ components:
           format: uri
         audience:
           type: string
-          description: Value of the audience restriction field of the assertion. When
-            left empty, no audience restriction will be added.
+          description: Entity ID of the service provider. Used as the audience restriction
+            of the assertion and as the expected Issuer of requests from the service
+            provider. When left empty, no audience restriction is added and the Issuer
+            is not verified.
         issuer_override:
           type: string
           description: Also known as EntityID. Providing a value overrides the default
@@ -58435,8 +58437,10 @@ components:
           format: uri
         audience:
           type: string
-          description: Value of the audience restriction field of the assertion. When
-            left empty, no audience restriction will be added.
+          description: Entity ID of the service provider. Used as the audience restriction
+            of the assertion and as the expected Issuer of requests from the service
+            provider. When left empty, no audience restriction is added and the Issuer
+            is not verified.
         issuer_override:
           type: string
           description: Also known as EntityID. Providing a value overrides the default
@@ -58658,8 +58662,10 @@ components:
           format: uri
         audience:
           type: string
-          description: Value of the audience restriction field of the assertion. When
-            left empty, no audience restriction will be added.
+          description: Entity ID of the service provider. Used as the audience restriction
+            of the assertion and as the expected Issuer of requests from the service
+            provider. When left empty, no audience restriction is added and the Issuer
+            is not verified.
         issuer_override:
           type: string
           description: Also known as EntityID. Providing a value overrides the default

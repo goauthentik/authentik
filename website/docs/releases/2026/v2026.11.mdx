@@ -131,6 +131,12 @@ If a hash is rejected, [generate a new one](../../core/password-hashes.mdx#gener
 
 When a SAML provider has a verification certificate, logout requests and logout responses from the service provider must now be signed with it. Previously, unsigned logout messages were accepted. Before upgrading, check that service providers which sign their authentication requests also sign their logout messages.
 
+### SAML providers verify the issuer of requests
+
+When a SAML provider has an **Audience** set, authentication requests, logout requests, and logout responses from the service provider must now name that value as their `<Issuer>`. Previously, the issuer of these messages was not checked. Providers without an **Audience** are not affected.
+
+Before upgrading, verify that the **Audience** of each SAML provider is the entity ID of its service provider. Logins and logouts from a service provider that uses a different entity ID fail after the upgrade. For more details, refer to the [SAML provider documentation](../../add-secure-apps/providers/saml/index.mdx#issuer-verification).
+
 ### Passwords are stored as authenticator devices
 
 Password hashes are now stored on password devices belonging to users. Existing passwords migrate automatically during upgrade.

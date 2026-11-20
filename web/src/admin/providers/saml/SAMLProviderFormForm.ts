@@ -190,6 +190,9 @@ export function renderForm({
                     inputmode="url"
                     value="${ifDefined(provider.audience)}"
                     .errorMessages=${errors.audience}
+                    help=${msg(
+                        "The Entity ID of the service provider. It is set as the audience of the assertion, and requests from the service provider must use it as their Issuer. When left empty, no audience restriction is added and the Issuer is not checked.",
+                    )}
                 ></ak-text-input>
                 <ak-text-input
                     name="slsUrl"
