@@ -32,6 +32,18 @@ Use `--report` to write per-locale Markdown reports or `--jsonl` to print findin
 
 TSV files use a header row `tier\tcategory\tword`; supported tiers are `vulgar`, `offensive`, and `sensitive`. Filenames identify BCP 47 locales, for example `en-US.tsv` or `words-en_US.tsv`.
 
+## Sealed lexicon for CI
+
+CI can't read the private vocabulary, so the database is committed encrypted as `lexicon-audit.db.gpg` (GnuPG, AES-256, symmetric). The passphrase is read from `LEXICON_AUDIT_PASSPHRASE` only, never from the command line.
+
+```sh
+pnpm exec lexicon-audit build
+LEXICON_AUDIT_PASSPHRASE=… pnpm exec lexicon-audit seal     # writes lexicon-audit.db.gpg; commit it
+LEXICON_AUDIT_PASSPHRASE=… pnpm exec lexicon-audit unseal   # writes out/lexicon-audit.db
+```
+
+The `Translation - Lexicon audit` workflow unseals the database with the `LEXICON_AUDIT_PASSPHRASE` secret from the `lexicon-audit` environment and runs `pnpm run lint:lexicon` from the repository root. Pull requests from forks can't read the secret and are skipped. Reseal and commit after every rebuild, including allowlist changes. Requires `gpg` on `PATH`.
+
 ## Development
 
 ```sh
