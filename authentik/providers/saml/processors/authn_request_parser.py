@@ -9,6 +9,7 @@ from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import (
+    NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
@@ -20,6 +21,7 @@ from authentik.common.saml.exceptions import (
 from authentik.common.saml.parsers.verify import (
     verify_detached_signature,
     verify_enveloped_signature,
+    verify_issuer,
 )
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
@@ -80,6 +82,11 @@ class AuthNRequestParser:
                     "ACS URL of {provider_acs_url}."
                 ).format(request_acs_url=request_acs_url, provider_acs_url=self.provider.acs_url),
             )
+
+        # The Audience of the provider is the entity ID of the service provider, which the
+        # request has to name as its Issuer (SAML 2.0 profiles §4.1.4.1)
+        issuer = root.find(f"{{{NS_SAML_ASSERTION}}}Issuer")
+        verify_issuer(issuer.text if issuer is not None else None, self.provider.audience)
 
         # `ForceAuthn` is an optional attribute. When true, the SP requires the IdP to
         # actively re-authenticate the user instead of relying on an existing session

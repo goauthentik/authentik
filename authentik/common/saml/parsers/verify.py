@@ -10,6 +10,7 @@ from authentik.common.saml.constants import NS_MAP, SIGN_ALGORITHM_TRANSFORM_MAP
 from authentik.common.saml.exceptions import (
     ERROR_CANNOT_DECODE_REQUEST,
     ERROR_FAILED_TO_VERIFY,
+    ERROR_ISSUER_MISMATCH,
     ERROR_SIGNATURE_REQUIRED_BUT_ABSENT,
     CannotHandleAssertion,
 )
@@ -84,3 +85,20 @@ def verify_detached_signature(  # noqa: PLR0913
         )
     except xmlsec.Error as exc:
         raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY, detail=exc) from exc
+
+
+def verify_issuer(issuer: str | None, expected: str) -> None:
+    """Verify that a message was issued by the entity it is expected from. `expected` is the
+    entity ID configured for the sender; when it is empty there is nothing to compare against
+    and the check is skipped.
+
+    The Issuer is required on an AuthnRequest (SAML 2.0 profiles §4.1.4.1), a LogoutRequest
+    (§4.4.4.1) and a LogoutResponse (§4.4.4.2), so a message without one is rejected."""
+    expected = expected.strip()
+    if not expected:
+        return
+    if issuer is None or issuer.strip() != expected:
+        raise CannotHandleAssertion(
+            ERROR_ISSUER_MISMATCH,
+            detail=f"Issuer of {issuer!r} doesn't match expected entity ID of {expected!r}.",
+        )

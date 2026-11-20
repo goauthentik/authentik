@@ -13,6 +13,9 @@ ERROR_FAILED_TO_VERIFY = _("Failed to verify signature")
 ERROR_ACS_URL_MISMATCH = _(
     "The ACS URL in the request does not match the ACS URL configured on the provider."
 )
+ERROR_ISSUER_MISMATCH = _(
+    "The Issuer of the SAML message does not match the Audience configured on the provider."
+)
 
 
 class CannotHandleAssertion(TracingIgnoredException):

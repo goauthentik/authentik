@@ -54,6 +54,26 @@ This field was previously named **Issuer**. Existing values were preserved durin
 
 :::
 
+## Audience
+
+The **Audience** field (under **Protocol settings** on a SAML provider) is the Entity ID of the SP. authentik adds it to the assertion as the `<Audience>` of an `<AudienceRestriction>`, which the SP uses to confirm that the assertion was issued for it.
+
+When you [import SP metadata](./create-saml-provider.mdx#create-a-saml-provider-from-sp-metadata-import-sp-metadata), authentik sets the **Audience** to the `entityID` of the SP.
+
+When the **Audience** field is empty, authentik doesn't add an audience restriction to the assertion.
+
+### Issuer verification
+
+When the **Audience** field is set, authentik also requires the SP to identify itself with that value. The `<Issuer>` of each of the following messages must match the **Audience**:
+
+- `AuthnRequest`
+- `LogoutRequest`
+- `LogoutResponse`
+
+A message with a different `<Issuer>`, or without one, is rejected. For an `AuthnRequest` or a `LogoutRequest`, the user is shown an error and authentik creates a configuration error event that contains both values. For a `LogoutResponse`, authentik logs a warning and redirects the user to the authentik home page.
+
+When the **Audience** field is empty, the `<Issuer>` isn't verified. IdP-initiated logins aren't affected because they don't involve a request from the SP.
+
 ## Certificates
 
 Certificates are vital for trust and security during SAML authentication and are used for several purposes.
