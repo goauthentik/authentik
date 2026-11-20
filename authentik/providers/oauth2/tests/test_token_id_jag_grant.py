@@ -26,8 +26,21 @@ from authentik.common.oauth.constants import (
     TOKEN_TYPE_URI_ACCESS_TOKEN,
     TOKEN_TYPE_URI_JWT,
 )
-from authentik.core.models import Application, User, UserTypes
-from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
+from authentik.core.models import (
+    Application,
+    Group,
+    Source,
+    User,
+    UserSourceConnection,
+    UserTypes,
+)
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_cert,
+    create_test_flow,
+    create_test_user,
+)
+from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
@@ -639,7 +652,195 @@ class TestTokenIdJagGrant(OAuthTestCase):
         )
         self.user.is_active = False
         self.user.save()
-        self.assert_rejected(self.id_jag(), "access_denied", "subject_not_provisioned")
+        self.assert_rejected(self.id_jag(), "access_denied", "subject_inactive")
+
+    def email_user(self, email: str = "alex@corp.example", linked: bool = True, **kwargs: Any):
+        """A user without a connection to the ID-JAG's source, and that source trusted for
+        corp.example emails. A `linked` user is connected to a directory, so their address
+        may identify them."""
+        self.source.id_jag_email_domains = ["corp.example"]
+        self.source.save()
+        user = create_test_user(**kwargs)
+        user.email = email
+        user.save()
+        if linked:
+            UserSourceConnection.objects.create(
+                user=user, source=self.directory(), identifier=generate_id()
+            )
+        return user
+
+    def directory(self) -> Source:
+        """A source users are connected to, which isn't trusted for ID-JAGs"""
+        if not hasattr(self, "_directory"):
+            self._directory = Source.objects.create(name=generate_id(), slug=generate_id())
+        return self._directory
+
+    def test_email_eligibility(self):
+        """Only users connected to an enabled source, or members of the source's ID-JAG email
+        group, are found by email: a user who registered themselves never is"""
+        user = self.email_user(linked=False)
+        self.assert_rejected(
+            self.id_jag(sub=generate_id(), email=user.email),
+            "access_denied",
+            "subject_not_provisioned",
+        )
+        # A member of a subgroup of the source's ID-JAG email group
+        parent = Group.objects.create(name=generate_id())
+        child = Group.objects.create(name=generate_id())
+        child.parents.add(parent)
+        child.users.add(user)
+        self.source.id_jag_email_group = parent
+        self.source.save()
+        self.assertEqual(
+            self.redeem(self.id_jag(sub=generate_id(), email=user.email)).status_code, 200
+        )
+
+    def test_email_eligibility_disabled_directory(self):
+        """A connection to a disabled source doesn't make an address trusted, and an
+        ineligible user with the same address doesn't make it ambiguous"""
+        user = self.email_user()
+        directory = self.directory()
+        directory.enabled = False
+        directory.save()
+        self.assert_rejected(
+            self.id_jag(sub=generate_id(), email=user.email),
+            "access_denied",
+            "subject_not_provisioned",
+        )
+        directory.enabled = True
+        directory.save()
+        self.email_user(email=user.email.upper(), linked=False)
+        self.assertEqual(
+            self.redeem(self.id_jag(sub=generate_id(), email=user.email)).status_code, 200
+        )
+
+    def test_email_link(self):
+        """§9.8: without a connection, a verified email in a trusted domain connects the one
+        active user with that address, once; later ID-JAGs resolve by `sub`"""
+        user = self.email_user()
+        subject = generate_id()
+        response = self.redeem(self.id_jag(sub=subject, email="Alex@CORP.example"))
+        self.assertEqual(response.status_code, 200, response.content)
+        connection = UserOAuthSourceConnection.objects.get(source=self.source, user=user)
+        self.assertEqual(connection.identifier, subject)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.SOURCE_LINKED, user__pk=user.pk, context__identifier=subject
+            ).exists()
+        )
+        # Resolved by `sub` from now on, whatever the email
+        user.email = "renamed@corp.example"
+        user.save()
+        response = self.redeem(self.id_jag(sub=subject, email="someone@else.example"))
+        self.assertEqual(response.status_code, 200, response.content)
+
+    def test_email_link_refused(self):
+        """Email linking needs a trusted domain, a verified address naming exactly one
+        active person, and that person not connected to another subject"""
+        user = self.email_user()
+        sub = generate_id()
+        # The source isn't trusted for any domain
+        self.source.id_jag_email_domains = []
+        self.source.save()
+        self.assert_rejected(
+            self.id_jag(sub=sub, email=user.email), "access_denied", "subject_not_provisioned"
+        )
+        self.source.id_jag_email_domains = ["corp.example"]
+        self.source.save()
+        for email, error, cause in (
+            (None, "access_denied", "subject_not_provisioned"),
+            ("alex@sub.corp.example", "access_denied", "email_domain_not_trusted"),
+            ("alex@corp.example.evil", "access_denied", "email_domain_not_trusted"),
+            ("corp.example", "access_denied", "email_domain_not_trusted"),
+            ("@corp.example", "access_denied", "email_domain_not_trusted"),
+            ("nobody@corp.example", "access_denied", "subject_not_provisioned"),
+            (["alex@corp.example"], "invalid_grant", "invalid_email_claim"),
+        ):
+            with self.subTest(email=email):
+                self.assert_rejected(self.id_jag(sub=sub, email=email), error, cause)
+        for verified in (False, "true"):
+            with self.subTest(email_verified=verified):
+                self.assert_rejected(
+                    self.id_jag(sub=sub, email=user.email, email_verified=verified),
+                    "access_denied",
+                    "email_not_verified",
+                )
+        # The user already has a connection to this source, for another subject
+        UserOAuthSourceConnection.objects.create(
+            user=user, source=self.source, identifier=generate_id()
+        )
+        self.assert_rejected(
+            self.id_jag(sub=sub, email=user.email), "access_denied", "subject_conflict"
+        )
+        self.assertFalse(
+            UserOAuthSourceConnection.objects.filter(source=self.source, identifier=sub).exists()
+        )
+
+    def test_email_link_not_unique(self):
+        """Two active users with the address: nobody is connected"""
+        self.email_user()
+        self.email_user(email="ALEX@corp.example")
+        self.assert_rejected(
+            self.id_jag(sub=generate_id(), email="alex@corp.example"),
+            "access_denied",
+            "email_not_unique",
+        )
+
+    def test_email_link_skips_inactive_and_service_accounts(self):
+        """Inactive users and service accounts are never found by email"""
+        self.email_user(is_active=False)
+        self.email_user(type=UserTypes.SERVICE_ACCOUNT)
+        self.assert_rejected(
+            self.id_jag(sub=generate_id(), email="alex@corp.example"),
+            "access_denied",
+            "subject_not_provisioned",
+        )
+
+    def test_email_link_policy_denied(self):
+        """A user the application denies isn't connected"""
+        user = self.email_user()
+        PolicyBinding.objects.create(target=self.app, user=create_test_user(), order=0)
+        sub = generate_id()
+        self.assert_rejected(
+            self.id_jag(sub=sub, email=user.email), "access_denied", "policy_denied"
+        )
+        self.assertFalse(UserOAuthSourceConnection.objects.filter(user=user).exists())
+
+    def test_email_domains_api(self):
+        """Domains are normalized; invalid ones are refused"""
+        self.client.force_login(create_test_admin_user())
+        url = reverse("authentik_api:oauthsource-detail", kwargs={"slug": self.source.slug})
+        # Partial updates of an OpenID Connect source still have to name its URLs
+        urls = {
+            "enabled": False,
+            "authorization_url": self.source.authorization_url,
+            "access_token_url": self.source.access_token_url,
+            "profile_url": self.source.profile_url,
+        }
+        response = self.client.patch(
+            url,
+            {**urls, "id_jag_email_domains": ["Corp.Example.", "corp.example"]},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.source.refresh_from_db()
+        self.assertEqual(self.source.id_jag_email_domains, ["corp.example"])
+        for domain in ("*.corp.example", "alex@corp.example", "localhost", "", "corp .example"):
+            with self.subTest(domain=domain):
+                response = self.client.patch(
+                    url,
+                    {**urls, "id_jag_email_domains": [domain]},
+                    content_type="application/json",
+                )
+                self.assertEqual(response.status_code, 400, response.content)
+        group = Group.objects.create(name=generate_id())
+        response = self.client.patch(
+            url, {**urls, "id_jag_email_group": str(group.pk)}, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(loads(response.content)["id_jag_email_group"], str(group.pk))
+        self.source.refresh_from_db()
+        self.assertEqual(self.source.id_jag_email_group, group)
 
     def test_policy_denied(self):
         """A valid ID-JAG for a user the application denies is access_denied (§4.4.3)"""

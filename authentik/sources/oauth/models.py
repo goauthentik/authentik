@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.http.request import HttpRequest
 from django.urls import reverse
@@ -68,6 +69,38 @@ class OAuthSource(NonCreatableType, Source):
     oidc_well_known_url = models.TextField(default="", blank=True)
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
+    # ID-JAG (draft-ietf-oauth-identity-assertion-authz-grant §9.8): an issuer can assert any
+    # email, so emails are only trusted for subject resolution in domains the administrator
+    # trusts this issuer for.
+    id_jag_email_domains = ArrayField(
+        models.TextField(),
+        default=list,
+        db_default=[],
+        blank=True,
+        verbose_name=_("ID-JAG email domains"),
+        help_text=_(
+            "Email domains this source is trusted for when redeeming ID-JAGs. An ID-JAG whose "
+            "subject isn't connected to a user yet is connected to the one active user with "
+            "its email address, if that address is in one of these domains."
+        ),
+    )
+    # Self-registered users never match by email: anyone can register with an address in a
+    # trusted domain, so an address only identifies users it was established for elsewhere.
+    id_jag_email_group = models.ForeignKey(
+        "authentik_core.Group",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+        # Only followed from the source, and sources are few, so it isn't indexed
+        db_index=False,
+        verbose_name=_("ID-JAG email group"),
+        help_text=_(
+            "ID-JAG email addresses only match users connected to an enabled source, such as "
+            "a directory, or members of this group, as users who registered themselves may "
+            "not own their address."
+        ),
+    )
 
     pkce = models.TextField(
         choices=PKCEMethod.choices, default=PKCEMethod.NONE, verbose_name=_("PKCE")
