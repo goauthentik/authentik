@@ -50,7 +50,7 @@ export class TaskStatusSummary extends AKElement {
             ],
             [
                 msg("Error tasks"),
-                "fa fa-exclamation-triangle",
+                "fa fa-exclamation-circle",
                 this.status ? this.status.error + this.status.rejected : null,
             ],
         ];
