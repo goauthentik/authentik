@@ -119,6 +119,16 @@ Setting the issuer mode to **Same identifier is used for all providers** (referr
 Global issuer mode still serves the discovery document at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`, not at the root issuer URL.
 :::
 
+### Issuer in authorization responses
+
+When **Include issuer in authorization responses** (under **Advanced protocol settings**) is enabled, authentik adds an `iss` parameter to every response that it returns to the client's redirect URI, as described in [RFC 9207](https://www.rfc-editor.org/rfc/rfc9207.html). This includes both successful responses and errors, in the `query`, `fragment`, and `form_post` response modes. The value is the provider's issuer, the same as the `issuer` in the discovery document and the `iss` claim of ID tokens, and the discovery document advertises `"authorization_response_iss_parameter_supported": true`. Clients that use more than one authorization server can compare this value with the issuer they expect, to detect mix-up attacks.
+
+The setting is enabled by default for new providers. Providers that existed before authentik 2026.11 keep it disabled until you enable it. Providers created by [dynamic client registration](./dynamic-client-registration.mdx) copy the setting from the provider that they were registered through.
+
+:::warning Use a consistent URL
+authentik builds the issuer from the URL that each request uses. If clients reach authentik through different URLs, for example an internal URL for the discovery document and a public URL in the browser, the `iss` parameter does not match the issuer that the client expects, and clients that validate it reject the response. Before you enable the setting, make sure that authentik produces the same issuer for every URL that your clients use.
+:::
+
 ## OAuth 2.0 flows and grant types
 
 authentik supports the following general OAuth 2.0 and OpenID Connect flows:
