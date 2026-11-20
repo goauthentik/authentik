@@ -484,16 +484,21 @@ class OAuth2Provider(WebfingerProvider, Provider):
         :param jwt_type The type of the JWT. This will be put in the JWT header using the `typ`
             parameter. See RFC7515 Section 4.1.9. If not set fallback to the default of `JWT`.
         """
+        encoded = self.sign(payload, jwt_type=jwt_type)
+        if self.encryption_key:
+            return self.encrypt(encoded)
+        return encoded
+
+    def sign(self, payload: dict[str, Any], jwt_type: str | None = None) -> str:
+        """Sign `payload` as a JWT, without encrypting it even when the provider has an
+        encryption key. See `encode` for the parameters."""
         headers = {}
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
         if jwt_type is not None:
             headers["typ"] = jwt_type
         key, alg = self.jwt_key
-        encoded = encode(payload, key, algorithm=alg, headers=headers)
-        if self.encryption_key:
-            return self.encrypt(encoded)
-        return encoded
+        return encode(payload, key, algorithm=alg, headers=headers)
 
     def encrypt(self, raw: str) -> str:
         """Encrypt JWT"""
