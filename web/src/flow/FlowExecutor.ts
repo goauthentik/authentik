@@ -17,7 +17,12 @@ import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { aki } from "#common/api/client";
-import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import {
+    APIError,
+    isCausedByTimeoutError,
+    parseAPIResponseError,
+    pluckErrorDetail,
+} from "#common/errors/network";
 import { FlowMeta, globalAK } from "#common/global";
 import { applyBackgroundImageProperty, resolveThemedUrl } from "#common/theme";
 
@@ -56,7 +61,7 @@ import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -71,6 +76,19 @@ const DefaultFlowMeta: FlowMeta = {
     layout: flow?.layout || FlowLayoutEnum.Stacked,
     title: flow?.title ?? "",
 };
+
+/**
+ * What the executor is doing with its current challenge.
+ */
+export type FlowExecutorState =
+    | { kind: "loading"; challenge: ChallengeTypes | null }
+    | { kind: "ready"; challenge: ChallengeTypes | null }
+    | {
+          kind: "submitting";
+          challenge: ChallengeTypes | null;
+          submission: Promise<boolean>;
+          invisible: boolean;
+      };
 
 /**
  * An executor for authentik flows.
@@ -95,6 +113,12 @@ const DefaultFlowMeta: FlowMeta = {
 export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
     public static readonly DefaultLayout: FlowLayoutEnum = DefaultFlowMeta.layout;
 
+    /**
+     * Milliseconds before an in-flight challenge submission is aborted.
+     * Longer than the server's write timeout, which bounds blocking stages like Duo push.
+     */
+    public static readonly SubmitTimeout = 90_000;
+
     //#region Styles
 
     static styles: CSSResult[] = [
@@ -116,11 +140,39 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     @property({ type: String, attribute: "slug", useDefault: true })
     public flowSlug: string = window.location.pathname.split("/")[3];
 
-    @property({ attribute: false })
-    public challenge: ChallengeTypes | null = null;
+    @state()
+    protected executorState: FlowExecutorState = { kind: "loading", challenge: null };
 
-    @property({ type: Boolean })
-    public loading = true;
+    @property({ attribute: false })
+    public get challenge(): ChallengeTypes | null {
+        return this.executorState.challenge;
+    }
+
+    public set challenge(challenge: ChallengeTypes | null) {
+        const previous = this.executorState.challenge;
+
+        this.executorState = { ...this.executorState, challenge };
+        this.requestUpdate("challenge", previous);
+    }
+
+    public get loading(): boolean {
+        const { executorState } = this;
+
+        return (
+            executorState.kind === "loading" ||
+            (executorState.kind === "submitting" && !executorState.invisible)
+        );
+    }
+
+    public set loading(loading: boolean) {
+        // A submission settles its own state.
+        if (this.executorState.kind === "submitting") return;
+
+        this.executorState = {
+            kind: loading ? "loading" : "ready",
+            challenge: this.executorState.challenge,
+        };
+    }
 
     @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
     public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
@@ -214,7 +266,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     //#region Listeners
 
-    private setFlowErrorChallenge(error: APIError) {
+    private setFlowErrorChallenge(error: APIError | string) {
         this.challenge = {
             component: "ak-stage-flow-error",
             error: pluckErrorDetail(error),
@@ -288,6 +340,12 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         payload?: FlowChallengeResponseRequestBody,
         options?: SubmitOptions,
     ): Promise<boolean> => {
+        if (this.executorState.kind === "submitting") {
+            this.#logger.debug("Skipping submit, a submission is already in flight");
+
+            return this.executorState.submission;
+        }
+
         if (!payload) throw new Error("No payload provided");
 
         if (!this.challenge) throw new Error("No challenge provided");
@@ -308,16 +366,15 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             component: this.challenge.component as FlowChallengeResponseRequest["component"],
         } as FlowChallengeResponseRequest;
 
-        if (!options?.invisible) {
-            this.loading = true;
-        }
-
-        return this.#api
-            .flowsExecutorSolve({
-                flowSlug: this.flowSlug,
-                query: window.location.search.substring(1),
-                flowChallengeResponseRequest,
-            })
+        const submission = this.#api
+            .flowsExecutorSolve(
+                {
+                    flowSlug: this.flowSlug,
+                    query: window.location.search.substring(1),
+                    flowChallengeResponseRequest,
+                },
+                { signal: AbortSignal.timeout(FlowExecutor.SubmitTimeout) },
+            )
             .then((challenge) => {
                 window.dispatchEvent(new AKFlowAdvanceEvent());
 
@@ -333,13 +390,32 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 return !this.challenge.responseErrors;
             })
             .catch((error: APIError) => {
+                if (isCausedByTimeoutError(error)) {
+                    this.setFlowErrorChallenge(
+                        msg("The request timed out. Please try again.", {
+                            id: "flow.executor.submit.timeout.error",
+                        }),
+                    );
+
+                    return false;
+                }
+
                 this.setFlowErrorChallenge(error);
 
                 return false;
             })
             .finally(() => {
-                this.loading = false;
+                this.executorState = { kind: "ready", challenge: this.executorState.challenge };
             });
+
+        this.executorState = {
+            kind: "submitting",
+            challenge: this.executorState.challenge,
+            submission,
+            invisible: !!options?.invisible,
+        };
+
+        return submission;
     };
 
     //#region Render Challenge
