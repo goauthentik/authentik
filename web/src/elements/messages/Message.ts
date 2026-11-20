@@ -2,7 +2,7 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
-import { APIMessage, MessageLevel } from "#common/messages";
+import { MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
 
@@ -16,7 +16,7 @@ const LevelIconMap = {
     [MessageLevel.error]: "fas fa-exclamation-circle",
     [MessageLevel.warning]: "fas fa-exclamation-triangle",
     [MessageLevel.success]: "fas fa-check-circle",
-    [MessageLevel.info]: "fas fa-info",
+    [MessageLevel.info]: "fas fa-info-circle",
 } as const satisfies Record<MessageLevel, string>;
 
 const LevelARIALiveMap = {
@@ -42,7 +42,7 @@ export class Message extends AKElement {
     public icon?: string;
 
     @property({ attribute: false })
-    public onDismiss?: (message: APIMessage) => void;
+    public onDismiss?: () => void;
 
     @property({ type: Boolean })
     public live?: boolean;
@@ -56,6 +56,9 @@ export class Message extends AKElement {
 
     #timeoutID = -1;
 
+    // Track when the message is shown, so we know when to dismiss it.
+    #shownAt = 0;
+
     #scheduleDismiss = () => {
         clearTimeout(this.#timeoutID);
         this.#timeoutID = -1;
@@ -66,20 +69,30 @@ export class Message extends AKElement {
 
         if (!this.onDismiss) return;
 
-        this.#timeoutID = setTimeout(this.onDismiss, this.lifetime);
+        // Calculate how much time is *left* before we need to schedule the dismissal.
+        const remaining = Math.max(0, this.#shownAt + this.lifetime - Date.now());
+
+        this.#timeoutID = setTimeout(() => this.onDismiss?.(), remaining);
     };
 
     public firstUpdated() {
-        this.#scheduleDismiss();
+        this.#shownAt = Date.now();
     }
 
-    public willUpdate(changed: PropertyValues<this>) {
-        if (changed.has("lifetime") && this.lifetime) {
+    public updated(changed: PropertyValues<this>) {
+        if (changed.has("lifetime") || changed.has("onDismiss")) {
             this.#scheduleDismiss();
         }
     }
 
+    public connectedCallback() {
+        super.connectedCallback();
+
+        if (this.hasUpdated) this.#scheduleDismiss();
+    }
+
     public disconnectedCallback() {
+        super.disconnectedCallback();
         clearTimeout(this.#timeoutID);
     }
 
