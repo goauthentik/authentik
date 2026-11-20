@@ -234,6 +234,10 @@ This behavior does not apply to special scopes because they are not configurable
 The `bound_key` scope applies OpenID Connect Key Binding to the ID token. It does not bind the access token to the client's key.
 :::
 
+### Standard scopes without a default mapping
+
+The OIDC specification also defines the `address` and `phone` scopes. authentik does not include default scope mappings for them because it has no built-in address or phone number field on a user. To support these scopes, see [Add the address and phone scopes](./address-phone-scopes.mdx).
+
 ### authentik scopes
 
 - `goauthentik.io/api`: Grants access to the authentik API on behalf of the user.

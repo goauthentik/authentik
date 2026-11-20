@@ -1,0 +1,105 @@
+---
+title: Add the address and phone scopes
+description: Create scope mappings for the standard OIDC address and phone scopes, which authentik does not include by default.
+sidebar_position: 10
+---
+
+The OpenID Connect (OIDC) specification defines four [standard scopes that request claims](https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims): `profile`, `email`, `address`, and `phone`. authentik includes default scope mappings for `profile` and `email`, but not for `address` and `phone`.
+
+authentik has no built-in address or phone number field on a user, so there is no single source that a default mapping could read. To support these scopes, create a scope mapping for each one that reads from wherever you store the data, and then assign the mappings to the provider.
+
+| Scope     | Claims                                  |
+| --------- | --------------------------------------- |
+| `address` | `address`                               |
+| `phone`   | `phone_number`, `phone_number_verified` |
+
+## Prerequisites
+
+- An [OAuth2/OIDC provider](./create-oauth2-provider.mdx) for the application.
+- Address and phone data stored on your users, for example as [user attributes](../../../sys-mgmt/object-attributes.mdx).
+
+The examples on this page read the default [object attribute definitions](../../../sys-mgmt/object-attributes.mdx#default-object-attribute-definitions) `address_street`, `address_locality`, `address_region`, `address_postal_code`, and `phone_number`. If you store the data under different keys, change the keys in the expressions.
+
+## Create the address scope mapping
+
+The `address` scope returns a single `address` claim. Its value is a JSON object that can contain the members `formatted`, `street_address`, `locality`, `region`, `postal_code`, and `country`. All members are optional.
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Customization** > **Property Mappings**, and click **New Property Mapping**.
+3. Select **Scope Mapping**, click **Next**, and enter a **Name**.
+4. Set **Scope name** to `address`.
+5. Optionally enter a **Description**. authentik shows the description to the user on the consent page.
+6. Add this code to **Expression**:
+
+    ```python
+    address = {
+        "street_address": ak_obj_attr(request.user, "address_street"),
+        "locality": ak_obj_attr(request.user, "address_locality"),
+        "region": ak_obj_attr(request.user, "address_region"),
+        "postal_code": ak_obj_attr(request.user, "address_postal_code"),
+    }
+    # Only return the members that have a value.
+    address = {key: value for key, value in address.items() if value}
+    if not address:
+        return {}
+    return {"address": address}
+    ```
+
+7. Click **Finish**.
+
+authentik does not include a default object attribute definition for a country. To return the `country` member, store the value in a user attribute of your own and add it to the expression.
+
+## Create the phone scope mapping
+
+The `phone` scope returns the `phone_number` and `phone_number_verified` claims. The OIDC specification recommends the [E.164](https://www.itu.int/rec/T-REC-E.164) format for `phone_number`, for example `+1 (425) 555-1212`.
+
+1. Navigate to **Customization** > **Property Mappings**, and click **New Property Mapping**.
+2. Select **Scope Mapping**, click **Next**, and enter a **Name**.
+3. Set **Scope name** to `phone`.
+4. Optionally enter a **Description**.
+5. Add this code to **Expression**:
+
+    ```python
+    phone_number = ak_obj_attr(request.user, "phone_number")
+    if not phone_number:
+        return {}
+    return {
+        "phone_number": phone_number,
+        "phone_number_verified": False,
+    }
+    ```
+
+6. Click **Finish**.
+
+:::warning
+Return `phone_number_verified` as `True` only if a process proves that the user controls the phone number, and only if the number is stored in E.164 format. authentik does not verify phone numbers stored in user attributes. This is the same consideration that applies to the [`email_verified` claim](./verify-email-address.mdx).
+:::
+
+## Assign the scope mappings to the provider
+
+1. Navigate to **Applications** > **Providers** and edit the application's OAuth2/OIDC provider.
+2. Under **Advanced protocol settings**, add the new mappings to the selected **Scopes**.
+3. Click **Update**.
+
+Configure the application to request the `address` and `phone` scopes. authentik returns a mapping's claims only when the client requests the scope and the mapping is assigned to the provider.
+
+## Verify the result
+
+1. Open the provider's **OpenID Configuration URL** and confirm that `scopes_supported` lists `address` and `phone`.
+2. Log in to the application as a user who has address and phone data.
+3. Confirm that the response from the `UserInfo` endpoint includes the claims:
+
+    ```json
+    {
+        "address": {
+            "street_address": "1234 Hollywood Blvd.",
+            "locality": "Los Angeles",
+            "region": "CA",
+            "postal_code": "90210"
+        },
+        "phone_number": "+1 (425) 555-1212",
+        "phone_number_verified": false
+    }
+    ```
+
+The claims are included in the ID token only when **Include claims in id_token** is enabled on the provider. You can also inspect the claims for a specific user on the provider's **Preview** tab.
