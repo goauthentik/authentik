@@ -123,7 +123,7 @@ To list the applications that a user can access through policy bindings, as the 
 
 ### Passwords are stored as authenticator devices
 
-Password hashes are now stored on password devices (i.e. authenticators that support TOTP, WebAuthn) belonging to users. Existing passwords migrate automatically during upgrade.
+Password hashes are now stored on password devices belonging to users. Existing passwords migrate automatically during upgrade.
 
 Expressions can still read `user.password` and `user.password_change_date`. Expressions that change a password must use `PasswordDevice.set_password(user, password)` or `PasswordDevice.set_unusable_password(user)` from `authentik.stages.password.models`; `user.set_password()` and `user.set_unusable_password()` now raise an error.
 
