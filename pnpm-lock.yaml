@@ -597,8 +597,8 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
       wireit:
-        specifier: ^0.14.13
-        version: 0.14.13
+        specifier: ^0.15.0
+        version: 0.15.0
 
   packages/tsconfig: {}
 
@@ -7809,8 +7809,8 @@ packages:
   wildcard@2.0.1:
     resolution: {integrity: sha512-CC1bOL87PIWSBhDcTrdeLo6eGT7mCFtrg0uIJtqJUFyK+eJnzl8A1niH56uu7KMa5XFrtiV+AQuHO3n7DsHnLQ==}
 
-  wireit@0.14.13:
-    resolution: {integrity: sha512-Fo/VlEZKY4j53DQoW7Z/fWFrNGbnrfphgVDJdFoas5rVWUA9Z14/3AixEZcEfAuywympLCq49sTXVcD+sNtIxg==}
+  wireit@0.15.0:
+    resolution: {integrity: sha512-JOAKq9FTnDGQub2ApX7Laqjbad06hnl0inNCcPS9+VaudDnUkhle6Xy0YmgUCBSJjgJIf1htvOX+KJI/3fQLlw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -16341,12 +16341,14 @@ snapshots:
 
   wildcard@2.0.1: {}
 
-  wireit@0.14.13:
+  wireit@0.15.0:
     dependencies:
       brace-expansion: 5.0.7
-      chokidar: 3.6.0
+      chokidar: 4.0.3
       fast-glob: 3.3.3
+      glob-parent: 6.0.2
       jsonc-parser: 3.3.1
+      picomatch: 4.0.7
       proper-lockfile: 4.1.2
 
   word-wrap@1.2.5: {}

@@ -264,7 +264,7 @@
         "vite": "catalog:",
         "vitest": "catalog:",
         "webcomponent-qr-code": "^2.0.0",
-        "wireit": "^0.14.13",
+        "wireit": "^0.15.0",
         "yaml": "^2.9.0"
     },
     "optionalDependencies": {
