@@ -1,5 +1,3 @@
-import "#admin/stages/invitation/InvitationSendEmailForm";
-import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -11,6 +9,9 @@ import { writeToClipboard } from "#common/clipboard";
 import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
+
+import { InvitationSendEmailForm } from "#admin/stages/invitation/InvitationSendEmailForm";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
 
@@ -142,18 +143,15 @@ export class InvitationListLink extends AKElement {
                         >
                             ${msg("Copy Link")}
                         </button>
-                        <ak-forms-modal>
-                            <span slot="submit">${msg("Send")}</span>
-                            <span slot="header">${msg("Send Invitation via Email")}</span>
-                            <ak-invitation-send-email-form
-                                slot="form"
-                                .invitation=${this.invitation}
-                            >
-                            </ak-invitation-send-email-form>
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                ${msg("Send via Email")}
-                            </button>
-                        </ak-forms-modal>
+                        <button
+                            class="pf-c-button pf-m-secondary"
+                            type="button"
+                            ${modalInvoker(InvitationSendEmailForm, {
+                                invitation: this.invitation,
+                            })}
+                        >
+                            ${msg("Send via Email")}
+                        </button>
                     </div>
                 </dd>
             </div>
