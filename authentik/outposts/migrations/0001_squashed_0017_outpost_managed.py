@@ -104,10 +104,10 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("authentik_core", "0014_auto_20201018_1158"),
-        ("authentik_core", "0016_auto_20201202_2234"),
+        ("authentik_core", "0012_auto_20201003_1737_squashed_0016_auto_20201202_2234"),
+        ("authentik_core", "0012_auto_20201003_1737_squashed_0016_auto_20201202_2234"),
         ("authentik_crypto", "0002_create_self_signed_kp"),
-        ("authentik_core", "0008_auto_20200824_1532"),
+        ("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp"),
     ]
 
     operations = [

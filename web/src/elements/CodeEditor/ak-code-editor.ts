@@ -1,11 +1,11 @@
 import { pluckErrorDetail } from "#common/errors/network";
 
-import type { CodeMirrorEditor } from "#elements/CodeMirror/editor";
+import type { CodeMirrorEditor } from "#elements/CodeEditor/editor";
 import {
-    CodeMirrorMode,
-    parseCodeMirrorSource,
-    stringifyCodeMirrorSource,
-} from "#elements/CodeMirror/shared";
+    CodeEditorMode,
+    parseCodeEditorSource,
+    stringifyCodeEditorSource,
+} from "#elements/CodeEditor/shared";
 import { FormAssociatedElement } from "#elements/forms/form-associated-element";
 
 import type { EditorState } from "@codemirror/state";
@@ -15,10 +15,8 @@ import { msg } from "@lit/localize";
 import { css, CSSResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-@customElement("ak-codemirror")
-export class CodeMirrorTextarea<
-    T extends Jsonifiable = Jsonifiable,
-> extends FormAssociatedElement<string> {
+@customElement("ak-code-editor")
+export class CodeEditor<T extends Jsonifiable = Jsonifiable> extends FormAssociatedElement<string> {
     //#region Styles
 
     public static styles: CSSResult[] = [
@@ -42,7 +40,7 @@ export class CodeMirrorTextarea<
     //#region Properties
 
     @property({ type: String })
-    public mode: CodeMirrorMode = CodeMirrorMode.YAML;
+    public mode: CodeEditorMode = CodeEditorMode.YAML;
 
     @property({ type: Boolean })
     public raw?: boolean;
@@ -53,7 +51,7 @@ export class CodeMirrorTextarea<
             return;
         }
 
-        this.#parsedValue = stringifyCodeMirrorSource(nextValue, this.mode);
+        this.#parsedValue = stringifyCodeEditorSource(nextValue, this.mode);
 
         this.#syncValidity();
 
@@ -121,11 +119,11 @@ export class CodeMirrorTextarea<
         }
 
         try {
-            return parseCodeMirrorSource(innerValue, this.mode);
+            return parseCodeEditorSource(innerValue, this.mode);
         } catch (error: unknown) {
             const message = pluckErrorDetail(error);
 
-            console.debug("codemirror/parse-error", message);
+            console.debug("code-editor/parse-error", message);
 
             return innerValue;
         }
@@ -136,9 +134,9 @@ export class CodeMirrorTextarea<
     //#region Lifecycle
 
     async #initialize(root: ShadowRoot | Document) {
-        console.debug("ak-codemirror: initializing editor...");
+        console.debug("ak-code-editor: initializing editor...");
 
-        const { CodeMirrorEditor } = await import("#elements/CodeMirror/editor");
+        const { CodeMirrorEditor } = await import("#elements/CodeEditor/editor");
 
         this.#editor = new CodeMirrorEditor({
             root,
@@ -185,7 +183,7 @@ export class CodeMirrorTextarea<
         this.removeEventListener("focus", this.#focusListener);
 
         if (this.#editor) {
-            console.debug("ak-codemirror: destroying editor");
+            console.debug("ak-code-editor: destroying editor");
 
             this.#editor.dispose();
         }
@@ -200,6 +198,6 @@ export class CodeMirrorTextarea<
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-codemirror": CodeMirrorTextarea;
+        "ak-code-editor": CodeEditor;
     }
 }

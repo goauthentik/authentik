@@ -1,4 +1,4 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/HorizontalFormElement";
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
@@ -89,13 +89,13 @@ export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
                               msg("Result"),
                           )}
 
-                          <ak-codemirror
+                          <ak-code-editor
                               id="result"
                               mode="javascript"
                               readonly
                               value="${ifDefined(this.result?.result)}"
                           >
-                          </ak-codemirror>`
+                          </ak-code-editor>`
                     : html`<div class="pf-c-form__group-label">
                           <div class="c-form__horizontal-group">
                               <span class="pf-c-form__label-text">
@@ -205,12 +205,12 @@ export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
                     },
                     msg("Context"),
                 )}
-                <ak-codemirror
+                <ak-code-editor
                     id="context"
                     mode="yaml"
                     value=${YAML.stringify(this.request?.context ?? {})}
                 >
-                </ak-codemirror>
+                </ak-code-editor>
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult() : null}`;
     }

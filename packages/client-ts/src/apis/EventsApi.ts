@@ -1643,7 +1643,7 @@ export class EventsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Mark all the user's notifications as seen
+     * Mark all the user\'s notifications as seen
      */
     async eventsNotificationsMarkAllSeenCreateRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -1655,7 +1655,7 @@ export class EventsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Mark all the user's notifications as seen
+     * Mark all the user\'s notifications as seen
      */
     async eventsNotificationsMarkAllSeenCreate(
         initOverrides?: RequestInit | runtime.InitOverrideFunction,

@@ -1,5 +1,5 @@
 import "#admin/users/ak-user-group-table";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#components/ak-text-input";
