@@ -34,6 +34,7 @@ from authentik.providers.oauth2.errors import (
 )
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
+    REVOKED_REFRESH_TOKEN_RETENTION,
     AccessToken,
     OAuth2Provider,
     OAuth2SessionLogin,
@@ -246,6 +247,10 @@ class TokenView(View):
 
             # Mark old token as revoked
             self.params.refresh_token.revoked = True
+            if self.params.refresh_token.expiring:
+                self.params.refresh_token.expires = min(
+                    self.params.refresh_token.expires, now + REVOKED_REFRESH_TOKEN_RETENTION
+                )
             self.params.refresh_token.save()
             response["refresh_token"] = refresh_token.token
 
