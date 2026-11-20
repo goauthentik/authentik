@@ -47,3 +47,9 @@ The flow must have an [Endpoint stage](../../add-secure-apps/flows-stages/stages
 6. Click **Next**.
 7. Select the order for the stage. Ensure that this places the Endpoint stage in the flow wherever you want device access to be checked.
 8. Click **Finish**.
+
+## Automatic certificate selection
+
+The Endpoint stage reads the device's Fleet-issued certificate through mutual TLS, so the browser might prompt the user to select a certificate each time the flow runs. To avoid the prompt, configure the browser to select the certificate automatically. For instructions, refer to [Automatic certificate selection](../../add-secure-apps/flows-stages/stages/mtls/index.mdx#automatic-certificate-selection) in the Mutual TLS stage documentation.
+
+On macOS, you can deploy the browser configuration profile from that page with Fleet, in the same way as the Conditional Access profile.
