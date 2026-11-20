@@ -204,7 +204,7 @@ catalogs:
       specifier: ^3.10.2
       version: 3.10.2
     '@types/node':
-      specifier: ^26.1.2
+      specifier: ^26.6.6
       version: 26.6.6
     oxfmt:
       specifier: 0.78.0
