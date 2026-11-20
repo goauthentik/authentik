@@ -51,7 +51,9 @@ def pytest_runtest_setup(item: Item):
     from authentik.admin.utils import get_system_settings
     from authentik.brands.utils import get_brand_for_request
     from authentik.enterprise.license import LicenseKey
+    from authentik.events import notification_filter
 
+    notification_filter.clear_cache()
     get_brand_for_request.cache_clear()
     get_system_settings.cache_clear()
     LicenseKey.cached_summary.cache_clear()

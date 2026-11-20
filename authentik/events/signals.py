@@ -14,6 +14,7 @@ from authentik.admin.utils import get_system_settings
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed, password_hash_changed
 from authentik.events.models import Event, EventAction
+from authentik.events.notification_filter import could_match_notification_rule
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_DEVICE,
@@ -139,6 +140,8 @@ def event_post_save_notification(sender, instance: Event, **_):
     """Start task to check if any policies trigger an notification on this event"""
     from authentik.events.tasks import event_trigger_dispatch
 
+    if not could_match_notification_rule(instance.action):
+        return
     event_trigger_dispatch.send(instance.event_uuid)
 
 
