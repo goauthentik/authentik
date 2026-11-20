@@ -210,6 +210,78 @@ class TestCrypto(APITestCase):
         self.assertIsNotNone(key)
         self.assertEqual(len(key.certificate.extensions), 0)
 
+    def test_builder_key_size(self):
+        """Test Builder with the selectable key sizes"""
+        for alg, key_size, expected, signature_hash in (
+            (PrivateKeyAlg.RSA, None, 4096, "sha256"),
+            (PrivateKeyAlg.RSA, 2048, 2048, "sha256"),
+            (PrivateKeyAlg.RSA, 3072, 3072, "sha256"),
+            (PrivateKeyAlg.ECDSA, None, 256, "sha256"),
+            (PrivateKeyAlg.ECDSA, 384, 384, "sha384"),
+            (PrivateKeyAlg.ECDSA, 521, 521, "sha512"),
+        ):
+            with self.subTest(alg=alg, key_size=key_size):
+                builder = CertificateBuilder(generate_id())
+                builder.alg = alg
+                builder.key_size = key_size
+                builder.build(validity_days=3)
+                instance = builder.save()
+                self.assertEqual(instance.private_key.key_size, expected)
+                self.assertEqual(instance.certificate.public_key().key_size, expected)
+                self.assertEqual(instance.certificate.signature_hash_algorithm.name, signature_hash)
+
+    def test_builder_key_size_invalid(self):
+        """Test Builder with key sizes the algorithm doesn't support"""
+        for alg, key_size in (
+            (PrivateKeyAlg.RSA, 1024),
+            (PrivateKeyAlg.ECDSA, 4096),
+            (PrivateKeyAlg.ED25519, 256),
+        ):
+            with self.subTest(alg=alg, key_size=key_size):
+                builder = CertificateBuilder(generate_id())
+                builder.alg = alg
+                builder.key_size = key_size
+                with self.assertRaises(ValueError):
+                    builder.build(validity_days=3)
+
+    def test_builder_api_key_size(self):
+        """Test Builder (via API) with a key size"""
+        self.client.force_login(create_test_admin_user())
+        name = generate_id()
+        response = self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={
+                "common_name": name,
+                "validity_days": 3,
+                "alg": PrivateKeyAlg.ECDSA,
+                "key_size": 384,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        key = CertificateKeyPair.objects.filter(name=name).first()
+        self.assertEqual(key.private_key.curve.name, "secp384r1")
+
+    def test_builder_api_key_size_invalid(self):
+        """Test Builder (via API) with key sizes the algorithm doesn't support"""
+        self.client.force_login(create_test_admin_user())
+        for alg, key_size in (
+            (PrivateKeyAlg.RSA, 1024),
+            (PrivateKeyAlg.ECDSA, 4096),
+            (PrivateKeyAlg.ED25519, 256),
+        ):
+            with self.subTest(alg=alg, key_size=key_size):
+                response = self.client.post(
+                    reverse("authentik_api:certificatekeypair-generate"),
+                    data={
+                        "common_name": generate_id(),
+                        "validity_days": 3,
+                        "alg": alg,
+                        "key_size": key_size,
+                    },
+                )
+                self.assertEqual(response.status_code, 400)
+                self.assertIn("key_size", loads(response.content))
+
     def test_builder_api_invalid(self):
         """Test Builder (via API) (invalid)"""
         self.client.force_login(create_test_admin_user())

@@ -51,14 +51,33 @@ class PrivateKeyAlg(models.TextChoices):
     MLDSA87 = "mldsa87", _("ML-DSA-87")
 
 
+# Key sizes (in bits) that can be selected for each algorithm, the first one being the default.
+# For ECDSA the size selects the NIST curve (P-256, P-384, P-521). Algorithms that aren't listed
+# here (EdDSA, ML-DSA) have a fixed key size that's determined by the algorithm itself.
+KEY_SIZES: dict[PrivateKeyAlg, tuple[int, ...]] = {
+    PrivateKeyAlg.RSA: (4096, 3072, 2048),
+    PrivateKeyAlg.ECDSA: (256, 384, 521),
+}
+
+# ECDSA key size to curve and the hash the certificate is signed with, which is matched to the
+# strength of the curve
+ECDSA_CURVES: dict[int, tuple[type[ec.EllipticCurve], type[hashes.HashAlgorithm]]] = {
+    256: (ec.SECP256R1, hashes.SHA256),
+    384: (ec.SECP384R1, hashes.SHA384),
+    521: (ec.SECP521R1, hashes.SHA512),
+}
+
+
 class CertificateBuilder:
     """Build self-signed certificates"""
 
     common_name: str
     alg: PrivateKeyAlg
+    key_size: int | None
 
     def __init__(self, name: str):
         self.alg = PrivateKeyAlg.RSA
+        self.key_size = None
         self.__public_key = None
         self.__private_key = None
         self.__builder = None
@@ -76,14 +95,29 @@ class CertificateBuilder:
         self.cert.save()
         return self.cert
 
+    def get_key_size(self) -> int | None:
+        """Get the key size to generate the private key with, falling back to the default of the
+        selected algorithm. Returns None for algorithms with a fixed key size."""
+        sizes = KEY_SIZES.get(PrivateKeyAlg(self.alg))
+        if sizes is None:
+            if self.key_size is not None:
+                raise ValueError(f"Key size can't be selected for alg: {self.alg}")
+            return None
+        if self.key_size is None:
+            return sizes[0]
+        if self.key_size not in sizes:
+            raise ValueError(f"Invalid key size for alg {self.alg}: {self.key_size}")
+        return self.key_size
+
     def generate_private_key(self) -> PrivateKeyTypes:
         """Generate private key"""
+        key_size = self.get_key_size()
         try:
             if self.alg == PrivateKeyAlg.ECDSA:
-                return ec.generate_private_key(curve=ec.SECP256R1())
+                return ec.generate_private_key(curve=ECDSA_CURVES[key_size][0]())
             if self.alg == PrivateKeyAlg.RSA:
                 return rsa.generate_private_key(
-                    public_exponent=65537, key_size=4096, backend=default_backend()
+                    public_exponent=65537, key_size=key_size, backend=default_backend()
                 )
             if self.alg == PrivateKeyAlg.ED25519:
                 return Ed25519PrivateKey.generate()
@@ -140,6 +174,8 @@ class CertificateBuilder:
                 x509.SubjectAlternativeName(alt_names), critical=True
             )
         algo = hashes.SHA256()
+        if isinstance(self.__private_key, ec.EllipticCurvePrivateKey):
+            algo = ECDSA_CURVES[self.__private_key.key_size][1]()
         # EdDSA and ML-DSA don't take a hash algorithm
         if isinstance(self.__private_key, PKCS8_ONLY_KEY_TYPES):
             algo = None

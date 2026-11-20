@@ -39061,6 +39061,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/AlgEnum'
           default: rsa
+        key_size:
+          type: integer
+          nullable: true
+          description: Size of the private key in bits. Supported for RSA (2048, 3072,
+            4096) and ECDSA (256, 384, 521, selecting the curve), defaults to 4096
+            for RSA and 256 for ECDSA. All other algorithms have a fixed key size.
       required:
       - common_name
       - validity_days
