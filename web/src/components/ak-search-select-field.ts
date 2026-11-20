@@ -8,8 +8,8 @@ import type { SearchSelectSource } from "#elements/forms/SearchSelect/shared";
 import type { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
+import { AKFormErrors, ErrorProp } from "#components/renderFormErrors";
 
 import { html, nothing } from "lit";
 
