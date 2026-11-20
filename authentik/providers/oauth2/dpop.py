@@ -58,7 +58,7 @@ DPOP_SUPPORTED_ALGS = {
 JWK_REQUIRED_CLAIMS = {
     "EC": ("crv", "kty", "x", "y"),
     "RSA": ("e", "kty", "n"),
-    # RFC 9964 Section 5: alg is REQUIRED on AKP keys and is part of the thumbprint
+    # RFC 9964 Sections 3 and 6: alg is REQUIRED on AKP keys and is part of the thumbprint
     JWK_KTY_AKP: ("alg", "kty", "pub"),
 }
 

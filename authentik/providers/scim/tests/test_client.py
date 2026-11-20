@@ -83,9 +83,9 @@ class SCIMClientTests(TestCase):
     def test_config_bulk_unsupported_without_max_operations(self):
         """A provider that reports bulk as unsupported may omit the bulk limits.
 
-        RFC 7644 Section 5 only defines maxOperations alongside bulk support, so
-        such a response is conforming and must not push the client onto its
-        fallback config -- doing so reports patch and filter as unsupported
+        RFC 7643 Section 5 marks maxOperations as REQUIRED, but providers that
+        report bulk as unsupported commonly omit it, so such a response must not
+        push the client onto its fallback config -- doing so reports patch and filter as unsupported
         regardless of what the provider advertised, which silently disables
         PATCH updates and the filtered lookup that adopts existing objects."""
         with Mocker() as mock:
