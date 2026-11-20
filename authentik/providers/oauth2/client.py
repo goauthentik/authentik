@@ -99,6 +99,12 @@ class OAuthClientContext:
         return self.is_legacy and self.client_id == self.provider.client_id
 
     @property
+    def display_name(self) -> str | None:
+        """Name the client presents for itself, shown to users next to its identifier.
+        Registered clients have none; they are presented by their application."""
+        return None
+
+    @property
     def is_confidential(self) -> bool:
         return self.client_type == ClientType.CONFIDENTIAL
 
@@ -220,6 +226,13 @@ class OAuthClientResolver:
         if not provider:
             LOGGER.debug("No provider selected for client", client_id=client_id)
             return None
+        return self.resolve_in_provider(request, provider, client_id)
+
+    def resolve_in_provider(
+        self, request: HttpRequest | None, provider: OAuth2Provider, client_id: str
+    ) -> OAuthClientContext | None:
+        """Resolve a client within a provider that is already known, for example the
+        provider of a grant, without selecting one"""
         for adapter in self.adapters:
             client = adapter.resolve(request, provider, client_id)
             if client:

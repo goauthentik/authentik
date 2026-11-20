@@ -59,9 +59,11 @@ from authentik.lib.jwt_mldsa import MLDSAAlgorithm, MLDSAKey
 from authentik.lib.models import (
     DomainlessURLValidator,
     ExpiringModel,
+    HashedClientIDModel,
     InternallyManagedMixin,
     SerializerModel,
     SimpleThroughModel,
+    hash_client_id,
 )
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_string_validator
@@ -569,17 +571,6 @@ class OAuth2ProviderJWTFederationProvider(SimpleThroughModel):
         )
 
 
-# Upper bound for client identifiers stored on grants. Client identifiers of registered
-# providers are much shorter, but other registration kinds may use URLs.
-GRANT_CLIENT_ID_MAX_LENGTH = 2048
-
-
-def hash_client_id(client_id: str) -> str:
-    """Fixed-length digest of a client identifier, used to index grants by client.
-    The digest only narrows a lookup; the full client identifier must still be compared."""
-    return sha256(client_id.encode("utf-8")).hexdigest()
-
-
 @dataclass(frozen=True, slots=True)
 class ClientGrantBinding:
     """Client attributes recorded on a grant, and compared when the grant is used"""
@@ -590,7 +581,7 @@ class ClientGrantBinding:
     auth_method: str
 
 
-class ClientBoundModel(models.Model):
+class ClientBoundModel(HashedClientIDModel):
     """Binds a grant to the exact client it was issued to, within its provider.
 
     Rows without a client binding were issued before grants recorded their client. They
@@ -604,10 +595,6 @@ class ClientBoundModel(models.Model):
 
     provider_id: Any
 
-    client_id = models.CharField(
-        max_length=GRANT_CLIENT_ID_MAX_LENGTH, null=True, default=None, verbose_name=_("Client ID")
-    )
-    client_id_hash = models.CharField(max_length=64, null=True, default=None, editable=False)
     client_auth_method = models.CharField(
         max_length=64,
         null=True,
@@ -617,13 +604,6 @@ class ClientBoundModel(models.Model):
 
     class Meta:
         abstract = True
-
-    def save(self, *args, **kwargs):
-        self.client_id_hash = hash_client_id(self.client_id) if self.client_id is not None else None
-        update_fields = kwargs.get("update_fields")
-        if update_fields is not None and "client_id" in update_fields:
-            kwargs["update_fields"] = set(update_fields) | {"client_id_hash"}
-        return super().save(*args, **kwargs)
 
     def bind_client(self, client: OAuthClientContext) -> None:
         """Record the client this grant is issued to"""
@@ -873,6 +853,10 @@ class OAuth2SessionLogin(InternallyManagedMixin, models.Model):
     """Record of providers the user has logged in to this session. required for
     front/backchannel logout because tokens can expire before the RP's session ends.
 
+    Only logins of a provider's registered client are recorded, as its configured logout
+    URI is the only one front- and backchannel logout can be sent to; other clients of the
+    same provider never receive logout.
+
     https://openid.net/specs/openid-connect-frontchannel-1_0.html#OPLogout
     https://openid.net/specs/openid-connect-backchannel-1_0.html#Tracking"""
 
@@ -897,8 +881,11 @@ class OAuth2SessionLogin(InternallyManagedMixin, models.Model):
 
     @classmethod
     def record(cls, token: BaseGrantModel, id_token: IDToken) -> None:
-        """Remember that the provider of `token` has been issued `id_token` for its session"""
+        """Remember that the provider of `token` has been issued `id_token` for its session,
+        if `token` was issued to the provider's registered client"""
         if not token.session_id:
+            return
+        if not token.is_bound_to_registered_client():
             return
         cls.objects.update_or_create(
             session_id=token.session_id,
