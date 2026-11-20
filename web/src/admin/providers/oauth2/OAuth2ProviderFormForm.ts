@@ -29,6 +29,7 @@ import {
     AKAuthorizationFlowField,
     AKInvalidationFlowField,
 } from "#admin/providers/components/flow-fields";
+import { GrantTypeLabelRecord } from "#admin/providers/oauth2/labels";
 
 import {
     ClientTypeEnum,
@@ -144,6 +145,12 @@ const grantTypes = [
     [GrantTypeEnum.Password, msg("Password")],
     [GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode, msg("Device-code")],
     [GrantTypeEnum.UrnIetfParamsOauthGrantTypeTokenExchange, msg("Token exchange")],
+    // Every grant type the API accepts must be listed: saving sends only the checked options, so
+    // an unlisted grant type would be silently removed from the provider
+    [
+        GrantTypeEnum.UrnIetfParamsOauthGrantTypeJwtBearer,
+        GrantTypeLabelRecord[GrantTypeEnum.UrnIetfParamsOauthGrantTypeJwtBearer],
+    ],
 ];
 
 const defaultGrantTypes = [

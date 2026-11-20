@@ -20,7 +20,7 @@ import { modalInvoker } from "#elements/dialogs";
 import { sourceBindingTypeNotices } from "#elements/sources/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
-import renderDescriptionList from "#components/DescriptionList";
+import renderDescriptionList, { DescriptionPair } from "#components/DescriptionList";
 
 import { OAuthSourceForm } from "#admin/sources/oauth/OAuthSourceForm";
 
@@ -34,14 +34,16 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
     switch (provider) {
         case undefined:
             return "";
+        case ProviderTypeEnum.Openidconnect:
+            return msg("Generic OpenID Connect");
         case ProviderTypeEnum.Apple:
             return "Apple";
         case ProviderTypeEnum.Discord:
             return "Discord";
-        case ProviderTypeEnum.Facebook:
-            return "Facebook";
         case ProviderTypeEnum.Entraid:
             return "Entra ID";
+        case ProviderTypeEnum.Facebook:
+            return "Facebook";
         case ProviderTypeEnum.Github:
             return "GitHub";
         case ProviderTypeEnum.Gitlab:
@@ -49,11 +51,11 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
         case ProviderTypeEnum.Google:
             return "Google";
         case ProviderTypeEnum.Idjagissuer:
-            return msg("Identity Assertion Issuer");
+            return msg("Identity Assertion Issuer", {
+                id: "sources.oauth.id-jag-issuer.provider-type.label",
+            });
         case ProviderTypeEnum.Mailcow:
             return "Mailcow";
-        case ProviderTypeEnum.Openidconnect:
-            return msg("Generic OpenID Connect");
         case ProviderTypeEnum.Okta:
             return "Okta";
         case ProviderTypeEnum.Patreon:
@@ -62,10 +64,10 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Reddit";
         case ProviderTypeEnum.Slack:
             return "Slack";
-        case ProviderTypeEnum.Twitter:
-            return "Twitter";
         case ProviderTypeEnum.Twitch:
             return "Twitch";
+        case ProviderTypeEnum.Twitter:
+            return "Twitter";
         case ProviderTypeEnum.Wechat:
             return "WeChat";
         case ProviderTypeEnum.UnknownDefaultOpenApi:
@@ -100,6 +102,53 @@ export class OAuthSourceViewPage extends AKElement {
         });
     }
 
+    /**
+     * Sign-in details, which an issuer that only signs identity assertions doesn't have:
+     * it's identified by its issuer instead.
+     */
+    protected renderLoginDetails(): DescriptionPair[] {
+        if (!this.source) return [];
+
+        if (this.source.type?.assertionOnly) {
+            return [
+                [
+                    msg("Issuer", { id: "sources.oauth.id-jag-issuer.issuer.label" }),
+                    html`${this.source.idJagIssuer}`,
+                ],
+                [
+                    msg("Trusted email domains", {
+                        id: "sources.oauth.id-jag-issuer.email-domains.label",
+                    }),
+                    html`${(this.source.idJagEmailDomains ?? []).join(", ")}`,
+                ],
+            ];
+        }
+
+        return [
+            [msg("Callback URL"), html`${this.source.callbackUrl}`],
+            [msg("Access Key"), html`${this.source.consumerKey}`],
+            [
+                msg("Authorization URL"),
+                html`${this.source.type?.authorizationUrl || this.source.authorizationUrl}`,
+            ],
+            [
+                msg("Token URL"),
+                html`${this.source.type?.accessTokenUrl || this.source.accessTokenUrl}`,
+            ],
+        ];
+    }
+
+    protected renderDiagram(): SlottedTemplateResult {
+        if (!this.source || this.source.type?.assertionOnly) return nothing;
+
+        return html`<div class="pf-c-card pf-l-grid__item pf-m-8-col">
+            <div class="pf-c-card__title">${msg("Diagram")}</div>
+            <div class="pf-c-card__body">
+                <ak-source-oauth-diagram .source=${this.source}></ak-source-oauth-diagram>
+            </div>
+        </div>`;
+    }
+
     render(): SlottedTemplateResult {
         if (!this.source) {
             return nothing;
@@ -125,22 +174,7 @@ export class OAuthSourceViewPage extends AKElement {
                                         msg("Provider Type"),
                                         html`${ProviderToLabel(this.source.providerType)}`,
                                     ],
-                                    [msg("Callback URL"), html`${this.source.callbackUrl}`],
-                                    [msg("Access Key"), html`${this.source.consumerKey}`],
-                                    [
-                                        msg("Authorization URL"),
-                                        html`${
-                                            this.source.type?.authorizationUrl ||
-                                            this.source.authorizationUrl
-                                        }`,
-                                    ],
-                                    [
-                                        msg("Token URL"),
-                                        html`${
-                                            this.source.type?.accessTokenUrl ||
-                                            this.source.accessTokenUrl
-                                        }`,
-                                    ],
+                                    ...this.renderLoginDetails(),
                                     [
                                         msg("Related actions"),
                                         html`<button
@@ -155,14 +189,7 @@ export class OAuthSourceViewPage extends AKElement {
                                 ])}
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-8-col">
-                            <div class="pf-c-card__title">${msg("Diagram")}</div>
-                            <div class="pf-c-card__body">
-                                <ak-source-oauth-diagram
-                                    .source=${this.source}
-                                ></ak-source-oauth-diagram>
-                            </div>
-                        </div>
+                        ${this.renderDiagram()}
                     </div>
                 </div>
                 <div
