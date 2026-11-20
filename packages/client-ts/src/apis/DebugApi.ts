@@ -59,7 +59,7 @@ export class DebugApi extends runtime.BaseAPI {
 
     /**
      * Debug-only endpoint to allow frontend to log messages, usable when browser develooper-tools
-     * aren't available. Never available in production.
+     * aren\'t available. Never available in production.
      */
     async debugLogCreateRaw(
         requestParameters: DebugLogCreateRequest,
@@ -73,7 +73,7 @@ export class DebugApi extends runtime.BaseAPI {
 
     /**
      * Debug-only endpoint to allow frontend to log messages, usable when browser develooper-tools
-     * aren't available. Never available in production.
+     * aren\'t available. Never available in production.
      */
     async debugLogCreate(
         requestParameters: DebugLogCreateRequest,
