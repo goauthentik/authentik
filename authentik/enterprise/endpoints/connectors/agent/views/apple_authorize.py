@@ -31,6 +31,7 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
+from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
 
 LOGGER = get_logger()
@@ -59,7 +60,20 @@ class AppleAuthorizePreauthView(View):
                 kwargs={"connector_uuid": connector_uuid},
             )
         )
-        return JsonResponse({"authorization_url": f"{url}?{urlencode(params)}"})
+        return JsonResponse(
+            {
+                "authorization_url": f"{url}?{urlencode(params)}",
+                # Platform SSO only sends the device-signed request object to the authorization
+                # endpoint when the pre-authentication response includes this.
+                "authorizationRequest": {
+                    "client_id": str(connector_uuid),
+                    "redirect_uri": REDIRECT_URI,
+                    "response_type": "code",
+                    "scope": "openid profile email",
+                    "state": params["state"],
+                },
+            }
+        )
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -79,7 +93,10 @@ class AppleAuthorizeView(EnterprisePolicyAccessView):
         same query string a plain GET would carry; it identifies the device the request came
         from. Only dynamicOpenID is supported, plain federation carries no device identity and
         could neither be policy-checked nor bound to the authorization code it receives."""
-        assertion = self.request.POST.get("request")
+        # When the user isn't logged in yet, the POST data is kept in the session while they
+        # authenticate, and they come back to this view with a GET
+        post_data = self.request.POST or self.request.session.get(SESSION_KEY_POST, {})
+        assertion = post_data.get("request")
         if not assertion:
             LOGGER.warning("Platform SSO authorization request without a request object")
             raise Http404
@@ -144,7 +161,12 @@ class AppleAuthorizeView(EnterprisePolicyAccessView):
             return self.handle_no_permission_authenticated()
 
         plan.append_stage(in_memory_stage(PSSOAuthFulfillmentStage))
+        request.session.pop(SESSION_KEY_POST, None)
         return plan.to_redirect(request, self.connector.authorization_flow)
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Return from the authentication flow, with the request object in the session"""
+        return self.post(request, *args, **kwargs)
 
 
 class PSSOAuthFulfillmentStage(StageView):

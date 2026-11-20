@@ -18,7 +18,10 @@ import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { AKLabel } from "#components/ak-label";
 
-import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
+import {
+    additionalAcceptedOriginsField,
+    deviceTypeRestrictionPair,
+} from "#admin/stages/authenticator_webauthn/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
@@ -311,6 +314,10 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
             </ak-form-group>
             <ak-form-group open label="${msg("WebAuthn-specific settings")}">
                 <div class="pf-c-form">
+                    ${additionalAcceptedOriginsField(
+                        "webauthnAdditionalAcceptedOrigins",
+                        this.instance?.webauthnAdditionalAcceptedOrigins,
+                    )}
                     <ak-form-element-horizontal
                         label=${msg("WebAuthn User verification")}
                         required

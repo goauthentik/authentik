@@ -39,7 +39,7 @@ class LogoutResponseParser:
         try:
             root = ElementTree.fromstring(decoded_xml)
         except (ParseError, ValueError) as exc:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE) from exc
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE, detail=exc) from exc
         response = LogoutResponse(
             id=root.attrib.get("ID"),
             in_response_to=root.attrib.get("InResponseTo"),
@@ -66,16 +66,16 @@ class LogoutResponseParser:
         """Parse raw response with enveloped signature (POST binding)"""
         try:
             decoded_xml = b64decode(saml_response.encode())
-        except UnicodeDecodeError, binascii.Error:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE) from None
+        except (UnicodeDecodeError, binascii.Error) as exc:
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE, detail=exc) from None
         return self._parse_xml(decoded_xml, relay_state)
 
     def parse_detached(self, saml_response: str, relay_state: str | None = None) -> LogoutResponse:
         """Parse raw response with detached signature (Redirect binding)"""
         try:
             decoded_xml = decode_base64_and_inflate(saml_response)
-        except UnicodeDecodeError, binascii.Error:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE) from None
+        except (UnicodeDecodeError, binascii.Error) as exc:
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE, detail=exc) from None
         return self._parse_xml(decoded_xml, relay_state)
 
     def verify_status(self, response: LogoutResponse) -> None:

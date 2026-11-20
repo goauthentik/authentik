@@ -362,6 +362,91 @@ class TestAppleToken(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertFalse(AppleAuthorizationCode.objects.filter(pk=auth_code.pk).exists())
 
+    def _token_exchange(self, **claims):
+        """Login request of a web login, which redeems the authorization response"""
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+        assertion = encode(
+            {
+                "iss": str(self.connector.pk),
+                "aud": "http://testserver/endpoints/agent/psso/token/",
+                "request_nonce": nonce,
+                "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
+                "sub": self.user.username,
+                "jwe_crypto": {
+                    "apv": (
+                        "AAAABUFwcGxlAAAAQQTFgZOospN6KbkhXhx1lfa-AKYxjEfJhTJrkpdEY_srMmkPzS7VN0Bzt2AtNBEXE"
+                        "aphDONiP2Mq6Oxytv5JKOxHAAAAJDgyOThERkY5LTVFMUUtNEUwMS04OEUwLUI3QkQzOUM4QjA3Qw"
+                    )
+                },
+                **claims,
+            },
+            self.apple_sign_key.private_key,
+            headers={"kid": self.apple_sign_key.kid, "typ": "platformsso-login-request+jwt"},
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        return self.client.post(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token"),
+            data={
+                "assertion": assertion,
+                "platform_sso_version": "1.0",
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            },
+        )
+
+    @reconcile_app("authentik_crypto")
+    def test_token_exchange(self):
+        """A web login redeems its authorization code and binds the user to the device, as
+        Platform SSO requests the user's keys without registering the user first"""
+        user = create_test_user()
+        auth_code = AppleAuthorizationCode.objects.create(
+            user=user,
+            connector=self.connector,
+            device_connection=self.connection,
+            scope="openid",
+        )
+        res = self._token_exchange(
+            sub=user.username,
+            subject_token=f"com.apple.PlatformSSO://callback?code={auth_code.code}&state=foo",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertFalse(AppleAuthorizationCode.objects.filter(pk=auth_code.pk).exists())
+        self.assertTrue(
+            AgentDeviceUserBinding.objects.filter(
+                target=self.device, user=user, connector=self.connector
+            ).exists()
+        )
+
+    @reconcile_app("authentik_crypto")
+    def test_token_exchange_without_code(self):
+        """A device can't log in as a user bound to it without an authorization code"""
+        res = self._token_exchange()
+        self.assertEqual(res.status_code, 400)
+        res = self._token_exchange(
+            subject_token=f"com.apple.PlatformSSO://callback?code={generate_id()}"
+        )
+        self.assertEqual(res.status_code, 400)
+
+    @reconcile_app("authentik_crypto")
+    def test_token_exchange_other_device(self):
+        """A code issued to another device of the same connector must not be redeemable"""
+        other_connection = AgentDeviceConnection.objects.create(
+            device=Device.objects.create(name=generate_id(), identifier=generate_id()),
+            connector=self.connector,
+            apple_sign_key_id=generate_id(),
+        )
+        auth_code = AppleAuthorizationCode.objects.create(
+            user=self.user,
+            connector=self.connector,
+            device_connection=other_connection,
+            scope="openid",
+        )
+        res = self._token_exchange(
+            subject_token=f"com.apple.PlatformSSO://callback?code={auth_code.code}"
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertTrue(AppleAuthorizationCode.objects.filter(pk=auth_code.pk).exists())
+
     @reconcile_app("authentik_crypto")
     def test_authorization_code_other_device(self):
         """A code issued to another device of the same connector must not be redeemable"""

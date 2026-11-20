@@ -12,6 +12,7 @@ from channels.layers import get_channel_layer
 from django.apps import apps
 from django.db import models
 from django.db.models import Q
+from django.db.models.lookups import IsNull
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -336,18 +337,41 @@ class Event(SerializerModel, ExpiringModel):
         verbose_name_plural = _("Events")
         indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["action"]),
-            models.Index(fields=["user"]),
             models.Index(fields=["app"]),
-            models.Index(fields=["created"]),
-            models.Index(fields=["client_ip"]),
+            # Event volume charts count events by time and action. Including the other columns
+            # they read lets Postgres count from the index without reading the events.
             models.Index(
-                models.F("context__authorized_application"),
-                name="authentik_e_ctx_app__idx",
+                fields=["created"],
+                include=["action", "expires", "expiring"],
+                name="authentik_e_created_cov_idx",
+            ),
+            models.Index(fields=["client_ip"]),
+            # The context keys the API filters by. Few events have them, so the indexes skip
+            # the others: Postgres cannot merge equal jsonb entries, so they would cost one
+            # entry per event. A filter on a key implies it is not null, so these still apply.
+            models.Index(
+                models.F("context__authorized_application__pk"),
+                "created",
+                condition=Q(IsNull(models.F("context__authorized_application__pk"), False)),
+                name="authentik_e_ctx_app_pk_idx",
+            ),
+            models.Index(
+                models.F("context__username"),
+                condition=Q(IsNull(models.F("context__username"), False)),
+                name="authentik_e_ctx_username_idx",
+            ),
+            # Object changelogs filter by model and action. Postgres assumes the two are unrelated
+            # and would combine an index on the model with the much larger action index, so this
+            # index has both. It is not partial: Postgres only keeps statistics for the
+            # expressions of indexes that cover every row.
+            models.Index(
+                models.F("context__model__pk"), "action", name="authentik_e_ctx_model_pk_idx"
             ),
             models.Index(
                 models.F("user__pk"),
                 name="authentik_e_user_pk__idx",
             ),
+            models.Index(models.F("user__username"), name="authentik_e_user_username_idx"),
         ]
 
 
@@ -684,6 +708,14 @@ class Notification(SerializerModel):
     class Meta:
         verbose_name = _("Notification")
         verbose_name_plural = _("Notifications")
+        indexes = [
+            # The notification drawer lists a user's unseen notifications, newest first
+            models.Index(
+                fields=["user", "created"],
+                condition=Q(seen=False),
+                name="authentik_e_notif_unseen_idx",
+            ),
+        ]
 
 
 class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
