@@ -97,6 +97,7 @@ class SAMLSource(Source):
 
     metadata_url = models.TextField(
         blank=True,
+        db_default="",
         default="",
         validators=[DomainlessURLValidator(schemes=("http", "https"))],
         verbose_name=_("Metadata URL"),

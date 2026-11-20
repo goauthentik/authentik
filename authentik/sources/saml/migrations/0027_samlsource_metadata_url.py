@@ -16,6 +16,7 @@ class Migration(migrations.Migration):
             name="metadata_url",
             field=models.TextField(
                 blank=True,
+                db_default="",
                 default="",
                 help_text="URL of the Identity Provider's metadata. When set, the source's settings are periodically updated from this metadata.",
                 validators=[authentik.lib.models.DomainlessURLValidator(schemes=("http", "https"))],
