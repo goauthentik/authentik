@@ -63,7 +63,7 @@ Inside `website/` the underlying scripts are `pnpm run format` / `pnpm run forma
 website/
   docs/                 # Topics site (@goauthentik/docs-topics)
     add-secure-apps/    # Applications, providers, flows, stages, etc.
-    core/               # Core concepts + glossary (core/glossary/terms/)
+    core/               # Core concepts
     customize/          # Branding, blueprints, policies, theming
     developer-docs/     # CONTRIBUTOR GUIDES — read these before authoring (see below)
     enterprise/ install-config/ releases/ security/ sys-mgmt/
@@ -85,7 +85,7 @@ website/
 
 ### Author-facing guides (source of truth — keep content consistent with these)
 
-- `docs/developer-docs/docs/writing-documentation.mdx` — setup, build commands, glossary, page routing & redirects.
+- `docs/developer-docs/docs/writing-documentation.mdx` — setup, build commands, page routing & redirects.
 - `docs/developer-docs/docs/style-guide.mdx` — the canonical style guide (terminology, voice, formatting, accessibility, metadata).
 - `docs/developer-docs/docs/templates/` — `combo` / `procedural` / `conceptual` / `reference` templates (`*.tmpl.mdx`). Start from a template; default to **combo** unless the steps get buried, then split into procedural + conceptual.
 - `docs/developer-docs/contributing.mdx` — general contribution guidelines.
@@ -112,10 +112,6 @@ The one rule the linters and spell checker cannot enforce, and the one most ofte
 2. Use placeholder domains `authentik.company` and `<app-name>.company` (drop the service domain for SaaS).
 3. **Do not edit the integrations sidebar** — it is auto-generated from `categories.mjs`.
 4. Run `make integrations` before pushing.
-
-### Adding a glossary term
-
-Create `docs/core/glossary/terms/<term>.mdx` with `sidebar_custom_props` frontmatter (`termName`, `tags`, optional `authentikSpecific`, `shortDescription`, optional `longDescription`). See `writing-documentation.mdx` for the field reference.
 
 ## URLs and redirects
 

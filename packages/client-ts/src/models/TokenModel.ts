@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime, serializeDateTime } from "../runtime";
-import type { Provider } from "./Provider";
-import { ProviderFromJSON, ProviderToJSON } from "./Provider";
-import type { User } from "./User";
-import { UserFromJSON, UserToJSON } from "./User";
+import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { Provider } from "./Provider.js";
+import { ProviderFromJSON, ProviderToJSON } from "./Provider.js";
+import type { User } from "./User.js";
+import { UserFromJSON, UserToJSON } from "./User.js";
 
 /**
  * Serializer for BaseGrantModel and RefreshToken

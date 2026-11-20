@@ -5,6 +5,7 @@ from django.urls import reverse
 from lxml.etree import Element, SubElement, tostring  # nosec
 
 from authentik.common.saml.constants import (
+    ENCRYPTION_METHODS_ADVERTISED,
     NS_MAP,
     NS_SAML_METADATA,
     NS_SIGNATURE,
@@ -46,6 +47,11 @@ class MetadataProcessor:
             x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
             x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
             x509_certificate.text = x509_certificate_b64(self.source.encryption_kp.certificate)
+            for algorithm in ENCRYPTION_METHODS_ADVERTISED:
+                encryption_method = SubElement(
+                    key_descriptor, f"{{{NS_SAML_METADATA}}}EncryptionMethod"
+                )
+                encryption_method.attrib["Algorithm"] = algorithm
             return key_descriptor
         return None
 

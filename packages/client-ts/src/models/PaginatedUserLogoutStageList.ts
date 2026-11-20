@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { UserLogoutStage } from "./UserLogoutStage";
-import { UserLogoutStageFromJSON, UserLogoutStageToJSON } from "./UserLogoutStage";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { UserLogoutStage } from "./UserLogoutStage.js";
+import { UserLogoutStageFromJSON, UserLogoutStageToJSON } from "./UserLogoutStage.js";
 
 /**
  * @export

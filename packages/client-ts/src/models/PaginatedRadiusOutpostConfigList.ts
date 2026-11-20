@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { RadiusOutpostConfig } from "./RadiusOutpostConfig";
-import { RadiusOutpostConfigFromJSON, RadiusOutpostConfigToJSON } from "./RadiusOutpostConfig";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { RadiusOutpostConfig } from "./RadiusOutpostConfig.js";
+import { RadiusOutpostConfigFromJSON, RadiusOutpostConfigToJSON } from "./RadiusOutpostConfig.js";
 
 /**
  * @export

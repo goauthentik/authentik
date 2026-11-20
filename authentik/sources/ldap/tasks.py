@@ -1,5 +1,6 @@
 """LDAP Sync tasks"""
 
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.core.cache import cache
@@ -7,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 from dramatiq.composition import group
 from dramatiq.message import Message
-from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
@@ -17,25 +17,13 @@ from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.lib.utils.reflection import all_subclasses, class_to_path, path_to_class
 from authentik.sources.ldap.models import LDAPSource
-from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
-from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
-from authentik.sources.ldap.sync.forward_delete_users import UserLDAPForwardDeletion
-from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
-from authentik.sources.ldap.sync.membership import (
-    GroupHierarchyLDAPSynchronizer,
-    MembershipLDAPSynchronizer,
-)
-from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
 
+if TYPE_CHECKING:
+    from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+
 LOGGER = get_logger()
-SYNC_CLASSES: list[type[BaseLDAPSynchronizer]] = [
-    UserLDAPSynchronizer,
-    GroupLDAPSynchronizer,
-    MembershipLDAPSynchronizer,
-    GroupHierarchyLDAPSynchronizer,
-]
 CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
 
@@ -60,6 +48,16 @@ def ldap_connectivity_check(pk: str | None = None):
 )
 def ldap_sync(source_pk: str):
     """Sync a single source"""
+    # Sync classes pull in ldap3, only import them when an LDAP source is synced
+    from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
+    from authentik.sources.ldap.sync.forward_delete_users import UserLDAPForwardDeletion
+    from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
+    from authentik.sources.ldap.sync.membership import (
+        GroupHierarchyLDAPSynchronizer,
+        MembershipLDAPSynchronizer,
+    )
+    from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+
     task = CurrentTask.get_task()
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk, enabled=True).first()
     if not source:
@@ -143,6 +141,8 @@ def ldap_sync_paginator(
 )
 def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
+    from ldap3.core.exceptions import LDAPException
+
     self = CurrentTask.get_task()
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:

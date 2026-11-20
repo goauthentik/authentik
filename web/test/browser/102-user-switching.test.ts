@@ -100,6 +100,27 @@ test.describe("User switching", () => {
 
             await expect(dialog, "Edit modal closes").toBeHidden({ timeout: 15_000 });
 
+            // Brands are cached per server process (`cache.timeout_brands`), and saving
+            // only clears the cache of the process that handled the save. Requests are
+            // spread across processes, so wait for a run of consistent responses.
+            await test.step("Wait for every server process to see the switch flow", async () => {
+                let consecutive = 0;
+
+                await expect
+                    .poll(
+                        async () => {
+                            const response = await page.request.get("/api/v3/core/brands/current/");
+                            const { flow_user_switch } = await response.json();
+
+                            consecutive = flow_user_switch ? consecutive + 1 : 0;
+
+                            return consecutive;
+                        },
+                        { timeout: 60_000, intervals: [500] },
+                    )
+                    .toBeGreaterThanOrEqual(10);
+            });
+
             await context.close();
         },
     );

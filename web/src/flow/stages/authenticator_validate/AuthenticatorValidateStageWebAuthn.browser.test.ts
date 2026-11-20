@@ -20,6 +20,7 @@ function challengeOf(
     overrides: Partial<AuthenticatorValidationChallenge> = {},
 ): AuthenticatorValidationChallenge {
     return {
+        component: "ak-stage-authenticator-validate",
         pendingUser: "akadmin",
         pendingUserAvatar: "",
         deviceChallenges: [deviceChallenge],
@@ -58,10 +59,12 @@ function assertionOf(): PublicKeyCredential {
 const mounted: HTMLElement[] = [];
 
 let submit: ReturnType<typeof vi.fn>;
+let refresh: ReturnType<typeof vi.fn>;
 let credentialsGet: ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
     submit = vi.fn().mockResolvedValue(true);
+    refresh = vi.fn().mockResolvedValue(true);
     credentialsGet = vi.fn().mockResolvedValue(assertionOf());
 
     vi.stubGlobal("navigator", {
@@ -71,6 +74,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
 
     for (const element of mounted.splice(0)) {
@@ -81,7 +85,7 @@ afterEach(() => {
 function createStage() {
     const stage = document.createElement("ak-stage-authenticator-validate-webauthn");
 
-    stage.host = { submit } as unknown as StageHost;
+    stage.host = { submit, refresh } as unknown as StageHost;
     stage.deviceChallenge = deviceChallenge;
 
     document.body.append(stage);
@@ -140,7 +144,7 @@ describe("AuthenticatorValidateStageWebAuthn", () => {
         expect(submit).not.toHaveBeenCalled();
     });
 
-    it("starts a single new ceremony per retry click", async () => {
+    it("waits for a fresh server challenge before starting a single retry ceremony", async () => {
         credentialsGet.mockRejectedValue(new DOMException("denied", "NotAllowedError"));
 
         const stage = createStage();
@@ -151,11 +155,25 @@ describe("AuthenticatorValidateStageWebAuthn", () => {
 
         credentialsGet.mockReturnValue(new Promise(() => {}));
 
-        retryButton(stage)!.click();
+        const retry = retryButton(stage)!;
+        retry.click();
+        retry.click();
         await stage.updateComplete;
-        retryButton(stage)?.click();
+
+        expect(refresh).toHaveBeenCalledOnce();
+        expect(credentialsGet).toHaveBeenCalledOnce();
+
+        stage.deviceChallenge = {
+            ...deviceChallenge,
+            challenge: { challenge: "AQ==" },
+        };
+
+        stage.challenge = challengeOf({ deviceChallenges: [stage.deviceChallenge] });
+        await stage.updateComplete;
 
         expect(credentialsGet).toHaveBeenCalledTimes(2);
+
+        expect(credentialsGet.mock.calls[1][0].publicKey.challenge).toEqual(Uint8Array.from([1]));
     });
 
     it("renders a response error instead of re-running the ceremony", async () => {

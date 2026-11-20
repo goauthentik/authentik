@@ -10,38 +10,38 @@
  * Do not edit the class manually.
  */
 
-import { type Cache, CacheFromJSON } from "../models/Cache";
-import { type ChallengeTypes, ChallengeTypesFromJSON } from "../models/ChallengeTypes";
-import { type DeniedActionEnum } from "../models/DeniedActionEnum";
-import { type Flow, FlowFromJSON } from "../models/Flow";
+import { type Cache, CacheFromJSON } from "../models/Cache.js";
+import { type ChallengeTypes, ChallengeTypesFromJSON } from "../models/ChallengeTypes.js";
+import { type DeniedActionEnum } from "../models/DeniedActionEnum.js";
+import { type Flow, FlowFromJSON } from "../models/Flow.js";
 import {
     type FlowChallengeResponseRequest,
     FlowChallengeResponseRequestToJSON,
-} from "../models/FlowChallengeResponseRequest";
-import { type FlowDesignationEnum } from "../models/FlowDesignationEnum";
-import { type FlowDiagram, FlowDiagramFromJSON } from "../models/FlowDiagram";
-import { type FlowInspection, FlowInspectionFromJSON } from "../models/FlowInspection";
-import { type FlowRequest, FlowRequestToJSON } from "../models/FlowRequest";
-import { type FlowStageBinding, FlowStageBindingFromJSON } from "../models/FlowStageBinding";
+} from "../models/FlowChallengeResponseRequest.js";
+import { type FlowDesignationEnum } from "../models/FlowDesignationEnum.js";
+import { type FlowDiagram, FlowDiagramFromJSON } from "../models/FlowDiagram.js";
+import { type FlowInspection, FlowInspectionFromJSON } from "../models/FlowInspection.js";
+import { type FlowRequest, FlowRequestToJSON } from "../models/FlowRequest.js";
+import { type FlowStageBinding, FlowStageBindingFromJSON } from "../models/FlowStageBinding.js";
 import {
     type FlowStageBindingRequest,
     FlowStageBindingRequestToJSON,
-} from "../models/FlowStageBindingRequest";
-import { type InvalidResponseActionEnum } from "../models/InvalidResponseActionEnum";
-import { type Link, LinkFromJSON } from "../models/Link";
-import { type PaginatedFlowList, PaginatedFlowListFromJSON } from "../models/PaginatedFlowList";
+} from "../models/FlowStageBindingRequest.js";
+import { type InvalidResponseActionEnum } from "../models/InvalidResponseActionEnum.js";
+import { type Link, LinkFromJSON } from "../models/Link.js";
+import { type PaginatedFlowList, PaginatedFlowListFromJSON } from "../models/PaginatedFlowList.js";
 import {
     type PaginatedFlowStageBindingList,
     PaginatedFlowStageBindingListFromJSON,
-} from "../models/PaginatedFlowStageBindingList";
-import { type PatchedFlowRequest, PatchedFlowRequestToJSON } from "../models/PatchedFlowRequest";
+} from "../models/PaginatedFlowStageBindingList.js";
+import { type PatchedFlowRequest, PatchedFlowRequestToJSON } from "../models/PatchedFlowRequest.js";
 import {
     type PatchedFlowStageBindingRequest,
     PatchedFlowStageBindingRequestToJSON,
-} from "../models/PatchedFlowStageBindingRequest";
-import { type PolicyEngineMode } from "../models/PolicyEngineMode";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/PatchedFlowStageBindingRequest.js";
+import { type PolicyEngineMode } from "../models/PolicyEngineMode.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface FlowsBindingsCreateRequest {
     flowStageBindingRequest: FlowStageBindingRequest;

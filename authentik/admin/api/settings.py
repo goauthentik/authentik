@@ -12,7 +12,7 @@ from rest_framework.permissions import SAFE_METHODS
 
 from authentik.admin.flags import Flag
 from authentik.admin.models import SystemSettings
-from authentik.admin.utils import get_system_settings, normalize_base_url
+from authentik.admin.utils import normalize_base_url
 from authentik.core.api.utils import JSONDictField, ModelSerializer
 from authentik.rbac.permissions import HasPermission
 
@@ -122,6 +122,7 @@ class SettingsView(RetrieveUpdateAPIView):
         ]
 
     def get_object(self):
-        obj = get_system_settings()
+        # Fresh instance; the serializer mutates it on update
+        obj = SystemSettings.objects.get(pk=True)
         self.check_object_permissions(self.request, obj)
         return obj

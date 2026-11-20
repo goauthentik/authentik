@@ -10,14 +10,14 @@
  * Do not edit the class manually.
  */
 
-import { parseDateTime } from "../runtime";
-import type { ContentType } from "./ContentType";
-import { ContentTypeFromJSON } from "./ContentType";
-import type { ObjectAttributeTypeEnum } from "./ObjectAttributeTypeEnum";
+import { parseDateTime } from "../runtime.js";
+import type { ContentType } from "./ContentType.js";
+import { ContentTypeFromJSON } from "./ContentType.js";
+import type { ObjectAttributeTypeEnum } from "./ObjectAttributeTypeEnum.js";
 import {
     ObjectAttributeTypeEnumFromJSON,
     ObjectAttributeTypeEnumToJSON,
-} from "./ObjectAttributeTypeEnum";
+} from "./ObjectAttributeTypeEnum.js";
 
 /**
  * @export

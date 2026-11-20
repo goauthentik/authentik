@@ -10,23 +10,23 @@
  * Do not edit the class manually.
  */
 
-import { type GlobalTaskStatus, GlobalTaskStatusFromJSON } from "../models/GlobalTaskStatus";
+import { type GlobalTaskStatus, GlobalTaskStatusFromJSON } from "../models/GlobalTaskStatus.js";
 import {
     type PaginatedScheduleList,
     PaginatedScheduleListFromJSON,
-} from "../models/PaginatedScheduleList";
-import { type PaginatedTaskList, PaginatedTaskListFromJSON } from "../models/PaginatedTaskList";
+} from "../models/PaginatedScheduleList.js";
+import { type PaginatedTaskList, PaginatedTaskListFromJSON } from "../models/PaginatedTaskList.js";
 import {
     type PatchedScheduleRequest,
     PatchedScheduleRequestToJSON,
-} from "../models/PatchedScheduleRequest";
-import { type Schedule, ScheduleFromJSON } from "../models/Schedule";
-import { type ScheduleRequest, ScheduleRequestToJSON } from "../models/ScheduleRequest";
-import { type Task, TaskFromJSON } from "../models/Task";
-import { type TaskAggregatedStatusEnum } from "../models/TaskAggregatedStatusEnum";
-import { type TaskStatusEnum } from "../models/TaskStatusEnum";
-import { type Worker, WorkerFromJSON } from "../models/Worker";
-import * as runtime from "../runtime";
+} from "../models/PatchedScheduleRequest.js";
+import { type Schedule, ScheduleFromJSON } from "../models/Schedule.js";
+import { type ScheduleRequest, ScheduleRequestToJSON } from "../models/ScheduleRequest.js";
+import { type Task, TaskFromJSON } from "../models/Task.js";
+import { type TaskAggregatedStatusEnum } from "../models/TaskAggregatedStatusEnum.js";
+import { type TaskStatusEnum } from "../models/TaskStatusEnum.js";
+import { type Worker, WorkerFromJSON } from "../models/Worker.js";
+import * as runtime from "../runtime.js";
 
 export interface TasksSchedulesListRequest {
     actorName?: string;

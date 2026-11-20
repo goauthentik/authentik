@@ -147,7 +147,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for loading spinner
      */
     private renderLoading(): SlottedTemplateResult {
-        return html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`;
+        return html`<ak-spinner size=${PFSize.Large}></ak-spinner>`;
     }
 
     /**

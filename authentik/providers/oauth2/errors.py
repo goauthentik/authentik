@@ -1,6 +1,6 @@
 """OAuth errors"""
 
-from urllib.parse import quote, urlparse
+from urllib.parse import quote, urlencode, urlparse, urlsplit, urlunsplit
 
 from django.http import HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
@@ -155,7 +155,7 @@ class AuthorizeError(OAuth2Error):
         redirect_uri: str,
         error: str,
         grant_type: str,
-        state: str,
+        state: str | None,
         response_mode: str | None = None,
         description: str | None = None,
     ):
@@ -182,7 +182,7 @@ class AuthorizeError(OAuth2Error):
         # See https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html
         if self.response_mode == ResponseMode.FORM_POST:
             attrs = {"error": self.error, "error_description": self.description}
-            if self.state:
+            if self.state is not None:
                 attrs["state"] = self.state
             return TemplateResponse(
                 request,
@@ -201,23 +201,25 @@ class AuthorizeError(OAuth2Error):
 
     def create_uri(self) -> str:
         """Get a redirect URI with the error message"""
-        description = quote(str(self.description))
+        uri = urlsplit(self.redirect_uri)
+        response_mode = self.response_mode
+        if response_mode not in ResponseMode.values:
+            response_mode = (
+                ResponseMode.FRAGMENT
+                if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID]
+                else ResponseMode.QUERY
+            )
 
-        # See:
-        # http://openid.net/specs/openid-connect-core-1_0.html#ImplicitAuthError
-        fragment_or_query = (
-            "#" if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID] else "?"
-        )
+        params = {"error": self.error, "error_description": str(self.description)}
+        if self.state is not None:
+            params["state"] = self.state
 
-        uri = (
-            f"{self.redirect_uri}{fragment_or_query}error="
-            f"{self.error}&error_description={description}"
-        )
-
-        # Add state if present.
-        uri = uri + (f"&state={self.state}" if self.state else "")
-
-        return uri
+        encoded = urlencode(params, quote_via=quote)
+        if response_mode == ResponseMode.FRAGMENT:
+            return urlunsplit(uri._replace(fragment=encoded))
+        # Preserve the callback query, including its original encoding.
+        query = f"{uri.query}&{encoded}" if uri.query else encoded
+        return urlunsplit(uri._replace(query=query))
 
 
 class TokenError(OAuth2Error):

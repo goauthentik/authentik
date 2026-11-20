@@ -26,9 +26,6 @@
  * @property {"topic" | "category"} [groupBy] How to group the root index.
  * @property {readonly (readonly [string, string])[]} [categories] [slug, label] pairs that
  *   override the auto title-cased section heading for a group (used by both group modes).
- * @property {readonly (readonly [string, string])[]} [regroup] [pathPrefix, groupSlug] pairs:
- *   docs whose path equals or sits under pathPrefix join groupSlug instead of their top dir
- *   (e.g. ["core/glossary", "glossary"] splits the glossary into its own section).
  * @property {string[]} [overviewPages] Site-relative paths (no extension) whose content
  *   is inlined into the root index as an "## Overview" section instead of listed as links.
  */

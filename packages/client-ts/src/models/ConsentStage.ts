@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { ConsentModeEnum } from "./ConsentModeEnum";
-import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnum";
-import type { FlowSet } from "./FlowSet";
-import { FlowSetFromJSON } from "./FlowSet";
+import type { ConsentModeEnum } from "./ConsentModeEnum.js";
+import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnum.js";
+import type { FlowSet } from "./FlowSet.js";
+import { FlowSetFromJSON } from "./FlowSet.js";
 
 /**
  * ConsentStage Serializer

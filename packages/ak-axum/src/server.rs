@@ -13,9 +13,7 @@ use eyre::{Result, WrapErr as _};
 use tracing::{info, trace};
 
 use crate::{
-    accept::{
-        catch_panic::CatchPanicAcceptor, proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor,
-    },
+    accept::{catch_panic::CatchPanicAcceptor, proxy_protocol::ProxyProtocolAcceptor},
     extract::trusted_proxy::TrustedProxy,
 };
 
@@ -63,7 +61,6 @@ pub fn start_plain(
 
 struct UnixSocketGuard(PathBuf);
 
-#[expect(clippy::missing_trait_methods, reason = "We don't use pin drop")]
 impl Drop for UnixSocketGuard {
     fn drop(&mut self) {
         trace!(path = ?self.0, "removing socket");
@@ -139,9 +136,8 @@ async fn run_tls(
 
     axum_server::Server::bind(addr)
         .acceptor(CatchPanicAcceptor::new(
-            ProxyProtocolAcceptor::new().acceptor(TlsAcceptor::new(
-                RustlsAcceptor::new(config).acceptor(DefaultAcceptor::new()),
-            )),
+            ProxyProtocolAcceptor::new()
+                .acceptor(RustlsAcceptor::new(config).acceptor(DefaultAcceptor::new())),
             arbiter.clone(),
         ))
         .handle(handle)

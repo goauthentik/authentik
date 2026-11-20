@@ -10,17 +10,17 @@
  * Do not edit the class manually.
  */
 
-import type { ApplicationRequest } from "./ApplicationRequest";
-import { ApplicationRequestFromJSON, ApplicationRequestToJSON } from "./ApplicationRequest";
-import type { ModelRequest } from "./ModelRequest";
-import { ModelRequestFromJSON, ModelRequestToJSON } from "./ModelRequest";
-import type { ProviderModelEnum } from "./ProviderModelEnum";
-import { ProviderModelEnumFromJSON, ProviderModelEnumToJSON } from "./ProviderModelEnum";
-import type { TransactionPolicyBindingRequest } from "./TransactionPolicyBindingRequest";
+import type { ApplicationRequest } from "./ApplicationRequest.js";
+import { ApplicationRequestFromJSON, ApplicationRequestToJSON } from "./ApplicationRequest.js";
+import type { ModelRequest } from "./ModelRequest.js";
+import { ModelRequestFromJSON, ModelRequestToJSON } from "./ModelRequest.js";
+import type { ProviderModelEnum } from "./ProviderModelEnum.js";
+import { ProviderModelEnumFromJSON, ProviderModelEnumToJSON } from "./ProviderModelEnum.js";
+import type { TransactionPolicyBindingRequest } from "./TransactionPolicyBindingRequest.js";
 import {
     TransactionPolicyBindingRequestFromJSON,
     TransactionPolicyBindingRequestToJSON,
-} from "./TransactionPolicyBindingRequest";
+} from "./TransactionPolicyBindingRequest.js";
 
 /**
  * Serializer for creating a provider and an application in one transaction

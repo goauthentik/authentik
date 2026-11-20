@@ -13,6 +13,15 @@ export class FormFixture extends PageFixture {
     //#region Field Methods
 
     /**
+     * Locate a legacy input whose wrapper label is in a different shadow root.
+     * Prefer accessible-name queries for controls with properly associated labels.
+     */
+    public legacyTextInput = (label: string, context: LocatorContext = this.page): Locator =>
+        context
+            .locator(`ak-form-element-horizontal[label=${JSON.stringify(label)}]`)
+            .getByRole("textbox");
+
+    /**
      * Set the value of a text input.
      *
      * @param fieldName The name of the form element.
@@ -132,15 +141,19 @@ export class FormFixture extends PageFixture {
 
         await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
-        const currentChecked = await control
-            .getAttribute("checked")
-            .then((value) => value !== null);
+        const checkbox = control.getByRole("checkbox");
+        const currentChecked = await checkbox.isChecked();
 
         if (currentChecked === value) {
             return;
         }
 
-        await control.click();
+        // The wrapper also contains help text; clicking its center can miss the switch.
+        await control.locator("label.pf-c-switch").click();
+
+        await expect(checkbox, `Field (${fieldName}) has the requested state`).toBeChecked({
+            checked: value,
+        });
     };
 
     /**
@@ -204,11 +217,25 @@ export class FormFixture extends PageFixture {
 
         await combobox.click();
 
-        if (typeof pattern === "string") {
-            await combobox.fill(pattern);
+        // Search selects only load their first page of options, so filter whenever the pattern
+        // is plain text. Otherwise accumulated test data can push the option out of the list.
+        const filter = typeof pattern === "string" ? pattern : literalPattern(pattern);
+
+        if (filter) {
+            await combobox.fill(filter);
         }
 
         const option = host.getByRole("option", { name: pattern }).first();
+
+        if (filter && typeof pattern !== "string") {
+            // Options the server doesn't search, such as the blank choice, only show unfiltered.
+            const filtered = await option
+                .waitFor({ timeout: 5_000 })
+                .then(() => true)
+                .catch(() => false);
+
+            if (!filtered) await combobox.fill("");
+        }
 
         await expect(option, `Search select option (${pattern}) should be visible`).toBeVisible();
 
@@ -259,4 +286,13 @@ export class FormFixture extends PageFixture {
     }
 
     //#endregion
+}
+
+/**
+ * The text a regular expression matches, if it is plain text with no special characters.
+ */
+function literalPattern(pattern: RegExp): string | null {
+    const unescaped = pattern.source.replace(/\\([-/ ])/g, "$1");
+
+    return /[\\^$.|?*+()[\]{}]/.test(unescaped) ? null : unescaped;
 }

@@ -1,13 +1,16 @@
 """identification tests"""
 
+from json import loads
+
 from django.urls import reverse
 from requests_mock import Mocker
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.enterprise.tests import enterprise_test
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
@@ -21,10 +24,10 @@ from authentik.stages.captcha.tests import RECAPTCHA_PRIVATE_KEY, RECAPTCHA_PUBL
 from authentik.stages.identification.api import IdentificationStageSerializer
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
-from authentik.stages.password.models import PasswordStage
+from authentik.stages.password.models import PasswordDevice, PasswordStage
 
 
-class TestIdentificationStagePasskey(FlowTestCase):
+class TestIdentificationStagePasskey(APIFlowTestCase):
     """Passkey authentication tests"""
 
     def setUp(self):
@@ -134,7 +137,7 @@ class TestIdentificationStagePasskey(FlowTestCase):
         self.assertNotIn("uid_field", errors)
 
 
-class TestIdentificationStage(FlowTestCase):
+class TestIdentificationStage(APIFlowTestCase):
     """Identification tests"""
 
     def setUp(self):
@@ -164,6 +167,46 @@ class TestIdentificationStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_source_icon_themed_urls(self):
+        """Test themed icon URLs of login sources"""
+        sources = [
+            # Built-in default icon
+            OAuthSource(provider_type="github"),
+            # Built-in icon picked in the file picker
+            OAuthSource(icon="/static/authentik/sources/github/%(theme)s.svg"),
+            OAuthSource(icon="https://example.com/logo-%(theme)s.svg"),
+            OAuthSource(icon="https://example.com/logo.png"),
+        ]
+        for idx, source in enumerate(sources):
+            source.name = f"{idx}-{generate_id()}"
+            source.slug = generate_id()
+            source.save()
+        self.stage.sources.set(sources)
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(
+            [source["icon_themed_urls"] for source in loads(response.content)["sources"]],
+            [
+                # Default icons are relative, like their icon_url
+                {
+                    "light": "/static/authentik/sources/github/light.svg",
+                    "dark": "/static/authentik/sources/github/dark.svg",
+                },
+                {
+                    "light": "http://testserver/static/authentik/sources/github/light.svg",
+                    "dark": "http://testserver/static/authentik/sources/github/dark.svg",
+                },
+                {
+                    "light": "https://example.com/logo-light.svg",
+                    "dark": "https://example.com/logo-dark.svg",
+                },
+                None,
+            ],
+        )
 
     def test_valid_with_email(self):
         """Test with valid email, check that URL redirects back to itself"""
@@ -211,7 +254,11 @@ class TestIdentificationStage(FlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -219,6 +266,39 @@ class TestIdentificationStage(FlowTestCase):
             show_source_labels=False,
             user_fields=["email"],
         )
+
+    @enterprise_test()
+    def test_invalid_with_password_lockout(self):
+        """Test lockout applies to a password embedded in identification"""
+        pw_stage = PasswordStage.objects.create(
+            name="password-lockout",
+            backends=[BACKEND_INBUILT],
+            failed_attempts_before_lockout=2,
+            last_attempt_warning_message="One attempt remains.",
+            lockout_message="Password locked.",
+        )
+        self.stage.password_stage = pw_stage
+        self.stage.save(update_fields=("password_stage",))
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        form_data = {
+            "uid_field": self.user.email,
+            "password": self.user.username + "test",
+        }
+
+        response = self.client.post(url, form_data)
+        self.assertEqual(
+            response.json()["response_errors"]["non_field_errors"][0]["string"],
+            "One attempt remains.",
+        )
+
+        response = self.client.post(url, form_data)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Password locked.",
+        )
+        self.assertTrue(PasswordDevice.objects.get(user=self.user).locked)
 
     def test_invalid_with_password_pretend(self):
         """Test with invalid email and invalid password in single step (with pretend_user_exists)"""
@@ -248,7 +328,11 @@ class TestIdentificationStage(FlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -371,7 +455,11 @@ class TestIdentificationStage(FlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -428,7 +516,11 @@ class TestIdentificationStage(FlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -492,7 +584,11 @@ class TestIdentificationStage(FlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -537,7 +633,11 @@ class TestIdentificationStage(FlowTestCase):
             primary_action="Log in",
             sources=[
                 {
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "challenge": {
                         "component": "xak-flow-redirect",
@@ -581,7 +681,11 @@ class TestIdentificationStage(FlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -610,7 +714,11 @@ class TestIdentificationStage(FlowTestCase):
                         "to": f"/source/oauth/login/{self.source.slug}/",
                         "final_redirect": False,
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": "/static/authentik/sources/default/light.svg",
+                    "icon_themed_urls": {
+                        "light": "/static/authentik/sources/default/light.svg",
+                        "dark": "/static/authentik/sources/default/dark.svg",
+                    },
                     "name": self.source.name,
                     "promoted": False,
                 }

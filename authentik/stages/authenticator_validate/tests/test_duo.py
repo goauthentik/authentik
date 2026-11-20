@@ -12,7 +12,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -21,7 +21,7 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 from authentik.stages.user_login.models import UserLoginStage
 
 
-class AuthenticatorValidateStageDuoTests(FlowTestCase):
+class AuthenticatorValidateStageDuoTests(APIFlowTestCase):
     """Test validator stage"""
 
     def setUp(self) -> None:

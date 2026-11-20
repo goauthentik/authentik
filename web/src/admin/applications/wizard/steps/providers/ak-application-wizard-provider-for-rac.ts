@@ -1,5 +1,5 @@
 import "#components/ak-text-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { AKAuthorizationFlowField } from "#admin/providers/components/flow-fields";

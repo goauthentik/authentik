@@ -6,10 +6,8 @@
         "strict": true,
         "newLine": "lf",
         "target": "ESNext",
-        // The generator emits extensionless relative imports, which `NodeNext` rejects.
-        // Every consumer links this package and bundles `src` directly, so resolve the way they do.
-        "module": "preserve",
-        "moduleResolution": "bundler",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
         "outDir": "dist",
         "skipDefaultLibCheck": true,
         "skipLibCheck": true,

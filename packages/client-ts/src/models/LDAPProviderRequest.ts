@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { LDAPAPIAccessMode } from "./LDAPAPIAccessMode";
-import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAccessMode";
+import type { LDAPAPIAccessMode } from "./LDAPAPIAccessMode.js";
+import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAccessMode.js";
 
 /**
  * LDAPProvider Serializer

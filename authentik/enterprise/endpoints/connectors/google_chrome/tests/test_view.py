@@ -9,12 +9,12 @@ from authentik.enterprise.endpoints.connectors.google_chrome.models import Googl
 from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 
 
-class TestChromeDTCView(FlowTestCase):
+class TestChromeDTCView(APIFlowTestCase):
     def setUp(self):
         self.flow = create_test_flow()
         self.connector = GoogleChromeConnector.objects.create(

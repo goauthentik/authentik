@@ -26,6 +26,13 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
+    public static override verboseName = msg("Invitation", {
+        id: "invitations.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Invitations", {
+        id: "invitations.verbose-name-plural.label",
+    });
+
     public static styles: CSSResult[] = [...super.styles, PFBanner];
 
     protected override searchEnabled = true;
@@ -88,7 +95,6 @@ export class InvitationListPage extends TablePage<Invitation> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Invitation(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Invitation) => {
                 return aki(StagesApi).stagesInvitationInvitationsUsedByList({

@@ -10,15 +10,18 @@
  * Do not edit the class manually.
  */
 
-import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum";
+import type { GroupMatchingModeEnum } from "./GroupMatchingModeEnum.js";
 import {
     GroupMatchingModeEnumFromJSON,
     GroupMatchingModeEnumToJSON,
-} from "./GroupMatchingModeEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+} from "./GroupMatchingModeEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum.js";
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from "./UserMatchingModeEnum.js";
 
 /**
  * Plex Source Serializer

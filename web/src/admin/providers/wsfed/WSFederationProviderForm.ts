@@ -23,6 +23,9 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
     protected hasSigningKp = false;
 
     @state()
+    protected hasEncryptionKp = false;
+
+    @state()
     protected signingKeyType: KeyTypeEnum | null = null;
 
     async loadInstance(pk: number): Promise<WSFederationProvider> {
@@ -31,6 +34,7 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
         });
 
         this.hasSigningKp = !!provider.signingKp;
+        this.hasEncryptionKp = !!provider.encryptionKp;
 
         return provider;
     }
@@ -54,11 +58,17 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
             this.signingKeyType = detail.value?.keyType ?? KeyTypeEnum.Rsa;
         };
 
+        const setHasEncryptionKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasEncryptionKp = !!detail.value;
+        };
+
         return html`${renderForm({
             provider: this.instance ?? {},
             setHasSigningKp,
             hasSigningKp: this.hasSigningKp,
             signingKeyType: this.signingKeyType,
+            setHasEncryptionKp,
+            hasEncryptionKp: this.hasEncryptionKp,
         })}`;
     }
 }

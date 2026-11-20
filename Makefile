@@ -98,7 +98,7 @@ lint-check-types:  ## Type-check the repository's Node.js scripts.
 	pnpm run build:types
 
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Check Python (bandit, mypy), Go (golangci) and Rust dependencies (cargo deny, machete)
-	golangci-lint run -v
+	golangci-lint run -v --config .github/golangci.yml
 
 core-install:
 ifneq ($(BREW_EXISTS),)
@@ -388,6 +388,9 @@ ci-lint-bandit: ci--meta-debug
 
 ci-lint-pending-migrations: ci--meta-debug
 	$(UV) run python -m manage makemigrations --check
+
+ci-lint-migrations: ci--meta-debug  ## Lint migrations added since MIGRATIONS_BASE (default: origin/main)
+	AUTHENTIK_DEBUG=true $(UV) run python -m manage lintmigrations --project-root-path . --sql-analyser postgresql --git-commit-id $(or $(MIGRATIONS_BASE),origin/main)
 
 ci-lint-cargo-deny: ci--meta-debug
 	$(CARGO) deny --config "${PWD}/.cargo/deny.toml" --locked --workspace check

@@ -68,7 +68,7 @@ impl OutpostController {
                  authentik Outpost"
             ));
         };
-        debug!(name = outpost.name, "fetched outpost configuration");
+        debug!(outpost = outpost.name, "fetched outpost configuration");
 
         Ok(outpost)
     }

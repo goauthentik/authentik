@@ -2,6 +2,7 @@
 
 from base64 import urlsafe_b64encode
 from binascii import hexlify
+from collections.abc import Callable
 from functools import lru_cache
 from hashlib import md5, sha512
 from ssl import PEM_FOOTER, PEM_HEADER
@@ -14,6 +15,11 @@ from cryptography.hazmat.primitives.asymmetric.dsa import DSAPublicKey
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey
 from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.mldsa import (
+    MLDSA44PublicKey,
+    MLDSA65PublicKey,
+    MLDSA87PublicKey,
+)
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes, PublicKeyTypes
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
@@ -24,6 +30,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
+from authentik.lib.jwt_mldsa import KEY_LOAD_ERRORS
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 LOGGER = get_logger()
@@ -45,6 +52,23 @@ def _load_private_key(key_data: str) -> PrivateKeyTypes:
     )
 
 
+@lru_cache(maxsize=128)
+def _load_public_key(key_data: str) -> PublicKeyTypes:
+    """Load the public key of a normalized PEM private key.
+
+    Loading an RSA private key normally checks its private components, including that both
+    primes are prime, which takes tens of milliseconds for a 3072-bit key and more for a 4096-bit
+    one. That check protects signing, and every path that stores a key already ran it. The public
+    key is only the modulus and exponent, so this skips the check and returns nothing that can
+    sign. Keep the unvalidated private key inside this function."""
+    return load_pem_private_key(
+        key_data.encode("utf-8"),
+        password=None,
+        backend=default_backend(),
+        unsafe_skip_rsa_key_validation=True,
+    ).public_key()
+
+
 def format_cert(raw_pam: str) -> str:
     """Format a PEM certificate that is either missing its header/footer or is in a single line"""
     return "\n".join([PEM_HEADER, *wrap(raw_pam.replace("\n", ""), 64), PEM_FOOTER])
@@ -58,6 +82,9 @@ class KeyType(models.TextChoices):
     DSA = "dsa", _("DSA")
     ED25519 = "ed25519", _("Ed25519")
     ED448 = "ed448", _("Ed448")
+    MLDSA44 = "mldsa44", _("ML-DSA-44")
+    MLDSA65 = "mldsa65", _("ML-DSA-65")
+    MLDSA87 = "mldsa87", _("ML-DSA-87")
 
 
 def fingerprint_sha256(cert: Certificate) -> str:
@@ -79,6 +106,12 @@ def detect_key_type(certificate: Certificate) -> str | None:
             return KeyType.ED25519
         if isinstance(public_key, Ed448PublicKey):
             return KeyType.ED448
+        if isinstance(public_key, MLDSA44PublicKey):
+            return KeyType.MLDSA44
+        if isinstance(public_key, MLDSA65PublicKey):
+            return KeyType.MLDSA65
+        if isinstance(public_key, MLDSA87PublicKey):
+            return KeyType.MLDSA87
     except (ValueError, TypeError, AttributeError) as exc:
         LOGGER.warning("Failed to detect key type", exc=exc)
     return None
@@ -168,9 +201,9 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
     @property
     def public_key(self) -> PublicKeyTypes | None:
-        """Get public key of the private key"""
+        """Get public key of the private key, without loading the private key for signing"""
         if not self._public_key:
-            self._public_key = self.private_key.public_key()
+            self._public_key = self._load_key(_load_public_key, "public")
         return self._public_key
 
     @property
@@ -178,15 +211,21 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         self,
     ) -> PrivateKeyTypes | None:
         """Get python cryptography PrivateKey instance"""
-        if not self._private_key and self.key_data != "":
-            try:
-                self._private_key = _load_private_key(
-                    "\n".join(x.strip() for x in self.key_data.split("\n"))
-                )
-            except ValueError as exc:
-                LOGGER.warning(exc)
-                return None
+        if not self._private_key:
+            self._private_key = self._load_key(_load_private_key, "private")
         return self._private_key
+
+    def _load_key[T](self, loader: Callable[[str], T], kind: str) -> T | None:
+        if self.key_data == "":
+            return None
+        try:
+            return loader("\n".join(x.strip() for x in self.key_data.split("\n")))
+        except KEY_LOAD_ERRORS as exc:
+            # InternalError/UnsupportedAlgorithm: OpenSSL has no implementation for the key's
+            # algorithm in the current configuration (e.g. ML-DSA under a FIPS provider that
+            # predates it), so treat the key as unusable rather than failing the caller
+            LOGGER.warning(f"Failed to load {kind} key", exc=exc)
+            return None
 
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name}"

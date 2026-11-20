@@ -10,17 +10,20 @@
  * Do not edit the class manually.
  */
 
-import type { DeviceClassesEnum } from "./DeviceClassesEnum";
-import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum";
-import type { NotConfiguredActionEnum } from "./NotConfiguredActionEnum";
+import type { DeviceClassesEnum } from "./DeviceClassesEnum.js";
+import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum.js";
+import type { NotConfiguredActionEnum } from "./NotConfiguredActionEnum.js";
 import {
     NotConfiguredActionEnumFromJSON,
     NotConfiguredActionEnumToJSON,
-} from "./NotConfiguredActionEnum";
-import type { UserVerificationEnum } from "./UserVerificationEnum";
-import { UserVerificationEnumFromJSON, UserVerificationEnumToJSON } from "./UserVerificationEnum";
-import type { WebAuthnHintEnum } from "./WebAuthnHintEnum";
-import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum";
+} from "./NotConfiguredActionEnum.js";
+import type { UserVerificationEnum } from "./UserVerificationEnum.js";
+import {
+    UserVerificationEnumFromJSON,
+    UserVerificationEnumToJSON,
+} from "./UserVerificationEnum.js";
+import type { WebAuthnHintEnum } from "./WebAuthnHintEnum.js";
+import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum.js";
 
 /**
  * AuthenticatorValidateStage Serializer
@@ -49,6 +52,10 @@ export interface AuthenticatorValidateStageRequest {
      */
     webauthnUserVerification?: UserVerificationEnum;
     webauthnHints?: Array<WebAuthnHintEnum>;
+    /**
+     * Additional trusted origins for WebAuthn authentication. Matched exactly.
+     */
+    webauthnAdditionalAcceptedOrigins?: Array<string>;
     webauthnAllowedDeviceTypes?: Array<string>;
     emailOtpThrottlingFactor?: number;
     smsOtpThrottlingFactor?: number;
@@ -101,6 +108,10 @@ export function AuthenticatorValidateStageRequestFromJSONTyped(
             json["webauthn_hints"] == null
                 ? undefined
                 : (json["webauthn_hints"] as Array<any>).map(WebAuthnHintEnumFromJSON),
+        webauthnAdditionalAcceptedOrigins:
+            json["webauthn_additional_accepted_origins"] == null
+                ? undefined
+                : json["webauthn_additional_accepted_origins"],
         webauthnAllowedDeviceTypes:
             json["webauthn_allowed_device_types"] == null
                 ? undefined
@@ -152,6 +163,7 @@ export function AuthenticatorValidateStageRequestToJSONTyped(
             value["webauthnHints"] == null
                 ? undefined
                 : (value["webauthnHints"] as Array<any>).map(WebAuthnHintEnumToJSON),
+        webauthn_additional_accepted_origins: value["webauthnAdditionalAcceptedOrigins"],
         webauthn_allowed_device_types: value["webauthnAllowedDeviceTypes"],
         email_otp_throttling_factor: value["emailOtpThrottlingFactor"],
         sms_otp_throttling_factor: value["smsOtpThrottlingFactor"],

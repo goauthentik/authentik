@@ -25,7 +25,7 @@ import { toAdminInterface } from "#elements/router/core/interfaces";
 import { setPageDetails } from "#elements/router/meta";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -158,20 +158,20 @@ export class AdminOverviewPage extends AdminOverviewBase {
         };
 
         return html`<div class=${classMap(classes)}>
-                <ak-admin-status-system> </ak-admin-status-system>
+                <ak-admin-status-system></ak-admin-status-system>
             </div>
             <div class=${classMap(classes)}>
-                <ak-admin-status-version> </ak-admin-status-version>
+                <ak-admin-status-version></ak-admin-status-version>
             </div>
             <div class=${classMap(classes)}>
-                <ak-admin-status-card-workers> </ak-admin-status-card-workers>
+                <ak-admin-status-card-workers></ak-admin-status-card-workers>
             </div>
             ${
                 isEnterprise
-                    ? html` <div class=${classMap(classes)}>
-                          <ak-admin-fips-status-system> </ak-admin-fips-status-system>
+                    ? html`<div class=${classMap(classes)}>
+                          <ak-admin-fips-status-system></ak-admin-fips-status-system>
                       </div>`
-                    : nothing
+                    : null
             } `;
     }
 

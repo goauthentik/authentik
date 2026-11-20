@@ -59,12 +59,12 @@ flowchart LR
 - For external URLs and `fa://...` values, the passthrough backend returns the value unchanged
 - For uploads, the backend validates the file size and path rules before writing to local storage or S3
 
-When a value contains `%(theme)s`, authentik can return both a single `url` and a `themed_urls` map:
+When a value contains `%(theme)s`, authentik can return both a single `url`, which points at the light variant, and a `themed_urls` map:
 
 ```mermaid
 flowchart LR
     A["Stored value<br/>branding/logo-%(theme)s.svg"] --> B["FileManager"]
-    B --> C["file_url(name)<br/>raw URL for stored value"]
+    B --> C["file_url(name)<br/>URL of the light variant"]
     B --> D["themed_urls(name)"]
     D --> E["light -> .../logo-light.svg"]
     D --> F["dark -> .../logo-dark.svg"]

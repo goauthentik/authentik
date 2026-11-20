@@ -1,7 +1,6 @@
 """v1 blueprints tasks"""
 
 from dataclasses import asdict, dataclass, field
-from hashlib import sha512
 from pathlib import Path
 from sys import platform
 from uuid import UUID
@@ -31,6 +30,7 @@ from authentik.blueprints.models import (
     BlueprintRetrievalFailed,
 )
 from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, EntryInvalidError
+from authentik.blueprints.v1.hash import blueprint_hash
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
@@ -124,8 +124,9 @@ def blueprints_find() -> list[BlueprintFile]:
         if any(part for part in rel_path.parts if part.startswith(".")):
             continue
         with open(path, encoding="utf-8") as blueprint_file:
+            content = blueprint_file.read()
             try:
-                raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
+                raw_blueprint = load(content, BlueprintLoader)
             except YAMLError as exc:
                 raw_blueprint = None
                 LOGGER.warning("failed to parse blueprint", exc=exc, path=str(rel_path))
@@ -136,7 +137,7 @@ def blueprints_find() -> list[BlueprintFile]:
             if version != 1:
                 LOGGER.warning("invalid blueprint version", version=version, path=str(rel_path))
                 continue
-        file_hash = sha512(path.read_bytes()).hexdigest()
+        file_hash = blueprint_hash(content)
         blueprint = BlueprintFile(str(rel_path), version, file_hash, int(path.stat().st_mtime))
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
         blueprints.append(blueprint)
@@ -197,7 +198,7 @@ def apply_blueprint(instance_pk: UUID):
             self.info(f"Blueprint {instance.name} is disabled, skipping")
             return
         blueprint_content = instance.retrieve()
-        file_hash = sha512(blueprint_content.encode()).hexdigest()
+        file_hash = blueprint_hash(blueprint_content)
         importer = Importer.from_string(blueprint_content, instance.context)
         if importer.blueprint.metadata:
             instance.metadata = asdict(importer.blueprint.metadata)

@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { ConsentPermission } from "./ConsentPermission";
-import { ConsentPermissionFromJSON, ConsentPermissionToJSON } from "./ConsentPermission";
-import type { ContextualFlowInfo } from "./ContextualFlowInfo";
-import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
-import type { ErrorDetail } from "./ErrorDetail";
+import type { ConsentPermission } from "./ConsentPermission.js";
+import { ConsentPermissionFromJSON, ConsentPermissionToJSON } from "./ConsentPermission.js";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo.js";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo.js";
+import type { ErrorDetail } from "./ErrorDetail.js";
 
 /**
  * Challenge info for consent screens

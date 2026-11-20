@@ -258,26 +258,13 @@ function removeNumberedPrefixes(pathStr) {
 }
 
 /**
- * Determine a doc's grouping key. Normally the directory slug (first path
- * segment); `regroup` lets a subtree split into its own group — e.g.
- * `["core/glossary", "glossary"]` pulls the glossary out of `## Core Concepts`
- * into its own `## Glossary` section.
+ * Determine a doc's grouping key: the directory slug (first path segment).
  *
  * @param {{ path: string }} doc
- * @param {{
- *     groupBy?: "topic" | "category";
- *     categories?: readonly (readonly [string, string])[];
- *     regroup?: readonly (readonly [string, string])[];
- * }} opts
  *
  * @returns {string}
  */
-export function assignGroup(doc, opts) {
-    if (opts.regroup) {
-        for (const [prefix, slug] of opts.regroup) {
-            if (doc.path === prefix || doc.path.startsWith(`${prefix}/`)) return slug;
-        }
-    }
+export function assignGroup(doc) {
     return doc.path.split("/")[0] || "";
 }
 

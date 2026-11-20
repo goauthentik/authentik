@@ -10,10 +10,13 @@
  * Do not edit the class manually.
  */
 
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
-import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
-import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./UserMatchingModeEnum";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
+import type { UserMatchingModeEnum } from "./UserMatchingModeEnum.js";
+import {
+    UserMatchingModeEnumFromJSON,
+    UserMatchingModeEnumToJSON,
+} from "./UserMatchingModeEnum.js";
 
 /**
  * Source Serializer

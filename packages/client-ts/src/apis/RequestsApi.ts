@@ -13,67 +13,70 @@
 import {
     type AgentGrantRequestCreated,
     AgentGrantRequestCreatedFromJSON,
-} from "../models/AgentGrantRequestCreated";
+} from "../models/AgentGrantRequestCreated.js";
 import {
     type AgentGrantRequestCreateRequest,
     AgentGrantRequestCreateRequestToJSON,
-} from "../models/AgentGrantRequestCreateRequest";
-import { type GrantRequest, GrantRequestFromJSON } from "../models/GrantRequest";
+} from "../models/AgentGrantRequestCreateRequest.js";
+import { type GrantRequest, GrantRequestFromJSON } from "../models/GrantRequest.js";
 import {
     type GrantRequestCreateRequest,
     GrantRequestCreateRequestToJSON,
-} from "../models/GrantRequestCreateRequest";
-import { type Link, LinkFromJSON } from "../models/Link";
+} from "../models/GrantRequestCreateRequest.js";
+import { type Link, LinkFromJSON } from "../models/Link.js";
 import {
     type PaginatedGrantRequestList,
     PaginatedGrantRequestListFromJSON,
-} from "../models/PaginatedGrantRequestList";
+} from "../models/PaginatedGrantRequestList.js";
 import {
     type PaginatedRequestRuleBindingList,
     PaginatedRequestRuleBindingListFromJSON,
-} from "../models/PaginatedRequestRuleBindingList";
+} from "../models/PaginatedRequestRuleBindingList.js";
 import {
     type PaginatedRequestRuleChildBindingList,
     PaginatedRequestRuleChildBindingListFromJSON,
-} from "../models/PaginatedRequestRuleChildBindingList";
+} from "../models/PaginatedRequestRuleChildBindingList.js";
 import {
     type PaginatedRequestRuleList,
     PaginatedRequestRuleListFromJSON,
-} from "../models/PaginatedRequestRuleList";
+} from "../models/PaginatedRequestRuleList.js";
 import {
     type PatchedGrantRequestFulfillRequest,
     PatchedGrantRequestFulfillRequestToJSON,
-} from "../models/PatchedGrantRequestFulfillRequest";
+} from "../models/PatchedGrantRequestFulfillRequest.js";
 import {
     type PatchedRequestRuleBindingRequest,
     PatchedRequestRuleBindingRequestToJSON,
-} from "../models/PatchedRequestRuleBindingRequest";
+} from "../models/PatchedRequestRuleBindingRequest.js";
 import {
     type PatchedRequestRuleChildBindingRequest,
     PatchedRequestRuleChildBindingRequestToJSON,
-} from "../models/PatchedRequestRuleChildBindingRequest";
+} from "../models/PatchedRequestRuleChildBindingRequest.js";
 import {
     type PatchedRequestRuleRequest,
     PatchedRequestRuleRequestToJSON,
-} from "../models/PatchedRequestRuleRequest";
-import { type RequestRule, RequestRuleFromJSON } from "../models/RequestRule";
-import { type RequestRuleBinding, RequestRuleBindingFromJSON } from "../models/RequestRuleBinding";
+} from "../models/PatchedRequestRuleRequest.js";
+import { type RequestRule, RequestRuleFromJSON } from "../models/RequestRule.js";
+import {
+    type RequestRuleBinding,
+    RequestRuleBindingFromJSON,
+} from "../models/RequestRuleBinding.js";
 import {
     type RequestRuleBindingRequest,
     RequestRuleBindingRequestToJSON,
-} from "../models/RequestRuleBindingRequest";
+} from "../models/RequestRuleBindingRequest.js";
 import {
     type RequestRuleChildBinding,
     RequestRuleChildBindingFromJSON,
-} from "../models/RequestRuleChildBinding";
+} from "../models/RequestRuleChildBinding.js";
 import {
     type RequestRuleChildBindingRequest,
     RequestRuleChildBindingRequestToJSON,
-} from "../models/RequestRuleChildBindingRequest";
-import { type RequestRuleRequest, RequestRuleRequestToJSON } from "../models/RequestRuleRequest";
-import { type RequestStatus } from "../models/RequestStatus";
-import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
-import * as runtime from "../runtime";
+} from "../models/RequestRuleChildBindingRequest.js";
+import { type RequestRuleRequest, RequestRuleRequestToJSON } from "../models/RequestRuleRequest.js";
+import { type RequestStatus } from "../models/RequestStatus.js";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy.js";
+import * as runtime from "../runtime.js";
 
 export interface RequestsGrantRequestsAgentCreateRequest {
     agentGrantRequestCreateRequest: AgentGrantRequestCreateRequest;
@@ -386,11 +389,11 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Delegate access an agent's owner already holds to the agent, time-boxed. Unlike `create` this
-     * persists the request directly instead of returning a flow link -- an agent authenticates with
-     * an API token and has no browser to run a flow in, so no justification is ever collected. That
-     * is why the agent may only ask for what its owner already has: the owner's approval is then
-     * the whole decision, and no reviewer is asked to judge a request with nothing in it. The
+     * Delegate access an agent\'s owner already holds to the agent, time-boxed. Unlike `create`
+     * this persists the request directly instead of returning a flow link -- an agent authenticates
+     * with an API token and has no browser to run a flow in, so no justification is ever collected.
+     * That is why the agent may only ask for what its owner already has: the owner\'s approval is
+     * then the whole decision, and no reviewer is asked to judge a request with nothing in it. The
      * returned `fulfill_url` is what the agent hands to its owner so they can act on it.
      */
     async requestsGrantRequestsAgentCreateRaw(
@@ -407,11 +410,11 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Delegate access an agent's owner already holds to the agent, time-boxed. Unlike `create` this
-     * persists the request directly instead of returning a flow link -- an agent authenticates with
-     * an API token and has no browser to run a flow in, so no justification is ever collected. That
-     * is why the agent may only ask for what its owner already has: the owner's approval is then
-     * the whole decision, and no reviewer is asked to judge a request with nothing in it. The
+     * Delegate access an agent\'s owner already holds to the agent, time-boxed. Unlike `create`
+     * this persists the request directly instead of returning a flow link -- an agent authenticates
+     * with an API token and has no browser to run a flow in, so no justification is ever collected.
+     * That is why the agent may only ask for what its owner already has: the owner\'s approval is
+     * then the whole decision, and no reviewer is asked to judge a request with nothing in it. The
      * returned `fulfill_url` is what the agent hands to its owner so they can act on it.
      */
     async requestsGrantRequestsAgentCreate(

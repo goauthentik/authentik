@@ -9,7 +9,7 @@ import { ifPresent } from "#elements/utils/attributes";
 import { MatchingModeEnum, RedirectURI, RedirectURITypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -22,6 +22,8 @@ export type RedirectURIProperties = LitPropertyRecord<{
 
 @customElement("ak-provider-oauth2-redirect-uri")
 export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
+    static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
+
     static styles = [
         PFInputGroup,
         PFFormControl,

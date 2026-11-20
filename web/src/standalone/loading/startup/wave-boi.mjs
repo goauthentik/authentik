@@ -167,7 +167,7 @@ export class WavesCanvas {
             shape === "circle" ? this.#drawCircleParticle : this.#drawTriangleParticle;
 
         window.addEventListener("resize", this.refresh);
-        const colorSchemeChangeListener = window.matchMedia("(prefers-color-scheme: dark)");
+        const colorSchemeChangeListener = matchMedia("(prefers-color-scheme: dark)");
 
         colorSchemeChangeListener.addEventListener("change", this.refresh);
     }
@@ -201,7 +201,7 @@ export class WavesCanvas {
         this.#fieldHeight = this.waveHeight * this.aspectRatio;
         this.#fieldDepth = this.#gridDepth;
 
-        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
         if (prefersReducedMotion.matches) {
             this.speed = 5;

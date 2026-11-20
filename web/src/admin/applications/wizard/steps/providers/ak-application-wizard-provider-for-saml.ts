@@ -24,6 +24,9 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     protected hasSigningKp = false;
 
     @state()
+    protected hasEncryptionKp = false;
+
+    @state()
     protected hasSlsUrl = false;
 
     @state()
@@ -56,6 +59,10 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
         const setHasSigningKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
             this.hasSigningKp = !!detail.value;
             this.signingKeyType = detail.value?.keyType ?? KeyTypeEnum.Rsa;
+        };
+
+        const setHasEncryptionKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasEncryptionKp = !!detail.value;
         };
 
         const setHasSlsUrl = (ev: Event) => {
@@ -93,6 +100,8 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
                     setHasSigningKp,
                     hasSigningKp: this.hasSigningKp,
                     signingKeyType: this.signingKeyType,
+                    setHasEncryptionKp,
+                    hasEncryptionKp: this.hasEncryptionKp,
                     setHasSlsUrl,
                     hasSlsUrl: this.hasSlsUrl,
                     setSlsBinding,

@@ -1,11 +1,20 @@
-from collections.abc import Generator, Iterator
+from collections.abc import Generator, Iterable, Iterator
+from contextlib import contextmanager
 
+from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
+from django.db import DatabaseError
 from django.http.request import HttpRequest
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
-from authentik.admin.files.backends.base import ManageableBackend
+from authentik.admin.files.backends.base import (
+    PREFETCHED_URLS,
+    ManageableBackend,
+    get_valid_themes,
+    has_theme_variable,
+    substitute_theme,
+)
 from authentik.admin.files.backends.file import FileBackend
 from authentik.admin.files.backends.passthrough import PassthroughBackend
 from authentik.admin.files.backends.s3 import S3Backend
@@ -78,6 +87,9 @@ class FileManager:
         Set ``use_cache=False`` when the caller needs a fresh signed URL instead
         of a cached one, for example when serializing flow/login payloads that
         may be refreshed after the previous JWT has expired.
+
+        A name with ``%(theme)s`` resolves to its light variant, so the URL always
+        points at a real file. Callers that know the theme use ``themed_urls()``.
         """
         if not name:
             return ""
@@ -85,6 +97,7 @@ class FileManager:
         if isinstance(request, Request):
             request = request._request
 
+        name = substitute_theme(name, "light")
         for backend in self.backends:
             if backend.supports_file(name):
                 return backend.file_url(name, request, use_cache=use_cache)
@@ -99,12 +112,13 @@ class FileManager:
         use_cache: bool = True,
     ) -> dict[str, str] | None:
         """
-        Get URLs for each theme variant when filename contains %(theme)s.
+        Get URLs for each theme variant when filename contains %(theme)s, or when it is
+        one variant of a built-in source icon.
 
         ``use_cache`` has the same semantics as ``file_url()`` and allows
         callers to force regeneration of expiring signed URLs.
 
-        Returns dict mapping theme to URL if %(theme)s present, None otherwise.
+        Returns dict mapping theme to URL if there are theme variants, None otherwise.
         """
         if not name:
             return None
@@ -117,6 +131,41 @@ class FileManager:
                 return backend.themed_urls(name, request, use_cache=use_cache)
 
         return None
+
+    @contextmanager
+    def prefetch_urls(self, names: Iterable[str | None]) -> Iterator[None]:
+        """
+        Read the cached URLs of ``names`` and their theme variants with one query, for the
+        ``file_url()`` and ``themed_urls()`` calls made without a request inside this block.
+        Each of those calls otherwise reads the cache with a query of its own, which a list
+        of objects with icons makes once per object.
+
+        A URL that is not cached yet is generated and cached by its own call, as without
+        this block.
+        """
+        keys = []
+        for name in names:
+            if not name:
+                continue
+            variants = [substitute_theme(name, "light")]
+            if has_theme_variable(name):
+                variants += [substitute_theme(name, theme) for theme in get_valid_themes()]
+            for variant in variants:
+                backend = next((b for b in self.backends if b.supports_file(variant)), None)
+                # Only the manageable backends cache their URLs
+                if isinstance(backend, ManageableBackend):
+                    keys.append(backend.cache_key(variant, None))
+        try:
+            prefetched = cache.get_many(keys)
+        except DatabaseError:
+            # cache.get() treats a failing cache as empty; do the same, so each call reads or
+            # generates its own URL
+            prefetched = {}
+        token = PREFETCHED_URLS.set(prefetched)
+        try:
+            yield
+        finally:
+            PREFETCHED_URLS.reset(token)
 
     def _check_manageable(self) -> None:
         if not self.manageable:

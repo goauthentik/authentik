@@ -10,11 +10,11 @@
  * Do not edit the class manually.
  */
 
-import type { LicenseUserCountRange } from "./LicenseUserCountRange";
+import type { LicenseUserCountRange } from "./LicenseUserCountRange.js";
 import {
     LicenseUserCountRangeFromJSON,
     LicenseUserCountRangeToJSON,
-} from "./LicenseUserCountRange";
+} from "./LicenseUserCountRange.js";
 
 /**
  * Current active user totals and counts for requested date ranges.

@@ -40,7 +40,7 @@ To support the integration of Audiobookshelf with authentik, you need to create 
         - Add three **Redirect URIs**:
             - `Strict` `Authorization` `https://audiobookshelf.company/auth/openid/callback`
             - `Strict` `Authorization` `https://audiobookshelf.company/auth/openid/mobile-redirect`
-            - `Strict` `Post Logout` `https://audiobookshelf.company/login`
+            - `Strict` `Post Logout` `https://audiobookshelf.company/audiobookshelf/login`
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 

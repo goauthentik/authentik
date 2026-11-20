@@ -2,7 +2,9 @@
 
 from typing import Any
 
+from asgiref.sync import sync_to_async
 from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.hashers import make_password
 from django.http.request import HttpRequest
 
 from authentik.core.models import Token, TokenIntents, User
@@ -38,8 +40,15 @@ class InbuiltBackend(ModelBackendNoAuthz):
     def authenticate(
         self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
     ) -> User | None:
-        user = super().authenticate(request, username=username, password=password, **kwargs)
-        if not user:
+        if username is None or password is None:
+            return None
+        user = User.objects.select_related("password_device").filter(username=username).first()
+        device = getattr(user, "password_device", None)
+        if device is None:
+            # Hash once, so a missing user or password takes as long as a wrong password.
+            make_password(password)
+            return None
+        if not device.check_password(password) or not self.user_can_authenticate(user):
             return None
         self.set_method("password", request)
         return user
@@ -47,11 +56,9 @@ class InbuiltBackend(ModelBackendNoAuthz):
     async def aauthenticate(
         self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
     ) -> User | None:
-        user = await super().aauthenticate(request, username=username, password=password, **kwargs)
-        if not user:
-            return None
-        self.set_method("password", request)
-        return user
+        return await sync_to_async(self.authenticate)(
+            request, username=username, password=password, **kwargs
+        )
 
     def set_method(self, method: str, request: HttpRequest | None, **kwargs):
         """Set method data on current flow, if possbiel"""
@@ -78,7 +85,7 @@ class TokenBackend(InbuiltBackend):
         except User.DoesNotExist:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a nonexistent user (#20760).
-            User().set_password(password, request=request)
+            make_password(password)
             return None
 
         tokens = Token.objects.filter(

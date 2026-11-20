@@ -61,16 +61,19 @@ class PolicyProcess(PROCESS_CLASS):
     connection: Connection
     binding: PolicyBinding
     request: PolicyRequest
+    use_cache: bool
 
     def __init__(
         self,
         binding: PolicyBinding,
         request: PolicyRequest,
         connection: Connection | None,
+        use_cache: bool = True,
     ):
         super().__init__()
         self.binding = binding
         self.request = request
+        self.use_cache = use_cache
         if not isinstance(self.request, PolicyRequest):
             raise ValueError(f"{self.request} is not a Policy Request.")
         if connection:
@@ -122,7 +125,9 @@ class PolicyProcess(PROCESS_CLASS):
                 dry_run=True,
                 cached=False,
             )
-        should_cache = self.request.should_cache
+        # Engines bypass the cache when the result depends on request context the key
+        # doesn't capture, so it mustn't be served to anyone else either
+        should_cache = self.use_cache and self.request.should_cache
         if should_cache:
             key = cache_key(self.binding, self.request)
             cache.set(key, policy_result, CACHE_TIMEOUT)

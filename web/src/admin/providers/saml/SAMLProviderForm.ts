@@ -23,6 +23,9 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     protected hasSigningKp = false;
 
     @state()
+    protected hasEncryptionKp = false;
+
+    @state()
     protected hasSlsUrl = false;
 
     @state()
@@ -35,6 +38,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         super.reset();
 
         this.hasSigningKp = false;
+        this.hasEncryptionKp = false;
         this.hasSlsUrl = false;
         this.hasPostBinding = false;
         this.logoutMethod = SAMLLogoutMethods.FrontchannelIframe;
@@ -49,6 +53,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         });
 
         this.hasSigningKp = !!provider.signingKp;
+        this.hasEncryptionKp = !!provider.encryptionKp;
         this.hasSlsUrl = !!provider.slsUrl;
         this.hasPostBinding = provider.slsBinding === SAMLBindingsEnum.Post;
         this.logoutMethod = provider.logoutMethod ?? SAMLLogoutMethods.FrontchannelIframe;
@@ -83,6 +88,10 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             this.signingKeyType = detail.value?.keyType ?? KeyTypeEnum.Rsa;
         };
 
+        const setHasEncryptionKp = ({ detail }: SearchSelectChangeEvent<CertificateKeyPair>) => {
+            this.hasEncryptionKp = !!detail.value;
+        };
+
         const setHasSlsUrl = (ev: Event) => {
             const akTextInput = ev.currentTarget as HTMLElement & { value?: string };
 
@@ -115,6 +124,8 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             setHasSigningKp,
             hasSigningKp: this.hasSigningKp,
             signingKeyType: this.signingKeyType,
+            setHasEncryptionKp,
+            hasEncryptionKp: this.hasEncryptionKp,
             setHasSlsUrl,
             hasSlsUrl: this.hasSlsUrl,
             setSlsBinding,

@@ -10,18 +10,13 @@ from urllib.parse import urlparse
 from channels.layers import get_channel_layer
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
-from docker.constants import DEFAULT_UNIX_SOCKET
 from dramatiq.actor import actor
-from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
-from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 from yaml import safe_load
 
 from authentik.lib.config import CONFIG
 from authentik.outposts.consumer import build_outpost_group
 from authentik.outposts.controllers.base import BaseController, ControllerException
-from authentik.outposts.controllers.docker import DockerClient
-from authentik.outposts.controllers.kubernetes import KubernetesClient
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
@@ -30,14 +25,6 @@ from authentik.outposts.models import (
     OutpostType,
     ServiceConnectionInvalid,
 )
-from authentik.providers.ldap.controllers.docker import LDAPDockerController
-from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
-from authentik.providers.proxy.controllers.docker import ProxyDockerController
-from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
-from authentik.providers.rac.controllers.docker import RACDockerController
-from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
-from authentik.providers.radius.controllers.docker import RadiusDockerController
-from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
 from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
@@ -54,26 +41,31 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
     if not outpost.service_connection:
         return None
     service_connection = outpost.service_connection
-    if outpost.type == OutpostType.PROXY:
-        if isinstance(service_connection, DockerServiceConnection):
-            return ProxyDockerController
-        if isinstance(service_connection, KubernetesServiceConnection):
-            return ProxyKubernetesController
-    if outpost.type == OutpostType.LDAP:
-        if isinstance(service_connection, DockerServiceConnection):
-            return LDAPDockerController
-        if isinstance(service_connection, KubernetesServiceConnection):
-            return LDAPKubernetesController
-    if outpost.type == OutpostType.RADIUS:
-        if isinstance(service_connection, DockerServiceConnection):
-            return RadiusDockerController
-        if isinstance(service_connection, KubernetesServiceConnection):
-            return RadiusKubernetesController
-    if outpost.type == OutpostType.RAC:
-        if isinstance(service_connection, DockerServiceConnection):
-            return RACDockerController
-        if isinstance(service_connection, KubernetesServiceConnection):
-            return RACKubernetesController
+    # Controllers pull in the docker or kubernetes client, only import the one in use
+    if isinstance(service_connection, DockerServiceConnection):
+        from authentik.providers.ldap.controllers.docker import LDAPDockerController
+        from authentik.providers.proxy.controllers.docker import ProxyDockerController
+        from authentik.providers.rac.controllers.docker import RACDockerController
+        from authentik.providers.radius.controllers.docker import RadiusDockerController
+
+        return {
+            OutpostType.PROXY: ProxyDockerController,
+            OutpostType.LDAP: LDAPDockerController,
+            OutpostType.RADIUS: RadiusDockerController,
+            OutpostType.RAC: RACDockerController,
+        }.get(outpost.type)
+    if isinstance(service_connection, KubernetesServiceConnection):
+        from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
+        from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
+        from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
+        from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
+
+        return {
+            OutpostType.PROXY: ProxyKubernetesController,
+            OutpostType.LDAP: LDAPKubernetesController,
+            OutpostType.RADIUS: RadiusKubernetesController,
+            OutpostType.RAC: RACKubernetesController,
+        }.get(outpost.type)
     return None
 
 
@@ -87,8 +79,12 @@ def outpost_service_connection_monitor(connection_pk: Any):
         return
     cls = None
     if isinstance(connection, DockerServiceConnection):
+        from authentik.outposts.controllers.docker import DockerClient
+
         cls = DockerClient
     if isinstance(connection, KubernetesServiceConnection):
+        from authentik.outposts.controllers.kubernetes import KubernetesClient
+
         cls = KubernetesClient
     if not cls:
         LOGGER.warning("No class found for service connection", connection=connection)
@@ -168,6 +164,10 @@ def outpost_connection_discovery():
     if not CONFIG.get_bool("outposts.discover"):
         self.info("Outpost integration discovery is disabled")
         return
+    from docker.constants import DEFAULT_UNIX_SOCKET
+    from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
+    from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
+
     # Explicitly check against token filename, as that's
     # only present when the integration is enabled
     if Path(SERVICE_TOKEN_FILENAME).exists():

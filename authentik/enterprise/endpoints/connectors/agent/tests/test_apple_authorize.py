@@ -15,13 +15,15 @@ from authentik.endpoints.connectors.agent.models import (
 from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.enterprise.endpoints.connectors.agent.views.apple_authorize import REDIRECT_URI
 from authentik.enterprise.tests import enterprise_test
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import JWTAlgorithms
+from authentik.stages.dummy.models import DummyStage
 
 
-class TestAppleAuthorize(FlowTestCase):
+class TestAppleAuthorize(APIFlowTestCase):
 
     def setUp(self):
         self.apple_sign_key = create_test_cert(PrivateKeyAlg.ECDSA)
@@ -82,6 +84,81 @@ class TestAppleAuthorize(FlowTestCase):
         auth_code = AppleAuthorizationCode.objects.get(code=code)
         self.assertEqual(auth_code.device_connection, self.connection)
         self.assertEqual(auth_code.user, self.user)
+
+    @enterprise_test()
+    def test_preauthenticate(self):
+        """Platform SSO only signs and posts a request object when the pre-authentication
+        response contains an authorization request"""
+        res = self.client.get(
+            reverse(
+                "authentik_enterprise_endpoints_connectors_agent:psso-preauthenticate",
+                kwargs={"connector_uuid": str(self.connector.pk)},
+            ),
+            {"user": self.user.username},
+        )
+        self.assertEqual(res.status_code, 200)
+        body = res.json()
+        query = parse_qs(urlparse(body["authorization_url"]).query)
+        self.assertEqual(query["login_hint"], [self.user.username])
+        self.assertEqual(
+            body["authorizationRequest"],
+            {
+                "client_id": str(self.connector.pk),
+                "redirect_uri": REDIRECT_URI,
+                "response_type": "code",
+                "scope": "openid profile email",
+                "state": query["state"][0],
+            },
+        )
+
+    @enterprise_test()
+    def test_authorize_unauthenticated(self):
+        """The request object is only posted once, and has to survive the user logging in"""
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+        self.device.access_group = DeviceAccessGroup.objects.create(name=generate_id())
+        self.device.save()
+        PolicyBinding.objects.create(target=self.device.access_group, group=group, order=0)
+        FlowStageBinding.objects.create(
+            target=create_test_flow(FlowDesignation.AUTHENTICATION),
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+
+        request_object = encode(
+            {"iss": str(self.connector.pk)},
+            self.apple_sign_key.private_key,
+            headers={"kid": self.apple_sign_key.kid},
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        url = f"{self.url}?redirect_uri={REDIRECT_URI}"
+        res = self.client.post(
+            url,
+            data=urlencode({"request": request_object}),
+            content_type="application/x-www-form-urlencoded",
+        )
+        # Sent to the authentication flow
+        self.assertEqual(res.status_code, 302)
+        self.assertNotIn(self.connector.authorization_flow.slug, res.url)
+
+        self.client.force_login(self.user)
+        # After logging in, the user is sent back with a GET
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, 302)
+        self.assertIn(self.connector.authorization_flow.slug, res.url)
+        res = self.client.get(
+            reverse(
+                "authentik_api:flow-executor",
+                kwargs={"flow_slug": self.connector.authorization_flow.slug},
+            )
+        )
+        to = self.assertStageResponse(res, component="xak-flow-redirect")["to"]
+        code = parse_qs(urlparse(to).query)["code"][0]
+        self.assertEqual(
+            AppleAuthorizationCode.objects.get(code=code).device_connection, self.connection
+        )
+        # The request object can't be replayed from the session
+        self.assertEqual(self.client.get(url).status_code, 404)
 
     @enterprise_test()
     def test_authorize_without_request_object(self):

@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { ConnectionToken } from "./ConnectionToken";
-import { ConnectionTokenFromJSON, ConnectionTokenToJSON } from "./ConnectionToken";
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { ConnectionToken } from "./ConnectionToken.js";
+import { ConnectionTokenFromJSON, ConnectionTokenToJSON } from "./ConnectionToken.js";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
 
 /**
  * @export

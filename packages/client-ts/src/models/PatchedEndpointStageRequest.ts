@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 
-import type { StageModeEnum } from "./StageModeEnum";
-import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
+import type { StageModeEnum } from "./StageModeEnum.js";
+import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum.js";
 
 /**
  * EndpointStage Serializer

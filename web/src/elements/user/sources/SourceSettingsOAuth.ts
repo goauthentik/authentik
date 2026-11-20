@@ -1,6 +1,6 @@
 import "#elements/Spinner";
 import { aki } from "#common/api/client";
-import { AndNext } from "#common/api/config";
+import { withNext } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -56,7 +56,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
 
         return html`<a
             class="pf-c-button pf-m-primary"
-            href="${this.configureURL}${AndNext(toUserInterface("settings/sources"))}"
+            href=${withNext(this.configureURL, toUserInterface("settings/sources"))}
         >
             ${msg("Connect")}
         </a>`;

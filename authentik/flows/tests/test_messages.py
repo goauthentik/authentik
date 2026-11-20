@@ -11,7 +11,7 @@ from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.models import FlowStageBinding, in_memory_stage
 from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView, StageView
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.stages.dummy.models import DummyStage
 
 
@@ -34,7 +34,7 @@ class MessageChallengeStageView(ChallengeStageView):
         return self.executor.stage_ok()
 
 
-class TestFlowMessages(FlowTestCase):
+class TestFlowMessages(APIFlowTestCase):
     """Test messages attached to challenges"""
 
     def setUp(self):

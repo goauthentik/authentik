@@ -78,6 +78,29 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn(b"The SAML assertion is not valid yet or has expired.", response.content)
 
+    def test_error_status_generic_message(self):
+        """An unsuccessful IdP status shows the user a generic message, not the IdP's details"""
+        response = self.client.post(
+            reverse(
+                "authentik_sources_saml:acs",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_error_with_detail.xml").encode()
+                ).decode()
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            b"The identity provider did not complete the authentication request.",
+            response.content,
+        )
+        self.assertNotIn(b"User account is disabled", response.content)
+        self.assertNotIn(b"Authentication failed", response.content)
+
     @freeze_time("2022-10-14T14:15:00")
     def test_enroll_redirect(self):
         """Enroll when attempting to access a provider"""

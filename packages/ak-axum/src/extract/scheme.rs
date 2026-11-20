@@ -1,5 +1,7 @@
 //! axum extractor and middleware to get the request scheme.
 
+use std::sync::Arc;
+
 use axum::{
     Extension, RequestPartsExt as _,
     extract::{FromRequestParts, Request},
@@ -7,12 +9,10 @@ use axum::{
     middleware::Next,
     response::Response,
 };
+use axum_server::tls::TlsInfo;
 use tracing::{Span, instrument};
 
-use crate::{
-    accept::{proxy_protocol::ProxyProtocolState, tls::TlsState},
-    extract::trusted_proxy::TrustedProxy,
-};
+use crate::{accept::proxy_protocol::ProxyProtocolState, extract::trusted_proxy::TrustedProxy};
 
 const X_FORWARDED_PROTO: &str = "X-Forwarded-Proto";
 
@@ -68,7 +68,7 @@ async fn extract_scheme(parts: &mut Parts) -> http::uri::Scheme {
         }
     }
 
-    if parts.extract::<Extension<TlsState>>().await.is_ok() {
+    if parts.extract::<Extension<Arc<TlsInfo>>>().await.is_ok() {
         http::uri::Scheme::HTTPS
     } else {
         http::uri::Scheme::HTTP
@@ -133,12 +133,10 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn scheme_from_tls_state() {
+    async fn scheme_from_tls_info() {
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
-            .extension(TlsState {
-                peer_certificates: None,
-            })
+            .extension(Arc::new(TlsInfo::default()))
             .body(Body::empty())
             .expect("Failed to create request")
             .into_parts();

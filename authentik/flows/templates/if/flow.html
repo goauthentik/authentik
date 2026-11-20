@@ -22,7 +22,7 @@
 {% include "base/header_js.html" %}
 <meta name="ak-flow-layout" content="{{ flow.layout }}">
 <meta name="ak-flow-background" content="{{ flow.background }}">
-<meta name="ak-flow-title" content="{{ flow.title }}">
+<meta name="ak-flow-title" content="{{ flow_title }}">
 {% endblock %}
 
 {% block interface_stylesheet %}
@@ -35,6 +35,11 @@
   :root {
       --ak-global--background-image: url("{{ flow_background_url|iriencode|safe }}");
   }
+  {% if flow_background_themed_urls %}
+  :root[data-theme="dark"] {
+      --ak-global--background-image: url("{{ flow_background_themed_urls.dark|iriencode|safe }}");
+  }
+  {% endif %}
 </style>
 {% endblock %}
 
@@ -48,10 +53,18 @@
         loading
     >
         {% include "base/placeholder.html" %}
-        
+
+        <div class="ak-c-flow-overlay" slot="overlay-viewport">
+            {% include "base/spinner.html" %}
+        </div>
+
+        <div class="ak-c-flow-overlay" slot="overlay-card">
+            {% include "base/spinner.html" %}
+        </div>
+
         <ak-brand-links name="flow-links" slot="footer"></ak-brand-links>
     </ak-flow-executor>
-    
+
     <ak-flow-inspector
         slot="panel"
         id="flow-inspector"

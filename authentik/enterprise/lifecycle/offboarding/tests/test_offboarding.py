@@ -412,7 +412,10 @@ class TestOffboardingAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn("user", response.data)
+        self.assertJSONEqual(
+            response.content,
+            {"non_field_errors": ["The fields user must make a unique set."]},
+        )
 
     def test_duplicate_pending_race_returns_400(self):
         """If two requests race past validation, the DB constraint yields a 400, not a 500."""
@@ -433,8 +436,10 @@ class TestOffboardingAPI(APITestCase):
                 },
             )
         self.assertEqual(response.status_code, 400)
-        self.assertIn("user", response.data)
-        # The losing insert did not create a second pending row.
+        self.assertJSONEqual(
+            response.content,
+            {"non_field_errors": ["The fields user must make a unique set."]},
+        )  # The losing insert did not create a second pending row.
         self.assertEqual(
             UserOffboarding.objects.filter(
                 user=self.user, status=OffboardingStatus.PENDING
@@ -543,3 +548,29 @@ class TestOffboardingAPI(APITestCase):
             self.assertEqual(response.status_code, 405)
         offboarding.refresh_from_db()
         self.assertEqual(offboarding.action, OffboardingAction.DEACTIVATE)
+
+    def test_generated_filter_keeps_rows_of_deleted_rules(self):
+        from authentik.enterprise.lifecycle.expiration.models import UserExpirationRule
+
+        with patch(
+            "authentik.enterprise.lifecycle.expiration.tasks.apply_expiration_rule.send_with_options"
+        ):
+            rule = UserExpirationRule.objects.create(name=generate_id())
+        generated = UserOffboarding.objects.create(
+            user=create_test_user(),
+            rule=rule,
+            generated=True,
+            scheduled_at=now(),
+            status=OffboardingStatus.COMPLETED,
+        )
+        manual = UserOffboarding.objects.create(user=self.user, scheduled_at=now())
+        rule.delete()
+        url = reverse("authentik_api:useroffboarding-list")
+        for value, expected in (("true", generated), ("false", manual)):
+            with self.subTest(generated=value):
+                response = self.client.get(url, {"generated": value})
+                self.assertEqual(response.status_code, 200)
+                results = response.json()["results"]
+                self.assertEqual([row["id"] for row in results], [str(expected.pk)])
+                self.assertEqual(results[0]["generated"], value == "true")
+                self.assertIsNone(results[0]["rule"])

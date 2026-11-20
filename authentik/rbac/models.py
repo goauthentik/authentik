@@ -1,35 +1,25 @@
 """RBAC models"""
 
+from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
-from django.contrib.auth.management import _get_all_permissions
 from django.contrib.auth.models import Permission
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.transaction import atomic
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
+from guardian.backends import object_grants_cache
 from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework.serializers import BaseSerializer
 
 from authentik.blueprints.models import ManagedModel
 from authentik.lib.models import SerializerModel, SimpleThroughModel
-from authentik.lib.utils.reflection import get_apps
 
+if TYPE_CHECKING:
+    from authentik.core.models import User
 
-def get_permission_choices():
-    all_perms = []
-    for app in get_apps():
-        for model in app.get_models():
-            for perm, _desc in _get_all_permissions(model._meta):
-                all_perms.append((model, perm))
-    return sorted(
-        [
-            (
-                f"{model._meta.app_label}.{perm}",
-                f"{model._meta.app_label}.{perm}",
-            )
-            for model, perm in all_perms
-        ]
-    )
+GRANTS_ATTRIBUTE = "object_grants"
 
 
 class Role(SerializerModel, ManagedModel):
@@ -147,3 +137,69 @@ class SystemPermission(models.Model):
 
     def __str__(self) -> str:
         return "System Permission"
+
+
+CUSTOM_PERMISSION_PREFIX = "custom_"
+
+
+class CustomPermissionManager(models.Manager):
+    def get_queryset(self) -> models.QuerySet:
+        return super().get_queryset().filter(codename__startswith=CUSTOM_PERMISSION_PREFIX)
+
+
+class CustomPermission(SerializerModel, Permission):
+    """The permissions admins define. This is a proxy model to make API and blueprints simple."""
+
+    objects = CustomPermissionManager()
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.rbac.api.custom_permissions import CustomPermissionSerializer
+
+        return CustomPermissionSerializer
+
+    def __str__(self) -> str:
+        return f"Custom permission {self.codename}"
+
+    class Meta:
+        proxy = True
+        verbose_name = _("Custom permission")
+        verbose_name_plural = _("Custom permissions")
+
+
+class PermissionCheck(SerializerModel):
+    """Python snippet with the final say on access to the API endpoints it is bound to"""
+
+    check_uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    name = models.TextField(unique=True)
+    expression = models.TextField()
+    endpoints = ArrayField(models.TextField())
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.rbac.api.permission_checks import PermissionCheckSerializer
+
+        return PermissionCheckSerializer
+
+    def __str__(self) -> str:
+        return f"Permission check {self.name}"
+
+    @staticmethod
+    def skipped_for(user: User) -> bool:
+        """Superusers automatically pass every check"""
+        return user.is_superuser
+
+    def defines(self, function: str) -> bool:
+        from authentik.rbac.evaluator import PermissionCheckEvaluator
+
+        return function in PermissionCheckEvaluator.defined_functions(self.expression)
+
+    def run(self, function: str, request: HttpRequest, endpoint: str | None, *args) -> Any:
+        from authentik.rbac.evaluator import PermissionCheckEvaluator
+
+        with object_grants_cache(request.__dict__.setdefault(GRANTS_ATTRIBUTE, {})):
+            return PermissionCheckEvaluator(self, request, endpoint).run(function, *args)
+
+    class Meta:
+        verbose_name = _("Permission check")
+        verbose_name_plural = _("Permission checks")

@@ -63,6 +63,11 @@ const recoveryButtonStyles = css`
 export class UserListPage extends WithLicenseSummary(
     WithBrandConfig(WithCapabilitiesConfig(WithSession(TablePage<User>))),
 ) {
+    public static override verboseName = msg("User", { id: "users.verbose-name.label" });
+    public static override verboseNamePlural = msg("Users", {
+        id: "users.verbose-name-plural.label",
+    });
+
     static styles: CSSResult[] = [
         ...TablePage.styles,
         PFDescriptionList,
@@ -221,7 +226,6 @@ export class UserListPage extends WithLicenseSummary(
                 </button>
             </ak-user-bulk-revoke-sessions>
             <ak-forms-delete-bulk
-                object-label=${msg("User(s)")}
                 .objects=${this.selectedElements}
                 .metadata=${(item: User) => {
                     return [

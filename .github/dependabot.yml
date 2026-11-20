@@ -310,6 +310,12 @@ updates:
       opentelemetry:
         patterns:
           - opentelemetry-*
+    ignore:
+      # Without this rule no 5.2.x patch PR gets opened.
+      # TODO: Remove this rule when moving to Django 6.
+      - dependency-name: "django"
+        update-types:
+          - "version-update:semver-major"
 
   #endregion
 
@@ -329,10 +335,10 @@ updates:
       - dependencies
     cooldown:
       default-days: 3
-    groups:
-      pnpm:
-        patterns:
-          - "*pnpm/pnpm"
+    ignore:
+      # Dependabot can't update the `packageManager` pins, so it would leave them
+      # behind the image and fail `make lint-catalogs`. Bump pnpm by hand.
+      - dependency-name: "*pnpm/pnpm"
   - package-ecosystem: docker-compose
     directories:
       - /packages/client-go

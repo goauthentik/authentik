@@ -10,14 +10,14 @@
  * Do not edit the class manually.
  */
 
-import type { DeniedActionEnum } from "./DeniedActionEnum";
-import { DeniedActionEnumFromJSON, DeniedActionEnumToJSON } from "./DeniedActionEnum";
-import type { FlowDesignationEnum } from "./FlowDesignationEnum";
-import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum";
-import type { FlowLayoutEnum } from "./FlowLayoutEnum";
-import { FlowLayoutEnumFromJSON, FlowLayoutEnumToJSON } from "./FlowLayoutEnum";
-import type { PolicyEngineMode } from "./PolicyEngineMode";
-import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { DeniedActionEnum } from "./DeniedActionEnum.js";
+import { DeniedActionEnumFromJSON, DeniedActionEnumToJSON } from "./DeniedActionEnum.js";
+import type { FlowDesignationEnum } from "./FlowDesignationEnum.js";
+import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum.js";
+import type { FlowLayoutEnum } from "./FlowLayoutEnum.js";
+import { FlowLayoutEnumFromJSON, FlowLayoutEnumToJSON } from "./FlowLayoutEnum.js";
+import type { PolicyEngineMode } from "./PolicyEngineMode.js";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
 /**
  * Stripped down flow serializer

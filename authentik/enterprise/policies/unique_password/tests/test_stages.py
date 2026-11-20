@@ -9,7 +9,7 @@ from authentik.enterprise.policies.unique_password.models import (
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_key
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
@@ -17,7 +17,7 @@ from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserWriteStage
 
 
-class TestUserWriteStage(FlowTestCase):
+class TestUserWriteStage(APIFlowTestCase):
     """Write tests"""
 
     def setUp(self):

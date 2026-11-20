@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { Source } from "./Source";
-import { SourceFromJSON, SourceToJSON } from "./Source";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { Source } from "./Source.js";
+import { SourceFromJSON, SourceToJSON } from "./Source.js";
 
 /**
  * @export

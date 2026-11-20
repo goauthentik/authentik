@@ -8,12 +8,12 @@ from authentik.enterprise.stages.authenticator_endpoint_gdtc.views.dtc import (
     PLAN_CONTEXT_METHOD_ARGS_ENDPOINTS,
 )
 from authentik.flows.models import FlowStageBinding
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
 
-class TestAuthenticatorEndpointGDTCStage(FlowTestCase):
+class TestAuthenticatorEndpointGDTCStage(APIFlowTestCase):
     def setUp(self):
         self.flow = create_test_flow()
         self.stage = AuthenticatorEndpointGDTCStage.objects.create(

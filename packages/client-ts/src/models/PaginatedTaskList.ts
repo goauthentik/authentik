@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 
-import type { Pagination } from "./Pagination";
-import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { Task } from "./Task";
-import { TaskFromJSON, TaskToJSON } from "./Task";
+import type { Pagination } from "./Pagination.js";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination.js";
+import type { Task } from "./Task.js";
+import { TaskFromJSON, TaskToJSON } from "./Task.js";
 
 /**
  * @export

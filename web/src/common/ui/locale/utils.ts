@@ -153,7 +153,7 @@ export function isTargetLanguageTag(
  *
  *   1. A `locale` URL parameter (a dev/test override; the server honors the same parameter when
  *      rendering the shell, so client and server cannot disagree)
- *   2. The server-resolved locale hint (`window.authentik.locale`)
+ *   2. The server-context locale hint.
  *   3. The browser's navigator language (only relevant on a first anonymous visit, when the server had
  *      nothing persisted to resolve from)
  *   4. A provided fallback locale code
@@ -164,8 +164,8 @@ export function isTargetLanguageTag(
  * @returns The best-matching supported locale code.
  */
 export function autoDetectLanguage(
-    languageTagHint?: Intl.UnicodeBCP47LocaleIdentifier,
-    fallbackLanguageTag?: Intl.UnicodeBCP47LocaleIdentifier,
+    languageTagHint?: Intl.UnicodeBCP47LocaleIdentifier | null,
+    fallbackLanguageTag?: Intl.UnicodeBCP47LocaleIdentifier | null,
 ): TargetLanguageTag {
     let localeParam: string | null = null;
 

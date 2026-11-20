@@ -1,5 +1,6 @@
 import "#admin/users/UserChart";
 import "#admin/users/UserInfoCard";
+import "#admin/users/UserRequiredActionsList";
 import "#admin/users/UserNotesCard";
 import "#components/ak-object-attributes-card";
 import "#admin/events/ObjectChangelog";
@@ -8,15 +9,16 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { AKElement } from "#elements/Base";
+import { WithLicenseSummary } from "#elements/mixins/license";
 
-import { ModelEnum, User } from "@goauthentik/api";
+import { LicenseSummaryStatusEnum, ModelEnum, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-overview-tab")
-export class UserOverviewTab extends AKElement {
+export class UserOverviewTab extends WithLicenseSummary(AKElement) {
     @property({ attribute: false })
     public user?: User;
 
@@ -25,9 +27,6 @@ export class UserOverviewTab extends AKElement {
 
     @property({ type: Boolean })
     public canImpersonate = false;
-
-    @property({ type: Boolean })
-    public hasEnterpriseLicense = false;
 
     @property({ type: Boolean })
     public brandHasRecoveryFlow = false;
@@ -65,6 +64,25 @@ export class UserOverviewTab extends AKElement {
                     .objectAttributes=${this.user.attributes}
                 ></ak-object-attributes-card>
             </div>
+            ${
+                this.licenseSummary &&
+                this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed
+                    ? html`<div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                          <div class="pf-c-card__title">
+                              ${msg("Required actions", { id: "user-required-actions.card.title" })}
+                          </div>
+                          <div class="pf-c-card__body">
+                              ${msg(
+                                  "The user must complete these flows in order before they can continue. Changes apply on their next request.",
+                                  { id: "user-required-actions.card.description" },
+                              )}
+                          </div>
+                          <ak-user-required-actions-list
+                              .user=${this.user}
+                          ></ak-user-required-actions-list>
+                      </div>`
+                    : nothing
+            }
             <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                 <div class="pf-c-card__title">${msg("Changelog")}</div>
                 <ak-object-changelog
