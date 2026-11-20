@@ -15,6 +15,7 @@ from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableExce
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_IS_REAUTHENTICATION,
     PLAN_CONTEXT_POST,
     FlowPlanner,
 )
@@ -89,6 +90,10 @@ class PolicyAccessView(AccessMixin, View):
         a hint on the Identification Stage what the user should login for."""
         flow_context = {}
         authn_flow = None
+        # An authenticated user only gets here when they have to log in again, for example
+        # for OAuth2 prompt=login or SAML ForceAuthn.
+        if self.request.user.is_authenticated:
+            flow_context[PLAN_CONTEXT_IS_REAUTHENTICATION] = True
         if self.application:
             flow_context[PLAN_CONTEXT_APPLICATION] = self.application
             if self.provider and self.provider.authentication_flow:

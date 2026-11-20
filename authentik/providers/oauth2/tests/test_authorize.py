@@ -19,7 +19,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import FlowStageBinding
+from authentik.flows.models import Flow, FlowAuthenticationRequirement, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
@@ -1294,3 +1294,48 @@ class TestAuthorize(OAuthTestCase):
         with self.assertRaises(AuthorizeError) as cm:
             OAuthAuthorizationParams.from_request(request)
         self.assertEqual(cm.exception.error, "invalid_request")
+
+    def test_prompt_login_require_unauthenticated_flow(self):
+        """A logged-in user can log in again for prompt=login, even when the authentication
+        flow requires an unauthenticated user"""
+        auth_flow = create_test_flow()
+        Flow.objects.filter(pk=auth_flow.pk).update(
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        )
+        FlowStageBinding.objects.create(
+            target=auth_flow, stage=DummyStage.objects.create(name=generate_id()), order=10
+        )
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            authentication_flow=auth_flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "redirect_uri": "foo://localhost",
+                "prompt": "login",
+            },
+        )
+        # The authentication flow starts for the logged-in user, instead of a 404
+        self.assertEqual(response.status_code, 302)
+        flow_url = urlparse(response.url)
+        self.assertEqual(
+            flow_url.path, reverse("authentik_core:if-flow", kwargs={"flow_slug": auth_flow.slug})
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": auth_flow.slug}),
+            {"query": flow_url.query},
+        )
+        self.assertEqual(response.json()["component"], "ak-stage-dummy")
+        self.client.force_login(user)
+        response = self.client.get(parse_qs(flow_url.query)["next"][0])
+        self.assertRegex(response.url, r"^foo://localhost\?code=")
