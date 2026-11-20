@@ -9,7 +9,8 @@ import { staticURL } from "#common/urls";
 import { EventActions } from "@goauthentik/api";
 
 import { cellToLatLng } from "h3-js";
-import maplibregl, { type LngLatBoundsLike, type Map as MapLibreMap } from "maplibre-gl";
+import * as maplibregl from "maplibre-gl";
+import type { LngLatBoundsLike, Map as MapLibreMap } from "maplibre-gl";
 import { Protocol } from "pmtiles";
 
 import { LitElement, type PropertyValues, unsafeCSS } from "lit";
