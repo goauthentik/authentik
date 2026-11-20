@@ -124,3 +124,36 @@ describe("OAuth2 provider signing key", () => {
         expect(new FormData(element.closest("form")!).get("signingKey")).toBe(certificate.pk);
     });
 });
+
+describe("OAuth2 provider authorization response issuer", () => {
+    function issuerSwitch(provider: Partial<OAuth2Provider>): HTMLElement & { checked: boolean } {
+        const container = document.createElement("div");
+
+        render(
+            renderForm({
+                provider,
+                showLogoutMethod: false,
+                showLogoutMethodCallback: () => undefined,
+            }),
+            container,
+        );
+
+        return container.querySelector<HTMLElement & { checked: boolean }>(
+            'ak-switch-input[name="includeIssuerInAuthorizationResponse"]',
+        )!;
+    }
+
+    it("is enabled for a new provider", () => {
+        expect(issuerSwitch({}).checked).toBe(true);
+    });
+
+    it("reflects the stored value of an existing provider", () => {
+        expect(issuerSwitch({ pk: 1, includeIssuerInAuthorizationResponse: false }).checked).toBe(
+            false,
+        );
+
+        expect(issuerSwitch({ pk: 1, includeIssuerInAuthorizationResponse: true }).checked).toBe(
+            true,
+        );
+    });
+});
