@@ -24,6 +24,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
 )
 from authentik.providers.oauth2.token.base import TokenRequest
+from authentik.providers.oauth2.utils import is_id_jag_typ
 from authentik.providers.saml.models import SAMLProvider
 from authentik.sources.oauth.models import OAuthSource
 
@@ -80,13 +81,26 @@ class FederatedTokenRequest(TokenRequest):
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             self.logger.warning("failed to parse JWT for kid lookup", exc=exc)
             raise TokenError("invalid_grant") from None
-        expected_kid = decode_unvalidated["header"].get("kid")
-        fallback_alg = decode_unvalidated["header"].get("alg")
+        header = decode_unvalidated["header"]
+        # An ID-JAG is a grant for one Resource Authorization Server, redeemed only by the
+        # jwt-bearer grant (draft-ietf-oauth-identity-assertion-authz-grant §4.4). The keys
+        # of the issuer that signed it may be trusted here for other JWTs, so refuse it by
+        # type before looking for a key: as a client assertion or subject token it would mint
+        # a service account for whatever its claims say.
+        if is_id_jag_typ(header.get("typ")):
+            self.logger.info("ID-JAG presented outside the jwt-bearer grant")
+            raise TokenError("invalid_grant").with_cause("id_jag_not_accepted")
+        expected_kid = header.get("kid")
+        fallback_alg = header.get("alg")
         if not expected_kid or not fallback_alg:
             return None
         for source in self.provider.jwt_federation_sources.filter(
-            oidc_jwks__keys__contains=[{"kid": expected_kid}]
+            enabled=True, oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):
+            # Sources that only issue identity assertions (ID-JAGs) aren't trusted for
+            # anything else
+            if getattr(source.source_type, "assertion_only", False):
+                continue
             self.logger.debug("verifying JWT with source", source=source.slug)
             keys = source.oidc_jwks.get("keys", [])
             for key in keys:

@@ -260,6 +260,9 @@ class TokenError(OAuth2Error):
             "The authorization server is unable to issue a token for the target service "
             "indicated by the 'resource' or 'audience' parameter"
         ),
+        # draft-ietf-oauth-identity-assertion-authz-grant §4.4.3: a valid ID-JAG whose
+        # user or client isn't authorized here. Re-issuing the ID-JAG won't help.
+        "access_denied": "The user or client is not authorized at this authorization server",
     }
 
     def __init__(self, error: str):
