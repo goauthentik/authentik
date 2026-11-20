@@ -97,7 +97,7 @@ export interface OAuthSourceRequest {
      */
     profileUrl?: string | null;
     pkce?: PKCEMethodEnum;
-    consumerKey: string;
+    consumerKey?: string;
     consumerSecret?: string;
     additionalScopes?: string;
     oidcWellKnownUrl?: string;
@@ -123,6 +123,11 @@ export interface OAuthSourceRequest {
      * first time, or by email on every redemption, for issuers whose subjects aren't stable.
      */
     idJagUserMatching?: IdJagUserMatchingEnum;
+    /**
+     * Issuer identifier of an Identity Assertion Issuer source, as it publishes it. ID-JAGs are
+     * accepted when their `iss` equals it exactly.
+     */
+    idJagIssuer?: string;
 }
 
 /**
@@ -136,13 +141,6 @@ export function instanceOfOAuthSourceRequest(value: object): value is OAuthSourc
             !("provider_type" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["providerType"] === undefined &&
             (value as Record<string, any>)["provider_type"] === undefined)
-    )
-        return false;
-    if (
-        (!("consumerKey" in (value as Record<string, any>)) &&
-            !("consumer_key" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["consumerKey"] === undefined &&
-            (value as Record<string, any>)["consumer_key"] === undefined)
     )
         return false;
     return true;
@@ -221,7 +219,7 @@ export function OAuthSourceRequestFromJSONTyped(
                   ? null
                   : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
-        consumerKey: json["consumer_key"],
+        consumerKey: json["consumer_key"] == null ? undefined : json["consumer_key"],
         consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         oidcWellKnownUrl:
@@ -244,6 +242,7 @@ export function OAuthSourceRequestFromJSONTyped(
             json["id_jag_user_matching"] == null
                 ? undefined
                 : IdJagUserMatchingEnumFromJSON(json["id_jag_user_matching"]),
+        idJagIssuer: json["id_jag_issuer"] == null ? undefined : json["id_jag_issuer"],
     };
 }
 
@@ -291,5 +290,6 @@ export function OAuthSourceRequestToJSONTyped(
         id_jag_email_domains: value["idJagEmailDomains"],
         id_jag_email_group: value["idJagEmailGroup"],
         id_jag_user_matching: IdJagUserMatchingEnumToJSON(value["idJagUserMatching"]),
+        id_jag_issuer: value["idJagIssuer"],
     };
 }

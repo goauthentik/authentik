@@ -33,6 +33,8 @@ class SourceType:
 
     urls_customizable = False
     requires_client_secret = True
+    # Users never sign in through this type, which is only trusted for ID-JAGs
+    assertion_only = False
 
     request_token_url: str | None = None
     authorization_url: str | None = None
