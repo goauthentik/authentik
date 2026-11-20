@@ -237,10 +237,12 @@ describe("ak-structured-view: summary spacing", () => {
      * whole characters.
      */
     const mountSpaced = (value: JsonValue) =>
-        mountTemplate(html`<ak-structured-view
-            style="font-family: monospace; --ak-c-structured-view__summary--WordSpacing: -0.5ch"
-            .value=${value}
-        ></ak-structured-view>`);
+        mountTemplate(
+            html`<ak-structured-view
+                style="font-family: monospace; --ak-c-structured-view__summary--WordSpacing: -0.5ch"
+                .value=${value}
+            ></ak-structured-view>`,
+        );
 
     const widthInCh = (element: StructuredView, selector: string) => {
         const target = element.renderRoot.querySelector<HTMLElement>(selector)!;

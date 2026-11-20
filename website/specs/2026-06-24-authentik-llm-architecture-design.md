@@ -171,7 +171,7 @@ instance's version for free.
 
 - **`search(query)`** — query the resolved `schema.yml` (all `$ref`s inlined) and
   return only the matching operations: `method + path + summary + param / request /
-response schema slices`. This is the only output that scales with the API, and
+  response schema slices`. This is the only output that scales with the API, and
   it returns slices, never the whole spec. (Replaces the prior
   `find_endpoint`/`describe_endpoint` pair — search returns the param/response
   schema the agent needs to construct a call.)

@@ -19,9 +19,9 @@ If the answer involves rendering a Lit component, clicking something, awaiting n
 ## Imports
 
 ```ts
-import { describe, expect, it, vi } from "vitest";
-
 import { shouldResetSelectedChallenge } from "#flow/stages/authenticator_validate/challenge-selection";
+
+import { describe, expect, it, vi } from "vitest";
 ```
 
 - Use `describe` / `it` / `expect` from `vitest`. Do **not** import `test`/`expect` from `#e2e` — that's for browser tests and pulls in Playwright.

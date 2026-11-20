@@ -42,7 +42,7 @@ declare global {
         /**
          * @deprecated
          * @todo Determine where this is used and if it is needed,
-         * give it a better name.
+         *   give it a better name.
          */
         readonly AK_API_BASE_PATH: string;
     }
