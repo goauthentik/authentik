@@ -54,6 +54,7 @@ CLIENT_A = "https://a.example.com/oauth/client.json"
 CLIENT_B = "https://b.example.com/oauth/client.json"
 REDIRECT_A = "http://127.0.0.1:1234/a/callback"
 REDIRECT_B = "http://127.0.0.1:1234/b/callback"
+RESOURCE = "https://mcp.example.com/mcp"
 
 
 @dataclass(frozen=True, slots=True)
@@ -159,7 +160,7 @@ class TestClientBoundGrants(OAuthTestCase):
         with patch.object(TokenView, "get_client_resolver", return_value=resolver):
             return self.client.post(reverse("authentik_providers_oauth2:token"), data, **kwargs)
 
-    def create_code(self, client: OAuthClientContext | None) -> AuthorizationCode:
+    def create_code(self, client: OAuthClientContext | None, **kwargs) -> AuthorizationCode:
         """Authorization code, bound to `client` unless it is None"""
         code = AuthorizationCode(
             provider=self.provider,
@@ -170,11 +171,11 @@ class TestClientBoundGrants(OAuthTestCase):
             scope=[SCOPE_OPENID, SCOPE_OFFLINE_ACCESS],
         )
         if client:
-            code.bind_client(client, redirect_uri=REDIRECT_A)
+            code.bind_client(client, redirect_uri=REDIRECT_A, **kwargs)
         code.save()
         return code
 
-    def create_refresh_token(self, client: OAuthClientContext | None) -> RefreshToken:
+    def create_refresh_token(self, client: OAuthClientContext | None, **kwargs) -> RefreshToken:
         """Refresh token, bound to `client` unless it is None"""
         token = RefreshToken(
             provider=self.provider,
@@ -186,7 +187,7 @@ class TestClientBoundGrants(OAuthTestCase):
             _scope=f"{SCOPE_OPENID} {SCOPE_OFFLINE_ACCESS}",
         )
         if client:
-            token.bind_client(client)
+            token.bind_client(client, **kwargs)
         token.save()
         return token
 
@@ -208,12 +209,13 @@ class TestClientBoundGrants(OAuthTestCase):
 
     def test_bind_client(self):
         """Binding records the exact client and its hash"""
-        code = self.create_code(self.client_a)
+        code = self.create_code(self.client_a, resource=RESOURCE)
         code.refresh_from_db()
         self.assertEqual(code.client_id, CLIENT_A)
         self.assertEqual(code.client_id_hash, hash_client_id(CLIENT_A))
         self.assertEqual(code.client_auth_method, ClientAuthMethod.NONE)
         self.assertEqual(code.redirect_uri, REDIRECT_A)
+        self.assertEqual(code.resource, RESOURCE)
         self.assertEqual(code.bound_client_id, CLIENT_A)
 
     def test_bind_client_registered(self):
@@ -275,10 +277,10 @@ class TestClientBoundGrants(OAuthTestCase):
         """Saving another field must not persist an unsaved identity or its hash."""
         token = self.create_refresh_token(self.client_a)
         token.client_id = CLIENT_B
-        token.revoked = True
-        token.save(update_fields={"revoked"})
+        token.resource = RESOURCE
+        token.save(update_fields={"resource"})
         token.refresh_from_db()
-        self.assertTrue(token.revoked)
+        self.assertEqual(token.resource, RESOURCE)
         self.assertEqual(token.client_id, CLIENT_A)
         self.assertEqual(token.client_id_hash, hash_client_id(CLIENT_A))
         self.assertEqual(find_client_token(token.token, self.client_a), token)
@@ -374,7 +376,7 @@ class TestClientBoundGrants(OAuthTestCase):
 
     def test_code_flow(self):
         """Client A redeems its code and refreshes; tokens stay bound to A"""
-        code = self.create_code(self.client_a)
+        code = self.create_code(self.client_a, resource=RESOURCE)
         response = self.redeem_code(CLIENT_A, code)
         self.assertEqual(response.status_code, 200, response.content)
         body = loads(response.content)
@@ -382,6 +384,7 @@ class TestClientBoundGrants(OAuthTestCase):
         refresh = RefreshToken.objects.get(token=body["refresh_token"])
         for token in (access, refresh):
             self.assertEqual(token.client_id, CLIENT_A)
+            self.assertEqual(token.resource, RESOURCE)
 
         # Client B cannot use A's refresh token, and doing so does not revoke it
         response = self.refresh(CLIENT_B, refresh)
@@ -395,6 +398,8 @@ class TestClientBoundGrants(OAuthTestCase):
         body = loads(response.content)
         successor = RefreshToken.objects.get(token=body["refresh_token"])
         self.assertEqual(successor.client_id, CLIENT_A)
+        self.assertEqual(successor.resource, RESOURCE)
+        self.assertEqual(AccessToken.objects.get(token=body["access_token"]).resource, RESOURCE)
 
     def test_refresh_unbound(self):
         """Refresh tokens without a binding keep working for the registered client, and
@@ -426,7 +431,7 @@ class TestClientBoundGrants(OAuthTestCase):
             expires=timezone.now() + timedelta(minutes=5),
             _scope=SCOPE_OPENID,
         )
-        device.bind_client(self.client_a)
+        device.bind_client(self.client_a, resource=RESOURCE)
         device.save()
         self.assertEqual(device.client_id_hash, hash_client_id(CLIENT_A))
         response = self.token_request(
@@ -441,6 +446,7 @@ class TestClientBoundGrants(OAuthTestCase):
         self.assertEqual(response.status_code, 200, response.content)
         access = AccessToken.objects.get(token=loads(response.content)["access_token"])
         self.assertEqual(access.client_id, CLIENT_A)
+        self.assertEqual(access.resource, RESOURCE)
 
     def test_device_backchannel_binds(self):
         """Device authorization binds the device code to the registered client"""
@@ -564,7 +570,7 @@ class TestClientBoundGrants(OAuthTestCase):
 
 
 class TestTokenAudiences(OAuthTestCase):
-    """Client audiences"""
+    """Client and resource audiences"""
 
     def setUp(self) -> None:
         super().setUp()
@@ -579,7 +585,7 @@ class TestTokenAudiences(OAuthTestCase):
             name=generate_id(), slug=generate_id(), provider=self.provider
         )
 
-    def issue(self, client: OAuthClientContext | None):
+    def issue(self, client: OAuthClientContext | None, resource: str | None = None):
         """Issue an access token, returning it with its ID token and access claims"""
         token = AccessToken(
             provider=self.provider,
@@ -589,7 +595,7 @@ class TestTokenAudiences(OAuthTestCase):
             scope=[SCOPE_OPENID],
         )
         if client:
-            token.bind_client(client)
+            token.bind_client(client, resource=resource)
         id_token = IDToken.new(self.provider, token, self.factory.get("/"))
         token.id_token = id_token
         token.save()
@@ -598,7 +604,7 @@ class TestTokenAudiences(OAuthTestCase):
         return token, id_token, claims
 
     def test_registered_unchanged(self):
-        """Access tokens keep the client audience and claim layout"""
+        """Without a resource, access tokens keep the client audience and claim layout"""
         _, unbound_id, unbound = self.issue(None)
         _, bound_id, bound = self.issue(OAuthClientContext.for_provider(self.provider))
         for id_token, claims in ((unbound_id, unbound), (bound_id, bound)):
@@ -612,18 +618,49 @@ class TestTokenAudiences(OAuthTestCase):
                 claims.pop(key)
         self.assertEqual(list(unbound.items()), list(bound.items()))
 
-    def test_synthetic_client(self):
-        """A synthetic client is the audience of both tokens"""
+    def test_resource_audience(self):
+        """With a resource, the access token targets it; the ID token targets the client"""
+        client = synthetic_client(self.provider, CLIENT_A)
+        token, id_token, claims = self.issue(client, RESOURCE)
+        self.assertEqual(id_token.aud, CLIENT_A)
+        self.assertEqual(id_token.to_dict()["aud"], CLIENT_A)
+        self.assertEqual(claims["aud"], RESOURCE)
+        self.assertEqual(claims["client_id"], CLIENT_A)
+        self.assertEqual(claims["azp"], CLIENT_A)
+        self.assertNotEqual(id_token.aud, claims["aud"])
+        # The stored ID token keeps the client audience
+        self.assertEqual(AccessToken.objects.get(pk=token.pk).id_token.aud, CLIENT_A)
+
+    def test_synthetic_without_resource(self):
+        """Without a resource, a synthetic client is the audience of both tokens"""
         _, id_token, claims = self.issue(synthetic_client(self.provider, CLIENT_A))
         self.assertEqual(id_token.aud, CLIENT_A)
         self.assertEqual(claims["aud"], CLIENT_A)
         self.assertEqual(claims["azp"], CLIENT_A)
 
-    def test_introspection_client_id(self):
-        """Introspection reports the bound client"""
+    def test_resource_overrides_claim_overlay(self):
+        """Custom claims cannot override the enforced resource audience"""
+        client = synthetic_client(self.provider, CLIENT_A)
+        token = AccessToken(
+            provider=self.provider,
+            user=self.user,
+            auth_time=timezone.now(),
+            expires=timezone.now() + timedelta(minutes=5),
+        )
+        token.bind_client(client, resource=RESOURCE)
+        id_token = IDToken.new(self.provider, token, self.factory.get("/"))
+        id_token.claims = {"aud": "https://evil.example.com", "azp": "evil"}
+        token.id_token = id_token
+        key = self.provider.signing_key.public_key
+        claims = decode(token.token, key, algorithms=["RS256"], options={"verify_aud": False})
+        self.assertEqual(claims["aud"], RESOURCE)
+        self.assertEqual(claims["azp"], CLIENT_A)
+
+    def test_introspection_audience(self):
+        """Introspection reports the bound client and the resource audience"""
         self.provider.client_type = ClientType.CONFIDENTIAL
         self.provider.save()
-        token, _, _ = self.issue(OAuthClientContext.for_provider(self.provider))
+        token, _, _ = self.issue(OAuthClientContext.for_provider(self.provider), RESOURCE)
         header = b64encode(
             f"{self.provider.client_id}:{self.provider.client_secret}".encode()
         ).decode()
@@ -634,4 +671,5 @@ class TestTokenAudiences(OAuthTestCase):
         )
         body = loads(response.content)
         self.assertTrue(body["active"])
+        self.assertEqual(body["aud"], RESOURCE)
         self.assertEqual(body["client_id"], self.provider.client_id)

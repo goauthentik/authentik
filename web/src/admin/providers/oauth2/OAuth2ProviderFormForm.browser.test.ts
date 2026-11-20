@@ -1,3 +1,4 @@
+import type { ArrayInput } from "#elements/ak-array-input";
 import type { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
 
 import { renderForm } from "#admin/providers/oauth2/OAuth2ProviderFormForm";
@@ -122,5 +123,36 @@ describe("OAuth2 provider signing key", () => {
         expect(inputValue(element)).toBe(certificate.name);
         expect(element.toJSON()).toBe(certificate.pk);
         expect(new FormData(element.closest("form")!).get("signingKey")).toBe(certificate.pk);
+    });
+});
+
+describe("OAuth2 provider allowed resources", () => {
+    it("serializes allowed resources as a list of URIs", async () => {
+        const resources = ["https://mcp.example.com/mcp", "https://api.example.com/"];
+        const container = document.createElement("div");
+
+        render(
+            renderForm({
+                provider: { pk: 1, allowedResources: resources },
+                showLogoutMethod: false,
+                showLogoutMethodCallback: () => undefined,
+            }),
+            container,
+        );
+
+        const element = container.querySelector<ArrayInput<string>>(
+            'ak-form-element-horizontal[name="allowedResources"] ak-array-input',
+        )!;
+
+        // Connect only the resources field so unrelated form fields do not fetch data.
+        const form = document.body.appendChild(document.createElement("form"));
+        mounted.add(form);
+        form.appendChild(element);
+        await element.updateComplete;
+
+        const rows = element.renderRoot.querySelectorAll("ak-provider-oauth2-resource");
+        await Promise.all(Array.from(rows, (row) => row.updateComplete));
+
+        expect(element.toJSON()).toEqual(resources);
     });
 });

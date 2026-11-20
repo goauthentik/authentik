@@ -14,6 +14,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Actor, Application, Token, TokenIntents
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
+from authentik.providers.oauth2.client import OAuthClientContext
 from authentik.providers.oauth2.errors import TokenExchangeError
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.oauth2.token.base_fed import FederatedTokenRequest
@@ -52,10 +53,6 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         """RFC 8693 §2.1 `audience`: the provider the issued token is for, named by its
         `client_id` or by its application's `pbm_uuid`. Targets that cannot be honored are
         refused with invalid_target (§2.2.2) rather than ignored."""
-        # RFC 8707 resource indicators are not implemented.
-        if request.POST.getlist("resource"):
-            self.logger.warning("Resource indicators are not supported")
-            raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
         audiences = request.POST.getlist("audience")
         if request.POST.get("requested_token_type") == TOKEN_TYPE_URI_SAML2:
             return self.resolve_saml_audience(audiences)
@@ -141,6 +138,8 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
                 self.saml_provider.application, request, oauth_jwt=federated_party.parsed_token
             )
 
+        self.resolve_exchange_resources(request)
+
         self.prior_act = self.validate_prior_act(federated_party.parsed_token.get("act"))
         self.post_init_token_exchange_actor(request)
 
@@ -169,6 +168,22 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
                 PLAN_CONTEXT_APPLICATION: app,
             },
         ).from_http(request, user=self.actor or self.user)
+
+    def resolve_exchange_resources(self, request: HttpRequest) -> None:
+        """RFC 8707 `resource`: restrict the issued access token to the requested resources,
+        which the provider the token is issued on must allow. They are refused for SAML
+        responses, which have no use for them."""
+        if self.saml_provider:
+            if self.requested_resources:
+                self.logger.warning("Resource indicators are not supported for SAML responses")
+                raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
+            return
+        client = (
+            OAuthClientContext.for_provider(self.audience_provider)
+            if self.audience_provider
+            else self.client
+        )
+        self.resolve_resources(request, client=client)
 
     def validate_prior_act(self, act: Any, depth: int = 0) -> dict | None:
         """RFC 8693 §4.1: validate the delegation chain the verified subject_token carries

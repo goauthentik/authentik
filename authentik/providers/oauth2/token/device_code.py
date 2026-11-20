@@ -33,3 +33,5 @@ class DeviceCodeTokenRequest(TokenRequest):
                 raw_code=device_code,
                 flow_name="device code",
             )
+
+        self.resolve_resources(request, self.device_code.resources)

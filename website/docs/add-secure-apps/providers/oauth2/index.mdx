@@ -94,6 +94,18 @@ For advanced use cases, an authentik administrator can use regular expressions i
 
 When using regular expressions, remember that a period (`.`) matches any single character. To match a literal period in a URL, escape it as `\.`.
 
+### Resource indicators
+
+Clients can use the `resource` parameter ([RFC 8707](https://datatracker.ietf.org/doc/html/rfc8707)) to request an access token for a specific protected resource, such as an API or an MCP server. The access token then uses the resource as its `aud` (audience) claim instead of the client ID, so that a token issued for one resource is not accepted by another. ID tokens are always issued for the client.
+
+To enable resource indicators, list the resources that clients may request in the provider's **Allowed resources** field, under **Advanced protocol settings**. Each resource must be an absolute URI without a fragment, for example `https://mcp.company/mcp`. authentik compares requested resources with this list exactly, so enter each resource the way clients send it.
+
+When resources are allowed, authentik refuses a request for any other resource, or for a malformed one, with an `invalid_target` error. A resource requested at the authorization endpoint restricts the authorization code and the tokens issued for it. At the token endpoint, clients can narrow an access token to some of those resources, but never request more. Refresh tokens keep all of the resources that were authorized, so a client can refresh an access token for each of them in turn.
+
+When the **Allowed resources** field is empty, authentik ignores the `resource` parameter and issues tokens for the client, as it does for clients that don't send the parameter. The token exchange grant doesn't support the `resource` parameter and refuses requests that include it.
+
+Requested resources are available to application policies as `request.context["oauth_resources"]`.
+
 ### OAuth 2.0 and OpenID Connect logout
 
 Back-channel logout is a server-to-server notification mechanism that allows an identity provider to notify connected OAuth 2.0 or OpenID Connect clients when a user's session ends.
