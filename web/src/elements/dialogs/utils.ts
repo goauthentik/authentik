@@ -7,6 +7,7 @@ import "#elements/dialogs/ak-modal";
 import { AKRefreshEvent } from "#common/events";
 
 import { DialogInit } from "#elements/dialogs/shared";
+import { findMessageContainer } from "#elements/messages/MessageContainer";
 import { RouteChangeEvent } from "#elements/router/events";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -114,11 +115,24 @@ export function renderDialog(
 
         if (returnValue === "submitted") {
             const dispatcher = invokerElement ?? dialog;
+            // TODO: Refresh might benefit from a namespace to avoid excess re-renders.
             dispatcher.dispatchEvent(new AKRefreshEvent());
         }
 
         dialog.close();
         dialog.remove();
+
+        // Messages shown in the dialog, such as a confirmation after submitting it, outlive it.
+        // Closing the dialog runs this again, so the messages are only handed over once.
+        const { messages } = messageContainer;
+        messageContainer.messages = [];
+
+        const nextContainer = findMessageContainer(ownerDocument);
+
+        for (const message of messages) {
+            nextContainer?.addMessage(message);
+        }
+
         resolvers.resolve();
 
         setDialogCountAttribute(-1, ownerDocument);

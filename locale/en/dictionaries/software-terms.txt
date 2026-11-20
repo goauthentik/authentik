@@ -24,6 +24,8 @@ Algs
 Backblaze
 CASB
 CLDR
+COSE
+CTAP
 Cloudflare
 DOTADIW
 DTCG
@@ -119,6 +121,7 @@ hres
 kadmin
 kiprop
 kubeadm
+kubelet
 labelledby
 wasabisys
 LLM

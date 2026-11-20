@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2026.8.5
+  version: 2026.8.6
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -61026,6 +61026,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/OffboardingStatusEnum'
           readOnly: true
+          default: pending
         created_by_obj:
           allOf:
           - $ref: '#/components/schemas/PartialUser'

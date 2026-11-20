@@ -17,7 +17,11 @@ from authentik.core.tests.utils import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
-from authentik.sources.saml.exceptions import InvalidEncryption, InvalidSignature
+from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
+    InvalidSignature,
+    UnsuccessfulStatus,
+)
 from authentik.sources.saml.models import (
     GroupSAMLSourceConnection,
     SAMLSource,
@@ -58,7 +62,7 @@ class TestResponseProcessor(TestCase):
         )
 
         with self.assertRaisesMessage(
-            ValueError,
+            UnsuccessfulStatus,
             (
                 "Invalid request, ACS Url in request http://localhost:9000/source/saml/google/acs/ "
                 "doesn't match configured ACS Url https://127.0.0.1:9443/source/saml/google/acs/."
@@ -142,7 +146,7 @@ class TestResponseProcessor(TestCase):
             },
         )
 
-        with self.assertRaises(ValueError) as ctx:
+        with self.assertRaises(UnsuccessfulStatus) as ctx:
             ResponseProcessor(self.source, request).parse()
         # Should contain both detail and message
         self.assertIn("User account is disabled", str(ctx.exception))
