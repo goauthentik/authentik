@@ -3,7 +3,7 @@
 import re
 import traceback
 from collections.abc import Callable
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import StrEnum
 from hashlib import sha256
 from typing import Any, Self
@@ -29,8 +29,11 @@ from django.utils.translation import gettext_lazy as _
 from guardian.conf import settings
 from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
+from psqlextra.expressions import ExcludedCol
 from psqlextra.indexes import UniqueIndex
 from psqlextra.models import PostgresMaterializedViewModel
+from psqlextra.query import ConflictAction
+from psqlextra.util import postgres_manager
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, IntegerField, ListField
 from rest_framework.serializers import Serializer
@@ -64,6 +67,7 @@ from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 USERNAME_MAX_LENGTH = 150
+USER_ACTIVITY_INTERVAL = timedelta(minutes=5)
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 _USER_ATTR_PREFIX = f"{USER_PATH_SYSTEM_PREFIX}/user"
 USER_ATTRIBUTE_DEBUG = f"{_USER_ATTR_PREFIX}/debug"
@@ -1717,3 +1721,37 @@ class Actor(ExpiringModel, User):
             **kwargs,
         )
         return actor
+
+
+class UserActivityManager(models.Manager["UserActivity"]):
+    """Record successful activity without rewriting frequently active users."""
+
+    def record(self, user_id: Any, at: datetime | None = None) -> None:
+        if type(user_id) is not int or not 0 < user_id <= 2147483647:  # noqa: PLR2004
+            return
+        excluded = ExcludedCol(self.model._meta.get_field("last_activity_at"))
+        with postgres_manager(self.model) as manager:
+            manager.on_conflict(
+                ["user_id"],
+                ConflictAction.UPDATE,
+                update_condition=Q(last_activity_at__lte=excluded - USER_ACTIVITY_INTERVAL),
+                update_values={"last_activity_at": excluded},
+            ).insert(using=self.db, user_id=user_id, last_activity_at=at or now())
+
+
+class UserActivity(models.Model):
+    """Latest sampled successful activity, independent of audit retention."""
+
+    # A late write after user deletion may leave an orphan; expiration joins existing users.
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="activity",
+        db_constraint=False,
+    )
+    last_activity_at = models.DateTimeField()
+    objects = UserActivityManager()
+
+    def __str__(self):
+        return f"Activity for user {self.user_id}"

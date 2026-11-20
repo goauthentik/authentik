@@ -142,7 +142,7 @@
         "stylelint": "^18.0.0",
         "stylelint-config-recommended": "^19.0.0",
         "typescript": "catalog:",
-        "wireit": "^0.14.13"
+        "wireit": "^0.15.0"
     },
     "peerDependencies": {
         "@goauthentik/fonts": "^1.0.0 || ^2.0.0"
