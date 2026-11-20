@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 00:09+0000\n"
+"POT-Creation-Date: 2026-11-20 00:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -333,6 +333,12 @@ msgstr ""
 
 #: authentik/common/saml/exceptions.py
 msgid "Failed to verify signature"
+msgstr ""
+
+#: authentik/common/saml/exceptions.py
+msgid ""
+"The ACS URL in the request does not match the ACS URL configured on the "
+"provider."
 msgstr ""
 
 #: authentik/common/saml/parsers/logout_response.py
@@ -3631,6 +3637,13 @@ msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
+"When enabled, the ForceAuthn attribute set by the Service Provider on an "
+"AuthnRequest is ignored and an existing session is used. When disabled, "
+"ForceAuthn requires the user to re-authenticate."
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
 "OAuth2 providers which can exchange their JWTs for a SAML Response of this "
 "provider via token exchange."
 msgstr ""
@@ -3693,6 +3706,13 @@ msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Sessions"
+msgstr ""
+
+#: authentik/providers/saml/processors/authn_request_parser.py
+#, python-brace-format
+msgid ""
+"ACS URL of {request_acs_url} doesn't match Provider ACS URL of "
+"{provider_acs_url}."
 msgstr ""
 
 #: authentik/providers/saml/views/flows.py
@@ -5078,6 +5098,11 @@ msgid "Enforce user verification for WebAuthn devices."
 msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
+msgid ""
+"Additional trusted origins for WebAuthn authentication. Matched exactly."
+msgstr ""
+
+#: authentik/stages/authenticator_validate/models.py
 msgid "Authenticator Validation Stage"
 msgstr ""
 
@@ -5103,6 +5128,10 @@ msgstr ""
 
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Additional trusted origins for WebAuthn registration. Matched exactly."
 msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
@@ -5145,6 +5174,12 @@ msgstr ""
 #: authentik/stages/authenticator_webauthn/tasks.py
 msgid ""
 "Background task to import FIDO Alliance MDS blob and AAGUIDs into database."
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/utils.py
+msgid ""
+"Enter a non-empty origin without whitespace or wildcards. The value 'null' "
+"is not allowed."
 msgstr ""
 
 #: authentik/stages/captcha/models.py
