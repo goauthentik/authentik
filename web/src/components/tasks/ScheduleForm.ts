@@ -1,5 +1,5 @@
 import "#components/ak-switch-input";
-import "#components/ak-text-input";
+import "#components/ak-cron-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
@@ -42,13 +42,12 @@ export class ScheduleForm extends ModelForm<Schedule, string> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html`<ak-text-input
+        return html`<ak-cron-input
                 name="crontab"
                 value=${ifDefined(this.instance?.crontab)}
                 label=${msg("Crontab")}
                 required
-                help=${msg("Crontab")}
-            ></ak-text-input>
+            ></ak-cron-input>
             <ak-switch-input
                 name="paused"
                 label=${msg("Paused")}
