@@ -56377,6 +56377,7 @@ components:
       - username
       - email
       - password
+      - password_viewable
       - number
       - checkbox
       - radio-button-group
