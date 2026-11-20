@@ -13,9 +13,7 @@ use eyre::{Result, WrapErr as _};
 use tracing::{info, trace};
 
 use crate::{
-    accept::{
-        catch_panic::CatchPanicAcceptor, proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor,
-    },
+    accept::{catch_panic::CatchPanicAcceptor, proxy_protocol::ProxyProtocolAcceptor},
     extract::trusted_proxy::TrustedProxy,
 };
 
@@ -138,9 +136,8 @@ async fn run_tls(
 
     axum_server::Server::bind(addr)
         .acceptor(CatchPanicAcceptor::new(
-            ProxyProtocolAcceptor::new().acceptor(TlsAcceptor::new(
-                RustlsAcceptor::new(config).acceptor(DefaultAcceptor::new()),
-            )),
+            ProxyProtocolAcceptor::new()
+                .acceptor(RustlsAcceptor::new(config).acceptor(DefaultAcceptor::new())),
             arbiter.clone(),
         ))
         .handle(handle)
