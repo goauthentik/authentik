@@ -317,7 +317,6 @@ dependencies = [
  "ipnet",
  "pin-project-lite",
  "tokio",
- "tokio-rustls",
  "tower",
  "tower-http 0.7.1",
  "tracing",
