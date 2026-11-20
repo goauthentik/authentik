@@ -36,7 +36,6 @@ config-rs = { package = "config", version = "= 0.15.22", default-features = fals
   "yaml",
 ] }
 console-subscriber = "= 0.5.0"
-dotenvy = "= 0.15.7"
 durstr = "= 0.6.0"
 eyre = "= 0.6.14"
 futures = "= 0.3.34"
