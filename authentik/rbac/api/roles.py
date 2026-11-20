@@ -29,6 +29,8 @@ from authentik.rbac.models import Role
 class RoleSerializer(ManagedSerializer, ModelSerializer):
     """Role serializer"""
 
+    user_count = IntegerField(read_only=True)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
@@ -48,7 +50,7 @@ class RoleSerializer(ManagedSerializer, ModelSerializer):
 
     class Meta:
         model = Role
-        fields = ["pk", "name"]
+        fields = ["pk", "name", "user_count"]
 
 
 class RoleFilterSet(FilterSet):
