@@ -5,7 +5,7 @@ from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.providers import ProviderSerializer
+from authentik.core.api.providers import ProviderSerializer, ProviderUniqueSaveMixin
 from authentik.core.api.tokens import TokenSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.validators import JWT_SIGNING_KEY_TYPES, KeyTypeValidator
@@ -60,7 +60,7 @@ class SSFProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
         }
 
 
-class SSFProviderViewSet(UsedByMixin, ModelViewSet):
+class SSFProviderViewSet(ProviderUniqueSaveMixin, UsedByMixin, ModelViewSet):
     """SSFProvider Viewset"""
 
     queryset = SSFProvider.objects.all().prefetch_related("oidc_auth_providers")
