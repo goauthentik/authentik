@@ -101,7 +101,7 @@ export const CardMenu: LitFC<CardMenuProps> = ({
                               href=${editURL.toString()}
                               class="pf-c-dropdown__menu-item"
                           >
-                              <i class="fas fa-edit" role="img"></i>
+                              <i class="fas fa-edit" aria-hidden="true"></i>
                               &nbsp;${msg(str`Edit application...`)}</a
                           >
                       </li>`
