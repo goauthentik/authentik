@@ -387,19 +387,46 @@ class OAuthAuthorizationParams:
             ).with_cause("nonce_missing")
 
     def check_code_challenge(self):
-        """PKCE validation of the transformation method."""
-        if self.code_challenge and self.code_challenge_method not in [
-            PKCE_METHOD_PLAIN,
-            PKCE_METHOD_S256,
-        ]:
-            raise AuthorizeError(
+        """PKCE validation: the transformation method must be allowed by the provider, and
+        clients required to use PKCE must send a challenge when requesting a code."""
+
+        def pkce_error(description: str, cause: str) -> AuthorizeError:
+            return AuthorizeError(
                 redirect_uri=self.redirect_uri,
                 error="invalid_request",
                 grant_type=self.grant_type,
                 state=self.state,
                 response_mode=self.response_mode,
-                description=f"Unsupported challenge method {self.code_challenge_method}",
+                description=description,
+            ).with_cause(cause)
+
+        if self.code_challenge and self.code_challenge_method not in [
+            PKCE_METHOD_PLAIN,
+            PKCE_METHOD_S256,
+        ]:
+            raise pkce_error(
+                f"Unsupported challenge method {self.code_challenge_method}",
+                "pkce_method_unsupported",
             )
+        # Only the authorization code is protected by PKCE; the implicit flow issues none,
+        # so the provider's PKCE settings don't apply to it
+        if self.grant_type == GrantType.IMPLICIT:
+            return
+        if self.code_challenge:
+            allowed_methods = self.provider.pkce_methods
+            if self.code_challenge_method not in allowed_methods:
+                LOGGER.warning(
+                    "PKCE challenge method not allowed by provider",
+                    method=self.code_challenge_method,
+                )
+                raise pkce_error(
+                    f"Challenge method {self.code_challenge_method} is not allowed, "
+                    f"use {' or '.join(allowed_methods)}",
+                    "pkce_method_not_allowed",
+                )
+        elif self.provider.pkce_required:
+            LOGGER.warning("Missing PKCE code challenge, which the provider requires")
+            raise pkce_error("code_challenge is required", "pkce_challenge_missing")
 
     def check_max_age(self, raw_max_age: str | None):
         """max_age is a number of seconds, so it must be a non-negative integer"""

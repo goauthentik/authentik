@@ -201,6 +201,8 @@ class TestTokenPKCE(OAuthTestCase):
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
             grant_types=[GrantType.AUTHORIZATION_CODE],
+            # New providers only accept S256 by default
+            pkce_allow_plain=True,
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()

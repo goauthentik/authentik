@@ -46862,6 +46862,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GrantTypeEnum'
+        pkce_mode:
+          allOf:
+          - $ref: '#/components/schemas/PkceModeEnum'
+          title: PKCE
+          description: Which clients must use PKCE (RFC 7636) to obtain an authorization
+            code. Clients may always use PKCE.
+        pkce_allow_plain:
+          type: boolean
+          title: Allow plain PKCE
+          description: Accept the plain code challenge method. When disabled, clients
+            must use S256.
         client_id:
           type: string
           maxLength: 255
@@ -46987,6 +46998,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GrantTypeEnum'
+        pkce_mode:
+          allOf:
+          - $ref: '#/components/schemas/PkceModeEnum'
+          title: PKCE
+          description: Which clients must use PKCE (RFC 7636) to obtain an authorization
+            code. Clients may always use PKCE.
+        pkce_allow_plain:
+          type: boolean
+          title: Allow plain PKCE
+          description: Accept the plain code challenge method. When disabled, clients
+            must use S256.
         client_id:
           type: string
           minLength: 1
@@ -53053,6 +53075,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GrantTypeEnum'
+        pkce_mode:
+          allOf:
+          - $ref: '#/components/schemas/PkceModeEnum'
+          title: PKCE
+          description: Which clients must use PKCE (RFC 7636) to obtain an authorization
+            code. Clients may always use PKCE.
+        pkce_allow_plain:
+          type: boolean
+          title: Allow plain PKCE
+          description: Accept the plain code challenge method. When disabled, clients
+            must use S256.
         client_id:
           type: string
           minLength: 1
@@ -55232,6 +55265,12 @@ components:
       - endpoints
       - expression
       - name
+    PkceModeEnum:
+      enum:
+      - optional
+      - required_public
+      - required
+      type: string
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
