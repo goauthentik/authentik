@@ -108,8 +108,8 @@ export class ProviderListPage extends TablePage<Provider> {
                 >`;
         }
 
-        return html`<i aria-hidden="true" class="pf-icon pf-icon-warning-triangle pf-m-warning"></i
-            ><span>${msg("Provider not assigned to any application.")}</span>`;
+        return html`<i aria-hidden="true" class="fa fa-exclamation-triangle pf-m-warning"></i
+            ><span> ${msg("Provider not assigned to any application.")}</span>`;
     }
 
     override row(item: Provider): SlottedTemplateResult[] {
