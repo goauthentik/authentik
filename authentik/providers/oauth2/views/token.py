@@ -27,6 +27,7 @@ from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.events.signals import get_login_event
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.oauth2.client import OAuthClientContext, OAuthClientResolver
 from authentik.providers.oauth2.errors import (
     DeviceCodeError,
     TokenError,
@@ -57,8 +58,13 @@ class TokenView(View):
     """Generate tokens for clients"""
 
     provider: OAuth2Provider | None = None
+    client: OAuthClientContext | None = None
     params: TokenRequest | None = None
     provider_class = OAuth2Provider
+
+    def get_client_resolver(self) -> OAuthClientResolver:
+        """Resolver used to find the client (and its provider) for this request"""
+        return OAuthClientResolver.legacy(self.provider_class)
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
@@ -75,11 +81,12 @@ class TokenView(View):
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
-                self.provider = self.provider_class.objects.filter(client_id=client_id).first()
-                if not self.provider:
+                self.client = self.get_client_resolver().resolve(request, client_id)
+                if not self.client:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
-                self.params = parse_token_request(request, self.provider, client_id, client_secret)
+                self.provider = self.client.provider
+                self.params = parse_token_request(request, self.client, client_secret)
                 CTX_AUTH_VIA.set("oauth_client_secret")
 
             with active_tracer().start_span(

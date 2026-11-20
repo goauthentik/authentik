@@ -18,6 +18,7 @@ from structlog.stdlib import get_logger
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.oauth2.client import OAuthClientContext, OAuthClientResolver
 from authentik.providers.oauth2.errors import BearerTokenError
 from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import (
@@ -230,27 +231,44 @@ def protected_resource_view(scopes: list[str]):
     return wrapper
 
 
-def provider_from_request(request: HttpRequest) -> tuple[OAuth2Provider | None, str, str]:
-    """Get provider from Basic auth of client_id:client_secret. Does not perform authentication"""
+def client_from_request(
+    request: HttpRequest, resolver: OAuthClientResolver | None = None
+) -> tuple[OAuthClientContext | None, str, str]:
+    """Resolve the client from Basic auth of client_id:client_secret (or POST parameters).
+    Does not perform authentication"""
     client_id, client_secret = extract_client_auth(request)
     if client_id == client_secret == "":
         return None, "", ""
-    provider: OAuth2Provider | None = OAuth2Provider.objects.filter(client_id=client_id).first()
-    return provider, client_id, client_secret
+    resolver = resolver or OAuthClientResolver.legacy()
+    return resolver.resolve(request, client_id), client_id, client_secret
 
 
-def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
-    """Attempt to authenticate via Basic auth of client_id:client_secret"""
-    provider, client_id, client_secret = provider_from_request(request)
-    if not provider:
+def authenticate_client(
+    request: HttpRequest, resolver: OAuthClientResolver | None = None
+) -> OAuthClientContext | None:
+    """Attempt to authenticate a client via Basic auth of client_id:client_secret"""
+    client, client_id, client_secret = client_from_request(request, resolver)
+    if not client:
         return None
-    if not compare_digest(client_id, provider.client_id) or not compare_digest(
-        client_secret, provider.client_secret
+    if not compare_digest(client_id, client.client_id) or not client.check_client_secret(
+        client_secret
     ):
         LOGGER.debug("(basic) Provider for basic auth does not exist")
         return None
     CTX_AUTH_VIA.set("oauth_client_secret")
-    return provider
+    return client
+
+
+def provider_from_request(request: HttpRequest) -> tuple[OAuth2Provider | None, str, str]:
+    """Get provider from Basic auth of client_id:client_secret. Does not perform authentication"""
+    client, client_id, client_secret = client_from_request(request)
+    return (client.provider if client else None), client_id, client_secret
+
+
+def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
+    """Attempt to authenticate via Basic auth of client_id:client_secret"""
+    client = authenticate_client(request)
+    return client.provider if client else None
 
 
 class HttpResponseRedirectScheme(HttpResponseRedirect):
