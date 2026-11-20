@@ -36075,10 +36075,13 @@ components:
           format: date-time
           nullable: true
         email:
-          type: string
-          format: email
           title: Email address
-          maxLength: 254
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         attributes:
           type: object
           additionalProperties: {}
@@ -36477,10 +36480,13 @@ components:
           format: date-time
           nullable: true
         email:
-          type: string
-          format: email
           title: Email address
-          maxLength: 254
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         attributes:
           type: object
           additionalProperties: {}
@@ -36738,8 +36744,11 @@ components:
           type: boolean
           description: Open launch URL in a new browser tab or window.
         meta_launch_url:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         meta_icon:
           type: string
         meta_icon_url:
@@ -36843,8 +36852,11 @@ components:
           type: boolean
           description: Open launch URL in a new browser tab or window.
         meta_launch_url:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         meta_icon:
           type: string
         meta_description:
@@ -45225,20 +45237,6 @@ components:
       - vi
       - zh-hans
       - zh-hant
-    LastTaskStatusEnum:
-      enum:
-      - waiting_for_dependencies
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      - info
-      - warning
-      - error
-      type: string
     License:
       type: object
       description: License Serializer
@@ -45302,7 +45300,7 @@ components:
         external_users:
           type: integer
         status:
-          $ref: '#/components/schemas/LicenseSummaryStatusEnum'
+          $ref: '#/components/schemas/Status646Enum'
         latest_valid:
           type: string
           format: date-time
@@ -45316,16 +45314,6 @@ components:
       - latest_valid
       - license_flags
       - status
-    LicenseSummaryStatusEnum:
-      enum:
-      - unlicensed
-      - valid
-      - expired
-      - expiry_soon
-      - limit_exceeded_admin
-      - limit_exceeded_user
-      - read_only
-      type: string
     LicenseUserCountRange:
       type: object
       description: Counts of active users added within a date range.
@@ -46586,8 +46574,11 @@ components:
           description: Return selected mode with a UI Label
           readOnly: true
         webhook_url:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         webhook_ca:
           type: string
           format: uuid
@@ -46628,8 +46619,11 @@ components:
         mode:
           $ref: '#/components/schemas/TransportModeEnum'
         webhook_url:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         webhook_ca:
           type: string
           format: uuid
@@ -46905,8 +46899,11 @@ components:
           items:
             $ref: '#/components/schemas/RedirectURI'
         logout_uri:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         logout_method:
           allOf:
           - $ref: '#/components/schemas/OAuth2ProviderLogoutMethodEnum'
@@ -47035,8 +47032,11 @@ components:
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
         logout_uri:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         logout_method:
           allOf:
           - $ref: '#/components/schemas/OAuth2ProviderLogoutMethodEnum'
@@ -50433,10 +50433,13 @@ components:
           format: date-time
           nullable: true
         email:
-          type: string
-          format: email
           title: Email address
-          maxLength: 254
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         attributes:
           type: object
           additionalProperties: {}
@@ -50947,10 +50950,13 @@ components:
           format: date-time
           nullable: true
         email:
-          type: string
-          format: email
           title: Email address
-          maxLength: 254
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         attributes:
           type: object
           additionalProperties: {}
@@ -51015,8 +51021,11 @@ components:
           type: boolean
           description: Open launch URL in a new browser tab or window.
         meta_launch_url:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         meta_icon:
           type: string
         meta_description:
@@ -52938,8 +52947,11 @@ components:
         mode:
           $ref: '#/components/schemas/TransportModeEnum'
         webhook_url:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         webhook_ca:
           type: string
           format: uuid
@@ -53101,8 +53113,11 @@ components:
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
         logout_uri:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         logout_method:
           allOf:
           - $ref: '#/components/schemas/OAuth2ProviderLogoutMethodEnum'
@@ -53668,8 +53683,11 @@ components:
             type: string
             format: uuid
         internal_host:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         external_host:
           type: string
           minLength: 1
@@ -54037,10 +54055,13 @@ components:
           minLength: 1
           format: uri
         sls_url:
-          type: string
           description: Single Logout Service URL where the logout response should
             be sent.
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -54240,10 +54261,13 @@ components:
           description: URL that the initial Login request is sent to.
           format: uri
         slo_url:
-          type: string
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -54950,10 +54974,13 @@ components:
             type: string
             format: uuid
         email:
-          type: string
-          format: email
           title: Email address
-          maxLength: 254
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         attributes:
           type: object
           additionalProperties: {}
@@ -56226,8 +56253,11 @@ components:
         name:
           type: string
         internal_host:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         external_host:
           type: string
           format: uri
@@ -56380,8 +56410,11 @@ components:
           type: string
           readOnly: true
         internal_host:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         external_host:
           type: string
           format: uri
@@ -56496,8 +56529,11 @@ components:
             type: string
             format: uuid
         internal_host:
-          type: string
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         external_host:
           type: string
           minLength: 1
@@ -58041,10 +58077,13 @@ components:
           type: string
           format: uri
         sls_url:
-          type: string
           description: Single Logout Service URL where the logout response should
             be sent.
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -58264,10 +58303,13 @@ components:
           minLength: 1
           format: uri
         sls_url:
-          type: string
           description: Single Logout Service URL where the logout response should
             be sent.
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -58492,10 +58534,13 @@ components:
           description: URL that the initial Login request is sent to.
           format: uri
         slo_url:
-          type: string
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -58697,10 +58742,13 @@ components:
           description: URL that the initial Login request is sent to.
           format: uri
         slo_url:
-          type: string
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          format: uri
+          oneOf:
+          - type: string
+            format: uri
+          - type: string
+            maxLength: 0
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -59618,7 +59666,7 @@ components:
           readOnly: true
         last_task_status:
           allOf:
-          - $ref: '#/components/schemas/LastTaskStatusEnum'
+          - $ref: '#/components/schemas/TaskAggregatedStatusEnum'
           nullable: true
           readOnly: true
       required:
@@ -60464,6 +60512,16 @@ components:
           maxLength: 100
       required:
       - token
+    Status646Enum:
+      enum:
+      - unlicensed
+      - valid
+      - expired
+      - expiry_soon
+      - limit_exceeded_admin
+      - limit_exceeded_user
+      - read_only
+      type: string
     SubModeEnum:
       enum:
       - hashed_user_id
@@ -61551,10 +61609,13 @@ components:
           readOnly: true
           nullable: true
         email:
-          type: string
-          format: email
           title: Email address
-          maxLength: 254
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         avatar:
           type: string
           description: User's avatar, either a http/https URL or a data URI
@@ -62291,10 +62352,13 @@ components:
             type: string
             format: uuid
         email:
-          type: string
-          format: email
           title: Email address
-          maxLength: 254
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         attributes:
           type: object
           additionalProperties: {}
@@ -62396,10 +62460,13 @@ components:
             $ref: '#/components/schemas/UserSelfRoles'
           readOnly: true
         email:
-          type: string
-          format: email
           title: Email address
-          maxLength: 254
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         avatar:
           type: string
           description: User's avatar, either a http/https URL or a data URI

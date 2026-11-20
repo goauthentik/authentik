@@ -13,11 +13,8 @@
 import { parseDateTime, serializeDateTime } from "../runtime.js";
 import type { LicenseFlagsEnum } from "./LicenseFlagsEnum.js";
 import { LicenseFlagsEnumFromJSON, LicenseFlagsEnumToJSON } from "./LicenseFlagsEnum.js";
-import type { LicenseSummaryStatusEnum } from "./LicenseSummaryStatusEnum.js";
-import {
-    LicenseSummaryStatusEnumFromJSON,
-    LicenseSummaryStatusEnumToJSON,
-} from "./LicenseSummaryStatusEnum.js";
+import type { Status646Enum } from "./Status646Enum.js";
+import { Status646EnumFromJSON, Status646EnumToJSON } from "./Status646Enum.js";
 
 /**
  * Serializer for license status
@@ -28,7 +25,7 @@ import {
 export interface LicenseSummary {
     internalUsers: number;
     externalUsers: number;
-    status: LicenseSummaryStatusEnum;
+    status: Status646Enum;
     latestValid: Date;
     licenseFlags: Array<LicenseFlagsEnum>;
 }
@@ -83,7 +80,7 @@ export function LicenseSummaryFromJSONTyped(
     return {
         internalUsers: json["internal_users"],
         externalUsers: json["external_users"],
-        status: LicenseSummaryStatusEnumFromJSON(json["status"]),
+        status: Status646EnumFromJSON(json["status"]),
         latestValid:
             json["latest_valid"] == null
                 ? json["latest_valid"]
@@ -107,7 +104,7 @@ export function LicenseSummaryToJSONTyped(
     return {
         internal_users: value["internalUsers"],
         external_users: value["externalUsers"],
-        status: LicenseSummaryStatusEnumToJSON(value["status"]),
+        status: Status646EnumToJSON(value["status"]),
         latest_valid:
             value["latestValid"] == null
                 ? value["latestValid"]

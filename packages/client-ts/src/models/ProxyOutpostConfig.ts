@@ -10,6 +10,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationMetaLaunchUrl } from "./ApplicationMetaLaunchUrl.js";
+import {
+    ApplicationMetaLaunchUrlFromJSON,
+    ApplicationMetaLaunchUrlToJSON,
+} from "./ApplicationMetaLaunchUrl.js";
 import type { OpenIDConnectConfiguration } from "./OpenIDConnectConfiguration.js";
 import { OpenIDConnectConfigurationFromJSON } from "./OpenIDConnectConfiguration.js";
 import type { ProxyMode } from "./ProxyMode.js";
@@ -24,7 +29,7 @@ import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode.js";
 export interface ProxyOutpostConfig {
     readonly pk: number;
     name: string;
-    internalHost?: string;
+    internalHost?: ApplicationMetaLaunchUrl;
     externalHost: string;
     /**
      * Validate SSL Certificates of upstream servers
@@ -148,7 +153,10 @@ export function ProxyOutpostConfigFromJSONTyped(
     return {
         pk: json["pk"],
         name: json["name"],
-        internalHost: json["internal_host"] == null ? undefined : json["internal_host"],
+        internalHost:
+            json["internal_host"] == null
+                ? undefined
+                : ApplicationMetaLaunchUrlFromJSON(json["internal_host"]),
         externalHost: json["external_host"],
         internalHostSslValidation:
             json["internal_host_ssl_validation"] == null
@@ -208,7 +216,7 @@ export function ProxyOutpostConfigToJSONTyped(
 
     return {
         name: value["name"],
-        internal_host: value["internalHost"],
+        internal_host: ApplicationMetaLaunchUrlToJSON(value["internalHost"]),
         external_host: value["externalHost"],
         internal_host_ssl_validation: value["internalHostSslValidation"],
         client_id: value["clientId"],

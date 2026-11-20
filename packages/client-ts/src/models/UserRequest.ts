@@ -11,6 +11,8 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { EmailAddress } from "./EmailAddress.js";
+import { EmailAddressFromJSON, EmailAddressToJSON } from "./EmailAddress.js";
 import type { UserTypeEnum } from "./UserTypeEnum.js";
 import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum.js";
 
@@ -34,7 +36,7 @@ export interface UserRequest {
     lastLogin?: Date | null;
     groups?: Array<string>;
     roles?: Array<string>;
-    email?: string;
+    email?: EmailAddress;
     attributes?: { [key: string]: any };
     path?: string;
     type?: UserTypeEnum;
@@ -69,7 +71,7 @@ export function UserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean
                   : parseDateTime(json["last_login"]),
         groups: json["groups"] == null ? undefined : json["groups"],
         roles: json["roles"] == null ? undefined : json["roles"],
-        email: json["email"] == null ? undefined : json["email"],
+        email: json["email"] == null ? undefined : EmailAddressFromJSON(json["email"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         path: json["path"] == null ? undefined : json["path"],
         type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
@@ -96,7 +98,7 @@ export function UserRequestToJSONTyped(
             value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
         groups: value["groups"],
         roles: value["roles"],
-        email: value["email"],
+        email: EmailAddressToJSON(value["email"]),
         attributes: value["attributes"],
         path: value["path"],
         type: UserTypeEnumToJSON(value["type"]),

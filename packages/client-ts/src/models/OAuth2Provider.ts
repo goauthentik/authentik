@@ -10,6 +10,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationMetaLaunchUrl } from "./ApplicationMetaLaunchUrl.js";
+import {
+    ApplicationMetaLaunchUrlFromJSON,
+    ApplicationMetaLaunchUrlToJSON,
+} from "./ApplicationMetaLaunchUrl.js";
 import type { ClientTypeEnum } from "./ClientTypeEnum.js";
 import { ClientTypeEnumFromJSON, ClientTypeEnumToJSON } from "./ClientTypeEnum.js";
 import type { GrantTypeEnum } from "./GrantTypeEnum.js";
@@ -122,7 +127,7 @@ export interface OAuth2Provider {
      */
     encryptionKey?: string | null;
     redirectUris: Array<RedirectURI>;
-    logoutUri?: string;
+    logoutUri?: ApplicationMetaLaunchUrl;
     /**
      * Backchannel logs out with server to server calls. Frontchannel uses iframes in your browser
      */
@@ -284,7 +289,10 @@ export function OAuth2ProviderFromJSONTyped(
                   ? null
                   : json["encryption_key"],
         redirectUris: (json["redirect_uris"] as Array<any>).map(RedirectURIFromJSON),
-        logoutUri: json["logout_uri"] == null ? undefined : json["logout_uri"],
+        logoutUri:
+            json["logout_uri"] == null
+                ? undefined
+                : ApplicationMetaLaunchUrlFromJSON(json["logout_uri"]),
         logoutMethod:
             json["logout_method"] == null
                 ? undefined
@@ -343,7 +351,7 @@ export function OAuth2ProviderToJSONTyped(
         signing_key: value["signingKey"],
         encryption_key: value["encryptionKey"],
         redirect_uris: (value["redirectUris"] as Array<any>).map(RedirectURIToJSON),
-        logout_uri: value["logoutUri"],
+        logout_uri: ApplicationMetaLaunchUrlToJSON(value["logoutUri"]),
         logout_method: OAuth2ProviderLogoutMethodEnumToJSON(value["logoutMethod"]),
         sub_mode: SubModeEnumToJSON(value["subMode"]),
         issuer_mode: IssuerModeEnumToJSON(value["issuerMode"]),

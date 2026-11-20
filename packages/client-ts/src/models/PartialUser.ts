@@ -11,6 +11,9 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { EmailAddress } from "./EmailAddress.js";
+import { EmailAddressFromJSON, EmailAddressToJSON } from "./EmailAddress.js";
+
 /**
  * Partial User Serializer, does not include child relations.
  *
@@ -33,7 +36,7 @@ export interface PartialUser {
      */
     isActive?: boolean;
     lastLogin?: Date | null;
-    email?: string;
+    email?: EmailAddress;
     attributes?: { [key: string]: any };
     readonly uid: string;
 }
@@ -68,7 +71,7 @@ export function PartialUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
                 : json["last_login"] === null
                   ? null
                   : parseDateTime(json["last_login"]),
-        email: json["email"] == null ? undefined : json["email"],
+        email: json["email"] == null ? undefined : EmailAddressFromJSON(json["email"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],
     };
@@ -92,7 +95,7 @@ export function PartialUserToJSONTyped(
         is_active: value["isActive"],
         last_login:
             value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
-        email: value["email"],
+        email: EmailAddressToJSON(value["email"]),
         attributes: value["attributes"],
     };
 }

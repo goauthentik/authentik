@@ -11,6 +11,9 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { EmailAddress } from "./EmailAddress.js";
+import { EmailAddressFromJSON, EmailAddressToJSON } from "./EmailAddress.js";
+
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
@@ -33,7 +36,7 @@ export interface AgentRequest {
      */
     isActive?: boolean;
     lastLogin?: Date | null;
-    email?: string;
+    email?: EmailAddress;
     attributes?: { [key: string]: any };
     expiring?: boolean;
     expires?: Date | null;
@@ -66,7 +69,7 @@ export function AgentRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["last_login"] === null
                   ? null
                   : parseDateTime(json["last_login"]),
-        email: json["email"] == null ? undefined : json["email"],
+        email: json["email"] == null ? undefined : EmailAddressFromJSON(json["email"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         expires:
@@ -96,7 +99,7 @@ export function AgentRequestToJSONTyped(
         is_active: value["isActive"],
         last_login:
             value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
-        email: value["email"],
+        email: EmailAddressToJSON(value["email"]),
         attributes: value["attributes"],
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),

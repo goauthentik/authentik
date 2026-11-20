@@ -19,6 +19,11 @@ import {
     GroupMatchingModeEnumFromJSON,
     GroupMatchingModeEnumToJSON,
 } from "./GroupMatchingModeEnum.js";
+import type { PatchedSAMLSourceRequestSloUrl } from "./PatchedSAMLSourceRequestSloUrl.js";
+import {
+    PatchedSAMLSourceRequestSloUrlFromJSON,
+    PatchedSAMLSourceRequestSloUrlToJSON,
+} from "./PatchedSAMLSourceRequestSloUrl.js";
 import type { PolicyEngineMode } from "./PolicyEngineMode.js";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum.js";
@@ -91,10 +96,7 @@ export interface PatchedSAMLSourceRequest {
      * URL that the initial Login request is sent to.
      */
     ssoUrl?: string;
-    /**
-     * Optional URL if your IDP supports Single-Logout.
-     */
-    sloUrl?: string | null;
+    sloUrl?: PatchedSAMLSourceRequestSloUrl | null;
     /**
      * Allows authentication flows initiated by the IdP. This can be a security risk, as no
      * validation of the request ID is done.
@@ -201,7 +203,7 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
                 ? undefined
                 : json["slo_url"] === null
                   ? null
-                  : json["slo_url"],
+                  : PatchedSAMLSourceRequestSloUrlFromJSON(json["slo_url"]),
         allowIdpInitiated:
             json["allow_idp_initiated"] == null ? undefined : json["allow_idp_initiated"],
         forceAuthn: json["force_authn"] == null ? undefined : json["force_authn"],
@@ -277,7 +279,7 @@ export function PatchedSAMLSourceRequestToJSONTyped(
         pre_authentication_flow: value["preAuthenticationFlow"],
         issuer_override: value["issuerOverride"],
         sso_url: value["ssoUrl"],
-        slo_url: value["sloUrl"],
+        slo_url: PatchedSAMLSourceRequestSloUrlToJSON(value["sloUrl"]),
         allow_idp_initiated: value["allowIdpInitiated"],
         force_authn: value["forceAuthn"],
         name_id_policy: SAMLNameIDPolicyEnumToJSON(value["nameIdPolicy"]),
