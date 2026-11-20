@@ -38,8 +38,11 @@ export default defineConfig({
             "**/.{idea,git,cache,output,temp}/**",
             "**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*",
         ],
+        // Since Vitest 5, inline projects extend this config by default, which would
+        // re-apply the root `test.dir` and plugins. Each project declares its own.
         projects: [
             {
+                extends: false,
                 // The root `tsconfig.json` excludes `src/**/*.test.ts`, so `vite:oxc`'s
                 // per-file tsconfig discovery bails with `[TSCONFIG_ERROR] Tsconfig not
                 // found` on co-located `src/**/*.unit.test.ts`. Disabling tsconfig
@@ -64,6 +67,7 @@ export default defineConfig({
                 },
             },
             {
+                extends: false,
                 // Projects do not inherit the root plugin list, and elements
                 // import their stylesheets as text for `unsafeCSS`. Without
                 // this the CSS resolves to a Vite style side-effect with no
