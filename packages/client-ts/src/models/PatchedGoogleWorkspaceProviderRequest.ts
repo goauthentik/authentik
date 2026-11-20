@@ -33,7 +33,10 @@ export interface PatchedGoogleWorkspaceProviderRequest {
     credentials?: { [key: string]: any };
     scopes?: string;
     excludeUsersServiceAccount?: boolean;
-    filterGroup?: string | null;
+    /**
+     * Group filters used to define sync-scope for groups.
+     */
+    groupFilters?: Array<string>;
     userDeleteAction?: OutgoingSyncDeleteAction;
     groupDeleteAction?: OutgoingSyncDeleteAction;
     defaultGroupEmailDomain?: string;
@@ -89,12 +92,7 @@ export function PatchedGoogleWorkspaceProviderRequestFromJSONTyped(
             json["exclude_users_service_account"] == null
                 ? undefined
                 : json["exclude_users_service_account"],
-        filterGroup:
-            json["filter_group"] === undefined
-                ? undefined
-                : json["filter_group"] === null
-                  ? null
-                  : json["filter_group"],
+        groupFilters: json["group_filters"] == null ? undefined : json["group_filters"],
         userDeleteAction:
             json["user_delete_action"] == null
                 ? undefined
@@ -136,7 +134,7 @@ export function PatchedGoogleWorkspaceProviderRequestToJSONTyped(
         credentials: value["credentials"],
         scopes: value["scopes"],
         exclude_users_service_account: value["excludeUsersServiceAccount"],
-        filter_group: value["filterGroup"],
+        group_filters: value["groupFilters"],
         user_delete_action: OutgoingSyncDeleteActionToJSON(value["userDeleteAction"]),
         group_delete_action: OutgoingSyncDeleteActionToJSON(value["groupDeleteAction"]),
         default_group_email_domain: value["defaultGroupEmailDomain"],
