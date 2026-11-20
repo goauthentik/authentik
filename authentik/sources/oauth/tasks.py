@@ -1,13 +1,12 @@
 """OAuth Source tasks"""
 
-from json import dumps
-
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 from requests import RequestException
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_http_session
+from authentik.sources.oauth.jwks import refresh_jwks
 from authentik.sources.oauth.models import OAuthSource
 from authentik.tasks.middleware import CurrentTask
 
@@ -62,15 +61,9 @@ def update_well_known_jwks():
 
     for source in OAuthSource.objects.all().filter(enabled=True).exclude(oidc_jwks_url=""):
         try:
-            jwks_config = session.get(source.oidc_jwks_url)
-            jwks_config.raise_for_status()
-        except RequestException as exc:
-            text = exc.response.text if exc.response is not None else str(exc)
+            refresh_jwks(source)
+        except (RequestException, ValueError) as exc:
+            response = getattr(exc, "response", None)
+            text = response.text if response is not None else str(exc)
             LOGGER.warning("Failed to update JWKS", source=source, exc=exc, text=text)
             self.info(f"Failed to update JWKS for {source.slug}")
-            continue
-        config = jwks_config.json()
-        if dumps(source.oidc_jwks, sort_keys=True) != dumps(config, sort_keys=True):
-            source.oidc_jwks = config
-            LOGGER.info("Updating sources' JWKS", source=source)
-            source.save()

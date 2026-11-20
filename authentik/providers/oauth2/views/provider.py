@@ -11,10 +11,12 @@ from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import (
     ACR_AUTHENTIK_DEFAULT,
+    GRANT_PROFILE_ID_JAG,
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_CLIENT_CREDENTIALS,
     GRANT_TYPE_DEVICE_CODE,
     GRANT_TYPE_IMPLICIT,
+    GRANT_TYPE_JWT_BEARER,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
     GRANT_TYPE_TOKEN_EXCHANGE,
@@ -25,6 +27,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.providers.oauth2.dpop import DPOP_SUPPORTED_ALGS
 from authentik.providers.oauth2.models import (
+    GrantType,
     OAuth2DynamicClientRegistration,
     OAuth2Provider,
     ResponseMode,
@@ -109,6 +112,7 @@ class ProviderInfoView(View):
                 GRANT_TYPE_PASSWORD,
                 GRANT_TYPE_DEVICE_CODE,
                 GRANT_TYPE_TOKEN_EXCHANGE,
+                GRANT_TYPE_JWT_BEARER,
             ],
             "id_token_signing_alg_values_supported": [provider.jwt_alg],
             # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes
@@ -139,6 +143,9 @@ class ProviderInfoView(View):
             )
         except OAuth2DynamicClientRegistration.DoesNotExist:
             pass
+        # draft-ietf-oauth-identity-assertion-authz-grant §7.2: this provider redeems ID-JAGs
+        if GrantType.JWT_BEARER in provider.grant_types:
+            config["authorization_grant_profiles_supported"] = [GRANT_PROFILE_ID_JAG]
         return config
 
     def get_claims_cached(self, provider: OAuth2Provider) -> list[str]:
