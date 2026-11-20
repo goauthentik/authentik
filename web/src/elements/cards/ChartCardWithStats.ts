@@ -107,17 +107,19 @@ export abstract class ChartCardWithStats extends EventChart {
 
         return html`<div class="stats-row">
             ${this.stats.map(
-                (stat) => html`<div class="stat">
-                    <span class="stat-label">${stat.label}</span>
-                    <span class="stat-value">${stat.value}</span>
-                    ${
-                        stat.delta
-                            ? html`<span class="stat-delta ${stat.tone ? `pf-m-${stat.tone}` : ""}"
-                                  >${stat.delta}</span
-                              >`
-                            : nothing
-                    }
-                </div>`,
+                (stat) =>
+                    html`<div class="stat">
+                        <span class="stat-label">${stat.label}</span>
+                        <span class="stat-value">${stat.value}</span>
+                        ${
+                            stat.delta
+                                ? html`<span
+                                      class="stat-delta ${stat.tone ? `pf-m-${stat.tone}` : ""}"
+                                      >${stat.delta}</span
+                                  >`
+                                : nothing
+                        }
+                    </div>`,
             )}
         </div>`;
     }
