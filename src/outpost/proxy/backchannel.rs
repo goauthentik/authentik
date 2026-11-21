@@ -62,7 +62,8 @@ impl TokenHost {
 
     /// Claim the host and scheme on a request bound for `target`.
     ///
-    /// Omit an unnecessary override when the target authority already matches.
+    /// Omit an unnecessary override when the target scheme and authority already
+    /// match.
     /// HTTP/2 permits `Host` alongside `:authority`, but forbids conflicting
     /// values. The backchannel client uses HTTP/1.1 so an override is effective.
     fn apply(&self, request: RequestBuilder, target: &str) -> RequestBuilder {
@@ -74,13 +75,16 @@ impl TokenHost {
             .header(X_FORWARDED_PROTO, self.scheme.as_str())
     }
 
-    /// Whether `target` already points at the host this override would claim.
+    /// Whether `target` already points at the host and scheme this override
+    /// would claim.
+    ///
+    /// The scheme matters on its own: `http://localhost` and `https://localhost`
+    /// share an authority, but the core would mint an `http://` issuer for the
+    /// former without `X-Forwarded-Proto`.
     fn addresses(&self, target: &str) -> bool {
-        Url::parse(target)
-            .ok()
-            .as_ref()
-            .and_then(authority)
-            .is_some_and(|authority| authority == self.host)
+        Url::parse(target).is_ok_and(|target| {
+            target.scheme() == self.scheme && authority(&target).is_some_and(|a| a == self.host)
+        })
     }
 }
 
@@ -252,6 +256,42 @@ mod tests {
             assert!(request.headers().get(HOST).is_none(), "target: {target}");
             assert!(
                 request.headers().get(X_FORWARDED_PROTO).is_none(),
+                "target: {target}"
+            );
+        }
+    }
+
+    #[test]
+    fn overrides_when_only_the_scheme_differs() {
+        // The embedded outpost reaches the core at `http://localhost`, so an `authentik_host` of
+        // `https://localhost` shares its authority but still needs the forwarded scheme.
+        for (browser, target) in [
+            (
+                "https://localhost/",
+                "http://localhost/application/o/token/",
+            ),
+            (
+                "http://localhost/",
+                "https://localhost/application/o/token/",
+            ),
+        ] {
+            let host = token_host(browser);
+            let request = host
+                .apply(client().post(target), target)
+                .build()
+                .expect("failed to build request");
+
+            assert_eq!(
+                request.headers().get(HOST).expect("host header"),
+                "localhost",
+                "target: {target}"
+            );
+            assert_eq!(
+                request
+                    .headers()
+                    .get(X_FORWARDED_PROTO)
+                    .expect("forwarded proto header"),
+                host.scheme.as_str(),
                 "target: {target}"
             );
         }
