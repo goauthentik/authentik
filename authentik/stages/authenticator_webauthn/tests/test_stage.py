@@ -23,6 +23,7 @@ from authentik.stages.authenticator_webauthn.algorithms import PREFERRED_PUB_KEY
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     AuthenticatorWebAuthnStage,
+    UserVerification,
     WebAuthnDevice,
     WebAuthnDeviceType,
     WebAuthnHint,
@@ -764,7 +765,9 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         params = response.json()["registration"]["pubKeyCredParams"]
         self.assertEqual([p["alg"] for p in params], [-7, -257])
 
-    def _register_software_credential(self, credential: SoftwareCredential):
+    def _register_software_credential(
+        self, credential: SoftwareCredential, user_verified: bool = True
+    ):
         challenge = b"\x01" * 64
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
@@ -776,11 +779,47 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             data={
                 "component": "ak-stage-authenticator-webauthn",
-                "response": credential.registration_response(challenge),
+                "response": credential.registration_response(challenge, user_verified),
             },
             SERVER_NAME="localhost",
             SERVER_PORT="9000",
         )
+
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
+    def test_register_user_verification_required(self):
+        """Test registration without user verification is rejected when it is required"""
+        self.stage.user_verification = UserVerification.REQUIRED
+        self.stage.save()
+        credential = SoftwareCredential(
+            rp_id="localhost", origin="http://localhost:9000", alg=COSEAlgorithmIdentifier.EDDSA
+        )
+        response = self._register_software_credential(credential, user_verified=False)
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            component="ak-stage-authenticator-webauthn",
+            response_errors={
+                "response": [
+                    {
+                        "string": "Registration failed. Please contact your administrator.",
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
+        self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
+
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
+    def test_register_user_verification_required_verified(self):
+        """Test registration with user verification is accepted when it is required"""
+        self.stage.user_verification = UserVerification.REQUIRED
+        self.stage.save()
+        credential = SoftwareCredential(
+            rp_id="localhost", origin="http://localhost:9000", alg=COSEAlgorithmIdentifier.EDDSA
+        )
+        response = self._register_software_credential(credential)
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
     @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
     def test_register_eddsa(self):
