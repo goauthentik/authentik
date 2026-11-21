@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-28 00:13+0000\n"
+"POT-Creation-Date: 2026-11-20 00:13+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Johan Davidsson, 2026\n"
 "Language-Team: Swedish (Sweden) (https://app.transifex.com/authentik/teams/119923/sv_SE/)\n"
@@ -27,6 +27,13 @@ msgstr ""
 #, python-brace-format
 msgid "Value for flag {flag_key} needs to be of type {type}."
 msgstr "Värdet för flaggan {flag_key} måste ha typen {type}."
+
+#: authentik/admin/files/api.py
+#, python-brace-format
+msgid "File size ({size}B) exceeds maximum allowed size ({max_size}B)."
+msgstr ""
+"Filstorleken ({size} B) överskrider den högsta tillåtna storleken "
+"({max_size} B)."
 
 #: authentik/admin/files/validation.py
 msgid "File name cannot be empty"
@@ -58,6 +65,17 @@ msgstr "Referenser till överordnad katalog (”..”) är inte tillåtna"
 #: authentik/admin/files/validation.py
 msgid "Paths cannot start with '.'"
 msgstr "Sökvägar får inte börja med ”.”"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+msgstr "Filnamnet är för långt (högst {MAX_FILE_NAME_LENGTH} tecken)"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
+msgstr ""
+"Sökvägskomponenten är för lång (högst {MAX_PATH_COMPONENT_LENGTH} tecken)"
 
 #: authentik/admin/models.py
 msgid "Configure how authentik should show avatars for users."
@@ -354,6 +372,14 @@ msgstr "Verifieringscertifikat är konfigurerat, men begäran är inte signerad.
 msgid "Failed to verify signature"
 msgstr "Misslyckades med att verifiera signaturen."
 
+#: authentik/common/saml/exceptions.py
+msgid ""
+"The ACS URL in the request does not match the ACS URL configured on the "
+"provider."
+msgstr ""
+"ACS-URL:en i begäran stämmer inte överens med den ACS-URL som har "
+"konfigurerats hos leverantören."
+
 #: authentik/common/saml/parsers/logout_response.py
 msgid "Cannot decode SAML response."
 msgstr "Kan inte avkoda SAML-svaret."
@@ -374,6 +400,14 @@ msgstr ""
 #, python-brace-format
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr "Sluggen ”{slug}” är reserverad och kan inte användas för program."
+
+#: authentik/core/api/groups.py
+#, python-brace-format
+msgid ""
+"User does not have permission to set superuser status to {superuser_status}."
+msgstr ""
+"Användaren har inte behörighet att sätta superanvändarstatus till "
+"{superuser_status}."
 
 #: authentik/core/api/groups.py
 msgid "User does not have permission to add members to this group."
@@ -597,6 +631,7 @@ msgid "Hide this application from the user's My applications page."
 msgstr "Dölj det här programmet från användarens sida Mina program."
 
 #: authentik/core/models.py
+#: authentik/stages/authenticator_validate/challenge.py
 msgid "Application"
 msgstr "Applikation"
 
@@ -1328,6 +1363,34 @@ msgstr "Google Device Trust-anslutningar"
 msgid "Verifying your browser..."
 msgstr "Verifierar din webbläsare …"
 
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid ""
+"Certificate authorities which issue device certificates via Intune (Cloud "
+"PKI, SCEP or PKCS profiles), used by the endpoint stage to validate "
+"certificates. This option has a higher priority than the "
+"`client_certificate` option on `Brand`."
+msgstr ""
+"Certifikatutfärdare som utfärdar enhetscertifikat via Intune (Cloud PKI-, "
+"SCEP- eller PKCS-profiler), vilka används av slutpunktsfasen för att "
+"validera certifikat. Detta alternativ har högre prioritet än alternativet "
+"`client_certificate` under `Brand`."
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector"
+msgstr "Microsoft Intune-anslutning"
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connectors"
+msgstr "Microsoft Intune-anslutningar"
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector Certificate Authority"
+msgstr "Certifikatutfärdare för Microsoft Intune-anslutning"
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector Certificate Authorities"
+msgstr "Certifikatutfärdare för Microsoft Intune-anslutning"
+
 #: authentik/enterprise/lifecycle/offboarding/actions.py
 #, python-format
 msgid "User %(username)s was offboarded (%(action)s)"
@@ -1470,6 +1533,31 @@ msgstr "Granskad"
 #: authentik/enterprise/lifecycle/review/models.py
 msgid "Overdue"
 msgstr "Försenad"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Go to {model_name}"
+msgstr "Gå till {model_name}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review is due for {model_name} {object_label}"
+msgstr "Behörighetsgranskning ska utföras för {model_name} {object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review is overdue for {model_name} {object_label}"
+msgstr "Behörighetsgranskning är försenad för {model_name} {object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review completed for {model_name} {object_label}"
+msgstr "Behörighetsgranskning slutförd för {model_name} {object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review attested for {model_name} {object_label}"
+msgstr "Behörighetsgranskning bekräftad för {model_name} {object_label}"
 
 #: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Dispatch tasks to apply lifecycle rules."
@@ -1825,6 +1913,14 @@ msgid "WS-Federation Providers"
 msgstr "WS-Federation-leverantörer"
 
 #: authentik/enterprise/providers/ws_federation/views.py
+msgid "Invalid WS-Federation action"
+msgstr "Ogiltig WS-Federation-åtgärd"
+
+#: authentik/enterprise/providers/ws_federation/views.py
+msgid "Invalid WS-Federation request"
+msgstr "Ogiltig WS-Federation-förfrågan"
+
+#: authentik/enterprise/providers/ws_federation/views.py
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
 #, python-brace-format
@@ -1838,6 +1934,11 @@ msgstr "Dataexport"
 #: authentik/enterprise/reports/models.py
 msgid "Data Exports"
 msgstr "Dataexporter"
+
+#: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
+msgstr "Exporten av {model_verbose_name} skapades"
 
 #: authentik/enterprise/reports/models.py
 msgid "Download"
@@ -1966,6 +2067,23 @@ msgstr "Godkännanden av begäranden om beviljande"
 #: authentik/enterprise/requests/tasks.py
 msgid "Send access-request review notification."
 msgstr "Skicka granskningsmeddelande för åtkomstbegäran."
+
+#: authentik/enterprise/required_actions/api.py
+msgid ""
+"Required actions must reference existing flows that a logged-in user can "
+"run, other than authentication or invalidation flows."
+msgstr ""
+"Nödvändiga åtgärder måste referera till befintliga flöden som en inloggad "
+"användare kan köra, med undantag för autentiserings- eller "
+"ogiltigförklaringsflöden."
+
+#: authentik/enterprise/required_actions/middleware.py
+msgid "The required actions are invalid. Contact your administrator."
+msgstr "De begärda åtgärderna är ogiltiga. Kontakta din administratör."
+
+#: authentik/enterprise/required_actions/middleware.py
+msgid "Complete the required actions before continuing."
+msgstr "Slutför de nödvändiga åtgärderna innan du fortsätter."
 
 #: authentik/enterprise/stages/account_lockdown/api.py
 msgid "User to lock. If omitted, locks the current user (self-service)."
@@ -2099,6 +2217,10 @@ msgstr "Ett certifikat krävs men inget certifikat angavs."
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "No user found for certificate."
 msgstr "Ingen användare hittades för certifikatet."
+
+#: authentik/enterprise/stages/password/api.py
+msgid "A service account's password cannot be locked."
+msgstr "Lösenordet för ett tjänstekonto kan inte låsas."
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -2464,6 +2586,10 @@ msgstr "%(value)s är inte i det rätta formatet av 'hours=3;minutes=1'."
 msgid "The fields {field_names} must be used together."
 msgstr "Fälten {field_names} måste användas tillsammans."
 
+#: authentik/lib/views.py
+msgid "Bad Request"
+msgstr "Felaktig begäran"
+
 #: authentik/outposts/api/service_connections.py
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
@@ -2640,6 +2766,26 @@ msgid ""
 msgstr ""
 "Matchar händelsens klient-IP (strikt matchning; använd en uttryckspolicy för"
 " nätverksmatchning)"
+
+#: authentik/policies/event_matcher/models.py
+msgid "Query matched."
+msgstr "Sökfrågan gav träff."
+
+#: authentik/policies/event_matcher/models.py
+msgid "Action matched."
+msgstr "Åtgärd matchad."
+
+#: authentik/policies/event_matcher/models.py
+msgid "Client IP matched."
+msgstr "Klient-IP matchade."
+
+#: authentik/policies/event_matcher/models.py
+msgid "App matched."
+msgstr "Appen matchade."
+
+#: authentik/policies/event_matcher/models.py
+msgid "Model matched."
+msgstr "Modellen matchade."
 
 #: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policy"
@@ -3012,6 +3158,18 @@ msgstr "ES512 (asymmetrisk kryptering)"
 #: authentik/providers/oauth2/models.py
 msgid "EdDSA (Asymmetric Encryption)"
 msgstr "EdDSA (asymmetrisk kryptering)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-44 (Post-quantum, Asymmetric Encryption)"
+msgstr "ML-DSA-44 (Post-quantum, asymmetrisk kryptering)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-65 (Post-quantum, Asymmetric Encryption)"
+msgstr "ML-DSA-65 (Post-quantum, asymmetrisk kryptering)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-87 (Post-quantum, Asymmetric Encryption)"
+msgstr "ML-DSA-87 (Post-quantum, asymmetrisk kryptering)"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
@@ -3794,6 +3952,17 @@ msgstr "Standardvärde för relay_state vid IDP-initierade inloggningar"
 
 #: authentik/providers/saml/models.py
 msgid ""
+"When enabled, the ForceAuthn attribute set by the Service Provider on an "
+"AuthnRequest is ignored and an existing session is used. When disabled, "
+"ForceAuthn requires the user to re-authenticate."
+msgstr ""
+"När funktionen är aktiverad ignoreras attributet ForceAuthn – som angetts av"
+" tjänsteleverantören i en AuthnRequest – och en befintlig session används. "
+"När den är inaktiverad innebär ForceAuthn att användaren måste autentisera "
+"sig på nytt."
+
+#: authentik/providers/saml/models.py
+msgid ""
 "OAuth2 providers which can exchange their JWTs for a SAML Response of this "
 "provider via token exchange."
 msgstr ""
@@ -3859,6 +4028,30 @@ msgstr "SAML-session"
 #: authentik/providers/saml/models.py
 msgid "SAML Sessions"
 msgstr "SAML-sessioner"
+
+#: authentik/providers/saml/processors/authn_request_parser.py
+#, python-brace-format
+msgid ""
+"ACS URL of {request_acs_url} doesn't match Provider ACS URL of "
+"{provider_acs_url}."
+msgstr ""
+"ACS-URL:en {request_acs_url} stämmer inte överens med leverantörens ACS-URL "
+"{provider_acs_url}."
+
+#: authentik/providers/saml/views/flows.py
+msgid "Invalid sp_binding specified"
+msgstr "Ogiltig sp_binding angiven"
+
+#: authentik/providers/saml/views/sp_slo.py
+#: authentik/providers/saml/views/sso.py
+#: authentik/providers/saml/views/unified.py
+msgid "The SAML request payload is missing."
+msgstr "SAML-förfrågans nyttolast saknas."
+
+#: authentik/providers/saml/views/unified.py
+#, python-brace-format
+msgid "Unsupported SAML message type: {message_type}"
+msgstr "SAML-meddelandetyp som inte stöds: {message_type}"
 
 #: authentik/providers/scim/models.py
 msgid "Basic"
@@ -4018,6 +4211,64 @@ msgstr ""
 "Skicka ut synkroniseringar för ett relaterat objekt (medlemskap) till SCIM-"
 "leverantörer."
 
+#: authentik/rbac/api/custom_permissions.py
+msgid "Unknown model."
+msgstr "Okänd modell."
+
+#: authentik/rbac/api/custom_permissions.py
+msgid "This cannot change."
+msgstr "Detta kan inte ändras."
+
+#: authentik/rbac/api/custom_permissions.py
+msgid ""
+"Start with custom_, followed by lowercase letters, digits, and underscores."
+msgstr "Börja med custom_, följt av gemener, siffror och understreck."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Define at least one of {functions}."
+msgstr "Definiera minst en av {funktionerna}."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Unknown endpoint {id}."
+msgstr "Okänd slutpunkt {id}."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Already bound to another check: {ids}."
+msgstr "Redan kopplad till en annan kontroll: {ids}."
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "{id} runs no functions defined for it."
+msgstr "{id} kör inga funktioner som har definierats för den."
+
+#: authentik/rbac/api/rbac.py
+#, python-brace-format
+msgid "Unknown permission {name}"
+msgstr "Okänd behörighet {name}"
+
+#: authentik/rbac/apps.py
+msgid ""
+"Let permission checks decide API access. While enabled, every API request "
+"costs an additional database query."
+msgstr ""
+"Låt behörighetskontroller styra åtkomsten till API:et. När detta är "
+"aktiverat medför varje API-anrop en extra databasfråga."
+
+#: authentik/rbac/endpoint_checks.py
+msgid "A permission check failed."
+msgstr "En behörighetskontroll misslyckades."
+
+#: authentik/rbac/field_rules.py
+msgid "You cannot change this value."
+msgstr "Du kan inte ändra detta värde."
+
+#: authentik/rbac/field_rules.py
+msgid "This field is hidden from you."
+msgstr "Det här fältet är dolt för dig."
+
 #: authentik/rbac/models.py
 msgid "Role"
 msgstr "Roll"
@@ -4077,6 +4328,22 @@ msgstr "Kan visa mediefiler"
 #: authentik/rbac/models.py
 msgid "Can manage media files"
 msgstr "Kan hantera mediefiler"
+
+#: authentik/rbac/models.py
+msgid "Custom permission"
+msgstr "Anpassad behörighet"
+
+#: authentik/rbac/models.py
+msgid "Custom permissions"
+msgstr "Anpassad behörigheter"
+
+#: authentik/rbac/models.py
+msgid "Permission check"
+msgstr "Behörighetskontroll"
+
+#: authentik/rbac/models.py
+msgid "Permission checks"
+msgstr "Behörighetskontroller"
 
 #: authentik/rbac/tasks.py
 msgid "Remove object-level permissions whose object no longer exists."
@@ -4226,6 +4493,14 @@ msgstr ""
 #: authentik/sources/ldap/api/sources.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr "Endast en LDAP-källa med lösenordssynkronisering tillåts"
+
+#: authentik/sources/ldap/api/sources.py
+#, python-brace-format
+msgid ""
+"When 'Sync {type}s' is enabled, '{type}s property mappings' cannot be empty."
+msgstr ""
+"När ”Synkronisera {type}er” är aktiverat får ”egenskapsmappningar för "
+"{type}er” inte vara tomma."
 
 #: authentik/sources/ldap/api/sources.py
 msgid "SASL EXTERNAL requires a client certificate with a private key."
@@ -4777,11 +5052,11 @@ msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid ""
-"NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
-"sent."
+"Format of the NameID Policy sent to the IdP. Select Unspecified to let the "
+"IdP choose the format of the NameID it returns."
 msgstr ""
-"NameID-princip som skickas till IdP:n. Den kan vara avaktiverad, och då "
-"skickas ingen princip."
+"Format för den NameID-policy som skickas till IdP:n. Välj ”Ospecificerad” "
+"för att låta IdP:n bestämma formatet på det NameID som den returnerar."
 
 #: authentik/sources/saml/models.py
 msgid "Delete temporary users after"
@@ -4986,6 +5261,10 @@ msgstr ""
 "hours=3,minutes=17,seconds=300)."
 
 #: authentik/stages/authenticator_email/models.py
+msgid "authentik Sign-in code"
+msgstr "authentik-inloggningskod"
+
+#: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stage"
 msgstr "Konfigurationsfas för e-postautentiserare"
 
@@ -5178,6 +5457,25 @@ msgstr ""
 msgid "Invalid device type. Contact your {brand} administrator for help."
 msgstr "Ogiltig enhetstyp. Kontakta administratören för {brand} för hjälp."
 
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Assertion failed"
+msgstr "Påstående misslyckades"
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Invalid security key. Please re-register or contact an administrator."
+msgstr ""
+"Ogiltig säkerhetsnyckel. Vänligen registrera dig på nytt eller kontakta en "
+"administratör."
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Domain"
+msgstr "Domän"
+
+#: authentik/stages/authenticator_validate/challenge.py
+#, python-brace-format
+msgid "{brand_name} Login request"
+msgstr "{brand_name} Inloggningsförfrågan"
+
 #: authentik/stages/authenticator_validate/models.py
 msgid "Static"
 msgstr "Statisk"
@@ -5225,6 +5523,12 @@ msgid "Enforce user verification for WebAuthn devices."
 msgstr "Kräv användarverifiering för WebAuthn-enheter."
 
 #: authentik/stages/authenticator_validate/models.py
+msgid ""
+"Additional trusted origins for WebAuthn authentication. Matched exactly."
+msgstr ""
+"Ytterligare betrodda ursprung för WebAuthn-autentisering. Exakt matchning."
+
+#: authentik/stages/authenticator_validate/models.py
 msgid "Authenticator Validation Stage"
 msgstr "Valideringsfas för autentiserare"
 
@@ -5251,6 +5555,11 @@ msgstr "Tillåtna WebAuthn-enhetstyper för valideringsfasen för autentiserare"
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
 msgstr "Ingen (tillåten) MFA-autentiserare har konfigurerats."
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Additional trusted origins for WebAuthn registration. Matched exactly."
+msgstr ""
+"Ytterligare betrodda ursprung för WebAuthn-registrering. Exakt matchning."
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
@@ -5284,12 +5593,28 @@ msgstr "Begränsning av enhetstyp för WebAuthn-fas"
 msgid "Authenticator WebAuthn Stage Device Type Restrictions"
 msgstr "Begränsningar av enhetstyp för WebAuthn-fas"
 
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid ""
+"Exceeded maximum attempts. Contact your {brand} administrator for help."
+msgstr ""
+"Maximalt antal försök har överskridits. Kontakta din {brand}-administratör "
+"för att få hjälp."
+
 #: authentik/stages/authenticator_webauthn/tasks.py
 msgid ""
 "Background task to import FIDO Alliance MDS blob and AAGUIDs into database."
 msgstr ""
 "Bakgrundsaktivitet för att importera FIDO Alliance MDS-blob och AAGUID:er "
 "till databasen."
+
+#: authentik/stages/authenticator_webauthn/utils.py
+msgid ""
+"Enter a non-empty origin without whitespace or wildcards. The value 'null' "
+"is not allowed."
+msgstr ""
+"Ange ett ursprung som inte är tomt och som saknar blanksteg eller "
+"jokertecken. Värdet ”null” är inte tillåtet."
 
 #: authentik/stages/captcha/models.py
 msgid "Form encoded"
@@ -5806,11 +6131,36 @@ msgstr "Urval av bakändar som lösenordet ska kontrolleras mot."
 
 #: authentik/stages/password/models.py
 msgid ""
-"How many attempts a user has before the flow is canceled. To lock the user "
-"out, use a reputation policy and a user_write stage."
+"How many attempts a user has before the flow is canceled. This only cancels "
+"the flow, it does not lock the user's password."
 msgstr ""
-"Hur många försök en användare får innan flödet avbryts. Använd en "
-"anseendepolicy och ett user_write-steg för att låsa användaren."
+"Hur många försök en användare har på sig innan flödet avbryts. Detta "
+"avbryter endast flödet, det låser inte användarens lösenord."
+
+#: authentik/stages/password/models.py
+msgid ""
+"How many consecutive failed attempts lock the user's password until an "
+"administrator unlocks it. Set to 0 to never lock."
+msgstr ""
+"Hur många misslyckade försök i rad som krävs för att användarens lösenord "
+"ska låsas, fram till dess att en administratör låser upp det. Ange 0 för att"
+" aldrig låsa."
+
+#: authentik/stages/password/models.py
+msgid ""
+"Warning shown when the user has one password attempt remaining. Leave blank "
+"to show no warning."
+msgstr ""
+"Varning visas när användaren har ett lösenordsförsök kvar. Lämna tomt för "
+"att inte visa någon varning."
+
+#: authentik/stages/password/models.py
+msgid ""
+"Message shown when the user's password has been locked. Leave blank to show "
+"a generic authentication error."
+msgstr ""
+"Meddelande som visas när användarens lösenord har låsts. Lämna tomt för att "
+"visa ett generiskt autentiseringsfel."
 
 #: authentik/stages/password/models.py
 msgid ""
@@ -5827,6 +6177,14 @@ msgstr "Lösenordsfas"
 #: authentik/stages/password/models.py
 msgid "Password Stages"
 msgstr "Lösenordsfaser"
+
+#: authentik/stages/password/models.py
+msgid "Password Device"
+msgstr "Lösenordsenhet"
+
+#: authentik/stages/password/models.py
+msgid "Password Devices"
+msgstr "Lösenordsenheter"
 
 #: authentik/stages/password/stage.py
 msgid "Invalid password"
