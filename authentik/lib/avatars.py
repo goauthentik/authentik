@@ -183,7 +183,7 @@ def avatar_mode_url(user: User, mode: str) -> str | None:
     cache_key_image_url = f"goauthentik.io/lib/avatars/{hostname}/{mail_hash}"
 
     if cache.has_key(cache_key_image_url):
-        cache.touch(cache_key_image_url)
+        cache.touch(cache_key_image_url, AVATAR_STATUS_TTL_SECONDS)
         return cache.get(cache_key_image_url)
 
     try:
