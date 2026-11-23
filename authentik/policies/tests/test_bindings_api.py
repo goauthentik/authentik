@@ -43,7 +43,7 @@ class TestBindingsAPI(APITestCase):
         ]
 
     def test_target_subclasses_preserve_parent_primary_keys(self):
-        """Only the base PolicyBindingModel needs resolving to get the target's ID."""
+        """Test subclasses preserve primary keys below PolicyBindingModel"""
         for model in apps.get_models():
             if not issubclass(model, PolicyBindingModel):
                 continue
@@ -58,7 +58,7 @@ class TestBindingsAPI(APITestCase):
                         self.assertIs(link.target_field, parent._meta.pk)
 
     def test_target_field_with_intermediate_source(self):
-        """A Source object has the same target ID as its more specific source type."""
+        """Test intermediate sources retain concrete target primary keys"""
         source = OAuthSource.objects.create(name="binding-test", slug="binding-test")
         intermediate = Source.objects.get(pk=source.pk)
         concrete = PolicyBindingModel.objects.get_subclass(pbm_uuid=source.pbm_uuid)
@@ -69,7 +69,7 @@ class TestBindingsAPI(APITestCase):
             self.assertEqual(field.to_representation(intermediate), concrete.pk)
 
     def test_target_primary_keys(self):
-        """List and detail responses expose concrete target primary keys."""
+        """Test concrete target primary keys in list and detail responses"""
         expected = {}
         for target in self._create_targets():
             binding = PolicyBinding.objects.create(target=target, user=self.user, order=0)
@@ -88,7 +88,7 @@ class TestBindingsAPI(APITestCase):
         )
 
     def test_target_field_without_prefetch(self):
-        """Keep resolving base objects supplied by other serializer callers."""
+        """Test target primary keys without prefetching"""
         field = PolicyBindingModelForeignKey(read_only=True)
         for target in self._create_targets():
             with self.subTest(target=type(target).__name__):
@@ -100,7 +100,7 @@ class TestBindingsAPI(APITestCase):
                         self.assertEqual(field.to_representation(target), target.pk)
 
     def test_target_primary_keys_on_write(self):
-        """Create/update responses retain subclass IDs without relying on prefetch."""
+        """Test concrete target primary keys in create and update responses"""
         for target in self._create_targets():
             with self.subTest(target=type(target).__name__):
                 response = self.client.post(
@@ -119,7 +119,7 @@ class TestBindingsAPI(APITestCase):
                 self.assertEqual(response.json()["target"], str(target.pk))
 
     def test_list_query_count(self):
-        """Resolving targets must not add a query for every binding on the page."""
+        """Test list query counts remain constant as the page size increases"""
         for index in range(20):
             target = Application.objects.create(name=f"binding-{index}", slug=f"binding-{index}")
             PolicyBinding.objects.create(target=target, user=self.user, order=index)
