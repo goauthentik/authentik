@@ -118,10 +118,10 @@
         }
     },
     "dependencies": {
-        "@styleframe/core": "^3.5.0",
+        "@styleframe/core": "^3.7.0",
         "@styleframe/dtcg": "^1.1.0",
         "@styleframe/theme": "^3.7.0",
-        "@styleframe/transpiler": "^3.3.0",
+        "@styleframe/transpiler": "^3.5.0",
         "rimraf": "^6.1.3",
         "styleframe": "^3.7.0"
     },
@@ -139,8 +139,8 @@
         "npm-run-all": "^4.1.5",
         "oxfmt": "catalog:",
         "oxlint": "catalog:",
-        "stylelint": "^17.14.1",
-        "stylelint-config-recommended": "^18.0.0",
+        "stylelint": "^18.0.0",
+        "stylelint-config-recommended": "^19.0.0",
         "typescript": "catalog:",
         "wireit": "^0.15.0"
     },

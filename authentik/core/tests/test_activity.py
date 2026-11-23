@@ -43,6 +43,12 @@ class TestUserActivity(TestCase):
         UserActivity.objects.record(user_id)
         self.assertTrue(UserActivity.objects.filter(user_id=user_id).exists())
 
+    def test_record_writes_to_primary_with_read_replicas(self):
+        user = create_test_user()
+        with patch("authentik.root.db.router.FailoverRouter.db_for_read", return_value="replica"):
+            UserActivity.objects.record(user.pk)
+        self.assertTrue(UserActivity.objects.filter(user=user).exists())
+
     def test_event_attribution_and_resaves(self):
         admin, target = create_test_user(), create_test_user()
         at = now()

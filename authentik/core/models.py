@@ -1736,7 +1736,7 @@ class UserActivityManager(models.Manager["UserActivity"]):
                 ConflictAction.UPDATE,
                 update_condition=Q(last_activity_at__lte=excluded - USER_ACTIVITY_INTERVAL),
                 update_values={"last_activity_at": excluded},
-            ).insert(using=self.db, user_id=user_id, last_activity_at=at or now())
+            ).insert(user_id=user_id, last_activity_at=at or now())
 
 
 class UserActivity(models.Model):
