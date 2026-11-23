@@ -31,7 +31,7 @@ flowchart TD
     db[("PostgreSQL<br/>(data, task queue, cache,<br/>messaging, and sessions)")]
 
     users --> rp -->|"HTTP 9000<br/>HTTPS 9443"| router
-    ext_outposts -->|"API and<br/>WebSocket"| router
+    ext_outposts --> router
     router --> core
     router --> embedded
     core --> db
