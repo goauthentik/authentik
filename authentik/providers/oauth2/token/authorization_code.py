@@ -37,6 +37,20 @@ class AuthorizationCodeTokenRequest(TokenRequest):
             raise TokenError("invalid_grant")
 
         # Validate PKCE parameters.
+        # Enforce the provider's PKCE settings again, in case the code was issued without
+        # satisfying them (for example before the settings were changed).
+        if self.provider.pkce_required and not self.authorization_code.code_challenge:
+            self.logger.warning("Invalid code: issued without PKCE, which the provider requires")
+            raise TokenError("invalid_grant").with_cause("pkce_challenge_missing")
+        if (
+            self.authorization_code.code_challenge
+            and self.authorization_code.code_challenge_method not in self.provider.pkce_methods
+        ):
+            self.logger.warning(
+                "Invalid code: issued with a PKCE method the provider does not allow",
+                method=self.authorization_code.code_challenge_method,
+            )
+            raise TokenError("invalid_grant").with_cause("pkce_method_not_allowed")
         if self.authorization_code.code_challenge:
             # Authorization code had PKCE but we didn't get one
             if not self.code_verifier:

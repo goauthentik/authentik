@@ -144,6 +144,9 @@ class DynamicClientRegistrationView(View):
             client_secret=generate_client_secret(),
             client_type=client_type,
             grant_types=grant_types,
+            # Registered clients are held to the PKCE policy of the provider they register with
+            pkce_mode=self.provider.pkce_mode,
+            pkce_allow_plain=self.provider.pkce_allow_plain,
             authorization_flow=self.dcr.override_authorization_flow
             or self.provider.authorization_flow,
             invalidation_flow=self.dcr.override_invalidation_flow
