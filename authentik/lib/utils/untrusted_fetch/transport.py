@@ -25,6 +25,7 @@ from time import monotonic
 from typing import Protocol
 
 from authentik.lib.utils.untrusted_fetch.errors import (
+    ConcurrencyLimitExceeded,
     ConnectError,
     DeadlineExceeded,
     ProtocolError,
@@ -35,6 +36,8 @@ from authentik.lib.utils.untrusted_fetch.policy import IPAddress
 
 # Upper bound on the number of addresses considered per hostname
 MAX_RESOLVED_ADDRESSES = 16
+# Longest to wait for a free DNS worker before failing
+SLOT_WAIT = 0.1
 
 
 class Deadline:
@@ -111,6 +114,10 @@ class SystemResolver:
         self._slots = threading.BoundedSemaphore(max_workers)
 
     def _lookup(self, hostname: str, port: int) -> list[IPAddress]:
+        if "." in hostname:
+            # Resolve as an absolute name so resolver search domains never apply.
+            # Single-label names only get here when allow-listed, and keep the search path.
+            hostname = f"{hostname.rstrip('.')}."
         infos = socket.getaddrinfo(
             hostname, port, type=socket.SOCK_STREAM, proto=socket.IPPROTO_TCP
         )
@@ -130,8 +137,8 @@ class SystemResolver:
         return addresses
 
     def resolve(self, hostname: str, port: int, deadline: Deadline) -> list[IPAddress]:
-        if not self._slots.acquire(timeout=deadline.remaining()):
-            raise DeadlineExceeded("Timed out waiting for DNS capacity")
+        if not self._slots.acquire(timeout=min(SLOT_WAIT, deadline.remaining())):
+            raise ConcurrencyLimitExceeded("Too many concurrent DNS lookups")
         try:
             deadline.remaining()
             future = self._executor.submit(self._lookup, hostname, port)

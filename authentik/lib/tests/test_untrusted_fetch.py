@@ -82,6 +82,16 @@ ALWAYS_BLOCKED = [
     "2001:0:4136:e378:8000:63bf:80ff:fffe",  # Teredo client 127.0.0.1
 ]
 
+# Loopback, including IPv4 loopback embedded in mapped/translated/NAT64 IPv6 forms
+LOOPBACK_FORMS = (
+    "127.0.0.1",
+    "127.255.255.254",
+    "::1",
+    "::ffff:127.0.0.1",
+    "::ffff:0:127.0.0.1",
+    "64:ff9b::7f00:1",
+)
+
 PRIVATE = [
     "10.0.0.1",
     "172.16.5.4",
@@ -136,7 +146,7 @@ class TestSystemResolver(TestCase):
     def assert_no_new_submissions(self, submit, queued):
         start = monotonic()
         for _ in range(5):
-            with self.assertRaises(DeadlineExceeded):
+            with self.assertRaises(ConcurrencyLimitExceeded):
                 self.resolver.resolve("client.example.com", 443, Deadline(0.01))
         self.assertLess(monotonic() - start, 2)
         self.assertEqual(submit.call_count, 1)
@@ -275,6 +285,53 @@ class TestSystemResolver(TestCase):
         self.assertEqual(transport.requests, [])
 
 
+class TestSystemResolverLimits(TestCase):
+    """Capacity and name handling of the resolver"""
+
+    def test_saturated_dns_pool_fails_fast(self):
+        resolver = SystemResolver(max_workers=2)
+        self.addCleanup(resolver._executor.shutdown)
+        for _ in range(2):
+            self.assertTrue(resolver._slots.acquire(blocking=False))
+        with patch("socket.getaddrinfo") as lookup:
+            start = monotonic()
+            with self.assertRaises(ConcurrencyLimitExceeded):
+                resolver.resolve("client.example.com", 443, Deadline(5))
+            self.assertLess(monotonic() - start, 0.5)
+        lookup.assert_not_called()
+
+    def test_saturated_dns_pool_does_not_starve_fetch_slots(self):
+        resolver = SystemResolver(max_workers=1)
+        self.addCleanup(resolver._executor.shutdown)
+        self.assertTrue(resolver._slots.acquire(blocking=False))
+        fetcher = UntrustedURLFetcher(
+            resolver=resolver, transport=MockTransport(), max_concurrency=2
+        )
+        with self.assertRaises(ConcurrencyLimitExceeded):
+            fetcher.fetch(URL, max_bytes=1024)
+        # The failed fetch gave its slot back
+        for _ in range(2):
+            self.assertTrue(fetcher._slots.acquire(blocking=False))
+
+    def test_dns_pool_is_larger_than_fetch_pool(self):
+        fetcher = UntrustedURLFetcher(transport=MockTransport())
+        self.addCleanup(fetcher.resolver._executor.shutdown)
+        self.assertGreater(fetcher.dns_concurrency, fetcher.max_concurrency)
+
+    def test_names_resolve_as_absolute(self):
+        resolver = SystemResolver(max_workers=1)
+        self.addCleanup(resolver._executor.shutdown)
+        answer = [(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP, "", (PUBLIC_V4, 443))]
+        with patch("socket.getaddrinfo", return_value=answer) as lookup:
+            resolver.resolve("client.example.com", 443, Deadline(2))
+            resolver.resolve("client.example.com.", 443, Deadline(2))
+            resolver.resolve("intranet", 443, Deadline(2))
+        self.assertEqual(
+            [call.args[0] for call in lookup.call_args_list],
+            ["client.example.com.", "client.example.com.", "intranet"],
+        )
+
+
 class TestDestinationPolicy(TestCase):
     """Address policy"""
 
@@ -338,6 +395,32 @@ class TestDestinationPolicy(TestCase):
         # But the broad entries do permit ordinary private ranges
         self.assertTrue(policy.check_str("10.0.0.1").allowed)
 
+    def test_loopback_only_when_enabled(self):
+        policy = DestinationPolicy(allow_loopback=True)
+        for addr in LOOPBACK_FORMS:
+            with self.subTest(addr=addr):
+                decision = policy.check_str(addr)
+                self.assertTrue(decision.allowed)
+                self.assertEqual(decision.reason, "loopback")
+            self.assertFalse(DestinationPolicy().check_str(addr).allowed)
+
+    def test_loopback_never_unblocks_other_always_blocked(self):
+        policy = DestinationPolicy(allow_loopback=True)
+        for addr in ALWAYS_BLOCKED:
+            if addr in LOOPBACK_FORMS:
+                continue
+            with self.subTest(addr=addr):
+                self.assertFalse(policy.check_str(addr).allowed)
+        for addr in ("169.254.169.254", "fd00:ec2::254", "fd20:ce::254", "100.100.100.200"):
+            with self.subTest(addr=addr):
+                self.assertFalse(policy.check_str(addr).allowed)
+                self.assertFalse(policy.check_str(addr, "localhost").allowed)
+
+    def test_loopback_allowance_survives_config_parsing(self):
+        policy = DestinationPolicy.from_config_value("10.0.0.0/8", allow_loopback=True)
+        self.assertTrue(policy.allow_loopback)
+        self.assertTrue(policy.check_str("127.0.0.1").allowed)
+
     def test_ipv4_address_does_not_match_ipv6_network(self):
         # ipaddress would report 0.0.0.10 as inside ::/96 without a version check
         policy = DestinationPolicy.from_entries(["::/96"])
@@ -388,17 +471,12 @@ class TestParseURL(TestCase):
             "ftp://client.example.com/m",
             "https://user:pass@client.example.com/m",
             "https://user@client.example.com/m",
-            "https://client.example.com/m?x=1",
-            "https://client.example.com/m?",
             "https://client.example.com/m#frag",
             "https://client.example.com/m#",
-            "https://client.example.com/a/../m",
-            "https://client.example.com/a/./m",
-            "https://client.example.com/a/%2e%2e/m",
-            "https://client.example.com/a%2Fb",
-            "https://client.example.com/a%5cb",
             "https://client.example.com/a%00",
             "https://client.example.com/a%zz",
+            "https://client.example.com/a?b=%zz",
+            "https://client.example.com/a?b=%00",
             "https://client.example.com\\@evil.example/",
             "https://client.example.com/a b",
             "https://client.example.com/\n",
@@ -419,6 +497,20 @@ class TestParseURL(TestCase):
             with self.subTest(url=url):
                 with self.assertRaises(InvalidURL):
                     parse_untrusted_url(url)
+
+    def test_query_allowed(self):
+        parsed = parse_untrusted_url("https://h.example.com/keys?appid=x&y=1")
+        self.assertEqual(parsed.path, "/keys")
+        self.assertEqual(parsed.query, "appid=x&y=1")
+        self.assertEqual(parsed.request_target, "/keys?appid=x&y=1")
+        self.assertEqual(parse_untrusted_url("https://h.example.com/keys").request_target, "/keys")
+        self.assertEqual(parse_untrusted_url("https://h.example.com").request_target, "/")
+
+    def test_path_shape_is_not_restricted(self):
+        # CIMD-specific path rules (dot segments, %2e/%2f) live with the CIMD parser
+        for url in ("https://h.example.com/a/../m", "https://h.example.com/a%2Fb"):
+            with self.subTest(url=url):
+                parse_untrusted_url(url)
 
     def test_ip_literal(self):
         self.assertEqual(
@@ -454,7 +546,7 @@ class TestFetcher(TestCase):
         headers = dict(request.headers)
         self.assertEqual(headers["Host"], "client.example.com")
         self.assertEqual(headers["Accept"], "application/jwk-set+json")
-        self.assertEqual(headers["Accept-Encoding"], "gzip")
+        self.assertEqual(headers["Accept-Encoding"], "identity")
         self.assertEqual(request.hostname, "client.example.com")
         self.assertEqual(request.path, "/oauth/metadata.json")
 
@@ -684,17 +776,62 @@ class TestFetcher(TestCase):
 
     def test_concurrency_limit(self):
         fetcher, transport = mock_fetcher({URL: MockResponse(body=b"{}")}, max_concurrency=1)
-        # Use a real clock so the semaphore wait is bounded by the deadline
-        fetcher._clock = __import__("time").monotonic
-        fetcher.timeout = 0.2
+        # Use a real clock so the slot wait is measured for real
+        fetcher._clock = monotonic
         self.assertTrue(fetcher._slots.acquire(blocking=False))
         try:
+            start = monotonic()
             with self.assertRaises(ConcurrencyLimitExceeded):
                 fetcher.fetch(URL, max_bytes=1024)
+            self.assertLess(monotonic() - start, 0.5)
         finally:
             fetcher._slots.release()
         self.assertEqual(transport.requests, [])
         self.assertEqual(fetcher.fetch(URL, max_bytes=1024).content, b"{}")
+
+    def test_query_is_sent(self):
+        url = "https://h.example.com/keys?appid=x"
+        fetcher, transport = mock_fetcher({url: MockResponse(body=b"{}")})
+        self.assertEqual(fetcher.fetch(url, max_bytes=1024).content, b"{}")
+        self.assertEqual(transport.requests[0].path, "/keys?appid=x")
+
+    def test_single_label_host_rejected(self):
+        fetcher, transport = mock_fetcher({"https://intranet/m": MockResponse(body=b"{}")})
+        with self.assertRaises(BlockedDestination):
+            fetcher.fetch("https://intranet/m", max_bytes=1024)
+        self.assertEqual(transport.requests, [])
+
+    def test_single_label_host_allow_listed(self):
+        fetcher, _ = mock_fetcher(
+            {"https://intranet/m": MockResponse(body=b"{}")},
+            records={"intranet": ["10.1.1.1"]},
+            policy=DestinationPolicy.from_entries(["intranet", "10.0.0.0/8"]),
+        )
+        self.assertEqual(fetcher.fetch("https://intranet/m", max_bytes=1024).content, b"{}")
+
+    def test_single_label_localhost_only_in_debug(self):
+        url = "https://localhost/m"
+        for debug, allowed in ((False, False), (True, True)):
+            with self.subTest(debug=debug):
+                fetcher, _ = mock_fetcher(
+                    {url: MockResponse(body=b"{}")},
+                    records={"localhost": ["127.0.0.1"]},
+                    policy=DestinationPolicy(allow_loopback=debug),
+                )
+                if allowed:
+                    self.assertEqual(fetcher.fetch(url, max_bytes=1024).content, b"{}")
+                else:
+                    with self.assertRaises(BlockedDestination):
+                        fetcher.fetch(url, max_bytes=1024)
+
+    def test_loopback_follows_debug_setting(self):
+        for debug in (False, True):
+            with self.subTest(debug=debug), CONFIG.patch("debug", debug):
+                fetcher = UntrustedURLFetcher.from_config(
+                    resolver=StaticResolver(), transport=MockTransport()
+                )
+                self.assertEqual(fetcher.policy.allow_loopback, debug)
+                self.assertEqual(fetcher.policy.check_str("127.0.0.1").allowed, debug)
 
     def test_bounds_clamped(self):
         fetcher = UntrustedURLFetcher(
@@ -707,6 +844,8 @@ class TestFetcher(TestCase):
         with (
             CONFIG.patch("untrusted_fetch.timeout", "2.5"),
             CONFIG.patch("untrusted_fetch.max_concurrency", 3),
+            CONFIG.patch("untrusted_fetch.dns_concurrency", 7),
+            CONFIG.patch("debug", False),
             CONFIG.patch(
                 "untrusted_fetch.allowed_private_destinations", "10.0.0.0/8,internal.example"
             ),
@@ -716,14 +855,16 @@ class TestFetcher(TestCase):
             )
         self.assertEqual(fetcher.timeout, 2.5)
         self.assertEqual(fetcher.max_concurrency, 3)
+        self.assertEqual(fetcher.dns_concurrency, 7)
         self.assertTrue(fetcher.policy.check_str("10.2.3.4").allowed)
         self.assertTrue(fetcher.policy.check_str("192.168.1.1", "internal.example").allowed)
         self.assertFalse(fetcher.policy.check_str("127.0.0.1", "internal.example").allowed)
 
     def test_default_config(self):
-        fetcher = UntrustedURLFetcher.from_config(
-            resolver=StaticResolver(), transport=MockTransport()
-        )
+        with CONFIG.patch("debug", False):
+            fetcher = UntrustedURLFetcher.from_config(
+                resolver=StaticResolver(), transport=MockTransport()
+            )
         self.assertEqual(fetcher.timeout, 5)
         self.assertEqual(fetcher.policy, DestinationPolicy())
 

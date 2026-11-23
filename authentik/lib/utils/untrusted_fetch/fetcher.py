@@ -26,6 +26,7 @@ from authentik.lib.utils.untrusted_fetch.errors import (
 )
 from authentik.lib.utils.untrusted_fetch.policy import DestinationPolicy, IPAddress
 from authentik.lib.utils.untrusted_fetch.transport import (
+    SLOT_WAIT,
     ConnectTarget,
     Deadline,
     HTTPClientTransport,
@@ -41,6 +42,10 @@ DEFAULT_TIMEOUT = 5.0
 MIN_TIMEOUT = 0.5
 MAX_TIMEOUT = 30.0
 DEFAULT_MAX_CONCURRENCY = 10
+# DNS lookups get their own, larger pool: a lookup that outlives its fetch (a black-holed
+# nameserver) keeps its worker, so it must not be able to starve the fetch slots.
+DEFAULT_DNS_CONCURRENCY = 32
+MAX_DNS_CONCURRENCY = 256
 MAX_CONCURRENCY = 64
 DEFAULT_MAX_URL_LENGTH = 2048
 # Hard ceiling on caller-supplied body limits, so a caller can't accidentally
@@ -51,8 +56,8 @@ _ENCODED_OVERHEAD = 1024
 _READ_CHUNK = 16 * 1024
 
 _LABEL_RE = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$")
-# Percent-encoded '.', '/', '\' and NUL make path normalization ambiguous
-_UNSAFE_ESCAPE_RE = re.compile(r"%(?:2e|2f|5c|00)", re.IGNORECASE)
+# A percent-encoded NUL has no place in a request target
+_NUL_ESCAPE_RE = re.compile(r"%00")
 _BAD_ESCAPE_RE = re.compile(r"%(?![0-9a-fA-F]{2})")
 _GZIP_ENCODINGS = frozenset(("gzip", "x-gzip"))
 _REDIRECT_STATUSES = frozenset((301, 302, 303, 307, 308))
@@ -67,6 +72,12 @@ class UntrustedURL:
     port: int
     path: str
     ip_literal: IPAddress | None
+    query: str = ""
+
+    @property
+    def request_target(self) -> str:
+        """The path and query, as sent in the request line"""
+        return f"{self.path}?{self.query}" if self.query else self.path
 
     @property
     def host_header(self) -> str:
@@ -105,8 +116,6 @@ def parse_untrusted_url(url: str, max_length: int = DEFAULT_MAX_URL_LENGTH) -> U
         raise InvalidURL("URL is too long")
     if not url.isascii() or any(c <= " " or c == "\x7f" for c in url) or "\\" in url:
         raise InvalidURL("URL contains disallowed characters")
-    if "?" in url:
-        raise InvalidURL("URL must not contain a query")
     if "#" in url:
         raise InvalidURL("URL must not contain a fragment")
     try:
@@ -138,11 +147,17 @@ def parse_untrusted_url(url: str, max_length: int = DEFAULT_MAX_URL_LENGTH) -> U
     path = parts.path or "/"
     if not path.startswith("/"):
         raise InvalidURL("Invalid path")
-    if any(segment in (".", "..") for segment in path.split("/")):
-        raise InvalidURL("URL path must not contain dot segments")
-    if _UNSAFE_ESCAPE_RE.search(path) or _BAD_ESCAPE_RE.search(path):
-        raise InvalidURL("URL path contains unsafe escapes")
-    return UntrustedURL(url=url, hostname=hostname, port=port, path=path, ip_literal=ip_literal)
+    for component in (path, parts.query):
+        if _NUL_ESCAPE_RE.search(component) or _BAD_ESCAPE_RE.search(component):
+            raise InvalidURL("URL contains unsafe escapes")
+    return UntrustedURL(
+        url=url,
+        hostname=hostname,
+        port=port,
+        path=path,
+        ip_literal=ip_literal,
+        query=parts.query,
+    )
 
 
 def _content_encoding(headers: dict[str, str]) -> str | None:
@@ -217,7 +232,8 @@ class UntrustedURLFetcher:
     """Fetch untrusted URLs (for example OAuth client metadata documents or JWKS).
 
     - HTTPS only, with certificate and hostname verification
-    - no credentials, queries, fragments, or dot segments in URLs
+    - no credentials or fragments in URLs (queries are allowed; callers that need a
+      stricter URL shape validate it themselves)
     - redirects are never followed, proxies are never used
     - every resolved address is checked against a `DestinationPolicy` and the
       connection goes to the checked address (no second DNS lookup)
@@ -226,7 +242,7 @@ class UntrustedURLFetcher:
       Connection headers; never cookies, credentials or caller headers
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         *,
         policy: DestinationPolicy | None = None,
@@ -234,6 +250,7 @@ class UntrustedURLFetcher:
         transport: Transport | None = None,
         timeout: float = DEFAULT_TIMEOUT,
         max_concurrency: int = DEFAULT_MAX_CONCURRENCY,
+        dns_concurrency: int = DEFAULT_DNS_CONCURRENCY,
         max_url_length: int = DEFAULT_MAX_URL_LENGTH,
         clock: Callable[[], float] = monotonic,
     ):
@@ -241,7 +258,8 @@ class UntrustedURLFetcher:
         self.timeout = min(max(float(timeout), MIN_TIMEOUT), MAX_TIMEOUT)
         self.max_concurrency = min(max(int(max_concurrency), 1), MAX_CONCURRENCY)
         self.max_url_length = max_url_length
-        self.resolver = resolver or SystemResolver(max_workers=self.max_concurrency)
+        self.dns_concurrency = min(max(int(dns_concurrency), 1), MAX_DNS_CONCURRENCY)
+        self.resolver = resolver or SystemResolver(max_workers=self.dns_concurrency)
         self.transport = transport or HTTPClientTransport()
         self._clock = clock
         self._slots = threading.BoundedSemaphore(self.max_concurrency)
@@ -260,9 +278,14 @@ class UntrustedURLFetcher:
             CONFIG.get_int("untrusted_fetch.max_concurrency", DEFAULT_MAX_CONCURRENCY),
         )
         kwargs.setdefault(
+            "dns_concurrency",
+            CONFIG.get_int("untrusted_fetch.dns_concurrency", DEFAULT_DNS_CONCURRENCY),
+        )
+        kwargs.setdefault(
             "policy",
             DestinationPolicy.from_config_value(
-                CONFIG.get("untrusted_fetch.allowed_private_destinations", [])
+                CONFIG.get("untrusted_fetch.allowed_private_destinations", []),
+                allow_loopback=CONFIG.get_bool("debug"),
             ),
         )
         return cls(**kwargs)
@@ -272,6 +295,9 @@ class UntrustedURLFetcher:
             addresses = [target.ip_literal]
             hostname = None
         else:
+            if not self.policy.single_label_allowed(target.hostname):
+                LOGGER.info("Blocked untrusted fetch destination", host=target.hostname)
+                raise BlockedDestination("Destination not allowed (single_label_host)")
             addresses = self.resolver.resolve(target.hostname, target.port, deadline)
             hostname = target.hostname
         # Every address must pass: a partially poisoned answer is rejected outright
@@ -291,7 +317,7 @@ class UntrustedURLFetcher:
             ("Host", target.host_header),
             ("User-Agent", self._user_agent),
             ("Accept", accept),
-            ("Accept-Encoding", "gzip"),
+            ("Accept-Encoding", "identity"),
             ("Connection", "close"),
         )
 
@@ -312,7 +338,8 @@ class UntrustedURLFetcher:
             raise ValueError("Invalid accept value")
         target = parse_untrusted_url(url, self.max_url_length)
         deadline = Deadline(self.timeout, self._clock)
-        if not self._slots.acquire(timeout=deadline.remaining()):
+        # Fail fast instead of queueing: this is reachable by unauthenticated requests
+        if not self._slots.acquire(timeout=min(SLOT_WAIT, deadline.remaining())):
             raise ConcurrencyLimitExceeded("Too many concurrent fetches")
         try:
             return self._fetch(target, max_bytes, accept, deadline)
@@ -334,7 +361,7 @@ class UntrustedURLFetcher:
                 address=address,
                 hostname=target.hostname,
                 port=target.port,
-                path=target.path,
+                path=target.request_target,
                 headers=headers,
             )
             try:

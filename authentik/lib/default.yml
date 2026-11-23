@@ -65,8 +65,11 @@ untrusted_fetch:
   timeout: 5
   # Maximum concurrent fetches per process
   max_concurrency: 10
+  # Maximum concurrent DNS lookups per process, separate from (and larger than) the fetch limit
+  dns_concurrency: 32
   # Non-public CIDRs or exact hostnames that may be fetched. Loopback, link-local
-  # and cloud metadata addresses are always blocked, even when listed here.
+  # and cloud metadata addresses are always blocked, even when listed here. In debug
+  # mode, loopback addresses (and the name `localhost`) are additionally allowed.
   allowed_private_destinations: []
 
 cache:

@@ -38,6 +38,9 @@ ALWAYS_BLOCKED_NETWORKS: tuple[IPNetwork, ...] = tuple(
     )
 )
 
+# Reachable only when the policy allows loopback (development mode)
+LOOPBACK_NETWORKS: tuple[IPNetwork, ...] = (ip_network("127.0.0.0/8"), ip_network("::1/128"))
+
 # IPv6 prefixes whose last 32 bits are an embedded IPv4 address that the
 # connection effectively reaches. These are judged by the embedded address.
 _EMBEDDED_V4_TRANSLATION_NETWORKS: tuple[IPv6Network, ...] = (
@@ -98,9 +101,12 @@ class DestinationPolicy:
 
     allowed_networks: tuple[IPNetwork, ...] = field(default_factory=tuple)
     allowed_hostnames: frozenset[str] = field(default_factory=frozenset)
+    allow_loopback: bool = False
 
     @classmethod
-    def from_entries(cls, entries: Iterable[str]) -> DestinationPolicy:
+    def from_entries(
+        cls, entries: Iterable[str], *, allow_loopback: bool = False
+    ) -> DestinationPolicy:
         """Build a policy from a list of CIDRs, IP addresses, or hostnames"""
         networks: list[IPNetwork] = []
         hostnames: set[str] = set()
@@ -117,10 +123,14 @@ class DestinationPolicy:
             if "/" in entry or ":" in entry or not entry.isascii():
                 raise DestinationPolicyError(f"Invalid private destination entry: {entry!r}")
             hostnames.add(_normalize_hostname(entry))
-        return cls(allowed_networks=tuple(networks), allowed_hostnames=frozenset(hostnames))
+        return cls(
+            allowed_networks=tuple(networks),
+            allowed_hostnames=frozenset(hostnames),
+            allow_loopback=allow_loopback,
+        )
 
     @classmethod
-    def from_config_value(cls, value: object) -> DestinationPolicy:
+    def from_config_value(cls, value: object, *, allow_loopback: bool = False) -> DestinationPolicy:
         """Build a policy from a config value (a list, or a comma-separated string).
 
         Invalid entries are logged and skipped so that a typo never widens access."""
@@ -140,11 +150,18 @@ class DestinationPolicy:
                 LOGGER.warning("Ignoring invalid private destination entry", error=str(exc))
                 continue
             valid.append(item)
-        return cls.from_entries(valid)
+        return cls.from_entries(valid, allow_loopback=allow_loopback)
 
     def hostname_allowed(self, hostname: str) -> bool:
         """Whether the hostname is listed as a permitted private destination"""
         return _normalize_hostname(hostname) in self.allowed_hostnames
+
+    def single_label_allowed(self, hostname: str) -> bool:
+        """Whether a DNS name may be resolved: it has a dot, or is explicitly allowed"""
+        name = _normalize_hostname(hostname)
+        if "." in name or self.hostname_allowed(name):
+            return True
+        return self.allow_loopback and name == "localhost"
 
     def check(self, address: IPAddress, hostname: str | None = None) -> AddressDecision:
         """Check whether `address` (resolved for `hostname`) may be connected to"""
@@ -154,6 +171,8 @@ class DestinationPolicy:
             embedded = _embedded_ipv4(address)
             if embedded is not None:
                 return self.check(embedded, hostname)
+        if self.allow_loopback and _in_any(address, LOOPBACK_NETWORKS):
+            return AddressDecision(True, "loopback")
         if _in_any(address, ALWAYS_BLOCKED_NETWORKS):
             return AddressDecision(False, "always_blocked")
         if isinstance(address, IPv6Address):
