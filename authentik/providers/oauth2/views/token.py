@@ -24,6 +24,7 @@ from authentik.common.oauth.constants import (
     TOKEN_TYPE_URI_SAML2,
 )
 from authentik.core.middleware import CTX_AUTH_VIA
+from authentik.core.models import UserActivity
 from authentik.events.signals import get_login_event
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
@@ -253,6 +254,12 @@ class TokenView(View):
                 )
             self.params.refresh_token.save()
             response["refresh_token"] = refresh_token.token
+
+        # Refreshes come from the client without a browser session, so check the session
+        # the token was issued from. During impersonation it belongs to the admin.
+        token = self.params.refresh_token
+        if token.session is None or token.session.user_id == token.user_id:
+            UserActivity.objects.record(token.user_id, now)
 
         return response
 

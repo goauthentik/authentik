@@ -37,7 +37,15 @@ export class ActionWizardPage extends WizardPage {
     @property({ attribute: false })
     currentStep?: ActionStateBundle;
 
+    #finished = false;
+
+    public override get canAdvance(): boolean {
+        return this.#finished;
+    }
+
     activeCallback = async (): Promise<void> => {
+        this.#finished = false;
+
         this.states = this.host.actions.map((act, idx) => ({
             action: act,
             state: ActionState.pending,
@@ -50,7 +58,8 @@ export class ActionWizardPage extends WizardPage {
         await this.run();
 
         // Ensure wizard is closable, even when run() failed
-        this.host.valid = true;
+        this.#finished = true;
+        this.host.requestUpdate();
     };
 
     public headline = msg("Apply changes");
@@ -86,8 +95,6 @@ export class ActionWizardPage extends WizardPage {
                 return;
             }
         }
-
-        this.host.valid = true;
 
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {

@@ -9,6 +9,8 @@ from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.test import APITestCase
 
+from authentik.admin.files.manager import get_file_manager
+from authentik.admin.files.usage import FileUsage
 from authentik.core.models import Application, PropertyMapping
 from authentik.core.tests.utils import (
     create_test_admin_user,
@@ -66,6 +68,27 @@ class TestApplicationsAPI(APITestCase):
             self.allowed.get_launch_url(self.user),
             f"https://{self.user.username}-test.test.goauthentik.io/{self.user.username}",
         )
+
+    def test_relative_launch_url(self):
+        """Test launch URL as a path relative to the current host"""
+        self.client.force_login(self.user)
+        url = reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug})
+        for launch_url in ["/app/", "/app/%(username)s?a=b#c"]:
+            with self.subTest(launch_url=launch_url):
+                response = self.client.patch(url, {"meta_launch_url": launch_url})
+                self.assertEqual(response.status_code, 200, response.content)
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.get_launch_url(self.user), f"/app/{self.user.username}?a=b#c")
+        for launch_url in [
+            "//example.com/app/",
+            "/\\example.com/app/",
+            "/app /",
+            "app/",
+            "javascript:alert(1)",
+        ]:
+            with self.subTest(launch_url=launch_url):
+                response = self.client.patch(url, {"meta_launch_url": launch_url})
+                self.assertEqual(response.status_code, 400, response.content)
 
     def test_formatted_launch_url_percent_encoding(self):
         """Only placeholders and `%%` are formatted, percent-encoding is kept as is rather than
@@ -383,6 +406,7 @@ class TestApplicationsAPI(APITestCase):
                 slug=generate_id(),
                 provider=provider,
                 meta_launch_url="https://goauthentik.io",
+                meta_icon=f"{generate_id()}{'-%(theme)s' if index % 3 == 0 else ''}.svg",
             )
             backchannel = SCIMProvider.objects.create(
                 name=generate_id(), url="https://goauthentik.io", token=generate_id()
@@ -410,14 +434,17 @@ class TestApplicationsAPI(APITestCase):
         return response, captured
 
     def _assert_serialized(self, results: list[dict], apps: list[Application]):
-        """`results` are exactly `apps`, with providers serialized as their concrete type and
-        with their applications"""
+        """`results` are exactly `apps`. Icons have the URLs the file manager gives them, and
+        providers are serialized as their concrete type, with their applications"""
         by_slug = {app["slug"]: app for app in results}
         self.assertCountEqual(by_slug, [app.slug for app in apps])
+        files = get_file_manager(FileUsage.MEDIA)
         for app in apps:
             provider = app.provider
             backchannel = SCIMProvider.objects.get(backchannel_application=app)
             data = by_slug[app.slug]
+            self.assertEqual(data["meta_icon_url"], files.file_url(app.meta_icon))
+            self.assertEqual(data["meta_icon_themed_urls"], files.themed_urls(app.meta_icon))
             self.assertEqual(data["provider_obj"]["component"], provider.component)
             self.assertEqual(data["provider_obj"]["assigned_application_slug"], app.slug)
             self.assertEqual(

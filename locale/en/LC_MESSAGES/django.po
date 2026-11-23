@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 00:09+0000\n"
+"POT-Creation-Date: 2026-11-23 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -333,6 +333,12 @@ msgstr ""
 
 #: authentik/common/saml/exceptions.py
 msgid "Failed to verify signature"
+msgstr ""
+
+#: authentik/common/saml/exceptions.py
+msgid ""
+"The ACS URL in the request does not match the ACS URL configured on the "
+"provider."
 msgstr ""
 
 #: authentik/common/saml/parsers/logout_response.py
@@ -1282,6 +1288,104 @@ msgstr ""
 
 #: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
 msgid "Microsoft Intune Connector Certificate Authorities"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Select at least one user type."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Internal service accounts cannot be expired."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Inactivity duration must be positive."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Warning period must be positive."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "A warning period is required for notifications."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Warning period must be shorter than the inactivity duration."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Last login"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Last activity"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Measure inactivity from the last login or successful user activity."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Only expire members of this group (including descendant groups). Leave empty "
+"to apply to every user."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Only expire users of these types. Service accounts are excluded by default."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "How long a user may be inactive before they are expired."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Schedule the offboarding and notify the user this long before they expire. "
+"Leave empty to expire users without warning."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Select which transports should be used to warn the user. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Never expire members of a superuser group."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rule"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rules"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+#, python-format
+msgid ""
+"User %(username)s will be offboarded (%(action)s) on %(scheduled_at)s due to "
+"inactivity"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rule Notification Transport"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rule Notification Transports"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/tasks.py
+msgid "Apply all enabled user expiration rules."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/tasks.py
+msgid "Apply user expiration rule."
 msgstr ""
 
 #: authentik/enterprise/lifecycle/offboarding/actions.py
@@ -3631,6 +3735,13 @@ msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
+"When enabled, the ForceAuthn attribute set by the Service Provider on an "
+"AuthnRequest is ignored and an existing session is used. When disabled, "
+"ForceAuthn requires the user to re-authenticate."
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
 "OAuth2 providers which can exchange their JWTs for a SAML Response of this "
 "provider via token exchange."
 msgstr ""
@@ -3693,6 +3804,13 @@ msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Sessions"
+msgstr ""
+
+#: authentik/providers/saml/processors/authn_request_parser.py
+#, python-brace-format
+msgid ""
+"ACS URL of {request_acs_url} doesn't match Provider ACS URL of "
+"{provider_acs_url}."
 msgstr ""
 
 #: authentik/providers/saml/views/flows.py
@@ -5078,6 +5196,11 @@ msgid "Enforce user verification for WebAuthn devices."
 msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
+msgid ""
+"Additional trusted origins for WebAuthn authentication. Matched exactly."
+msgstr ""
+
+#: authentik/stages/authenticator_validate/models.py
 msgid "Authenticator Validation Stage"
 msgstr ""
 
@@ -5103,6 +5226,10 @@ msgstr ""
 
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Additional trusted origins for WebAuthn registration. Matched exactly."
 msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
@@ -5145,6 +5272,12 @@ msgstr ""
 #: authentik/stages/authenticator_webauthn/tasks.py
 msgid ""
 "Background task to import FIDO Alliance MDS blob and AAGUIDs into database."
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/utils.py
+msgid ""
+"Enter a non-empty origin without whitespace or wildcards. The value 'null' "
+"is not allowed."
 msgstr ""
 
 #: authentik/stages/captcha/models.py
