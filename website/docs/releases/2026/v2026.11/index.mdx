@@ -10,7 +10,7 @@ import APIChanges from "./_api-changes.mdx";
 ## Highlights
 
 - **macOS 27 Platform SSO**: :ak-enterprise The authentik Agent supports Platform SSO on macOS 27, including browser-based sign-in and unlocking the lock screen.
-- **Managed secrets**: :ak-preview Store credentials for providers, sources, and stages as secrets with their own permissions, rotation, and audit trail.
+- **Managed secrets**: :ak-preview Manage and rotate OAuth2/OpenID and Proxy provider secrets under **System** > **Secrets**.
 - **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
 - **Required actions**: :ak-enterprise Require users to complete flows, such as changing their password or setting up an authenticator, before they can continue.
 - **RAC for enrolled devices**: RAC providers connect to devices enrolled through the authentik Agent and sign users in without storing credentials for the device.
@@ -128,30 +128,11 @@ Password devices are excluded from MFA discovery and validation. Their lock stat
 
 ### Credentials move to managed secrets
 
-Credentials that providers, sources, stages, and connectors store are now [managed secrets](../../../sys-mgmt/secrets/index.mdx). The upgrade moves each existing credential into a secret and keeps who can view it, so no action is needed for objects configured in the Admin interface.
+During the upgrade to 2026.11, authentik migrates only the client secrets of OAuth2/OpenID and Proxy providers and the cookie secrets of Proxy providers. It creates a managed secret for each credential, preserving its value and carrying over [role permissions](../../../sys-mgmt/secrets/permissions.mdx#permissions-after-upgrading).
 
-API requests and blueprints must reference a secret by its UUID through a field named after the old credential field with a `_ref` suffix, such as `client_secret_ref`. A request or blueprint that sets the old field fails with a validation error that names the replacement.
+Update OAuth2/OpenID provider API requests and blueprints that set `client_secret` to reference a managed secret through `client_secret_ref`. The API takes the secret's UUID. Blueprints can reference a secret with `!KeyOf` or `!Find`. Requests and blueprints that still set `client_secret` fail with a validation error that names the new field. See [API and blueprints](../../../sys-mgmt/secrets/index.mdx#api-and-blueprints).
 
-| Object                                                                                  | Fields                                                                                              |
-| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| OAuth2/OpenID providers                                                                 | `client_secret_ref`                                                                                 |
-| Proxy providers                                                                         | Not exposed. Rotate or replace the client and cookie secrets under **System** > **Secrets**.        |
-| RADIUS providers                                                                        | `shared_secret_ref`                                                                                 |
-| SCIM providers                                                                          | `token_ref`, `auth_basic_password_ref`                                                              |
-| Google Workspace providers, Google Chrome connectors, Google Chrome Device Trust stages | `credentials_ref`                                                                                   |
-| Microsoft Entra providers                                                               | `client_secret_ref`                                                                                 |
-| LDAP sources                                                                            | `bind_password_ref`                                                                                 |
-| Kerberos sources                                                                        | `sync_password_ref`, `sync_keytab_ref`, `sync_ccache_ref`, `spnego_keytab_ref`, `spnego_ccache_ref` |
-| OAuth sources                                                                           | `consumer_secret_ref`                                                                               |
-| Plex sources                                                                            | `plex_token_ref`                                                                                    |
-| Telegram sources                                                                        | `bot_token_ref`                                                                                     |
-| Duo authenticator setup stages                                                          | `client_secret_ref`, `admin_secret_key_ref`                                                         |
-| SMS authenticator setup stages                                                          | `auth_ref`, `auth_password_ref`                                                                     |
-| Email and email authenticator setup stages                                              | `password_ref`                                                                                      |
-| Captcha stages                                                                          | `private_key_ref`                                                                                   |
-| Fleet connectors                                                                        | `token_ref`                                                                                         |
-| Notification transports                                                                 | `webhook_url_ref`                                                                                   |
-| Kubernetes service connections                                                          | `kubeconfig_ref`                                                                                    |
+Proxy providers manage their own secret references. To rotate or replace their client and cookie secrets, go to **System** > **Secrets**.
 
 ### Multi-tenancy has been removed
 
@@ -188,9 +169,11 @@ Users can now authenticate directly into their macOS devices using a customizabl
 
 ### Managed secrets :ak-preview
 
-Credentials for providers, sources, stages, and connectors are stored as [secrets](../../../sys-mgmt/secrets/index.mdx) under **System** > **Secrets**. A secret is text, a JSON or YAML object, or an uploaded file, and several objects can share one. Viewing a secret's value and replacing or rotating it need separate permissions, and both are recorded in the audit log. Text secrets can be rotated to a generated value from the secret picker in each form.
+authentik 2026.11 starts the [managed secrets](../../../sys-mgmt/secrets/index.mdx) rollout with OAuth2/OpenID and Proxy providers. Other providers, sources, stages, and connectors will move to managed secrets in later releases.
 
-Secret values are stored unencrypted in the database, as these credentials were before.
+Manage secrets under **System** > **Secrets**. You can also create, view, or rotate a client secret from the OAuth2/OpenID provider form. Viewing a secret's value requires its own permission. authentik records each view, replacement, and rotation in the audit log.
+
+authentik stores secret values unencrypted in the database, as it did with these credentials before.
 
 ### Password lockout :ak-enterprise
 
