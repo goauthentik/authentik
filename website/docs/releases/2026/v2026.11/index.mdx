@@ -10,7 +10,7 @@ import APIChanges from "./_api-changes.mdx";
 ## Highlights
 
 - **macOS 27 Platform SSO**: :ak-enterprise The authentik Agent supports Platform SSO on macOS 27, including browser-based sign-in and unlocking the lock screen.
-- **Managed secrets**: :ak-preview Manage and rotate OAuth2/OpenID and Proxy provider secrets under **System** > **Secrets**.
+- **Managed secrets**: :ak-preview Store OAuth2/OpenID and Proxy provider credentials separately from provider settings, with their own permissions and audit history.
 - **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
 - **Required actions**: :ak-enterprise Require users to complete flows, such as changing their password or setting up an authenticator, before they can continue.
 - **RAC for enrolled devices**: RAC providers connect to devices enrolled through the authentik Agent and sign users in without storing credentials for the device.
@@ -128,9 +128,13 @@ Password devices are excluded from MFA discovery and validation. Their lock stat
 
 ### Credentials move to managed secrets
 
-During the upgrade to 2026.11, authentik migrates only the client secrets of OAuth2/OpenID and Proxy providers and the cookie secrets of Proxy providers. It creates a managed secret for each credential, preserving its value and carrying over [role permissions](../../../sys-mgmt/secrets/permissions.mdx#permissions-after-upgrading).
+During the upgrade, authentik moves the client secrets of OAuth2/OpenID and Proxy providers, and the cookie secrets of Proxy providers, into managed secrets. Each secret keeps its value and its [role permissions](../../../sys-mgmt/secrets/permissions.mdx#permissions-after-upgrading).
 
-Update OAuth2/OpenID provider API requests and blueprints that set `client_secret` to reference a managed secret through `client_secret_ref`. The API takes the secret's UUID. Blueprints can reference a secret with `!KeyOf` or `!Find`. Requests and blueprints that still set `client_secret` fail with a validation error that names the new field. See [API and blueprints](../../../sys-mgmt/secrets/index.mdx#api-and-blueprints).
+:::note
+The remaining credentials move to managed secrets in 2027.2.
+:::
+
+OAuth2/OpenID provider API requests and blueprints must set `client_secret_ref` instead of `client_secret`. The API takes the secret's UUID, and blueprints can use `!KeyOf` or `!Find`. Setting `client_secret` fails with a validation error that names the new field. See [API and blueprints](../../../sys-mgmt/secrets/index.mdx#api-and-blueprints).
 
 Proxy providers manage their own secret references. To rotate or replace their client and cookie secrets, go to **System** > **Secrets**.
 
@@ -169,11 +173,9 @@ Users can now authenticate directly into their macOS devices using a customizabl
 
 ### Managed secrets :ak-preview
 
-authentik 2026.11 starts the [managed secrets](../../../sys-mgmt/secrets/index.mdx) rollout with OAuth2/OpenID and Proxy providers. Other providers, sources, stages, and connectors will move to managed secrets in later releases.
+authentik 2026.11 introduces [managed secrets](../../../sys-mgmt/secrets/index.mdx), starting with OAuth2/OpenID and Proxy providers. Manage them under **System** > **Secrets**, or create, view, and rotate a client secret from the OAuth2/OpenID provider form.
 
-Manage secrets under **System** > **Secrets**. You can also create, view, or rotate a client secret from the OAuth2/OpenID provider form. Viewing a secret's value requires its own permission. authentik records each view, replacement, and rotation in the audit log.
-
-authentik stores secret values unencrypted in the database, as it did with these credentials before.
+Viewing a secret's value requires its own permission, and authentik records each view, replacement, and rotation in the audit log. Secret values are stored unencrypted in the database, as these credentials were before.
 
 ### Password lockout :ak-enterprise
 
