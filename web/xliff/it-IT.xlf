@@ -12791,6 +12791,173 @@ doesn't pass when either or both of the selected options are equal or above the 
 <group id="users.revoke-sessions.success" restype="x-gettext-plurals">
 </group>
 <group id="groups.add-user.success" restype="x-gettext-plurals">
+</group>
+<group id="users.add-related.success" restype="x-gettext-plurals">
+</group>
+<group id="lifecycle.review.min-reviewers.single-group" restype="x-gettext-plurals">
+</group>
+<group id="lifecycle.review.min-reviewers.multiple-groups" restype="x-gettext-plurals">
+</group>
+<group id="outposts.health.summary" restype="x-gettext-plurals">
+</group>
+<group id="policies.bound-to.label" restype="x-gettext-plurals">
+</group>
+<group id="request-rules.target-count.label" restype="x-gettext-plurals">
+</group>
+<group id="roles.add-user.success" restype="x-gettext-plurals">
+</group>
+<group id="stages.duo.import.success" restype="x-gettext-plurals">
+</group>
+<group id="invitations.send-email.success" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.user-count" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="user-required-actions.object.label" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.marked-to-add" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.selected" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.marked-to-remove" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.error" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.error" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.error" restype="x-gettext-plurals">
+</group>
+<group id="data-view.summary.item-count" restype="x-gettext-plurals">
+</group>
+<group id="data-view.summary.key-count" restype="x-gettext-plurals">
+</group>
+<group id="table.select-all.aria-label" restype="x-gettext-plurals">
+</group>
+<group id="rac.connection.failed" restype="x-gettext-plurals">
+</group>
+<group id="rac.connection.reconnecting" restype="x-gettext-plurals">
+</group>
+<group id="user.library.application-count.search-result" restype="x-gettext-plurals">
+</group>
+<group id="user.library.application-count.available" restype="x-gettext-plurals">
+</group>
+<group id="notifications.unread-count.label" restype="x-gettext-plurals">
+</group>
+<group id="used-by.count" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.success" restype="x-gettext-plurals">
+</group>
+<group id="groups.add-user.success" restype="x-gettext-plurals">
+</group>
+<group id="users.add-related.success" restype="x-gettext-plurals">
+</group>
+<group id="lifecycle.review.min-reviewers.single-group" restype="x-gettext-plurals">
+</group>
+<group id="lifecycle.review.min-reviewers.multiple-groups" restype="x-gettext-plurals">
+</group>
+<group id="outposts.health.summary" restype="x-gettext-plurals">
+</group>
+<group id="policies.bound-to.label" restype="x-gettext-plurals">
+</group>
+<trans-unit id="sfc131148afd9a048">
+  <source>Ignore ForceAuthn</source>
+</trans-unit>
+<trans-unit id="s90b035d5359923af">
+  <source>When enabled, the ForceAuthn attribute set by the Service Provider is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.</source>
+</trans-unit>
+<group id="request-rules.target-count.label" restype="x-gettext-plurals">
+</group>
+<group id="roles.add-user.success" restype="x-gettext-plurals">
+</group>
+<group id="stages.duo.import.success" restype="x-gettext-plurals">
+</group>
+<trans-unit id="webauthn.additional-origins.label">
+  <source>Additional accepted origins</source>
+</trans-unit>
+<trans-unit id="webauthn.additional-origins.entry.label">
+  <source>Origin</source>
+</trans-unit>
+<trans-unit id="webauthn.additional-origins.description">
+  <source>Additional trusted origins, matched exactly, such as HTTPS or android:apk-key-hash origins. The current request origin is always accepted. Android apps also require externally hosted Digital Asset Links on the relying-party domain.</source>
+</trans-unit>
+<group id="invitations.send-email.success" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.user-count" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="user-required-actions.object.label" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.marked-to-add" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.selected" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.marked-to-remove" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.error" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.error" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.error" restype="x-gettext-plurals">
+</group>
+<group id="data-view.summary.item-count" restype="x-gettext-plurals">
+</group>
+<group id="data-view.summary.key-count" restype="x-gettext-plurals">
+</group>
+<group id="table.select-all.aria-label" restype="x-gettext-plurals">
+</group>
+<group id="rac.connection.failed" restype="x-gettext-plurals">
+</group>
+<group id="rac.connection.reconnecting" restype="x-gettext-plurals">
+</group>
+<group id="user.library.application-count.search-result" restype="x-gettext-plurals">
+</group>
+<group id="user.library.application-count.available" restype="x-gettext-plurals">
+</group>
+<group id="notifications.unread-count.label" restype="x-gettext-plurals">
+</group>
+<group id="used-by.count" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.success" restype="x-gettext-plurals">
+</group>
+<group id="groups.add-user.success" restype="x-gettext-plurals">
   <trans-unit id="groups.add-user.success[0]" xml:space="preserve">
     <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> group.</source>
   </trans-unit>
@@ -12933,6 +13100,9 @@ doesn't pass when either or both of the selected options are equal or above the 
     <source>Required actions</source>
   </trans-unit>
 </group>
+<trans-unit id="user-expiration.event.warning">
+  <source>User will be offboarded due to inactivity</source>
+</trans-unit>
 <group id="dual-select.status.marked-to-add" restype="x-gettext-plurals">
   <trans-unit id="dual-select.status.marked-to-add[0]" xml:space="preserve">
     <source><x id="0" equiv-text="${formattedCount}"/> item marked to add.</source>

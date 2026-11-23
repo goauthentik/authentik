@@ -99,8 +99,12 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
         if not self.crd_exists():
             self.logger.debug("CRD doesn't exist")
             return True
-        if not self.controller.outpost.config.kubernetes_httproute_parent_refs:
-            self.logger.debug("HTTPRoute parentRefs not set.")
+        config = self.controller.outpost.config
+        if (
+            not config.kubernetes_httproute_parent_refs
+            and not config.kubernetes_listenerset_parent_ref
+        ):
+            self.logger.debug("HTTPRoute parentRefs and ListenerSet parentRef not set.")
             return True
         return False
 
@@ -172,6 +176,14 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
             hostnames.append(external_host_name.hostname)
             rules.append(rule)
 
+        parent_refs = [
+            from_dict(RouteSpecParentRefs, spec)
+            for spec in self.controller.outpost.config.kubernetes_httproute_parent_refs
+        ]
+        if self.controller.outpost.config.kubernetes_listenerset_parent_ref:
+            # Routes attached to a Gateway don't attach to its ListenerSets' listeners
+            parent_refs.append(RouteSpecParentRefs(name=self.name, kind="ListenerSet"))
+
         return HTTPRoute(
             apiVersion=f"{self.crd_group}/{self.crd_version}",
             kind="HTTPRoute",
@@ -182,10 +194,7 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
                 labels=self.get_object_meta().labels,
             ),
             spec=HTTPRouteSpec(
-                parentRefs=[
-                    from_dict(RouteSpecParentRefs, spec)
-                    for spec in self.controller.outpost.config.kubernetes_httproute_parent_refs
-                ],
+                parentRefs=parent_refs,
                 hostnames=hostnames,
                 rules=rules,
             ),

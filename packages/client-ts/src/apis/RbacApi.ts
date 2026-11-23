@@ -2321,7 +2321,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get a role's assigned object permissions
+     * Get a role\'s assigned object permissions
      */
     async rbacPermissionsRolesListRaw(
         requestParameters: RbacPermissionsRolesListRequest,
@@ -2336,7 +2336,7 @@ export class RbacApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get a role's assigned object permissions
+     * Get a role\'s assigned object permissions
      */
     async rbacPermissionsRolesList(
         requestParameters: RbacPermissionsRolesListRequest = {},

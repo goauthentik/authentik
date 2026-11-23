@@ -2682,7 +2682,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider's sync status
+     * Get provider\'s sync status
      */
     async providersGoogleWorkspaceSyncStatusRetrieveRaw(
         requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
@@ -2696,7 +2696,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider's sync status
+     * Get provider\'s sync status
      */
     async providersGoogleWorkspaceSyncStatusRetrieve(
         requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
@@ -4530,7 +4530,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider's sync status
+     * Get provider\'s sync status
      */
     async providersMicrosoftEntraSyncStatusRetrieveRaw(
         requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
@@ -4544,7 +4544,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider's sync status
+     * Get provider\'s sync status
      */
     async providersMicrosoftEntraSyncStatusRetrieve(
         requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
@@ -9262,7 +9262,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider's sync status
+     * Get provider\'s sync status
      */
     async providersScimSyncStatusRetrieveRaw(
         requestParameters: ProvidersScimSyncStatusRetrieveRequest,
@@ -9276,7 +9276,7 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider's sync status
+     * Get provider\'s sync status
      */
     async providersScimSyncStatusRetrieve(
         requestParameters: ProvidersScimSyncStatusRetrieveRequest,
