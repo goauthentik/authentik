@@ -18,8 +18,6 @@ export class FormWizardPage<S extends WizardPageState = WizardPageState> extends
     };
 
     public override activeCallback = async () => {
-        this.host.valid = true;
-
         this.activePageCallback(this);
     };
 

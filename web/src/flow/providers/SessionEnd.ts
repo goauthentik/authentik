@@ -1,6 +1,7 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
+import { WithBrandConfig } from "#elements/mixins/branding";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { FlowUserDetails } from "#flow/FormStatic";
@@ -19,17 +20,17 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-session-end")
-export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
+export class SessionEnd extends WithBrandConfig(BaseStage<SessionEndChallenge, unknown>) {
     static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
 
     getText(challenge: SessionEndChallenge) {
         if (challenge.overviewUrl && challenge.invalidationFlowUrl) {
             return msg(
-                str`You've logged out of ${challenge.applicationName}. You can go back to the overview to launch another application, or log out of your authentik account.`,
+                str`You've logged out of ${challenge.applicationName}. You can go back to the overview to launch another application, or log out of your ${this.brandingTitle} account.`,
             );
         } else if (challenge.invalidationFlowUrl) {
             return msg(
-                str`You've logged out of ${challenge.applicationName}. You can log out of your authentik account.`,
+                str`You've logged out of ${challenge.applicationName}. You can log out of your ${this.brandingTitle} account.`,
             );
         }
         return msg(str`You've logged out of ${challenge.applicationName}.`);

@@ -23,6 +23,15 @@ import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-gro
 const logger = ConsoleLogger.prefix("messages");
 
 /**
+ * Finds the message container shown to the user: the topmost open dialog's, or the page's.
+ *
+ * @param ownerDocument The document to query. Defaults to the global document.
+ */
+export function findMessageContainer(ownerDocument = document): MessageContainer | null {
+    return findTopmost(ownerDocument).querySelector<MessageContainer>("ak-message-container");
+}
+
+/**
  * Adds a message to the message container, displaying it to the user.
  *
  * @param message The message to display.
@@ -42,9 +51,7 @@ export function showMessage(message: APIMessage | null, unique: boolean = false)
         message.description ??= msg("Please check the browser console for more details.");
     }
 
-    const topmost = findTopmost();
-
-    const container = topmost.querySelector<MessageContainer>("ak-message-container");
+    const container = findMessageContainer();
 
     if (!container) {
         logger.warn("authentik/messages: No message container found in DOM");
@@ -117,17 +124,6 @@ export class MessageContainer extends AKElement {
     public alignment: MessageContainerAlignment = "bottom-left";
 
     static styles: CSSResult[] = [PFAlertGroup, Styles];
-
-    constructor() {
-        super();
-
-        // Note: This seems to be susceptible to race conditions.
-        // Events are dispatched regardless if the message container is listening.
-
-        window.addEventListener("ak-message", (event) => {
-            this.addMessage(event.message);
-        });
-    }
 
     public override connectedCallback(): void {
         super.connectedCallback();
