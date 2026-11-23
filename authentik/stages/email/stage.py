@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from django.utils.translation import override
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 
@@ -117,10 +118,13 @@ class EmailStageView(ChallengeStageView):
         token = self.get_token()
         # Send mail to user
         try:
+            language = pending_user.locale(self.request)
+            with override(language):
+                subject = _(current_stage.subject)
             message = TemplateEmailMessage(
-                subject=_(current_stage.subject),
+                subject=subject,
                 to=[(pending_user.name, email)],
-                language=pending_user.locale(self.request),
+                language=language,
                 template_name=current_stage.template,
                 template_context={
                     "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),

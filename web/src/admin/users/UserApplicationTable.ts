@@ -1,4 +1,6 @@
 import "#elements/AppIcon";
+import "#elements/forms/ModalForm";
+import "#admin/applications/ApplicationForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
@@ -7,7 +9,7 @@ import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { applicationListStyle } from "#admin/applications/ApplicationListPage";
+import Styles from "#admin/applications/ApplicationListPage.css";
 
 import { Application, CoreApi, User } from "@goauthentik/api";
 
@@ -20,7 +22,7 @@ export class UserApplicationTable extends Table<Application> {
     @property({ attribute: false })
     user?: User;
 
-    static styles: CSSResult[] = [...super.styles, applicationListStyle];
+    static styles: CSSResult[] = [...super.styles, Styles];
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return aki(CoreApi).coreApplicationsAccessibleList({

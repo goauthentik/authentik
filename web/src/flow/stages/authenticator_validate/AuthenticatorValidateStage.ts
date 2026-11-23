@@ -14,7 +14,10 @@ import { aki } from "#common/api/client";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
-import { shouldResetSelectedChallenge } from "#flow/stages/authenticator_validate/challenge-selection";
+import {
+    requiresSelectionNotification,
+    shouldResetSelectedChallenge,
+} from "#flow/stages/authenticator_validate/challenge-selection";
 import { BaseStage } from "#flow/stages/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
 import type { StageHost, SubmitOptions } from "#flow/types";
@@ -145,10 +148,14 @@ export class AuthenticatorValidateStage
             return;
         }
 
+        value.lastUsed ??= new Date();
+
+        if (!requiresSelectionNotification(value)) {
+            return;
+        }
+
         const component = (this.challenge?.component ||
             "") as unknown as "ak-stage-authenticator-validate";
-
-        value.lastUsed ??= new Date();
 
         const flowChallengeResponseRequest = {
             component,

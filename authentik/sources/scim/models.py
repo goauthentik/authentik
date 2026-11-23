@@ -29,7 +29,7 @@ class SCIMSource(Source):
 
     @property
     def icon_url(self) -> str:
-        return static("authentik/sources/scim.png")
+        return static("authentik/sources/scim/light.svg")
 
     @property
     def serializer(self) -> BaseSerializer:

@@ -147,6 +147,7 @@ class PromptChallengeResponse(ChallengeResponse):
             self._validate_password_fields(*[field.field_key for field in password_fields])
 
         engine = PromptValidationPolicyEngine(
+            self.stage_instance,
             self.stage_instance.validation_policies.all(),
             self.stage.get_pending_user(),
             self.request,
@@ -195,8 +196,16 @@ def password_single_validator_factory() -> Callable[[PromptChallengeResponse, st
 class PromptValidationPolicyEngine(PolicyEngine):
     """Slightly modified policy engine, which uses a list instead of a PolicyBindingModel"""
 
-    def __init__(self, policies: list[Policy], user: User, request: HttpRequest = None) -> None:
-        super().__init__(PolicyBindingModel(), user, request)
+    def __init__(
+        self,
+        stage: PromptStage,
+        policies: list[Policy],
+        user: User,
+        request: HttpRequest = None,
+    ) -> None:
+        # Use the stage's primary key so that the engine's metric labels (obj_pk)
+        # are stable per stage instead of a random UUID per submission
+        super().__init__(PolicyBindingModel(pbm_uuid=stage.pk), user, request)
         self.__list = policies
         self.use_cache = False
 

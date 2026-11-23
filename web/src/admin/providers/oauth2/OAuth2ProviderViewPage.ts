@@ -6,7 +6,7 @@ import "#admin/providers/RelatedApplicationButton";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";

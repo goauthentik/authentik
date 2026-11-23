@@ -55,11 +55,16 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                 );
                 break;
             case LicenseSummaryStatusEnum.Expired:
-                message = msg("Warning: One or more license(s) have expired.");
+                message = msg("Warning: One or more licenses have expired.", {
+                    id: "enterprise.license.banner.expired",
+                });
                 break;
             case LicenseSummaryStatusEnum.ExpirySoon:
                 message = msg(
-                    "Warning: One or more license(s) will expire within the next 2 weeks.",
+                    "Warning: One or more licenses will expire within the next 2 weeks.",
+                    {
+                        id: "enterprise.license.banner.expiry-soon",
+                    },
                 );
                 break;
             case LicenseSummaryStatusEnum.ReadOnly:

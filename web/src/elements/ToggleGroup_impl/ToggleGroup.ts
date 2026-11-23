@@ -39,15 +39,17 @@ export class ToggleGroup extends FormAssociatedElement<string> {
      *
      * @attr
      */
-
     @property({ type: String })
-    value = "";
+    public value = "";
 
     @property({ type: Boolean, reflect: true })
-    multi = false;
+    public multi = false;
 
     @property({ type: String })
-    separator = ",";
+    public separator = ",";
+
+    @property({ type: Boolean })
+    public compact = false;
 
     protected optionsObserver: MutationObserver | null = null;
 

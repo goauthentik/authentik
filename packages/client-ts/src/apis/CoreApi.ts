@@ -180,7 +180,7 @@ export interface CoreApplicationEntitlementsListRequest {
      * Entitlements assigned to this user, directly or through a group, regardless of the user's
      * access to the application.
      */
-    forUser?: string;
+    forUser?: number;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -215,7 +215,7 @@ export interface CoreApplicationEntitlementsRequestableListRequest {
      * Entitlements assigned to this user, directly or through a group, regardless of the user's
      * access to the application.
      */
-    forUser?: string;
+    forUser?: number;
     name?: string;
     /**
      * Which field to use when ordering the results.
@@ -6473,10 +6473,10 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Set a user's password from a pre-hashed Django password value. Submit the Django password
-     * hash in the shared `password` request field. This updates authentik's local password verifier
-     * only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw
-     * password is available from the request payload.
+     * Set a user\'s password from a pre-hashed Django password value. Submit the Django password
+     * hash in the shared `password` request field. This updates authentik\'s local password
+     * verifier only. It does not attempt to propagate the password change to LDAP or Kerberos
+     * because no raw password is available from the request payload.
      */
     async coreUsersSetPasswordHashCreateRaw(
         requestParameters: CoreUsersSetPasswordHashCreateRequest,
@@ -6490,10 +6490,10 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Set a user's password from a pre-hashed Django password value. Submit the Django password
-     * hash in the shared `password` request field. This updates authentik's local password verifier
-     * only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw
-     * password is available from the request payload.
+     * Set a user\'s password from a pre-hashed Django password value. Submit the Django password
+     * hash in the shared `password` request field. This updates authentik\'s local password
+     * verifier only. It does not attempt to propagate the password change to LDAP or Kerberos
+     * because no raw password is available from the request payload.
      */
     async coreUsersSetPasswordHashCreate(
         requestParameters: CoreUsersSetPasswordHashCreateRequest,

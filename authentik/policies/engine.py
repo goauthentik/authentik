@@ -386,7 +386,14 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
         service accounts can be actors, so the scan is a cheap, targeted query, and parents that
         are shared across actors are evaluated once.
         """
-        for actor in self.__original_users.filter(type__in=_ACTOR_USER_TYPES):
+        actors = Actor.objects.filter(
+            pk__in=self.__original_users.filter(type__in=_ACTOR_USER_TYPES).values("pk"),
+            policy_behavior=ActorPolicyInheritance.MIRROR,
+            parent_id__isnull=False,
+        ).select_related("parent")
+        for actor in actors:
+            # Seed the per-instance memo that _get_mirror_parent() uses
+            actor.__dict__["_actor"] = actor
             effective = effective_policy_user(actor)
             if effective.pk != actor.pk:
                 self.__mirror_of[actor.pk] = effective

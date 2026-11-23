@@ -164,7 +164,7 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/azuread.svg")
+        return static("authentik/sources/azuread/light.svg")
 
     @property
     def component(self) -> str:

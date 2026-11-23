@@ -171,6 +171,7 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "ActivityBasisEnum": "authentik.enterprise.lifecycle.expiration.models.ActivityBasis",
         "AppEnum": "authentik.lib.api.Apps",
         "AuthenticationEnum": "authentik.flows.models.FlowAuthenticationRequirement",
         "ClientTypeEnum": "authentik.providers.oauth2.models.ClientType",
@@ -304,6 +305,7 @@ MIDDLEWARE = [
     "authentik.core.middleware.ImpersonateMiddleware",
     "authentik.core.middleware.LocaleOverrideMiddleware",
     "authentik.rbac.middleware.InitialPermissionsMiddleware",
+    "authentik.rbac.middleware.AlterResponseMiddleware",
 ]
 MIDDLEWARE_LAST = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",
@@ -584,9 +586,9 @@ try:
 except ImportError:
     pass
 
-
 if DEBUG:
     INSTALLED_APPS.insert(INSTALLED_APPS.index("django.contrib.staticfiles"), "daphne")
+    INSTALLED_APPS.append("django_migration_linter")
     from xmlsec import enable_debug_trace
 
     enable_debug_trace(True)

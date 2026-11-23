@@ -1,5 +1,6 @@
 """Tests for the FailoverRouter and the direct database alias."""
 
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from django.db import DEFAULT_DB_ALIAS
@@ -56,3 +57,18 @@ class TestFailoverRouter(TestCase):
         """Writes never go to the direct alias even when it's configured."""
         router = self._router_with_databases(DEFAULT_DB_ALIAS, DIRECT_DB_ALIAS, "replica_0")
         self.assertEqual(router.db_for_write(None), DEFAULT_DB_ALIAS)
+
+    def test_db_for_read_follows_instance(self):
+        """An instance's related objects are read from the database the instance came from,
+        unless that is the direct alias."""
+        router = self._router_with_databases(
+            DEFAULT_DB_ALIAS, DIRECT_DB_ALIAS, "replica_0", "replica_1"
+        )
+        with patch("authentik.root.db.router.connections") as connections:
+            connections.__getitem__.return_value.in_atomic_block = False
+            for alias in (DEFAULT_DB_ALIAS, "replica_0", "replica_1"):
+                instance = SimpleNamespace(_state=SimpleNamespace(db=alias))
+                self.assertEqual(router.db_for_read(None, instance=instance), alias)
+            instance = SimpleNamespace(_state=SimpleNamespace(db=DIRECT_DB_ALIAS))
+            self.assertIn(router.db_for_read(None, instance=instance), router.read_replica_aliases)
+            self.assertIn(router.db_for_read(None), router.read_replica_aliases)

@@ -1,6 +1,5 @@
 """RBAC Roles"""
 
-from django.contrib.auth.models import Permission
 from django.http import Http404
 from django_filters.filters import AllValuesMultipleFilter, BooleanFilter, CharFilter, NumberFilter
 from django_filters.filterset import FilterSet
@@ -9,7 +8,6 @@ from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import (
-    ChoiceField,
     IntegerField,
     ListField,
 )
@@ -23,8 +21,9 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
+from authentik.rbac.api.rbac import PermissionField
 from authentik.rbac.decorators import permission_required
-from authentik.rbac.models import Role, get_permission_choices
+from authentik.rbac.models import Role
 
 
 class RoleSerializer(ManagedSerializer, ModelSerializer):
@@ -33,30 +32,18 @@ class RoleSerializer(ManagedSerializer, ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            self.fields["permissions"] = ListField(
-                required=False, child=ChoiceField(choices=get_permission_choices())
-            )
+            self.fields["permissions"] = ListField(required=False, child=PermissionField())
 
     def create(self, validated_data: dict) -> Role:
-        perms_qs = Permission.objects.filter(
-            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        ).values_list("content_type__app_label", "codename")
-        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
-
+        permissions = validated_data.pop("permissions", [])
         instance: Role = super().create(validated_data)
-        instance.assign_perms(perms_list)
-
+        instance.assign_perms(permissions)
         return instance
 
     def update(self, instance: Role, validated_data: dict) -> Role:
-        perms_qs = Permission.objects.filter(
-            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        ).values_list("content_type__app_label", "codename")
-        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
-
+        permissions = validated_data.pop("permissions", [])
         instance: Role = super().update(instance, validated_data)
-        instance.assign_perms(perms_list)
-
+        instance.assign_perms(permissions)
         return instance
 
     class Meta:

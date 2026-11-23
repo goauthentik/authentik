@@ -17,6 +17,7 @@ from authentik.enterprise.providers.ssf.models import (
     Stream,
     StreamEvent,
 )
+from authentik.events.middleware import audit_ignore
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
@@ -191,3 +192,38 @@ class TestSignals(APITestCase):
             stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE
         ).first()
         self.assertIsNone(event)
+
+    def test_signal_authenticator_audit_ignore(self):
+        """Test device updates during authentication (audit_ignore) don't emit events"""
+        user = create_test_user()
+        self.client.force_login(user)
+        dev = WebAuthnDevice.objects.create(
+            user=user,
+            name=generate_id(),
+            credential_id=generate_id(),
+            public_key=generate_id(),
+            aaguid=str(uuid4()),
+        )
+        stream = Stream.objects.filter(provider=self.provider).first()
+        self.assertIsNotNone(stream)
+        StreamEvent.objects.all().delete()
+
+        with audit_ignore():
+            dev.sign_count += 1
+            dev.save()
+        self.assertFalse(
+            StreamEvent.objects.filter(
+                stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE
+            ).exists()
+        )
+
+        dev.name = generate_id()
+        dev.save()
+        event = StreamEvent.objects.filter(
+            stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE
+        ).first()
+        self.assertIsNotNone(event)
+        event_payload = event.payload["events"][
+            "https://schemas.openid.net/secevent/caep/event-type/credential-change"
+        ]
+        self.assertEqual(event_payload["change_type"], "update")

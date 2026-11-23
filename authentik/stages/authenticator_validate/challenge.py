@@ -9,7 +9,6 @@ from django.db import transaction
 from django.http import HttpRequest
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField, ChoiceField, DateTimeField
 from rest_framework.serializers import ValidationError
@@ -46,12 +45,13 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 from authentik.stages.authenticator_webauthn.algorithms import credential_key_type
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
-from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.authenticator_webauthn.utils import get_expected_origins, get_rp_id
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
-LOGGER = get_logger()
 if TYPE_CHECKING:
     from authentik.stages.authenticator_validate.stage import AuthenticatorValidateStageView
+
+LOGGER = get_logger()
 
 
 class DeviceChallenge(PassiveSerializer):
@@ -80,9 +80,9 @@ def get_webauthn_challenge_without_user(
 ) -> dict:
     """Same as `get_webauthn_challenge`, but allows any client device. We can then later check
     who the device belongs to."""
-    stage_view.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(stage_view.request),
+        challenge=stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE),
         allow_credentials=[],
         user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
@@ -102,8 +102,6 @@ def get_webauthn_challenge(
     device: WebAuthnDevice | None = None,
 ) -> dict:
     """Send the client a challenge that we'll check later"""
-    stage_view.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
-
     allowed_credentials = []
 
     if device:
@@ -114,6 +112,7 @@ def get_webauthn_challenge(
 
     authentication_options = generate_authentication_options(
         rp_id=get_rp_id(stage_view.request),
+        challenge=stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE),
         allow_credentials=allowed_credentials,
         user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
@@ -255,10 +254,8 @@ def validate_challenge_webauthn(
         and not stage.webauthn_allowed_device_types.filter(pk=device.device_type.pk).exists()
     ):
         raise ValidationError(
-            _(
-                "Invalid device type. Contact your {brand} administrator for help.".format(
-                    brand=stage_view.request.brand.branding_title
-                )
+            _("Invalid device type. Contact your {brand} administrator for help.").format(
+                brand=stage_view.request.brand.branding_title
             ),
             "invalid",
         )
@@ -267,13 +264,15 @@ def validate_challenge_webauthn(
             credential=credential,
             expected_challenge=challenge,
             expected_rp_id=get_rp_id(request),
-            expected_origin=get_origin(request),
+            expected_origin=get_expected_origins(
+                request, stage.webauthn_additional_accepted_origins
+            ),
             credential_public_key=base64url_to_bytes(device.public_key),
             credential_current_sign_count=device.sign_count,
             require_user_verification=stage.webauthn_user_verification == UserVerification.REQUIRED,
         )
     except (WebAuthnException, ValueError, InternalError, UnsupportedAlgorithm) as exc:
-        error = __("Assertion failed")
+        error = _("Assertion failed")
         event_context = {}
         if isinstance(
             exc,
@@ -303,7 +302,7 @@ def validate_challenge_webauthn(
             )
             # The user gets a generic error; the details are for administrators in the log and
             # event. Event context keys containing "key" are masked, hence "algorithm".
-            error = __("Invalid security key. Please re-register or contact an administrator.")
+            error = _("Invalid security key. Please re-register or contact an administrator.")
             event_context = {"message": detail, "algorithm": key_type, "fips_enabled": fips_enabled}
         else:
             LOGGER.warning("Assertion failed", exc=exc)
@@ -323,6 +322,9 @@ def validate_challenge_webauthn(
         )
         raise ValidationError(error) from exc
 
+    # Challenges are single-use. The generators reuse a pending challenge until an assertion
+    # verifies, so consume it here for every caller before accepting another assertion.
+    stage_view.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
     with audit_ignore():
         device.set_sign_count(authentication_verification.new_sign_count)
     return device
@@ -338,10 +340,10 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
 
     # Get additional context for push
     pushinfo = {
-        __("Domain"): stage_view.request.get_host(),
+        str(_("Domain")): stage_view.request.get_host(),
     }
     if PLAN_CONTEXT_APPLICATION in stage_view.executor.plan.context:
-        pushinfo[__("Application")] = stage_view.executor.plan.context.get(
+        pushinfo[str(_("Application"))] = stage_view.executor.plan.context.get(
             PLAN_CONTEXT_APPLICATION, Application()
         ).name
 
@@ -350,12 +352,8 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
             "auto",
             user_id=device.duo_user_id,
             ipaddr=ClientIPMiddleware.get_client_ip(stage_view.request),
-            type=__(
-                "{brand_name} Login request".format_map(
-                    {
-                        "brand_name": stage_view.request.brand.branding_title,
-                    }
-                )
+            type=_("{brand_name} Login request").format(
+                brand_name=stage_view.request.brand.branding_title
             ),
             display_username=user.username,
             device="auto",
