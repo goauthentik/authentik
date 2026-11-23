@@ -3,6 +3,7 @@
 from collections import OrderedDict
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Prefetch
 from django_filters.filters import BooleanFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from rest_framework.exceptions import ValidationError
@@ -37,8 +38,11 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
             self.fail("incorrect_type", data_type=type(data).__name__)
 
     def to_representation(self, value):
-        correct_model = PolicyBindingModel.objects.get_subclass(pbm_uuid=value.pbm_uuid)
-        return correct_model.pk
+        # Other callers can still supply a base object via select_related("target").
+        # Its primary key is not necessarily the concrete target's primary key.
+        if type(value) is PolicyBindingModel:
+            value = PolicyBindingModel.objects.get_subclass(pbm_uuid=value.pbm_uuid)
+        return value.pk
 
 
 class PolicyBindingSerializer(ModelSerializer):
@@ -118,9 +122,12 @@ class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
 
     queryset = (
         PolicyBinding.objects.all()
-        .select_related("target", "group", "user")
-        .prefetch_related("policy")
-    )  # prefetching policy so we resolve the subclass
+        .select_related("group", "user")
+        .prefetch_related(
+            "policy",
+            Prefetch("target", queryset=PolicyBindingModel.objects.select_subclasses()),
+        )
+    )  # Prefetch policy and target so we resolve their subclasses.
     serializer_class = PolicyBindingSerializer
     search_fields = ["policy__name"]
     filterset_class = PolicyBindingFilter
