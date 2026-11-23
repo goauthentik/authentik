@@ -198,6 +198,7 @@ export class RelatedRoleTable extends Table<Role> {
 
         return renderModal(
             html`<ak-add-related-role-form .user=${this.targetUser}></ak-add-related-role-form>`,
+            { invokerElement: this },
         );
     };
 

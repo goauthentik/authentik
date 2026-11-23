@@ -388,6 +388,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return renderModal(
             html`${banner}<ak-add-related-user-form .targetGroup=${this.targetGroup}>
                 </ak-add-related-user-form>`,
+            { invokerElement: this },
         );
     };
 
@@ -395,6 +396,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return renderModal(
             html`<ak-add-related-user-form .targetRole=${this.targetRole}>
             </ak-add-related-user-form>`,
+            { invokerElement: this },
         );
     };
 
@@ -410,6 +412,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     .targetGroup=${this.targetGroup}
                     headline=${msg("New Group User")}
                 ></ak-user-form>`,
+            { invokerElement: this },
         );
     };
 
@@ -425,6 +428,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     .targetRole=${this.targetRole}
                     headline=${msg("New Role User")}
                 ></ak-user-form>`,
+            { invokerElement: this },
         );
     };
 
@@ -441,6 +445,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 ></ak-user-service-account-form>`,
             {
                 closedBy: "none",
+                invokerElement: this,
             },
         );
     };
