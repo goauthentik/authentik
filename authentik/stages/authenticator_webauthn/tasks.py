@@ -1,14 +1,19 @@
 """MDS Helpers"""
 
+from base64 import b64decode
 from functools import lru_cache
 from json import loads
 from pathlib import Path
 
+from cryptography import x509
 from django.core.cache import cache
 from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
-from fido2.mds3 import filter_revoked, parse_blob
+from fido2.attestation import verify_x509_chain
+from fido2.cose import CoseKey
+from fido2.mds3 import MetadataBlobPayload, filter_revoked
+from fido2.utils import websafe_decode
 
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
@@ -29,12 +34,39 @@ def mds_ca() -> bytes:
         return _raw_root.read()
 
 
+# fido2 requires these, but the FIDO Alliance publishes some statements without them.
+MDS_STATEMENT_LIST_DEFAULTS = ("userVerificationDetails", "attachmentHint")
+
+
+def parse_mds_blob(blob: bytes, trust_root: bytes) -> MetadataBlobPayload:
+    """Verify an MDS3 blob's signature and parse it, tolerating statements without
+    `userVerificationDetails` or `attachmentHint`."""
+    message, signature_b64 = blob.rsplit(b".", 1)
+    header, payload = (loads(websafe_decode(part)) for part in message.split(b"."))
+
+    chain = [b64decode(cert) for cert in header.get("x5c", [])] + [trust_root]
+    verify_x509_chain(chain)
+    leaf = x509.load_der_x509_certificate(chain[0])
+    public_key = CoseKey.for_name(header["alg"]).from_cryptography_key(leaf.public_key())
+    public_key.verify(message, websafe_decode(signature_b64))
+
+    for entry in payload.get("entries", []):
+        statement = entry.get("metadataStatement")
+        if statement is None:
+            continue
+        for key in MDS_STATEMENT_LIST_DEFAULTS:
+            if statement.get(key) is None:
+                statement[key] = []
+
+    return MetadataBlobPayload.from_dict(payload)
+
+
 @actor(description=_("Background task to import FIDO Alliance MDS blob and AAGUIDs into database."))
 def webauthn_mds_import(force=False):
     """Background task to import FIDO Alliance MDS blob and AAGUIDs into database"""
     self = CurrentTask.get_task()
     with open(MDS_BLOB_PATH, mode="rb") as _raw_blob:
-        blob = parse_blob(_raw_blob.read(), mds_ca())
+        blob = parse_mds_blob(_raw_blob.read(), mds_ca())
     to_create_update = [
         WebAuthnDeviceType(
             aaguid=UNKNOWN_DEVICE_TYPE_AAGUID,
