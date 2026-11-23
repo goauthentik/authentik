@@ -20,7 +20,7 @@ catalog:
   "@vitest/browser": "^5.1.1"
   "@vitest/browser-playwright": "^5.1.1"
   esbuild: "^0.28.2"
-  oxfmt: "0.78.0"
+  oxfmt: "0.79.0"
   oxlint: "^1.94.0"
   playwright: "^1.65.1"
   typescript: "^6.0.3"

@@ -34,7 +34,7 @@
         "react-before-after-slider-component": "^1.1.8",
         "react-dom": "^19.3.1",
         "typescript": "catalog:",
-        "unist-util-visit": "^5.1.0"
+        "unist-util-visit": "^5.2.0"
     },
     "engines": {
         "node": "^24.22.3 || >=26.13.1"
