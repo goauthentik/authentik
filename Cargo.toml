@@ -150,7 +150,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "local-time",
   "tracing-log",
 ] }
-url = "= 2.5.8"
+url = "= 2.5.9"
 uuid = { version = "= 1.24.0", features = ["serde", "v4"] }
 
 ak-axum = { package = "authentik-axum", version = "2026.8.6", path = "./packages/ak-axum" }
