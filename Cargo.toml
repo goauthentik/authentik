@@ -81,7 +81,7 @@ rcgen = { version = "= 0.14.10", default-features = false, features = [
   "aws_lc_rs",
   "fips",
 ] }
-regex = "= 1.13.1"
+regex = "= 1.13.2"
 reqwest = { version = "= 0.13.5", features = [
   "form",
   "json",
