@@ -821,6 +821,14 @@ Allows configuration of TLS Ciphers for LDAP connections used by LDAP sources. S
 
 Defaults to `null`.
 
+### `AUTHENTIK_PROVIDERS__OAUTH2__TRUSTED_ISSUER_ORIGINS`:ak-version[2026.11]
+
+List of comma-separated origins (`scheme://host[:port]`, without a path), for example `https://authentik.company`, that OAuth 2.0 provider issuers may be built from when authentik checks a token's audience, such as an ID-JAG or a client assertion. A request sent to any other origin fails these checks. Entries that aren't origins are ignored.
+
+When empty, authentik trusts a host that matches the domain of a brand, and refuses a host that only reaches the default brand as the fallback. For more information, see [Issuer in audience checks](../../add-secure-apps/providers/oauth2/index.mdx#issuer-in-audience-checks).
+
+Defaults to an empty list.
+
 ### `AUTHENTIK_REPUTATION__EXPIRY`
 
 Configure how long reputation scores should be saved for in seconds.
