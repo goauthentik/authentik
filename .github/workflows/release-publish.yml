@@ -167,7 +167,7 @@ jobs:
           container=$(docker container create "$image")
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
-        uses: getsentry/action-release@d55c8c3b7375607e972b710f12926b676d89d7d2 # v3
+        uses: getsentry/action-release@2e505a70ff06dac263413242aa3617fec90134e5 # v3
         continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
