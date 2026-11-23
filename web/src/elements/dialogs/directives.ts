@@ -78,7 +78,7 @@ export class ModalInvokerDirective extends Directive {
                     props as unknown as LitPropertyRecord<ModelFormLikeConstructor>,
                 );
             },
-            { ...options, invokerElement: part.element },
+            options,
         );
 
         part.element.addEventListener("click", listener);
