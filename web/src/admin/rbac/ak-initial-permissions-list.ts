@@ -37,7 +37,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
 
     public override pageTitle = msg("Initial Permissions");
     public override pageDescription = msg("Set initial permissions for newly created objects.");
-    public override pageIcon = "fa fa-lock";
+    public override pageIcon = "fa fa-lock-open";
 
     public override order = "name";
 
