@@ -126,17 +126,19 @@ Expressions can still read `user.password` and `user.password_change_date`. Expr
 
 Password devices are excluded from MFA discovery and validation. Their lock state can be managed through the [password authenticator API](../../../add-secure-apps/flows-stages/stages/password/index.mdx#manage-locks-through-the-api).
 
-### Credentials move to managed secrets
+### OAuth2/OpenID and Proxy provider credentials are now managed secrets
 
-During the upgrade, authentik moves the client secrets of OAuth2/OpenID and Proxy providers, and the cookie secrets of Proxy providers, into managed secrets. Each secret keeps its value and its [role permissions](../../../sys-mgmt/secrets/permissions.mdx#permissions-after-upgrading).
+Starting with authentik 2026.11, OAuth2/OpenID and Proxy providers store their credentials as [managed secrets](../../../sys-mgmt/secrets/index.mdx) instead of as provider fields. During the upgrade, authentik turns the client secret of each OAuth2/OpenID and Proxy provider, and the cookie secret of each Proxy provider, into a managed secret with the same value.
+
+Roles that could view or change a provider can view its secrets after the upgrade, and roles that could read a client secret through the API can still read its value. No role can change or rotate the migrated secrets until you grant it those permissions. Refer to [Permissions after upgrading](../../../sys-mgmt/secrets/permissions.mdx#permissions-after-upgrading) for details.
 
 :::note
-The remaining credentials move to managed secrets in 2027.2.
+The remaining credentials of providers, sources, stages, and connectors will move to managed secrets in authentik 2027.2.
 :::
 
-OAuth2/OpenID provider API requests and blueprints must set `client_secret_ref` instead of `client_secret`. The API takes the secret's UUID, and blueprints can use `!KeyOf` or `!Find`. Setting `client_secret` fails with a validation error that names the new field. See [API and blueprints](../../../sys-mgmt/secrets/index.mdx#api-and-blueprints).
+The OAuth2/OpenID provider API and blueprints no longer accept `client_secret`. Reference a managed secret through `client_secret_ref` instead, using the secret's UUID in the API or `!KeyOf` in blueprints. Requests and blueprints that still set `client_secret` fail with a validation error. Refer to [API and blueprints](../../../sys-mgmt/secrets/index.mdx#api-and-blueprints) for an example.
 
-Proxy providers manage their own secret references. To rotate or replace their client and cookie secrets, go to **System** > **Secrets**.
+Proxy providers create and reference their own secrets, so their API requests and blueprints don't change. To rotate or replace a Proxy provider's client or cookie secret, go to **System** > **Secrets**.
 
 ### Multi-tenancy has been removed
 
@@ -173,9 +175,11 @@ Users can now authenticate directly into their macOS devices using a customizabl
 
 ### Managed secrets :ak-preview
 
-authentik 2026.11 introduces [managed secrets](../../../sys-mgmt/secrets/index.mdx), starting with OAuth2/OpenID and Proxy providers. Manage them under **System** > **Secrets**, or create, view, and rotate a client secret from the OAuth2/OpenID provider form.
+authentik now stores credentials as managed secrets, separate from the objects that use them. A secret has its own permissions, so administrators can let a role manage a provider without letting it read the provider's credentials. Each time someone views, replaces, or rotates a secret's value, authentik records it in the event log.
 
-Viewing a secret's value requires its own permission, and authentik records each view, replacement, and rotation in the audit log. Secret values are stored unencrypted in the database, as these credentials were before.
+In authentik 2026.11, OAuth2/OpenID and Proxy providers use managed secrets. Administrators manage them under **System** > **Secrets**, and the OAuth2/OpenID provider form can create, view, and rotate its client secret directly. Secret values are still stored unencrypted in the database, as before.
+
+For more details, refer to the [managed secrets documentation](../../../sys-mgmt/secrets/index.mdx).
 
 ### Password lockout :ak-enterprise
 
