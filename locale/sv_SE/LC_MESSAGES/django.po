@@ -4325,7 +4325,7 @@ msgstr "Börja med custom_, följt av gemener, siffror och understreck."
 #: authentik/rbac/api/permission_checks.py
 #, python-brace-format
 msgid "Define at least one of {functions}."
-msgstr "Definiera minst en av {funktionerna}."
+msgstr "Definiera minst en av {functions}."
 
 #: authentik/rbac/api/permission_checks.py
 #, python-brace-format
