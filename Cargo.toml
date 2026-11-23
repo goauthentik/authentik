@@ -111,7 +111,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "local-time",
   "tracing-log",
 ] }
-url = "= 2.5.8"
+url = "= 2.5.9"
 uuid = { version = "= 1.23.1", features = ["serde", "v4"] }
 which = "= 8.0.2"
 
