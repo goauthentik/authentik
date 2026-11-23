@@ -22,6 +22,7 @@ from authentik.common.oauth.constants import (
     TOKEN_TYPE,
 )
 from authentik.core.middleware import CTX_AUTH_VIA
+from authentik.core.models import AuthenticatedSession, Session
 from authentik.events.signals import get_login_event
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import (
@@ -32,6 +33,8 @@ from authentik.providers.oauth2.errors import (
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
+    AuthorizationCode,
+    DeviceToken,
     OAuth2Provider,
     RefreshToken,
 )
@@ -44,6 +47,23 @@ from authentik.providers.oauth2.utils import (
 )
 
 LOGGER = get_logger()
+
+
+def session_if_active(
+    grant: AuthorizationCode | RefreshToken | DeviceToken,
+) -> AuthenticatedSession | None:
+    """Session of `grant` that tokens issued from it are bound to, if it is still valid.
+
+    A refresh token outlives the session it was issued in. Once that session has expired it
+    is only a matter of time until it is cleaned up, at which point the tokens are unbound
+    from it anyway. Binding new tokens to it in the meantime would only add references to
+    a session that is about to be deleted, possibly while it is being deleted."""
+    if not grant.session_id:
+        return None
+    # The default manager of `Session` does not return expired sessions
+    return AuthenticatedSession.objects.filter(
+        pk=grant.session_id, session__in=Session.objects.all()
+    ).first()
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -117,6 +137,7 @@ class TokenView(View):
     def create_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
         now = timezone.now()
+        session = session_if_active(self.params.authorization_code)
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         access_token = AccessToken(
             provider=self.provider,
@@ -125,7 +146,7 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.authorization_code.scope,
             auth_time=self.params.authorization_code.auth_time,
-            session=self.params.authorization_code.session,
+            session=session,
         )
         access_id_token = IDToken.new(
             self.provider,
@@ -156,7 +177,7 @@ class TokenView(View):
                 expires=refresh_token_expiry,
                 provider=self.provider,
                 auth_time=self.params.authorization_code.auth_time,
-                session=self.params.authorization_code.session,
+                session=session,
                 dpop_jkt=self.params.authorization_code.dpop_jkt,
             )
             id_token = IDToken.new(
@@ -183,6 +204,7 @@ class TokenView(View):
         if SCOPE_OFFLINE_ACCESS not in self.params.scope:
             raise TokenError("invalid_scope")
         now = timezone.now()
+        session = session_if_active(self.params.refresh_token)
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         access_token = AccessToken(
             provider=self.provider,
@@ -191,7 +213,7 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.refresh_token.scope,
             auth_time=self.params.refresh_token.auth_time,
-            session=self.params.refresh_token.session,
+            session=session,
         )
         access_id_token = IDToken.new(
             self.provider,
@@ -225,7 +247,7 @@ class TokenView(View):
                 expires=refresh_token_expiry,
                 provider=self.provider,
                 auth_time=self.params.refresh_token.auth_time,
-                session=self.params.refresh_token.session,
+                session=session,
                 dpop_jkt=self.params.refresh_token.dpop_jkt,
             )
             id_token = IDToken.new(
@@ -240,8 +262,10 @@ class TokenView(View):
             refresh_token.save()
 
             # Mark old token as revoked
+            # Only write the field that changed, the token has been loaded at the start of
+            # the request and might since have been unbound from its session
             self.params.refresh_token.revoked = True
-            self.params.refresh_token.save()
+            self.params.refresh_token.save(update_fields=["revoked"])
             response["refresh_token"] = refresh_token.token
 
         return response
@@ -278,6 +302,7 @@ class TokenView(View):
         if not self.params.device_code.user:
             raise DeviceCodeError("authorization_pending")
         now = timezone.now()
+        session = session_if_active(self.params.device_code)
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         auth_event = get_login_event(self.params.device_code.session)
         access_token = AccessToken(
@@ -286,7 +311,7 @@ class TokenView(View):
             expires=access_token_expiry,
             scope=self.params.device_code.scope,
             auth_time=auth_event.created if auth_event else now,
-            session=self.params.device_code.session,
+            session=session,
         )
         access_id_token = IDToken.new(
             self.provider,

@@ -1,5 +1,6 @@
 """authentik core tasks"""
 
+from contextlib import contextmanager
 from datetime import datetime, timedelta
 
 from django.utils.timezone import now
@@ -25,29 +26,48 @@ LOGGER = get_logger()
 @actor(description=_("Remove expired objects."))
 def clean_expired_models():
     self = CurrentTask.get_task()
+    errors: list[Exception] = []
+
+    @contextmanager
+    def isolated(name: str):
+        """A failure to clean up one kind of object must not prevent the cleanup of the
+        others. The first error is raised again once everything has been attempted."""
+        try:
+            yield
+        except Exception as exc:  # noqa: BLE001
+            LOGGER.warning("Failed to expire models", model=name, exc=exc)
+            self.warning(f"Failed to expire {name}: {exc}")
+            errors.append(exc)
+
     for cls in ExpiringModel.__subclasses__():
-        objects = (
-            cls.objects.including_expired()
-            .all()
-            .exclude(expiring=False)
-            .exclude(expiring=True, expires__gt=now())
-        )
-        if cls.expire_action is ExpiringModel.expire_action:
-            amount = delete_in_batches(objects)
-        else:
-            amount = objects.count()
-            for obj in chunked_queryset(objects):
-                obj.expire_action()
-        LOGGER.debug("Expired models", model=cls, amount=amount)
-        self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
-    clear_expired_cache()
+        with isolated(cls._meta.verbose_name_plural):
+            objects = (
+                cls.objects.including_expired()
+                .all()
+                .exclude(expiring=False)
+                .exclude(expiring=True, expires__gt=now())
+            )
+            if cls.expire_action is ExpiringModel.expire_action:
+                amount = delete_in_batches(objects)
+            else:
+                amount = objects.count()
+                for obj in chunked_queryset(objects):
+                    obj.expire_action()
+            LOGGER.debug("Expired models", model=cls, amount=amount)
+            self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
+    with isolated("cache entries"):
+        clear_expired_cache()
     for cls in [Message, GroupChannel]:
-        amount = delete_in_batches(cls.objects.filter(expires__lt=now()))
-        LOGGER.debug("Expired models", model=cls, amount=amount)
-        self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
+        with isolated(cls._meta.verbose_name_plural):
+            amount = delete_in_batches(cls.objects.filter(expires__lt=now()))
+            LOGGER.debug("Expired models", model=cls, amount=amount)
+            self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
     for cls in Sync.__subclasses__():
-        amount = cls.cleanup()
-        LOGGER.debug("Expired models", model=cls, amount=amount)
+        with isolated(cls._meta.verbose_name_plural):
+            amount = cls.cleanup()
+            LOGGER.debug("Expired models", model=cls, amount=amount)
+    if errors:
+        raise errors[0]
 
 
 @actor(description=_("Remove temporary users created by SAML Sources."))
