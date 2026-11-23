@@ -1,0 +1,20 @@
+{
+    "client_name": "Visual Studio Code",
+    "logo_uri": "https://code.visualstudio.com/assets/branding/code-stable.png",
+    "grant_types": [
+        "authorization_code",
+        "refresh_token",
+        "urn:ietf:params:oauth:grant-type:device_code"
+    ],
+    "response_types": [
+        "code"
+    ],
+    "token_endpoint_auth_method": "none",
+    "application_type": "native",
+    "client_id": "https://vscode.dev/oauth/client-metadata.json",
+    "client_uri": "https://vscode.dev/product",
+    "redirect_uris": [
+        "http://127.0.0.1:33418/",
+        "https://vscode.dev/redirect"
+    ]
+}
