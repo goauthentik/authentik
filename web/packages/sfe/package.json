@@ -23,10 +23,10 @@
         "base64-js": "^1.5.1",
         "core-js": "^3.49.0",
         "formdata-polyfill": "workspace:*",
-        "globby": "16.2.0",
+        "globby": "16.2.4",
         "jquery": "^3.7.1",
         "lit-html": "^1.4.1",
-        "rollup": "^4.68.3",
+        "rollup": "^4.68.8",
         "weakmap-polyfill": "^2.0.4"
     },
     "optionalDependencies": {
