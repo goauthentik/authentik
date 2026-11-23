@@ -1,6 +1,7 @@
 from typing import Any
 
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, SerializerMethodField
@@ -20,6 +21,7 @@ class AttributesMixinSerializer(ModelSerializer):
             object_type=ContentType.objects.get_for_model(model),
             enabled=True,
         )
+        instance = self.instance if isinstance(self.instance, Model) else None
         for attr in attributes:
             value = get_path_from_dict(attrs, attr.key)
             attr.run_validation(value, instance)
