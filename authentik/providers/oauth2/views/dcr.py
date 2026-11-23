@@ -152,6 +152,11 @@ class DynamicClientRegistrationView(View):
             or self.provider.access_token_validity,
             refresh_token_validity=self.dcr.refresh_token_validity
             or self.provider.refresh_token_validity,
+            # Copied at registration time; later changes to the registration provider only
+            # apply to clients registered afterwards
+            include_issuer_in_authorization_response=(
+                self.provider.include_issuer_in_authorization_response
+            ),
         )
         provider.redirect_uris = redirect_uris
         provider.save()

@@ -61,7 +61,7 @@ class TestTokenPKCE(OAuthTestCase):
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
         self.assertEqual(
             response.url,
-            f"foo://localhost?code={code.code}&state={state}",
+            f"foo://localhost?code={code.code}&state={state}&{self.iss_param(provider)}",
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -119,7 +119,7 @@ class TestTokenPKCE(OAuthTestCase):
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
         self.assertEqual(
             response.url,
-            f"foo://localhost?code={code.code}&state={state}",
+            f"foo://localhost?code={code.code}&state={state}&{self.iss_param(provider)}",
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -177,7 +177,7 @@ class TestTokenPKCE(OAuthTestCase):
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
         self.assertEqual(
             response.url,
-            f"foo://localhost?code={code.code}&state={state}",
+            f"foo://localhost?code={code.code}&state={state}&{self.iss_param(provider)}",
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -222,7 +222,7 @@ class TestTokenPKCE(OAuthTestCase):
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
         self.assertEqual(
             response.url,
-            f"foo://localhost?code={code.code}&state={state}",
+            f"foo://localhost?code={code.code}&state={state}&{self.iss_param(provider)}",
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
