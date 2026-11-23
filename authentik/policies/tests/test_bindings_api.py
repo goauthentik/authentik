@@ -23,7 +23,7 @@ class TestBindingsAPI(APITestCase):
         self.group = self.user.groups.first()
         self.client.force_login(self.user)
 
-    def create_targets(self):
+    def _create_targets(self) -> list[PolicyBindingModel]:
         """Include targets whose concrete and base primary keys differ."""
         flow = Flow.objects.create(name="binding-test", slug="binding-test")
         stage = DummyStage.objects.create(name="binding-test")
@@ -40,7 +40,7 @@ class TestBindingsAPI(APITestCase):
     def test_target_primary_keys(self):
         """List and detail responses expose concrete target primary keys."""
         expected = {}
-        for target in self.create_targets():
+        for target in self._create_targets():
             binding = PolicyBinding.objects.create(target=target, user=self.user, order=0)
             expected[str(binding.pk)] = str(target.pk)
             response = self.client.get(
@@ -59,7 +59,7 @@ class TestBindingsAPI(APITestCase):
     def test_target_field_without_prefetch(self):
         """Keep resolving base objects supplied by other serializer callers."""
         field = PolicyBindingModelForeignKey(read_only=True)
-        for target in self.create_targets():
+        for target in self._create_targets():
             with self.subTest(target=type(target).__name__):
                 base = PolicyBindingModel.objects.get(pk=target.pbm_uuid)
                 with self.assertNumQueries(1):
@@ -70,7 +70,7 @@ class TestBindingsAPI(APITestCase):
 
     def test_target_primary_keys_on_write(self):
         """Create/update responses retain subclass IDs without relying on prefetch."""
-        for target in self.create_targets():
+        for target in self._create_targets():
             with self.subTest(target=type(target).__name__):
                 response = self.client.post(
                     reverse("authentik_api:policybinding-list"),
