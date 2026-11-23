@@ -64,7 +64,7 @@ metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
 moka = { version = "= 0.12.16", default-features = false, features = [
   "future",
 ] }
-nix = { version = "= 0.31.4", features = [
+nix = { version = "= 0.32.0", features = [
   "fs",
   "hostname",
   "signal",
