@@ -3,7 +3,7 @@
 from itertools import chain
 
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from djangoql.queryset import apply_search
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
@@ -109,25 +109,25 @@ class EventMatcherPolicy(Policy):
 
         print(Event.objects.filter(pk=event.pk))
         qs = apply_search(Event.objects.filter(pk=event.pk), self.query, InlineSchema)
-        return PolicyResult(qs.exists(), "Query matched.")
+        return PolicyResult(qs.exists(), str(_("Query matched.")))
 
     def passes_action(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.action` matches"""
         if self.action is None:
             return None
-        return PolicyResult(self.action == event.action, "Action matched.")
+        return PolicyResult(self.action == event.action, str(_("Action matched.")))
 
     def passes_client_ip(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.client_ip` matches"""
         if self.client_ip is None:
             return None
-        return PolicyResult(self.client_ip == event.client_ip, "Client IP matched.")
+        return PolicyResult(self.client_ip == event.client_ip, str(_("Client IP matched.")))
 
     def passes_app(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.app` matches"""
         if self.app is None:
             return None
-        return PolicyResult(self.app == event.app, "App matched.")
+        return PolicyResult(self.app == event.app, str(_("App matched.")))
 
     def passes_model(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.model` is set, and pass if it matches the event's model"""
@@ -135,7 +135,7 @@ class EventMatcherPolicy(Policy):
             return None
         event_model_info = event.context.get("model", {})
         event_model = f"{event_model_info.get('app')}.{event_model_info.get('model_name')}"
-        return PolicyResult(event_model == self.model, "Model matched.")
+        return PolicyResult(event_model == self.model, str(_("Model matched.")))
 
     class Meta(Policy.PolicyMeta):
         verbose_name = _("Event Matcher Policy")

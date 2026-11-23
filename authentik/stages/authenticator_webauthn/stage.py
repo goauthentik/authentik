@@ -7,7 +7,6 @@ from cryptography.hazmat.primitives.serialization import Encoding
 from cryptography.x509 import load_der_x509_certificate
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
@@ -48,7 +47,7 @@ from authentik.stages.authenticator_webauthn.models import (
     WebAuthnDevice,
     WebAuthnDeviceType,
 )
-from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.authenticator_webauthn.utils import get_expected_origins, get_rp_id
 
 PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/authenticator_webauthn/challenge"
 PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/attempt"
@@ -80,13 +79,16 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
     def validate_response(self, response: dict) -> VerifiedRegistrationData:
         """Validate webauthn challenge response"""
         challenge = self.stage.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]
+        stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         try:
             registration: VerifiedRegistration = verify_registration_response(
                 credential=response,
                 expected_challenge=challenge,
                 expected_rp_id=get_rp_id(self.request),
-                expected_origin=get_origin(self.request),
+                expected_origin=get_expected_origins(
+                    self.request, stage.additional_accepted_origins
+                ),
                 supported_pub_key_algs=supported_pub_key_algs(),
             )
         # py_webauthn does not wrap cryptography's ValueError when an attestation certificate
@@ -98,7 +100,6 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             ) from None
 
         registration_data = VerifiedRegistrationData(registration)
-        stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
 
         att_obj = parse_attestation_object(registration.attestation_object)
         if (
@@ -128,10 +129,8 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
         allowed_aaguids = stage.device_type_restrictions.values_list("aaguid", flat=True)
         if allowed_aaguids.exists():
             invalid_error = ValidationError(
-                _(
-                    "Invalid device type. Contact your {brand} administrator for help.".format(
-                        brand=self.stage.request.brand.branding_title
-                    )
+                _("Invalid device type. Contact your {brand} administrator for help.").format(
+                    brand=self.stage.request.brand.branding_title
                 )
             )
             # If there are any restrictions set and we didn't get an aaguid, invalid
@@ -235,11 +234,8 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             and self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_ATTEMPT] >= stage.max_attempts
         ):
             return self.executor.stage_invalid(
-                __(
-                    "Exceeded maximum attempts. "
-                    "Contact your {brand} administrator for help.".format(
-                        brand=self.request.brand.branding_title
-                    )
+                _("Exceeded maximum attempts. Contact your {brand} administrator for help.").format(
+                    brand=self.request.brand.branding_title
                 )
             )
         return super().challenge_invalid(response)
@@ -265,4 +261,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             attestation_certificate_pem=webauthn_credential.attest_cert,
             attestation_certificate_fingerprint=webauthn_credential.attest_cert_fingerprint,
         )
+        # The registration challenge has been answered. Remove it, as the authenticator validation
+        # stage uses the same key and keeps a pending challenge until it's answered
+        self.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
         return self.executor.stage_ok()

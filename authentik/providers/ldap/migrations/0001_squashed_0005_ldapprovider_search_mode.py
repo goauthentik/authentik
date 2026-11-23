@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("authentik_core", "0019_source_managed"),
+        ("authentik_core", "0018_auto_20210330_1345_squashed_0028_alter_token_intent"),
         ("authentik_crypto", "0002_create_self_signed_kp"),
     ]
 

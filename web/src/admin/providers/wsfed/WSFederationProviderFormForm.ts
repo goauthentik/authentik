@@ -63,6 +63,7 @@ const samlNameIDPolicyAndLabel = [
     ],
     [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName, msg("X509 Subject")],
     [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient, msg("Transient")],
+    [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified, msg("Unspecified")],
 ];
 
 export interface WSFederationProviderFormProps {

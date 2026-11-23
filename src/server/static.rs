@@ -97,11 +97,7 @@ fn is_storage_token_valid(usage: &str, secret_key: &str, request: &Request) -> b
     };
     let request_path = request_path.trim_start_matches('/');
     let expected_path = format!("{usage}/{request_path}");
-    if claim_path != expected_path {
-        return false;
-    }
-
-    true
+    claim_path == expected_path
 }
 
 #[derive(Clone)]

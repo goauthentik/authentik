@@ -4,7 +4,7 @@ from datetime import timedelta
 
 from django.db import models
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
@@ -43,12 +43,10 @@ class PasswordExpiryPolicy(Policy):
             if not self.deny_only:
                 PasswordDevice.set_unusable_password(request.user)
                 message = _(
-                    "Password expired {days} days ago. Please update your password.".format(
-                        days=days_since_expiry
-                    )
-                )
+                    "Password expired {days} days ago. Please update your password."
+                ).format(days=days_since_expiry)
                 return PolicyResult(False, message)
-            return PolicyResult(False, _("Password has expired."))
+            return PolicyResult(False, str(_("Password has expired.")))
         return PolicyResult(True)
 
     class Meta(Policy.PolicyMeta):

@@ -5,36 +5,52 @@ from typing import TYPE_CHECKING
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from guardian.shortcuts import assign_perm
-from rest_framework.permissions import BasePermission, DjangoObjectPermissions
+from rest_framework.permissions import DjangoObjectPermissions
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
 from authentik.lib.tracing import active_tracer
+from authentik.rbac.endpoint_checks import EndpointChecks
 from authentik.rbac.models import InitialPermissions
 
 if TYPE_CHECKING:
+    from rest_framework.views import APIView
+
     from authentik.core.models import User
 
 LOGGER = get_logger()
 
 
 class ObjectPermissions(DjangoObjectPermissions):
-    """RBAC Permissions"""
+    """Decides API access: authentik's own decision, then the final say of a permission check"""
 
     @active_tracer().instrument()
-    def has_permission(self, request: Request, view) -> bool:
-        """Deny unauthenticated users, like `DjangoModelPermissions`. For authenticated users,
-        always grant permission for object-specific requests, as view permission checking
-        is done by `ObjectFilter`, and write permission checking is done by
-        `has_object_permission`"""
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        if self.are_permission_classes_explicit(view):
+            return True
+        return EndpointChecks.for_request(request).has_permission(
+            self.allows_request(request, view)
+        )
+
+    @active_tracer().instrument()
+    def has_object_permission(self, request: Request, view: APIView, obj: Model) -> bool:
+        if self.are_permission_classes_explicit(view):
+            return True
+        return EndpointChecks.for_request(request).has_object_permission(
+            obj, self.allows_object(request, view, obj)
+        )
+
+    def allows_request(self, request: Request, view: APIView) -> bool:
+        """authentik's own decision on the request. Unauthenticated users are denied, like
+        `DjangoModelPermissions`. Otherwise requests for one object are decided per object:
+        viewing by `ObjectFilter`, and changing by `allows_object`"""
         # Check this before the shortcuts below: `ObjectFilter` can't filter by `owner_field`
         # for an anonymous user, and fails with a server error.
         if not request.user or (
             not request.user.is_authenticated and self.authenticated_users_only
         ):
             return False
-        lookup = getattr(view, "lookup_url_kwarg", None) or getattr(view, "lookup_field", None)
-        if lookup and lookup in view.kwargs:
+        if self.is_detail_route(view):
             return True
         # Legacy behavior:
         # Allow creation of objects even without explicit permission
@@ -49,8 +65,8 @@ class ObjectPermissions(DjangoObjectPermissions):
             return True
         return super().has_permission(request, view)
 
-    @active_tracer().instrument()
-    def has_object_permission(self, request: Request, view, obj: Model) -> bool:
+    def allows_object(self, request: Request, view: APIView, obj: Model) -> bool:
+        """authentik's own decision on one object"""
         queryset = self._queryset(view)
         model_cls = queryset.model
         perms = self.get_required_object_permissions(request.method, model_cls)
@@ -63,14 +79,28 @@ class ObjectPermissions(DjangoObjectPermissions):
                 return True
         return super().has_object_permission(request, view, obj)
 
+    @staticmethod
+    def is_detail_route(view: APIView) -> bool:
+        lookup = getattr(view, "lookup_url_kwarg", None) or getattr(view, "lookup_field", None)
+        return bool(lookup and lookup in getattr(view, "kwargs", {}))
 
-def HasPermission(*perm: str) -> type[BasePermission]:
+    @staticmethod
+    def are_permission_classes_explicit(view: APIView) -> bool:
+        """Whether the current action declares its permissions with `permission_required`"""
+        handler = getattr(view, getattr(view, "action", None) or "", None)
+        return getattr(handler, "permission_requirements", None) is not None
+
+
+def HasPermission(*perm: str) -> type[ObjectPermissions]:
     """Permission checker for any non-object permissions, returns
-    a BasePermission class that can be used with rest_framework"""
+    a permission class that can be used with rest_framework"""
 
-    class checker(BasePermission):
-        def has_permission(self, request: Request, view):
+    class checker(ObjectPermissions):
+        def allows_request(self, request: Request, view: APIView) -> bool:
             return bool(request.user and request.user.has_perms(perm))
+
+        def allows_object(self, request: Request, view: APIView, obj: Model) -> bool:
+            return True
 
     return checker
 

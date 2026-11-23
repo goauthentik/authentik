@@ -929,7 +929,7 @@ export class OutpostsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Delete and recreate all permissions of the outpost's service account
+     * Delete and recreate all permissions of the outpost\'s service account
      */
     async outpostsInstancesRebuildPermissionsCreateRaw(
         requestParameters: OutpostsInstancesRebuildPermissionsCreateRequest,
@@ -943,7 +943,7 @@ export class OutpostsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Delete and recreate all permissions of the outpost's service account
+     * Delete and recreate all permissions of the outpost\'s service account
      */
     async outpostsInstancesRebuildPermissionsCreate(
         requestParameters: OutpostsInstancesRebuildPermissionsCreateRequest,
@@ -1753,7 +1753,7 @@ export class OutpostsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get the service connection's state
+     * Get the service connection\'s state
      */
     async outpostsServiceConnectionsAllStateRetrieveRaw(
         requestParameters: OutpostsServiceConnectionsAllStateRetrieveRequest,
@@ -1769,7 +1769,7 @@ export class OutpostsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get the service connection's state
+     * Get the service connection\'s state
      */
     async outpostsServiceConnectionsAllStateRetrieve(
         requestParameters: OutpostsServiceConnectionsAllStateRetrieveRequest,

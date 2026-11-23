@@ -29,6 +29,9 @@ class GeoIPDict(TypedDict):
 class GeoIPContextProcessor(MMDBContextProcessor):
     """Slim wrapper around GeoIP API"""
 
+    default_path = "/geoip/dbip-city-lite.mmdb"
+    legacy_path = "/geoip/GeoLite2-City.mmdb"
+
     def capability(self) -> Capabilities | None:
         from authentik.api.v3.config import Capabilities
 

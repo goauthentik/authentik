@@ -2,8 +2,9 @@
 
 from json import loads
 from sys import version_info
-from unittest import skipUnless
+from unittest import skipIf, skipUnless
 
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.urls import reverse
 from freezegun import freeze_time
 from rest_framework.test import APITestCase
@@ -107,7 +108,7 @@ class TestAPI(APITestCase):
             {
                 "signing_key": [
                     "Key type DSA is not supported. Supported key types are: "
-                    "RSA, Elliptic Curve, Ed25519, Ed448."
+                    "RSA, Elliptic Curve, Ed25519, Ed448, ML-DSA-44, ML-DSA-65, ML-DSA-87."
                 ]
             },
         )
@@ -122,6 +123,7 @@ class TestAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("encryption_key", loads(response.content))
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no EdDSA")
     def test_validate_signing_key_supported_types(self):
         """Test that every key type JWTAlgorithms can map is accepted.
 

@@ -42,7 +42,7 @@ runs:
         sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v5
+      uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -57,24 +57,24 @@ runs:
       run: uv sync --all-extras --dev --locked
     - name: Setup rust (stable)
       if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@ecabd13d1c56bd1345c230e542e9144811ad706f # v2.0.0
+      uses: actions-rust-lang/setup-rust-toolchain@a188e68d0fd2bd36ad51dccb2b07ba6e75105f30 # v2.0.1
       with:
         rustflags: ""
     - name: Setup rust (nightly)
       if: ${{ contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@ecabd13d1c56bd1345c230e542e9144811ad706f # v2.0.0
+      uses: actions-rust-lang/setup-rust-toolchain@a188e68d0fd2bd36ad51dccb2b07ba6e75105f30 # v2.0.1
       with:
         toolchain: nightly
         components: rustfmt
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@68a389c788b2cd04016ce8c80ee23b80d2ab3d68 # v2
+      uses: taiki-e/install-action@75a7c0f87bd666af3cdb75c5b9e9d03ab6044e6f # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup pnpm
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       with:
         package_json_file: ${{ inputs.working-directory }}package.json
     - name: Pin pnpm store directory
@@ -101,7 +101,7 @@ runs:
         pnpm --dir web install --frozen-lockfile
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
-      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v5
+      uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v5
       with:
         go-version-file: "${{ inputs.working-directory }}go.mod"
         cache-dependency-path: "${{ inputs.working-directory }}go.mod"
@@ -110,7 +110,7 @@ runs:
       # The post step `docker save`s every new image, but digest-pinned images (e2e,
       # kind) list without a tag and fail. Jobs share the key, so another job saves it.
       continue-on-error: true
-      uses: AndreKurait/docker-cache@7a3887908bdb97935395833df69b060cfcca0f7f
+      uses: AndreKurait/docker-cache@e1eb0120c0c16b3f1c6ff1c0ef4ebc9f67f8dc6a
       with:
         key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies

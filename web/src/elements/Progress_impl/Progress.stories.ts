@@ -60,8 +60,9 @@ const meta: Meta<ProgressProps> = {
                         font-weight: bold;
                         font-size: 1.25rem;
                         padding-bottom: 1.25rem;
-                    }</style
-                >${story()}
+                    }
+                </style>
+                ${story()}
             </div>`,
     ],
 };

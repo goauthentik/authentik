@@ -2,8 +2,10 @@
 
 from base64 import b64decode
 from json import loads
+from unittest import skipIf
 from unittest.mock import MagicMock, patch
 
+from cryptography.hazmat.backends.openssl.backend import backend
 from django.urls import reverse
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
@@ -28,6 +30,7 @@ from authentik.stages.authenticator_webauthn.models import (
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
 from authentik.stages.authenticator_webauthn.tests.credentials import SoftwareCredential
+from authentik.stages.dummy.models import DummyStage
 
 
 class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
@@ -54,6 +57,7 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         )
         self.assertEqual(response.status_code, 204)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519 or ML-DSA")
     def test_registration_options(self):
         """Test registration options"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -177,6 +181,39 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
             loads(response.content)["registration"]["excludeCredentials"],
             [{"id": device.credential_id, "type": "public-key"}],
         )
+
+    def test_register_removes_challenge(self):
+        """Test that the registration challenge is removed from the plan once answered"""
+        dummy_binding = FlowStageBinding.objects.create(
+            target=self.flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=1,
+        )
+        plan = FlowPlan(
+            flow_pk=self.flow.pk.hex,
+            bindings=[self.binding, dummy_binding],
+            markers=[StageMarker(), StageMarker()],
+        )
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
+            b"iHIX3AtkZZCxSYLxOhk80ZXI7RnAC0Pb4WTk9dEJ4eLJdzoh8jRmjKW2U9oE/CBn5n6Zj67BIIZvFL3lpiwJwg=="
+        )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={
+                "component": "ak-stage-authenticator-webauthn",
+                "response": loads(load_fixture("fixtures/register.json")),
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(WebAuthnDevice.objects.filter(user=self.user).exists())
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        self.assertNotIn(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, plan.context)
 
     def test_register_shared_attestation_certificate(self):
         """Test that a device sharing an attestation certificate with an existing device of
@@ -688,6 +725,7 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         )
         self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519 or ML-DSA")
     def test_registration_options_algorithms(self):
         """Registration offers the classical algorithms first and the ML-DSA sets last"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -744,6 +782,7 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
             SERVER_PORT="9000",
         )
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
     def test_register_eddsa(self):
         """Test registration of an Ed25519 credential"""
         credential = SoftwareCredential(
@@ -755,6 +794,7 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         device = WebAuthnDevice.objects.get(user=self.user)
         self.assertEqual(device.public_key, bytes_to_base64url(credential.cose_public_key))
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
     def test_register_unavailable_algorithm_fips(self):
         """An authenticator that ignores the offered algorithms and creates a credential the
         FIPS provider cannot verify is rejected at registration, not at first login"""
@@ -778,6 +818,7 @@ class TestAuthenticatorWebAuthnStage(APIFlowTestCase):
         )
         self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
     def test_register_mldsa(self):
         """Test registration of an ML-DSA-44 (FIPS 204) credential"""
         credential = SoftwareCredential(rp_id="localhost", origin="http://localhost:9000")

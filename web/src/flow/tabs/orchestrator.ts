@@ -75,10 +75,10 @@ function waitForTabExit(tabID: string, resumeID: string): Promise<void> {
 
         finished = true;
 
-        self.clearTimeout(timeout);
+        clearTimeout(timeout);
         abort.abort();
 
-        self.setTimeout(() => {
+        setTimeout(() => {
             resolve();
         }, delay);
     };
@@ -124,12 +124,12 @@ function waitForTabExit(tabID: string, resumeID: string): Promise<void> {
 
         logger.warn("Timed out waiting for tab to exit, tab still active", tabID);
 
-        timeout = self.setTimeout(timeoutCheck, TAB_EXIT_TIMEOUT_MS);
+        timeout = setTimeout(timeoutCheck, TAB_EXIT_TIMEOUT_MS);
     };
 
     window.addEventListener(AKMultiTabExitEvent.eventName, exitListener, { signal: abort.signal });
 
-    timeout = self.setTimeout(timeoutCheck, TAB_EXIT_TIMEOUT_MS);
+    timeout = setTimeout(timeoutCheck, TAB_EXIT_TIMEOUT_MS);
 
     return promise;
 }

@@ -5,7 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("authentik_flows", "0017_auto_20210329_1334"),
+        ("authentik_flows", "0012_auto_20200908_1542_squashed_0017_auto_20210329_1334"),
     ]
 
     operations = []

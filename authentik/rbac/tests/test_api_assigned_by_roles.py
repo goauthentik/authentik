@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.rbac.api.rbac_assigned_by_roles import RoleAssignedObjectPermissionSerializer
 from authentik.rbac.models import Role
@@ -80,6 +81,12 @@ class TestRBACRoleAPI(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         self.assertTrue(self.user.has_perm("authentik_stages_invitation.view_invitation"))
+        event = Event.objects.filter(
+            action=EventAction.MODEL_UPDATED, context__model__pk=self.role.pk.hex
+        ).first()
+        self.assertEqual(
+            event.context["permissions_assigned"], ["authentik_stages_invitation.view_invitation"]
+        )
 
     def test_assign_object(self):
         """Test permission assign (object)"""

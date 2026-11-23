@@ -4,7 +4,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/Crontab";
 import "#components/tasks/ScheduleForm";
-import "#components/tasks/TaskList";
 import "#components/tasks/TaskStatus";
 import "#elements/table/ak-table-filter-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -16,6 +15,8 @@ import { EVENT_REFRESH } from "#common/constants";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { taskCard } from "#components/tasks/taskCard";
 
 import { ModelEnum, Schedule, TasksApi } from "@goauthentik/api";
 
@@ -144,15 +145,7 @@ export class ScheduleList extends Table<Schedule> {
     }
 
     renderExpanded(item: Schedule): TemplateResult {
-        const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
-
-        return html`<div class="pf-c-content">
-            <ak-task-list
-                .relObjAppLabel=${appLabel}
-                .relObjModel=${modelName}
-                .relObjId="${item.id}"
-            ></ak-task-list>
-        </div>`;
+        return taskCard(ModelEnum.AuthentikTasksSchedulesSchedule, item.id);
     }
 }
 

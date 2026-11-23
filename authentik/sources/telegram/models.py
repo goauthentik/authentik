@@ -46,7 +46,7 @@ class TelegramSource(Source):
     def icon_url(self) -> str | None:
         icon = super().icon_url
         if not icon:
-            icon = static("authentik/sources/telegram.svg")
+            icon = static("authentik/sources/telegram/light.svg")
         return icon
 
     @property
@@ -67,6 +67,7 @@ class TelegramSource(Source):
             ),
             name=self.name,
             icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
+            icon_themed_urls=self.get_icon_themed_urls(request, use_cache=False),
             promoted=self.promoted,
         )
 
@@ -76,6 +77,7 @@ class TelegramSource(Source):
                 "title": self.name,
                 "component": "ak-user-settings-source-telegram",
                 "icon_url": self.icon_url,
+                "icon_themed_urls": self.icon_themed_urls,
                 "configure_url": urlencode(
                     {
                         "bot_username": self.bot_username,

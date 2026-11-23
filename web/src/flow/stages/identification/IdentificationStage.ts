@@ -404,9 +404,9 @@ export class IdentificationStage extends BaseStage<
 
     //#region Render
     protected renderDefaultSource(source: LoginSource, showLabels: boolean) {
-        const { name, iconUrl, challenge } = source;
+        const { name, iconUrl, iconThemedUrls, challenge } = source;
 
-        const icon = renderSourceIcon(name, iconUrl);
+        const icon = renderSourceIcon(name, iconUrl, iconThemedUrls, this.activeTheme);
 
         return html`<button
             type="button"

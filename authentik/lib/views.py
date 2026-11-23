@@ -8,13 +8,13 @@ from django.utils.translation import gettext_lazy as _
 def bad_request_message(
     request: HttpRequest,
     message: str,
-    title="Bad Request",
+    title: str | None = None,
     template="if/error.html",
 ) -> TemplateResponse:
     """Return generic error page with message, with status code set to 400"""
     return TemplateResponse(
         request,
         template,
-        {"message": message, "title": _(title)},
+        {"message": message, "title": title or _("Bad Request")},
         status=400,
     )

@@ -2,17 +2,24 @@
 
 import base64
 import json
+from unittest import skipIf
+from unittest.mock import patch
 
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.backends.openssl.backend import backend
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateNumbers
+from cryptography.hazmat.primitives.serialization import Encoding, NoEncryption, PrivateFormat
 from cryptography.x509 import load_der_x509_certificate
 from django.urls.base import reverse
 from jwt import PyJWKSet, decode
+from jwt.algorithms import RSAAlgorithm
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.crypto.builder import PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
+from authentik.lib.jwt_mldsa import key_from_jwk
 from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
@@ -62,6 +69,72 @@ class TestJWKS(OAuthTestCase):
         key = body["keys"][0]
         load_der_x509_certificate(base64.b64decode(key["x5c"][0]), default_backend()).public_key()
 
+    def test_private_key_not_loaded(self):
+        """Test keys are published without loading the private keys, whose validation is slow
+        for RSA keys"""
+        signing_key = create_test_cert()
+        encryption_key = create_test_cert()
+        provider = OAuth2Provider.objects.create(
+            name="test",
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=signing_key,
+            encryption_key=encryption_key,
+        )
+        app = Application.objects.create(name="test", slug="test", provider=provider)
+        with patch("authentik.crypto.models._load_private_key", side_effect=AssertionError):
+            response = self.client.get(
+                reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
+            )
+        keys = json.loads(response.content.decode())["keys"]
+        self.assertEqual([key["alg"] for key in keys], ["RS256", "RSA-OAEP-256"])
+        for key, keypair in zip(keys, [signing_key, encryption_key], strict=True):
+            self.assertEqual(
+                RSAAlgorithm.from_jwk(key).public_numbers(),
+                keypair.private_key.public_key().public_numbers(),
+            )
+
+    def test_invalid_rsa_key(self):
+        """Test an RSA key that fails validation is still published but can't sign"""
+        signing_key = create_test_cert()
+        numbers = signing_key.private_key.private_numbers()
+        # A wrong CRT coefficient fails OpenSSL's RSA key check; the API would reject this key, so
+        # store it directly
+        invalid = RSAPrivateNumbers(
+            numbers.p,
+            numbers.q,
+            numbers.d,
+            numbers.dmp1,
+            numbers.dmq1,
+            (numbers.iqmp + 1) % numbers.p,
+            numbers.public_numbers,
+        )
+        signing_key.key_data = (
+            invalid.private_key(unsafe_skip_rsa_key_validation=True)
+            .private_bytes(Encoding.PEM, PrivateFormat.PKCS8, NoEncryption())
+            .decode()
+        )
+        signing_key.save()
+        signing_key = CertificateKeyPair.objects.get(pk=signing_key.pk)
+        self.assertIsNone(signing_key.private_key)
+        self.assertEqual(signing_key.public_key.public_numbers(), numbers.public_numbers)
+
+        provider = OAuth2Provider.objects.create(
+            name="test",
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=signing_key,
+        )
+        app = Application.objects.create(name="test", slug="test", provider=provider)
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
+        )
+        [key] = json.loads(response.content.decode())["keys"]
+        self.assertEqual(key["alg"], "RS256")
+        self.assertEqual(RSAAlgorithm.from_jwk(key).public_numbers(), numbers.public_numbers)
+
     def test_hs256(self):
         """Test JWKS request with HS256"""
         provider = OAuth2Provider.objects.create(
@@ -93,6 +166,7 @@ class TestJWKS(OAuthTestCase):
         self.assertEqual(len(body["keys"]), 1)
         PyJWKSet.from_dict(body)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no EdDSA")
     def test_eddsa(self):
         """Test JWKS request with EdDSA, for both Edwards curves"""
         for alg, crv in [(PrivateKeyAlg.ED25519, "Ed25519"), (PrivateKeyAlg.ED448, "Ed448")]:
@@ -123,6 +197,7 @@ class TestJWKS(OAuthTestCase):
                 # key is actually usable by a relying party rather than merely well-shaped.
                 PyJWKSet.from_dict(body)
 
+    @skipIf(backend._fips_enabled, "The FIPS provider has no Ed25519")
     def test_eddsa_sign_verify(self):
         """Test a token signed with EdDSA verifies against the published JWKS"""
         provider = OAuth2Provider.objects.create(
@@ -187,3 +262,65 @@ class TestJWKS(OAuthTestCase):
         body = json.loads(response.content.decode())
         self.assertEqual(len(body["keys"]), 1)
         PyJWKSet.from_dict(body)
+
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
+    def test_mldsa(self):
+        """Test JWKS request with ML-DSA (RFC 9964 AKP keys), for all parameter sets"""
+        for alg, jose_alg in [
+            (PrivateKeyAlg.MLDSA44, "ML-DSA-44"),
+            (PrivateKeyAlg.MLDSA65, "ML-DSA-65"),
+            (PrivateKeyAlg.MLDSA87, "ML-DSA-87"),
+        ]:
+            with self.subTest(jose_alg):
+                slug = generate_id()
+                provider = OAuth2Provider.objects.create(
+                    name=generate_id(),
+                    client_id=generate_id(),
+                    authorization_flow=create_test_flow(),
+                    redirect_uris=[
+                        RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")
+                    ],
+                    signing_key=create_test_cert(alg),
+                )
+                app = Application.objects.create(name=slug, slug=slug, provider=provider)
+                response = self.client.get(
+                    reverse(
+                        "authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug}
+                    )
+                )
+                body = json.loads(response.content.decode())
+                self.assertEqual(len(body["keys"]), 1)
+                key = body["keys"][0]
+                self.assertEqual(key["kty"], "AKP")
+                self.assertEqual(key["alg"], jose_alg)
+                self.assertIn("pub", key)
+                self.assertIn("x5c", key)
+                # The published key must load into a usable verification key
+                public_key, loaded_alg = key_from_jwk(key)
+                self.assertEqual(loaded_alg, jose_alg)
+                self.assertEqual(
+                    public_key.public_bytes_raw(),
+                    provider.signing_key.private_key.public_key().public_bytes_raw(),
+                )
+
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
+    def test_mldsa_sign_verify(self):
+        """Test a token signed with ML-DSA verifies against the published JWKS"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=create_test_cert(PrivateKeyAlg.MLDSA44),
+        )
+        slug = generate_id()
+        app = Application.objects.create(name=slug, slug=slug, provider=provider)
+        token = provider.encode({"sub": "test"})
+        self.assertEqual(provider.jwt_key[1], "ML-DSA-44")
+
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
+        )
+        public_key, alg = key_from_jwk(json.loads(response.content.decode())["keys"][0])
+        decoded = decode(token, public_key, algorithms=[alg], options={"verify_aud": False})
+        self.assertEqual(decoded["sub"], "test")

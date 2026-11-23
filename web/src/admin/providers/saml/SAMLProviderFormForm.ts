@@ -353,6 +353,14 @@ export function renderForm({
                         "Determines how authentik sends the response back to the Service Provider.",
                     )}
                 ></ak-radio-input>
+                <ak-switch-input
+                    name="ignoreForceAuthn"
+                    label=${msg("Ignore ForceAuthn")}
+                    ?checked=${provider.ignoreForceAuthn ?? false}
+                    help=${msg(
+                        "When enabled, the ForceAuthn attribute set by the Service Provider is ignored and an existing session is used. When disabled, ForceAuthn requires the user to re-authenticate.",
+                    )}
+                ></ak-switch-input>
                 <ak-form-element-horizontal
                     label=${msg("Default NameID Policy")}
                     required
@@ -403,6 +411,15 @@ export function renderForm({
                             }
                         >
                             ${msg("Transient")}
+                        </option>
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified}
+                            ?selected=${
+                                provider?.defaultNameIdPolicy ===
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatUnspecified
+                            }
+                        >
+                            ${msg("Unspecified")}
                         </option>
                     </select>
                     <p class="pf-c-form__helper-text">
