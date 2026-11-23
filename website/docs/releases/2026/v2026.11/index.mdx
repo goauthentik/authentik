@@ -9,15 +9,11 @@ import APIChanges from "./_api-changes.mdx";
 
 ## Highlights
 
-{/* @dominic-r TODO: drop the managed secrets highlight if #25415 misses 2026.11. Awaiting Jens */}
-
 - **macOS 27 Platform SSO**: :ak-enterprise The authentik Agent supports Platform SSO on macOS 27, including browser-based sign-in and unlocking the lock screen.
+- **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
 - **Required actions**: :ak-enterprise Require users to complete flows, such as changing their password or setting up an authenticator, before they can continue.
 - **RAC for enrolled devices**: RAC providers connect to devices enrolled through the authentik Agent and sign users in without storing credentials for the device.
-- **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
 - **Post-quantum cryptography**: Generate ML-DSA certificates, and use a hybrid post-quantum key exchange for outpost TLS.
-
-{/* @girlbossrush ensure the highlight order matches the order below */}
 
 ## Breaking changes
 
@@ -129,10 +125,6 @@ Expressions can still read `user.password` and `user.password_change_date`. Expr
 
 Password devices are excluded from MFA discovery and validation. Their lock state can be managed through the [password authenticator API](../../../add-secure-apps/flows-stages/stages/password/index.mdx#manage-locks-through-the-api).
 
-### Credentials move to managed secrets
-
-{/* @dominic-r @jens TODO: fill in from #26095–#26103. Old credential field names fail with an error that names the `<field>_ref` replacement; list the affected providers, sources, and stages, and the blueprint and API changes. */}
-
 ### Multi-tenancy has been removed
 
 [Multi-tenancy](https://version-2026-8.goauthentik.io/sys-mgmt/tenancy/) (an enterprise feature preview) has been removed. Instances that never set `AUTHENTIK_TENANTS__ENABLED=true` are unaffected apart from the changes listed below.
@@ -165,12 +157,6 @@ The following API changes may require updates to scripts and API clients:
 ### Web-based login support for macOS 27 Platform SSO :ak-enterprise
 
 Users can now authenticate directly into their macOS devices using a customizable web-based flow. This skips an additional credential separate from the user's macOS password. The user completes the login flow in the browser, and authentik manages the authentication instead of macOS handling the password entry. For more details, refer to the [macOS deployment documentation](../../../endpoint-devices/authentik-agent/agent-deployment/macos.mdx).
-
-### Managed secrets
-
-{/* @dominic-r TODO: fill in from #25415 and its stack once merged, and link the docs. */}
-
-Credentials for providers, sources, and stages can be stored as managed secrets under **System** > **Secrets**. Viewing a secret's value and replacing or rotating it need separate permissions, and both are recorded in the audit log.
 
 ### Password lockout :ak-enterprise
 
