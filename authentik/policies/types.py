@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import copy, deepcopy
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
@@ -62,6 +63,17 @@ class PolicyRequest:
         if self.http_request:
             text += f" http_request={self.http_request}"
         return text + ">"
+
+    def deepcopy(self) -> PolicyRequest:
+        """Deep copy of this policy request;
+
+        HTTP Request, User and related object are _not_ copied"""
+        new_req = PolicyRequest(self.user)
+        new_req.context = deepcopy(self.context)
+        new_req.http_request = self.http_request
+        new_req.obj = self.obj
+        new_req.debug = copy(self.debug)
+        return new_req
 
 
 @dataclass(slots=True)

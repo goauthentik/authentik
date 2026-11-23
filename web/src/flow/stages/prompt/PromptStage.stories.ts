@@ -1,6 +1,5 @@
 import "@patternfly/patternfly/components/Login/login.css";
 import "./PromptStage.js";
-
 import { flowFactory } from "#stories/flow-interface";
 
 import { PromptTypeEnum } from "@goauthentik/api";
@@ -38,7 +37,7 @@ export const AllFieldTypes = flowFactory("ak-stage-prompt", {
     ].map((type, idx) => {
         return {
             fieldKey: `fk_${type}`,
-            type: type,
+            type,
             label: `${capitalCase(type)} (${type})`,
             order: idx,
             required: true,

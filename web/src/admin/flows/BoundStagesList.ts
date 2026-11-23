@@ -4,17 +4,15 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-
 import { aki } from "#common/api/client";
 
-import { modalInvoker } from "#elements/dialogs";
+import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
-import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { StageBindingForm } from "#admin/flows/StageBindingForm";
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 import { AKStageWizard } from "#admin/stages/ak-stage-wizard";
 
 import { FlowsApi, FlowStageBinding, ModelEnum } from "@goauthentik/api";
@@ -25,6 +23,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
+    public static override verboseName = msg("Stage binding", {
+        id: "stage-bindings.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Stage bindings", {
+        id: "stage-bindings.verbose-name-plural.label",
+    });
+
     protected flowsAPI = aki(FlowsApi);
 
     public override expandable = true;
@@ -56,8 +61,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Stage binding(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: FlowStageBinding) => {
                 return [
@@ -88,25 +93,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             item.stageObj?.name,
             item.stageObj?.verboseName,
             html`<div class="ak-c-table__actions">
-                <button
-                    type="button"
-                    class="pf-c-button pf-m-secondary"
-                    ${modalInvoker(() =>
-                        StrictUnsafe<CustomFormElementTagName>(item.stageObj?.component, {
-                            instancePk: item.stageObj?.pk,
-                        }),
-                    )}
-                >
-                    ${msg("Edit Stage")}
-                </button>
-
-                <button
-                    type="button"
-                    class="pf-c-button pf-m-secondary"
-                    ${modalInvoker(StageBindingForm, { instancePk: item.pk })}
-                >
-                    ${msg("Edit Binding")}
-                </button>
+                ${IconEditButtonByTagName(item.stageObj.component, item.stageObj.pk)}
+                ${IconEditButton(StageBindingForm, item.pk, null, { iconName: "fa-link" })}
                 ${IconPermissionButton(item.stageObj?.name || "", {
                     model: ModelEnum.AuthentikFlowsFlowstagebinding,
                     objectPk: item.pk,
@@ -128,18 +116,11 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     }
 
     protected override renderExpanded(item: FlowStageBinding): SlottedTemplateResult {
-        return html`<div class="pf-c-content">
-            <ak-bound-policies-list
-                .target=${item.policybindingmodelPtrId}
-                .policyEngineMode=${item.policyEngineMode}
-            >
-                <span slot="description"
-                    >${msg(
-                        "These bindings control if this stage will be applied to the flow.",
-                    )}</span
-                >
-            </ak-bound-policies-list>
-        </div>`;
+        return renderBoundPoliciesExpansion({
+            target: item.policybindingmodelPtrId,
+            mode: item.policyEngineMode,
+            description: msg("These bindings control if this stage will be applied to the flow."),
+        });
     }
 
     protected override renderEmpty(): SlottedTemplateResult {

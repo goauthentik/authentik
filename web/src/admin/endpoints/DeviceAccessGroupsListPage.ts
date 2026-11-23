@@ -1,9 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/endpoints/DeviceAccessGroupForm";
-import "#admin/policies/BoundPoliciesList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
@@ -12,6 +10,7 @@ import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { DeviceAccessGroupForm } from "#admin/endpoints/DeviceAccessGroupForm";
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
 
 import { DeviceAccessGroup, EndpointsApi } from "@goauthentik/api";
 
@@ -21,6 +20,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-endpoints-device-access-groups-list")
 export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
+    public static override verboseName = msg("Device Group", {
+        id: "device-access-groups.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Device Groups", {
+        id: "device-access-groups.verbose-name-plural.label",
+    });
+
     protected searchEnabled: boolean = true;
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
@@ -52,9 +58,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     }
 
     protected override renderExpanded(item: DeviceAccessGroup) {
-        return html`<div class="pf-c-content">
-            <ak-bound-policies-list .target=${item.pbmUuid}></ak-bound-policies-list>
-        </div>`;
+        return renderBoundPoliciesExpansion({ target: item.pbmUuid });
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
@@ -63,8 +67,8 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
 
     renderToolbarSelected() {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Device Group(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: DeviceAccessGroup) => {
                 return [{ key: msg("Name"), value: item.name }];

@@ -37,6 +37,9 @@ class Scheduler:
     def process_schedule(self, schedule: ScheduleBase) -> None:
         schedule.next_run = schedule.compute_next_run()
         schedule.send(self.broker)
+        if schedule.paused:
+            # send() paused the schedule because its actor doesn't exist
+            return
         schedule.save(update_fields=["next_run"])
 
     def _lock(self) -> pglock.advisory:

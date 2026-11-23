@@ -1,6 +1,6 @@
 /**
- * @file Docusaurus theme plugin.
  * @import { Plugin } from "@docusaurus/types";
+ * @file Docusaurus theme plugin.
  */
 
 /**

@@ -16,8 +16,13 @@ from authentik.endpoints.models import (
     DeviceUserBinding,
 )
 from authentik.flows.stage import StageView
-from authentik.lib.generators import generate_key
-from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
+from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.models import (
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator.models import Device as Authenticator
 
@@ -41,7 +46,10 @@ class AgentConnector(Connector):
         "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
     )
     jwt_federation_providers = models.ManyToManyField(
-        "authentik_providers_oauth2.OAuth2Provider", blank=True, default=None
+        "authentik_providers_oauth2.OAuth2Provider",
+        blank=True,
+        default=None,
+        through="AgentConnectorJWTFederationProvider",
     )
 
     nss_uid_offset = models.PositiveIntegerField(default=1000)
@@ -86,6 +94,29 @@ class AgentConnector(Connector):
     class Meta:
         verbose_name = _("Agent Connector")
         verbose_name_plural = _("Agent Connectors")
+
+
+class AgentConnectorJWTFederationProvider(SimpleThroughModel):
+    agent_connector = models.ForeignKey(
+        AgentConnector, on_delete=models.CASCADE, db_column="agentconnector_id"
+    )
+    oauth2_provider = models.ForeignKey(
+        "authentik_providers_oauth2.OAuth2Provider",
+        on_delete=models.CASCADE,
+        db_column="oauth2provider_id",
+    )
+
+    class Meta:
+        db_table = "authentik_endpoints_connectors_agent_agentconnector_jwt_fed2bc6"
+        unique_together = (("agent_connector", "oauth2_provider"),)
+        verbose_name = _("Agent Connector JWT Federation Provider")
+        verbose_name_plural = _("Agent Connector JWT Federation Providers")
+
+    def __str__(self):
+        return (
+            f"AgentConnectorJWTFederationProvider for AgentConnector {self.agent_connector_id} "
+            f"and OAuth2Provider {self.oauth2_provider_id}."
+        )
 
 
 class AgentDeviceConnection(DeviceConnection):
@@ -177,6 +208,38 @@ class AppleNonce(InternallyManagedMixin, ExpiringModel):
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Apple Nonce")
         verbose_name_plural = _("Apple Nonces")
+
+
+class AppleAuthorizationCode(InternallyManagedMixin, ExpiringModel):
+    """Short-lived code issued by the authorize endpoint, exchanged for tokens."""
+
+    code = models.TextField(default=generate_id)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    connector = models.ForeignKey("AgentConnector", on_delete=models.CASCADE)
+    # The device the code was issued to, it is the only one allowed to redeem it
+    device_connection = models.ForeignKey(AgentDeviceConnection, on_delete=models.CASCADE)
+    state = models.TextField(default="")
+    scope = models.TextField()
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Apple Authorization Code")
+        verbose_name_plural = _("Apple Authorization Codes")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["code"]),
+        ]
+
+
+class AppleUnlockKey(InternallyManagedMixin, ExpiringModel):
+    """Server-provisioned EC256 key for Platform SSO v2.0 user_unlock."""
+
+    identifier = models.UUIDField(primary_key=True, default=uuid4)
+    device_user = models.ForeignKey(AgentDeviceUserBinding, on_delete=models.CASCADE)
+    private_key = models.TextField()
+    certificate_der = models.TextField(default="")
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Apple Unlock Key")
+        verbose_name_plural = _("Apple Unlock Keys")
 
 
 class AppleIndependentSecureEnclave(Authenticator):

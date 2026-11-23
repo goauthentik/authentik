@@ -10,9 +10,6 @@ from authentik.admin.api.version_history import VersionHistoryViewSet
 from authentik.api.v3.urls import router
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user
 from authentik.lib.generators import generate_id
-from authentik.tenants.api.domains import DomainViewSet
-from authentik.tenants.api.tenants import TenantViewSet
-from authentik.tenants.utils import get_current_tenant
 
 
 class TestModelViewSets(TestCase):
@@ -42,7 +39,6 @@ def viewset_tester_factory(test_viewset: type[ModelViewSet], full=True) -> dict[
                 req = self.factory.get(
                     f"/?{urlencode({'ordering': ordering_field}, doseq=True)}", user=self.user
                 )
-                req.tenant = get_current_tenant()
                 res = view(req)
                 self.assertEqual(res.status_code, 200)
 
@@ -52,7 +48,6 @@ def viewset_tester_factory(test_viewset: type[ModelViewSet], full=True) -> dict[
         req = self.factory.get(
             f"/?{urlencode({'search': generate_id()}, doseq=True)}", user=self.user
         )
-        req.tenant = get_current_tenant()
         res = view(req)
         self.assertEqual(res.status_code, 200)
 
@@ -68,6 +63,6 @@ def viewset_tester_factory(test_viewset: type[ModelViewSet], full=True) -> dict[
 for _, viewset, _ in router.registry:
     if not issubclass(viewset, ModelViewSet | ReadOnlyModelViewSet):
         continue
-    full = viewset not in [VersionHistoryViewSet, DomainViewSet, TenantViewSet]
+    full = viewset not in [VersionHistoryViewSet]
     for test, case in viewset_tester_factory(viewset, full=full).items():
         setattr(TestModelViewSets, f"test_viewset_{viewset.__name__}_{test}", case)

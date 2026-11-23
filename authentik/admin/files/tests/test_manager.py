@@ -1,9 +1,10 @@
 """Test file service layer"""
 
 from unittest import skipUnless
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from urllib.parse import urlparse
 
+from django.db import DatabaseError
 from django.http import HttpRequest
 from django.test import TestCase
 
@@ -53,6 +54,18 @@ class TestResolveFileUrlBasic(TestCase):
         manager = FileManager(FileUsage.MEDIA)
         result = manager.file_url("/static/authentik/sources/icon.svg")
         self.assertEqual(result, "/static/authentik/sources/icon.svg")
+
+    def test_file_url_theme_variable_uses_light(self):
+        """Test file_url resolves %(theme)s to the light variant, never the placeholder"""
+        manager = FileManager(FileUsage.MEDIA)
+        self.assertEqual(
+            manager.file_url("/static/authentik/sources/kerberos/%(theme)s.png"),
+            "/static/authentik/sources/kerberos/light.png",
+        )
+        self.assertEqual(
+            manager.file_url("https://example.com/logo-%(theme)s.png"),
+            "https://example.com/logo-light.png",
+        )
 
     def test_file_url_forwards_use_cache(self):
         """Test file_url forwards use_cache to backend."""
@@ -187,3 +200,43 @@ class TestThemedUrls(FileTestFileBackendMixin, TestCase):
         # External URLs without %(theme)s should return None
         result = manager.themed_urls("https://example.com/logo.png")
         self.assertIsNone(result)
+
+
+class TestPrefetchUrls(FileTestFileBackendMixin, TestCase):
+    """Test FileManager.prefetch_urls"""
+
+    names = [
+        "logo.png",
+        "logo-%(theme)s.svg",
+        "https://goauthentik.io/logo.png",
+        "/static/dist/assets/icons/icon.svg",
+    ]
+
+    def _urls(self, manager: FileManager) -> list:
+        return [(manager.file_url(name), manager.themed_urls(name)) for name in self.names]
+
+    def test_prefetch_urls(self):
+        """Inside the block, file_url() and themed_urls() return the URLs they return outside
+        it, and reading the cached ones takes one query"""
+        manager = FileManager(FileUsage.MEDIA)
+        expected = self._urls(manager)
+        with self.assertNumQueries(1), manager.prefetch_urls(self.names):
+            self.assertEqual(self._urls(manager), expected)
+
+    def test_prefetch_urls_uncached(self):
+        """A URL that is not cached yet is generated and cached inside the block"""
+        manager = FileManager(FileUsage.MEDIA)
+        with manager.prefetch_urls(["logo.png"]):
+            url = manager.file_url("logo.png")
+        with self.assertNumQueries(1):
+            self.assertEqual(manager.file_url("logo.png"), url)
+
+    def test_prefetch_urls_cache_error(self):
+        """When the bulk read fails, each call reads its own URL, as without the block"""
+        manager = FileManager(FileUsage.MEDIA)
+        expected = self._urls(manager)
+        with (
+            patch("authentik.admin.files.manager.cache.get_many", side_effect=DatabaseError),
+            manager.prefetch_urls(self.names),
+        ):
+            self.assertEqual(self._urls(manager), expected)

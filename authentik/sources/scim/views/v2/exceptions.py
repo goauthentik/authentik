@@ -56,3 +56,16 @@ class SCIMNotFoundError(SCIMValidationError):
                 status=self.status_code,
             )
         )
+
+
+class SCIMInvalidFilterError(SCIMValidationError):
+    status_code = 400
+
+    def __init__(self, detail: str):
+        super().__init__(
+            SCIMError(
+                detail=detail,
+                scimType=SCIMErrorTypes.invalid_filter,
+                status=self.status_code,
+            )
+        )

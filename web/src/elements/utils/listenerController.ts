@@ -31,6 +31,7 @@ export class ListenerController {
         if (!this.listenerController) {
             this.listenerController = new AbortController();
         }
+
         return this.listenerController.signal;
     }
 

@@ -1,5 +1,5 @@
 export const InteractiveElementsQuery =
-    "[href],input,button,i,[role='button'],select,[tabindex]:not([tabindex='-1'])";
+    "[href],input,button,i,[role='button'],select,textarea,[tabindex]:not([tabindex='-1'])";
 
 export function isInteractiveElement(
     target: EventTarget | Element | null | undefined,
@@ -23,4 +23,36 @@ export function isInteractiveElement(
     return (
         visible && (tabIndex === 0 || tabIndex === -1 || target.matches(InteractiveElementsQuery))
     );
+}
+
+const TextLikeInputTypes = new Set([
+    "text",
+    "url",
+    "password",
+    "email",
+    "date",
+    "month",
+    "week",
+    "number",
+    "tel",
+    "time",
+]);
+
+/**
+ * Type predicate to determine if a given a target element is shaped like a text field.
+ *
+ * @see {@linkcode isInteractiveElement} to narrow the input to this function.
+ */
+export function isInteractiveTextElement(
+    target: HTMLElement,
+): target is HTMLInputElement | HTMLTextAreaElement {
+    if (target instanceof HTMLTextAreaElement) {
+        return true;
+    }
+
+    if (target instanceof HTMLInputElement) {
+        return TextLikeInputTypes.has(target.type);
+    }
+
+    return false;
 }

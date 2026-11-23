@@ -8,6 +8,7 @@
         "composite": true,
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
+        "allowImportingTsExtensions": true,
         "emitDeclarationOnly": true,
         "target": "esnext",
         "module": "preserve",
@@ -21,11 +22,7 @@
         // ---
         "**/out/**/*",
         "**/dist/**/*",
-        "storybook-static",
-        // TODO: @lit/localize-tools v0.8.0 has a nullish coalescing typing error.
-        // Remove when we upgrade past that.
-        "scripts/pseudolocalize.mjs",
-        "scripts/build-locales.mjs"
+        "storybook-static"
     ],
     "references": [
         {

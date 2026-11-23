@@ -34,8 +34,8 @@ entries:
         - username
       template: stages/identification/login.html
   - identifiers:
-      name: default-authentication-flow-mfa
-    id: default-authentication-flow-mfa
+      name: default-authentication-mfa-validation
+    id: default-authentication-mfa-validation
     model: authentik_stages_authenticator_validate.authenticatorvalidatestage
   - identifiers:
       name: default-authentication-password
@@ -58,7 +58,7 @@ entries:
     model: authentik_flows.flowstagebinding
   - identifiers:
       target: !KeyOf flow
-      stage: !KeyOf default-authentication-flow-mfa
+      stage: !KeyOf default-authentication-mfa-validation
       order: 30
     model: authentik_flows.flowstagebinding
     id: flow-binding-mfa

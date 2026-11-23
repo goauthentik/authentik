@@ -1,8 +1,8 @@
 import { aki } from "#common/api/client";
 import { type APIResult, isAPIResultReady } from "#common/api/responses";
-import { globalAK } from "#common/global";
 import { applyThemeChoice, formatColorScheme } from "#common/theme";
 import { createUIConfig, DefaultUIConfig } from "#common/ui/config";
+import { applyLocaleChange } from "#common/ui/locale/persist";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { me } from "#common/users";
 
@@ -20,6 +20,7 @@ import {
     SessionMixin,
     UIConfigContext,
 } from "#elements/mixins/session";
+import { toAdminInterface, toUserInterface } from "#elements/router/core/interfaces";
 import type { ReactiveElementHost } from "#elements/types";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
@@ -83,8 +84,19 @@ export class SessionContextController extends ReactiveContextController<APIResul
 
         if (localeHint) {
             const locale = autoDetectLanguage(localeHint);
-            this.logger.info(`Activating user's configured locale '${locale}'`);
-            this.host[kAKLocale]?.setLocale(locale);
+            const activeLocale = this.host[kAKLocale]?.getLocale();
+
+            // Locale is fixed per page load. On a normal load the server has already
+            // resolved the user's saved locale into this page, so this is a no-op.
+            // It only differs right after the user changes their language in settings:
+            // persist the new preference and reload so the whole UI — including
+            // server-rendered strings — comes back translated.
+            if (activeLocale && locale !== activeLocale) {
+                this.logger.info(`Applying user's configured locale '${locale}' via reload`);
+                applyLocaleChange(locale);
+
+                return;
+            }
         }
 
         const { settings = {} } = session.user || {};
@@ -112,10 +124,10 @@ export class SessionContextController extends ReactiveContextController<APIResul
 
         if (!isAPIResultReady(session)) {
             this.#commands.clear();
+
             return;
         }
 
-        const base = globalAK().api.base;
         const group = msg("Session");
         const weight = 0.5;
 
@@ -128,7 +140,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 group,
                 weight,
                 action: () => {
-                    window.location.assign(`${base}if/user/#/settings`);
+                    window.location.assign(toUserInterface("settings"));
                 },
             },
         ];
@@ -168,7 +180,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 group,
                 weight,
                 action: () => {
-                    window.location.assign(`${base}if/admin/`);
+                    window.location.assign(toAdminInterface());
                 },
             });
         }

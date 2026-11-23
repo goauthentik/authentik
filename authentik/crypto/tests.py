@@ -1,14 +1,27 @@
 """Crypto tests"""
 
 from json import loads
+from math import isnan
 from os import makedirs
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest import skipIf
+from unittest.mock import patch
 
+from cryptography.exceptions import InternalError
+from cryptography.hazmat.backends.openssl.backend import backend
+from cryptography.hazmat.primitives.serialization import (
+    load_pem_private_key as cryptography_load_pem_private_key,
+)
+from cryptography.x509 import (
+    load_pem_x509_certificate as cryptography_load_pem_x509_certificate,
+)
 from cryptography.x509.extensions import SubjectAlternativeName
 from cryptography.x509.general_name import DNSName
 from django.urls import reverse
 from django.utils.timezone import now
+from prometheus_client import REGISTRY
+from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
@@ -19,12 +32,22 @@ from authentik.core.tests.utils import (
     create_test_user,
 )
 from authentik.crypto.api import CertificateKeyPairSerializer
-from authentik.crypto.builder import CertificateBuilder
-from authentik.crypto.models import CertificateKeyPair, generate_key_id, generate_key_id_legacy
+from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
+from authentik.crypto.models import (
+    CertificateKeyPair,
+    KeyType,
+    _load_certificate,
+    _load_private_key,
+    _load_public_key,
+    generate_key_id,
+    generate_key_id_legacy,
+)
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
+from authentik.crypto.validators import TLS_KEY_TYPES, XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
+from authentik.root.monitoring import monitoring_set
 
 
 class TestCrypto(APITestCase):
@@ -38,6 +61,63 @@ class TestCrypto(APITestCase):
             key_data="foo",
         )
         self.assertIsNone(cert.private_key)
+
+    def test_model_certificate_cached_across_instances(self):
+        """Test model certificate is cached across model instances"""
+        keypair = create_test_cert()
+        other_keypair = create_test_cert()
+        _load_certificate.cache_clear()
+        self.addCleanup(_load_certificate.cache_clear)
+
+        with patch(
+            "authentik.crypto.models.load_pem_x509_certificate",
+            wraps=cryptography_load_pem_x509_certificate,
+        ) as loader:
+            first = CertificateKeyPair.objects.get(pk=keypair.pk)
+            second = CertificateKeyPair.objects.get(pk=keypair.pk)
+            other = CertificateKeyPair.objects.get(pk=other_keypair.pk)
+
+            self.assertIs(first.certificate, second.certificate)
+            self.assertEqual(loader.call_count, 1)
+            self.assertIsNot(first.certificate, other.certificate)
+            self.assertEqual(loader.call_count, 2)
+
+    def test_model_private_key_cached_across_instances(self):
+        """Test model private key is cached across model instances"""
+        keypair = create_test_cert()
+        other_keypair = create_test_cert()
+        _load_private_key.cache_clear()
+        self.addCleanup(_load_private_key.cache_clear)
+
+        with patch(
+            "authentik.crypto.models.load_pem_private_key",
+            wraps=cryptography_load_pem_private_key,
+        ) as loader:
+            first = CertificateKeyPair.objects.get(pk=keypair.pk)
+            second = CertificateKeyPair.objects.get(pk=keypair.pk)
+
+            self.assertIs(first.private_key, second.private_key)
+            self.assertEqual(loader.call_count, 1)
+            self.assertIsNot(first.private_key, other_keypair.private_key)
+            self.assertEqual(loader.call_count, 2)
+
+    def test_model_public_key_cached_across_instances(self):
+        """Test model public key is cached across model instances and loaded without the RSA key
+        check"""
+        keypair = create_test_cert()
+        _load_public_key.cache_clear()
+        self.addCleanup(_load_public_key.cache_clear)
+
+        with patch(
+            "authentik.crypto.models.load_pem_private_key",
+            wraps=cryptography_load_pem_private_key,
+        ) as loader:
+            first = CertificateKeyPair.objects.get(pk=keypair.pk)
+            second = CertificateKeyPair.objects.get(pk=keypair.pk)
+
+            self.assertIs(first.public_key, second.public_key)
+            self.assertEqual(loader.call_count, 1)
+            self.assertTrue(loader.call_args.kwargs["unsafe_skip_rsa_key_validation"])
 
     def test_serializer(self):
         """Test API Validation"""
@@ -138,6 +218,88 @@ class TestCrypto(APITestCase):
             data={},
         )
         self.assertEqual(response.status_code, 400)
+
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
+    def test_builder_mldsa(self):
+        """Test Builder with the ML-DSA (FIPS 204) parameter sets"""
+        for alg, key_type in (
+            (PrivateKeyAlg.MLDSA44, KeyType.MLDSA44),
+            (PrivateKeyAlg.MLDSA65, KeyType.MLDSA65),
+            (PrivateKeyAlg.MLDSA87, KeyType.MLDSA87),
+        ):
+            with self.subTest(alg=alg):
+                builder = CertificateBuilder(generate_id())
+                builder.alg = alg
+                builder.build(subject_alt_names=["pq.example"], validity_days=3)
+                instance = builder.save()
+                # ML-DSA certificates are self-signed with the ML-DSA scheme itself
+                self.assertEqual(instance.certificate.signature_algorithm_oid._name, key_type.label)
+                # The key type is detected from the certificate, which gates where it can be used
+                self.assertEqual(instance.key_type, key_type)
+                # The PKCS#8 private key round-trips through the model
+                self.assertIsNotNone(instance.private_key)
+                self.assertEqual(
+                    instance.private_key.public_key().public_bytes_raw(),
+                    instance.certificate.public_key().public_bytes_raw(),
+                )
+
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
+    def test_builder_api_mldsa(self):
+        """Test Builder (via API) with ML-DSA"""
+        self.client.force_login(create_test_admin_user())
+        name = generate_id()
+        response = self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={"common_name": name, "validity_days": 3, "alg": PrivateKeyAlg.MLDSA65},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(loads(response.content)["key_type"], KeyType.MLDSA65)
+
+    def test_builder_api_mldsa_unavailable(self):
+        """ML-DSA generation failing at the OpenSSL level (FIPS provider without ML-DSA) is
+        reported as a validation error instead of a server error"""
+        self.client.force_login(create_test_admin_user())
+        with patch(
+            "authentik.crypto.builder.MLDSA65PrivateKey.generate",
+            side_effect=InternalError("Unknown OpenSSL error.", []),
+        ):
+            response = self.client.post(
+                reverse("authentik_api:certificatekeypair-generate"),
+                data={"common_name": generate_id(), "validity_days": 3, "alg": "mldsa65"},
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("alg", loads(response.content))
+
+    def test_import_key_unavailable(self):
+        """Importing a key whose algorithm OpenSSL cannot load (ML-DSA under a FIPS provider
+        without it) is a validation error, not a server error"""
+        self.client.force_login(create_test_admin_user())
+        cert = create_test_cert()
+        with patch(
+            "authentik.crypto.api.load_pem_private_key",
+            side_effect=InternalError("Unknown OpenSSL error.", []),
+        ):
+            response = self.client.post(
+                reverse("authentik_api:certificatekeypair-list"),
+                data={
+                    "name": generate_id(),
+                    "certificate_data": cert.certificate_data,
+                    "key_data": cert.key_data,
+                },
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("key_data", loads(response.content))
+
+    @skipIf(backend._fips_enabled, "The FIPS provider has no ML-DSA")
+    def test_mldsa_key_type_validation(self):
+        """ML-DSA keypairs are accepted for TLS, and rejected where nothing can sign with them"""
+        builder = CertificateBuilder(generate_id())
+        builder.alg = PrivateKeyAlg.MLDSA65
+        builder.build(validity_days=3)
+        keypair = builder.save()
+        KeyTypeValidator(*TLS_KEY_TYPES)(keypair)
+        with self.assertRaises(ValidationError):
+            KeyTypeValidator(*XML_SIGNING_KEY_TYPES)(keypair)
 
     def test_list(self):
         """Test API List"""
@@ -557,3 +719,27 @@ class TestCrypto(APITestCase):
         # Kid should now be SHA512 for the new key
         self.assertNotEqual(cert.kid, legacy_kid)
         self.assertEqual(cert.kid, generate_key_id(cert.key_data))
+
+
+class TestCryptoMetrics(APITestCase):
+    """Certificate expiry metric tests"""
+
+    METRIC = "authentik_crypto_certificate_expiry_timestamp_seconds"
+
+    def test_expiry_exported(self):
+        """Each pair's certificate expiry is exported as a timestamp"""
+        kp = create_test_cert()
+        monitoring_set.send_robust(self)
+        self.assertEqual(
+            REGISTRY.get_sample_value(self.METRIC, {"name": kp.name, "kp_uuid": str(kp.kp_uuid)}),
+            kp.cert_expiry.timestamp(),
+        )
+
+    def test_deleted_pair_nan(self):
+        """A deleted pair is reported as NaN instead of its old expiry"""
+        kp = create_test_cert()
+        labels = {"name": kp.name, "kp_uuid": str(kp.kp_uuid)}
+        monitoring_set.send_robust(self)
+        kp.delete()
+        monitoring_set.send_robust(self)
+        self.assertTrue(isnan(REGISTRY.get_sample_value(self.METRIC, labels)))

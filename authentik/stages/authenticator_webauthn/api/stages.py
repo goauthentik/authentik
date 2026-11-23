@@ -24,9 +24,9 @@ class AuthenticatorWebAuthnStageSerializer(StageSerializer):
             "authenticator_attachment",
             "resident_key_requirement",
             "hints",
+            "additional_accepted_origins",
             "device_type_restrictions",
             "device_type_restrictions_obj",
-            "prevent_duplicate_devices",
             "max_attempts",
         ]
 

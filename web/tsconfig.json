@@ -1,22 +1,12 @@
 // @file TSConfig used by the web package during development.
 {
-    "extends": "@goauthentik/tsconfig",
+    "extends": "@goauthentik/tsconfig/web",
     "compilerOptions": {
         "ignoreDeprecations": "6.0",
-        "composite": true,
-        "types": ["node"],
-        "checkJs": true,
-        "allowJs": true,
-        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
-        "emitDeclarationOnly": true,
         "experimentalDecorators": true,
         // See https://lit.dev/docs/components/properties/
         "useDefineForClassFields": false,
-        "target": "esnext",
-        "module": "preserve",
-        "moduleResolution": "bundler",
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
 
         // TODO: We should enable this when when we're ready to enforce it.
         "noUncheckedIndexedAccess": false,
@@ -74,11 +64,6 @@
         // packages/client-ts) into every `tsc -p .` for no benefit.
         "packages/client-ts",
         "packages/sfe",
-        // TODO: @lit/localize-tools v0.8.0 has a nullish coalescing typing error.
-        // Remove when we upgrade past that.
-        "scripts/pseudolocalize.mjs",
-        "scripts/build-locales.mjs",
-
         // TODO: Remove after monorepo cleanup.
         "src/**/*.comp.ts"
     ]

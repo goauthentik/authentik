@@ -1,4 +1,5 @@
 import "#elements/cards/AggregateCard";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { AKElement } from "#elements/Base";
 
@@ -7,8 +8,6 @@ import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
-
-import PFList from "@patternfly/patternfly/components/List/list.css";
 
 export type QuickAction = [label: string, url: string, isExternal?: boolean];
 
@@ -20,18 +19,20 @@ export interface IQuickActionsCard {
 function renderItem([label, url, external]: QuickAction) {
     return html` <li>
         <a class="pf-u-mb-xl" href=${url} target=${ifDefined(external ? "_blank" : undefined)}
-            >${label}${external
-                ? html`&nbsp;<i
-                          aria-hidden="true"
-                          class="fas fa-external-link-alt ak-external-link"
-                      ></i>`
-                : nothing}
+            >${label}${
+                external
+                    ? html`&nbsp;<i
+                              aria-hidden="true"
+                              class="fas fa-external-link-alt ak-external-link"
+                          ></i>`
+                    : nothing
+            }
         </a>
     </li>`;
 }
 
 /**
- * class QuickActionsCard
+ * Class QuickActionsCard
  * element ak-quick-actions-card
  *
  * Specialized card for navigation.

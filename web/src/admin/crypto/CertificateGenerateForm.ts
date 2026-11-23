@@ -2,7 +2,6 @@ import "#components/ak-text-input";
 import "#components/ak-number-input";
 import "#elements/forms/Radio";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
@@ -80,6 +79,18 @@ export class CryptoCertificateGenerateForm extends Form<CertificateGenerationReq
                         {
                             label: msg("ED448"),
                             value: AlgEnum.Ed448,
+                        },
+                        {
+                            label: msg("ML-DSA-44", { id: "crypto.generate.alg.ml-dsa-44.label" }),
+                            value: AlgEnum.Mldsa44,
+                        },
+                        {
+                            label: msg("ML-DSA-65", { id: "crypto.generate.alg.ml-dsa-65.label" }),
+                            value: AlgEnum.Mldsa65,
+                        },
+                        {
+                            label: msg("ML-DSA-87", { id: "crypto.generate.alg.ml-dsa-87.label" }),
+                            value: AlgEnum.Mldsa87,
                         },
                     ]}
                 >

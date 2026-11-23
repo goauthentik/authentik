@@ -9,22 +9,20 @@ from django.urls import reverse
 from lxml.etree import Element, SubElement, _Element, tostring  # nosec
 
 from authentik.common.saml.constants import (
-    DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_METADATA,
     NS_SAML_PROTOCOL,
     NS_SIGNATURE,
-    SAML_BINDING_POST,
-    SAML_BINDING_REDIRECT,
+    SAML_BINDINGS_SUPPORTED,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
-from authentik.lib.xml import remove_xml_newlines
+from authentik.common.saml.utils import x509_certificate_b64
 from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.utils.encoding import strip_pem_header
+from authentik.providers.saml.processors.signature import sign_xml_element
 
 
 class MetadataProcessor:
@@ -63,9 +61,7 @@ class MetadataProcessor:
         key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
         x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
         x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
-        x509_certificate.text = strip_pem_header(
-            self.provider.signing_kp.certificate_data.replace("\r", "")
-        )
+        x509_certificate.text = x509_certificate_b64(self.provider.signing_kp.certificate)
         return key_descriptor
 
     def get_name_id_formats(self) -> Iterator[Element]:
@@ -93,7 +89,7 @@ class MetadataProcessor:
     def get_sso_bindings(self) -> Iterator[Element]:
         """Get all SSO Bindings - both point to unified endpoint"""
         unified_url = self._get_unified_url()
-        for binding in [SAML_BINDING_REDIRECT, SAML_BINDING_POST]:
+        for binding in SAML_BINDINGS_SUPPORTED:
             if self.force_binding and self.force_binding != binding:
                 continue
             element = Element(f"{{{NS_SAML_METADATA}}}SingleSignOnService")
@@ -104,7 +100,7 @@ class MetadataProcessor:
     def get_slo_bindings(self) -> Iterator[Element]:
         """Get all SLO Bindings - both point to unified endpoint"""
         unified_url = self._get_unified_url()
-        for binding in [SAML_BINDING_REDIRECT, SAML_BINDING_POST]:
+        for binding in SAML_BINDINGS_SUPPORTED:
             if self.force_binding and self.force_binding != binding:
                 continue
             element = Element(f"{{{NS_SAML_METADATA}}}SingleLogoutService")
@@ -124,36 +120,8 @@ class MetadataProcessor:
         )
         entity_descriptor.append(signature)
 
-    def _sign(self, entity_descriptor: _Element):
-        digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
-            self.provider.digest_algorithm, xmlsec.constants.TransformSha1
-        )
-        assertion = entity_descriptor.xpath("//md:EntityDescriptor", namespaces=NS_MAP)[0]
-        xmlsec.tree.add_ids(assertion, ["ID"])
-        signature_node = xmlsec.tree.find_node(assertion, xmlsec.constants.NodeSignature)
-        ref = xmlsec.template.add_reference(
-            signature_node,
-            digest_algorithm_transform,
-            uri="#" + self.xml_id,
-        )
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
-        xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)
-        key_info = xmlsec.template.ensure_key_info(signature_node)
-        xmlsec.template.add_x509_data(key_info)
-
-        ctx = xmlsec.SignatureContext()
-
-        key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-            None,
-        )
-        key.load_cert_from_memory(
-            self.provider.signing_kp.certificate_data,
-            xmlsec.constants.KeyDataFormatCertPem,
-        )
-        ctx.key = key
-        ctx.sign(remove_xml_newlines(assertion, signature_node))
+    def _sign(self, entity_descriptor: _Element) -> None:
+        sign_xml_element(entity_descriptor, self.provider)
 
     def add_children(self, entity_descriptor: _Element):
         self.add_idp_sso(entity_descriptor)

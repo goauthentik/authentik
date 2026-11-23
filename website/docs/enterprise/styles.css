@@ -1,0 +1,35 @@
+.ak-enterprise-actions {
+    margin: 1.25rem 0 2rem;
+}
+
+.ak-enterprise-actions .button {
+    padding: 0.625rem 1.75rem;
+    font-size: 1.0625rem;
+}
+
+.ak-enterprise-actions svg {
+    width: 0.8em;
+    height: 0.8em;
+    vertical-align: baseline;
+}
+
+.ak-enterprise-pricing {
+    border: 2px solid currentcolor;
+    color: var(--ifm-color-primary-darkest);
+}
+
+.ak-enterprise-pricing:hover,
+.ak-enterprise-pricing:focus-visible {
+    background-color: var(--ifm-color-primary-darkest);
+    color: var(--white);
+}
+
+[data-theme="dark"] .ak-enterprise-pricing {
+    color: var(--ifm-color-primary-light);
+}
+
+[data-theme="dark"] .ak-enterprise-pricing:hover,
+[data-theme="dark"] .ak-enterprise-pricing:focus-visible {
+    background-color: var(--ifm-color-primary-light);
+    color: var(--ifm-background-color);
+}

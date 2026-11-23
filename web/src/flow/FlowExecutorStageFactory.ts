@@ -19,6 +19,7 @@ import { match, P } from "ts-pattern";
 
 export type { FlowChallengeComponentName, StageModuleCallback };
 export const propVariants = ["standard", "challenge"] as const;
+
 export type PropVariant = (typeof propVariants)[number];
 
 const STANDARD = propVariants[0];
@@ -35,7 +36,7 @@ export class StageMappingError extends TypeError {
  */
 function resolveStageTag(module: ResolvedDefaultESModule<BaseStageConstructor>): string {
     const StageConstructor = module.default;
-    const tag = window.customElements.getName(StageConstructor);
+    const tag = customElements.getName(StageConstructor);
 
     if (!tag) {
         const error = new StageMappingError(
@@ -71,7 +72,8 @@ export class StageMapping {
     /**
      * A mapping of server-side stage tokens to client-side custom element tags.
      *
-     * This can be used to determine if a given stage component has a corresponding client-side stage.
+     * This can be used to determine if a given stage component has a corresponding client-side
+     * stage.
      */
     public static readonly registry: ReadonlyMap<FlowChallengeComponentName, StageEntry> = new Map(
         StageEntries.map((entry) => [entry.stage, entry]),
@@ -110,6 +112,7 @@ export class StageMapping {
         // import event won't happen. Without it, the class constructor won't be available for tag
         // resolution anyway.
         const newtag = init.tag || (await fetch?.().then(resolveStageTag)) || stage;
+
         return new StageMapping({ ...init, tag: newtag });
     }
 }

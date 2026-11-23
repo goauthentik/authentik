@@ -1,11 +1,12 @@
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.object_attributes import AttributesMixinSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.endpoints.models import DeviceAccessGroup
 
 
-class DeviceAccessGroupSerializer(ModelSerializer):
+class DeviceAccessGroupSerializer(AttributesMixinSerializer, ModelSerializer):
 
     class Meta:
         model = DeviceAccessGroup

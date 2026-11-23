@@ -9,28 +9,184 @@ from rest_framework.exceptions import ErrorDetail
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.tests.utils import create_test_admin_user, create_test_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.sources.ldap.api.sources import LDAPSourceSerializer
-from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
+from authentik.sources.ldap.models import (
+    LDAPSource,
+    LDAPSourceBindMethod,
+    LDAPSourcePropertyMapping,
+)
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 
 
 class LDAPAPITests(APITestCase):
     """LDAP API tests"""
 
+    def source_data(self, **kwargs):
+        """Build serializer data for an LDAP source."""
+        data = {
+            "name": "foo",
+            "slug": generate_id(),
+            "server_uri": "ldaps://1.2.3.4",
+            "base_dn": "dc=foo",
+        }
+        data.update(kwargs)
+        return data
+
+    def external_source_data(self, **kwargs):
+        """Build serializer data for a SASL EXTERNAL source."""
+        data = self.source_data(
+            name="external",
+            server_uri="ldap://ldap.example.com",
+            start_tls=True,
+            client_certificate=create_test_cert().pk,
+            service_bind_method=LDAPSourceBindMethod.SASL_EXTERNAL,
+            base_dn="dc=example,dc=com",
+            sync_users_password=False,
+        )
+        data.update(kwargs)
+        return data
+
+    def test_sasl_external_valid(self):
+        """SASL EXTERNAL accepts a client certificate over StartTLS."""
+        serializer = LDAPSourceSerializer(data=self.external_source_data())
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.errors, {})
+
+    def test_sasl_external_valid_ldaps(self):
+        """SASL EXTERNAL accepts a client certificate over LDAPS."""
+        serializer = LDAPSourceSerializer(
+            data=self.external_source_data(
+                server_uri="ldaps://ldap.example.com",
+                start_tls=False,
+            )
+        )
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(serializer.errors, {})
+
+    def test_sasl_external_requires_certificate(self):
+        """SASL EXTERNAL requires a client certificate and private key."""
+        serializer = LDAPSourceSerializer(data=self.external_source_data(client_certificate=None))
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors,
+            {
+                "client_certificate": [
+                    ErrorDetail(
+                        string=("SASL EXTERNAL requires a client certificate with a private key."),
+                        code="invalid",
+                    )
+                ]
+            },
+        )
+
+    def test_sasl_external_rejects_plaintext(self):
+        """SASL EXTERNAL rejects LDAP without StartTLS."""
+        serializer = LDAPSourceSerializer(data=self.external_source_data(start_tls=False))
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors,
+            {
+                "server_uri": [
+                    ErrorDetail(
+                        string=(
+                            "SASL EXTERNAL requires ldap:// with StartTLS or ldaps:// without "
+                            "StartTLS."
+                        ),
+                        code="invalid",
+                    )
+                ]
+            },
+        )
+
+    def test_sasl_external_rejects_start_tls_over_ldaps(self):
+        """SASL EXTERNAL rejects StartTLS when the URI already uses LDAPS."""
+        serializer = LDAPSourceSerializer(
+            data=self.external_source_data(server_uri="ldaps://ldap.example.com")
+        )
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors,
+            {
+                "server_uri": [
+                    ErrorDetail(
+                        string=(
+                            "SASL EXTERNAL requires ldap:// with StartTLS or ldaps:// without "
+                            "StartTLS."
+                        ),
+                        code="invalid",
+                    )
+                ]
+            },
+        )
+
+    def test_sasl_external_rejects_mixed_server_schemes(self):
+        """Every server in a SASL EXTERNAL pool must use the same secure transport."""
+        serializer = LDAPSourceSerializer(
+            data=self.external_source_data(
+                server_uri="ldap://ldap.example.com,ldaps://ldap.example.net"
+            )
+        )
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors,
+            {
+                "server_uri": [
+                    ErrorDetail(
+                        string=(
+                            "SASL EXTERNAL requires ldap:// with StartTLS or ldaps:// without "
+                            "StartTLS."
+                        ),
+                        code="invalid",
+                    )
+                ]
+            },
+        )
+
+    def test_sasl_external_partial_update(self):
+        """Partial updates validate changed fields against existing source fields."""
+        source = LDAPSource.objects.create(
+            **self.source_data(
+                name="external",
+                server_uri="ldap://ldap.example.com",
+                start_tls=True,
+                client_certificate=create_test_cert(),
+                service_bind_method=LDAPSourceBindMethod.SASL_EXTERNAL,
+                base_dn="dc=example,dc=com",
+                sync_users_password=False,
+            )
+        )
+        serializer = LDAPSourceSerializer(
+            source,
+            data={"start_tls": False},
+            partial=True,
+        )
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors,
+            {
+                "server_uri": [
+                    ErrorDetail(
+                        string=(
+                            "SASL EXTERNAL requires ldap:// with StartTLS or ldaps:// without "
+                            "StartTLS."
+                        ),
+                        code="invalid",
+                    )
+                ]
+            },
+        )
+
     def test_sync_users_password_valid(self):
         """Check that single source with sync_users_password is valid"""
         serializer = LDAPSourceSerializer(
-            data={
-                "name": "foo",
-                "slug": " foo",
-                "server_uri": "ldaps://1.2.3.4",
-                "bind_cn": "",
-                "bind_password": generate_id(),
-                "base_dn": "dc=foo",
-                "sync_users_password": True,
-            }
+            data=self.source_data(
+                slug=" foo",
+                bind_cn="",
+                bind_password=generate_id(),
+                sync_users_password=True,
+            )
         )
         self.assertTrue(serializer.is_valid())
         self.assertEqual(serializer.errors, {})
@@ -38,24 +194,18 @@ class LDAPAPITests(APITestCase):
     def test_sync_users_password_invalid(self):
         """Ensure only a single source with password sync can be created"""
         LDAPSource.objects.create(
-            name="foo",
-            slug=generate_id(),
-            server_uri="ldaps://1.2.3.4",
-            bind_cn="",
-            bind_password=generate_id(),
-            base_dn="dc=foo",
-            sync_users_password=True,
+            **self.source_data(
+                bind_cn="",
+                bind_password=generate_id(),
+                sync_users_password=True,
+            )
         )
         serializer = LDAPSourceSerializer(
-            data={
-                "name": "foo",
-                "slug": generate_id(),
-                "server_uri": "ldaps://1.2.3.4",
-                "bind_cn": "",
-                "bind_password": generate_id(),
-                "base_dn": "dc=foo",
-                "sync_users_password": True,
-            }
+            data=self.source_data(
+                bind_cn="",
+                bind_password=generate_id(),
+                sync_users_password=True,
+            )
         )
         self.assertFalse(serializer.is_valid())
         self.assertEqual(
@@ -73,32 +223,26 @@ class LDAPAPITests(APITestCase):
     def test_sync_users_mapping_empty(self):
         """Check that when sync_users is enabled, property mappings must be set"""
         serializer = LDAPSourceSerializer(
-            data={
-                "name": "foo",
-                "slug": " foo",
-                "server_uri": "ldaps://1.2.3.4",
-                "bind_cn": "",
-                "bind_password": generate_id(),
-                "base_dn": "dc=foo",
-                "sync_users": True,
-                "user_property_mappings": [],
-            }
+            data=self.source_data(
+                slug=" foo",
+                bind_cn="",
+                bind_password=generate_id(),
+                sync_users=True,
+                user_property_mappings=[],
+            )
         )
         self.assertFalse(serializer.is_valid())
 
     def test_sync_groups_mapping_empty(self):
         """Check that when sync_groups is enabled, property mappings must be set"""
         serializer = LDAPSourceSerializer(
-            data={
-                "name": "foo",
-                "slug": " foo",
-                "server_uri": "ldaps://1.2.3.4",
-                "bind_cn": "",
-                "bind_password": generate_id(),
-                "base_dn": "dc=foo",
-                "sync_groups": True,
-                "group_property_mappings": [],
-            }
+            data=self.source_data(
+                slug=" foo",
+                bind_cn="",
+                bind_password=generate_id(),
+                sync_groups=True,
+                group_property_mappings=[],
+            )
         )
         self.assertFalse(serializer.is_valid())
 

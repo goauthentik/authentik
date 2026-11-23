@@ -1,12 +1,13 @@
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls.base import reverse
+from freezegun import freeze_time
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.stage import StageView
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
@@ -62,7 +63,7 @@ class AuthenticatorValidateStageFactorTests(TestCase):
         self.assertIsNone(stage.get_throttling_factor(DeviceClasses.DUO))
 
 
-class ValidateChallengeCodeThrottlingTests(FlowTestCase):
+class ValidateChallengeCodeThrottlingTests(APIFlowTestCase):
     """Tests for validate_challenge_code throttling behavior."""
 
     def setUp(self) -> None:
@@ -118,8 +119,9 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         stage = self._validate_stage(email_otp_throttling_factor=3)
         device = self._email_device()
         device.generate_token()
+        challenges = [{"device_class": DeviceClasses.EMAIL, "device_uid": str(device.pk)}]
         with self.assertRaises(ValidationError):
-            validate_challenge_code("000000", self._stage_view(stage), self.user)
+            validate_challenge_code("000000", self._stage_view(stage), self.user, challenges)
         device.refresh_from_db()
         self.assertEqual(device.throttling_failure_count, 1)
         # verify_is_allowed must compute the delay using factor=3 (3 * 2^0 = 3s).
@@ -135,10 +137,11 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         device = self._email_device()
         device.generate_token()
         token = device.token
+        challenges = [{"device_class": DeviceClasses.EMAIL, "device_uid": str(device.pk)}]
         for _ in range(10):
             with self.assertRaises(ValidationError):
-                validate_challenge_code("000000", self._stage_view(stage), self.user)
-        matched = validate_challenge_code(token, self._stage_view(stage), self.user)
+                validate_challenge_code("000000", self._stage_view(stage), self.user, challenges)
+        matched = validate_challenge_code(token, self._stage_view(stage), self.user, challenges)
         self.assertEqual(matched.pk, device.pk)
 
     def test_lockout_persists_across_calls(self):
@@ -150,18 +153,19 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         device.generate_token()
         token = device.token
         invalid_token = "000000" if token != "000000" else "111111"  # nosec
+        challenges = [{"device_class": DeviceClasses.EMAIL, "device_uid": str(device.pk)}]
         with self.assertRaises(ValidationError):
-            validate_challenge_code(invalid_token, self._stage_view(stage), self.user)
+            validate_challenge_code(invalid_token, self._stage_view(stage), self.user, challenges)
         # Immediately try with the correct token: lockout still active, attempt must be rejected.
         with self.assertRaises(ValidationError):
-            validate_challenge_code(token, self._stage_view(stage), self.user)
+            validate_challenge_code(token, self._stage_view(stage), self.user, challenges)
         device.refresh_from_db()
         # Token wasn't consumed (verification never ran), and counter didn't get incremented.
         self.assertEqual(device.token, token)
         self.assertEqual(device.throttling_failure_count, 1)
 
 
-class ValidateStageThrottlingFlowTests(FlowTestCase):
+class ValidateStageThrottlingFlowTests(APIFlowTestCase):
     """End-to-end lockout behavior through the flow executor HTTP API."""
 
     def setUp(self) -> None:
@@ -222,19 +226,20 @@ class ValidateStageThrottlingFlowTests(FlowTestCase):
         # Server generated and stored the token - grab it from DB.
         device.refresh_from_db()
         token = device.token
-        # First attempt: bad code - must increment the DB counter.
-        self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"component": "ak-stage-authenticator-validate", "code": "000000"},
-        )
-        device.refresh_from_db()
-        self.assertEqual(device.throttling_failure_count, 1)
-        self.assertEqual(device.token, token)
-        # Second attempt with the correct token - still blocked.
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"component": "ak-stage-authenticator-validate", "code": token},
-        )
+        with freeze_time():
+            # First attempt: bad code - must increment the DB counter.
+            self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                {"component": "ak-stage-authenticator-validate", "code": "000000"},
+            )
+            device.refresh_from_db()
+            self.assertEqual(device.throttling_failure_count, 1)
+            self.assertEqual(device.token, token)
+            # Second attempt with the correct token - still blocked.
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                {"component": "ak-stage-authenticator-validate", "code": token},
+            )
         self.assertStageResponse(
             response,
             flow=self.flow,

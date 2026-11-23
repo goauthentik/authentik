@@ -1,6 +1,6 @@
-import "#elements/messages/MessageContainer";
-import "#admin/ak-interface-admin";
+import { initializeLocale } from "#common/ui/locale/runtime";
 
-if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload");
-}
+// The catalog must be active before any module that calls `msg()` at module level loads.
+await initializeLocale();
+
+await import("#admin/boot");

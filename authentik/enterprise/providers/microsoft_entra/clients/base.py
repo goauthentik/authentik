@@ -39,6 +39,18 @@ from authentik.lib.sync.outgoing.exceptions import (
 )
 
 
+def entity_as_dict(entity: Entity) -> dict:
+    """Create a dictionary of a model instance, making sure to remove (known) things
+    we can't JSON serialize"""
+    return sanitize_item(
+        asdict(
+            entity,
+            # Nested entities carry their own backing store, so filter at every level
+            dict_factory=lambda items: {k: v for k, v in items if k != "backing_store"},
+        )
+    )
+
+
 class AuthentikRequestAdapter(GraphRequestAdapter):
     def __init__(self, auth_provider, provider: MicrosoftEntraProvider, client=None):
         super().__init__(auth_provider, client)
@@ -99,18 +111,20 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
             return run(request)
         except ClientAuthenticationError as exc:
             raise StopSync(exc, None, None) from exc
-        except ODataError as exc:
-            raise StopSync(exc, None, None) from exc
         except (ServiceRequestError, ServiceResponseError) as exc:
             raise TransientSyncException("Failed to sent request") from exc
         except APIError as exc:
+            # Graph raises every error response as ODataError, a subclass of APIError
+            detail = exc
+            if isinstance(exc, ODataError) and exc.error and exc.error.message:
+                detail = exc.error.message
             if exc.response_status_code == HttpResponseNotFound.status_code:
-                raise NotFoundSyncException("Object not found") from exc
+                raise NotFoundSyncException(detail) from exc
             if exc.response_status_code == HttpResponseBadRequest.status_code:
-                raise BadRequestSyncException("Bad request", exc.response_headers) from exc
+                raise BadRequestSyncException(detail) from exc
             if exc.response_status_code == HTTP_CONFLICT:
-                raise ObjectExistsSyncException("Object exists", exc.response_headers) from exc
-            raise exc
+                raise ObjectExistsSyncException(detail) from exc
+            raise StopSync(exc, None, None) from exc
 
     def __prefetch_domains(self):
         self.domains = []
@@ -128,10 +142,3 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
         for email in emails:
             if not any(email.endswith(f"@{domain_name}") for domain_name in self.domains):
                 raise BadRequestSyncException(f"Invalid email domain: {email}")
-
-    def entity_as_dict(self, entity: Entity) -> dict:
-        """Create a dictionary of a model instance, making sure to remove (known) things
-        we can't JSON serialize"""
-        raw_data = asdict(entity)
-        raw_data.pop("backing_store", None)
-        return sanitize_item(raw_data)

@@ -1,5 +1,4 @@
 import "../AppIcon.js";
-
 import { AppIcon } from "../AppIcon.js";
 
 import { PFSize } from "#common/enums";

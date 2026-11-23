@@ -10,7 +10,7 @@ from authentik.core.middleware import get_user
 from authentik.core.models import Session
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.root.middleware import ClientIPMiddleware, SessionMiddleware
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding
 
@@ -19,7 +19,7 @@ SESSION_KEY_BINDING_GEO = "authentik/stages/user_login/binding/geo"
 LOGGER = get_logger()
 
 
-class SessionBindingBroken(SentryIgnoredException):
+class SessionBindingBroken(TracingIgnoredException):
     """Session binding was broken due to specified `reason`"""
 
     def __init__(  # noqa: PLR0913
@@ -113,7 +113,7 @@ class BoundSessionMiddleware(SessionMiddleware):
         if SESSION_KEY_BINDING_NET in request.session or SESSION_KEY_BINDING_GEO in request.session:
             # Only set the last IP in the session if there's a binding specified
             # (== basically requires the user to be logged in)
-            request.session[Session.Keys.LAST_IP] = new_ip
+            request.session.save_last_ip(new_ip)
 
     @staticmethod
     def recheck_session_net(binding: NetworkBinding, last_ip: str, new_ip: str):

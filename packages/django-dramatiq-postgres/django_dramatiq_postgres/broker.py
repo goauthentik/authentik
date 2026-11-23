@@ -1,5 +1,6 @@
 import functools
 import logging
+import random
 import time
 from collections.abc import Callable, Iterable
 from datetime import UTC, datetime, timedelta
@@ -11,6 +12,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import (
     DEFAULT_DB_ALIAS,
     DatabaseError,
+    Error,
     InterfaceError,
     OperationalError,
     connections,
@@ -32,6 +34,7 @@ from psycopg import sql
 from psycopg.errors import AdminShutdown
 from structlog.stdlib import get_logger
 
+from authentik.lib.utils.db import delete_in_batches
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import CHANNEL_PREFIX, ChannelIdentifier, TaskBase, TaskState
 
@@ -53,6 +56,8 @@ CONSUMABLE_TASK_STATES: set[TaskState] = set(TaskState) - {
     TaskState.REJECTED,
     TaskState.WAITING_FOR_DEPENDENCIES,
 }
+# Only fetch the most due messages, so a consumer's memory doesn't grow with the queue's backlog
+PENDING_FETCH_LIMIT = 1000
 
 
 def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
@@ -276,9 +281,14 @@ class _PostgresConsumer(Consumer):
 
         # Override because dramatiq doesn't allow us setting this manually
         self.timeout = Conf().worker["consumer_listen_timeout"]
+        self._next_pending_reconciliation = time.monotonic() + self.timeout
 
         self.task_purge_interval = timedelta(seconds=Conf().task_purge_interval)
-        self.task_purge_last_run = timezone.now() - self.task_purge_interval
+        # Spread the first purge over the interval instead of running it on boot. Using
+        # now() would starve purging on pods that restart more often than the interval.
+        self.task_purge_last_run = timezone.now() - timedelta(
+            seconds=random.uniform(0, self.task_purge_interval.total_seconds())  # nosec
+        )
 
         self.scheduler = None
         if Conf().schedule_model:
@@ -378,20 +388,25 @@ class _PostgresConsumer(Consumer):
 
     def _fetch_pending_messages(self) -> set[str]:
         self.logger.debug("Fetching for pending messages", queue=self.queue_name)
-        pending = set(
-            self.query_set.exclude(message_id__in=self.in_processing)
+        pending = {
+            str(message_id)
+            for message_id in self.query_set.exclude(message_id__in=self.in_processing)
             .filter(queue_name=self.queue_name)
             .filter(state__in=CONSUMABLE_TASK_STATES)
             .exclude(eta__gte=timezone.now() + timedelta(seconds=self.timeout))
             .order_by(F("eta").asc(nulls_first=True))
-            .values_list("message_id", flat=True)
-        )
+            .values_list("message_id", flat=True)[:PENDING_FETCH_LIMIT]
+        }
         self.logger.debug(
             "Finished fetching pending messages in queue",
             pending=len(pending),
             queue=self.queue_name,
         )
-        return {str(message_id) for message_id in pending}
+        return pending
+
+    def _reconcile_pending_messages(self) -> None:
+        self.pending.update(self._fetch_pending_messages())
+        self._next_pending_reconciliation = time.monotonic() + self.timeout
 
     def _poll_for_notify(self) -> set[str]:
         self.logger.debug("Polling for message notifications", queue=self.queue_name)
@@ -409,36 +424,61 @@ class _PostgresConsumer(Consumer):
             self.logger.debug("Message already consumed by self", message_id=message_id)
             return None
 
+        table = sql.Identifier(self.query_set.model._meta.db_table)
+        consumable = sql.SQL("""
+            {table}.{message_id} = %(message_id)s
+            AND
+            {table}.{state} = ANY(%(consumable_states)s)
+            AND
+            ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
+        """).format(
+            table=table,
+            message_id=sql.Identifier("message_id"),
+            state=sql.Identifier("state"),
+            eta=sql.Identifier("eta"),
+        )
+        consumable_params: dict[str, Any] = {
+            "message_id": message_id,
+            "consumable_states": [state.value for state in CONSUMABLE_TASK_STATES],
+            "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
+        }
+
         with self.locks_connection.cursor() as cursor:
+            # Every consumer is notified of every message, so most attempts lose the race to
+            # another consumer. Unlocking a lock that isn't held logs a "you don't own a lock"
+            # warning in PostgreSQL, so we only unlock locks we acquired.
+            # The lock is only attempted for a consumable message: no row means the message is
+            # done, rejected or not due yet, and no lock was taken.
             cursor.execute(
-                sql.SQL("""
-                    UPDATE {table}
-                    SET {state} = %(state)s, {mtime} = %(mtime)s
-                    WHERE
-                        {table}.{message_id} = %(message_id)s
-                        AND
-                        {table}.{state} = ANY(%(consumable_states)s)
-                        AND
-                        ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
-                        AND
-                        pg_try_advisory_lock(%(lock_id)s)
-                    """).format(
-                    table=sql.Identifier(self.query_set.model._meta.db_table),
+                sql.SQL(
+                    "SELECT pg_try_advisory_lock(%(lock_id)s) FROM {table} WHERE {consumable}"
+                ).format(
+                    table=table,
+                    consumable=consumable,
+                ),
+                {**consumable_params, "lock_id": self._get_message_lock_id(message_id)},
+            )
+            row = cursor.fetchone()
+            if row is None or not row[0]:
+                return None
+
+            cursor.execute(
+                sql.SQL(
+                    "UPDATE {table} SET {state} = %(state)s, {mtime} = %(mtime)s WHERE {consumable}"
+                ).format(
+                    table=table,
                     state=sql.Identifier("state"),
                     mtime=sql.Identifier("mtime"),
-                    message_id=sql.Identifier("message_id"),
-                    eta=sql.Identifier("eta"),
+                    consumable=consumable,
                 ),
                 {
+                    **consumable_params,
                     "state": TaskState.CONSUMED.value,
                     "mtime": timezone.now(),
-                    "message_id": message_id,
-                    "consumable_states": [state.value for state in CONSUMABLE_TASK_STATES],
-                    "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
-                    "lock_id": self._get_message_lock_id(message_id),
                 },
             )
             if cursor.rowcount != 1:
+                # The message changed between the lock and the update, release our lock.
                 self._unlock_message(message_id)
                 return None
 
@@ -476,7 +516,7 @@ class _PostgresConsumer(Consumer):
         if self._listen_connection is None and not self.pending:
             # We might miss a notification between the initial query and the first time we wait for
             # notifications, it doesn't matter because we re-fetch for missed messages later on.
-            self.pending = self._fetch_pending_messages()
+            self._reconcile_pending_messages()
             # Force creation of listen connection
             _ = self.listen_connection
 
@@ -495,11 +535,15 @@ class _PostgresConsumer(Consumer):
         else:
             self.misses = 0
 
+        # A continuous notification stream can otherwise prevent the fallback query from running.
+        if time.monotonic() >= self._next_pending_reconciliation:
+            self._reconcile_pending_messages()
+
         if not self.pending:
             self.pending = self._poll_for_notify()
 
         if not self.pending:
-            self.pending = self._fetch_pending_messages()
+            self._reconcile_pending_messages()
 
         if not self.pending:
             self._backlog_waiting_for_dependencies()
@@ -616,13 +660,29 @@ class _PostgresConsumer(Consumer):
     def _auto_purge(self) -> None:
         if timezone.now() - self.task_purge_last_run < self.task_purge_interval:
             return
-        self.logger.debug("Running garbage collector")
-        count = self.query_set.filter(
-            state__in=(TaskState.DONE, TaskState.REJECTED),
-            mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
-            result_expiry__lte=timezone.now(),
-        ).delete()
-        self.logger.info("Purged messages in all queues", count=count)
+        self.logger.info("Task purge started", queue=self.queue_name)
+        start = time.monotonic()
+        try:
+            count = delete_in_batches(
+                self.query_set.filter(
+                    state__in=(TaskState.DONE, TaskState.REJECTED),
+                    mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
+                    result_expiry__lte=timezone.now(),
+                )
+            )
+        except Error:
+            self.logger.warning(
+                "Task purge failed",
+                queue=self.queue_name,
+                duration=round(time.monotonic() - start, 3),
+            )
+            raise
+        self.logger.info(
+            "Task purge finished",
+            queue=self.queue_name,
+            count=count,
+            duration=round(time.monotonic() - start, 3),
+        )
         self.task_purge_last_run = timezone.now()
 
     @raise_broker_connection_error

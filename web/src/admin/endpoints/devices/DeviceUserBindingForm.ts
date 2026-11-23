@@ -1,5 +1,4 @@
 import "#components/ak-switch-input";
-
 import { aki } from "#common/api/client";
 
 import {
@@ -16,12 +15,16 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-device-binding-form")
 export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> {
+    protected override supportsDryRun = false;
+
     async loadInstance(pk: string): Promise<DeviceUserBinding> {
         const binding = await aki(EndpointsApi).endpointsDeviceBindingsRetrieve({
             policyBindingUuid: pk,
         });
+
         this.policyGroupUser = pickPolicyGroupUser(binding, this.policyGroupUser);
         this.defaultOrder = await this.getOrder();
+
         return binding;
     }
 

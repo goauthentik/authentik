@@ -1,24 +1,26 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/cards/AggregateCard.css";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CSSResult, html, nothing } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+export type StatusTone = "success" | "warning" | "danger" | "neutral" | "";
 
 export interface IAggregateCard {
     icon?: string | null;
     label?: string | null;
     headerLink?: string | null;
     subtext?: string | null;
+    tone?: StatusTone;
 }
 
 /**
- * class AggregateCard
+ * Class AggregateCard
  * element ak-aggregate-card
  *
  * @slot - The main content of the card
@@ -68,7 +70,33 @@ export class AggregateCard extends AKElement implements IAggregateCard {
     @property({ type: String })
     public subtext: string | null = null;
 
-    public static styles: CSSResult[] = [PFCard, PFFlex, Styles];
+    /**
+     * If set, a colored banner is shown at the top of the card reflecting this tone.
+     *
+     * @attr
+     */
+    @property({ type: String, reflect: true })
+    public tone: StatusTone = "";
+
+    public static styles: CSSResult[] = [
+        PFCard,
+        PFFlex,
+        Styles,
+        css`
+            :host([tone="success"]) .pf-c-card {
+                border-top: 3px solid var(--pf-global--success-color--100);
+            }
+            :host([tone="warning"]) .pf-c-card {
+                border-top: 3px solid var(--pf-global--warning-color--100);
+            }
+            :host([tone="danger"]) .pf-c-card {
+                border-top: 3px solid var(--pf-global--danger-color--100);
+            }
+            :host([tone="neutral"]) .pf-c-card {
+                border-top: 3px solid var(--pf-global--BorderColor--200);
+            }
+        `,
+    ];
 
     renderInner(): SlottedTemplateResult {
         if (this.role === "status") {
@@ -102,19 +130,23 @@ export class AggregateCard extends AKElement implements IAggregateCard {
             >
                 <h1 part="card-title" class="pf-c-card__title" id="card-title">
                     ${this.icon ? html`<i aria-hidden="true" class="${this.icon}"></i>` : nothing}
-                    ${this.tooltip
-                        ? html`<pf-tooltip position="top" content=${this.tooltip}
-                              ><span>${this.label || nothing}</span></pf-tooltip
-                          >`
-                        : html`<span>${this.label || nothing}</span>`}
+                    ${
+                        this.tooltip
+                            ? html`<pf-tooltip position="top" content=${this.tooltip}
+                                  ><span>${this.label || nothing}</span></pf-tooltip
+                              >`
+                            : html`<span>${this.label || nothing}</span>`
+                    }
                     ${this.renderHeaderLink()}
                 </h1>
             </header>
             <div part="card-body" class="pf-c-card__body">
                 ${this.renderInner()}
-                ${this.subtext
-                    ? html`<p part="card-subtext" class="subtext">${this.subtext}</p>`
-                    : nothing}
+                ${
+                    this.subtext
+                        ? html`<p part="card-subtext" class="subtext">${this.subtext}</p>`
+                        : nothing
+                }
             </div>
             <div class="pf-c-card__footer"></div>
         </section>`;

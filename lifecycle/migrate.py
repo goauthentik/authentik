@@ -7,9 +7,11 @@ from os import environ, system
 from pathlib import Path
 from typing import Any
 
+from packaging.version import Version
 from psycopg import Connection, Cursor, connect
 from structlog.stdlib import get_logger
 
+from authentik import authentik_version, authentik_version_family_previous
 from authentik.lib.config import CONFIG, django_db_config, postgresql_direct_connection_kwargs
 
 LOGGER = get_logger()
@@ -73,6 +75,76 @@ def release_lock(conn: Connection, cursor: Cursor):
     LOCKED = False
 
 
+def ensure_allowed_version(cursor: Cursor) -> None:
+    """During an upgrade, ensure that major (i.e. semver-minor) versions were not skipped."""
+    if CONFIG.get_bool("migrations.dangerously_allow_multiple_major_version_upgrades"):
+        LOGGER.warning("Omitting version check before migrations")
+        return
+
+    cursor.execute(
+        "SELECT * FROM information_schema.tables WHERE table_name = 'authentik_version_history';"
+    )
+    if not cursor.rowcount:
+        return
+    cursor.execute("SELECT version FROM authentik_version_history ORDER BY timestamp DESC LIMIT 1")
+    if not cursor.rowcount:
+        return
+
+    db_version = Version(cursor.fetchone()[0])
+    previous_code_version_family = authentik_version_family_previous()
+    lowest_acceptable_version = Version(f"{previous_code_version_family}.0")
+    current_code_version = Version(authentik_version())
+
+    # Downgrades are not supported, but we don't stop them (for now)
+    if db_version > current_code_version:
+        LOGGER.warning(
+            "Unsupported downgrade detected",
+            downgrading_from=db_version,
+            downgrading_to=current_code_version,
+        )
+
+    if (
+        db_version.major == lowest_acceptable_version.major
+        and db_version.minor == lowest_acceptable_version.minor
+    ) or (
+        db_version.major == current_code_version.major
+        and db_version.minor == current_code_version.minor
+    ):
+        return
+
+    message = f"Major version skips are not allowed. See: https://docs.goauthentik.io/install-config/upgrade/?from={db_version}&to={current_code_version}"
+    LOGGER.error(
+        message,
+        from_version=db_version,
+        to_version=current_code_version,
+    )
+    raise RuntimeError(message)
+
+
+ACKNOWLEDGE_REMOVAL = "tenants.acknowledge_removal"
+
+
+def ensure_no_extra_tenants(curr):
+    curr.execute("SELECT nspname FROM pg_catalog.pg_namespace WHERE nspname LIKE 't\\_%'")
+    schemas = sorted(row[0] for row in curr.fetchall())
+    if not schemas:
+        return
+    if CONFIG.get_bool(ACKNOWLEDGE_REMOVAL, False):
+        LOGGER.warning(
+            "Continuing past additional tenant schemas, their data will not be migrated",
+            schemas=schemas,
+        )
+        return
+    message = (
+        "Multi-tenancy has been removed, but this install still has additional tenant schemas: "
+        f"{', '.join(schemas)}. Their data will not be migrated and will no longer be reachable. "
+        "Set AUTHENTIK_TENANTS__ACKNOWLEDGE_REMOVAL=true to continue anyway. "
+        "See https://docs.goauthentik.io/releases/2026.11/#multi-tenancy-has-been-removed"
+    )
+    LOGGER.error(message, schemas=schemas)
+    raise RuntimeError(message)
+
+
 def run_migrations():
     if CONFIG.get_bool("skip_migrations", False):
         return
@@ -84,6 +156,8 @@ def run_migrations():
     curr = conn.cursor()
     try:
         wait_for_lock(conn, curr)
+        ensure_allowed_version(curr)
+        ensure_no_extra_tenants(curr)
         for migration_path in sorted(
             Path(__file__).parent.absolute().glob("system_migrations/*.py")
         ):
@@ -112,9 +186,7 @@ def run_migrations():
                 "available on your PYTHONPATH environment variable? Did you "
                 "forget to activate a virtual environment?"
             ) from exc
-        execute_from_command_line(["", "migrate_schemas"])
-        if CONFIG.get_bool("tenants.enabled", False):
-            execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
+        execute_from_command_line(["", "migrate"])
         # Run django system checks for all databases
         check_args = ["", "check"]
         for label in django_db_config(CONFIG).keys():

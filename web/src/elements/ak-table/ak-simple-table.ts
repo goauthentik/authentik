@@ -1,12 +1,13 @@
 import "#elements/EmptyState";
-
 import { TableColumn } from "./TableColumn.js";
 import type { Column, TableFlat, TableGroup, TableGrouped, TableRow } from "./types.js";
 import { convertContent } from "./utils.js";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
+
+import type { NamedEntityElement } from "#common/api/entities";
 
 import { AKElement } from "#elements/Base";
 import {
-    EntityDescriptorElement,
     isTransclusionParentElement,
     TransclusionChildElement,
     TransclusionChildSymbol,
@@ -21,9 +22,8 @@ import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { repeat } from "lit/directives/repeat.js";
 
-import PFTable from "@patternfly/patternfly/components/Table/table.css";
-
 export type RawContent = string | number | TemplateResult;
+
 export type ContentType = RawContent[][] | TableRow[] | TableGrouped;
 
 export interface ISimpleTable {
@@ -78,14 +78,13 @@ export interface ISimpleTable {
  * - @part row: The `<tr>` element for a standard row
  * - @part cell cell-{index}: The `<td>` element for a single datum. Can be accessed via the index,
  *   which is zero-indexed
- *
  */
 @customElement("ak-simple-table")
 export class SimpleTable
     extends WithLocale(AKElement)
     implements ISimpleTable, TransclusionChildElement
 {
-    declare ["constructor"]: Required<EntityDescriptorElement>;
+    declare ["constructor"]: Required<NamedEntityElement>;
 
     public static verboseName: string = msg("Object");
     public static verboseNamePlural: string = msg("Objects");
@@ -171,6 +170,7 @@ export class SimpleTable
     protected get icolumns(): TableColumn[] {
         const hosted = (column: TableColumn) => {
             column.host = this;
+
             return column;
         };
 
@@ -202,6 +202,7 @@ export class SimpleTable
         const columnCount = this.columns.length || 1;
 
         const verboseNamePlural = this.constructor.verboseNamePlural || msg("Objects");
+
         const message = msg(
             str`No ${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)} found.`,
             {

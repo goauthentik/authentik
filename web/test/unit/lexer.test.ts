@@ -9,6 +9,7 @@ const drain = (lexer: Lexer): unknown[] => {
     while ((token = lexer.lex()) !== null) {
         out.push(token);
     }
+
     return out;
 };
 
@@ -26,6 +27,7 @@ describe("Lexer", () => {
             lexer.addRule(/^a/im, (m) => {
                 seen.push(m);
             });
+
             lexer.setInput("A\nA");
 
             drain(lexer);
@@ -66,6 +68,7 @@ describe("Lexer", () => {
     describe("tokenization", () => {
         it("tokenizes a simple expression", () => {
             const lexer = new Lexer();
+
             lexer
                 .addRule(/\s+/, () => null)
                 .addRule(/[a-zA-Z]+/, (m) => ({ type: "ident", value: m }))
@@ -73,6 +76,7 @@ describe("Lexer", () => {
                 .addRule(/[+\-*/]/, (m) => ({ type: "op", value: m }));
 
             lexer.setInput("foo + 12 * bar");
+
             expect(drain(lexer)).toEqual([
                 { type: "ident", value: "foo" },
                 { type: "op", value: "+" },
@@ -106,6 +110,7 @@ describe("Lexer", () => {
 
             lexer.addRule(/(\w+)=(\w+)/, (...args) => {
                 calls.push(args);
+
                 return args[0];
             });
 
@@ -121,6 +126,7 @@ describe("Lexer", () => {
             lexer.addRule(/a/, function () {
                 // eslint-disable-next-line consistent-this, @typescript-eslint/no-this-alias
                 captured = this;
+
                 return "a";
             });
 
@@ -181,6 +187,7 @@ describe("Lexer", () => {
                 })
                 .addRule(/foo/, () => {
                     order.push("second");
+
                     return "FOO";
                 });
 
@@ -279,6 +286,7 @@ describe("Lexer", () => {
             lexer
                 .addRule(/!/, function () {
                     this.state = 5;
+
                     return "BANG";
                 })
                 .addRule(/./, (m) => m, []);

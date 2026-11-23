@@ -15,4 +15,5 @@ class AuthentikEndpointsConnectorAgentAppConfig(ManagedAppConfig):
         from authentik.endpoints.connectors.agent.models import AgentConnector
 
         _ = AgentConnector().stage
+        self.import_module("authentik.endpoints.connectors.agent.schema")
         return super().import_related()

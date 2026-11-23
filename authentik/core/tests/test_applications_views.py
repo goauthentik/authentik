@@ -7,12 +7,12 @@ from django.urls import reverse
 from authentik.brands.models import Brand
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
-class TestApplicationsViews(FlowTestCase):
+class TestApplicationsViews(APIFlowTestCase):
     """Test applications Views"""
 
     def setUp(self) -> None:
@@ -59,6 +59,36 @@ class TestApplicationsViews(FlowTestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, f"https://goauthentik.io/{self.user.username}")
+
+    def test_check_redirect_auth_relative(self):
+        """Test redirect to a launch URL relative to the current host"""
+        self.client.force_login(self.user)
+        self.app.meta_launch_url = "/app/%(username)s"
+        self.app.save()
+        response = self.client.get(
+            reverse(
+                "authentik_core:application-launch",
+                kwargs={"application_slug": self.app.slug},
+            ),
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f"/app/{self.user.username}")
+
+    def test_check_redirect_auth_invalid_rendered_relative_url(self):
+        """A formatted launch URL must still be root-relative."""
+        self.user.name = "/"
+        self.user.save(update_fields=["name"])
+        self.client.force_login(self.user)
+        self.app.meta_launch_url = "/%(name)s"
+        self.app.save(update_fields=["meta_launch_url"])
+
+        response = self.client.get(
+            reverse(
+                "authentik_core:application-launch",
+                kwargs={"application_slug": self.app.slug},
+            ),
+        )
+        self.assertEqual(response.status_code, 404)
 
     def test_redirect_application_auth_flow(self):
         """Test launching an application with a provider and an authentication flow set"""

@@ -25,7 +25,7 @@ select[multiple] {
     justify-content: space-between;
     position: sticky;
     inset-block-start: 0;
-    z-index: var(--pf-global--ZIndex--md);
+    z-index: var(--pf-global--ZIndex--xs);
     background: var(--pf-c-card--BackgroundColor);
     padding-block-start: var(--pf-global--spacer--md);
     margin-top: calc(-1 * var(--pf-c-card--first-child--PaddingTop));

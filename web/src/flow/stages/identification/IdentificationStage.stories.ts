@@ -1,6 +1,5 @@
 import "@patternfly/patternfly/components/Login/login.css";
 import "./IdentificationStage.js";
-
 import { flowFactory } from "#stories/flow-interface";
 
 import { FlowDesignationEnum } from "@goauthentik/api";
@@ -79,7 +78,7 @@ export const ChallengeEverything = flowFactory("ak-stage-identification", {
                 component: "xak-flow-redirect",
                 to: "foo",
             },
-            iconUrl: "/static/authentik/sources/google.svg",
+            iconUrl: "/static/authentik/sources/google/light.svg",
         },
     ],
     recoveryUrl: "foo",

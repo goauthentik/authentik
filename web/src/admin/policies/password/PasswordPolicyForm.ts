@@ -1,7 +1,6 @@
 import "#elements/forms/FormGroup";
 import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
-
 import { aki } from "#common/api/client";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
@@ -36,9 +35,11 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         const policy = await aki(PoliciesApi).policiesPasswordRetrieve({
             policyUuid: pk,
         });
+
         this.showStatic = policy.checkStaticRules || false;
         this.showHIBP = policy.checkHaveIBeenPwned || false;
         this.showZxcvbn = policy.checkZxcvbn || false;
+
         return policy;
     }
 
@@ -49,6 +50,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 passwordPolicyRequest: data,
             });
         }
+
         return aki(PoliciesApi).policiesPasswordCreate({
             passwordPolicyRequest: data,
         });

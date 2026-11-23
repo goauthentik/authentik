@@ -3,8 +3,6 @@
  */
 
 html[lang^="zh"] {
-    /* spellchecker:disable */
-
     --ak-font-family-sans-serif:
         "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei",
         sans-serif, var(--ak-generic-sans-serif);
@@ -14,8 +12,6 @@ html[lang^="zh"] {
     --ak-font-family-heading:
         "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei",
         sans-serif;
-
-    /* spellchecker:enable */
 
     --pf-c-content--h1--FontWeight: 500;
 

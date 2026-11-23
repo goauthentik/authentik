@@ -4,7 +4,10 @@
     "targetLocales": [
         "ar",
         "bg-BG",
+        "bn-BD",
         "cs-CZ",
+        "sk-SK",
+        "da-DK",
         "de-DE",
         "en",
         "en-XA",
@@ -14,6 +17,7 @@
         "it-IT",
         "ja-JP",
         "ko-KR",
+        "lv-LV",
         "nb-NO",
         "nl-NL",
         "pl-PL",

@@ -11,7 +11,7 @@ from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
     SkipObjectException,
 )
-from authentik.core.models import Group, User, UserTypes
+from authentik.core.models import Group, User
 from authentik.core.sources.mapper import SourceMapper
 from authentik.core.sources.matcher import Action, SourceMatcher
 from authentik.events.models import Event, EventAction
@@ -71,7 +71,7 @@ class KerberosSync:
                 principal=principal,
                 principal_obj=principal_obj,
             )
-            self._logger.debug("Writing user with attributes", **defaults)
+            self._logger.debug("Writing user with attributes", attributes=defaults)
             if "username" not in defaults:
                 raise IntegrityError("Username was not set by propertymappings")
 
@@ -95,14 +95,12 @@ class KerberosSync:
 
             if action == Action.ENROLL:
                 user = User.objects.create(**defaults)
-                if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-                    user.set_unusable_password()
-                    user.save()
                 connection.user = user
                 connection.save()
             elif action in (Action.AUTH, Action.LINK):
                 user = connection.user
                 user.update_attributes(defaults)
+                connection.save()
             else:
                 return False
 

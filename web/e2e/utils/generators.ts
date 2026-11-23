@@ -16,6 +16,7 @@ function simpleHash(seed: string) {
     for (let i = 0; i < seed.length; i++) {
         hash = (hash * 31 + seed.charCodeAt(i)) | 0; // keep it 32-bit
     }
+
     return Math.abs(hash);
 }
 

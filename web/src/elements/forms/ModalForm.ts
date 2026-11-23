@@ -1,11 +1,11 @@
 import "#elements/LoadingOverlay";
 import "#elements/buttons/SpinnerButton/index";
-
 import { EVENT_REFRESH } from "#common/constants";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { ModalHideEvent } from "#elements/controllers/ModalOrchestrationController";
 import { Form } from "#elements/forms/Form";
+import { settleFormFields } from "#elements/forms/settle-form-fields";
 import { SlottedTemplateResult } from "#elements/types";
 import { findSlottedInstance } from "#elements/utils/slots";
 
@@ -75,15 +75,23 @@ export class ModalForm extends ModalButton {
             throw new Error(msg("No form found"));
         }
 
+        // Ignore repeated clicks while a submission is settling or in flight.
+        if (this.locked) return;
+
+        this.loading = true;
+        this.locked = true;
+
+        // Validating before the fields settle would reject a value that is still loading.
+        if (form.form) {
+            await settleFormFields(form.form);
+        }
+
         if (!form.reportValidity()) {
             this.loading = false;
             this.locked = false;
 
             return;
         }
-
-        this.loading = true;
-        this.locked = true;
 
         const submitter =
             event instanceof SubmitEvent
@@ -233,9 +241,9 @@ export class ModalForm extends ModalButton {
     }
 
     protected override renderModalInner(): TemplateResult {
-        return html`${this.loading
-                ? html`<ak-loading-overlay topmost></ak-loading-overlay>`
-                : nothing}
+        return html`${
+                this.loading ? html`<ak-loading-overlay topmost></ak-loading-overlay>` : nothing
+            }
             ${this.renderHeading()}
             <slot name="above-form"></slot>
             <div class="pf-c-modal-box__body" @scroll=${this.scrollListener}>${this.formSlot}</div>

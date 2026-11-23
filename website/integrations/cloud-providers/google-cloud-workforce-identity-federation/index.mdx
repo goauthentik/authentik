@@ -1,0 +1,131 @@
+---
+title: Integrate with Google Cloud Workforce Identity Federation
+sidebar_label: Google Cloud Workforce Identity Federation
+support_level: community
+---
+
+## What is Google Cloud Workforce Identity Federation?
+
+> Workforce Identity Federation lets you use your external IdP to authenticate your workforce—users and groups of users, such as employees, partners, and contractors. Users can then access Google Cloud using single sign-on (SSO), through your IdP.
+>
+> -- https://docs.cloud.google.com/iam/docs/workforce-identity-federation
+
+This guide configures authentik as a SAML identity provider for a Google Cloud workforce identity pool, and uses authentik group membership to grant access to Google Cloud resources through IAM.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+Before you start, choose an ID for the workforce identity pool. Pool IDs must be globally unique. This guide refers to it as `<pool_id>`, and uses `authentik` as the ID of the provider in that pool.
+
+To complete this guide, you need:
+
+- A Google Cloud organization with [Essential Contacts](https://docs.cloud.google.com/resource-manager/docs/managing-notification-contacts) configured.
+- The **IAM Workforce Pool Admin** (`roles/iam.workforcePoolAdmin`) role on the organization, and the **Project IAM Admin** (`roles/resourcemanager.projectIamAdmin`) role on the project, or equivalent permissions.
+- The [Google Cloud CLI](https://docs.cloud.google.com/sdk/docs/install-sdk), installed and initialized.
+- An authentik group named `gcp-readers` that contains the users who should have access to Google Cloud. If you use a different group name, use it everywhere this guide uses `gcp-readers`.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info Google Workspace and Cloud Identity
+Workforce Identity Federation does not create Google accounts. To sign in to Google Workspace, or to Google Cloud with Cloud Identity accounts, see [Integrate with Google Workspace](../google/index.mdx).
+:::
+
+## authentik configuration
+
+To support the integration of Google Cloud Workforce Identity Federation with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+        - Under **UI settings**, set **Launch URL** to `https://auth.cloud.google/signin/locations/global/workforcePools/<pool_id>/providers/authentik?continueUrl=https://console.cloud.google/`.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set **ACS URL** to `https://auth.cloud.google/signin-callback/locations/global/workforcePools/<pool_id>/providers/authentik`.
+        - Set **Audience** to `https://iam.googleapis.com/locations/global/workforcePools/<pool_id>/providers/authentik`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Enable **Sign responses**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: User ID`.
+            - Set **Service Provider Binding** to **Post**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page. Bind the `gcp-readers` group to show the application only to its members.
+3. Click **Submit** to save the new application and provider.
+
+:::info User identifier
+Google Cloud uses the SAML NameID as the user's subject (`google.subject`) and includes it in IAM principal identifiers and audit logs. Avoid changing the **NameID Property Mapping** after users have signed in, because a different NameID is treated as a different user.
+:::
+
+### Download the metadata file
+
+1. Navigate to **Applications** > **Providers** and click the name of the provider that you created.
+2. Under **Related objects** > **Metadata**, click **Download**. This metadata file is required in the next section.
+
+## Google Cloud configuration
+
+To support the integration of authentik with Google Cloud, create a workforce identity pool and a SAML provider that trusts authentik, and then grant the authentik group access to your resources.
+
+### Create a workforce identity pool
+
+Run the following command to create the workforce identity pool, replacing `<organization_id>` with your Google Cloud organization ID:
+
+```bash
+gcloud iam workforce-pools create "<pool_id>" \
+  --organization="<organization_id>" \
+  --display-name="authentik" \
+  --location=global
+```
+
+If the command fails with a permission error shortly after you were granted the IAM Workforce Pool Admin role, wait a few minutes for the [role grant to propagate](https://docs.cloud.google.com/iam/docs/access-change-propagation) and try again.
+
+### Create the SAML provider
+
+Run the following command to create the SAML provider, replacing `<path_to_metadata_file>` with the path to the metadata file that you downloaded from authentik:
+
+```bash
+gcloud iam workforce-pools providers create-saml "authentik" \
+  --workforce-pool="<pool_id>" \
+  --display-name="authentik" \
+  --idp-metadata-path="<path_to_metadata_file>" \
+  --attribute-mapping="google.subject=assertion.subject,google.groups=assertion.attributes['http://schemas.xmlsoap.org/claims/Group']" \
+  --attribute-condition="'gcp-readers' in google.groups" \
+  --location=global
+```
+
+The attribute mapping sets `google.subject` to the SAML NameID and `google.groups` to the authentik groups sent by the `authentik default SAML Mapping: Groups` property mapping. The attribute condition only allows members of the `gcp-readers` group to sign in through this provider.
+
+### Grant access to a project
+
+Grant IAM roles to the `gcp-readers` group on the resources that its members need to access. For example, the following commands grant the **Browser** and **Compute Viewer** roles on a project, where `<project_id>` is the ID of the project:
+
+```bash
+gcloud projects add-iam-policy-binding "<project_id>" \
+  --member="principalSet://iam.googleapis.com/locations/global/workforcePools/<pool_id>/group/gcp-readers" \
+  --role="roles/browser"
+
+gcloud projects add-iam-policy-binding "<project_id>" \
+  --member="principalSet://iam.googleapis.com/locations/global/workforcePools/<pool_id>/group/gcp-readers" \
+  --role="roles/compute.viewer"
+```
+
+:::info Federated console
+Workforce Identity Federation users sign in to the federated Google Cloud console, which supports a subset of Google Cloud products. Refer to [Supported products and limitations](https://docs.cloud.google.com/iam/docs/federated-identity-supported-services) before granting access to a service.
+:::
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Google Cloud Workforce Identity Federation, log in to authentik as a member of the `gcp-readers` group and open the Google Cloud application from the authentik User interface. The federated Google Cloud console should open. Select the project and confirm that the user can access the resources that their IAM roles allow.
+
+If Google Cloud shows `The given credential is rejected by the attribute condition`, confirm that the user is a member of `gcp-readers` and that the provider's **Property mappings** include `authentik default SAML Mapping: Groups`.
+
+## Resources
+
+- [Google Cloud documentation - Workforce Identity Federation](https://docs.cloud.google.com/iam/docs/workforce-identity-federation)
+- [Google Cloud documentation - Configure Workforce Identity Federation](https://docs.cloud.google.com/iam/docs/configuring-workforce-identity-federation)
+- [Google Cloud documentation - Set up user access to the federated console](https://docs.cloud.google.com/iam/docs/workforce-console-sso)
+- [Google Cloud documentation - Manage access to projects, folders, and organizations](https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access)

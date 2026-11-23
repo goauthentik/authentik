@@ -7,11 +7,11 @@ import "#admin/sources/saml/SAMLSourceForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -26,6 +26,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
+    public static override verboseName = msg("Source", { id: "sources.verbose-name.label" });
+    public static override verboseNamePlural = msg("Sources", {
+        id: "sources.verbose-name-plural.label",
+    });
+
     public override pageTitle = msg("Federation and Social login");
     public override pageDescription = msg(
         "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.",
@@ -54,9 +59,10 @@ export class SourceListPage extends TablePage<Source> {
         const disabled =
             this.selectedElements.length < 1 ||
             this.selectedElements.some((item) => item.component === "");
+
         const nonBuiltInSources = this.selectedElements.filter((item) => item.component !== "");
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Source(s)")}
             .objects=${nonBuiltInSources}
             .usedBy=${(item: Source) => {
                 return aki(SourcesApi).sourcesAllUsedByList({
@@ -81,13 +87,15 @@ export class SourceListPage extends TablePage<Source> {
         }
 
         return [
-            html`<a href="#/core/sources/${item.slug}">
+            html`<a href=${toAdminInterface(`core/sources/${item.slug}`)}>
                 <div>${item.name}</div>
-                ${item.enabled
-                    ? nothing
-                    : html`<ak-label color=${PFColor.Orange} compact>
-                          ${msg("Disabled")}</ak-label
-                      >`}
+                ${
+                    item.enabled
+                        ? nothing
+                        : html`<ak-label color=${PFColor.Orange} compact>
+                              ${msg("Disabled")}</ak-label
+                          >`
+                }
             </a>`,
             item.verboseName,
             html`<div class="ak-c-table__actions">

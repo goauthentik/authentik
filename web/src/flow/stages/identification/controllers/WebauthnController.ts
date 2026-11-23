@@ -20,21 +20,17 @@ type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
  *
  * @remarks
  *
- * Conditional Webauthn is the mechanism where a device can store authentication details and request
- * them automatically on the log-in page; if the user completes the browser-based transaction, their
- * credentials are automatically and completely filled-in, allowing the user to proceed directly to
- * the application.
- *
- * If enabled by site configuration, this controller queries the browser for Webauthn availability
- * and, if present, requests a Webauthn transaction. (On most mobile devices this looks like the OS
- * "pick an identity" and "use biometrics or your pin to unlock the credentials associated with that
- * identity" dialogs.)
- *
- * This has no relationship to the fields presented by IdentificationStage; it is its own routine in
- * filling the data structures otherwise filled by the IdentificationStage and submitting them to
- * the server, so it needs only be added to the host stage and it works automatically.
- *
- * [conditional webauthn](https://developer.chrome.com/docs/identity/webauthn-conditional-ui)
+ *   Conditional Webauthn is the mechanism where a device can store authentication details and
+ *   request them automatically on the log-in page; if the user completes the browser-based
+ *   transaction, their credentials are automatically and completely filled-in, allowing the user to
+ *   proceed directly to the application. If enabled by site configuration, this controller queries
+ *   the browser for Webauthn availability and, if present, requests a Webauthn transaction. (On
+ *   most mobile devices this looks like the OS "pick an identity" and "use biometrics or your pin
+ *   to unlock the credentials associated with that identity" dialogs.) This has no relationship to
+ *   the fields presented by IdentificationStage; it is its own routine in filling the data
+ *   structures otherwise filled by the IdentificationStage and submitting them to the server, so it
+ *   needs only be added to the host stage and it works automatically. [conditional
+ *   webauthn](https://developer.chrome.com/docs/identity/webauthn-conditional-ui)
  */
 export class WebauthnController implements ReactiveController {
     public passkey: PublicKeyCredentialRequestOptions | null = null;
@@ -58,6 +54,7 @@ export class WebauthnController implements ReactiveController {
         // the pending request and the passkey autofill dropdown would never appear.
         if (this.passkey !== this.#hostPasskey) {
             this.passkey = this.#hostPasskey;
+
             if (this.passkey) {
                 this.#startConditionalWebAuthn(this.passkey);
             }
@@ -78,8 +75,10 @@ export class WebauthnController implements ReactiveController {
     ): Promise<void> {
         // Check if browser supports conditional mediation
         const isAvailable = await isConditionalMediationAvailable();
+
         if (!isAvailable) {
             console.debug("authentik/identification: Conditional mediation not available");
+
             return;
         }
 
@@ -100,6 +99,7 @@ export class WebauthnController implements ReactiveController {
 
             if (!credential) {
                 console.debug("authentik/identification: No credential returned");
+
                 return;
             }
 
@@ -110,8 +110,10 @@ export class WebauthnController implements ReactiveController {
             if (error instanceof Error && error.name === "AbortError") {
                 // Request was aborted, this is expected when navigating away
                 console.debug("authentik/identification: Conditional WebAuthn aborted");
+
                 return;
             }
+
             console.warn("authentik/identification: Conditional WebAuthn failed", error);
         }
     }

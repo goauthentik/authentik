@@ -9,5 +9,6 @@ export function isPromiseLike<T>(obj: unknown): obj is PromiseLike<T> {
     if (!obj || typeof obj !== "object") {
         return false;
     }
+
     return typeof (obj as Promise<T>).then === "function";
 }

@@ -4,7 +4,7 @@ import { test } from "node:test";
 import { destinationToMatcher, pathnameToMatcher, RewriteIndex } from "./index.mjs";
 
 /**
- * @param {Array<[from: string, to: string]>} entries
+ * @param {[from: string, to: string][]} entries
  */
 function createIndex(entries) {
     return new RewriteIndex(entries.map(([from, to]) => ({ from, to, force: true })));
@@ -122,6 +122,15 @@ test("findAliases substitutes splats back into the source", () => {
     const index = createIndex([["/providers/*", "/add-secure-apps/providers/:splat"]]);
 
     assert.deepEqual(index.findAliases("/add-secure-apps/providers/ldap/"), ["/providers/ldap/"]);
+});
+
+test("findAliases skips splat sources redirecting to a fixed destination", () => {
+    const index = createIndex([
+        ["/old/*", "/"],
+        ["/old", "/"],
+    ]);
+
+    assert.deepEqual(index.findAliases("/"), ["/old"]);
 });
 
 test("findAliases never includes the pathname itself", () => {

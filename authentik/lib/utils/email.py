@@ -1,14 +1,38 @@
 """Email utility functions"""
 
+from email.utils import parseaddr
 
-def normalize_addresses(addr: str | list[str] | None) -> list[tuple[str, str]] | None:
+Address = str | tuple[str, str] | list[str | tuple[str, str]] | None
+
+
+def _normalize_single_address(item: str | tuple[str, str] | list[str]) -> tuple[str, str]:
+    """Normalize a single address into a (name, email) tuple."""
+    if isinstance(item, tuple | list):
+        if len(item) != 2:  # noqa: PLR2004
+            raise ValueError("Address tuple must be in the form (name, email)")
+        name, email = item
+        return (str(name or "").strip(), str(email or "").strip())
+    if isinstance(item, str):
+        # Only parse RFC 5322 style addresses ("Name <email>"), plain addresses are kept as-is
+        # so that unusual but valid addresses are not mangled by parseaddr
+        if "<" in item and item.rstrip().endswith(">"):
+            name, email = parseaddr(item)
+            if email:
+                return (name.strip(), email.strip())
+        return ("", item.strip())
+    raise ValueError("Address must be a string or a (name, email) tuple")
+
+
+def normalize_addresses(addr: Address) -> list[tuple[str, str]] | None:
     """Normalize email address parameter to list of (name, email) tuples.
 
     Args:
         addr: Email address(es). Can be:
             - None: Returns None
             - Single email string: "user@example.com"
-            - List of email strings: ["user1@example.com", "user2@example.com"]
+            - Formatted address string: "John Doe <user@example.com>"
+            - (name, email) tuple: ("John Doe", "user@example.com")
+            - List of any of the above
 
     Returns:
         List of (name, email) tuples suitable for TemplateEmailMessage, or None
@@ -18,13 +42,13 @@ def normalize_addresses(addr: str | list[str] | None) -> list[tuple[str, str]] |
     """
     if addr is None:
         return None
-    if isinstance(addr, str):
-        return [("", addr)]
+    if isinstance(addr, str | tuple):
+        return [_normalize_single_address(addr)]
     if isinstance(addr, list):
         if not addr:
             raise ValueError("Address list cannot be empty")
-        return [("", email) for email in addr]
-    raise ValueError("Address must be a string or list of strings")
+        return [_normalize_single_address(item) for item in addr]
+    raise ValueError("Address must be a string, a (name, email) tuple, or a list of those")
 
 
 def mask_email(email: str | None) -> str | None:

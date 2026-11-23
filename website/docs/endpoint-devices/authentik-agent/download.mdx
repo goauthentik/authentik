@@ -1,0 +1,115 @@
+---
+title: Download the authentik Agent
+sidebar_label: Download
+description: Download the authentik Agent installer for macOS or Windows, or install it on Linux from the APT or RPM repository.
+tags: [authentik Agent, download, install, packages, macos, windows, linux]
+authentik_version: "2025.12.0"
+sidebar_position: 0.5
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+import { DownloadButtons } from "./DownloadButtons";
+
+The [authentik Agent](./index.mdx) is a service that you install on Linux, macOS, and Windows devices to enable device compliance, local device login, SSH authentication, and CLI application authentication. The downloads on this page always provide the latest release.
+
+## Download for macOS or Windows
+
+<DownloadButtons />
+
+:::info
+Downloading the installer is only the first step. To create an enrollment token, install the package, and join the device to an authentik domain, follow the [macOS](./agent-deployment/macos.mdx) or [Windows](./agent-deployment/windows.mdx) deployment guide. For more than a handful of devices, use [MDM or automated deployment](./agent-deployment/automated.mdx) instead.
+:::
+
+## Install on Linux
+
+On Linux, install the authentik Agent from the authentik package repository rather than downloading a file.
+
+<Tabs
+    groupId="platform"
+    defaultValue="debian"
+    values={[
+        { label: "Debian-based", value: "debian" },
+        { label: "Red Hat-based", value: "rhel" },
+    ]}
+>
+<TabItem value="debian">
+
+1. Open a Terminal session and install the required GPG key:
+
+```sh
+curl -fsSL https://pkg.goauthentik.io/keys/gpg-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/authentik-keyring.gpg
+```
+
+2. Add the repository:
+
+```sh
+echo "deb [signed-by=/usr/share/keyrings/authentik-keyring.gpg] https://pkg.goauthentik.io stable main" | sudo tee /etc/apt/sources.list.d/authentik.list
+```
+
+3. Update your repositories and install the authentik Agent packages:
+
+```sh
+sudo apt update
+sudo apt install authentik-cli authentik-agent authentik-sysd
+```
+
+4. _(Optional)_ To enable SSH server authentication and local device login, install two additional packages:
+
+```sh
+sudo apt install libnss-authentik libpam-authentik
+```
+
+</TabItem>
+<TabItem value="rhel">
+
+1. Open a Terminal session and run the following command to add the authentik repo and associated GPG key:
+
+```bash
+# This overwrites any existing configuration in /etc/yum.repos.d/authentik.repo
+cat <<EOF | sudo tee /etc/yum.repos.d/authentik.repo
+[authentik]
+name=authentik
+baseurl=https://pkg.goauthentik.io
+enabled=1
+gpgcheck=1
+gpgkey=https://pkg.goauthentik.io/keys/gpg-key.asc
+EOF
+```
+
+2. Install the authentik Agent packages:
+
+```bash
+sudo yum install -y authentik-cli authentik-agent authentik-sysd
+```
+
+3. _(Optional)_ To enable SSH server authentication and local device login, install two additional packages:
+
+```sh
+sudo yum install -y libnss-authentik libpam-authentik
+```
+
+</TabItem>
+</Tabs>
+
+:::info
+To join the device to an authentik domain and configure NSS and PAM, continue with the [Linux deployment guide](./agent-deployment/linux.mdx).
+:::
+
+## Verify the installation
+
+Check the version of all installed authentik components by running the following command:
+
+```bash
+ak version
+```
+
+You should see a response that starts with `authentik CLI v<version_number>`.
+
+## Next steps
+
+- [Configure your authentik deployment](./configuration.mdx) to support the authentik Agent. This is required before a device can enroll.
+- Deploy the Agent on [Linux](./agent-deployment/linux.mdx), [macOS](./agent-deployment/macos.mdx), or [Windows](./agent-deployment/windows.mdx).
+- Deploy at scale with [MDM and automation tools](./agent-deployment/automated.mdx).
+- Review the [release notes](./release-notes/index.mdx) for the latest changes.

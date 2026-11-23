@@ -26,6 +26,15 @@
     text-transform: capitalize;
 }
 
+.ak-m-code-emphasis {
+    display: inline-block;
+    vertical-align: baseline;
+    padding-inline: var(--ak-m-code-emphasis--PaddingInline, 0.25rem);
+    font-weight: var(--ak-m-code-emphasis--FontWeight, 500);
+    background: var(--pf-global--BackgroundColor--150);
+    border-radius: var(--pf-global--BorderRadius--sm);
+}
+
 ::placeholder {
     font-style: italic;
 }

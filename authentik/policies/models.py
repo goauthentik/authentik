@@ -9,6 +9,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.lib.models import (
     CreatedUpdatedModel,
+    ExpiringManager,
     ExpiringModel,
     InheritanceAutoManager,
     InheritanceForeignKey,
@@ -66,6 +67,10 @@ class PolicyBinding(ExpiringModel, SerializerModel):
     policy_binding_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     enabled = models.BooleanField(default=True)
+    dry_run = models.BooleanField(
+        default=False,
+        help_text=_("Execute the policy but ignore its result."),
+    )
     # Shadow's field from ExpiringModel, as we don't want to default expire
     expiring = models.BooleanField(default=False)
 
@@ -160,6 +165,7 @@ class PolicyBinding(ExpiringModel, SerializerModel):
             return f"Binding - #{self.order} to {suffix}"
         return ""
 
+    objects = ExpiringManager()
     in_use = BoundPolicyQuerySet.as_manager()
 
     class Meta:
@@ -221,3 +227,31 @@ class Policy(SerializerModel, CreatedUpdatedModel):
         indexes = [
             models.Index(fields=["policy_ptr_id"]),
         ]
+
+
+class RequestableModel:
+    """Mixin for models which access can be requested to"""
+
+    def requestable_child_model_types(self) -> list[type[RequestableChildModel]]:
+        return []
+
+    @property
+    def requestable_label(self) -> str:
+        return str(self)
+
+    @property
+    def requestable_parent(self) -> RequestableModel | None:
+        return None
+
+
+class RequestableChildModel:
+    """Mixin for models which are related of models that access can be requested too
+    and should be equally offered"""
+
+    @property
+    def requestable_label(self) -> str:
+        return str(self)
+
+    @property
+    def requestable_parent(self) -> RequestableModel:
+        raise NotImplementedError

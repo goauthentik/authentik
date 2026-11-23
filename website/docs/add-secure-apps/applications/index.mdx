@@ -1,0 +1,36 @@
+---
+title: Applications
+sidebar_position: 1
+---
+
+Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **Application Dashboard** page.
+
+When a user logs into authentik, they see a list of the applications for which authentik is configured to provide authentication and authorization (the applications that they are authorized to use).
+
+Applications are the "other half" of providers. They typically exist in a 1-to-1 relationship; each application needs a provider and every provider can be used with one application. Applications can, however, use specific, additional providers to augment the functionality of the main provider. For more information, see [Backchannel providers](./manage_apps.mdx#backchannel-providers).
+
+Furthermore, the [RAC (Remote Access Control)](../providers/rac/index.mdx) feature uses a single application and a single provider, but multiple "endpoints". An endpoint defines each remote machine.
+
+:::info
+For information about creating and managing applications, refer to [Manage applications](./manage_apps.mdx).
+:::
+
+## Appearance
+
+authentik shows an application on the **Application Dashboard** when the user has access, the application has a supported launch URL, and **Hide from Application Dashboard** is off. Users have access by default when the application has no policies bound.
+
+For details on hiding an application without changing who can access it, see [Hide applications](./manage_apps.mdx#hide-applications).
+
+The following options can be configured:
+
+- _Name_: This is the name shown for the application card
+- **Launch URL** is where authentik sends users when they open the application. If you leave it empty, authentik tries to determine the URL from the provider.
+
+    Use an absolute `https://` or `http://` URL. If authentik and the application share an origin, you can also use a path beginning with a single `/`, such as `/grafana/`. The browser uses the scheme, hostname, and port of the authentik page. This works when a reverse proxy serves both services, even if users reach it under different hostnames.
+
+    You can include placeholders in either form. For example, authentik replaces `%(username)s` in `/grafana/%(username)s` with the signed-in user's username. Relative launch URLs must stay on the same origin after substitution. For available fields, see the [User API schema](https://api.goauthentik.io/reference/core-users-retrieve/).
+
+- _Icon (URL)_: Optionally configure an icon for the application. You can select from files uploaded to the [Files](../../customize/files.mdx) library or enter an absolute URL.
+
+- _Publisher_: Text shown in the application card's expandable kebab menu (⋮)
+- _Description_: Text shown in the application card's expandable kebab menu (⋮)

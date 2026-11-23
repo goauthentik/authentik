@@ -2,6 +2,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/entities/UsedByTable";
 import "#elements/forms/FormGroup";
 import "#elements/ak-table/ak-simple-table";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { plural } from "#common/ui/locale/plurals";
 
@@ -18,10 +19,9 @@ import { CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
-import PFList from "@patternfly/patternfly/components/List/list.css";
-
 /**
- * A generic form for confirming the deletion of an object, with an optional list of objects that use the object being deleted.
+ * A generic form for confirming the deletion of an object, with an optional list of objects that
+ * use the object being deleted.
  */
 @customElement("ak-destructive-model-form")
 export class DestructiveModelForm<T extends object = object> extends ModelForm<T> {
@@ -64,6 +64,7 @@ export class DestructiveModelForm<T extends object = object> extends ModelForm<T
     protected override load(): Promise<void> {
         if (!this.usedBy) {
             this.usedByList = [];
+
             return Promise.resolve();
         }
 
@@ -78,23 +79,31 @@ export class DestructiveModelForm<T extends object = object> extends ModelForm<T
         return guard([usedByList, verboseName], () => {
             const displayName = this.formatDisplayName();
 
-            const objectUsageMessage = plural(usedByList.length, {
-                zero: () =>
-                    msg(str`${verboseName} is not associated with any objects.`, {
-                        id: "usedBy.count.zero",
-                        desc: "Zero: no objects use this entity.",
-                    }),
-                one: () =>
-                    msg(str`${verboseName} is associated with one object.`, {
-                        id: "usedBy.count.one",
-                        desc: "Singular: exactly one object uses this entity.",
-                    }),
-                other: () =>
-                    msg(str`${verboseName} is associated with ${usedByList.length} objects.`, {
-                        id: "usedBy.count.other",
-                        desc: "Plural: N objects use this entity.",
-                    }),
-            });
+            // English never selects the CLDR "zero" category, so an empty list is checked first.
+            const objectUsageMessage =
+                usedByList.length === 0
+                    ? msg(str`${verboseName} is not associated with any objects.`, {
+                          id: "used-by.count.none",
+                          desc: "No objects use this entity.",
+                      })
+                    : plural(usedByList.length, {
+                          one: (formattedCount) =>
+                              msg(
+                                  str`${verboseName} is associated with ${formattedCount} object.`,
+                                  {
+                                      id: "used-by.count.one",
+                                      desc: "The first placeholder is the entity type, the second the number of objects using it.",
+                                  },
+                              ),
+                          other: (formattedCount) =>
+                              msg(
+                                  str`${verboseName} is associated with ${formattedCount} objects.`,
+                                  {
+                                      id: "used-by.count.other",
+                                      desc: "The first placeholder is the entity type, the second the number of objects using it.",
+                                  },
+                              ),
+                      });
 
             return html`<ak-form-group ?open=${usedByList.length} label=${objectUsageMessage}>
                 <div

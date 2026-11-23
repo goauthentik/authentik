@@ -1,5 +1,4 @@
 import "#elements/timestamp/ak-timestamp";
-
 import { Pagination } from "@goauthentik/api";
 
 import { html, LitElement, TemplateResult } from "lit";
@@ -32,5 +31,5 @@ export interface PaginatedResponse<T> {
  * @param timestamp - The timestamp to render.
  */
 export function Timestamp(timestamp?: Date | null): TemplateResult {
-    return html`<ak-timestamp .timestamp=${timestamp} elapsed datetime></ak-timestamp>`;
+    return html`<ak-timestamp .timestamp=${timestamp} datetime></ak-timestamp>`;
 }

@@ -1,6 +1,5 @@
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#elements/forms/ModalForm";
-
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";

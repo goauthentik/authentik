@@ -1,8 +1,8 @@
+import { CSRFHeaderName, readCSRFToken } from "#common/api/csrf";
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
 import { AKEnterpriseRefreshEvent, AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
 import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
-import { getCookie } from "#common/utils";
 
 import { showMessage } from "#elements/messages/MessageContainer";
 
@@ -16,10 +16,8 @@ import {
     ResponseContext,
 } from "@goauthentik/api";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import { html } from "lit";
 
-export const CSRFHeaderName = "X-authentik-CSRF";
 export const AcceptLanguage = "Accept-Language";
 
 export class LoggingMiddleware implements Middleware {
@@ -30,12 +28,14 @@ export class LoggingMiddleware implements Middleware {
             brand.matchedDomain && brand.matchedDomain !== "authentik-default"
                 ? `api/${brand.matchedDomain}`
                 : "api";
+
         this.#logger = ConsoleLogger.prefix(prefix);
     }
 
     post({ response, init, url }: ResponseContext): Promise<Response> {
         const parsedURL = URL.canParse(url) ? new URL(url) : null;
         const path = parsedURL ? parsedURL.pathname + parsedURL.search : url;
+
         if (response.ok) {
             this.#logger.debug(`${init.method} ${path}`);
         } else {
@@ -50,7 +50,7 @@ export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
         context.init.headers = {
             ...context.init.headers,
-            [CSRFHeaderName]: getCookie("authentik_csrf"),
+            [CSRFHeaderName]: readCSRFToken(),
         };
 
         return Promise.resolve(context);
@@ -72,25 +72,11 @@ export class EventMiddleware implements Middleware {
     }
 }
 
-export class LocaleMiddleware implements Middleware, Disposable {
+export class LocaleMiddleware implements Middleware {
     #locale: string;
 
-    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (event.detail.status !== "ready") {
-            return;
-        }
-
-        this.#locale = formatAcceptLanguageHeader(event.detail.readyLocale);
-    };
-
-    constructor(languageTagHint: Intl.UnicodeBCP47LocaleIdentifier) {
-        this.#locale = formatAcceptLanguageHeader(languageTagHint);
-
-        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
-    }
-
-    [Symbol.dispose]() {
-        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    constructor(languageTag: Intl.UnicodeBCP47LocaleIdentifier) {
+        this.#locale = formatAcceptLanguageHeader(languageTag);
     }
 
     pre(context: RequestContext): Promise<FetchParams | void> {
@@ -102,6 +88,7 @@ export class LocaleMiddleware implements Middleware, Disposable {
         return Promise.resolve(context);
     }
 }
+
 export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
     #requests: string[] = [];
     #counts = new Map<string, number>();
@@ -113,15 +100,16 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
         this.#warnings.clear();
     };
 
-    #timeoutId = -1;
+    #timeoutID = -1;
 
     public clearAfterIdle = () => {
-        clearTimeout(this.#timeoutId);
-        this.#timeoutId = window.setTimeout(this.clear, 1000);
+        clearTimeout(this.#timeoutID);
+        this.#timeoutID = setTimeout(this.clear, 1000);
     };
 
     constructor(protected readonly maxRequests: number = 10) {
         window.addEventListener("hashchange", this.clear, { passive: true });
+
         window.addEventListener(AKRefreshEvent.eventName, this.clear, { passive: true });
         window.addEventListener(AKEnterpriseRefreshEvent.eventName, this.clear, { passive: true });
 
@@ -130,6 +118,11 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
 
     public [Symbol.dispose]() {
         window.removeEventListener("hashchange", this.clear);
+
+        window.removeEventListener(AKRefreshEvent.eventName, this.clear);
+        window.removeEventListener(AKEnterpriseRefreshEvent.eventName, this.clear);
+
+        window.removeEventListener("click", this.clearAfterIdle);
     }
 
     public async pre(context: RequestContext): Promise<FetchParams | void> {

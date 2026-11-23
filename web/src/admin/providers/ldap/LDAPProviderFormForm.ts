@@ -1,7 +1,4 @@
 import "#components/ak-switch-input";
-import "#admin/common/ak-crypto-certificate-search";
-import "#admin/common/ak-flow-search/ak-branded-flow-search";
-import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-number-input";
 import "#components/ak-radio-input";
 import "#components/ak-text-input";
@@ -13,7 +10,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
-
 import {
     bindModeOptions,
     cryptoCertificateHelp,
@@ -24,7 +20,12 @@ import {
     uidStartNumberHelp,
 } from "./LDAPOptionsAndHelp.js";
 
-import { ifPresent } from "#elements/utils/attributes";
+import { AKCertificateSearch } from "#admin/common/AKCertificateSearch";
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
+import {
+    AKAuthorizationFlowField,
+    AKInvalidationFlowField,
+} from "#admin/providers/components/flow-fields";
 
 import { CurrentBrand, FlowDesignationEnum, LDAPProvider, ValidationError } from "@goauthentik/api";
 
@@ -35,7 +36,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 // All Provider objects have an Authorization flow, but not all providers have an Authentication
 // flow. LDAP needs only one field, but it is not an Authorization field, it is an Authentication
 // field. So, yeah, we're using the authorization field to store the authentication information,
-// which is why the ak-branded-flow-search call down there looks so weird-- we're looking up
+// which is why the authorization flow field down there looks so weird-- we're looking up
 // Authentication flows, but we're storing them in the Authorization field of the target Provider.
 
 export interface LDAPProviderFormProps {
@@ -85,39 +86,23 @@ export function renderForm({ provider, errors = {}, brand }: LDAPProviderFormPro
 
         <ak-form-group open label="${msg("Flow settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Bind Flow")}
-                    required
-                    name="authorizationFlow"
-                    .errorMessages=${errors.authorizationFlow}
-                >
-                    <ak-branded-flow-search
-                        label=${msg("Bind Flow")}
-                        flowType=${FlowDesignationEnum.Authentication}
-                        .currentFlow=${provider.authorizationFlow}
-                        .brandFlow=${brand?.flowAuthentication}
-                        required
-                    ></ak-branded-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Flow used for users to authenticate.")}
-                    </p>
-                </ak-form-element-horizontal>
-
-                <ak-form-element-horizontal
-                    label=${msg("Unbind Flow")}
-                    name="invalidationFlow"
-                    required
-                >
-                    <ak-branded-flow-search
-                        flowType=${FlowDesignationEnum.Invalidation}
-                        .currentFlow=${provider.invalidationFlow}
-                        .brandFlow=${brand?.flowInvalidation}
-                        defaultFlowSlug="default-invalidation-flow"
-                        .errorMessages=${errors.invalidationFlow}
-                        required
-                    ></ak-branded-flow-search>
-                    <p class="pf-c-form__helper-text">${msg("Flow used for unbinding users.")}</p>
-                </ak-form-element-horizontal>
+                ${AKAuthorizationFlowField({
+                    label: msg("Bind Flow"),
+                    placeholder: msg("Select a flow..."),
+                    help: msg("Flow used for users to authenticate."),
+                    flowType: FlowDesignationEnum.Authentication,
+                    value: provider.authorizationFlow,
+                    defaultFlowSlug: brand?.flowAuthentication,
+                    errors: errors.authorizationFlow,
+                })}
+                ${AKInvalidationFlowField({
+                    label: msg("Unbind Flow"),
+                    placeholder: msg("Select a flow..."),
+                    help: msg("Flow used for unbinding users."),
+                    value: provider.invalidationFlow,
+                    defaultFlowSlug: brand?.flowInvalidation ?? "default-invalidation-flow",
+                    errors: errors.invalidationFlow,
+                })}
             </div>
         </ak-form-group>
 
@@ -141,13 +126,7 @@ export function renderForm({ provider, errors = {}, brand }: LDAPProviderFormPro
                     name="certificate"
                     .errorMessages=${errors.certificate}
                 >
-                    <ak-crypto-certificate-search
-                        label=${msg("Certificate")}
-                        placeholder=${msg("Select a certificate...")}
-                        certificate=${ifPresent(provider.certificate)}
-                        name="certificate"
-                    >
-                    </ak-crypto-certificate-search>
+                    ${AKCertificateSearch({ name: "certificate", label: msg("Certificate"), placeholder: msg("Select a certificate..."), value: provider.certificate, allowedKeyTypes: TLSKeyTypes })}
                     <p class="pf-c-form__helper-text">${cryptoCertificateHelp}</p>
                 </ak-form-element-horizontal>
 

@@ -39,6 +39,17 @@ class TestEvaluator(TestCase):
         """Test expr_is_group_member"""
         self.assertFalse(BaseEvaluator.expr_is_group_member(create_test_admin_user(), name="test"))
 
+    def test_expr_obj_attr(self):
+        """Test expr_obj_attr"""
+        user = create_test_user()
+        user.attributes = {"locale": "en-US"}
+
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "locale", "en-GB"), "en-US")
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", "username"), user.username)
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", "en-GB"), "en-GB")
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", ""), "")
+        self.assertIsNone(BaseEvaluator.expr_obj_attr(user, "missing"))
+
     def test_expr_event_create(self):
         """Test expr_event_create"""
         evaluator = BaseEvaluator(generate_id())
@@ -128,6 +139,24 @@ class TestEvaluator(TestCase):
         self.assertEqual(message.subject, "Test Subject")
         self.assertEqual(message.to, ["test@example.com"])
         self.assertEqual(message.body, "Test Body")
+
+    @patch("authentik.stages.email.tasks.send_mails")
+    def test_expr_send_email_with_named_recipients(self, mock_send_mails):
+        """Test ak_send_email keeps recipient names"""
+        evaluator = BaseEvaluator(generate_id())
+        evaluator._context = {}
+
+        result = evaluator.evaluate(
+            "return ak_send_email("
+            "[('John Doe', 'john@example.com'), 'Jane Doe <jane@example.com>'], "
+            "'Test Subject', body='Test Body', cc=('Manager', 'manager@example.com'))"
+        )
+
+        self.assertTrue(result)
+        mock_send_mails.assert_called_once()
+        _, message = mock_send_mails.call_args.args
+        self.assertEqual(message.to, ["John Doe <john@example.com>", "Jane Doe <jane@example.com>"])
+        self.assertEqual(message.cc, ["Manager <manager@example.com>"])
 
     @patch("authentik.stages.email.tasks.send_mails")
     def test_expr_send_email_with_template(self, mock_send_mails):
@@ -264,7 +293,7 @@ class TestEvaluator(TestCase):
         # Test error when invalid type is provided
         with self.assertRaises(ValueError) as cm:
             evaluator.evaluate("return ak_send_email(123, 'Test', body='Body')")
-        self.assertIn("Address must be a string or list of strings", str(cm.exception))
+        self.assertIn("Address must be a string", str(cm.exception))
 
     @patch("authentik.stages.email.tasks.send_mails")
     def test_expr_send_email_with_cc(self, mock_send_mails):

@@ -1,12 +1,7 @@
 .ak-c-placeholder {
     color: var(--ak-c-placeholder--Color, var(--pf-global--Color--100));
     font-family:
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+        ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: xx-large;
     text-align: center;
     place-content: center;

@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.views import View
@@ -21,9 +22,9 @@ from authentik.common.oauth.constants import (
     SCOPE_OPENID,
 )
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.core.models import Application
 from authentik.providers.oauth2.dpop import DPOP_SUPPORTED_ALGS
 from authentik.providers.oauth2.models import (
+    OAuth2DynamicClientRegistration,
     OAuth2Provider,
     ResponseMode,
     ResponseTypes,
@@ -32,6 +33,10 @@ from authentik.providers.oauth2.models import (
 from authentik.providers.oauth2.utils import cors_allow
 
 LOGGER = get_logger()
+
+
+def claims_cache_key(provider: OAuth2Provider) -> str:
+    return f"authentik/providers/oauth2/provider_info/claims/{provider.pk}"
 
 
 class ProviderInfoView(View):
@@ -46,7 +51,6 @@ class ProviderInfoView(View):
         )
         if SCOPE_OPENID not in scopes:
             scopes.append(SCOPE_OPENID)
-        _, supported_alg = provider.jwt_key
         config = {
             "issuer": provider.get_issuer(self.request),
             "authorization_endpoint": self.request.build_absolute_uri(
@@ -104,7 +108,7 @@ class ProviderInfoView(View):
                 GRANT_TYPE_PASSWORD,
                 GRANT_TYPE_DEVICE_CODE,
             ],
-            "id_token_signing_alg_values_supported": [supported_alg],
+            "id_token_signing_alg_values_supported": [provider.jwt_alg],
             # See: http://openid.net/specs/openid-connect-core-1_0.html#SubjectIDTypes
             "subject_types_supported": ["public"],
             "token_endpoint_auth_methods_supported": [
@@ -115,15 +119,35 @@ class ProviderInfoView(View):
             "scopes_supported": scopes,
             # https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
             "request_parameter_supported": False,
-            "claims_supported": self.get_claims(provider),
+            "claims_supported": self.get_claims_cached(provider),
             "claims_parameter_supported": False,
             "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
             "dpop_signing_alg_values_supported": sorted(DPOP_SUPPORTED_ALGS),
         }
-        if provider.encryption_key:
+        if provider.encryption_key_id:
             config["id_token_encryption_alg_values_supported"] = ["RSA-OAEP-256"]
             config["id_token_encryption_enc_values_supported"] = ["A256CBC-HS512"]
+        try:
+            _ = provider.dcr_configuration
+            config["registration_endpoint"] = self.request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:dynamic-client-registration",
+                    kwargs={"application_slug": provider.application.slug},
+                )
+            )
+        except OAuth2DynamicClientRegistration.DoesNotExist:
+            pass
         return config
+
+    def get_claims_cached(self, provider: OAuth2Provider) -> list[str]:
+        """Same as self.get_claims but cached to avoid re-evaluating property-mappings"""
+        key = claims_cache_key(provider)
+        ttl_seconds = 60 * 60
+        claims = cache.get(key)
+        if not claims:
+            claims = self.get_claims(provider)
+            cache.set(key, claims, ttl_seconds)
+        return claims
 
     def get_claims(self, provider: OAuth2Provider) -> list[str]:
         """Get a list of supported claims based on configured scope mappings"""
@@ -138,11 +162,12 @@ class ProviderInfoView(View):
             "amr",
             "nonce",
         ]
+        user = get_anonymous_user()
         for scope in ScopeMapping.objects.filter(provider=provider).order_by("scope_name"):
             value = None
             try:
                 value = scope.evaluate(
-                    user=get_anonymous_user(),
+                    user=user,
                     request=self.request,
                     provider=provider,
                 )
@@ -163,10 +188,12 @@ class ProviderInfoView(View):
         self, request: HttpRequest, application_slug: str, *args: Any, **kwargs: Any
     ) -> HttpResponse:
         # Since this view only supports get, we can statically set the CORS headers
-        application = get_object_or_404(Application, slug=application_slug)
         self.provider: OAuth2Provider = get_object_or_404(
-            OAuth2Provider, pk=application.provider_id
+            # Not dynamic client registration: its join and the LIMIT get() adds take Postgres
+            # longer to plan than a separate query takes to run
+            OAuth2Provider.objects.select_related("application", "signing_key"),
+            application__slug=application_slug,
         )
         response = super().dispatch(request, *args, **kwargs)
-        cors_allow(request, response, *[x.url for x in self.provider.redirect_uris])
+        cors_allow(request, response, self.provider.redirect_uris)
         return response

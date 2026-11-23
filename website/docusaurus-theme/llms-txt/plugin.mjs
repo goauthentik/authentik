@@ -1,11 +1,18 @@
 /* eslint-disable no-console */
 /**
+ * @import {
+ *   LoadContext,
+ *   Plugin,
+ *   Props
+ * } from "@docusaurus/types"
+ * @import {
+ *   LLMSDocInfo,
+ *   LLMSPluginOptions
+ * } from "./common.mjs"
  * @file Docusaurus llms.txt plugin (postBuild).
- *
- * @import { LoadContext, Plugin, Props } from "@docusaurus/types"
- * @import { LLMSPluginOptions, LLMSDocInfo } from "./common.mjs"
  */
 
+import { statSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -29,11 +36,17 @@ import {
     groupLabel,
     parseDocFile,
     resolveDocumentUrl,
+    resolveDocumentUrlFromSource,
 } from "./node.mjs";
 
 const PLUGIN_NAME = "ak-llms-txt-plugin";
 
 export { assignGroup, groupLabel };
+
+/**
+ * @typedef {object} LLMSPluginContent
+ * @property {string} devOutputDir
+ */
 
 /**
  * Resolve the base URL for generated links. In a Netlify deploy preview or
@@ -45,6 +58,7 @@ export { assignGroup, groupLabel };
  *
  * @param {{ siteUrl?: string }} options
  * @param {{ url: string }} siteConfig
+ *
  * @returns {string}
  */
 export function resolveSiteUrl(options, siteConfig) {
@@ -58,48 +72,122 @@ export function resolveSiteUrl(options, siteConfig) {
 }
 
 /**
+ * Create the resolver that points links in a page's Markdown payload at
+ * published URLs.
+ *
+ * Docusaurus turns links to source files (`../core/architecture.mdx`) into
+ * routes only in the HTML it renders, so the payload needs its own pass.
+ * Source file links resolve the way Docusaurus resolves them and point at the
+ * target's payload. Relative URLs (`../releases/`) resolve against the page's
+ * trailing-slash route, as a browser does on the HTML page, because the
+ * payload sits at `<route>.md`, one directory higher.
+ *
+ * @param {Map<string, string>} docUrlsByFile Absolute source path to page URL.
+ * @param {string[]} contentDirs Absolute section directories.
+ * @param {string} siteDir
+ *
+ * @returns {(url: string, sourceFile: string, pageUrl: string) => string | undefined}
+ */
+function createLinkResolver(docUrlsByFile, contentDirs, siteDir) {
+    return (url, sourceFile, pageUrl) => {
+        // Absolute URLs, protocol-relative URLs and in-page anchors already work.
+        if (/^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(url)) return undefined;
+
+        const [, pathname = "", suffix = ""] = /^([^?#]*)(.*)$/s.exec(url) ?? [];
+        if (!/\.mdx?$/i.test(pathname)) {
+            // A site-absolute URL resolves the same from the payload.
+            if (pathname.startsWith("/")) return undefined;
+            // Docusaurus serves a linked file next to the source, such as an
+            // example JSON file, from a hashed asset URL that is not known here.
+            const asset = path.join(path.dirname(sourceFile), decodeURIComponent(pathname));
+            if (statSync(asset, { throwIfNoEntry: false })?.isFile()) return undefined;
+            return new URL(url, pageUrl).toString();
+        }
+
+        // Same lookup order as Docusaurus' resolveMarkdownLinkPathname.
+        let dirs;
+        if (pathname.startsWith("/")) {
+            dirs = [...contentDirs, siteDir];
+        } else if (pathname.startsWith("./") || pathname.startsWith("../")) {
+            dirs = [path.dirname(sourceFile)];
+        } else {
+            dirs = [path.dirname(sourceFile), ...contentDirs, siteDir];
+        }
+        for (const dir of dirs) {
+            const target = docUrlsByFile.get(path.join(dir, decodeURIComponent(pathname)));
+            if (target) return `${applyMdExtension(target)}${suffix}`;
+        }
+        // Not an indexed page, such as a draft. Keep the link as written.
+        return undefined;
+    };
+}
+
+/**
  * Build every output file's contents, keyed by build-relative path.
  *
- * @param {{ siteDir: string, outDir: string, siteUrl: string, title: string,
- *   description: string, routesPaths: string[], options: LLMSPluginOptions }} ctx
+ * @param {{
+ *     siteDir: string;
+ *     outDir: string;
+ *     siteUrl: string;
+ *     title: string;
+ *     description: string;
+ *     routesPaths: string[];
+ *     options: LLMSPluginOptions;
+ * }} ctx
+ *
  * @returns {Promise<Map<string, string>>}
  */
 export async function buildLLMSOutputs(ctx) {
     const options = normalizeOptions(ctx.options);
 
-    /** @type {LLMSDocInfo[]} */
-    const docs = [];
+    /** @type {{ file: string; doc: LLMSDocInfo }[]} */
+    const pages = [];
     let skippedNoRoute = 0;
     let mdxFallbacks = 0;
     const countMdxFallback = () => {
         mdxFallbacks += 1;
     };
 
+    // Every page's URL must be known before any page's links can be resolved.
     for (const section of options.sections) {
         const absDir = path.resolve(ctx.siteDir, section.path);
         for (const file of collectDocFiles(absDir, options.ignoreFiles)) {
             const parsed = parseDocFile(file, absDir);
             if (!parsed) continue;
 
-            const route = resolveDocumentUrl(parsed.path, ctx.routesPaths);
+            const route = ctx.routesPaths.length
+                ? resolveDocumentUrl(parsed, section.routeBasePath, ctx.routesPaths)
+                : resolveDocumentUrlFromSource(parsed, section.routeBasePath);
             if (!route) {
-                // Expected for source files Docusaurus does not route (e.g.
-                // historical release notes). Counted and summarized, not warned per-page.
+                // Expected for source files Docusaurus does not route. Counted
+                // and summarized, not warned per-page.
                 skippedNoRoute++;
                 continue;
             }
 
             parsed.url = new URL(route, ctx.siteUrl).toString();
-            parsed.group = assignGroup(parsed, options);
+            parsed.group = assignGroup(parsed);
             parsed.groupLabel = groupLabel(parsed.group, options);
-            parsed.content = await cleanMdxToMarkdown(parsed.content, file, countMdxFallback);
-            docs.push(parsed);
+            pages.push({ file, doc: parsed });
         }
     }
 
+    const resolveLink = createLinkResolver(
+        new Map(pages.map(({ file, doc }) => [file, doc.url])),
+        options.sections.map((section) => path.resolve(ctx.siteDir, section.path)),
+        ctx.siteDir,
+    );
+    for (const { file, doc } of pages) {
+        doc.content = await cleanMdxToMarkdown(doc.content, file, {
+            onFallback: countMdxFallback,
+            resolveLink: (url, sourceFile) => resolveLink(url, sourceFile, doc.url),
+        });
+    }
+    const docs = pages.map(({ doc }) => doc);
+
     if (skippedNoRoute || mdxFallbacks) {
         console.log(
-            `${PLUGIN_NAME}: indexed ${docs.length} pages ` +
+            `🚀 ${PLUGIN_NAME}: indexed ${docs.length} pages ` +
                 `(${skippedNoRoute} skipped — no route; ${mdxFallbacks} used the regex fallback)`,
         );
     }
@@ -145,13 +233,71 @@ export async function buildLLMSOutputs(ctx) {
 }
 
 /**
- * @param {LoadContext} _loadContext
- * @param {LLMSPluginOptions} options
- * @returns {Plugin}
+ * @param {string} outDir
+ * @param {Map<string, string>} outputs
+ *
+ * @returns {Promise<void>}
  */
-function akLLMSPlugin(_loadContext, options) {
+async function writeLLMSOutputs(outDir, outputs) {
+    await Promise.all(
+        [...outputs.entries()].map(async ([rel, contents]) => {
+            const dest = path.join(outDir, rel);
+            await fs.mkdir(path.dirname(dest), { recursive: true });
+            await fs.writeFile(dest, contents, "utf-8");
+        }),
+    );
+}
+
+/**
+ * @param {LoadContext} loadContext
+ * @param {LLMSPluginOptions} options
+ *
+ * @returns {Plugin<LLMSPluginContent>}
+ */
+function akLLMSPlugin(loadContext, options) {
+    const devOutputDir = path.join(loadContext.generatedFilesDir, PLUGIN_NAME);
+
     return {
         name: PLUGIN_NAME,
+
+        async loadContent() {
+            const outputs = await buildLLMSOutputs({
+                siteDir: loadContext.siteDir,
+                outDir: devOutputDir,
+                siteUrl: resolveSiteUrl(options, loadContext.siteConfig),
+                title: options.title ?? loadContext.siteConfig.title,
+                description: options.description ?? loadContext.siteConfig.tagline ?? "",
+                routesPaths: [],
+                options,
+            });
+
+            await fs.rm(devOutputDir, { recursive: true, force: true });
+            await writeLLMSOutputs(devOutputDir, outputs);
+
+            return {
+                devOutputDir,
+            };
+        },
+
+        configureWebpack(_config, isServer, _utils, content) {
+            if (isServer || !content?.devOutputDir) {
+                return undefined;
+            }
+
+            /** @type {any} */
+            const devServerConfig = {
+                devServer: {
+                    static: [
+                        {
+                            directory: content.devOutputDir,
+                            publicPath: loadContext.baseUrl,
+                        },
+                    ],
+                },
+            };
+
+            return devServerConfig;
+        },
 
         /**
          * @param {Props} props
@@ -169,13 +315,7 @@ function akLLMSPlugin(_loadContext, options) {
                 options,
             });
 
-            await Promise.all(
-                [...outputs.entries()].map(async ([rel, contents]) => {
-                    const dest = path.join(props.outDir, rel);
-                    await fs.mkdir(path.dirname(dest), { recursive: true });
-                    await fs.writeFile(dest, contents, "utf-8");
-                }),
-            );
+            await writeLLMSOutputs(props.outDir, outputs);
 
             console.log(`✅ ${PLUGIN_NAME} wrote ${outputs.size} files`);
         },

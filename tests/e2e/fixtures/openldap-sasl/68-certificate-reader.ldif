@@ -1,0 +1,6 @@
+olcAccess: to attrs=userPassword
+  by dn.exact="cn=authentik ldap sync" write
+  by * break
+olcAccess: to *
+  by dn.exact="cn=authentik ldap sync" read
+  by * break

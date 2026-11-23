@@ -3,6 +3,7 @@ import "#elements/user/sources/SourceSettingsOAuth";
 import "#elements/user/sources/SourceSettingsPlex";
 import "#elements/user/sources/SourceSettingsSAML";
 import "#elements/user/sources/SourceSettingsTelegram";
+import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -17,8 +18,6 @@ import { SourcesApi, UserSetting, UserSourceConnection } from "@goauthentik/api"
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends AKElement {
@@ -159,7 +158,13 @@ export class UserSourceSettingsPage extends AKElement {
             <div class="pf-c-data-list__item-row">
                 <div class="pf-c-data-list__item-content">
                     <div class="pf-c-data-list__cell">
-                        ${renderSourceIcon(source.title, source.iconUrl)} ${source.title}
+                        ${renderSourceIcon(
+                            source.title,
+                            source.iconUrl,
+                            source.iconThemedUrls,
+                            this.activeTheme,
+                        )}
+                        ${source.title}
                     </div>
                     <div class="pf-c-data-list__cell">${this.renderSourceSettings(source)}</div>
                 </div>
@@ -177,6 +182,7 @@ export class UserSourceSettingsPage extends AKElement {
                 <span>${msg("No services available.")}</span></ak-empty-state
             >`;
         }
+
         return html`<ul class="pf-c-data-list" part="list" aria-label="${msg("Source Settings")}">
             ${this.sourceSettings.map(this.renderSourceSetting)}
         </ul>`;

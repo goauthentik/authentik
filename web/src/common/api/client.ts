@@ -1,5 +1,5 @@
 /**
- * @file aki(): function to instantiate authentik OpenAPI connectors with configuration details
+ * @file Aki(): function to instantiate authentik OpenAPI connectors with configuration details
  */
 
 import {
@@ -28,6 +28,7 @@ const endpoints = new Map<APIConstructor<unknown>, unknown>();
 function apiConfiguration(): Configuration {
     if (!configuration) {
         const { locale, api, brand, config } = globalAK();
+
         configuration = new Configuration({
             basePath: `${api.base}api/v3`,
             middleware: [
@@ -41,17 +42,21 @@ function apiConfiguration(): Configuration {
                     : []),
             ],
         });
+
         Object.freeze(configuration);
     }
+
     return configuration;
 }
 
 export function aki<T>(APIClass: APIConstructor<T>): T {
     let endpoint = endpoints.get(APIClass) as T | undefined;
+
     if (!endpoint) {
         endpoint = new APIClass(apiConfiguration());
         endpoints.set(APIClass, endpoint);
     }
+
     return endpoint;
 }
 

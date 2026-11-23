@@ -16,6 +16,12 @@ entries:
               !Index 0,
           ],
       ]
+  - model: authentik_rbac.role
+    identifiers:
+      name: authentik Read-only
+    attrs:
+      permissions:
+        - authentik_rbac.access_admin_interface
   - model: authentik_core.group
     identifiers:
       name: authentik Read-only
@@ -25,4 +31,4 @@ entries:
       is_superuser: false
       attributes:
         notes: |
-          An group with an auto-generated role that allows read-only permissions on all objects.
+          A group with an auto-generated role that allows read-only permissions on all objects.

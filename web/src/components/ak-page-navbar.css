@@ -108,6 +108,8 @@
     }
 
     &.secondary {
+        display: flex;
+        align-items: center;
         grid-area: secondary;
         flex: 0 0 auto;
         justify-self: end;

@@ -1,5 +1,5 @@
 import "#components/ak-radio-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 import "#elements/utils/TimeDeltaHelp";
@@ -9,24 +9,18 @@ import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
-
 import { aki } from "#common/api/client";
 
+import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { groupSource } from "#admin/common/search-sources";
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
 } from "#admin/providers/google_workspace/GoogleWorkspaceProviderFormHelpers";
 
-import {
-    CoreApi,
-    CoreGroupsListRequest,
-    GoogleWorkspaceProvider,
-    Group,
-    OutgoingSyncDeleteAction,
-    ProvidersApi,
-} from "@goauthentik/api";
+import { GoogleWorkspaceProvider, OutgoingSyncDeleteAction, ProvidersApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -64,10 +58,10 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         required
                         name="credentials"
                     >
-                        <ak-codemirror
+                        <ak-code-editor
                             mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
-                        ></ak-codemirror>
+                        ></ak-code-editor>
                         <p class="pf-c-form__helper-text">
                             ${msg("Google Cloud credentials file.")}
                         </p>
@@ -177,30 +171,12 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
                     ></ak-switch-input>
                     <ak-form-element-horizontal label=${msg("Group")} name="filterGroup">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                                const args: CoreGroupsListRequest = {
-                                    ordering: "name",
-                                    includeUsers: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const groups = await aki(CoreApi).coreGroupsList(args);
-                                return groups.results;
-                            }}
-                            .renderElement=${(group: Group): string => {
-                                return group.name;
-                            }}
-                            .value=${(group: Group | undefined): string | undefined => {
-                                return group ? group.pk : undefined;
-                            }}
-                            .selected=${(group: Group): boolean => {
-                                return group.pk === this.instance?.filterGroup;
-                            }}
-                            blankable
-                        >
-                        </ak-search-select>
+                        ${AKSearchSelect({
+                            name: "filterGroup",
+                            source: groupSource,
+                            value: this.instance?.filterGroup,
+                            blankable: true,
+                        })}
                         <p class="pf-c-form__helper-text">
                             ${msg("Only sync users within the selected group.")}
                         </p>
@@ -266,6 +242,12 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
                     </ak-text-input>
+                    <ak-switch-input
+                        name="discoveryEnabled"
+                        label=${msg("Enable automatic discovery of remote resources.")}
+                        ?checked=${this.instance?.discoveryEnabled ?? true}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>`;
     }

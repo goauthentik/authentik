@@ -1,7 +1,4 @@
 import "./styles.css";
-
-import { isGlossaryItem } from "../utils/glossaryUtils";
-
 import { VersionPicker } from "#components/VersionPicker/index.tsx";
 
 import type { PropSidebarItem } from "@docusaurus/plugin-content-docs";
@@ -38,13 +35,9 @@ const DocSidebarItems = ({ items, ...props }: DocSidebarItemsProps): JSX.Element
     return (
         <DocSidebarItemsExpandedStateProvider>
             {includeVersionPicker ? <VersionPicker /> : null}
-            {visibleItems.map((item, index) => {
-                if (isGlossaryItem(item)) {
-                    return null;
-                }
-
-                return <DocSidebarItem key={index} item={item} index={index} {...props} />;
-            })}
+            {visibleItems.map((item, index) => (
+                <DocSidebarItem key={index} item={item} index={index} {...props} />
+            ))}
         </DocSidebarItemsExpandedStateProvider>
     );
 };

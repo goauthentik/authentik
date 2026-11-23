@@ -32,13 +32,16 @@ export function promptFieldsSelector(instanceFields: string[] | undefined) {
         return async (options: DualSelectPair<Prompt>[]) =>
             options.filter(([_0, _1, _2, prompt]: DualSelectPair<Prompt>) => prompt !== undefined);
     }
+
     return async () => {
         const stages = aki(StagesApi);
+
         const prompts = await Promise.allSettled(
             instanceFields.map((instanceId) =>
                 stages.stagesPromptPromptsRetrieve({ promptUuid: instanceId }),
             ),
         );
+
         return prompts
             .filter((p) => p.status === "fulfilled")
             .map((p) => p.value)
@@ -70,11 +73,13 @@ export function policiesSelector(instancePolicies: string[] | undefined) {
 
     return async () => {
         const policy = aki(PoliciesApi);
+
         const policies = await Promise.allSettled(
             instancePolicies.map((instanceId) =>
                 policy.policiesAllRetrieve({ policyUuid: instanceId }),
             ),
         );
+
         return policies
             .filter((p) => p.status === "fulfilled")
             .map((p) => p.value)

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Any
 
 from authentik.providers.scim.clients.schema import PatchOp, PatchOperation
@@ -12,8 +13,11 @@ class SCIMPatchProcessor:
         self.parser = SCIMPathParser()
 
     def apply_patches(self, data: dict[str, Any], patches: list[PatchOperation]) -> dict[str, Any]:
-        """Apply a list of patch operations to the data"""
-        result = data.copy()
+        """Apply a list of patch operations to the data, returning the
+        patched data without modifying the input
+        (the SCIM source views compare the result against the stored
+        attributes to decide whether to persist anything)"""
+        result = deepcopy(data)
 
         for _patch in patches:
             patch = PatchOperation.model_validate(_patch)

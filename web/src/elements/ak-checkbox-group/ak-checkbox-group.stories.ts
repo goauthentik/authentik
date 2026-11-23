@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "./ak-checkbox-group.js";
-
 import { CheckboxGroup as AkCheckboxGroup } from "./ak-checkbox-group.js";
 
 import { Meta } from "@storybook/web-components";
@@ -49,7 +48,7 @@ export const CheckboxGroup = () => {
 
         document.getElementById("check-message-pad")!.innerHTML = /*html*/ `
         <p>
-            Values selected on target: ${target.value.join(", ")}
+            Values selected on target: ${target.toJSON().join(", ")}
         </p>
         <p>
             Values sent in event: ${event.detail.join(", ")}

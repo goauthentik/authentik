@@ -5,6 +5,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, TypedDict
 from uuid import UUID
 
+from django.contrib.messages import DEFAULT_TAGS
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.http import JsonResponse
@@ -42,6 +43,16 @@ class ErrorDetailSerializer(PassiveSerializer):
     code = CharField()
 
 
+FLOW_MESSAGE_LEVELS = list(DEFAULT_TAGS.values())
+
+
+class FlowMessageSerializer(PassiveSerializer):
+    """Serializer for a django.contrib.messages message"""
+
+    level = ChoiceField(choices=FLOW_MESSAGE_LEVELS, source="level_tag")
+    message = CharField()
+
+
 class ContextualFlowInfo(PassiveSerializer):
     """Contextual flow information for a challenge"""
 
@@ -50,6 +61,7 @@ class ContextualFlowInfo(PassiveSerializer):
     background_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     cancel_url = CharField()
     layout = ChoiceField(choices=[(x.value, x.name) for x in FlowLayout])
+    messages = FlowMessageSerializer(many=True, required=False)
 
 
 class Challenge(PassiveSerializer):
@@ -179,7 +191,6 @@ class FrameChallenge(Challenge):
 
 
 class FrameChallengeResponse(ChallengeResponse):
-
     component = CharField(default="xak-flow-frame")
 
 

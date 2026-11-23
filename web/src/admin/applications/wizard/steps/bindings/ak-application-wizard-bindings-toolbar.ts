@@ -1,11 +1,11 @@
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
+
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 
 /**
  * @event clickNew

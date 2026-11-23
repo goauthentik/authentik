@@ -1,6 +1,8 @@
 """common RBAC serializers"""
 
+from django.apps import apps
 from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
@@ -9,17 +11,61 @@ from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.models import RoleModelPermission, RoleObjectPermission
 from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ReadOnlyField
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import CharField, ChoiceField, ListField, ReadOnlyField
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.events.models import Event, EventAction
+from authentik.events.utils import model_to_dict
 from authentik.lib.api import model_choices
-from authentik.rbac.api.rbac import PermissionAssignResultSerializer, PermissionAssignSerializer
+from authentik.lib.validators import RequiredTogetherValidator
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role
+
+
+class PermissionAssignResultSerializer(PassiveSerializer):
+    """Result from assigning permissions to a user/role"""
+
+    id = CharField()
+
+
+class PermissionAssignSerializer(PassiveSerializer):
+    """Request to assign a new permission"""
+
+    permissions = ListField(child=CharField())
+    model = ChoiceField(choices=model_choices(), required=False)
+    object_pk = CharField(required=False)
+
+    validators = [RequiredTogetherValidator(fields=["model", "object_pk"])]
+
+    def validate(self, attrs: dict) -> dict:
+        model_class = None
+        model_instance = None
+        # Check if we're setting an object-level perm or global
+        model = attrs.get("model")
+        object_pk = attrs.get("object_pk")
+        if model and object_pk:
+            model_class = apps.get_model(attrs["model"])
+            model_instance = model_class.objects.filter(pk=attrs["object_pk"]).first()
+        attrs["model_class"] = model_class
+        attrs["model_instance"] = model_instance
+        if attrs.get("model"):
+            return attrs
+        permissions = attrs.get("permissions", [])
+        if not all("." in perm for perm in permissions):
+            raise ValidationError(
+                {
+                    "permissions": (
+                        "When assigning global permissions, codename must be given as "
+                        "app_label.codename"
+                    )
+                }
+            )
+        return attrs
 
 
 class RoleObjectPermissionSerializer(ModelSerializer):
@@ -127,6 +173,15 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     filterset_class = RoleAssignedPermissionFilter
     search_fields = ["name"]
 
+    def log_permission_change(self, request: Request, role: Role, data: dict, change: str):
+        instance = data["model_instance"]
+        Event.new(
+            EventAction.MODEL_UPDATED,
+            model=model_to_dict(role),
+            object=model_to_dict(instance) if instance else None,
+            **{change: data["permissions"]},
+        ).from_http(request)
+
     @permission_required("authentik_rbac.assign_role_permissions")
     @extend_schema(
         request=PermissionAssignSerializer(),
@@ -142,11 +197,16 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
         role: Role = self.get_object()
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
+
+        if data.validated_data["model_class"] and not data.validated_data["model_instance"]:
+            raise ValidationError({"object_pk": "Object does not exist."})
+
         ids = []
         with atomic():
             for perm in data.validated_data["permissions"]:
                 assigned_perm = assign_perm(perm, role, data.validated_data["model_instance"])
                 ids.append(PermissionAssignResultSerializer(instance={"id": assigned_perm.pk}).data)
+        self.log_permission_change(request, role, data.validated_data, "permissions_assigned")
         return Response(ids, status=200)
 
     @permission_required("authentik_rbac.unassign_role_permissions")
@@ -165,5 +225,19 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
         data.is_valid(raise_exception=True)
         with atomic():
             for perm in data.validated_data["permissions"]:
-                remove_perm(perm, role, data.validated_data["model_instance"])
+                # Temporary™ fix for orphaned permissions.
+                if data.validated_data["model_class"] and not data.validated_data["model_instance"]:
+                    content_type = ContentType.objects.get_for_model(
+                        data.validated_data["model_class"]
+                    )
+                    _, codename = perm.split(".", 1)
+                    RoleObjectPermission.objects.filter(
+                        role=role,
+                        content_type=content_type,
+                        object_pk=data.validated_data["object_pk"],
+                        permission__codename=codename,
+                    ).delete()
+                else:
+                    remove_perm(perm, role, data.validated_data["model_instance"])
+        self.log_permission_change(request, role, data.validated_data, "permissions_unassigned")
         return Response(status=204)

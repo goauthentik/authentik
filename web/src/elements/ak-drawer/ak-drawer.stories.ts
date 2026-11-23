@@ -1,5 +1,4 @@
 import "./ak-drawer";
-
 import { DrawerExpandRequest } from "./ak-drawer.component";
 
 import type { Meta, StoryObj } from "@storybook/web-components-vite";
@@ -91,6 +90,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
+
 type Story = StoryObj;
 
 const Template: Story = {

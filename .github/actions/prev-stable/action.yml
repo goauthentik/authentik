@@ -1,0 +1,26 @@
+name: "Find previous stable version"
+description: "Find the git tag of the previous stable authentik release. Requires a checkout with tags (fetch-depth: 0)."
+
+outputs:
+  tag:
+    description: "Git tag of the previous stable version, e.g. version/2026.8.5"
+    value: ${{ steps.prev-stable.outputs.tag }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: prev-stable
+      shell: bash
+      run: |
+        set -e -o pipefail
+
+        # Previous stable tag
+        prev_stable=$(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
+        # Current version family based on
+        current_version_family=$(cat internal/constants/VERSION | grep -vE -- 'rc[0-9]+$' || true)
+        if [[ -n $current_version_family ]]; then
+            prev_stable="version/${current_version_family}"
+        fi
+
+        echo "::notice::Previous stable version: ${prev_stable}"
+        echo "tag=${prev_stable}" >> "$GITHUB_OUTPUT"

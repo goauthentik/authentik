@@ -1,7 +1,6 @@
 /**
- * @file Vendored Lexer Implementation
- *
  * @license MIT
+ * @file Vendored Lexer Implementation
  * @author Aadit M Shah <aaditmshah@fastmail.fm>
  * @see https://github.com/aaditmshah/lexer/tree/master
  */
@@ -19,13 +18,15 @@
  * `index`, and `reject`.
  *
  * Return values:
+ *
  * - `null` (or `undefined` from an implicit return) — discard the match and continue scanning.
- * - a single token — yield it from {@link Lexer.lex}.
- * - an array of tokens — yield the first; queue the rest for subsequent calls.
+ * - A single token — yield it from {@link Lexer.lex}.
+ * - An array of tokens — yield the first; queue the rest for subsequent calls.
  *
  * @callback LexerAction
  * @this {Lexer}
  * @param {...string[]} match
+ *
  * @returns {Token | Token[] | null | void}
  */
 
@@ -34,7 +35,8 @@
  * @property {RegExp} pattern Sticky-compiled pattern used to probe the input.
  * @property {boolean} global Whether the user-supplied pattern was global.
  * @property {LexerAction} action
- * @property {number[]} start States in which the rule is active. `[0]` is the default state; an empty array means "any state".
+ * @property {number[]} start States in which the rule is active. `[0]` is the default state; an
+ *   empty array means "any state".
  */
 
 /**
@@ -51,6 +53,7 @@
  * @callback DefunctHandler
  * @this {Lexer}
  * @param {string} chr The unexpected character.
+ *
  * @returns {Token | Token[] | null | void}
  */
 
@@ -113,6 +116,7 @@ export class Lexer {
      * @param {RegExp} pattern
      * @param {LexerAction} action
      * @param {number[]} [start] States in which the rule is active. Defaults to `[0]`.
+     *
      * @returns {this}
      */
     addRule(pattern, action, start) {
@@ -120,8 +124,11 @@ export class Lexer {
 
         if (!global || !pattern.sticky) {
             let flags = "gy";
+
             if (pattern.multiline) flags += "m";
+
             if (pattern.ignoreCase) flags += "i";
+
             if (pattern.unicode) flags += "u";
             pattern = new RegExp(pattern.source, flags);
         }
@@ -140,6 +147,7 @@ export class Lexer {
      * Reset the lexer and load a new input string.
      *
      * @param {string} input
+     *
      * @returns {this}
      */
     setInput(input) {
@@ -148,6 +156,7 @@ export class Lexer {
         this.index = 0;
         this.#tokens.length = 0;
         this.input = input;
+
         return this;
     }
 
@@ -172,6 +181,7 @@ export class Lexer {
                 const { result, length } = match;
                 this.index += length;
                 this.reject = false;
+
                 this.#remove++;
 
                 // TypeScript Native's assessment is correct.
@@ -187,7 +197,9 @@ export class Lexer {
                         this.#tokens = token.slice(1);
                         token = token[0];
                     }
+
                     if (length) this.#remove = 0;
+
                     return token;
                 }
             }
@@ -198,11 +210,14 @@ export class Lexer {
                 if (this.reject) {
                     this.#remove = 0;
                     const token = this.#defunct(input.charAt(this.index++));
+
                     if (token !== null && token !== undefined) {
                         if (Array.isArray(token)) {
                             this.#tokens = token.slice(1);
+
                             return token[0];
                         }
+
                         return token;
                     }
                 } else {
@@ -238,6 +253,7 @@ export class Lexer {
         for (const rule of this.#rules) {
             const start = rule.start;
             const states = start.length;
+
             const eligible =
                 !states || start.indexOf(state) >= 0 || (state % 2 && states === 1 && !start[0]);
 

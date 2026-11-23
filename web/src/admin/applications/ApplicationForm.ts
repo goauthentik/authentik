@@ -14,12 +14,12 @@ import "#elements/forms/SearchSelect/ak-search-select";
 import "#admin/applications/ak-provider-table";
 import "#admin/applications/components/ak-backchannel-input";
 import "#admin/applications/components/ak-provider-search-input";
-
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { navigate } from "#elements/router/RouterOutlet";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { navigate } from "#elements/router/core/navigation";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -34,7 +34,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 /**
  * Application Form
  *
- * @prop {string} instancePk - The primary key of the instance to load.
+ * @property {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
@@ -86,7 +86,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
 
         if (currentSlug && currentSlug !== nextSlug) {
             this.instancePk = nextSlug;
-            navigate(`/core/applications/${nextSlug}`);
+            navigate(toAdminInterface(`core/applications/${nextSlug}`));
         }
 
         return app;
@@ -113,14 +113,17 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );
+
         const providerFromInstance = this.instance?.provider;
         const providerValue = providerFromInstance ?? this.provider;
         const providerPrefilled = !this.instance && this.provider !== null;
 
         return html`
-            ${this.instance || this.provider
-                ? null
-                : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
+            ${
+                this.instance || this.provider
+                    ? null
+                    : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`
+            }
             <ak-text-input
                 name="name"
                 autocomplete="off"

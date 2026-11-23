@@ -1,0 +1,19 @@
+/**
+ * @file * @file Document-level CSS Custom Properties for Divider components.
+ */
+
+:root {
+    --ak-c-divider--line-thickness: 1px;
+    /* These colors change globally when dark mode is active; no dark block required. */
+    --ak-c-divider--color: var(--pf-global--BorderColor--100);
+    --ak-c-divider--strong-color: var(--pf-global--BorderColor--light-100);
+    --ak-c-divider--subtle-color: var(--pf-global--BorderColor--300);
+    --ak-c-divider--display: flex;
+    --ak-c-divider--flex-direction: row;
+    --ak-c-divider--content-spacing: 0.35em;
+    --ak-c-divider--height: auto;
+    --ak-c-divider__line--before--top: 50%;
+    --ak-c-divider__line--before--left: 0;
+    --ak-c-divider__line--before--width: 100%;
+    --ak-c-divider__line--before--height: var(--ak-c-divider--line-thickness);
+}

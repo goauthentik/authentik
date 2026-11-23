@@ -61,6 +61,7 @@ export const ZHRegionToHanScript: ReadonlyMap<string, HanScriptTag> = new Map([
  * Resolve a Chinese locale to it's preferred script tag.
  *
  * Priority:
+ *
  * 1. Explicit script subtag (zh-Hant, zh-Hans)
  * 2. Known region mapping (TW, HK, CN, etc.)
  * 3. CLDR maximize() inference
@@ -103,6 +104,7 @@ export function resolveChineseFallback(
 ): typeof CJKLanguageTag.HanSimplified | typeof CJKLanguageTag.HanTraditional {
     // Explicit script?
     if (/[-_]hant\b/i.test(candidate)) return CJKLanguageTag.HanTraditional;
+
     if (/[-_]hans\b/i.test(candidate)) return CJKLanguageTag.HanSimplified;
 
     // Traditional region?
@@ -119,6 +121,7 @@ export function resolveChineseFallback(
 export function resolveChineseScriptLegacy(candidate: string): HanScriptTag {
     // Explicit script?
     if (/[-_]hant\b/i.test(candidate)) return HanScriptTag.Traditional;
+
     if (/[-_]hans\b/i.test(candidate)) return HanScriptTag.Simplified;
 
     // Traditional region?

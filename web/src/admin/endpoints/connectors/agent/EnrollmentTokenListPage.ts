@@ -5,7 +5,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/ak-status-label";
-
 import { aki } from "#common/api/client";
 
 import { IconEnrollmentTokenCopyButton } from "#elements/buttons/IconEnrollmentTokenCopyButton";
@@ -61,7 +60,6 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Enrollment Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: EnrollmentToken) => {
                 return [

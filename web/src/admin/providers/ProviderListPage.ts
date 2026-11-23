@@ -13,10 +13,10 @@ import "#admin/providers/wsfed/WSFederationProviderForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -31,6 +31,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
+    public static override verboseName = msg("Provider", { id: "providers.verbose-name.label" });
+    public static override verboseNamePlural = msg("Providers", {
+        id: "providers.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     override pageTitle = msg("Providers");
@@ -65,7 +70,6 @@ export class ProviderListPage extends TablePage<Provider> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Provider(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Provider) => {
                 return aki(ProvidersApi).providersAllUsedByList({
@@ -88,7 +92,7 @@ export class ProviderListPage extends TablePage<Provider> {
         if (item.assignedApplicationName) {
             return html`<i class="pf-icon pf-icon-ok pf-m-success" aria-hidden="true"></i>
                 ${msg("Assigned to application ")}
-                <a href="#/core/applications/${item.assignedApplicationSlug}"
+                <a href=${toAdminInterface(`core/applications/${item.assignedApplicationSlug}`)}
                     >${item.assignedApplicationName}</a
                 >`;
         }
@@ -96,7 +100,10 @@ export class ProviderListPage extends TablePage<Provider> {
         if (item.assignedBackchannelApplicationName) {
             return html`<i class="pf-icon pf-icon-ok pf-m-success" aria-hidden="true"></i>
                 ${msg("Assigned to application (backchannel) ")}
-                <a href="#/core/applications/${item.assignedBackchannelApplicationSlug}"
+                <a
+                    href=${toAdminInterface(
+                        `core/applications/${item.assignedBackchannelApplicationSlug}`,
+                    )}
                     >${item.assignedBackchannelApplicationName}</a
                 >`;
         }
@@ -107,7 +114,7 @@ export class ProviderListPage extends TablePage<Provider> {
 
     override row(item: Provider): SlottedTemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.pk}">${item.name}</a>`,
+            html`<a href=${toAdminInterface(`core/providers/${item.pk}`)}>${item.name}</a>`,
             this.#rowApp(item),
             item.verboseName,
             html`<div class="ak-c-table__actions">

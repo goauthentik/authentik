@@ -1,0 +1,121 @@
+import "#admin/rbac/ObjectPermissionModal";
+import "#admin/requests/RequestRuleForm";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import { aki } from "#common/api/client";
+import "#elements/cards/SectionCard";
+
+import { plural } from "#common/ui/locale/plurals";
+
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { renderBoundPoliciesExpansion } from "#admin/policies/renderPolicyBindings";
+import { RequestRuleForm } from "#admin/requests/RequestRuleForm";
+
+import { ModelEnum, RequestRule, RequestsApi } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html } from "lit";
+import { customElement } from "lit/decorators.js";
+
+@customElement("ak-request-rule-list")
+export class RequestRuleListPage extends TablePage<RequestRule> {
+    public static override verboseName = msg("Request rule", {
+        id: "request-rules.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Request rules", {
+        id: "request-rules.verbose-name-plural.label",
+    });
+
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override searchPlaceholder = msg("Search for a request rule by name...");
+    public override pageTitle = msg("Request Rules");
+    public override pageDescription = msg(
+        "Define who can approve access requests for the objects these rules are bound to.",
+    );
+    public override pageIcon = "pf-icon pf-icon-locked";
+    public override expandable = true;
+
+    public override order = "name";
+
+    protected override searchEnabled = true;
+
+    protected async apiEndpoint(): Promise<PaginatedResponse<RequestRule>> {
+        return aki(RequestsApi).requestsRulesList(await this.defaultEndpointConfig());
+    }
+
+    protected override columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Bound to")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
+
+    protected override renderToolbarSelected(): SlottedTemplateResult {
+        const disabled = this.selectedElements.length < 1;
+
+        return html` <ak-forms-delete-bulk
+            .objects=${this.selectedElements}
+            .usedBy=${(item: RequestRule) => {
+                return aki(RequestsApi).requestsRulesUsedByList({
+                    uuid: item.uuid || "",
+                });
+            }}
+            .delete=${(item: RequestRule) => {
+                return aki(RequestsApi).requestsRulesDestroy({
+                    uuid: item.uuid || "",
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
+    }
+
+    protected override row(item: RequestRule): SlottedTemplateResult[] {
+        return [
+            item.name,
+            plural(item.targets.length, {
+                one: (formattedCount) =>
+                    msg(str`${formattedCount} object`, {
+                        id: "request-rules.target-count.label.one",
+                    }),
+                other: (formattedCount) =>
+                    msg(str`${formattedCount} objects`, {
+                        id: "request-rules.target-count.label.other",
+                    }),
+            }),
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(RequestRuleForm, item.uuid, item.name)}
+
+                <ak-rbac-object-permission-modal
+                    model=${ModelEnum.AuthentikRequestsRequestrule}
+                    objectPk=${item.uuid!}
+                >
+                </ak-rbac-object-permission-modal>
+            </div>`,
+        ];
+    }
+
+    protected override renderExpanded(item: RequestRule): SlottedTemplateResult {
+        return renderBoundPoliciesExpansion({
+            target: item.pbmUuid,
+            mode: item.policyEngineMode,
+            description: msg("These bindings control which users/groups can approve requests."),
+        });
+    }
+
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(RequestRuleForm);
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-request-rule-list": RequestRuleListPage;
+    }
+}

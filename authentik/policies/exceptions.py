@@ -1,13 +1,13 @@
 """policy exceptions"""
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 
 
-class PolicyEngineException(SentryIgnoredException):
+class PolicyEngineException(TracingIgnoredException):
     """Error raised when a policy engine is configured incorrectly"""
 
 
-class PolicyException(SentryIgnoredException):
+class PolicyException(TracingIgnoredException):
     """Exception that should be raised during Policy Evaluation, and can be recovered from."""
 
     src_exc: Exception | None = None

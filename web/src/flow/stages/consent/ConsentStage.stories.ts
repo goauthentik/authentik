@@ -1,6 +1,5 @@
 import "@patternfly/patternfly/components/Login/login.css";
 import "./ConsentStage.js";
-
 import { flowFactory } from "#stories/flow-interface";
 
 export default {

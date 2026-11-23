@@ -1,6 +1,5 @@
 import "#elements/messages/MessageContainer";
 import "../ak-number-input.js";
-
 import AkNumberInput from "../ak-number-input.js";
 
 import { Meta } from "@storybook/web-components";

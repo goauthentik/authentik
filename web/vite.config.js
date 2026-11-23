@@ -38,18 +38,41 @@ export default defineConfig({
             "**/.{idea,git,cache,output,temp}/**",
             "**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*",
         ],
+        // Since Vitest 5, inline projects extend this config by default, which would
+        // re-apply the root `test.dir` and plugins. Each project declares its own.
         projects: [
             {
+                extends: false,
+                // The root `tsconfig.json` excludes `src/**/*.test.ts`, so `vite:oxc`'s
+                // per-file tsconfig discovery bails with `[TSCONFIG_ERROR] Tsconfig not
+                // found` on co-located `src/**/*.unit.test.ts`. Disabling tsconfig
+                // discovery for this Node project lets oxc transform those files while
+                // leaving `build:types` (`tsgo -p .`) and the root excludes untouched.
+                // `tsconfig` is forwarded to oxc's transform at runtime but is omitted
+                // from vite's `OxcOptions` type, so the assertion adds it back to keep
+                // `tsgo -p .` clean.
+                oxc: /** @type {import("vite").OxcOptions & { tsconfig: false }} */ ({
+                    tsconfig: false,
+                    // Without tsconfig discovery, oxc no longer sees `experimentalDecorators`.
+                    decorator: { legacy: true },
+                }),
                 test: {
                     include: ["./test/unit/**/*.{test,spec}.ts", "**/*.unit.{test,spec}.ts"],
                     name: "Unit Tests",
                     environment: "node",
+                    setupFiles: ["./test/unit/setup.ts"],
                     typecheck: {
                         tsconfig: "./tsconfig.unit.json",
                     },
                 },
             },
             {
+                extends: false,
+                // Projects do not inherit the root plugin list, and elements
+                // import their stylesheets as text for `unsafeCSS`. Without
+                // this the CSS resolves to a Vite style side-effect with no
+                // default export, and importing any AKElement throws.
+                plugins: [inlineCSSPlugin()],
                 test: {
                     setupFiles: ["./test/lit/setup.js"],
 
@@ -57,6 +80,7 @@ export default defineConfig({
                     name: "Browser Tests",
                     browser: {
                         enabled: true,
+                        headless: true,
                         provider: playwright(),
 
                         instances: [

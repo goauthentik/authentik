@@ -6,12 +6,12 @@ Library](https://v4-archive.patternfly.org/v4/).
 This folder contains:
 
 - entrypoints and contents for the Authentik front-end's applications and utilities: Flow
-  (`flow.global.css`), User/Admin (`interface.global.css`), and the static CSS built for Django
-  templates that are not supporting applications (`static.global.css`).
+  (`if/flow/index.global.css`), User/Admin (`if/authenticated/index.global.css`), and the static CSS built for Django
+  templates that are not supporting applications (`if/shared/static.global.css`).
 - Overrides for various components where we apply our own design sensibilities to Patternfly
   components.
 
-The file `layers.css` is the top of every entrypoint; it describes the layers we use and the roles
+The file `if/shared/layers.css` is the top of every entrypoint; it describes the layers we use and the roles
 each layer plays in our CSS specificity chain.
 
 The goal of this hierarchy is to make it obvious by path:
@@ -55,9 +55,9 @@ CSS files.
 
 - Entry (source) Output Consumers
 
-- `interface.global.css` `dist/styles/interface-*` Admin + User
-- `flows.global.css` `dist/styles/flow-*` Flow
-- `static.global.css` `dist/styles/static-*` Django static templates
+- `if/authenticated/index.global.css` `dist/styles/interface-*` Admin + User
+- `if/flow/index.global.css` `dist/styles/flow-*` Flow
+- `if/shared/static.global.css` `dist/styles/static-*` Django static templates
 
 ### The fourth pipeline: shadow scope
 
@@ -79,12 +79,12 @@ Property with the highest specificity when it his the element boundary wins.
 
 ```
 web/src/styles/
-  layers.css            # Out @layer order statement — imported first by every entrypoint file
+  if/shared/layers.css  # Our @layer order statement — imported first by every entrypoint file
   README.md             # You're reading it!
 
-  interface.global.css  # entrypoint: Admin + User
-  flows.global.css      # entrypoint: Flow
-  static.global.css     # entrypoint: Django templates
+  if/authenticated/index.global.css  # entrypoint: Admin + User
+  if/flow/index.global.css           # entrypoint: Flow
+  if/shared/static.global.css        # entrypoint: Django templates
 
   global/               # Defines the design system for the document
     vendor/             # layer(vendor)  vendored PatternFly — override in `theme` or `components`
@@ -149,7 +149,7 @@ imbue their selectors with higher specificity over earlier ones.
 
 What you want to change, and where you can find it:
 
-- The login card's width / padding: `authentik/login.css` (`--ak-c-login--MaxWidth`, ...)
+- The login card's width / padding: `if/flow/login.css` (`--ak-c-login--MaxWidth`, ...)
 - A default color / spacing / font token: `global/theme/colors.css`, `spacers.css`, `fonts.css`
 - Dark-mode color values: `global/mode/mode.css` <sup>1</sup>
 - Light/dark/contrast/motion _behavior_: `global/mode/mode.css`, `global/mode/contrast.css` <sup>2</sup>
@@ -187,6 +187,6 @@ blocks.
 
 TODO: Find a better home for `patternfly/constants.ts`.
 
-TODO: What the heck is `authentik/login.css` doing?
+TODO: What the heck is `if/flow/login.css` doing?
 
 TODO: Move `atom` closer to the component.

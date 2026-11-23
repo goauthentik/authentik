@@ -4,11 +4,17 @@ import datetime
 import uuid
 
 from cryptography import x509
+from cryptography.exceptions import InternalError
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+from cryptography.hazmat.primitives.asymmetric.mldsa import (
+    MLDSA44PrivateKey,
+    MLDSA65PrivateKey,
+    MLDSA87PrivateKey,
+)
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from cryptography.x509.oid import NameOID
 from django.db import models
@@ -16,6 +22,21 @@ from django.utils.translation import gettext_lazy as _
 
 from authentik import authentik_version
 from authentik.crypto.models import CertificateKeyPair
+
+# Key types whose signature scheme takes no separate hash algorithm (EdDSA, ML-DSA) and whose
+# private keys can only be serialized as PKCS#8.
+PKCS8_ONLY_KEY_TYPES = (
+    Ed25519PrivateKey,
+    Ed448PrivateKey,
+    MLDSA44PrivateKey,
+    MLDSA65PrivateKey,
+    MLDSA87PrivateKey,
+)
+
+
+class KeyAlgorithmUnavailableError(ValueError):
+    """The selected key algorithm cannot be generated in the current OpenSSL configuration,
+    for example ML-DSA under a FIPS provider that predates it."""
 
 
 class PrivateKeyAlg(models.TextChoices):
@@ -25,6 +46,9 @@ class PrivateKeyAlg(models.TextChoices):
     ECDSA = "ecdsa", _("ecdsa")
     ED25519 = "ed25519", _("Ed25519")
     ED448 = "ed448", _("Ed448")
+    MLDSA44 = "mldsa44", _("ML-DSA-44")
+    MLDSA65 = "mldsa65", _("ML-DSA-65")
+    MLDSA87 = "mldsa87", _("ML-DSA-87")
 
 
 class CertificateBuilder:
@@ -54,16 +78,25 @@ class CertificateBuilder:
 
     def generate_private_key(self) -> PrivateKeyTypes:
         """Generate private key"""
-        if self.alg == PrivateKeyAlg.ECDSA:
-            return ec.generate_private_key(curve=ec.SECP256R1())
-        if self.alg == PrivateKeyAlg.RSA:
-            return rsa.generate_private_key(
-                public_exponent=65537, key_size=4096, backend=default_backend()
-            )
-        if self.alg == PrivateKeyAlg.ED25519:
-            return Ed25519PrivateKey.generate()
-        if self.alg == PrivateKeyAlg.ED448:
-            return Ed448PrivateKey.generate()
+        try:
+            if self.alg == PrivateKeyAlg.ECDSA:
+                return ec.generate_private_key(curve=ec.SECP256R1())
+            if self.alg == PrivateKeyAlg.RSA:
+                return rsa.generate_private_key(
+                    public_exponent=65537, key_size=4096, backend=default_backend()
+                )
+            if self.alg == PrivateKeyAlg.ED25519:
+                return Ed25519PrivateKey.generate()
+            if self.alg == PrivateKeyAlg.ED448:
+                return Ed448PrivateKey.generate()
+            if self.alg == PrivateKeyAlg.MLDSA44:
+                return MLDSA44PrivateKey.generate()
+            if self.alg == PrivateKeyAlg.MLDSA65:
+                return MLDSA65PrivateKey.generate()
+            if self.alg == PrivateKeyAlg.MLDSA87:
+                return MLDSA87PrivateKey.generate()
+        except InternalError as exc:
+            raise KeyAlgorithmUnavailableError(self.alg) from exc
         raise ValueError(f"Invalid alg: {self.alg}")
 
     def build(
@@ -107,8 +140,8 @@ class CertificateBuilder:
                 x509.SubjectAlternativeName(alt_names), critical=True
             )
         algo = hashes.SHA256()
-        # EdDSA doesn't take a hash algorithm
-        if isinstance(self.__private_key, (Ed25519PrivateKey | Ed448PrivateKey)):
+        # EdDSA and ML-DSA don't take a hash algorithm
+        if isinstance(self.__private_key, PKCS8_ONLY_KEY_TYPES):
             algo = None
         self.__certificate = self.__builder.sign(
             private_key=self.__private_key,
@@ -120,7 +153,7 @@ class CertificateBuilder:
     def private_key(self):
         """Return private key in PEM format"""
         format = serialization.PrivateFormat.TraditionalOpenSSL
-        if isinstance(self.__private_key, (Ed25519PrivateKey | Ed448PrivateKey)):
+        if isinstance(self.__private_key, PKCS8_ONLY_KEY_TYPES):
             format = serialization.PrivateFormat.PKCS8
         return self.__private_key.private_bytes(
             encoding=serialization.Encoding.PEM,

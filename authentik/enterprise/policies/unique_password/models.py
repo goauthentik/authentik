@@ -2,7 +2,7 @@ from hashlib import sha1
 
 from django.contrib.auth.hashers import identify_hasher, make_password
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
@@ -51,7 +51,7 @@ class UniquePasswordPolicy(Policy):
                 field=self.password_field,
                 fields=request.context.keys(),
             )
-            return PolicyResult(False, _("Password not set in context"))
+            return PolicyResult(False, str(_("Password not set in context")))
         password = str(password)
 
         if not self.num_historical_passwords:
@@ -75,7 +75,9 @@ class UniquePasswordPolicy(Policy):
                 # on old passwords to be an attack surface.
                 return PolicyResult(
                     False,
-                    _("This password has been used previously. Please choose a different one."),
+                    str(
+                        _("This password has been used previously. Please choose a different one.")
+                    ),
                 )
 
         return PolicyResult(True)

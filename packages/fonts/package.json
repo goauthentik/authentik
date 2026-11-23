@@ -1,0 +1,69 @@
+{
+    "name": "@goauthentik/fonts",
+    "version": "2.1.0",
+    "description": "The typefaces authentik ships: the RedHat variable faces and the PatternFly icon faces.",
+    "license": "MIT AND OFL-1.1 AND CC-BY-4.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/fonts"
+    },
+    "files": [
+        "faces.css",
+        "icons.css",
+        "*.woff",
+        "*.woff2",
+        "LICENSE.txt",
+        "NOTICE.md",
+        "licenses/**"
+    ],
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./faces.css": "./faces.css",
+        "./icons.css": "./icons.css"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "exit 0",
+        "check": "run-s format:check",
+        "fix": "run-s format",
+        "format": "oxfmt --write .",
+        "format:check": "oxfmt --check ."
+    },
+    "devDependencies": {
+        "@goauthentik/oxfmt-config": "link:../oxfmt-config",
+        "npm-run-all": "^4.1.5",
+        "oxfmt": "catalog:"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": "^24.22.3 || >=26.13.1",
+            "onFail": "error"
+        }
+    },
+    "engines": {
+        "node": "^24.22.3 || >=26.13.1",
+        "pnpm": ">=12.4.0"
+    },
+    "packageManager": "pnpm@12.22.0+sha512.894940a3d9a57dfa6fd373990fb4e41e09c2f2d76d982ed1d75275d39267f988fb4e2d40900cbe9921c68d97c67aa1a1096d276633db248f7b34927ac9ddb7a4",
+    "#exports-comment": [
+        "Only the two stylesheets need entries. The `url(\"./RedHatTextVF.woff2\")`",
+        "references inside them are resolved relative to the stylesheet by the",
+        "consuming bundler, not through this exports map.",
+        "faces.css holds the RedHat brand text faces; icons.css holds the icon",
+        "faces PatternFly components render glyphs from. They are separate so a",
+        "consumer can take the brand faces without the icon fonts.",
+        "There is no build step — the package is checked-in assets."
+    ],
+    "#license-comment": [
+        "The package itself is MIT (LICENSE.txt). The font files it redistributes",
+        "are not: the RedHat faces are OFL-1.1, Font Awesome's font files are",
+        "OFL-1.1 with the icons under CC-BY-4.0, and pficon is MIT via PatternFly.",
+        "NOTICE.md records the provenance and license of each file, and licenses/",
+        "carries the full texts. Both ship in the published package."
+    ]
+}

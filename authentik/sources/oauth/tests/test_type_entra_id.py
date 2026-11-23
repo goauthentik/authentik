@@ -1,9 +1,20 @@
 """Entra ID Type tests"""
 
-from django.test import TestCase
+from json import dumps
+from unittest.mock import patch
 
+from django.test import RequestFactory, TestCase
+from httpx import Response
+from requests_mock import Mocker
+
+from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.entra_id import EntraIDOAuthCallback, EntraIDType
+from authentik.sources.oauth.types.entra_id import (
+    EntraIDClient,
+    EntraIDOAuthCallback,
+    EntraIDOAuthRedirect,
+    EntraIDType,
+)
 
 # https://docs.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0&tabs=http#response-2
 EID_USER = {
@@ -49,3 +60,198 @@ class TestTypeAzureAD(TestCase):
     def test_user_id(self):
         """Test Entra ID user ID"""
         self.assertEqual(EntraIDOAuthCallback().get_user_id(EID_USER), EID_USER["id"])
+
+
+class TestEntraIDClient(TestCase):
+    """Entra ID group pagination"""
+
+    def setUp(self):
+        self.source = OAuthSource(
+            provider_type="entraid",
+            additional_scopes="https://graph.microsoft.com/GroupMember.Read.All",
+        )
+        self.oauth_client = EntraIDClient(self.source, RequestFactory().get("/"))
+        self.token = {"token_type": "Bearer", "access_token": generate_id()}
+        self.urls = [
+            "https://graph.microsoft.com/v1.0/me/memberOf",
+            "https://graph.microsoft.com/v1.0/me/memberOf?$skiptoken=Opaque%2BOne%3D",
+            "https://graph.microsoft.com/v1.0/me/memberOf?$top=2&$skiptoken=Other%2FTwo%3D",
+        ]
+
+    def test_group_pages(self):
+        """Collect all pages, follow exact next links, and filter non-group objects."""
+        for count in (1, 2, 3):
+            with (
+                self.subTest(pages=count),
+                Mocker() as mocker,
+                patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+            ):
+                mocker.get(EntraIDType.profile_url, json=EID_USER)
+                token = {"token_type": "Bearer", "access_token": generate_id()}
+                pages = []
+                for index in range(count):
+                    page = {
+                        "value": [
+                            {
+                                "@odata.type": "#microsoft.graph.group",
+                                "id": str(index),
+                                "displayName": f"Group {index}",
+                                "extension_custom": "retained",
+                                "createdDateTime": "2026-01-01T00:00:00Z",
+                                "owners": [{"@odata.type": "#microsoft.graph.user", "id": "owner"}],
+                            },
+                            {"@odata.type": "#microsoft.graph.directoryRole", "id": "role"},
+                        ]
+                    }
+                    if index + 1 < count:
+                        page["@odata.nextLink"] = self.urls[index + 1]
+                    pages.append(Response(200, json=page))
+                graph_request.side_effect = pages
+
+                info = self.oauth_client.get_profile_info(token)
+                self.assertEqual(len(info["raw_groups"]["value"]), count * 2)
+                self.assertEqual(
+                    EntraIDType().get_base_user_properties(info)["groups"],
+                    [str(index) for index in range(count)],
+                )
+                self.assertEqual(
+                    EntraIDType().get_base_group_properties(self.source, "0", info=info),
+                    {"name": "Group 0"},
+                )
+                group = info["raw_groups"]["0"]
+                self.assertEqual(group["additional_data"]["extension_custom"], "retained")
+                self.assertEqual(group["created_date_time"], "2026-01-01T00:00:00Z")
+                self.assertEqual(group["owners"][0]["id"], "owner")
+                self.assertNotIn("backing_store", dumps(group))
+                requests = [call.args[0] for call in graph_request.call_args_list]
+                self.assertEqual([str(request.url) for request in requests], self.urls[:count])
+                for request in requests:
+                    self.assertEqual(
+                        request.headers["Authorization"], f"Bearer {token['access_token']}"
+                    )
+
+    def test_later_page_error(self):
+        """A failed continuation must not return a partial profile for synchronization."""
+        with (
+            Mocker() as mocker,
+            patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+        ):
+            mocker.get(EntraIDType.profile_url, json=EID_USER)
+            graph_request.side_effect = [
+                Response(
+                    200,
+                    json={
+                        "value": [{"@odata.type": "#microsoft.graph.group", "id": "group"}],
+                        "@odata.nextLink": self.urls[1],
+                    },
+                ),
+                Response(403, json={"error": {"code": "Authorization_RequestDenied"}}),
+            ]
+            self.assertIsNone(self.oauth_client.get_profile_info(self.token))
+            self.assertEqual(graph_request.call_count, 2)
+
+    def test_without_group_scope(self):
+        """Only fetch the user profile when the group scope is absent."""
+        self.source.additional_scopes = "https://graph.microsoft.com/User.Read"
+        with (
+            Mocker() as mocker,
+            patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+        ):
+            mocker.get(EntraIDType.profile_url, json=EID_USER)
+            self.assertEqual(self.oauth_client.get_profile_info(self.token), EID_USER)
+            self.assertEqual(mocker.call_count, 1)
+            graph_request.assert_not_called()
+
+    def test_national_clouds(self):
+        """Use the profile's Graph cloud for scopes and every membership page."""
+        for host in (
+            "graph.microsoft.com",
+            "graph.microsoft.us",
+            "dod-graph.microsoft.us",
+            "microsoftgraph.chinacloudapi.cn",
+        ):
+            for path in ("/v1.0/me", "/oidc/userinfo", "/v1.0/me?$select=id,displayName"):
+                with (
+                    self.subTest(host=host, path=path),
+                    Mocker() as mocker,
+                    patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+                ):
+                    base_url = f"https://{host}"
+                    self.source.profile_url = base_url + path
+                    self.source.additional_scopes = (
+                        f"*openid {base_url}/User.Read {base_url}/GroupMember.Read.All"
+                    )
+                    self.assertEqual(
+                        EntraIDOAuthRedirect().get_additional_parameters(self.source),
+                        {"scope": ["openid", f"{base_url}/User.Read"]},
+                    )
+                    mocker.get(self.source.profile_url, json=EID_USER)
+                    next_url = f"{base_url}/v1.0/me/memberOf?$skiptoken=Opaque%2BOne%3D"
+                    graph_request.side_effect = [
+                        Response(
+                            200,
+                            json={
+                                "value": [{"@odata.type": "#microsoft.graph.group", "id": "first"}],
+                                "@odata.nextLink": next_url,
+                            },
+                        ),
+                        Response(
+                            200,
+                            json={
+                                "value": [
+                                    {"@odata.type": "#microsoft.graph.group", "id": "second"}
+                                ],
+                            },
+                        ),
+                    ]
+                    info = self.oauth_client.get_profile_info(self.token)
+                    self.assertEqual(
+                        EntraIDType().get_base_user_properties(info)["groups"],
+                        ["first", "second"],
+                    )
+                    requests = [call.args[0] for call in graph_request.call_args_list]
+                    self.assertEqual(
+                        [str(request.url) for request in requests],
+                        [f"{base_url}/v1.0/me/memberOf", next_url],
+                    )
+                    for request in requests:
+                        self.assertEqual(
+                            request.headers["Authorization"], f"Bearer {self.token['access_token']}"
+                        )
+
+    def test_default_profile_scope(self):
+        """Unset profile URLs retain the commercial default scope."""
+        for profile_url in (None, ""):
+            with self.subTest(profile_url=profile_url):
+                self.source.profile_url = profile_url
+                self.assertEqual(
+                    EntraIDOAuthRedirect().get_additional_parameters(self.source),
+                    {"scope": ["openid", "https://graph.microsoft.com/User.Read"]},
+                )
+
+    def test_group_scope_must_match(self):
+        """Do not fetch memberships for another cloud or a scope substring."""
+        self.source.profile_url = "https://graph.microsoft.us/v1.0/me"
+        for scope in (
+            "https://graph.microsoft.com/GroupMember.Read.All",
+            "https://graph.microsoft.us/GroupMember.Read.All.extra",
+        ):
+            with (
+                self.subTest(scope=scope),
+                Mocker() as mocker,
+                patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+            ):
+                self.source.additional_scopes = scope
+                mocker.get(self.source.profile_url, json=EID_USER)
+                self.assertEqual(self.oauth_client.get_profile_info(self.token), EID_USER)
+                graph_request.assert_not_called()
+
+    def test_profile_error(self):
+        """A failed profile request must not trigger a membership request."""
+        with (
+            Mocker() as mocker,
+            patch("httpx.AsyncHTTPTransport.handle_async_request") as graph_request,
+        ):
+            mocker.get(EntraIDType.profile_url, status_code=403)
+            self.assertIsNone(self.oauth_client.get_profile_info(self.token))
+            graph_request.assert_not_called()

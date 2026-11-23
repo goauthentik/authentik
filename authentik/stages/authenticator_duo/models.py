@@ -85,7 +85,7 @@ class DuoDevice(SerializerModel, Device):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     # Connect to the stage to when validating access we know the API Credentials
-    stage = models.ForeignKey(AuthenticatorDuoStage, on_delete=models.CASCADE)
+    stage = models.ForeignKey(AuthenticatorDuoStage, on_delete=models.PROTECT)
     duo_user_id = models.TextField()
     last_t = models.DateTimeField(auto_now=True)
 

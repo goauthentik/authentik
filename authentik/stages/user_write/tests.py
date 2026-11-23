@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 from django.urls import reverse
 from django.utils.timezone import now
+from rest_framework.exceptions import ValidationError
 
 from authentik.core.models import (
     USER_ATTRIBUTE_SOURCES,
@@ -12,13 +13,14 @@ from authentik.core.models import (
     User,
     UserSourceConnection,
 )
+from authentik.core.signals import password_changed
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_key
@@ -27,7 +29,7 @@ from authentik.stages.user_write.models import UserCreationMode, UserWriteStage
 from authentik.stages.user_write.stage import PLAN_CONTEXT_GROUPS, UserWriteStageView
 
 
-class TestUserWriteStage(FlowTestCase):
+class TestUserWriteStage(APIFlowTestCase):
     """Write tests"""
 
     def setUp(self):
@@ -129,6 +131,70 @@ class TestUserWriteStage(FlowTestCase):
         self.assertEqual(user_qs.first().attributes["foo"], "bar")
         self.assertEqual(user_qs.first().attributes["some_custom_attribute"], "test")
 
+    def test_password_only_update(self):
+        """Password-only updates persist and keep the user's session authenticated."""
+        self.client.force_login(self.user)
+        password = generate_key()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_PROMPT] = {"password": password}
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(pk=self.user.pk)
+        self.assertTrue(user.check_password(password))
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["user"]["pk"], user.pk)
+
+    def run_stage(self, prompt: dict, user: User | None = None):
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        if user:
+            plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        plan.context[PLAN_CONTEXT_PROMPT] = prompt
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        return self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+    def test_refused_password_keeps_error_event(self):
+        """A source refusing a password writes nothing but keeps its error event"""
+
+        def refuse(sender, user, **_):
+            Event.new(EventAction.CONFIGURATION_ERROR, message="refused").set_user(user).save()
+            raise ValidationError("Failed to set password")
+
+        password_changed.connect(refuse, dispatch_uid="test_refuse")
+        self.addCleanup(password_changed.disconnect, dispatch_uid="test_refuse")
+
+        response = self.run_stage({"password": generate_key(), "name": "changed"}, self.user)
+
+        self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")
+        user = User.objects.get(pk=self.user.pk)
+        self.assertTrue(user.check_password(self.user.username))
+        self.assertNotEqual(user.name, "changed")
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.CONFIGURATION_ERROR, context__message="refused"
+            ).exists()
+        )
+
+    def test_new_user_password_sends_no_signal(self):
+        """A new user's first password is stored without a password change signal"""
+        password = generate_key()
+        with patch.object(password_changed, "send") as send:
+            self.run_stage({"username": "new-user", "password": password})
+        send.assert_not_called()
+        self.assertTrue(User.objects.get(username="new-user").check_password(password))
+
     def test_user_update_complex(self):
         """Test update of existing user"""
         new_password = generate_key()
@@ -156,6 +222,43 @@ class TestUserWriteStage(FlowTestCase):
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(new_password))
         self.assertEqual(user_qs.first().attributes["foo"], time.isoformat()[:-6] + "Z")
+
+    def test_user_update_no_change(self):
+        """A write whose prompt data matches the existing user must not save the
+        user or emit a `model_updated` event, while group membership is still
+        reconciled (#23799)."""
+        user = User.objects.create(
+            username="unittest",
+            name="Test User",
+            email="test@goauthentik.io",
+        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": "unittest",
+            "name": "Test User",
+            "email": "test@goauthentik.io",
+        }
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        # No unchanged-write should have been persisted as an event
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.MODEL_UPDATED,
+                context__model__model_name="user",
+                context__model__pk=str(user.pk),
+            ).exists()
+        )
+        # Group membership is still reconciled even when the user is unchanged
+        self.assertIn(self.group, user.groups.all())
 
     def test_user_update_source(self):
         """Test update of existing user with a source"""

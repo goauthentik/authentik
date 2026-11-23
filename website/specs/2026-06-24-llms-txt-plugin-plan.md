@@ -95,7 +95,7 @@ Expected: FAIL — `Cannot find module './common.mjs'`.
  * @property {LLMSDocsSection[]} sections One or more docs roots to scan.
  * @property {string[]} [ignoreFiles] Extra glob patterns to exclude.
  * @property {LLMSCrossLink[]} [crossLinks] Sibling-site links for the header.
- * @property {"topic"|"category"} [groupBy] How to group the root index.
+ * @property {"topic" | "category"} [groupBy] How to group the root index.
  * @property {[string, string][]} [categories] [dirName, label] pairs (integrations).
  */
 
@@ -116,7 +116,11 @@ export const LLMS_FULL_FILENAME = "llms-full.txt";
  * Validate and apply defaults to plugin options.
  *
  * @param {Partial<LLMSPluginOptions>} options
- * @returns {Required<Pick<LLMSPluginOptions, "sections" | "ignoreFiles" | "crossLinks" | "groupBy">> & LLMSPluginOptions}
+ *
+ * @returns {Required<
+ *     Pick<LLMSPluginOptions, "sections" | "ignoreFiles" | "crossLinks" | "groupBy">
+ * > &
+ *     LLMSPluginOptions}
  */
 export function normalizeOptions(options) {
     if (!options || !Array.isArray(options.sections) || options.sections.length === 0) {
@@ -274,9 +278,8 @@ Expected: FAIL — `Cannot find module './node.mjs'`.
 // docusaurus-theme/llms-txt/node.mjs
 /* eslint-disable no-console */
 /**
+ * @import {LLMSDocInfo} from "./common.mjs"
  * @file Pure node-side logic for the llms.txt plugin: discovery, parsing, URLs.
- *
- * @import { LLMSDocInfo } from "./common.mjs"
  */
 
 import { resolve } from "node:path";
@@ -287,6 +290,7 @@ import FastGlob from "fast-glob";
  * Convert OS path separators to POSIX.
  *
  * @param {string} p
+ *
  * @returns {string}
  */
 export function normalizePath(p) {
@@ -298,6 +302,7 @@ export function normalizePath(p) {
  *
  * @param {string} absDir Absolute directory to scan.
  * @param {string[]} [ignoreFiles] Extra glob patterns to exclude.
+ *
  * @returns {string[]} Absolute file paths.
  */
 export function collectDocFiles(absDir, ignoreFiles = []) {
@@ -383,6 +388,7 @@ Expected: FAIL — `parseDocFile is not a function`.
  * @param {Record<string, any>} frontMatter
  * @param {string} body
  * @param {string} relPathNoExt
+ *
  * @returns {string}
  */
 function extractTitle(frontMatter, body, relPathNoExt) {
@@ -402,6 +408,7 @@ function extractTitle(frontMatter, body, relPathNoExt) {
  *
  * @param {Record<string, any>} frontMatter
  * @param {string} body
+ *
  * @returns {string}
  */
 function extractDescription(frontMatter, body) {
@@ -423,13 +430,14 @@ function extractDescription(frontMatter, body) {
  *
  * @param {string} filePath Absolute file path.
  * @param {string} baseDir Absolute scan root.
+ *
  * @returns {LLMSDocInfo | null}
  */
 export function parseDocFile(filePath, baseDir) {
     const raw = readFileSync(filePath, "utf-8");
     const { frontMatter, content } = parseFileContentFrontMatter(raw);
 
-    if (frontMatter.draft === true) {
+    if (frontMatter.draft) {
         return null;
     }
 
@@ -505,6 +513,7 @@ Expected: FAIL — `resolveDocumentUrl is not a function`.
 /**
  * @param {string[]} routesPaths
  * @param {string} tail
+ *
  * @returns {string | undefined}
  */
 function findMatchingRoute(routesPaths, tail) {
@@ -522,6 +531,7 @@ function findMatchingRoute(routesPaths, tail) {
 
 /**
  * @param {string} urlPath
+ *
  * @returns {string}
  */
 function collapseMatchingTrailingSegment(urlPath) {
@@ -538,6 +548,7 @@ function collapseMatchingTrailingSegment(urlPath) {
 
 /**
  * @param {string} pathStr
+ *
  * @returns {string}
  */
 function removeNumberedPrefixes(pathStr) {
@@ -552,6 +563,7 @@ function removeNumberedPrefixes(pathStr) {
  *
  * @param {string} relPathNoExt Site-relative path, POSIX, no extension.
  * @param {string[]} routesPaths Resolved routes from Docusaurus postBuild props.
+ *
  * @returns {string | undefined}
  */
 export function resolveDocumentUrl(relPathNoExt, routesPaths) {
@@ -639,7 +651,7 @@ Expected: FAIL — `Cannot find module './markdown.mjs'`.
 /* eslint-disable no-console */
 /**
  * @file Convert authentik MDX into clean Markdown for the .md payload:
- * inline partial imports, strip custom directives and JSX/imports.
+ *   inline partial imports, strip custom directives and JSX/imports.
  */
 
 import { readFileSync } from "node:fs";
@@ -658,6 +670,7 @@ import { visit } from "unist-util-visit";
  * Regex fallback used when MDX parsing throws (malformed/complex JSX).
  *
  * @param {string} content
+ *
  * @returns {string}
  */
 function regexClean(content) {
@@ -674,6 +687,7 @@ function regexClean(content) {
  *
  * @param {string} partialPath
  * @param {Set<string>} chain Guards against circular imports.
+ *
  * @returns {string}
  */
 function loadPartial(partialPath, chain) {
@@ -689,6 +703,7 @@ function loadPartial(partialPath, chain) {
  *
  * @param {string} content
  * @param {string} filePath
+ *
  * @returns {string}
  */
 function inlinePartials(content, filePath) {
@@ -722,6 +737,7 @@ function inlinePartials(content, filePath) {
  *
  * @param {string} content Raw file content (may include frontmatter).
  * @param {string} filePath Absolute path (for resolving partials).
+ *
  * @returns {Promise<string>}
  */
 export async function cleanMdxToMarkdown(content, filePath) {
@@ -864,13 +880,16 @@ Expected: FAIL — `Cannot find module './generate.mjs'`.
 ```js
 // docusaurus-theme/llms-txt/generate.mjs
 /**
+ * @import {
+ *   LLMSCrossLink,
+ *   LLMSDocInfo
+ * } from "./common.mjs"
  * @file Assemble llms.txt / llms-full.txt / per-page .md output strings.
- *
- * @import { LLMSDocInfo, LLMSCrossLink } from "./common.mjs"
  */
 
 /**
  * @param {string} url
+ *
  * @returns {string}
  */
 export function applyMdExtension(url) {
@@ -880,6 +899,7 @@ export function applyMdExtension(url) {
 
 /**
  * @param {string} description
+ *
  * @returns {string}
  */
 function oneLine(description) {
@@ -893,6 +913,7 @@ function oneLine(description) {
  * @param {string} description
  * @param {string} intro
  * @param {LLMSCrossLink[]} [crossLinks]
+ *
  * @returns {string}
  */
 export function buildHeader(title, description, intro, crossLinks = []) {
@@ -909,6 +930,7 @@ export function buildHeader(title, description, intro, crossLinks = []) {
 
 /**
  * @param {LLMSDocInfo} doc
+ *
  * @returns {string}
  */
 function tocLine(doc) {
@@ -920,7 +942,8 @@ function tocLine(doc) {
  * Generate the grouped links index (llms.txt).
  *
  * @param {LLMSDocInfo[]} docs
- * @param {{ title: string, description: string, crossLinks?: LLMSCrossLink[], intro?: string }} opts
+ * @param {{ title: string; description: string; crossLinks?: LLMSCrossLink[]; intro?: string }} opts
+ *
  * @returns {string}
  */
 export function generateIndex(docs, opts) {
@@ -1027,7 +1050,8 @@ Expected: FAIL — `generateFullText is not a function`.
  * Generate the concatenated full-text file (llms-full.txt).
  *
  * @param {LLMSDocInfo[]} docs
- * @param {{ title: string, description: string, crossLinks?: LLMSCrossLink[] }} opts
+ * @param {{ title: string; description: string; crossLinks?: LLMSCrossLink[] }} opts
+ *
  * @returns {string}
  */
 export function generateFullText(docs, opts) {
@@ -1045,6 +1069,7 @@ export function generateFullText(docs, opts) {
  * Render a single page's .md payload.
  *
  * @param {LLMSDocInfo} doc
+ *
  * @returns {string}
  */
 export function renderPagePayload(doc) {
@@ -1113,7 +1138,8 @@ Expected: FAIL — `generatePerGroupIndexes is not a function`.
  * Generate a per-group (topic/category) index for the third level.
  *
  * @param {LLMSDocInfo[]} docs
- * @param {{ title: string, description: string, parentUrl: string }} opts
+ * @param {{ title: string; description: string; parentUrl: string }} opts
+ *
  * @returns {Map<string, string>} group dir -> llms.txt contents
  */
 export function generatePerGroupIndexes(docs, opts) {
@@ -1247,7 +1273,8 @@ Expected: FAIL — `Cannot find module './plugin.mjs'`.
  * Determine a doc's grouping key.
  *
  * @param {{ path: string }} doc
- * @param {{ groupBy?: "topic"|"category", categories?: [string,string][] }} opts
+ * @param {{ groupBy?: "topic" | "category"; categories?: [string, string][] }} opts
+ *
  * @returns {string}
  */
 export function assignGroup(doc, opts) {
@@ -1266,10 +1293,16 @@ export function assignGroup(doc, opts) {
 // docusaurus-theme/llms-txt/plugin.mjs
 /* eslint-disable no-console */
 /**
+ * @import {
+ *   LoadContext,
+ *   Plugin,
+ *   Props
+ * } from "@docusaurus/types"
+ * @import {
+ *   LLMSDocInfo,
+ *   LLMSPluginOptions
+ * } from "./common.mjs"
  * @file Docusaurus llms.txt plugin (postBuild).
- *
- * @import { LoadContext, Plugin, Props } from "@docusaurus/types"
- * @import { LLMSPluginOptions, LLMSDocInfo } from "./common.mjs"
  */
 
 import * as fs from "node:fs/promises";
@@ -1293,8 +1326,16 @@ export { assignGroup };
 /**
  * Build every output file's contents, keyed by build-relative path.
  *
- * @param {{ siteDir: string, outDir: string, siteUrl: string, title: string,
- *   description: string, routesPaths: string[], options: LLMSPluginOptions }} ctx
+ * @param {{
+ *     siteDir: string;
+ *     outDir: string;
+ *     siteUrl: string;
+ *     title: string;
+ *     description: string;
+ *     routesPaths: string[];
+ *     options: LLMSPluginOptions;
+ * }} ctx
+ *
  * @returns {Promise<Map<string, string>>}
  */
 export async function buildLLMSOutputs(ctx) {
@@ -1355,6 +1396,7 @@ export async function buildLLMSOutputs(ctx) {
 /**
  * @param {LoadContext} _loadContext
  * @param {LLMSPluginOptions} options
+ *
  * @returns {Plugin}
  */
 function akLLMSPlugin(_loadContext, options) {
@@ -1433,6 +1475,7 @@ Append to `docusaurus-theme/config.js`:
  * Create the llms.txt plugin tuple.
  *
  * @param {import("./llms-txt/common.mjs").LLMSPluginOptions} options
+ *
  * @returns {[string, import("./llms-txt/common.mjs").LLMSPluginOptions]}
  */
 export function createLLMSPlugin(options) {

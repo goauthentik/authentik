@@ -12,15 +12,18 @@ from channels.layers import get_channel_layer
 from django.apps import apps
 from django.db import models
 from django.db.models import Q
+from django.db.models.lookups import IsNull
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from requests import RequestException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
+from authentik.admin.models import SystemSettings
+from authentik.admin.utils import get_system_settings
 from authentik.brands.models import Brand
 from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
@@ -29,6 +32,7 @@ from authentik.core.middleware import (
 )
 from authentik.core.models import Group, PropertyMapping, User
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.consumer import build_user_group
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -37,20 +41,21 @@ from authentik.events.utils import (
     sanitize_dict,
     sanitize_item,
 )
-from authentik.lib.models import DomainlessURLValidator, ExpiringModel, SerializerModel
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    ExpiringModel,
+    SerializerModel,
+    SimpleThroughModel,
+)
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.root.ws.consumer import build_user_group
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
-from authentik.tenants.models import Tenant
-from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 DISCORD_FIELD_LIMIT = 25
@@ -61,9 +66,9 @@ def default_event_duration():
     """Default duration an Event is saved.
     This is used as a fallback when no brand is available"""
     try:
-        tenant = get_current_tenant(only=["event_retention"])
-        return now() + timedelta_from_string(tenant.event_retention)
-    except Tenant.DoesNotExist:
+        settings = get_system_settings()
+        return now() + timedelta_from_string(settings.event_retention)
+    except SystemSettings.DoesNotExist:
         return now() + timedelta(days=365)
 
 
@@ -78,7 +83,17 @@ def django_app_names() -> list[str]:
     return [x.name for x in apps.app_configs.values()]
 
 
-class NotificationTransportError(SentryIgnoredException):
+@lru_cache
+def app_for_module(module: str) -> str:
+    """Match a module to the django app it belongs to, or keep the module name"""
+    django_apps: list[str] = get_close_matches(module, django_app_names(), n=1)
+    # Also ensure that closest django app has the correct prefix
+    if len(django_apps) > 0 and django_apps[0].startswith(module):
+        return django_apps[0]
+    return module
+
+
+class NotificationTransportError(TracingIgnoredException):
     """Error raised when a notification fails to be delivered"""
 
 
@@ -90,8 +105,14 @@ class EventAction(models.TextChoices):
     LOGOUT = "logout"
 
     USER_WRITE = "user_write"
+    USER_OFFBOARDED = "user_offboarded"
+    USER_EXPIRATION_WARNING = "user_expiration_warning"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
+    AUTHENTICATOR_LOCKED = "authenticator_locked"  # noqa # nosec
+    AUTHENTICATOR_UNLOCKED = "authenticator_unlocked"  # noqa # nosec
+
+    REQUIRED_ACTION_COMPLETED = "required_action_completed"
 
     SECRET_VIEW = "secret_view"  # noqa # nosec
     SECRET_ROTATE = "secret_rotate"  # noqa # nosec
@@ -130,7 +151,17 @@ class EventAction(models.TextChoices):
     REVIEW_ATTESTED = "review_attested"
     REVIEW_COMPLETED = "review_completed"
 
+    ACCESS_REQUEST_CREATED = "access_request_created"
+    ACCESS_REQUEST_APPROVED = "access_request_approved"
+    ACCESS_REQUEST_DENIED = "access_request_denied"
+    ACCESS_REQUEST_REVOKED = "access_request_revoked"
+
     CUSTOM_PREFIX = "custom_"
+
+
+def event_actions():
+    # Wrapper used in models to prevent migrations constantly changing when actions are added
+    return EventAction.choices
 
 
 class Event(SerializerModel, ExpiringModel):
@@ -138,7 +169,7 @@ class Event(SerializerModel, ExpiringModel):
 
     event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     user = models.JSONField(default=dict)
-    action = models.TextField(choices=EventAction.choices)
+    action = models.TextField(choices=event_actions)
     app = models.TextField()
     context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)
@@ -166,13 +197,7 @@ class Event(SerializerModel, ExpiringModel):
         if not app:
             current = currentframe()
             parent = current.f_back
-            app = parent.f_globals["__name__"]
-            # Attempt to match the calling module to the django app it belongs to
-            # if we can't find a match, keep the module name
-            django_apps: list[str] = get_close_matches(app, django_app_names(), n=1)
-            # Also ensure that closest django app has the correct prefix
-            if len(django_apps) > 0 and django_apps[0].startswith(app):
-                app = django_apps[0]
+            app = app_for_module(parent.f_globals["__name__"])
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
@@ -212,10 +237,10 @@ class Event(SerializerModel, ExpiringModel):
         if hasattr(request, "brand"):
             brand: Brand = request.brand
             self.brand = sanitize_dict(model_to_dict(brand))
-        if hasattr(request, "user"):
-            self.user = get_user(request.user)
         if user:
             self.user = get_user(user)
+        elif hasattr(request, "user"):
+            self.user = get_user(request.user)
         if hasattr(request, "session"):
             from authentik.flows.views.executor import SESSION_KEY_PLAN
 
@@ -313,18 +338,41 @@ class Event(SerializerModel, ExpiringModel):
         verbose_name_plural = _("Events")
         indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["action"]),
-            models.Index(fields=["user"]),
             models.Index(fields=["app"]),
-            models.Index(fields=["created"]),
-            models.Index(fields=["client_ip"]),
+            # Event volume charts count events by time and action. Including the other columns
+            # they read lets Postgres count from the index without reading the events.
             models.Index(
-                models.F("context__authorized_application"),
-                name="authentik_e_ctx_app__idx",
+                fields=["created"],
+                include=["action", "expires", "expiring"],
+                name="authentik_e_created_cov_idx",
+            ),
+            models.Index(fields=["client_ip"]),
+            # The context keys the API filters by. Few events have them, so the indexes skip
+            # the others: Postgres cannot merge equal jsonb entries, so they would cost one
+            # entry per event. A filter on a key implies it is not null, so these still apply.
+            models.Index(
+                models.F("context__authorized_application__pk"),
+                "created",
+                condition=Q(IsNull(models.F("context__authorized_application__pk"), False)),
+                name="authentik_e_ctx_app_pk_idx",
+            ),
+            models.Index(
+                models.F("context__username"),
+                condition=Q(IsNull(models.F("context__username"), False)),
+                name="authentik_e_ctx_username_idx",
+            ),
+            # Object changelogs filter by model and action. Postgres assumes the two are unrelated
+            # and would combine an index on the model with the much larger action index, so this
+            # index has both. It is not partial: Postgres only keeps statistics for the
+            # expressions of indexes that cover every row.
+            models.Index(
+                models.F("context__model__pk"), "action", name="authentik_e_ctx_model_pk_idx"
             ),
             models.Index(
                 models.F("user__pk"),
                 name="authentik_e_user_pk__idx",
             ),
+            models.Index(models.F("user__username"), name="authentik_e_user_username_idx"),
         ]
 
 
@@ -468,6 +516,9 @@ class NotificationTransport(TasksModel, SerializerModel):
             ]
 
         if self.webhook_ca:
+            # Imports the docker client, only load it when a custom CA is set
+            from authentik.outposts.docker_tls import DockerInlineTLS
+
             with DockerInlineTLS(self.webhook_ca, authentication_kp=None) as tls:
                 return send(verify=tls.ca_cert)
         return send()
@@ -476,12 +527,12 @@ class NotificationTransport(TasksModel, SerializerModel):
         """Send notification to slack or slack-compatible endpoints"""
         fields = [
             {
-                "title": _("Severity"),
+                "title": str(_("Severity")),
                 "value": notification.severity,
                 "short": True,
             },
             {
-                "title": _("Dispatched for user"),
+                "title": str(_("Dispatched for user")),
                 "value": str(notification.user),
                 "short": True,
             },
@@ -490,7 +541,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             if notification.event.user:
                 fields.append(
                     {
-                        "title": _("Event user"),
+                        "title": str(_("Event user")),
                         "value": str(notification.event.user.get("username")),
                         "short": True,
                     },
@@ -658,6 +709,14 @@ class Notification(SerializerModel):
     class Meta:
         verbose_name = _("Notification")
         verbose_name_plural = _("Notifications")
+        indexes = [
+            # The notification drawer lists a user's unseen notifications, newest first
+            models.Index(
+                fields=["user", "created"],
+                condition=Q(seen=False),
+                name="authentik_e_notif_unseen_idx",
+            ),
+        ]
 
 
 class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
@@ -671,6 +730,7 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
             "selected, the notification will only be shown in the authentik UI."
         ),
         blank=True,
+        through="NotificationRuleNotificationTransport",
     )
     severity = models.TextField(
         choices=NotificationSeverity.choices,
@@ -713,6 +773,30 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("Notification Rule")
         verbose_name_plural = _("Notification Rules")
+
+
+class NotificationRuleNotificationTransport(SimpleThroughModel):
+    notification_rule = models.ForeignKey(
+        NotificationRule, on_delete=models.CASCADE, db_column="notificationrule_id"
+    )
+    notification_transport = models.ForeignKey(
+        NotificationTransport,
+        on_delete=models.CASCADE,
+        db_column="notificationtransport_id",
+    )
+
+    class Meta:
+        db_table = "authentik_events_notificationrule_transports"
+        unique_together = (("notification_rule", "notification_transport"),)
+        verbose_name = _("Notification Rule Notification Transport")
+        verbose_name_plural = _("Notification Rule Notification Transports")
+
+    def __str__(self):
+        return (
+            "NotificationRuleNotificationTransport for NotificationRule "
+            f"{self.notification_rule_id} "
+            f"and NotificationTransport {self.notification_transport_id}."
+        )
 
 
 class NotificationWebhookMapping(PropertyMapping):

@@ -24,3 +24,4 @@ Use `closes #N` to auto-close an issue on merge. Use `refs #N` for related issue
 
 -   [ ] The project has been linted, built, and tested (`make all`)
 -   [ ] The documentation has been updated and formatted (`make docs`)
+-   [ ] I have read the [AI usage policy](https://github.com/goauthentik/authentik/blob/main/AI_POLICY.md).

@@ -1,6 +1,7 @@
 """SAML Source tests"""
 
 from base64 import b64encode
+from unittest.mock import MagicMock, patch
 
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
@@ -14,6 +15,10 @@ from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLSource
 
 
+@patch(
+    "authentik.sources.saml.processors.response.reverse",
+    MagicMock(return_value="https://127.0.0.1:9443/source/saml/google/acs/"),
+)
 class TestViews(TestCase):
     """Test SAML Views"""
 
@@ -22,7 +27,7 @@ class TestViews(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer_override="authentik",
+            issuer_override="https://accounts.google.com/o/saml2?idpid=",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )
@@ -53,6 +58,48 @@ class TestViews(TestCase):
         )
         plan: FlowPlan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertIsNotNone(plan)
+
+    @freeze_time("2022-10-14T15:00:00")
+    def test_expired_assertion(self):
+        """An expired assertion should return a 400, not an unhandled error"""
+        response = self.client.post(
+            reverse(
+                "authentik_sources_saml:acs",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success.xml").encode()
+                ).decode()
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"The SAML assertion is not valid yet or has expired.", response.content)
+
+    def test_error_status_generic_message(self):
+        """An unsuccessful IdP status shows the user a generic message, not the IdP's details"""
+        response = self.client.post(
+            reverse(
+                "authentik_sources_saml:acs",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_error_with_detail.xml").encode()
+                ).decode()
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            b"The identity provider did not complete the authentication request.",
+            response.content,
+        )
+        self.assertNotIn(b"User account is disabled", response.content)
+        self.assertNotIn(b"Authentication failed", response.content)
 
     @freeze_time("2022-10-14T14:15:00")
     def test_enroll_redirect(self):

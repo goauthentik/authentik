@@ -2,7 +2,7 @@
 
 from unittest import TestCase, mock
 
-from django_tenants.postgresql_backend.base import (
+from django_prometheus.db.backends.postgresql.base import (
     DatabaseWrapper as BaseDatabaseWrapper,
 )
 

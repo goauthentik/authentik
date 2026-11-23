@@ -23,6 +23,7 @@ export type MessageFormatter<
  */
 function getMinimizedLocaleID(tag: string): string {
     const locale = safeParseLocale(tag);
+
     if (!locale) {
         return tag.split(/[-_]/)[0].toLowerCase();
     }
@@ -40,6 +41,7 @@ function getMinimizedLocaleID(tag: string): string {
  */
 function getDisplayLocaleID(tag: TargetLanguageTag): string {
     const locale = safeParseLocale(tag);
+
     if (!locale) {
         return tag;
     }
@@ -99,10 +101,12 @@ export function createIntlCollator(
     return ([aLocale, aName]: LocaleDisplay, [bLocale, bName]: LocaleDisplay) => {
         // Active locale always first
         if (activeLocale === aLocale) return -1;
+
         if (activeLocale === bLocale) return 1;
 
         // Pseudo locale always last
         if (PseudoLanguageTag === aLocale) return 1;
+
         if (PseudoLanguageTag === bLocale) return -1;
 
         const aIsCJK = isCJKLanguageTag(aLocale);
@@ -137,13 +141,13 @@ export interface FormatLocaleOptionsInit {
  * Pre-defined display names for locales that need special handling.
  * These use minimized IDs or explicit fallbacks.
  */
-const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<TargetLanguageTag, () => string> = new Map([
-    [SourceLanguageTag, () => msg("English", { id: "en" })],
-    [CJKLanguageTag.HanSimplified, () => msg("Chinese (Simplified)", { id: "zh-Hans" })],
-    [CJKLanguageTag.HanTraditional, () => msg("Chinese (Traditional)", { id: "zh-Hant" })],
-    [CJKLanguageTag.Japanese, () => msg("Japanese", { id: "ja-JP" })],
-    [CJKLanguageTag.Korean, () => msg("Korean", { id: "ko-KR" })],
-    [PseudoLanguageTag, () => msg("English (Pseudo-Accents)", { id: "en-XA" })],
+const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<TargetLanguageTag, string> = new Map([
+    [SourceLanguageTag, msg("English", { id: "en" })],
+    [CJKLanguageTag.HanSimplified, msg("Chinese (Simplified)", { id: "zh-Hans" })],
+    [CJKLanguageTag.HanTraditional, msg("Chinese (Traditional)", { id: "zh-Hant" })],
+    [CJKLanguageTag.Japanese, msg("Japanese", { id: "ja-JP" })],
+    [CJKLanguageTag.Korean, msg("Korean", { id: "ko-KR" })],
+    [PseudoLanguageTag, msg("English (Pseudo-Accents)", { id: "en-XA" })],
 ]);
 
 /**
@@ -179,7 +183,7 @@ export function formatLocaleDisplayNames(
                 ? tag // Prefer the display name over region minimization.
                 : getMinimizedLocaleID(tag);
 
-            displayNames.set(tag, formatDisplayName(localeID, specialFallback(), languageNames));
+            displayNames.set(tag, formatDisplayName(localeID, specialFallback, languageNames));
         } else {
             // Standard locales: prefer language-only if not already used
             const locale = safeParseLocale(tag);

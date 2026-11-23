@@ -3,6 +3,7 @@
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qsl
 
+from django.db.models.deletion import ProtectedError
 from django.test import TestCase
 from django.urls import reverse
 from requests_mock import Mocker
@@ -10,7 +11,7 @@ from requests_mock import Mocker
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import FlowPlan
-from authentik.flows.tests import FlowTestCase
+from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator.tests import ThrottlingTestMixin
@@ -24,7 +25,7 @@ from authentik.stages.authenticator_sms.stage import PLAN_CONTEXT_PHONE, PLAN_CO
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
-class AuthenticatorSMSStageTests(FlowTestCase):
+class AuthenticatorSMSStageTests(APIFlowTestCase):
     """Test SMS API"""
 
     def setUp(self) -> None:
@@ -54,6 +55,16 @@ class AuthenticatorSMSStageTests(FlowTestCase):
             component="ak-stage-authenticator-sms",
             phone_number_required=True,
         )
+
+    def test_stage_deletion_is_protected(self):
+        """A setup stage with enrolled devices cannot be deleted."""
+        device = SMSDevice.objects.create(user=self.user, stage=self.stage, phone_number="+1234")
+
+        with self.assertRaises(ProtectedError):
+            self.stage.delete()
+
+        self.assertTrue(AuthenticatorSMSStage.objects.filter(pk=self.stage.pk).exists())
+        self.assertTrue(SMSDevice.objects.filter(pk=device.pk).exists())
 
     def test_stage_submit(self):
         """test stage (submit)"""

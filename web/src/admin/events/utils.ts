@@ -1,6 +1,7 @@
 import { EventUser, EventWithContext } from "#common/events";
 import { truncate } from "#common/strings";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";
@@ -10,9 +11,11 @@ export function formatUUID(hex: string): string {
     if (typeof hex !== "string") {
         return String(hex ?? "");
     }
+
     if (hex.length < 32) {
         return hex;
     }
+
     return `${hex.substring(0, 8)}-${hex.substring(8, 12)}-${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20, 32)}`;
 }
 
@@ -36,19 +39,24 @@ export function renderEventUser(
     if (!event.user.username) return html`-`;
 
     const linkOrSpan = (inner: TemplateResult, evu: EventUser) => {
-        return html`${evu.pk && !evu.is_anonymous
-            ? html`<a href="#/identity/users/${evu.pk}">${inner}</a>`
-            : html`<span>${inner}</span>`}`;
+        return html`${
+            evu.pk && !evu.is_anonymous
+                ? html`<a href=${toAdminInterface(`identity/users/${evu.pk}`)}>${inner}</a>`
+                : html`<span>${inner}</span>`
+        }`;
     };
 
     const renderUsername = (evu: EventUser) => {
         let username = evu.username;
+
         if (evu.is_anonymous) {
             username = msg("Anonymous user");
         }
+
         if (truncateUsername) {
             return truncate(username, truncateUsername);
         }
+
         return username;
     };
 
@@ -63,6 +71,7 @@ export function renderEventUser(
                 )}
             </small>`;
     }
+
     if (event.user.authenticated_as) {
         return html`${body}<small>
                 ${linkOrSpan(
@@ -73,9 +82,14 @@ export function renderEventUser(
                 )}
             </small>`;
     }
+
     if (event.context.device) {
         return html`${body}<small>
-                <a href="#/endpoints/devices/${formatUUID(event.context.device.pk)}">
+                <a
+                    href=${toAdminInterface(
+                        `endpoints/devices/${formatUUID(event.context.device.pk)}`,
+                    )}
+                >
                     ${msg(str`Via ${event.context.device.name}`)}
                 </a>
             </small>`;

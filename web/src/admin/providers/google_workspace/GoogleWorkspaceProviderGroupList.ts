@@ -1,9 +1,9 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
-
 import { aki } from "#common/api/client";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -50,8 +50,14 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Google Workspace Group(s)")}
+            verbose-name=${msg("Google Workspace Group", {
+                id: "google-workspace.groups.verbose-name.label",
+            })}
+            verbose-name-plural=${msg("Google Workspace Groups", {
+                id: "google-workspace.groups.verbose-name-plural.label",
+            })}
             .objects=${this.selectedElements}
             .delete=${(item: GoogleWorkspaceProviderGroup) => {
                 return aki(ProvidersApi).providersGoogleWorkspaceGroupsDestroy({
@@ -84,7 +90,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
 
     row(item: GoogleWorkspaceProviderGroup): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.groupObj.pk}">
+            html`<a href=${toAdminInterface(`identity/groups/${item.groupObj.pk}`)}>
                 <div>${item.groupObj.name}</div>
             </a>`,
             html`${item.id}`,

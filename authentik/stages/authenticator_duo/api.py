@@ -1,8 +1,10 @@
 """AuthenticatorDuoStage API Views"""
 
+from ssl import SSLCertVerificationError, SSLError
 from typing import Any
 
 from django.http import Http404
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import get_objects_for_user
@@ -208,10 +210,33 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
                 )
                 created += 1
             return {"error": "", "count": created}
+        # `duo_client` surfaces transport failures as the underlying socket/TLS
+        # error, which is an OSError and not a RuntimeError. Catching only
+        # RuntimeError let those escape the view entirely, so an unreachable or
+        # untrusted Duo endpoint produced no actionable error at all.
+        # SSLCertVerificationError < SSLError < OSError, so order matters here.
+        except SSLCertVerificationError as exc:
+            LOGGER.warning("failed to verify duo api certificate", exc=exc)
+            return {
+                "error": _("Failed to connect to Duo: TLS certificate verification failed."),
+                "count": created,
+            }
+        except SSLError as exc:
+            LOGGER.warning("tls error connecting to duo", exc=exc)
+            return {
+                "error": _("Failed to connect to Duo: TLS error."),
+                "count": created,
+            }
+        except OSError as exc:
+            LOGGER.warning("failed to connect to duo", exc=exc)
+            return {
+                "error": _("Failed to connect to Duo."),
+                "count": created,
+            }
         except RuntimeError as exc:
             LOGGER.warning("failed to get users from duo", exc=exc)
             return {
-                "error": "An internal error occurred while importing devices.",
+                "error": _("An internal error occurred while importing devices."),
                 "count": created,
             }
 
