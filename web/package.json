@@ -188,7 +188,7 @@
         "@patternfly/pfe-core": "^6.0.0",
         "@playwright/test": "catalog:",
         "@protomaps/basemaps": "^5.7.2",
-        "@sentry/browser": "^10.75.3",
+        "@sentry/browser": "^11.11.0",
         "@storybook/addon-docs": "^10.6.1",
         "@storybook/addon-links": "^10.6.1",
         "@storybook/web-components": "^10.6.1",
