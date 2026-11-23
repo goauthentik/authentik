@@ -44,9 +44,9 @@
         "remark-mdx": "^3.1.0",
         "remark-parse": "^11.0.0",
         "remark-stringify": "^11.0.0",
-        "semver": "^7.8.5",
+        "semver": "^7.8.6",
         "typescript": "catalog:",
         "unified": "^11.0.5",
-        "unist-util-visit": "^5.1.0"
+        "unist-util-visit": "^5.2.0"
     }
 }

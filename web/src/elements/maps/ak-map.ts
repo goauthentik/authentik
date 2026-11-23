@@ -50,6 +50,8 @@ let pmtilesProtocolRegistered = false;
 function ensurePMtilesProtocol(): void {
     if (pmtilesProtocolRegistered) return;
 
+    // maplibre resolves its worker next to its own module, which esbuild doesn't copy.
+    maplibregl.setWorkerUrl(staticURL("/static/dist/assets/maps/maplibre-gl-worker.mjs"));
     maplibregl.addProtocol("pmtiles", new Protocol().tile);
     pmtilesProtocolRegistered = true;
 }
