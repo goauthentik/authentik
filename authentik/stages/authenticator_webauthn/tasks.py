@@ -35,6 +35,7 @@ def mds_ca() -> bytes:
 
 
 # fido2 requires these, but the FIDO Alliance publishes some statements without them.
+# Fixed upstream in fido2 2.2.2; switch back to fido2.mds3.parse_blob once it is released.
 MDS_STATEMENT_LIST_DEFAULTS = ("userVerificationDetails", "attachmentHint")
 
 
