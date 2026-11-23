@@ -15,6 +15,29 @@ import { html, render } from "lit";
 //#region Rendering
 
 /**
+ * Finds the element that opened a dialog, from the event being handled or the focused element.
+ *
+ * @returns The elements from the opener outward, innermost first.
+ */
+function resolveInvokerPath(ownerDocument: Document): Element[] {
+    const { event } = ownerDocument.defaultView ?? window;
+
+    if (event?.isTrusted) {
+        return event.composedPath().filter((target) => target instanceof Element);
+    }
+
+    const path: Element[] = [];
+    let activeElement = ownerDocument.activeElement;
+
+    while (activeElement) {
+        path.unshift(activeElement);
+        activeElement = activeElement.shadowRoot?.activeElement ?? null;
+    }
+
+    return path;
+}
+
+/**
  * Resolves the container element for a dialog, given an optional parent element or selector.
  *
  * If the parent element is not provided or cannot be resolved, the document body is returned.
@@ -87,6 +110,7 @@ export function renderDialog(
     }: DialogInit = {},
 ): Promise<void> {
     const eventAbortController = new AbortController();
+    const invokerPath = invokerElement ? [invokerElement] : resolveInvokerPath(ownerDocument);
 
     const dialog = ownerDocument.createElement("dialog");
     dialog.classList.add("ak-c-dialog", ...classList);
@@ -109,7 +133,7 @@ export function renderDialog(
         const { returnValue } = dialog;
 
         if (returnValue === "submitted") {
-            const dispatcher = invokerElement ?? dialog;
+            const dispatcher = invokerPath.find((element) => element.isConnected) ?? dialog;
             // TODO: Refresh might benefit from a namespace to avoid excess re-renders.
             dispatcher.dispatchEvent(new AKRefreshEvent());
         }
