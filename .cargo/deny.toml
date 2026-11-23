@@ -50,4 +50,7 @@ exact = true
 ignore = [
   # https://github.com/askama-rs/askama/issues/594
   { id = "RUSTSEC-2026-0374", reason = "basic-toml is a build-time only dependency of the askama template engine, not shipped in the app or daemon; remove when askama drops basic-toml" },
+  # https://github.com/chronotope/chrono/issues/1768
+  { id = "RUSTSEC-2026-0543", reason = "chrono is unmaintained with no replacement release; pulled in by sqlx and the generated API client; remove when both move to jiff or time" },
+  { id = "RUSTSEC-2026-0542", reason = "humantime is unmaintained because it wraps chrono; only used by console-subscriber (tokio-console); remove when console-subscriber drops it" },
 ]
