@@ -1,15 +1,18 @@
 """Test bindings API"""
 
+from django.apps import apps
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application
+from authentik.core.models import Application, Source
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.endpoints.models import Device
 from authentik.flows.models import Flow, FlowStageBinding
 from authentik.policies.api.bindings import PolicyBindingModelForeignKey
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
+from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.dummy.models import DummyStage
 
 
@@ -35,7 +38,35 @@ class TestBindingsAPI(APITestCase):
             Application.objects.create(name="binding-test", slug="binding-test"),
             flow,
             stage_binding,
+            Device.objects.create(name="binding-test", identifier="binding-test"),
+            OAuthSource.objects.create(name="binding-test", slug="binding-test"),
         ]
+
+    def test_target_subclasses_preserve_parent_primary_keys(self):
+        """Only the base PolicyBindingModel needs resolving to get the target's ID."""
+        for model in apps.get_models():
+            if not issubclass(model, PolicyBindingModel):
+                continue
+            for parent, link in model._meta.parents.items():
+                if parent is PolicyBindingModel or not issubclass(parent, PolicyBindingModel):
+                    continue
+                with self.subTest(model=model._meta.label, parent=parent._meta.label):
+                    if model._meta.proxy:
+                        self.assertIs(model._meta.pk, parent._meta.pk)
+                    else:
+                        self.assertIs(model._meta.pk, link)
+                        self.assertIs(link.target_field, parent._meta.pk)
+
+    def test_target_field_with_intermediate_source(self):
+        """A Source object has the same target ID as its more specific source type."""
+        source = OAuthSource.objects.create(name="binding-test", slug="binding-test")
+        intermediate = Source.objects.get(pk=source.pk)
+        concrete = PolicyBindingModel.objects.get_subclass(pbm_uuid=source.pbm_uuid)
+        self.assertIs(type(intermediate), Source)
+        self.assertIs(type(concrete), OAuthSource)
+        field = PolicyBindingModelForeignKey(read_only=True)
+        with self.assertNumQueries(0):
+            self.assertEqual(field.to_representation(intermediate), concrete.pk)
 
     def test_target_primary_keys(self):
         """List and detail responses expose concrete target primary keys."""
