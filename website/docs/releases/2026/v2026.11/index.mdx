@@ -10,6 +10,7 @@ import APIChanges from "./_api-changes.mdx";
 ## Highlights
 
 - **macOS 27 Platform SSO**: :ak-enterprise The authentik Agent supports Platform SSO on macOS 27, including browser-based sign-in and unlocking the lock screen.
+- **Managed secrets**: :ak-preview Store credentials for providers, sources, and stages as secrets with their own permissions, rotation, and audit trail.
 - **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
 - **Required actions**: :ak-enterprise Require users to complete flows, such as changing their password or setting up an authenticator, before they can continue.
 - **RAC for enrolled devices**: RAC providers connect to devices enrolled through the authentik Agent and sign users in without storing credentials for the device.
@@ -125,6 +126,33 @@ Expressions can still read `user.password` and `user.password_change_date`. Expr
 
 Password devices are excluded from MFA discovery and validation. Their lock state can be managed through the [password authenticator API](../../../add-secure-apps/flows-stages/stages/password/index.mdx#manage-locks-through-the-api).
 
+### Credentials move to managed secrets
+
+Credentials that providers, sources, stages, and connectors store are now [managed secrets](../../../sys-mgmt/secrets/index.mdx). The upgrade moves each existing credential into a secret and keeps who can view it, so no action is needed for objects configured in the Admin interface.
+
+API requests and blueprints must reference a secret by its UUID through a field named after the old credential field with a `_ref` suffix, such as `client_secret_ref`. A request or blueprint that sets the old field fails with a validation error that names the replacement.
+
+| Object                                                                                  | Fields                                                                                              |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| OAuth2/OpenID providers                                                                 | `client_secret_ref`                                                                                 |
+| Proxy providers                                                                         | Not exposed. Rotate or replace the client and cookie secrets under **System** > **Secrets**.        |
+| RADIUS providers                                                                        | `shared_secret_ref`                                                                                 |
+| SCIM providers                                                                          | `token_ref`, `auth_basic_password_ref`                                                              |
+| Google Workspace providers, Google Chrome connectors, Google Chrome Device Trust stages | `credentials_ref`                                                                                   |
+| Microsoft Entra providers                                                               | `client_secret_ref`                                                                                 |
+| LDAP sources                                                                            | `bind_password_ref`                                                                                 |
+| Kerberos sources                                                                        | `sync_password_ref`, `sync_keytab_ref`, `sync_ccache_ref`, `spnego_keytab_ref`, `spnego_ccache_ref` |
+| OAuth sources                                                                           | `consumer_secret_ref`                                                                               |
+| Plex sources                                                                            | `plex_token_ref`                                                                                    |
+| Telegram sources                                                                        | `bot_token_ref`                                                                                     |
+| Duo authenticator setup stages                                                          | `client_secret_ref`, `admin_secret_key_ref`                                                         |
+| SMS authenticator setup stages                                                          | `auth_ref`, `auth_password_ref`                                                                     |
+| Email and email authenticator setup stages                                              | `password_ref`                                                                                      |
+| Captcha stages                                                                          | `private_key_ref`                                                                                   |
+| Fleet connectors                                                                        | `token_ref`                                                                                         |
+| Notification transports                                                                 | `webhook_url_ref`                                                                                   |
+| Kubernetes service connections                                                          | `kubeconfig_ref`                                                                                    |
+
 ### Multi-tenancy has been removed
 
 [Multi-tenancy](https://version-2026-8.goauthentik.io/sys-mgmt/tenancy/) (an enterprise feature preview) has been removed. Instances that never set `AUTHENTIK_TENANTS__ENABLED=true` are unaffected apart from the changes listed below.
@@ -157,6 +185,12 @@ The following API changes may require updates to scripts and API clients:
 ### Web-based login support for macOS 27 Platform SSO :ak-enterprise
 
 Users can now authenticate directly into their macOS devices using a customizable web-based flow. This skips an additional credential separate from the user's macOS password. The user completes the login flow in the browser, and authentik manages the authentication instead of macOS handling the password entry. For more details, refer to the [macOS deployment documentation](../../../endpoint-devices/authentik-agent/agent-deployment/macos.mdx).
+
+### Managed secrets :ak-preview
+
+Credentials for providers, sources, stages, and connectors are stored as [secrets](../../../sys-mgmt/secrets/index.mdx) under **System** > **Secrets**. A secret is text, a JSON or YAML object, or an uploaded file, and several objects can share one. Viewing a secret's value and replacing or rotating it need separate permissions, and both are recorded in the audit log. Text secrets can be rotated to a generated value from the secret picker in each form.
+
+Secret values are stored unencrypted in the database, as these credentials were before.
 
 ### Password lockout :ak-enterprise
 
