@@ -2,9 +2,11 @@
 
 from base64 import b64encode
 from copy import copy
+from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
+from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -192,11 +194,26 @@ class TokenView(View):
         if SCOPE_OFFLINE_ACCESS not in self.params.scope:
             raise TokenError("invalid_scope")
         old_token = self.params.refresh_token
-        if not old_token.family:
-            # Issued before refresh token families existed, start one now
-            old_token.family = uuid4()
-            old_token.save(update_fields=["family", "token_hash"])
         now = timezone.now()
+        refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
+        rotate = (
+            refresh_token_threshold.total_seconds() == 0
+            or (old_token.expires - now) < refresh_token_threshold
+        )
+        # Consuming the old token and issuing the new ones happen in one transaction, so that a
+        # concurrent request presenting the same token waits for this one to commit and then
+        # sees the successor (or that nothing was issued)
+        with transaction.atomic():
+            if self.params.claim(now, rotate):
+                return self._issue_refresh_response(old_token, now, rotate)
+        # Outside of the transaction, so that the family revocation is kept
+        self.params.reject_reuse(self.request)
+
+    def _issue_refresh_response(
+        self, old_token: RefreshToken, now: datetime, rotate: bool
+    ) -> dict[str, Any]:
+        """Issue a new access token, and a new refresh token if `rotate` is set, for a refresh
+        token which has been claimed"""
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         access_token = AccessToken(
             provider=self.provider,
@@ -229,11 +246,7 @@ class TokenView(View):
             "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
         }
 
-        refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
-        if (
-            refresh_token_threshold.total_seconds() == 0
-            or (old_token.expires - now) < refresh_token_threshold
-        ):
+        if rotate:
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(
                 user=old_token.user,
@@ -255,14 +268,7 @@ class TokenView(View):
             self._add_cnf_to_id_token(id_token)
             refresh_token.id_token = id_token
             refresh_token.save()
-
-            # Mark old token as revoked. It is kept so reuse can be detected. When it is reused
-            # within the grace period it is rotated again; keep the original rotation time so
-            # the grace period can't be extended by repeated reuse.
-            old_token.revoked = True
-            if not old_token.rotated_at:
-                old_token.rotated_at = now
-            old_token.save()
+            # The old token was already marked as rotated by `claim`
             response["refresh_token"] = refresh_token.token
 
         return response

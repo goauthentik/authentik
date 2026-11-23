@@ -4,6 +4,7 @@ import base64
 import binascii
 import json
 from dataclasses import asdict, dataclass
+from datetime import datetime
 from functools import cached_property
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any
@@ -25,7 +26,7 @@ from dacite.core import from_dict
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import HashIndex
 from django.db import models
-from django.db.models import Q
+from django.db.models import Exists, F, OuterRef, Q
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
@@ -799,6 +800,69 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
             # Never fall through to `legacy_token=None`, which matches every hashed token
             return Q(pk__in=[])
         return Q(token_hash=hash_refresh_token(raw)) | Q(legacy_token=raw)
+
+    def start_family(self) -> None:
+        """Start a family for a token issued before refresh token families existed, and hash it.
+        Concurrent requests presenting the same token may race here, so only the first one sets
+        the family, and all of them use that one."""
+        if self.family:
+            return
+        update: dict[str, Any] = {"family": uuid4()}
+        if not self.token_hash and self.legacy_token:
+            update["token_hash"] = hash_refresh_token(self.legacy_token)
+        RefreshToken.objects.filter(pk=self.pk, family__isnull=True).update(**update)
+        self.refresh_from_db(fields=["family", "token_hash"])
+
+    def consume(self, now: datetime) -> bool:
+        """Rotate this token: mark it as revoked, keeping it so its reuse can be detected.
+
+        This is a single conditional update, so of several requests presenting this token
+        concurrently, exactly one gets True and may issue a successor. The others get False and
+        must treat the request as reuse. When called inside a transaction, the row stays locked
+        until it commits, so a concurrent request blocks until the successor is visible."""
+        consumed = (
+            RefreshToken.objects.filter(pk=self.pk, revoked=False).update(
+                revoked=True, rotated_at=now
+            )
+            == 1
+        )
+        if consumed:
+            self.revoked = True
+            self.rotated_at = now
+        return consumed
+
+    def claim_reuse_grace(self, rotated_after: datetime) -> bool:
+        """Check whether this rotated token may be used again within the reuse grace period,
+        because it is the most recently rotated token of a family which still has an active
+        token, and it was rotated after `rotated_after`.
+
+        Like `consume`, this is a single conditional update (which doesn't change the row), so
+        the check is evaluated atomically and the row stays locked until the transaction issuing
+        the new token commits. The rotation time is kept, so that repeated reuse can't extend
+        the grace period.
+
+        This doesn't serialize with a concurrent family revocation, which doesn't touch this
+        (already revoked) row, so a token issued in the grace period could escape a revocation
+        committed between this check and the transaction's commit."""
+        if not self.family:
+            # Never compare with `family=None`, which would match every token without a family
+            return False
+        family = RefreshToken.objects.filter(family=OuterRef("family"))
+        return (
+            RefreshToken.objects.filter(
+                pk=self.pk,
+                revoked=True,
+                rotated_at__gt=rotated_after,
+            )
+            .filter(
+                # Another token was rotated since, so this one isn't the most recently rotated
+                ~Exists(family.filter(rotated_at__gt=OuterRef("rotated_at"))),
+                # The family has been revoked (or its active token revoked via RFC 7009)
+                Exists(family.filter(revoked=False)),
+            )
+            .update(rotated_at=F("rotated_at"))
+            == 1
+        )
 
     def revoke_family(self):
         """Revoke all refresh and access tokens of this token's family"""
