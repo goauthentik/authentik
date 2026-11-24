@@ -99,8 +99,8 @@ interface Generated {
 const PATCH_HEADING = /^## Fixed in (\S+)\s*$/m;
 const CHERRY_PICK = /cherry-pick (#\d+)/g;
 const EXCLUDED_ENTRY = /^- (ci:|website)/;
-const KEPT_ENTRY = /^- security:/;
-const BUMP_ENTRY = /^- (revert: )?([^:]+: )?bump /i;
+const KEPT_ENTRY = /^- security:|\b(CVE-\d{4}-\d+|GHSA(-[\w]{4}){3})\b/;
+const DEPENDABOT_ENTRY = /^- (revert: )?([^:]+: )?bump (\S+ from \S+ to \S+|the \S+ group)\b/;
 const TRANSLATION_ENTRY =
     /^- (translate: Updates for project authentik and language (?<locale>\S+)|core, web: update translations) \(#\d+\)$/;
 const PULL_REQUEST_SUFFIX = / \((#\d+)\)$/;
@@ -142,9 +142,14 @@ async function commitSubjects(range: string, cwd: string): Promise<string[]> {
 
 /**
  * Commits since the previous release, minus those already cherry-picked onto it.
+ * Dependabot updates are dropped when asked, unless they name a CVE or GHSA advisory.
  * These are best-effort guesses based on commit messages.
  */
-async function collectEntries(previousTag: string, cwd: string): Promise<string> {
+async function collectEntries(
+    previousTag: string,
+    cwd: string,
+    dropDependencyUpdates: boolean,
+): Promise<string> {
     const base = await run("git", ["merge-base", previousTag, "HEAD"], cwd);
 
     const [current, previous] = await Promise.all([
@@ -159,7 +164,10 @@ async function collectEntries(previousTag: string, cwd: string): Promise<string>
     const entries = current
         .filter((line) => ![...cherryPicked].some((suffix) => line.endsWith(suffix)))
         .filter((line) => !EXCLUDED_ENTRY.test(line))
-        .filter((line) => KEPT_ENTRY.test(line) || !BUMP_ENTRY.test(line));
+        .filter(
+            (line) =>
+                !dropDependencyUpdates || KEPT_ENTRY.test(line) || !DEPENDABOT_ENTRY.test(line),
+        );
 
     const sorted = mergeDuplicates(summarizeTranslations(entries)).sort((left, right) =>
         left.localeCompare(right, "en", { sensitivity: "base" }),
@@ -278,7 +286,8 @@ function renderEntries(entries: string[]): string {
 
 async function generateChangelog(version: string, root: string): Promise<Generated> {
     const previousTag = `version/${await previousRelease(version, root)}`;
-    const entries = await collectEntries(previousTag, root);
+    // Patch releases keep dependency updates, since they are backported on purpose.
+    const entries = await collectEntries(previousTag, root, version.endsWith(".0"));
 
     if (!entries) {
         throw new Error(`No changelog entries found since ${previousTag}`);
