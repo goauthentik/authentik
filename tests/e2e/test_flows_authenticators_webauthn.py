@@ -1,6 +1,7 @@
 """test flow with WebAuthn Stage"""
 
 from time import sleep
+from urllib.parse import parse_qs, urlsplit
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.virtual_authenticator import (
@@ -11,6 +12,21 @@ from selenium.webdriver.common.virtual_authenticator import (
 from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.oauth.constants import SCOPE_OPENID
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_brand
+from authentik.flows.models import Flow, FlowAuthenticationRequirement
+from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.models import (
+    AuthorizationCode,
+    ClientType,
+    GrantType,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
+from authentik.providers.oauth2.utils import pkce_s256_challenge
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 from authentik.stages.authenticator_webauthn.models import (
     AuthenticatorWebAuthnStage,
@@ -133,6 +149,77 @@ class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):
         self.wait_for_url(self.if_user_url("/library"))
 
         self.assert_user(self.user)
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+        "default/flow-default-authenticator-webauthn-setup.yaml",
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
+        "system/providers-oauth2.yaml",
+    )
+    def test_oidc_prompt_login_with_webauthn(self):
+        """A logged-out prompt=login request returns a code after one MFA login."""
+        auth_flow = Flow.objects.get(slug="default-authentication-flow")
+        auth_flow.authentication = FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        auth_flow.save()
+        create_test_brand(flow_authentication=auth_flow)
+
+        callback_url = self.url("authentik_api:user-me")
+        app_name = generate_id()
+        provider = OAuth2Provider.objects.create(
+            name=app_name,
+            client_id=generate_id(),
+            client_type=ClientType.PUBLIC,
+            authorization_flow=Flow.objects.get(
+                slug="default-provider-authorization-implicit-consent"
+            ),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, callback_url)],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        provider.property_mappings.add(ScopeMapping.objects.get(scope_name=SCOPE_OPENID))
+        Application.objects.create(name=app_name, slug=app_name, provider=provider)
+
+        self.register()
+        device = WebAuthnDevice.objects.get(user=self.user, confirmed=True)
+        previous_use = device.last_used
+        self.driver.delete_all_cookies()
+
+        state = generate_id()
+        challenge = pkce_s256_challenge(generate_id(43))
+        self.driver.get(
+            self.url(
+                "authentik_providers_oauth2:authorize",
+                query={
+                    "client_id": provider.client_id,
+                    "response_type": "code",
+                    "scope": SCOPE_OPENID,
+                    "redirect_uri": callback_url,
+                    "state": state,
+                    "prompt": "login",
+                    "code_challenge": challenge,
+                    "code_challenge_method": "S256",
+                },
+            )
+        )
+        self.login()
+
+        self.wait.until(
+            lambda driver: driver.current_url.startswith(f"{callback_url}?"),
+            "Expected the OIDC callback after a single login",
+        )
+        params = parse_qs(urlsplit(self.driver.current_url).query)
+        self.assertNotIn("error", params)
+        self.assertEqual(params.get("state"), [state])
+        self.assertIn("code", params)
+        code = AuthorizationCode.objects.get(
+            code=params["code"][0], provider=provider, user=self.user
+        )
+        self.assertEqual(code.code_challenge, challenge)
+        self.assertEqual(code.code_challenge_method, "S256")
+        device.refresh_from_db()
+        self.assertIsNotNone(device.last_used)
+        self.assertNotEqual(device.last_used, previous_use)
 
     @retry()
     @apply_blueprint(
