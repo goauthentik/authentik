@@ -7658,8 +7658,8 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
-  uuid@14.0.1:
-    resolution: {integrity: sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew==}
+  uuid@14.0.3:
+    resolution: {integrity: sha512-Sc5u1VVln93y1Xnz4R+CunOZc7R9LUcTmhj7Rc7Eg3HVcf7rVn2FOoa812fe0W8p3jD7xeoGSYbfqCGGH2B6xw==}
     hasBin: true
 
   validate-npm-package-license@3.0.4:
@@ -15507,7 +15507,7 @@ snapshots:
       mime-format: 2.0.2
       postman-url-encoder: 3.0.8
       semver: 7.7.1
-      uuid: 14.0.1
+      uuid: 14.0.3
 
   postman-collection@5.3.1:
     dependencies:
@@ -15521,7 +15521,7 @@ snapshots:
       mime-format: 2.0.2
       postman-url-encoder: 3.0.8
       semver: 7.7.1
-      uuid: 14.0.1
+      uuid: 14.0.3
 
   postman-url-encoder@3.0.8:
     dependencies:
@@ -16289,7 +16289,7 @@ snapshots:
   sockjs@0.3.24:
     dependencies:
       faye-websocket: 0.11.4
-      uuid: 14.0.1
+      uuid: 14.0.3
       websocket-driver: 0.7.5
 
   sort-css-media-queries@2.2.0: {}
@@ -16797,7 +16797,7 @@ snapshots:
 
   utils-merge@1.0.1: {}
 
-  uuid@14.0.1: {}
+  uuid@14.0.3: {}
 
   validate-npm-package-license@3.0.4:
     dependencies:
