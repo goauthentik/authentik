@@ -14,16 +14,29 @@ import { html, render } from "lit";
 
 //#region Rendering
 
+let clickPath: Element[] | null = null;
+
+// window.event is unset for listeners in shadow trees, so the click path is recorded here.
+window.addEventListener(
+    "click",
+    (event) => {
+        clickPath = event.composedPath().filter((target) => target instanceof Element);
+
+        setTimeout(() => {
+            clickPath = null;
+        });
+    },
+    { capture: true, passive: true },
+);
+
 /**
- * Finds the element that opened a dialog, from the event being handled or the focused element.
+ * Finds the element that opened a dialog, from the click being handled or the focused element.
  *
  * @returns The elements from the opener outward, innermost first.
  */
 function resolveInvokerPath(ownerDocument: Document): Element[] {
-    const { event } = ownerDocument.defaultView ?? window;
-
-    if (event?.isTrusted) {
-        return event.composedPath().filter((target) => target instanceof Element);
+    if (clickPath) {
+        return clickPath;
     }
 
     const path: Element[] = [];
