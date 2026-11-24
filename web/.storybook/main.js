@@ -32,6 +32,10 @@ const config = {
         "@storybook/addon-docs",
     ],
     framework: "@storybook/web-components-vite",
+    features: {
+        // We control the background ourselves, using our own light/dark mode.
+        backgrounds: false,
+    },
     viteFinal: async (config) => {
         const newConfig = {
             ...config,
