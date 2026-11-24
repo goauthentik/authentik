@@ -384,7 +384,7 @@ ci-lint-rustfmt: ci--meta-debug
 ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy --workspace --all-targets -- -D warnings
 
-ci-lint-clippy-proxy: ci--meta-debug  ## Lint the proxy outpost build the release ships, which leaves out the core feature
+ci-lint-clippy-proxy: ci--meta-debug
 	$(CARGO) clippy --package authentik --no-default-features --features proxy --all-targets --locked --config 'build.warnings="deny"' -- -D warnings
 
 ci-lint-catalogs: ci--meta-debug
