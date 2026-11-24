@@ -131,7 +131,7 @@ class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.action in ("list", "retrieve", "update", "partial_update"):
+        if self.action in ("list", "retrieve"):
             return queryset.prefetch_related(
                 Prefetch("target", queryset=PolicyBindingModel.objects.select_subclasses()),
             )
