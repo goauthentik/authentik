@@ -1487,14 +1487,6 @@
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
   <target>Szukaj <x id="0" equiv-text="${this.availableLabel}"/>...</target>
 </trans-unit>
-<trans-unit id="ha8e91858b300a3b7">
-  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=-1;minutes=-2;seconds=-3)<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
-  <target>(Format: <x id="0" equiv-text="&lt;code&gt;"/>godziny=-1;minuty=-2;sekundy=-3)<x id="1" equiv-text="&lt;/code&gt;"/>.</target>
-</trans-unit>
-<trans-unit id="hbe8e6353371ecb22">
-  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=1;minutes=2;seconds=3).<x id="1" equiv-text="&lt;/code&gt;"/></source>
-  <target>(Format: <x id="0" equiv-text="&lt;code&gt;"/>godziny=1;minuty=2;sekundy=3).<x id="1" equiv-text="&lt;/code&gt;"/></target>
-</trans-unit>
 <trans-unit id="sbb8ad22c83d375b1">
   <source>The following keywords are supported:</source>
   <target>Obsługiwane są następujące słowa kluczowe:</target>
@@ -8053,10 +8045,6 @@ w toku, tworzony jest nowy użytkownik i zapisywane są do niego dane.</target>
   <source>You've successfully authenticated your device.</source>
   <target>Pomyślnie uwierzytelniłeś swoje urządzenie.</target>
 </trans-unit>
-<trans-unit id="sac88482c48453fc8">
-  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
-  <target>Zostałeś wylogowany z <x id="0" equiv-text="${challenge.applicationName}"/>. Możesz wrócić do przeglądu, aby uruchomić inną aplikację lub wylogować się całkowicie ze Swojego konta.</target>
-</trans-unit>
 <trans-unit id="s3108167b562674e2">
   <source>Go back to overview</source>
   <target>Powróć do przeglądu aplikacji</target>
@@ -10595,9 +10583,6 @@ w toku, tworzony jest nowy użytkownik i zapisywane są do niego dane.</target>
 <trans-unit id="sf04a246ad842c3cf">
   <source>The description is shown in the Application Dashboard and may provide additional information about the application to end users.</source>
 </trans-unit>
-<trans-unit id="s88c83ac92bfb1f6c">
-  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can log out of your authentik account.</source>
-</trans-unit>
 <trans-unit id="sa5c3a21cbc762ce9">
   <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>.</source>
 </trans-unit>
@@ -12965,6 +12950,85 @@ w toku, tworzony jest nowy użytkownik i zapisywane są do niego dane.</target>
 <group id="users.revoke-sessions.success" restype="x-gettext-plurals">
 </group>
 <group id="groups.add-user.success" restype="x-gettext-plurals">
+</group>
+<group id="users.add-related.success" restype="x-gettext-plurals">
+</group>
+<group id="lifecycle.review.min-reviewers.single-group" restype="x-gettext-plurals">
+</group>
+<group id="lifecycle.review.min-reviewers.multiple-groups" restype="x-gettext-plurals">
+</group>
+<group id="outposts.health.summary" restype="x-gettext-plurals">
+</group>
+<group id="policies.bound-to.label" restype="x-gettext-plurals">
+</group>
+<group id="request-rules.target-count.label" restype="x-gettext-plurals">
+</group>
+<group id="roles.add-user.success" restype="x-gettext-plurals">
+</group>
+<group id="stages.duo.import.success" restype="x-gettext-plurals">
+</group>
+<group id="invitations.send-email.success" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.user-count" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="user-required-actions.object.label" restype="x-gettext-plurals">
+</group>
+<trans-unit id="user-expiration.event.warning">
+  <source>User will be offboarded due to inactivity</source>
+</trans-unit>
+<group id="dual-select.status.marked-to-add" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.selected" restype="x-gettext-plurals">
+</group>
+<group id="dual-select.status.marked-to-remove" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.delete.error" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.remove.error" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.heading" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.confirmation" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.success" restype="x-gettext-plurals">
+</group>
+<group id="bulk-action.cancel.error" restype="x-gettext-plurals">
+</group>
+<group id="data-view.summary.item-count" restype="x-gettext-plurals">
+</group>
+<group id="data-view.summary.key-count" restype="x-gettext-plurals">
+</group>
+<group id="table.select-all.aria-label" restype="x-gettext-plurals">
+</group>
+<group id="rac.connection.failed" restype="x-gettext-plurals">
+</group>
+<group id="rac.connection.reconnecting" restype="x-gettext-plurals">
+</group>
+<group id="user.library.application-count.search-result" restype="x-gettext-plurals">
+</group>
+<group id="user.library.application-count.available" restype="x-gettext-plurals">
+</group>
+<group id="notifications.unread-count.label" restype="x-gettext-plurals">
+</group>
+<group id="used-by.count" restype="x-gettext-plurals">
+</group>
+<group id="users.revoke-sessions.success" restype="x-gettext-plurals">
+</group>
+<group id="groups.add-user.success" restype="x-gettext-plurals">
   <trans-unit id="groups.add-user.success[0]" xml:space="preserve">
     <source>Successfully added user to <x id="0" equiv-text="${formattedCount}"/> group.</source>
   </trans-unit>
@@ -13146,9 +13210,6 @@ w toku, tworzony jest nowy użytkownik i zapisywane są do niego dane.</target>
     <source>Required actions</source>
   </trans-unit>
 </group>
-<trans-unit id="user-expiration.event.warning">
-  <source>User will be offboarded due to inactivity</source>
-</trans-unit>
 <group id="dual-select.status.marked-to-add" restype="x-gettext-plurals">
   <trans-unit id="dual-select.status.marked-to-add[0]" xml:space="preserve">
     <source><x id="0" equiv-text="${formattedCount}"/> item marked to add.</source>
@@ -13401,6 +13462,18 @@ w toku, tworzony jest nowy użytkownik i zapisywane są do niego dane.</target>
     <source>Select all rows on page (<x id="0" equiv-text="${formattedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
   </trans-unit>
 </group>
+<trans-unit id="h125e9885cb722bc3">
+  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=-1;minutes=-2;seconds=-3)<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="hd6dbe018a6ef5cd4">
+  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=1;minutes=2;seconds=3)<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="s3ac17dc69be75c63">
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your <x id="1" equiv-text="${this.brandingTitle}"/> account.</source>
+</trans-unit>
+<trans-unit id="s76d37ec5c8ae95d7">
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can log out of your <x id="1" equiv-text="${this.brandingTitle}"/> account.</source>
+</trans-unit>
 <group id="rac.connection.failed" restype="x-gettext-plurals">
   <trans-unit id="rac.connection.failed[0]" xml:space="preserve">
     <source>Connection failed after <x id="0" equiv-text="${formattedCount}"/> attempt.</source>
