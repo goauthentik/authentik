@@ -118,15 +118,16 @@ export class TableSearchForm extends AKElement {
     protected renderInput() {
         if (this.supportsQL) {
             const content = this.#importSearchQL().then(
-                () => html`<ak-search-ql
-                        label=${ifPresent(this.label)}
-                        role="presentation"
-                        name="search"
-                        placeholder=${ifPresent(this.placeholder)}
-                        value=${ifPresent(this.defaultValue)}
-                        .apiResponse=${this.apiResponse}
-                    ></ak-search-ql>
-                    <button type="reset" aria-label=${msg("Clear search")}>&times;</button>`,
+                () =>
+                    html`<ak-search-ql
+                            label=${ifPresent(this.label)}
+                            role="presentation"
+                            name="search"
+                            placeholder=${ifPresent(this.placeholder)}
+                            value=${ifPresent(this.defaultValue)}
+                            .apiResponse=${this.apiResponse}
+                        ></ak-search-ql>
+                        <button type="reset" aria-label=${msg("Clear search")}>&times;</button>`,
             );
 
             return until(content, nothing);

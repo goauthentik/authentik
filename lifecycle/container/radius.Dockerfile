@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27-trixie@sha256:c47c3fda018d13d43a6bf5ebac3e5bba8a23a35782aa4faf531afaf47c64c39f AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27-trixie@sha256:f18c3d73a184fb0582828510722e723b63a93f7188d11dd223d9be6f6880e65d AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -30,7 +30,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/radius ./cmd/radius
 
 # Stage 2: Run
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:56dbb468b1d0add9c1fff96593fd6ca2ceb25fcbcb96e07f729cbfcaec82c3a6
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7c0cb03c962ec2a7aca10132e35656a3692c383a8d689d3a4988e0043cb09a54
 
 ARG VERSION
 ARG GIT_BUILD_HASH

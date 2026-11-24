@@ -17,6 +17,7 @@ This integration creates the following Kubernetes resources:
 - A `ServiceMonitor` if the Prometheus Operator is installed in the target cluster.
 - An `Ingress` for proxy outposts.
 - An `HTTPRoute` for proxy outposts if Gateway API resources are installed in the target cluster and `kubernetes_httproute_parent_refs` is configured.
+- A `ListenerSet` for proxy outposts if Gateway API resources are installed in the target cluster and `kubernetes_listenerset_parent_ref` is configured.
 - A Traefik `Middleware` resource for proxy outposts that use forward auth.
 
 ## Supported settings
@@ -45,6 +46,7 @@ These settings control how authentik creates and manages Kubernetes resources. F
 
 - `kubernetes_httproute_parent_refs`: Defines which Gateway resources the generated `HTTPRoute` attaches to.
 - `kubernetes_httproute_annotations`: Adds annotations to the generated `HTTPRoute`.
+- `kubernetes_listenerset_parent_ref`: Defines which `Gateway` the generated `ListenerSet` attaches to, for example `{"name": "shared-gateway", "namespace": "default"}`. authentik creates one listener per provider hostname, and the generated `HTTPRoute` also attaches to the `ListenerSet`. Listeners use HTTPS on port 443 with the TLS secret from `kubernetes_ingress_secret_name`, or HTTP on port 80 if that setting is empty. The `Gateway` must allow `ListenerSet` resources from the outpost namespace through `spec.allowedListeners`. Requires Gateway API v1.5 or later.
 
 ### Disabled components
 
@@ -58,6 +60,7 @@ Use `kubernetes_disabled_components` to prevent authentik from creating specific
 - `ingress`
 - `traefik middleware`
 - `httproute`
+- `listenerset`
 
 ## Permissions
 

@@ -1,7 +1,6 @@
 /**
- * @file Vendored Lexer Implementation
- *
  * @license MIT
+ * @file Vendored Lexer Implementation
  * @author Aadit M Shah <aaditmshah@fastmail.fm>
  * @see https://github.com/aaditmshah/lexer/tree/master
  */

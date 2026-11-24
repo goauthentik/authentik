@@ -172,6 +172,7 @@ Expected: FAIL — `Cannot find module './config.mjs'`.
 
 /**
  * @param {Record<string, string | undefined>} env
+ *
  * @returns {AKConfig}
  */
 export function loadConfig(env) {
@@ -323,8 +324,10 @@ const HTTP_METHODS = ["get", "put", "post", "delete", "patch", "head", "options"
 
 /**
  * Resolve a single `#/a/b/c` JSON pointer against the root document.
+ *
  * @param {any} root
  * @param {string} ref
+ *
  * @returns {any}
  */
 function resolvePointer(root, ref) {
@@ -340,7 +343,9 @@ function resolvePointer(root, ref) {
 /**
  * Return the spec with internal `$ref`s inlined. Cycle-safe: a ref already on
  * the current resolution stack is left as `{ $ref }` to break the loop.
+ *
  * @param {any} spec
+ *
  * @returns {any}
  */
 export function derefSchema(spec) {
@@ -366,14 +371,16 @@ export function derefSchema(spec) {
 
 /**
  * Search operations by free-text query over path + operationId + summary + tags.
+ *
  * @param {any} spec A deref'd OpenAPI document.
  * @param {string} query
  * @param {number} [limit]
- * @returns {Array<object>}
+ *
+ * @returns {object[]}
  */
 export function searchOperations(spec, query, limit = 20) {
     const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
-    /** @type {Array<{ score: number, op: object }>} */
+    /** @type {{ score: number; op: object }[]} */
     const scored = [];
     for (const [path, item] of Object.entries(spec.paths ?? {})) {
         for (const method of HTTP_METHODS) {
@@ -516,20 +523,27 @@ Expected: FAIL — `Cannot find module './client.mjs'`.
 // mcp-servers/code-mode/src/client.mjs
 /** @file Authenticated `ak.request` helper bound into the sandbox. */
 
-/** @import { AKConfig } from "./config.mjs" */
+/** @import {AKConfig} from "./config.mjs" */
 
 const READ_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
 /**
  * @param {AKConfig} config
  * @param {{ allowWrites: boolean }} opts
- * @returns {{ request: (method: string, path: string, opts?: { query?: Record<string, string|number>, body?: unknown }) => Promise<{ status: number, data: unknown }> }}
+ *
+ * @returns {{
+ *     request: (
+ *         method: string,
+ *         path: string,
+ *         opts?: { query?: Record<string, string | number>; body?: unknown },
+ *     ) => Promise<{ status: number; data: unknown }>;
+ * }}
  */
 export function createAk(config, { allowWrites }) {
     /**
      * @param {string} method
      * @param {string} path
-     * @param {{ query?: Record<string, string|number>, body?: unknown }} [opts]
+     * @param {{ query?: Record<string, string | number>; body?: unknown }} [opts]
      */
     async function request(method, path, opts = {}) {
         const verb = method.toUpperCase();
@@ -652,7 +666,8 @@ import vm from "node:vm";
  * @param {string} code
  * @param {{ request: Function }} ak
  * @param {{ timeoutMs?: number }} opts
- * @returns {Promise<{ result: unknown, logs: string[] }>}
+ *
+ * @returns {Promise<{ result: unknown; logs: string[] }>}
  */
 export async function runInSandbox(code, ak, { timeoutMs = 30000 }) {
     /** @type {string[]} */
@@ -813,16 +828,16 @@ import { createAk } from "./client.mjs";
 import { runInSandbox } from "./sandbox.mjs";
 import { searchOperations } from "./schema.mjs";
 
-/** @import { AKConfig } from "./config.mjs" */
+/** @import {AKConfig} from "./config.mjs" */
 
 /**
- * @param {{ spec: any, config: AKConfig }} deps
+ * @param {{ spec: any; config: AKConfig }} deps
  */
 export function createTools({ spec, config }) {
     /** @param {string} code */
     const confirmTokenFor = (code) => createHash("sha256").update(code).digest("hex").slice(0, 8);
 
-    /** @param {{ query: string, limit?: number }} args */
+    /** @param {{ query: string; limit?: number }} args */
     const search = ({ query, limit }) => ({ operations: searchOperations(spec, query, limit) });
 
     /** @param {{ code: string }} args */
@@ -831,7 +846,7 @@ export function createTools({ spec, config }) {
         return runInSandbox(code, ak, {});
     };
 
-    /** @param {{ code: string, confirm?: string }} args */
+    /** @param {{ code: string; confirm?: string }} args */
     const executeWrite = async ({ code, confirm }) => {
         const token = confirmTokenFor(code);
         if (confirm !== token) {
@@ -934,10 +949,11 @@ import { derefSchema } from "./schema.mjs";
 
 import { parse } from "yaml";
 
-/** @import { AKConfig } from "./config.mjs" */
+/** @import {AKConfig} from "./config.mjs" */
 
 /**
  * @param {AKConfig} config
+ *
  * @returns {Promise<any>} deref'd OpenAPI document
  */
 export async function fetchSchema(config) {
