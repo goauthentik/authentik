@@ -104,6 +104,7 @@ const BUMP_ENTRY = /^- (revert: )?([^:]+: )?bump /i;
 const TRANSLATION_ENTRY =
     /^- (translate: Updates for project authentik and language (?<locale>\S+)|core, web: update translations) \(#\d+\)$/;
 const PULL_REQUEST_SUFFIX = / \((#\d+)\)$/;
+const DIFF_VERSION_HEADING = /^(#+ authentik \(v )\S+\)/m;
 
 interface ChangelogPartial {
     minorChanges: string;
@@ -331,10 +332,12 @@ async function generateDiff(version: string, root: string): Promise<Generated> {
             root,
         );
 
-        const diff = toMarkdown(
-            textifyHTML(fromMarkdown(await readFile(diffPath, "utf-8"))),
-            MARKDOWN_OPTIONS,
+        const source = (await readFile(diffPath, "utf-8")).replace(
+            DIFF_VERSION_HEADING,
+            `$1${version})`,
         );
+
+        const diff = toMarkdown(textifyHTML(fromMarkdown(source)), MARKDOWN_OPTIONS);
 
         return { output: partialPath(root, version, "api-changes"), content: diff };
     } finally {
