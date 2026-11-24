@@ -187,6 +187,9 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
 # prune.sh copies the used files into /out, and the final stage starts FROM scratch
 FROM python-base AS runtime-assemble
 
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
 WORKDIR /
 
 # Not cached on purpose: apt-get upgrade on every build is what keeps the OS packages current
