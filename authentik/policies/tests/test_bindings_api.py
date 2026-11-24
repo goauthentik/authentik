@@ -71,7 +71,8 @@ class TestBindingsAPI(APITestCase):
     def test_target_primary_keys(self):
         """Test concrete target primary keys in list and detail responses"""
         expected = {}
-        for target in self._create_targets():
+        targets = self._create_targets()
+        for target in targets:
             binding = PolicyBinding.objects.create(target=target, user=self.user, order=0)
             expected[str(binding.pk)] = str(target.pk)
             response = self.client.get(
@@ -80,7 +81,10 @@ class TestBindingsAPI(APITestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.json()["target"], str(target.pk))
 
-        response = self.client.get(reverse("authentik_api:policybinding-list"))
+        response = self.client.get(
+            reverse("authentik_api:policybinding-list"),
+            {"target_in": [target.pbm_uuid for target in targets]},
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             {binding["pk"]: binding["target"] for binding in response.json()["results"]},
@@ -120,19 +124,22 @@ class TestBindingsAPI(APITestCase):
 
     def test_list_query_count(self):
         """Test list query counts remain constant as the page size increases"""
+        targets = []
         for index in range(20):
             target = Application.objects.create(name=f"binding-{index}", slug=f"binding-{index}")
             PolicyBinding.objects.create(target=target, user=self.user, order=index)
+            targets.append(target.pbm_uuid)
 
         url = reverse("authentik_api:policybinding-list")
+        filters = {"target_in": targets, "policy__isnull": "true"}
         # Warm request-level caches before comparing page sizes.
-        self.client.get(url, {"page_size": 1, "policy__isnull": "true"})
+        self.client.get(url, {"page_size": 1, **filters})
         with CaptureQueriesContext(connection) as single:
-            response = self.client.get(url, {"page_size": 1, "policy__isnull": "true"})
+            response = self.client.get(url, {"page_size": 1, **filters})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["results"]), 1)
         with CaptureQueriesContext(connection) as multiple:
-            response = self.client.get(url, {"page_size": 20, "policy__isnull": "true"})
+            response = self.client.get(url, {"page_size": 20, **filters})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["results"]), 20)
         self.assertEqual(len(single), len(multiple))
