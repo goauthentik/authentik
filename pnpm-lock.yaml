@@ -546,8 +546,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       '@styleframe/theme':
-        specifier: 3.8.1
-        version: 3.8.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))
+        specifier: 3.10.0
+        version: 3.10.0(@styleframe/core@3.6.2(@styleframe/license@2.0.2))
       '@styleframe/transpiler':
         specifier: 3.4.2
         version: 3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)
@@ -2945,8 +2945,8 @@ packages:
       '@styleframe/core': ^3.6.1
       '@styleframe/license': ^2.0.2
 
-  '@styleframe/theme@3.8.1':
-    resolution: {integrity: sha512-G9XSG+b4HVzA4E2IaR0bsbH8IqZDlG3Zj180bX35Pbw48n17nTXNECb+9tfy1os/r7GbPD2RWnAWBbqko6/8iw==}
+  '@styleframe/theme@3.10.0':
+    resolution: {integrity: sha512-LR7g4gQXk6pVuujGyM5jMU7zt/PiXAAYAgipkwwuJc2bp0YNK1JFC+rnx0JEhop8dflktLA4qqnt3iGtIeTThA==}
     peerDependencies:
       '@styleframe/core': ^3.6.1
 
@@ -10600,7 +10600,7 @@ snapshots:
       fast-glob: 3.3.3
       importree: 2.0.1
 
-  '@styleframe/theme@3.8.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))':
+  '@styleframe/theme@3.10.0(@styleframe/core@3.6.2(@styleframe/license@2.0.2))':
     dependencies:
       '@styleframe/core': 3.6.2(@styleframe/license@2.0.2)
       culori: 4.0.2
