@@ -7,15 +7,13 @@
  *     replaces the list of minor changes; a patch release adds or replaces its own `## Fixed in
  *     <version>` section, so regenerating is idempotent.
  *   - `diff` writes the API schema diff against the previous release family into `_api-changes.mdx`.
- *
- *   Run it from the release branch (`version-<year>.<minor>`); other branches yield the wrong
- *   commits. `--review` prints the result instead of writing it.
+ *     Run it from the release branch (`version-<year>.<minor>`); other branches yield the wrong
+ *     commits. `--review` prints the result instead of writing it.
  *
  * @example
- *
- * ```sh
- * release-changelog <changelog|diff> --version <x.y.z> [--review]
- * ```
+ *     ```sh
+ *     release-changelog <changelog|diff> --version <x.y.z> [--review]
+ *     ```;
  */
 
 import { execFile } from "node:child_process";
@@ -29,6 +27,11 @@ import { resolveRepoRoot } from "./utils/git.ts";
 import { compareVersions } from "./utils/node.ts";
 
 import { ConsoleLogger } from "#logger";
+
+import type { List, ListItem, Nodes, PhrasingContent } from "mdast";
+import { fromMarkdown } from "mdast-util-from-markdown";
+import { mdxToMarkdown } from "mdast-util-mdx";
+import { type Options as ToMarkdownOptions, toMarkdown } from "mdast-util-to-markdown";
 
 const logger = ConsoleLogger.prefix("release-changelog");
 
@@ -96,6 +99,12 @@ interface Generated {
 const PATCH_HEADING = /^## Fixed in (\S+)\s*$/m;
 const CHERRY_PICK = /cherry-pick (#\d+)/g;
 const EXCLUDED_ENTRY = /^- (ci:|website)/;
+const KEPT_ENTRY = /^- security:|\b(CVE-\d{4}-\d+|GHSA(-[\w]{4}){3})\b/;
+const DEPENDABOT_ENTRY = /^- (revert: )?([^:]+: )?bump (\S+ from \S+ to \S+|the \S+ group)\b/;
+const TRANSLATION_ENTRY =
+    /^- (translate: Updates for project authentik and language (?<locale>\S+)|core, web: update translations) \(#\d+\)$/;
+const PULL_REQUEST_SUFFIX = / \((#\d+)\)$/;
+const DIFF_VERSION_HEADING = /^(#+ authentik \(v )\S+\)/m;
 
 interface ChangelogPartial {
     minorChanges: string;
@@ -109,7 +118,9 @@ function parsePartial(content: string): ChangelogPartial {
     for (let i = 0; i < rest.length; i += 2) {
         const [version, entries = ""] = rest.slice(i, i + 2);
 
-        if (version) patches.set(version, entries.trim());
+        if (version) {
+            patches.set(version, entries.trim());
+        }
     }
 
     return { minorChanges: minorChanges.trim(), patches };
@@ -131,9 +142,14 @@ async function commitSubjects(range: string, cwd: string): Promise<string[]> {
 
 /**
  * Commits since the previous release, minus those already cherry-picked onto it.
+ * Dependabot updates are dropped when asked, unless they name a CVE or GHSA advisory.
  * These are best-effort guesses based on commit messages.
  */
-async function collectEntries(previousTag: string, cwd: string): Promise<string> {
+async function collectEntries(
+    previousTag: string,
+    cwd: string,
+    dropDependencyUpdates: boolean,
+): Promise<string> {
     const base = await run("git", ["merge-base", previousTag, "HEAD"], cwd);
 
     const [current, previous] = await Promise.all([
@@ -145,16 +161,133 @@ async function collectEntries(previousTag: string, cwd: string): Promise<string>
         previous.flatMap((line) => [...line.matchAll(CHERRY_PICK)].map(([, pr]) => `(${pr})`)),
     );
 
-    return current
+    const entries = current
         .filter((line) => ![...cherryPicked].some((suffix) => line.endsWith(suffix)))
         .filter((line) => !EXCLUDED_ENTRY.test(line))
-        .sort()
-        .join("\n");
+        .filter(
+            (line) =>
+                !dropDependencyUpdates || KEPT_ENTRY.test(line) || !DEPENDABOT_ENTRY.test(line),
+        );
+
+    const sorted = mergeDuplicates(summarizeTranslations(entries)).sort((left, right) =>
+        left.localeCompare(right, "en", { sensitivity: "base" }),
+    );
+
+    return sorted.length ? renderEntries(sorted) : "";
+}
+
+/**
+ * Replaces the per-locale Transifex and extraction commits with one entry listing the locales.
+ */
+function summarizeTranslations(entries: string[]): string[] {
+    const locales = new Set<string>();
+    let summarized = false;
+
+    const rest = entries.filter((line) => {
+        const match = TRANSLATION_ENTRY.exec(line);
+
+        if (!match) return true;
+
+        summarized = true;
+
+        if (match.groups?.locale) {
+            locales.add(match.groups.locale);
+        }
+
+        return false;
+    });
+
+    if (!summarized) {
+        return rest;
+    }
+
+    const languages = locales.size ? ` for ${[...locales].sort().join(", ")}` : "";
+
+    return [...rest, `- translate: update translations${languages}`];
+}
+
+/**
+ * Collapses entries with the same subject into one, listing every pull request.
+ */
+function mergeDuplicates(entries: string[]): string[] {
+    const merged = new Map<string, string[]>();
+
+    for (const line of entries) {
+        const [, pullRequest] = PULL_REQUEST_SUFFIX.exec(line) ?? [];
+        const subject = line.replace(PULL_REQUEST_SUFFIX, "");
+        const pullRequests = merged.get(subject) ?? [];
+
+        if (pullRequest) pullRequests.push(pullRequest);
+
+        merged.set(subject, pullRequests);
+    }
+
+    return [...merged].map(([subject, pullRequests]) =>
+        pullRequests.length ? `${subject} (${pullRequests.sort().join(", ")})` : subject,
+    );
+}
+
+const MARKDOWN_OPTIONS: ToMarkdownOptions = {
+    bullet: "-",
+    rule: "-",
+    extensions: [mdxToMarkdown()],
+};
+
+/**
+ * Turns raw HTML into text, so the serializer escapes it rather than passing it through as markup.
+ */
+function textifyHTML(node: Nodes): Nodes {
+    if (node.type === "html") {
+        return { type: "text", value: node.value };
+    }
+
+    if ("children" in node) {
+        node.children = node.children.map(textifyHTML) as typeof node.children;
+    }
+
+    return node;
+}
+
+/**
+ * Splits a commit subject into text and inline code, so backticked spans stay verbatim.
+ */
+function toPhrasing(subject: string): PhrasingContent[] {
+    const segments = subject.split("`");
+
+    if (segments.length % 2 === 0) {
+        const unmatched = segments.pop();
+        segments[segments.length - 1] += `\`${unmatched}`;
+    }
+
+    return segments.flatMap((value, index): PhrasingContent[] => {
+        if (!value) return [];
+
+        return [index % 2 ? { type: "inlineCode", value } : { type: "text", value }];
+    });
+}
+
+/**
+ * Serializes entries as an MDX list, escaping anything MDX would read as markup.
+ */
+function renderEntries(entries: string[]): string {
+    const list: List = {
+        type: "list",
+        ordered: false,
+        spread: false,
+        children: entries.map((line): ListItem => ({
+            type: "listItem",
+            spread: false,
+            children: [{ type: "paragraph", children: toPhrasing(line.replace(/^- /, "")) }],
+        })),
+    };
+
+    return toMarkdown(list, MARKDOWN_OPTIONS).trim();
 }
 
 async function generateChangelog(version: string, root: string): Promise<Generated> {
     const previousTag = `version/${await previousRelease(version, root)}`;
-    const entries = await collectEntries(previousTag, root);
+    // Patch releases keep dependency updates, since they are backported on purpose.
+    const entries = await collectEntries(previousTag, root, version.endsWith(".0"));
 
     if (!entries) {
         throw new Error(`No changelog entries found since ${previousTag}`);
@@ -208,9 +341,12 @@ async function generateDiff(version: string, root: string): Promise<Generated> {
             root,
         );
 
-        const diff = (await readFile(diffPath, "utf-8"))
-            .replaceAll("{", "&#123;")
-            .replaceAll("}", "&#125;");
+        const source = (await readFile(diffPath, "utf-8")).replace(
+            DIFF_VERSION_HEADING,
+            `$1${version})`,
+        );
+
+        const diff = toMarkdown(textifyHTML(fromMarkdown(source)), MARKDOWN_OPTIONS);
 
         return { output: partialPath(root, version, "api-changes"), content: diff };
     } finally {

@@ -246,6 +246,18 @@ importers:
         specifier: ^2.9.1
         version: 2.9.1
     devDependencies:
+      '@types/mdast':
+        specifier: ^4.0.4
+        version: 4.0.4
+      mdast-util-from-markdown:
+        specifier: ^2.0.3
+        version: 2.0.3(supports-color@8.1.1)
+      mdast-util-mdx:
+        specifier: ^3.0.0
+        version: 3.0.0(supports-color@8.1.1)
+      mdast-util-to-markdown:
+        specifier: ^2.1.2
+        version: 2.1.2
       oxfmt:
         specifier: 'catalog:'
         version: 0.79.0
