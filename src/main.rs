@@ -134,11 +134,7 @@ fn main() -> Result<()> {
 
             config::start(&mut tasks)?;
 
-            #[cfg_attr(
-                not(feature = "core"),
-                expect(unused_variables, reason = "only the core commands record into it")
-            )]
-            let metrics = metrics::start(&mut tasks)?;
+            metrics::start(&mut tasks)?;
 
             #[cfg(feature = "core")]
             if Mode::is_core() {
@@ -148,20 +144,18 @@ fn main() -> Result<()> {
             match cli.command {
                 #[cfg(feature = "core")]
                 Command::AllInOne(_) => {
-                    let workers = worker::start(worker::Cli::default(), &mut tasks)?;
-                    metrics.workers.store(Some(workers));
-                    let server = server::start(server::Cli::default(), &mut tasks).await?;
-                    metrics.server.store(Some(server));
+                    metrics::register_workers(worker::start(worker::Cli::default(), &mut tasks)?);
+                    metrics::register_server(
+                        server::start(server::Cli::default(), &mut tasks).await?,
+                    );
                 }
                 #[cfg(feature = "core")]
                 Command::Server(args) => {
-                    let server = server::start(args, &mut tasks).await?;
-                    metrics.server.store(Some(server));
+                    metrics::register_server(server::start(args, &mut tasks).await?);
                 }
                 #[cfg(feature = "core")]
                 Command::Worker(args) => {
-                    let workers = worker::start(args, &mut tasks)?;
-                    metrics.workers.store(Some(workers));
+                    metrics::register_workers(worker::start(args, &mut tasks)?);
                 }
                 #[cfg(feature = "proxy")]
                 Command::Proxy(args) => {
