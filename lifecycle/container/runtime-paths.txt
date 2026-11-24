@@ -17,7 +17,6 @@
 /geoip
 /manage.py
 /pyproject.toml
-/uv.lock
 /packages
 
 # OpenSSL: the from-source FIPS provider and its configuration.
