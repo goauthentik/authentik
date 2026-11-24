@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage: Build
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7c0cb03c962ec2a7aca10132e35656a3692c383a8d689d3a4988e0043cb09a54 AS builder
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:137514c0276cbcf6066de69682726c642493de9a87d0e92c9ee93758f27a26c4 AS builder
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -41,7 +41,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     cp ./target/release/authentik /bin/authentik
 
 # Stage: Run
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7c0cb03c962ec2a7aca10132e35656a3692c383a8d689d3a4988e0043cb09a54
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:137514c0276cbcf6066de69682726c642493de9a87d0e92c9ee93758f27a26c4
 
 ARG VERSION
 ARG GIT_BUILD_HASH
