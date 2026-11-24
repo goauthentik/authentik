@@ -61,25 +61,22 @@ export class ModalInvokerDirective extends Directive {
             this.#cleanup = null;
         }
 
-        const listener = asInvoker(
-            (event) => {
-                if (!isAKElementConstructor(factory)) {
-                    return (factory as ModalTemplate)(event);
-                }
+        const listener = asInvoker((event) => {
+            if (!isAKElementConstructor(factory)) {
+                return (factory as ModalTemplate)(event);
+            }
 
-                const tagName = customElements.getName(factory);
+            const tagName = customElements.getName(factory);
 
-                if (!tagName) {
-                    throw new TypeError("Provided constructor is not a registered custom element");
-                }
+            if (!tagName) {
+                throw new TypeError("Provided constructor is not a registered custom element");
+            }
 
-                return StrictUnsafe(
-                    tagName,
-                    props as unknown as LitPropertyRecord<ModelFormLikeConstructor>,
-                );
-            },
-            options,
-        );
+            return StrictUnsafe(
+                tagName,
+                props as unknown as LitPropertyRecord<ModelFormLikeConstructor>,
+            );
+        }, options);
 
         part.element.addEventListener("click", listener);
 
