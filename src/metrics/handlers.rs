@@ -1,8 +1,10 @@
 use std::sync::Arc;
 
 use ak_axum::error::Result;
+#[cfg(feature = "core")]
 use ak_common::mode::Mode;
 use axum::{body::Body, extract::State, http::StatusCode, response::Response};
+#[cfg(feature = "core")]
 use tokio::task::spawn_blocking;
 use tracing::instrument;
 

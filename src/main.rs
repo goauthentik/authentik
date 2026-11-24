@@ -56,6 +56,7 @@ enum Command {
 #[derive(Debug, FromArgs, PartialEq)]
 /// Run both the authentik server and worker.
 #[argh(subcommand, name = "allinone")]
+#[cfg(feature = "core")]
 #[expect(
     clippy::empty_structs_with_brackets,
     reason = "argh doesn't support unit structs"
@@ -133,6 +134,10 @@ fn main() -> Result<()> {
 
             config::start(&mut tasks)?;
 
+            #[cfg_attr(
+                not(feature = "core"),
+                expect(unused_variables, reason = "only the core commands record into it")
+            )]
             let metrics = metrics::start(&mut tasks)?;
 
             #[cfg(feature = "core")]

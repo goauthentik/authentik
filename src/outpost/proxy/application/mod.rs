@@ -6,20 +6,23 @@ use ak_client::{
 };
 use ak_common::{config, tls::store::Certificate};
 use arc_swap::ArcSwapOption;
-use axum::{Router, http::Uri, routing::any};
+#[cfg(feature = "core")]
+use axum::http::Uri;
+use axum::{Router, routing::any};
 use eyre::{Result, eyre};
 use jsonwebtoken::jwk::JwkSet;
 use moka::future::Cache;
 use tracing::instrument;
 use url::Url;
 
+#[cfg(feature = "core")]
+use crate::outpost::proxy::oauth;
 use crate::outpost::proxy::{
     ProxyOutpost, allowlist,
     backchannel::{BackchannelClient, TokenHost},
     claims::Claims,
     cookie::SessionCookie,
     endpoint::OidcEndpoint,
-    oauth,
     session::{SessionStore, filesystem::FsSessionStore},
     upstream,
 };
@@ -191,6 +194,7 @@ impl Application {
     /// letting it fall through to the core backend. Proxy-mode apps handle
     /// everything; forward-auth apps only handle their own outpost endpoints
     /// and OAuth callback/logout signatures.
+    #[cfg(feature = "core")]
     pub(super) fn should_handle_url(&self, uri: &Uri) -> bool {
         if self.provider.mode == Some(ProxyMode::Proxy) {
             return true;

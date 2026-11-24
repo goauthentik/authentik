@@ -8,6 +8,7 @@ use ak_common::{
     arbiter::{Arbiter, Tasks},
     config,
 };
+#[cfg(feature = "core")]
 use arc_swap::ArcSwapOption;
 use axum::{Router, routing::any};
 use eyre::Result;
