@@ -10,56 +10,6 @@ draft: true
 
 ## New features and improvements
 
-<<<<<<< HEAD
-=======
-- **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
-- **Configurable SAML assertion encryption algorithm**: SAML providers now support AES128-CBC, AES256-CBC, AES128-GCM, and AES256-GCM for assertion encryption. New providers default to AES256-GCM, while existing providers retain AES128-CBC for compatibility. When you import SP metadata, authentik selects the first supported algorithm in the SP's order of preference. See [Encryption algorithm](../../add-secure-apps/providers/saml/index.mdx#encryption-algorithm) for details and guidance on updating existing providers.
-- **SAML source metadata advertises encryption algorithms**: When an encryption keypair is configured, a SAML source's service provider metadata now advertises supported encryption algorithms in `<EncryptionMethod>` elements, with AES256-GCM listed first.
-
-- **Distroless server image**: The server image is now also published as a distroless variant, with the same name and a `-distroless` suffix on each tag, for example `ghcr.io/goauthentik/server:2026.11.0-distroless` or `ghcr.io/goauthentik/server:2026.11-distroless`. It contains only what authentik needs at runtime, without a shell or a package manager. To use it, set `AUTHENTIK_TAG=2026.11.0-distroless` in your `.env` file, or `global.image.tag: 2026.11.0-distroless` in your Helm values, and update the tag with each upgrade. The regular image stays the default, and debugging with `AUTHENTIK_DEBUGGER` needs it.
-- **DB-IP GeoIP databases**: The server image now bundles the free [DB-IP](https://db-ip.com) Lite City and ASN databases instead of the MaxMind GeoLite2 databases. The default paths are now `/geoip/dbip-city-lite.mmdb` and `/geoip/dbip-asn-lite.mmdb`. If you mount your own MaxMind databases to `/geoip`, they keep working: when the DB-IP file is missing, authentik falls back to the previous `GeoLite2-City.mmdb` and `GeoLite2-ASN.mmdb` filenames and logs a warning. See [GeoIP](../../sys-mgmt/ops/geoip.mdx).
-
-### Duplicate WebAuthn enrollment prevented by the authenticator
-
-The [WebAuthn authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) now sends the user's already-enrolled credentials in the `excludeCredentials` registration parameter. An authenticator that already holds a credential for the account refuses to create another one, so the same security key can no longer be enrolled twice on one account. This replaces the **Prevent duplicate devices** option that was removed in 2026.8.
-
-### Single sign-on into devices managed by the authentik agent
-
-A RAC provider signs into devices which are enrolled through the authentik agent as the user who launched the connection, with no credentials configured for the device. authentik issues a token for the device, the RAC outpost turns it into an SSH certificate, and the agent validates the token before accepting the login. See [the RAC provider documentation](../../add-secure-apps/providers/rac/index.mdx#signing-in-with-the-authentik-agent).
-
-### Password lockout :ak-enterprise
-
-The [Password stage](../../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) can lock password login after a configured number of consecutive failed attempts. Lockout is disabled by default and also works when password validation is embedded in an Identification stage.
-
-Administrators with permission to view a user and reset their password can use **Lock password login** or **Unlock password login** on the user's details page. Changing the password preserves the lock. Existing sessions and passwordless authentication are unaffected. App passwords submitted through password stages also obey the lock. Optional warning and lockout messages help users understand failed attempts, and lock transitions appear in the audit log.
-
-An Enterprise license is required to create new locks. Existing locks remain enforced without a valid license, and administrators can still unlock them.
-
-### Passwords stored as authenticator devices
-
-Password hashes are now stored on password devices belonging to users. Existing passwords migrate automatically during upgrade.
-
-Expressions can still read `user.password` and `user.password_change_date`. Expressions that change a password must use `PasswordDevice.set_password(user, password)` or `PasswordDevice.set_unusable_password(user)` from `authentik.stages.password.models`; `user.set_password()` and `user.set_unusable_password()` now raise an error.
-
-Password devices are excluded from MFA discovery and validation. Their lock state can be managed through the [password authenticator API](../../add-secure-apps/flows-stages/stages/password/index.mdx#manage-locks-through-the-api).
-
-### Required actions :ak-enterprise
-
-Administrators can require users to complete one or more flows, such as changing their password or setting up an authenticator, before they can continue. Actions apply on the user's next request, including in sessions that are already logged in, and are cleared as the user completes them. See [Required actions](../../users-sources/user/required_actions.mdx).
-
-### PostgreSQL JIT compilation is disabled
-
-authentik now disables PostgreSQL's just-in-time (JIT) compilation for its own database user when it starts. In load tests, disabling JIT resolved a slowdown that built up over several hours. PostgreSQL 19 makes the same change to its default.
-
-authentik only changes `jit` while it has PostgreSQL's built-in default, and only for the user that authentik connects as, in the authentik database. If you have set `jit` explicitly, authentik leaves it unchanged. For details, including how to keep JIT enabled, see [authentik disables JIT compilation](../../troubleshooting/postgres/slow-queries.mdx#authentik-disables-jit-compilation).
-
-### Custom permissions and permission checks :ak-preview
-
-Define your own permissions on authentik's models and assign them to roles like built-in permissions. A permission check is Python code that you bind to API endpoints. It has the final say on access: it can deny or grant requests, narrow or widen lists, hide fields or make them read-only, and change responses. Permission checks are disabled by default; enable them with the **Custom permissions** [setting](../../sys-mgmt/settings.mdx#custom-permissions). For details, refer to [Custom permissions and permission checks](../../users-sources/access-control/custom_permissions.mdx).
-
-**Initial Permissions** has moved from **Directory** to **Customization** in the Admin interface, next to **Custom Permissions** and **Permission Checks**.
-
->>>>>>> 62e10f61e (events: bundle DB-IP Lite GeoIP databases instead of MaxMind GeoLite2 (#27102))
 ## Upgrading
 
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).

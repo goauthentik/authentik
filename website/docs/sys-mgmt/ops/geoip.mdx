@@ -24,7 +24,7 @@ The DB-IP Lite databases are licensed under the [Creative Commons Attribution 4.
 
 ### MaxMind GeoLite2 databases
 
-authentik versions before 2026.11 bundled the MaxMind GeoLite2 databases. You can still use them, or any other database in the same format, by mounting the files into the container and setting the paths described above.
+Earlier authentik releases bundled the MaxMind GeoLite2 databases. You can still use them, or any other database in the same format, by mounting the files into the container and setting the paths described above.
 
 If the default DB-IP file is missing and a MaxMind file exists at its previous default path (`/geoip/GeoLite2-City.mmdb` or `/geoip/GeoLite2-ASN.mmdb`), authentik loads the MaxMind file instead and logs a warning. This keeps existing setups that mount a volume over `/geoip` working. To silence the warning, set the paths explicitly.
 
