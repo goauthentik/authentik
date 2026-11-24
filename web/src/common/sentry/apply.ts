@@ -21,7 +21,7 @@ import { readInterfaceRouteParam } from "#elements/router/utils";
 import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { browserTracingIntegration, init } from "@sentry/browser";
-import { type Integration } from "@sentry/core/browser";
+import { type Integration } from "@sentry/core";
 
 const { errorReporting, capabilities } = globalAK().config;
 
