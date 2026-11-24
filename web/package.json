@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/web",
-    "version": "2026.11.0-rc1",
+    "version": "2027.2.0-rc1",
     "private": true,
     "license": "MIT",
     "type": "module",
