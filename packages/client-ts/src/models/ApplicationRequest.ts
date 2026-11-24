@@ -10,6 +10,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationMetaLaunchUrl } from "./ApplicationMetaLaunchUrl.js";
+import {
+    ApplicationMetaLaunchUrlFromJSON,
+    ApplicationMetaLaunchUrlToJSON,
+} from "./ApplicationMetaLaunchUrl.js";
 import type { PolicyEngineMode } from "./PolicyEngineMode.js";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode.js";
 
@@ -34,7 +39,7 @@ export interface ApplicationRequest {
      * Open launch URL in a new browser tab or window.
      */
     openInNewTab?: boolean;
-    metaLaunchUrl?: string;
+    metaLaunchUrl?: ApplicationMetaLaunchUrl;
     metaIcon?: string;
     metaDescription?: string;
     metaPublisher?: string;
@@ -78,7 +83,10 @@ export function ApplicationRequestFromJSONTyped(
         backchannelProviders:
             json["backchannel_providers"] == null ? undefined : json["backchannel_providers"],
         openInNewTab: json["open_in_new_tab"] == null ? undefined : json["open_in_new_tab"],
-        metaLaunchUrl: json["meta_launch_url"] == null ? undefined : json["meta_launch_url"],
+        metaLaunchUrl:
+            json["meta_launch_url"] == null
+                ? undefined
+                : ApplicationMetaLaunchUrlFromJSON(json["meta_launch_url"]),
         metaIcon: json["meta_icon"] == null ? undefined : json["meta_icon"],
         metaDescription: json["meta_description"] == null ? undefined : json["meta_description"],
         metaPublisher: json["meta_publisher"] == null ? undefined : json["meta_publisher"],
@@ -109,7 +117,7 @@ export function ApplicationRequestToJSONTyped(
         provider: value["provider"],
         backchannel_providers: value["backchannelProviders"],
         open_in_new_tab: value["openInNewTab"],
-        meta_launch_url: value["metaLaunchUrl"],
+        meta_launch_url: ApplicationMetaLaunchUrlToJSON(value["metaLaunchUrl"]),
         meta_icon: value["metaIcon"],
         meta_description: value["metaDescription"],
         meta_publisher: value["metaPublisher"],

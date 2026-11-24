@@ -30,7 +30,7 @@ dependencies = [
   "djangoql==0.19.1",
   "djangorestframework==3.18.3",
   "docker==7.2.0",
-  "drf-spectacular==0.29.0",
+  "drf-spectacular==0.30.0",
   "dumb-init==1.2.5.post1",
   "duo-client==5.7.0",
   "fido2==2.2.1",

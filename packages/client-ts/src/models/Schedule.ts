@@ -11,8 +11,8 @@
  */
 
 import { parseDateTime } from "../runtime.js";
-import type { LastTaskStatusEnum } from "./LastTaskStatusEnum.js";
-import { LastTaskStatusEnumFromJSON } from "./LastTaskStatusEnum.js";
+import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum.js";
+import { TaskAggregatedStatusEnumFromJSON } from "./TaskAggregatedStatusEnum.js";
 
 /**
  * @export
@@ -42,7 +42,7 @@ export interface Schedule {
     paused?: boolean;
     readonly nextRun: Date;
     readonly description: string | null;
-    readonly lastTaskStatus: LastTaskStatusEnum | null;
+    readonly lastTaskStatus: TaskAggregatedStatusEnum | null;
 }
 
 /**
@@ -117,7 +117,7 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         paused: json["paused"] == null ? undefined : json["paused"],
         nextRun: json["next_run"] == null ? json["next_run"] : parseDateTime(json["next_run"]),
         description: json["description"],
-        lastTaskStatus: LastTaskStatusEnumFromJSON(json["last_task_status"]),
+        lastTaskStatus: TaskAggregatedStatusEnumFromJSON(json["last_task_status"]),
     };
 }
 

@@ -21,10 +21,10 @@ var _ MappedNullable = &ProxyOutpostConfig{}
 
 // ProxyOutpostConfig Proxy provider serializer for outposts
 type ProxyOutpostConfig struct {
-	Pk           int32   `json:"pk"`
-	Name         string  `json:"name"`
-	InternalHost *string `json:"internal_host,omitempty"`
-	ExternalHost string  `json:"external_host"`
+	Pk           int32                           `json:"pk"`
+	Name         string                          `json:"name"`
+	InternalHost *ProxyOutpostConfigInternalHost `json:"internal_host,omitempty"`
+	ExternalHost string                          `json:"external_host"`
 	// Validate SSL Certificates of upstream servers
 	InternalHostSslValidation *bool                      `json:"internal_host_ssl_validation,omitempty"`
 	ClientId                  *string                    `json:"client_id,omitempty"`
@@ -132,9 +132,9 @@ func (o *ProxyOutpostConfig) SetName(v string) {
 }
 
 // GetInternalHost returns the InternalHost field value if set, zero value otherwise.
-func (o *ProxyOutpostConfig) GetInternalHost() string {
+func (o *ProxyOutpostConfig) GetInternalHost() ProxyOutpostConfigInternalHost {
 	if o == nil || IsNil(o.InternalHost) {
-		var ret string
+		var ret ProxyOutpostConfigInternalHost
 		return ret
 	}
 	return *o.InternalHost
@@ -142,7 +142,7 @@ func (o *ProxyOutpostConfig) GetInternalHost() string {
 
 // GetInternalHostOk returns a tuple with the InternalHost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ProxyOutpostConfig) GetInternalHostOk() (*string, bool) {
+func (o *ProxyOutpostConfig) GetInternalHostOk() (*ProxyOutpostConfigInternalHost, bool) {
 	if o == nil || IsNil(o.InternalHost) {
 		return nil, false
 	}
@@ -158,8 +158,8 @@ func (o *ProxyOutpostConfig) HasInternalHost() bool {
 	return false
 }
 
-// SetInternalHost gets a reference to the given string and assigns it to the InternalHost field.
-func (o *ProxyOutpostConfig) SetInternalHost(v string) {
+// SetInternalHost gets a reference to the given ProxyOutpostConfigInternalHost and assigns it to the InternalHost field.
+func (o *ProxyOutpostConfig) SetInternalHost(v ProxyOutpostConfigInternalHost) {
 	o.InternalHost = &v
 }
 

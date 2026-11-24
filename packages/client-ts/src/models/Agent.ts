@@ -11,6 +11,8 @@
  */
 
 import { parseDateTime, serializeDateTime } from "../runtime.js";
+import type { EmailAddress } from "./EmailAddress.js";
+import { EmailAddressFromJSON, EmailAddressToJSON } from "./EmailAddress.js";
 import type { PartialUser } from "./PartialUser.js";
 import { PartialUserFromJSON } from "./PartialUser.js";
 import type { PolicyBehaviorEnum } from "./PolicyBehaviorEnum.js";
@@ -39,7 +41,7 @@ export interface Agent {
      */
     isActive?: boolean;
     lastLogin?: Date | null;
-    email?: string;
+    email?: EmailAddress;
     attributes?: { [key: string]: any };
     readonly uid: string;
     readonly uuid: string;
@@ -99,7 +101,7 @@ export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Age
                 : json["last_login"] === null
                   ? null
                   : parseDateTime(json["last_login"]),
-        email: json["email"] == null ? undefined : json["email"],
+        email: json["email"] == null ? undefined : EmailAddressFromJSON(json["email"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],
         uuid: json["uuid"],
@@ -137,7 +139,7 @@ export function AgentToJSONTyped(
         is_active: value["isActive"],
         last_login:
             value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
-        email: value["email"],
+        email: EmailAddressToJSON(value["email"]),
         attributes: value["attributes"],
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),

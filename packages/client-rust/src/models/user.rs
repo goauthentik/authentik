@@ -44,7 +44,7 @@ pub struct User {
     #[serde(rename = "roles_obj", deserialize_with = "Option::deserialize")]
     pub roles_obj: Option<Vec<models::Role>>,
     #[serde(rename = "email", skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
+    pub email: Option<models::EmailAddress>,
     /// User's avatar, either a http/https URL or a data URI
     #[serde(rename = "avatar")]
     pub avatar: String,

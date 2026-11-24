@@ -10,6 +10,8 @@
  * Do not edit the class manually.
  */
 
+import type { EmailAddress } from "./EmailAddress.js";
+import { EmailAddressFromJSON, EmailAddressToJSON } from "./EmailAddress.js";
 import type { UserSelfGroups } from "./UserSelfGroups.js";
 import { UserSelfGroupsFromJSON } from "./UserSelfGroups.js";
 import type { UserSelfRoles } from "./UserSelfRoles.js";
@@ -45,7 +47,7 @@ export interface UserSelf {
     readonly isCurrent: boolean;
     readonly groups: Array<UserSelfGroups>;
     readonly roles: Array<UserSelfRoles>;
-    email?: string;
+    email?: EmailAddress;
     /**
      * User's avatar, either a http/https URL or a data URI
      */
@@ -122,7 +124,7 @@ export function UserSelfFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         isCurrent: json["is_current"],
         groups: (json["groups"] as Array<any>).map(UserSelfGroupsFromJSON),
         roles: (json["roles"] as Array<any>).map(UserSelfRolesFromJSON),
-        email: json["email"] == null ? undefined : json["email"],
+        email: json["email"] == null ? undefined : EmailAddressFromJSON(json["email"]),
         avatar: json["avatar"],
         uid: json["uid"],
         settings: json["settings"],
@@ -158,7 +160,7 @@ export function UserSelfToJSONTyped(
     return {
         username: value["username"],
         name: value["name"],
-        email: value["email"],
+        email: EmailAddressToJSON(value["email"]),
         type: UserTypeEnumToJSON(value["type"]),
     };
 }
