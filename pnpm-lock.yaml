@@ -555,8 +555,8 @@ importers:
         specifier: ^6.1.4
         version: 6.1.4
       styleframe:
-        specifier: 3.9.1
-        version: 3.9.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(@styleframe/plugin@3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.2)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.33))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.33)))(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))(typescript@6.0.3)
+        specifier: 3.9.2
+        version: 3.9.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(@styleframe/plugin@3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.2)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.33))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.33)))(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))
     devDependencies:
       '@goauthentik/fonts':
         specifier: link:../fonts
@@ -2877,15 +2877,6 @@ packages:
     resolution: {integrity: sha512-nZrawt+wWVwFb8+Ndlzy3M3pRt4hSAyEaY4kgNOHDTBcZU3MN/Wvs/HhIKZUHizqvKOkXjFX0iucQPum332h4Q==}
     peerDependencies:
       '@styleframe/loader': ^3.0.3
-
-  '@styleframe/cli@4.2.0':
-    resolution: {integrity: sha512-f2csbHzaNHLE1/jhKv+1iQC+O9gh1LnNq59ilxzhp3ldgBTjDTWfhxfbte5AbvG12Cee5aKmGZO+ZreV4K28TQ==}
-    peerDependencies:
-      '@styleframe/loader': ^3.0.3
-      typescript: '>=5'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   '@styleframe/core@3.6.2':
     resolution: {integrity: sha512-qGNMePrhDlZcGq1uAzAOTc2DF9QZ/rdoZ+AKV9XDbev7lMFGtGY4gK33zqZeAABihZa2QOhzuWdHrT4o9FZvtA==}
@@ -7131,11 +7122,11 @@ packages:
   style-to-object@1.0.14:
     resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
 
-  styleframe@3.9.1:
-    resolution: {integrity: sha512-SJNDfefYQlYZAIImXCUeHjyVL4dFTJZ4p52x2pt7iNb240H3zNc/S2N+2au5Z5V7WfFSSWOZap0V01YESkNMrg==}
+  styleframe@3.9.2:
+    resolution: {integrity: sha512-e0yYn3duU/c3g9HkElNaKl4PwqT5qBkJ2UQRtt3gfR2Bj/gIZNe0D/VJvKsv6/m3+JspBsjRXeR2dO4zG/V08w==}
     hasBin: true
     peerDependencies:
-      '@styleframe/core': ^3.6.1
+      '@styleframe/core': ^3.7.0
       '@styleframe/loader': ^3.0.3
       '@styleframe/plugin': ^3.4.0
       '@styleframe/transpiler': ^3.4.1
@@ -10523,19 +10514,6 @@ snapshots:
       citty: 0.2.2
       consola: 3.4.2
       magicast: 0.5.4
-    transitivePeerDependencies:
-      - '@styleframe/license'
-
-  '@styleframe/cli@4.2.0(@styleframe/license@2.0.2)(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(typescript@6.0.3)':
-    dependencies:
-      '@styleframe/dtcg': 1.1.0
-      '@styleframe/figma': 2.1.2(@styleframe/license@2.0.2)
-      '@styleframe/loader': 3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))
-      citty: 0.2.2
-      consola: 3.4.2
-      magicast: 0.5.4
-    optionalDependencies:
-      typescript: 6.0.3
     transitivePeerDependencies:
       - '@styleframe/license'
 
@@ -15781,16 +15759,14 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  styleframe@3.9.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(@styleframe/plugin@3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.2)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.33))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.33)))(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))(typescript@6.0.3):
+  styleframe@3.9.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(@styleframe/plugin@3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.2)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.33))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.33)))(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)):
     dependencies:
-      '@styleframe/cli': 4.2.0(@styleframe/license@2.0.2)(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(typescript@6.0.3)
+      '@styleframe/cli': 4.1.2(@styleframe/license@2.0.2)(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))
       '@styleframe/core': 3.6.2(@styleframe/license@2.0.2)
       '@styleframe/license': 2.0.2
       '@styleframe/loader': 3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))
       '@styleframe/plugin': 3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.2)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.33))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.33))
       '@styleframe/transpiler': 3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)
-    transitivePeerDependencies:
-      - typescript
 
   stylehacks@6.1.1(postcss@8.5.32):
     dependencies:

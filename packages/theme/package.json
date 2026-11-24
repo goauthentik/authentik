@@ -123,7 +123,7 @@
         "@styleframe/theme": "3.10.0",
         "@styleframe/transpiler": "3.4.2",
         "rimraf": "^6.1.4",
-        "styleframe": "3.9.1"
+        "styleframe": "3.9.2"
     },
     "devDependencies": {
         "@goauthentik/fonts": "link:../fonts",
