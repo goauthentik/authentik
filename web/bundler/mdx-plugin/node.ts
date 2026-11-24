@@ -37,6 +37,14 @@ export interface MDXPluginOptions {
     root: string;
 }
 
+export interface MdxPluginData {
+    sourcePath: string | undefined;
+}
+
+type MDXOnResolveArgs = Omit<OnResolveArgs, "pluginData"> & { pluginData: MdxPluginData };
+
+type MDXOnLoadArgs = Omit<OnLoadArgs, "pluginData"> & { pluginData?: MdxPluginData };
+
 /**
  * Bundle markdown and MDX source into JSON modules.
  */
@@ -46,25 +54,30 @@ export function mdxPlugin({ root }: MDXPluginOptions): Plugin {
     const docsPackageRoot = path.resolve(MonoRepoRoot, "website");
 
     function setup(build: PluginBuild) {
-        async function resolveListener(args: OnResolveArgs): Promise<OnResolveResult> {
+        async function resolveListener(args: MDXOnResolveArgs): Promise<OnResolveResult> {
             if (!args.path.startsWith("~")) return args;
 
+            // We explicitly convert the MDX into a JSON object for rendering, so we include the
+            // `sourcePath` as a separate field from the `path`, which points to our intended
+            // output.
+            const sourcePath = path.join(docsPackageRoot, "docs", args.path.slice(prefix.length));
+
             return {
-                path: path.join(docsPackageRoot, "docs", args.path.slice(prefix.length)),
+                path: sourcePath.replace(/\.mdx?$/, ".json"),
+                pluginData: { sourcePath },
                 pluginName,
             };
         }
 
-        async function loadListener(args: OnLoadArgs): Promise<OnLoadResult> {
-            const source = String(await fs.readFile(args.path));
+        async function loadListener(args: MDXOnLoadArgs): Promise<OnLoadResult | undefined> {
+            const sourcePath = args.pluginData?.sourcePath;
 
-            const publicPath = path.resolve(
-                "/",
-                path.relative(path.join(root, "website", "docs"), args.path),
-            );
+            if (!sourcePath) return undefined;
 
+            const source = String(await fs.readFile(sourcePath));
+            const docsPath = path.join(root, "website", "docs");
+            const publicPath = path.resolve("/", path.relative(docsPath, sourcePath));
             const publicDirectory = path.dirname(publicPath);
-
             const { html, frontmatter } = await compileMarkdown(source, publicDirectory);
 
             return {
@@ -75,12 +88,15 @@ export function mdxPlugin({ root }: MDXPluginOptions): Plugin {
                     publicDirectory,
                 }),
                 loader: "file",
+                // Since the resolved `.json` path is output, we have to specify the source to
+                // watch.
+                watchFiles: [sourcePath],
                 pluginName,
             };
         }
 
         build.onResolve({ filter: /\.mdx?$/ }, resolveListener);
-        build.onLoad({ filter: /\.mdx?$/ }, loadListener);
+        build.onLoad({ filter: /\.json$/ }, loadListener);
     }
 
     return {

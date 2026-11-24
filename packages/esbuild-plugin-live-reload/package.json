@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "3.0.0",
+    "version": "3.2.0",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "keywords": [
         "authentik",
@@ -74,7 +74,7 @@
         "oxfmt": "catalog:",
         "oxlint": "catalog:",
         "typedoc": "^0.28.20",
-        "typedoc-plugin-markdown": "^4.13.1",
+        "typedoc-plugin-markdown": "^4.14.1",
         "typescript": "catalog:"
     },
     "peerDependencies": {
@@ -89,13 +89,13 @@
     "devEngines": {
         "runtime": {
             "name": "node",
-            "version": "^24.22.1 || >=26.12.1",
+            "version": "^24.22.3 || >=26.13.1",
             "onFail": "error"
         }
     },
     "engines": {
-        "node": "^24.22.1 || >=26.12.1",
+        "node": "^24.22.3 || >=26.13.1",
         "pnpm": ">=12.4.0"
     },
-    "packageManager": "pnpm@12.9.1+sha512.06b055fff5cd20dc12781de173ced3310ce0951bf2ec620211a16045d5444d5c93a663210764ef29a653a610459ba0368f0e74f84d80c54723cf95aae7bc0d6d"
+    "packageManager": "pnpm@12.23.0+sha512.02da94ffaf133f46074322afe552f90d40b5f71ae259aefbccdacc5085b1d617e98d65e0131f5748b9b67445978ee5055d7d59a473f1eef0d504854fefcd5975"
 }

@@ -2,7 +2,8 @@
 
 import re
 import traceback
-from datetime import datetime
+from collections.abc import Callable
+from datetime import datetime, timedelta
 from enum import StrEnum
 from hashlib import sha256
 from typing import Any, Self
@@ -18,17 +19,21 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
-from django.db.models import Q, QuerySet, options
+from django.db.models import Prefetch, Q, QuerySet, options
 from django.db.models.functions import Upper
 from django.http import HttpRequest
+from django.utils.encoding import iri_to_uri
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from guardian.conf import settings
 from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
+from psqlextra.expressions import ExcludedCol
 from psqlextra.indexes import UniqueIndex
 from psqlextra.models import PostgresMaterializedViewModel
+from psqlextra.query import ConflictAction
+from psqlextra.util import postgres_manager
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, IntegerField, ListField
 from rest_framework.serializers import Serializer
@@ -62,6 +67,7 @@ from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 USERNAME_MAX_LENGTH = 150
+USER_ACTIVITY_INTERVAL = timedelta(minutes=5)
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 _USER_ATTR_PREFIX = f"{USER_PATH_SYSTEM_PREFIX}/user"
 USER_ATTRIBUTE_DEBUG = f"{_USER_ATTR_PREFIX}/debug"
@@ -738,14 +744,20 @@ class BackchannelProvider(Provider):
 
 class ApplicationQuerySet(QuerySet):
     def with_provider(self) -> QuerySet[Application]:
-        qs = self.select_related("provider")
-        for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
-            qs = qs.select_related(f"provider__{subclass}")
-            # Also prefetch/select through each subclass path to ensure casted instances have access
-            qs = qs.prefetch_related(f"provider__{subclass}__property_mappings")
-            qs = qs.select_related(f"provider__{subclass}__application")
-            qs = qs.select_related(f"provider__{subclass}__backchannel_application")
-        return qs
+        """Load each application's provider as its concrete subclass, so get_provider() needs
+        no query.
+
+        The providers come from a second query rather than a join: selecting every provider
+        subclass, and the applications related to each, through the application query made a
+        statement of about 70 joins that Postgres took over 100ms to plan.
+
+        The provider is prefetched before any other lookup, so lookups through it such as
+        `provider__property_mappings` work on the concrete providers whether they were added
+        before or after, and calling this again adds nothing."""
+        provider = Prefetch("provider", queryset=Provider.objects.select_subclasses())
+        # Prefetches are equal when they prefetch to the same attribute
+        lookups = [lookup for lookup in self._prefetch_related_lookups if lookup != provider]
+        return self.prefetch_related(None).prefetch_related(provider, *lookups)
 
 
 class Application(RequestableModel, SerializerModel, PolicyBindingModel):
@@ -807,12 +819,15 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).themed_urls(self.meta_icon)
 
-    def get_launch_url(self, user: User | None = None, user_data: dict | None = None) -> str | None:
+    def get_launch_url(
+        self, user: User | None = None, user_data: Callable[[], dict] | None = None
+    ) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider.
 
         Args:
-            user: User instance for formatting the URL
-            user_data: Pre-serialized user data to avoid re-serialization (performance optimization)
+            user: User whose data fills the URL's `%(name)s` placeholders
+            user_data: Returns `user` serialized, for a caller that formats many URLs for the
+                same user. Called only for a URL with placeholders.
         """
         from authentik.core.api.users import UserSerializer
 
@@ -821,16 +836,25 @@ class Application(RequestableModel, SerializerModel, PolicyBindingModel):
             url = self.meta_launch_url
         elif provider := self.get_provider():
             url = provider.launch_url
-        if user and url:
-            try:
-                # Use pre-serialized data if available, otherwise serialize now
-                if user_data is None:
-                    user_data = UserSerializer(instance=user).data
-                return url % user_data
-            except Exception as exc:  # noqa
-                LOGGER.warning("Failed to format launch url", exc=exc)
-                return url
-        return url
+        # Serializing the user queries their groups, roles and avatar, so it happens only for a
+        # URL with placeholders
+        if not user or not url or "%(" not in url:
+            return url
+        # Escape every `%` that is neither a placeholder nor `%%`, such as percent-encoding, so
+        # it is kept as is instead of being filled with the whole user
+        template = re.sub(r"(%%|%\()|%", lambda match: match.group(1) or "%%", url)
+        try:
+            data = user_data() if user_data else UserSerializer(instance=user).data
+            launch_url = template % data
+        except Exception as exc:  # noqa
+            LOGGER.warning("Failed to format launch url", exc=exc)
+            return url
+        if url.startswith("/"):
+            launch_url = iri_to_uri(launch_url)
+            # Substitutions must preserve the root-relative URL accepted by the validator.
+            if not DomainlessFormattedURLValidator.relative_re.match(launch_url):
+                return None
+        return launch_url
 
     def get_provider(self) -> Provider | None:
         """Get casted provider instance. Needs Application queryset with_provider"""
@@ -1697,3 +1721,37 @@ class Actor(ExpiringModel, User):
             **kwargs,
         )
         return actor
+
+
+class UserActivityManager(models.Manager["UserActivity"]):
+    """Record successful activity without rewriting frequently active users."""
+
+    def record(self, user_id: Any, at: datetime | None = None) -> None:
+        if type(user_id) is not int or not 0 < user_id <= 2147483647:  # noqa: PLR2004
+            return
+        excluded = ExcludedCol(self.model._meta.get_field("last_activity_at"))
+        with postgres_manager(self.model) as manager:
+            manager.on_conflict(
+                ["user_id"],
+                ConflictAction.UPDATE,
+                update_condition=Q(last_activity_at__lte=excluded - USER_ACTIVITY_INTERVAL),
+                update_values={"last_activity_at": excluded},
+            ).insert(user_id=user_id, last_activity_at=at or now())
+
+
+class UserActivity(models.Model):
+    """Latest sampled successful activity, independent of audit retention."""
+
+    # A late write after user deletion may leave an orphan; expiration joins existing users.
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name="activity",
+        db_constraint=False,
+    )
+    last_activity_at = models.DateTimeField()
+    objects = UserActivityManager()
+
+    def __str__(self):
+        return f"Activity for user {self.user_id}"

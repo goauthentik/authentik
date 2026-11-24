@@ -10,6 +10,8 @@ from djangoql.compat import text_type
 from djangoql.schema import StrField
 from djangoql.serializers import DjangoQLSchemaSerializer
 
+from authentik.lib.utils.db import distinct_values_containing
+
 
 class JSONSearchField(StrField):
     """JSON field for DjangoQL"""
@@ -157,3 +159,14 @@ class ChoiceSearchField(StrField):
                 if search in choice.lower():
                     result.append(choice)
         return result
+
+
+class IndexedStrField(StrField):
+    """String field which suggests the existing values of an indexed column with few distinct
+    values. `StrField` suggests them with `SELECT DISTINCT`, which reads the whole table."""
+
+    def __init__(self, model=None, name=None, nullable=None):
+        super().__init__(model, name, nullable, suggest_options=True)
+
+    def get_options(self, search):
+        return distinct_values_containing(self.model.objects.all(), self.name, search)
