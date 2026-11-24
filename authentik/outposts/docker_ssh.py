@@ -77,22 +77,40 @@ class DockerInlineSSH:
         if not was_written:
             self.cleanup()
 
+    def _without_own_blocks(self, lines: list[str]) -> list[str]:
+        """Drop every config block written for this host, including the blank line after
+        it, and keep all other lines"""
+        kept = []
+        in_block = False
+        after_block = False
+        for line in lines:
+            if line == self.header:
+                in_block = True
+            elif in_block:
+                if line == f"{FOOTER}\n" or line.startswith(HEADER):
+                    in_block = False
+                    after_block = line == f"{FOOTER}\n"
+                    if not after_block:
+                        kept.append(line)
+            elif after_block and line == "\n":
+                after_block = False
+            else:
+                after_block = False
+                kept.append(line)
+        return kept
+
     def cleanup(self):
         """Cleanup when we're done"""
+        # The key path only depends on the keypair, so a parallel connection with the same
+        # keypair may already have removed it; that must not skip the config cleanup
         try:
             os.unlink(self.key_path)
-            with open(self.config_path, encoding="utf-8") as ssh_config:
-                start = 0
-                end = 0
-                lines = ssh_config.readlines()
-                for idx, line in enumerate(lines):
-                    if line == self.header:
-                        start = idx
-                    if start != 0 and line == f"{FOOTER}\n":
-                        end = idx
-            with open(self.config_path, "w+", encoding="utf-8") as ssh_config:
-                lines = lines[:start] + lines[end + 2 :]
-                ssh_config.writelines(lines)
+        except OSError:
+            pass
+        try:
+            lines = self.config_path.read_text(encoding="utf-8").splitlines(keepends=True)
+            with open(self.config_path, "w", encoding="utf-8") as ssh_config:
+                ssh_config.writelines(self._without_own_blocks(lines))
         except OSError:
             # If we fail deleting a file it doesn't matter that much
             # since we're just in a container
