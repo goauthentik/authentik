@@ -77,8 +77,7 @@ pub(crate) async fn handle(
     .await;
 
     let (scheme, upstream_host) = Url::parse(&target)
-        .map(|url| (url.scheme().to_owned(), url.authority().to_owned()))
-        .unwrap_or_default();
+        .map_or_default(|url| (url.scheme().to_owned(), url.authority().to_owned()));
     histogram!(
         "authentik_outpost_proxy_upstream_response_duration_seconds",
         "outpost_name" => app.outpost_name.clone(),

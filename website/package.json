@@ -25,7 +25,7 @@
         "@goauthentik/oxlint-config": "link:../packages/oxlint-config",
         "@goauthentik/tsconfig": "link:../packages/tsconfig",
         "@types/node": "catalog:",
-        "deepmerge-ts": "^7.1.5",
+        "deepmerge-ts": "^8.0.2",
         "escape-string-regexp": "^5.0.0",
         "netlify-plugin-cache": "^1.0.3",
         "netlify-redirect-parser": "^14.4.0",
@@ -36,15 +36,15 @@
         "typescript": "catalog:"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "2.2.8",
-        "@rspack/binding-linux-arm64-gnu": "2.2.8",
-        "@rspack/binding-linux-x64-gnu": "2.2.8",
-        "@swc/core-darwin-arm64": "1.16.13",
-        "@swc/core-linux-arm64-gnu": "1.16.13",
-        "@swc/core-linux-x64-gnu": "1.16.13",
-        "@swc/html-darwin-arm64": "1.16.13",
-        "@swc/html-linux-arm64-gnu": "1.16.13",
-        "@swc/html-linux-x64-gnu": "1.16.13",
+        "@rspack/binding-darwin-arm64": "2.3.3",
+        "@rspack/binding-linux-arm64-gnu": "2.3.3",
+        "@rspack/binding-linux-x64-gnu": "2.3.3",
+        "@swc/core-darwin-arm64": "1.16.22",
+        "@swc/core-linux-arm64-gnu": "1.16.22",
+        "@swc/core-linux-x64-gnu": "1.16.22",
+        "@swc/html-darwin-arm64": "1.16.22",
+        "@swc/html-linux-arm64-gnu": "1.16.22",
+        "@swc/html-linux-x64-gnu": "1.16.22",
         "lightningcss-darwin-arm64": "1.33.0",
         "lightningcss-linux-arm64-gnu": "1.33.0",
         "lightningcss-linux-x64-gnu": "1.33.0"
@@ -52,13 +52,13 @@
     "devEngines": {
         "runtime": {
             "name": "node",
-            "version": "^24.22.1 || >=26.12.1",
+            "version": "^24.22.3 || >=26.13.1",
             "onFail": "error"
         }
     },
     "engines": {
-        "node": "^24.22.1 || >=26.12.1",
+        "node": "^24.22.3 || >=26.13.1",
         "pnpm": ">=12.4.0"
     },
-    "packageManager": "pnpm@12.22.0+sha512.894940a3d9a57dfa6fd373990fb4e41e09c2f2d76d982ed1d75275d39267f988fb4e2d40900cbe9921c68d97c67aa1a1096d276633db248f7b34927ac9ddb7a4"
+    "packageManager": "pnpm@12.23.0+sha512.02da94ffaf133f46074322afe552f90d40b5f71ae259aefbccdacc5085b1d617e98d65e0131f5748b9b67445978ee5055d7d59a473f1eef0d504854fefcd5975"
 }
