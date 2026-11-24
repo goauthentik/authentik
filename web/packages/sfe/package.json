@@ -24,7 +24,7 @@
         "core-js": "^3.49.0",
         "formdata-polyfill": "workspace:*",
         "globby": "16.2.4",
-        "jquery": "^3.7.1",
+        "jquery": "^4.0.0",
         "lit-html": "^1.4.1",
         "rollup": "^4.68.8",
         "weakmap-polyfill": "^2.0.4"
