@@ -67,7 +67,7 @@ dependencies = [
   "pyroscope-io==1.4.0",
   "pyroscope-otel==1.1.0",
   "python-kadmin-rs==0.7.5",
-  "pyyaml==6.0.3",
+  "pyyaml==6.0.4",
   "requests-oauthlib==2.0.0",
   "scim2-filter-parser==0.7.0",
   "sentry-sdk==2.75.0",
