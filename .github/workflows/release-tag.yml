@@ -209,6 +209,7 @@ jobs:
         with:
           rustflags: ""
           target: "${{ matrix.target.triple }}"
+          build-warnings: ""
       - name: Setup go
         uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
