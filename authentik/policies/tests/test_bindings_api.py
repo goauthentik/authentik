@@ -42,8 +42,8 @@ class TestBindingsAPI(APITestCase):
             OAuthSource.objects.create(name="binding-test", slug="binding-test"),
         ]
 
-    def test_target_subclasses_preserve_parent_primary_keys(self):
-        """Test subclasses preserve primary keys below PolicyBindingModel"""
+    def test_policy_binding_descendants_share_parent_pk(self):
+        """Test policy binding subclasses preserve the same primary key"""
         for model in apps.get_models():
             if not issubclass(model, PolicyBindingModel):
                 continue

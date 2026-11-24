@@ -121,15 +121,18 @@ class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
     """PolicyBinding Viewset"""
 
     queryset = (
-        PolicyBinding.objects.all()
-        .select_related("group", "user")
-        .prefetch_related(
-            "policy",
-            Prefetch("target", queryset=PolicyBindingModel.objects.select_subclasses()),
-        )
-    )  # Prefetch policy and target so we resolve their subclasses.
+        PolicyBinding.objects.all().select_related("group", "user").prefetch_related("policy")
+    )  # Prefetch policy so we resolve its subclass.
     serializer_class = PolicyBindingSerializer
     search_fields = ["policy__name"]
     filterset_class = PolicyBindingFilter
     ordering = ["order", "pk"]
     ordering_fields = ["order", "target__uuid", "pk"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.action in ("list", "retrieve", "update", "partial_update"):
+            return queryset.prefetch_related(
+                Prefetch("target", queryset=PolicyBindingModel.objects.select_subclasses()),
+            )
+        return queryset.select_related("target")
