@@ -121,7 +121,7 @@
         "@styleframe/core": "3.6.2",
         "@styleframe/dtcg": "^1.1.0",
         "@styleframe/theme": "3.10.0",
-        "@styleframe/transpiler": "3.4.2",
+        "@styleframe/transpiler": "3.5.0",
         "rimraf": "^6.1.4",
         "styleframe": "3.9.2"
     },
