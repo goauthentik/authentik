@@ -12,7 +12,7 @@ from authentik.flows.models import (
     FlowAuthenticationRequirement,
     FlowStageBinding,
 )
-from authentik.policies.models import PolicyBinding, PolicyBindingModel
+from authentik.policies.models import PolicyBinding, PolicyBindingModel, PolicyEngineMode
 
 
 class DiagramNodeTypes(models.TextChoices):
@@ -163,12 +163,26 @@ class FlowDiagram:
             DiagramNode(identifier="flow_pre", type=DiagramNodeTypes.PRE_FLOW_POLICIES)
         )
 
-        for index, binding in enumerate(bindings):
-            policy = self.add_node(policy_node(f"flow_policy_{index}", binding))
-
-            self.add_edges([pre], policy, DiagramEdgeTypes.BINDING)
+        policies = [
+            self.add_node(policy_node(f"flow_policy_{index}", binding))
+            for index, binding in enumerate(bindings)
+        ]
+        for policy in policies:
             self.add_edges([policy], end, DiagramEdgeTypes.POLICY_DENIED)
-            self.add_edges([policy], flow_start)
+
+        if self.flow.policy_engine_mode == PolicyEngineMode.MODE_ALL:
+            # Every policy has to pass, so they are checked one after the other.
+            self.add_edges([pre], policies[0], DiagramEdgeTypes.BINDING)
+            self.chain_policies(policies)
+            self.add_edges([policies[-1]], flow_start)
+        else:
+            for policy in policies:
+                self.add_edges([pre], policy, DiagramEdgeTypes.BINDING)
+                self.add_edges([policy], flow_start)
+
+    def chain_policies(self, policies: list[DiagramNode]) -> None:
+        for previous, policy in zip(policies, policies[1:], strict=False):
+            self.add_edges([previous], policy, DiagramEdgeTypes.POLICY_PASSED)
 
     def get_stages(self, flow_start: DiagramNode) -> DiagramNode:
         parents = [flow_start]
@@ -197,10 +211,14 @@ class FlowDiagram:
 
             stage = self.add_node(stage_node(f"stage_{stage_index}", stage_binding))
 
-            for policy in policies:
-                self.add_edges(parents, policy)
-
-            if policies:
+            if policies and stage_binding.policy_engine_mode == PolicyEngineMode.MODE_ALL:
+                # Every policy has to pass, so they are checked one after the other.
+                self.add_edges(parents, policies[0])
+                self.chain_policies(policies)
+                self.add_edges([policies[-1]], stage, DiagramEdgeTypes.POLICY_PASSED)
+            elif policies:
+                for policy in policies:
+                    self.add_edges(parents, policy)
                 self.add_edges(policies, stage, DiagramEdgeTypes.POLICY_PASSED)
             else:
                 self.add_edges(parents, stage)
