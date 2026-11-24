@@ -118,7 +118,7 @@
         }
     },
     "dependencies": {
-        "@styleframe/core": "3.6.2",
+        "@styleframe/core": "3.7.0",
         "@styleframe/dtcg": "^1.1.0",
         "@styleframe/theme": "3.8.1",
         "@styleframe/transpiler": "3.4.2",
