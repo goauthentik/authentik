@@ -266,7 +266,8 @@ export async function evaluate(env: Environment, connect = true): Promise<Verdic
     }
     return {
         ok: checks.every((c) => c.ok),
-        checks,
+        // A fix only means something for a check that failed.
+        checks: checks.map(({ fix, ...check }) => (check.ok ? check : { ...check, fix })),
         allowlistChanged: allowlistChanged(env),
     };
 }
