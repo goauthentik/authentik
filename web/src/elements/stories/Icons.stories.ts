@@ -1,7 +1,5 @@
-/// <reference types="vite/client" />
-
-import faIconsCSS from "#styles/global/vendor/patternfly-fa-icons.css?raw";
-import pfIconsCSS from "#styles/global/vendor/patternfly-pf-icons.css?raw";
+import faIconsCSS from "#styles/global/vendor/patternfly-fa-icons.css";
+import pfIconsCSS from "#styles/global/vendor/patternfly-pf-icons.css";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 
@@ -38,7 +36,7 @@ const metadata: Meta = {
     parameters: {
         docs: {
             description: {
-                component: /* md */ `
+                component: `
 # Icons
 
 Show all of the icons in the vendored icon stylesheets we ship with our product.
@@ -54,9 +52,9 @@ icons, but they're defined in Patternfly's CSS.
 export default metadata;
 
 export const FontAwesome: StoryObj = {
-    render: () => renderGrid(iconNames(faIconsCSS, "fa-"), (name) => `fas ${name}`),
+    render: () => renderGrid(iconNames(String(faIconsCSS), "fa-"), (name) => `fas ${name}`),
 };
 
 export const PatternFlyIcons: StoryObj = {
-    render: () => renderGrid(iconNames(pfIconsCSS, "pf-icon-"), (name) => name),
+    render: () => renderGrid(iconNames(String(pfIconsCSS), "pf-icon-"), (name) => name),
 };
