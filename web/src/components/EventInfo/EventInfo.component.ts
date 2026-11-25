@@ -27,9 +27,9 @@ import { property } from "lit/decorators.js";
 
 export class EventInfo extends AKElement {
     @property({ attribute: false })
-    event!: EventWithContext;
+    public event: EventWithContext | null = null;
 
-    static styles: CSSResult[] = [
+    public static readonly styles: CSSResult[] = [
         PFButton,
         PFFlex,
         PFCard,
