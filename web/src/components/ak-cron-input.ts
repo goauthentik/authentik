@@ -2,22 +2,23 @@ import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
 import { decodeCrontab } from "#elements/Crontab_impl/decodeCrontab";
 import { WithLocale } from "#elements/mixins/locale";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-cron-input")
 export class AKCronInput extends WithLocale(HorizontalLightComponent<string>) {
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: String })
     public value = "";
 
     /**
-     * @property
+     * @property *
      * @attribute
      */
     @property({ type: Boolean, attribute: "readonly" })
@@ -51,17 +52,17 @@ export class AKCronInput extends WithLocale(HorizontalLightComponent<string>) {
 
     protected override renderHelp(): SlottedTemplateResult {
         if (!this.value?.trim()) {
-          return null;
+            return null;
         }
 
         return html`<p class="pf-c-form__helper-text">${this.decode}</p>`;
     }
 }
 
-export default AkCronInput;
+export default AKCronInput;
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-cron-input": AkCronInput;
+        "ak-cron-input": AKCronInput;
     }
 }

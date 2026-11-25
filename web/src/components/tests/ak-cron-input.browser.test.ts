@@ -1,15 +1,15 @@
 import "#components/ak-cron-input";
-import { AkCronInput } from "#components/ak-cron-input";
+import { AKCronInput } from "#components/ak-cron-input";
 
 import { afterEach, describe, expect, it } from "vitest";
 
 const mounted = new Set<HTMLElement>();
 
-async function mount(value?: string): Promise<AkCronInput> {
+async function mount(value?: string): Promise<AKCronInput> {
     const container = document.body.appendChild(document.createElement("div"));
     mounted.add(container);
 
-    const element = new AkCronInput();
+    const element = new AKCronInput();
     element.name = "crontab";
     element.label = "Crontab";
 
@@ -23,15 +23,15 @@ async function mount(value?: string): Promise<AkCronInput> {
     return element;
 }
 
-const input = (element: AkCronInput) => element.querySelector<HTMLInputElement>("input")!;
+const input = (element: AKCronInput) => element.querySelector<HTMLInputElement>("input")!;
 
-const help = (element: AkCronInput) => {
+const help = (element: AKCronInput) => {
     const id = input(element).getAttribute("aria-describedby");
 
     return id ? document.getElementById(id) : null;
 };
 
-const helpText = (element: AkCronInput) => help(element)?.textContent?.replace(/\s+/g, " ").trim();
+const helpText = (element: AKCronInput) => help(element)?.textContent?.replace(/\s+/g, " ").trim();
 
 afterEach(() => {
     mounted.forEach((container) => container.remove());

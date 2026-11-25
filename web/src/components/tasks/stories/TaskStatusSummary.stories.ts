@@ -1,63 +1,57 @@
-/**
- * @file Storybook stories for ak-task-status-summary
- */
+import "#components/tasks/TaskStatusSummary";
+import { GlobalTaskStatus } from "@goauthentik/api";
 
-import "../TaskStatusSummary.js";
-import type { GlobalTaskStatus } from "@goauthentik/api";
-
-import { Meta, StoryObj } from "@storybook/web-components";
+import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 
-interface TaskStatusSummaryProps {
+interface SummaryArgs {
     status?: GlobalTaskStatus;
 }
 
-const meta: Meta<TaskStatusSummaryProps> = {
+const meta: Meta<SummaryArgs> = {
     title: "Components / Tasks / Task Status Summary",
     component: "ak-task-status-summary",
     tags: ["autodocs"],
-    parameters: {
-        docs: {
-            description: {
-                component: `Four aggregate cards summarizing global task counts. Running, queued,
-successful, and error cards each sum several underlying statuses. Shows spinners until \`status\`
-is set.`,
-            },
-        },
-    },
+    render: ({ status }) =>
+        html`<ak-task-status-summary .status=${status}></ak-task-status-summary>`,
 };
 
 export default meta;
 
-type Story = StoryObj<TaskStatusSummaryProps>;
+type Story = StoryObj<SummaryArgs>;
 
-const summary = (status?: GlobalTaskStatus) =>
-    html`<ak-task-status-summary .status=${status}></ak-task-status-summary>`;
-
-export const Loading: Story = {
-    render: () => summary(),
+const zero: GlobalTaskStatus = {
+    queued: 0,
+    consumed: 0,
+    preprocess: 0,
+    running: 0,
+    postprocess: 0,
+    rejected: 0,
+    done: 0,
+    info: 0,
+    warning: 0,
+    error: 0,
 };
 
-export const Retrieved: Story = {
-    parameters: {
-        docs: {
-            description: {
-                story: "Running = 3 + 1 + 1, Queued = 4 + 2, Successful = 120 + 8 + 5, Error = 2 + 1.",
-            },
-        },
-    },
-    render: () =>
-        summary({
+export const Loaded: Story = {
+    args: {
+        status: {
+            ...zero,
             queued: 4,
-            consumed: 2,
+            consumed: 1,
             preprocess: 1,
             running: 3,
             postprocess: 1,
-            rejected: 1,
-            done: 120,
-            info: 8,
-            warning: 5,
+            done: 1280,
+            info: 12,
+            warning: 7,
             error: 2,
-        }),
+            rejected: 1,
+        },
+    },
 };
+
+export const AllZero: Story = { args: { status: zero } };
+
+export const Loading: Story = { args: {} };

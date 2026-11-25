@@ -30,12 +30,13 @@ class RedirectToAppLaunch(View):
     def dispatch(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         app = get_object_or_404(Application, slug=application_slug)
         # Check here if the application has any launch URL set, if not 404
-        launch = app.get_launch_url()
+        user = request.user if request.user.is_authenticated else None
+        launch = app.get_launch_url(user)
         if not launch:
             raise Http404
         # Check if we're authenticated already, saves us the flow run
-        if request.user.is_authenticated:
-            return HttpResponseRedirect(app.get_launch_url(request.user))
+        if user is not None:
+            return HttpResponseRedirect(launch)
         # otherwise, do a custom flow plan that includes the application that's
         # being accessed, to improve usability
         if app and app.provider and app.provider.authentication_flow:

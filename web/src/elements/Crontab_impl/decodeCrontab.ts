@@ -1,12 +1,20 @@
 import type { TargetLanguageTag } from "#common/ui/locale/definitions";
 
+import type * as CronstrueLocales from "cronstrue/dist/i18n/allLocales";
 import cronstrue from "cronstrue/i18n";
 
 import { msg } from "@lit/localize";
 
 const localeFallback = "en";
 
-const localeToCronstrue: Record<TargetLanguageTag, string> = {
+export type CronstrueLocale = keyof typeof CronstrueLocales;
+
+// Cronstrue has its own internationalization library, and its own set of tokens for identifying
+// locales. This maps our i18n tokens to those of Cronstrue. It is *exhaustive*; if we add a new
+// language to authentik but don't record its equivalent here (even if it is the fallback), this
+// will fail to type-check.
+//
+const localeToCronstrue: Record<TargetLanguageTag, CronstrueLocale> = {
     "ar": "ar",
     "bg-BG": "bg",
     "bn-BD": localeFallback,
@@ -21,6 +29,7 @@ const localeToCronstrue: Record<TargetLanguageTag, string> = {
     "it-IT": "it",
     "ja-JP": "ja",
     "ko-KR": "ko",
+    "lv-LV": localeFallback,
     "nb-NO": "nb",
     "nl-NL": "nl",
     "pl-PL": "pl",
@@ -52,7 +61,7 @@ export function isValidDjangoCron(value: string): boolean {
 export function decodeCrontab(value: string, language: TargetLanguageTag): string {
     try {
         if (!isValidDjangoCron(value)) {
-          throw new TypeError(`Not a server-accepted crontab: ${value}`);
+            throw new TypeError(`Not a server-accepted crontab: ${value}`);
         }
 
         return cronstrue.toString(value, {

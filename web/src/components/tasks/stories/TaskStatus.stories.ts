@@ -1,66 +1,59 @@
-/**
- * @file Storybook stories for ak-task-status
- */
+import "#components/tasks/TaskStatus";
+import { TaskStatus } from "#components/tasks/TaskStatus";
 
-import "../TaskStatus.js";
 import { LastTaskStatusEnum, TaskAggregatedStatusEnum } from "@goauthentik/api";
 
-import { Meta, StoryObj } from "@storybook/web-components";
+import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
+import { map } from "lit/directives/map.js";
 
-interface TaskStatusProps {
-    status?: TaskAggregatedStatusEnum | LastTaskStatusEnum;
-}
-
-const meta: Meta<TaskStatusProps> = {
+const meta: Meta<TaskStatus> = {
     title: "Components / Tasks / Task Status",
     component: "ak-task-status",
     tags: ["autodocs"],
     parameters: {
         docs: {
             description: {
-                component: `A chip (color coded) for a task or schedule status.`,
+                // I'm kinda annoyed that it's called "label." This is a chip.
+                component:
+                    "A label that maps a task's aggregated status, or a schedule's last task status, to a chip.",
             },
         },
     },
     argTypes: {
         status: {
             control: "select",
-            options: Object.values(TaskAggregatedStatusEnum),
+            options: [undefined, ...Object.values(TaskAggregatedStatusEnum)],
         },
     },
 };
 
 export default meta;
 
-type Story = StoryObj<TaskStatusProps>;
+type Story = StoryObj<TaskStatus>;
 
 export const Default: Story = {
-    parameters: {
-        docs: {
-            description: {
-                story: "Every aggregated status value, plus an unset and an unrecognized value.",
-            },
-        },
-    },
-    render: () =>
-        html`<style>
-                dl {
-                    display: grid;
-                    grid-template-columns: 28ch 1fr;
-                    gap: 0.5rem;
-                }
-            </style>
-            <dl>
-                ${Object.values(TaskAggregatedStatusEnum).map(
-                    (status) =>
-                        html`<dt><code>${status}</code></dt>
-                            <dd><ak-task-status status=${status}></ak-task-status></dd>`,
-                )}
-                <dt>(unset)</dt>
-                <dd><ak-task-status></ak-task-status></dd>
-                <dt><code>not_a_status</code></dt>
-                <dd><ak-task-status status="not_a_status"></ak-task-status></dd>
-            </dl>`,
+    args: { status: TaskAggregatedStatusEnum.Running },
+    render: ({ status }) => html`<ak-task-status status=${status ?? ""}></ak-task-status>`,
+};
+
+const grid = (statuses: string[]) =>
+    html`<dl style="display: grid; grid-template-columns: 28ch 1fr; gap: 0.5rem;">
+        ${map(
+            statuses,
+            (status) =>
+                html`<dt><code>${status}</code></dt>
+                    <dd><ak-task-status status=${status}></ak-task-status></dd>`,
+        )}
+        <dt><em>unset</em></dt>
+        <dd><ak-task-status></ak-task-status></dd>
+    </dl>`;
+
+export const AllAggregatedStatuses: Story = {
+    render: () => grid(Object.values(TaskAggregatedStatusEnum)),
+};
+
+export const AllLastTaskStatuses: Story = {
+    render: () => grid(Object.values(LastTaskStatusEnum)),
 };

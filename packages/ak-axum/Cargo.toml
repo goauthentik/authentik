@@ -18,7 +18,6 @@ eyre.workspace = true
 futures.workspace = true
 ipnet.workspace = true
 pin-project-lite.workspace = true
-tokio-rustls.workspace = true
 tokio.workspace = true
 tower-http.workspace = true
 tower.workspace = true
