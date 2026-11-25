@@ -21,6 +21,8 @@ export const DEV_DATABASE_NAMES = ["authentik", "test_authentik"];
 export const USER_THRESHOLD = 50;
 export const LOGIN_WINDOW_DAYS = 7;
 export const SIGNALS = ["license", "users", "external_logins"] as const;
+/** Keep in step with `E2E_ATTRIBUTE` in web/e2e/fixtures/FormFixture.ts. */
+export const E2E_ATTRIBUTE = "goauthentik.io/testing/e2e";
 
 export interface Check {
     name: string;
@@ -115,7 +117,11 @@ const EXTERNAL_LOGINS_SQL =
     `AND NOT (${PRIVATE_RANGES.map((r) => `client_ip <<= inet '${r}'`).join(" OR ")})`;
 
 const SIGNAL_SQL = {
-    users: "SELECT count(*) FROM authentik_core_user WHERE type IN ('internal', 'external')",
+    // The e2e suite tags what it creates (web/e2e/fixtures/FormFixture.ts, E2E_ATTRIBUTE), and
+    // those users accumulate in dev databases by design.
+    users:
+        "SELECT count(*) FROM authentik_core_user WHERE type IN ('internal', 'external') " +
+        `AND NOT attributes @> '{"${E2E_ATTRIBUTE}": true}'::jsonb`,
     external_logins: EXTERNAL_LOGINS_SQL,
 } as const;
 
@@ -220,7 +226,7 @@ export async function databaseChecks(env: Environment): Promise<Check[]> {
             signal(
                 "users",
                 (users ?? 0) >= USER_THRESHOLD,
-                `${users ?? 0} human users (threshold ${USER_THRESHOLD})`,
+                `${users ?? 0} human users, not counting e2e test users (threshold ${USER_THRESHOLD})`,
             ),
             signal(
                 "external_logins",
