@@ -5,7 +5,7 @@ entries:
 - attrs:
     designation: invalidation
     name: Logout
-    title: Logging out...
+    title: Signing out...
     authentication: none
   identifiers:
     slug: default-invalidation-flow
