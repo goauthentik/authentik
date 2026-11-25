@@ -14,7 +14,13 @@ The following connectors are currently available:
 - [authentik Agent connector](./authentik-agent.mdx): Integrates with the [authentik Agent](../../authentik-agent/index.mdx)
 - [Fleet connector](./fleetdm.mdx): Imports device information from [Fleet](https://fleetdm.com/) for device compliance and conditional access.
 - [Google Chrome connector](./google-chrome.mdx): Uses Chrome Enterprise Device Trust signals for conditional access.
-- **Microsoft Intune connector**: Imports information about Intune-managed devices through Microsoft Graph. The Endpoint stage can match a client certificate to an imported device.
+- [Microsoft Intune connector](./microsoft-intune.mdx): Imports information about Intune-managed devices through Microsoft Graph. The Endpoint stage can match a client certificate to an imported device.
+
+## Devices from multiple connectors
+
+When a connector reports a device, authentik matches it to an existing device by its identifier, which is typically the serial number, or by its name. If a match is found, the connector is added to the existing device, and the device has facts from all of its connectors.
+
+As a result, two different devices that have the same name are treated as a single device. Ensure that device names are unique across all of your connectors.
 
 ## Connectors in development {#connectors-in-development}
 
@@ -26,7 +32,7 @@ Use the following instructions to manage your connectors:
 
 ### Add a connector
 
-For connector-specific settings, see the [authentik Agent](./authentik-agent.mdx), [Fleet](./fleetdm.mdx), or [Google Chrome](./google-chrome.mdx) connector documentation.
+For connector-specific settings, see the [authentik Agent](./authentik-agent.mdx), [Fleet](./fleetdm.mdx), [Google Chrome](./google-chrome.mdx), or [Microsoft Intune](./microsoft-intune.mdx) connector documentation.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
