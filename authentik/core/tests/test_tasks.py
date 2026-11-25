@@ -27,6 +27,7 @@ from authentik.core.tasks import (
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
+from authentik.lib.tests.utils import count_rows
 
 
 class TestTasks(APITestCase):
@@ -84,6 +85,26 @@ class TestTasks(APITestCase):
             clean_expired_models.send()
         self.assertFalse(Event.objects.including_expired().exists())
         self.assertLessEqual(len(ctx.captured_queries), 500)
+
+    def test_expire_scan_stops_at_cutoff(self):
+        """Cleanup batches must not scan live events. If they do, every batch once fewer
+        than a batch's worth have expired reads the whole table, and cleanup of large
+        installs falls behind as new events keep expiring."""
+        Event.objects.all().delete()
+        Event.objects.bulk_create(
+            Event(action=EventAction.CUSTOM_PREFIX, app="test", expires=now() + timedelta(days=1))
+            for _ in range(5_000)
+        )
+        Event.objects.bulk_create(
+            Event(action=EventAction.CUSTOM_PREFIX, app="test", expires=now() - timedelta(days=1))
+            for _ in range(10)
+        )
+        with count_rows(Event) as rows:
+            clean_expired_models.send()
+        self.assertEqual(rows.deleted, 10)
+        self.assertEqual(Event.objects.including_expired().count(), 5_000)
+        # Finding and deleting a row reads it a few times; scanning live events reads thousands
+        self.assertLessEqual(rows.read, rows.deleted * 10)
 
     def test_clean_temporary_users(self):
         """Test clean_temporary_users task"""

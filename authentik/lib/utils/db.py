@@ -58,7 +58,9 @@ def delete_in_batches[T: Model](queryset: QuerySet[T], batch_size: int = 1_000) 
     deleted_total = 0
     while True:
         with transaction.atomic(using=database):
-            pks = list(queryset.order_by("pk").values_list("pk", flat=True)[:batch_size])
+            # Any matching rows will do, so don't sort: ordering by a column the filter doesn't
+            # range over makes Postgres read every match or walk a whole index each batch.
+            pks = list(queryset.order_by().values_list("pk", flat=True)[:batch_size])
             if not pks:
                 return deleted_total
             # Hold the locks through Django's collector and DELETE so that a cache
