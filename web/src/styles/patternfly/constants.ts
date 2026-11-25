@@ -20,7 +20,7 @@ export const P4BannerDispositionIconClassName = {
     [P4Disposition.Warning]: "fas fa-exclamation-triangle",
     [P4Disposition.Danger]: "fas fa-exclamation-triangle",
     [P4Disposition.Neutral]: "fas fa-times",
-    [P4Disposition.Error]: "fas fa-times",
+    [P4Disposition.Error]: "fas fa-exclamation-circle",
 } as const satisfies Record<P4Disposition, string>;
 
 export const P4BannerDispositionClassName = {

@@ -136,12 +136,12 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for error display
      */
     private renderError(error: string): SlottedTemplateResult {
-        return html`
-            <h2 role="alert" aria-live="assertive">
+        return html`<div class="status-container">
+            <h2 class="status-heading" role="alert" aria-live="assertive">
                 <i aria-hidden="true" class="fa fa-times"></i>${msg("Failed to fetch")}
             </h2>
             <p class="subtext">${error}</p>
-        `;
+        </div>`;
     }
 
     /**
@@ -150,7 +150,9 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for loading spinner
      */
     private renderLoading(): SlottedTemplateResult {
-        return html`<ak-spinner size=${PFSize.Large}></ak-spinner>`;
+        return html`<div class="status-container">
+            <ak-spinner size=${PFSize.Large}></ak-spinner>
+        </div>`;
     }
 
     /**

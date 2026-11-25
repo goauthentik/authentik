@@ -33,7 +33,7 @@ export class TaskStatusSummary extends AKElement {
         return [
             [
                 msg("Running tasks"),
-                "pf-icon pf-icon-in-progress",
+                "fas fa-fw fa-spinner",
                 this.status
                     ? this.status.running + this.status.preprocess + this.status.postprocess
                     : null,
@@ -50,7 +50,7 @@ export class TaskStatusSummary extends AKElement {
             ],
             [
                 msg("Error tasks"),
-                "fa fa-exclamation-triangle",
+                "fa fa-exclamation-circle",
                 this.status ? this.status.error + this.status.rejected : null,
             ],
         ];

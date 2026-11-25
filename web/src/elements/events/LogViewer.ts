@@ -9,11 +9,25 @@ import { StaticTable } from "#elements/table/StaticTable";
 import { TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { P4Disposition } from "#styles/patternfly/constants";
+
 import { LogEvent, LogLevelEnum } from "@goauthentik/api";
+
+import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
+
+const LogLevelError = P.union(LogLevelEnum.Critical, LogLevelEnum.Error, LogLevelEnum.Exception);
+
+const LogLevelWarning = P.union(LogLevelEnum.Warn, LogLevelEnum.Warning);
+
+const logLevelToStatus = (logLevel: LogLevelEnum) =>
+    match(logLevel)
+        .with(LogLevelError, () => P4Disposition.Error)
+        .with(LogLevelWarning, () => P4Disposition.Warning)
+        .otherwise(() => P4Disposition.Info);
 
 @customElement("ak-log-viewer")
 export class LogViewer extends StaticTable<LogEvent> {
@@ -63,20 +77,6 @@ export class LogViewer extends StaticTable<LogEvent> {
         [msg("Logger")],
     ];
 
-    protected statusForItem(item: LogEvent): string {
-        switch (item.logLevel) {
-            case LogLevelEnum.Critical:
-            case LogLevelEnum.Error:
-            case LogLevelEnum.Exception:
-                return "error";
-            case LogLevelEnum.Warn:
-            case LogLevelEnum.Warning:
-                return "warning";
-            default:
-                return "info";
-        }
-    }
-
     protected override rowLabel(item: LogEvent): string {
         return formatElapsedTime(item.timestamp);
     }
@@ -85,7 +85,7 @@ export class LogViewer extends StaticTable<LogEvent> {
         return [
             html`<ak-timestamp .timestamp=${item.timestamp} refresh></ak-timestamp>`,
             html`<ak-status-label
-                type=${this.statusForItem(item)}
+                type=${logLevelToStatus(item.logLevel)}
                 bad-label=${item.logLevel}
             ></ak-status-label>`,
             item.event,
