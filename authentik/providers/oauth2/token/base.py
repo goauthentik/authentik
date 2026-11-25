@@ -1,5 +1,4 @@
 from re import error as RegexError
-from re import fullmatch
 from urllib.parse import urlparse
 
 from django.http import HttpRequest
@@ -26,7 +25,7 @@ from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
-    RedirectURIMatchingMode,
+    RedirectURI,
     ScopeMapping,
 )
 from authentik.providers.oauth2.resources import (
@@ -57,13 +56,18 @@ class TokenRequest:
     client: OAuthClientContext
     audience_provider: OAuth2Provider | None = None
     logger: BoundLogger
+    # Absolute URL of the token endpoint the request was made to, the `htu` DPoP proofs
+    # must be bound to. When unset, the shared token endpoint.
+    endpoint_url: str | None = None
 
     def __init__(
         self,
         client: OAuthClientContext,
         client_secret: str,
+        endpoint_url: str | None = None,
     ):
         self.client = client
+        self.endpoint_url = endpoint_url
         self.provider = client.provider
         self.logger = get_logger().bind(provider=self.provider.name)
         self.client_id = client.client_id
@@ -197,7 +201,9 @@ class TokenRequest:
             kwargs = {}
             if raw_code is not None:
                 kwargs["expected_c_s256"] = pkce_s256_challenge(raw_code)
-            token_url = request.build_absolute_uri(reverse("authentik_providers_oauth2:token"))
+            token_url = self.endpoint_url or request.build_absolute_uri(
+                reverse("authentik_providers_oauth2:token")
+            )
             self.dpop_jwk = DPoPValidator().validate(
                 self.dpop_proof,
                 expected_htm="POST",
@@ -210,34 +216,26 @@ class TokenRequest:
             raise TokenError("invalid_request") from exc
 
     def check_redirect_uri(self, request: HttpRequest):
+        """Check the redirect URI against the client's allowed redirect URIs, see
+        `OAuthClientContext.allows_redirect_uri()`"""
         allowed_redirect_urls = list(self.client.redirect_uris)
         # At this point, no provider should have a blank redirect_uri, in case they do
         # this will check an empty array and raise an error
 
-        match_found = False
-        for allowed in allowed_redirect_urls:
-            if allowed.matching_mode == RedirectURIMatchingMode.STRICT:
-                if self.redirect_uri == allowed.url:
-                    match_found = True
-                    break
-            if allowed.matching_mode == RedirectURIMatchingMode.REGEX:
-                try:
-                    if fullmatch(allowed.url, self.redirect_uri):
-                        match_found = True
-                        break
-                except RegexError as exc:
-                    self.logger.warning(
-                        "Failed to parse regular expression",
-                        exc=exc,
-                        url=allowed.url,
-                        provider=self.provider,
-                    )
-                    Event.new(
-                        EventAction.CONFIGURATION_ERROR,
-                        message="Invalid redirect_uri configured",
-                        provider=self.provider,
-                    ).from_http(request)
-        if not match_found:
+        def invalid_pattern(allowed: RedirectURI, exc: RegexError) -> None:
+            self.logger.warning(
+                "Failed to parse regular expression",
+                exc=exc,
+                url=allowed.url,
+                provider=self.provider,
+            )
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message="Invalid redirect_uri configured",
+                provider=self.provider,
+            ).from_http(request)
+
+        if not self.client.allows_redirect_uri(self.redirect_uri, invalid_pattern):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message="Invalid redirect URI used by provider",

@@ -8,10 +8,16 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
+from authentik.providers.oauth2.client import OAuthClientResolver
 from authentik.providers.oauth2.errors import TokenIntrospectionError
 from authentik.providers.oauth2.id_token import IDToken, resource_audience
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
-from authentik.providers.oauth2.utils import TokenResponse, authenticate_client, find_client_token
+from authentik.providers.oauth2.utils import (
+    TokenResponse,
+    authenticate_client,
+    find_client_token,
+    find_resource_token,
+)
 
 LOGGER = get_logger()
 
@@ -37,10 +43,12 @@ class TokenIntrospectionParams:
             raise TokenIntrospectionError()
 
     @staticmethod
-    def from_request(request: HttpRequest) -> TokenIntrospectionParams:
+    def from_request(
+        request: HttpRequest, resolver: OAuthClientResolver | None = None
+    ) -> TokenIntrospectionParams:
         """Extract required Parameters from HTTP Request"""
         raw_token = request.POST.get("token", "")
-        client = authenticate_client(request)
+        client = authenticate_client(request, resolver)
         if not client:
             LOGGER.info("Failed to authenticate introspection request")
             raise TokenIntrospectionError
@@ -49,6 +57,8 @@ class TokenIntrospectionParams:
             raise TokenIntrospectionError
 
         token = find_client_token(raw_token, client, include_federated=True)
+        if not token:
+            token = find_resource_token(raw_token, client)
         if token:
             return TokenIntrospectionParams(token, token.provider)
         LOGGER.debug("Token does not exist", token=raw_token)
@@ -64,10 +74,14 @@ class TokenIntrospectionView(View):
     params: TokenIntrospectionParams
     provider: OAuth2Provider
 
+    def get_client_resolver(self) -> OAuthClientResolver:
+        """Resolver used to find the client (and its provider) for this request"""
+        return OAuthClientResolver.legacy()
+
     def post(self, request: HttpRequest) -> HttpResponse:
         """Introspection handler"""
         try:
-            self.params = TokenIntrospectionParams.from_request(request)
+            self.params = TokenIntrospectionParams.from_request(request, self.get_client_resolver())
             response = {}
             if self.params.id_token:
                 response.update(self.params.id_token.to_dict())

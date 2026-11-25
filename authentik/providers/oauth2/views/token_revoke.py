@@ -8,6 +8,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
+from authentik.providers.oauth2.client import OAuthClientResolver
 from authentik.providers.oauth2.errors import TokenRevocationError
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import (
@@ -28,13 +29,15 @@ class TokenRevocationParams:
     provider: OAuth2Provider
 
     @staticmethod
-    def from_request(request: HttpRequest) -> TokenRevocationParams:
+    def from_request(
+        request: HttpRequest, resolver: OAuthClientResolver | None = None
+    ) -> TokenRevocationParams:
         """Extract required Parameters from HTTP Request"""
         raw_token = request.POST.get("token", "")
 
-        client, _, _ = client_from_request(request)
+        client, _, _ = client_from_request(request, resolver)
         if client and client.is_confidential:
-            client = authenticate_client(request)
+            client = authenticate_client(request, resolver)
         if not client:
             raise TokenRevocationError("invalid_client")
         # By default clients can only revoke their own tokens. If the request is
@@ -55,10 +58,14 @@ class TokenRevokeView(View):
     params: TokenRevocationParams
     provider: OAuth2Provider
 
+    def get_client_resolver(self) -> OAuthClientResolver:
+        """Resolver used to find the client (and its provider) for this request"""
+        return OAuthClientResolver.legacy()
+
     def post(self, request: HttpRequest) -> HttpResponse:
         """Revocation handler"""
         try:
-            self.params = TokenRevocationParams.from_request(request)
+            self.params = TokenRevocationParams.from_request(request, self.get_client_resolver())
 
             self.params.token.delete()
 

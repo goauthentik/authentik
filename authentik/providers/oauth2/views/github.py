@@ -12,7 +12,9 @@ from authentik.providers.oauth2.utils import protected_resource_view
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-@method_decorator(protected_resource_view([SCOPE_GITHUB_USER_EMAIL]), name="dispatch")
+@method_decorator(
+    protected_resource_view([SCOPE_GITHUB_USER_EMAIL], registered_client_only=True), name="dispatch"
+)
 class GitHubUserView(View):
     """Emulate GitHub's /user API Endpoint"""
 
@@ -69,7 +71,9 @@ class GitHubUserView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-@method_decorator(protected_resource_view([SCOPE_GITHUB_ORG_READ]), name="dispatch")
+@method_decorator(
+    protected_resource_view([SCOPE_GITHUB_ORG_READ], registered_client_only=True), name="dispatch"
+)
 class GitHubUserTeamsView(View):
     """Emulate GitHub's /user/teams API Endpoint"""
 

@@ -18,7 +18,10 @@ class AuthorizationCodeTokenRequest(TokenRequest):
             self.logger.warning("Missing authorization code")
             raise TokenError("invalid_grant")
 
-        self.check_redirect_uri(request)
+        # Registered clients are checked against their configured redirect URIs. Other
+        # clients may have none here, and are checked against the code's redirect URI below
+        if self.client.is_legacy:
+            self.check_redirect_uri(request)
 
         self.authorization_code = AuthorizationCode.objects.filter(code=raw_code).first()
         if not self.authorization_code:
@@ -39,9 +42,29 @@ class AuthorizationCodeTokenRequest(TokenRequest):
         # Clients other than registered ones must redeem the code with the exact redirect
         # URI it was authorized for. Registered clients keep being checked against their
         # configured redirect URIs only.
-        if not self.client.is_legacy and self.authorization_code.redirect_uri != self.redirect_uri:
+        if not self.client.is_legacy and (
+            not self.authorization_code.redirect_uri
+            or self.authorization_code.redirect_uri != self.redirect_uri
+        ):
             self.logger.warning("Invalid code: redirect URI does not match authorization")
             raise TokenError("invalid_grant")
+
+        # Enforce the client's PKCE requirements again, so that a code issued without
+        # satisfying them can never be redeemed (no downgrade)
+        if self.client.pkce_required and not self.authorization_code.code_challenge:
+            self.logger.warning("Invalid code: issued without PKCE, which the client requires")
+            raise TokenError("invalid_grant").with_cause("pkce_challenge_missing")
+        allowed_methods = self.client.pkce_methods
+        if (
+            self.authorization_code.code_challenge
+            and allowed_methods is not None
+            and self.authorization_code.code_challenge_method not in allowed_methods
+        ):
+            self.logger.warning(
+                "Invalid code: issued with a PKCE method the client may not use",
+                method=self.authorization_code.code_challenge_method,
+            )
+            raise TokenError("invalid_grant").with_cause("pkce_method_not_allowed")
 
         # Validate PKCE parameters.
         if self.authorization_code.code_challenge:

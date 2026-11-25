@@ -172,11 +172,14 @@ def extract_client_auth(request: HttpRequest) -> tuple[str, str]:
     return (client_id, client_secret)
 
 
-def protected_resource_view(scopes: list[str]):
+def protected_resource_view(scopes: list[str], registered_client_only: bool = False):
     """View decorator. The client accesses protected resources by presenting the
     access token to the resource server.
 
     https://datatracker.ietf.org/doc/html/rfc6749#section-7
+
+    With `registered_client_only`, only access tokens issued to their provider's own
+    registered client are accepted; tokens of the provider's other clients are not.
 
     This decorator also injects the token into `kwargs`"""
 
@@ -216,6 +219,13 @@ def protected_resource_view(scopes: list[str]):
                         token_has=set(token.scope),
                     )
                     raise BearerTokenError("insufficient_scope")
+
+                if registered_client_only and not token.is_bound_to_registered_client():
+                    LOGGER.info(
+                        "Token of a client other than the provider's registered client",
+                        client_id=token.client_id,
+                    )
+                    raise BearerTokenError("invalid_token")
             except BearerTokenError as error:
                 response = HttpResponse(status=error.status)
                 response["WWW-Authenticate"] = (
@@ -294,6 +304,27 @@ def find_client_token(
         if token and _client_may_access_grant(token, client):
             return token
     return None
+
+
+def find_resource_token(raw_token: str, client: OAuthClientContext) -> AccessToken | None:
+    """Find an access token of another client of `client`'s provider, which `client` may
+    introspect as a resource server.
+
+    Only the provider's own registered confidential client may, and only access tokens
+    restricted to resources it allows, which are the resource servers it represents.
+    Resource servers which aren't the provider's registered client validate access tokens
+    locally instead, as JWTs signed by the provider."""
+    if not client.is_registered_client or not client.is_confidential:
+        return None
+    allowed = client.allowed_resources()
+    if not allowed:
+        return None
+    token = AccessToken.objects.filter(
+        provider=client.provider, token=raw_token, resource__isnull=False
+    ).first()
+    if not token or not token.resources or not allowed.issuperset(token.resources):
+        return None
+    return token
 
 
 class HttpResponseRedirectScheme(HttpResponseRedirect):

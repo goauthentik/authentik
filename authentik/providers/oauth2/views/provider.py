@@ -1,5 +1,6 @@
 """authentik OAuth2 OpenID well-known views"""
 
+from collections.abc import Callable
 from typing import Any
 
 from django.core.cache import cache
@@ -33,6 +34,41 @@ from authentik.providers.oauth2.models import (
 from authentik.providers.oauth2.utils import cors_allow
 
 LOGGER = get_logger()
+
+
+# Adds to or changes the metadata of a provider, given the request it is served for
+ProviderInfoContributor = Callable[[HttpRequest, OAuth2Provider, dict[str, Any]], None]
+
+
+class ProviderInfoContributors:
+    """Contributors to the authorization server metadata (RFC 8414) and OpenID provider
+    configuration of every provider. Components outside core register theirs from their
+    app config's `ready()`; contributors run in the order they were registered, after
+    core has built the metadata, and change the metadata they are given in place.
+
+    A contributor must only change the metadata of providers it applies to, and must not
+    raise for any other."""
+
+    def __init__(self) -> None:
+        self._contributors: dict[str, ProviderInfoContributor] = {}
+
+    def register(self, name: str, contributor: ProviderInfoContributor) -> None:
+        """Register `contributor` as `name`, replacing any contributor of the same name"""
+        self._contributors[name] = contributor
+
+    def unregister(self, name: str) -> None:
+        """Remove the contributor registered as `name`, if any"""
+        self._contributors.pop(name, None)
+
+    def contribute(
+        self, request: HttpRequest, provider: OAuth2Provider, info: dict[str, Any]
+    ) -> None:
+        """Let every registered contributor change `info`"""
+        for contributor in list(self._contributors.values()):
+            contributor(request, provider, info)
+
+
+provider_info_contributors = ProviderInfoContributors()
 
 
 def claims_cache_key(provider: OAuth2Provider) -> str:
@@ -137,6 +173,7 @@ class ProviderInfoView(View):
             )
         except OAuth2DynamicClientRegistration.DoesNotExist:
             pass
+        provider_info_contributors.contribute(self.request, provider, config)
         return config
 
     def get_claims_cached(self, provider: OAuth2Provider) -> list[str]:

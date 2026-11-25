@@ -4,8 +4,6 @@ from base64 import urlsafe_b64decode
 from dataclasses import InitVar, dataclass, field
 from datetime import timedelta
 from json import JSONDecodeError, dumps, loads
-from re import error as RegexError
-from re import fullmatch
 from typing import Any
 from urllib.parse import parse_qs, quote, urlencode, urlparse, urlsplit, urlunparse, urlunsplit
 from uuid import uuid4
@@ -64,7 +62,6 @@ from authentik.providers.oauth2.models import (
     GrantType,
     OAuth2Provider,
     OAuth2SessionLogin,
-    RedirectURIMatchingMode,
     ResponseMode,
     ResponseTypes,
     ScopeMapping,
@@ -311,25 +308,7 @@ class OAuthAuthorizationParams:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls).with_cause("redirect_uri_missing")
 
-        match_found = False
-        for allowed in allowed_redirect_urls:
-            if allowed.matching_mode == RedirectURIMatchingMode.STRICT:
-                if self.redirect_uri == allowed.url:
-                    match_found = True
-                    break
-            if allowed.matching_mode == RedirectURIMatchingMode.REGEX:
-                try:
-                    if fullmatch(allowed.url, self.redirect_uri):
-                        match_found = True
-                        break
-                except RegexError as exc:
-                    LOGGER.warning(
-                        "Failed to parse regular expression",
-                        exc=exc,
-                        url=allowed.url,
-                        provider=self.provider,
-                    )
-        if not match_found:
+        if not self.client.allows_redirect_uri(self.redirect_uri):
             raise RedirectUriError(self.redirect_uri, allowed_redirect_urls).with_cause(
                 "redirect_uri_no_match"
             )
@@ -448,19 +427,47 @@ class OAuthAuthorizationParams:
             ).with_cause("nonce_missing")
 
     def check_code_challenge(self):
-        """PKCE validation of the transformation method."""
-        if self.code_challenge and self.code_challenge_method not in [
-            PKCE_METHOD_PLAIN,
-            PKCE_METHOD_S256,
-        ]:
-            raise AuthorizeError(
+        """PKCE validation: the transformation method must be supported and allowed for the
+        client, and clients required to use PKCE must send a challenge when requesting a
+        code."""
+
+        def pkce_error(description: str, cause: str | None = None) -> AuthorizeError:
+            error = AuthorizeError(
                 redirect_uri=self.redirect_uri,
                 error="invalid_request",
                 grant_type=self.grant_type,
                 state=self.state,
                 response_mode=self.response_mode,
-                description=f"Unsupported challenge method {self.code_challenge_method}",
+                description=description,
             )
+            if cause:
+                error.with_cause(cause)
+            return error
+
+        if self.code_challenge and self.code_challenge_method not in [
+            PKCE_METHOD_PLAIN,
+            PKCE_METHOD_S256,
+        ]:
+            raise pkce_error(f"Unsupported challenge method {self.code_challenge_method}")
+        # Only the authorization code is protected by PKCE; the implicit flow issues none,
+        # so the client's PKCE requirements don't apply to it
+        if self.grant_type == GrantType.IMPLICIT:
+            return
+        allowed_methods = self.client.pkce_methods
+        if self.code_challenge:
+            if allowed_methods is not None and self.code_challenge_method not in allowed_methods:
+                LOGGER.warning(
+                    "PKCE challenge method not allowed for client",
+                    method=self.code_challenge_method,
+                )
+                raise pkce_error(
+                    f"Challenge method {self.code_challenge_method} is not allowed, "
+                    f"use {' or '.join(sorted(allowed_methods))}",
+                    "pkce_method_not_allowed",
+                )
+        elif self.client.pkce_required:
+            LOGGER.warning("Missing PKCE code challenge, which the client requires")
+            raise pkce_error("code_challenge is required", "pkce_challenge_missing")
 
     def check_max_age(self, raw_max_age: str | None):
         """max_age is a number of seconds, so it must be a non-negative integer"""
@@ -688,7 +695,8 @@ class AuthorizationFlowInitView(PolicyAccessView):
             self.params.scope, self.params.provider
         )
         # Regardless, we start the planner and return to it
-        planner = FlowPlanner(self.provider.authorization_flow)
+        authorization_flow = self.client.authorization_flow
+        planner = FlowPlanner(authorization_flow)
         planner.allow_empty_flows = True
         context: dict[str, Any] = {
             PLAN_CONTEXT_SSO: True,
@@ -723,7 +731,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
 
         return plan.to_redirect(
             self.request,
-            self.provider.authorization_flow,
+            authorization_flow,
             # We can only skip the flow executor and directly go to the final redirect URL if
             #  we can submit the data to the RP via URL
             allowed_silent_types=(

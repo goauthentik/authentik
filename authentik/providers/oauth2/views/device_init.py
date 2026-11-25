@@ -81,7 +81,8 @@ class CodeValidatorView(PolicyAccessView):
 
     def get(self, request: HttpRequest, *args, **kwargs):
         scope_descriptions = UserInfoView().get_scope_descriptions(self.token.scope, self.provider)
-        planner = FlowPlanner(self.provider.authorization_flow)
+        authorization_flow = self.client.authorization_flow
+        planner = FlowPlanner(authorization_flow)
         planner.allow_empty_flows = True
         planner.use_cache = False
         context: dict[str, Any] = {
@@ -106,7 +107,7 @@ class CodeValidatorView(PolicyAccessView):
             LOGGER.warning("Flow not applicable to user")
             return None
         plan.append_stage(in_memory_stage(OAuthDeviceCodeFinishStage))
-        return plan.to_redirect(self.request, self.token.provider.authorization_flow)
+        return plan.to_redirect(self.request, authorization_flow)
 
 
 class DeviceEntryView(PolicyAccessView):

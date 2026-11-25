@@ -4,10 +4,10 @@ Clients name the protected resources they want an access token for with the ``re
 parameter of authorization, device authorization and token requests. Access tokens issued
 for one or more resources are audience-restricted to them, instead of to the client.
 
-A provider supports resource indicators once any resources are allowed for it, which are the
-ones configured on the provider itself.
+A client supports resource indicators once any resources are allowed for it, see
+`OAuthClientContext.allowed_resources()`; by default those configured on its provider.
 
-A provider without any allowed resources ignores the ``resource`` parameter, as it always has.
+A client without any allowed resources ignores the ``resource`` parameter, as it always has.
 Clients may send it to any authorization server whether or not it supports it, and MCP clients
 send it on every authorization and token request.
 
@@ -77,9 +77,10 @@ def parse_resource_indicators(values: Iterable[str]) -> tuple[str, ...]:
 
 
 def allowed_resources(client: OAuthClientContext) -> frozenset[str]:
-    """All resources `client` may request tokens for, which are the ones configured on its
-    provider. Empty when the provider does not support resource indicators."""
-    return frozenset(client.provider.allowed_resources)
+    """All resources `client` may request tokens for, see
+    `OAuthClientContext.allowed_resources()`. Empty when the client does not support
+    resource indicators."""
+    return client.allowed_resources()
 
 
 def resolve_resources(
@@ -91,19 +92,39 @@ def resolve_resources(
     grant restricted to the `granted` ones. A grant without resources is not restricted
     to any; its resources are limited by what is allowed only.
 
-    Without any requested resources, or when the provider does not support resource
-    indicators, the grant's resources are kept, so that a token is never issued for
-    more than its grant. Otherwise, every requested resource must be allowed and be
-    part of the grant; the result may only narrow the grant, never widen it.
+    Without any requested resources, or when the client may not request any resources,
+    the grant's resources are kept, so that a token is never issued for more than its
+    grant. Otherwise, every requested resource must be allowed and be part of the grant;
+    the result may only narrow the grant, never widen it.
+
+    A grant that would not be restricted to any resource is restricted to the client's
+    default resources, if it has any. Clients which require a single resource must end up
+    with exactly one.
 
     Raises ResourceIndicatorError when the requested resources can't be issued for."""
-    granted = tuple(granted)
+    resources = _narrow_resources(client, requested, tuple(granted))
+    if not resources:
+        resources = _default_resources(client)
+    if client.requires_single_resource and len(resources) != 1:
+        LOGGER.info(
+            "Client requires exactly one resource",
+            client_id=client.client_id,
+            resources=resources,
+        )
+        raise ResourceIndicatorError("resource_missing" if not resources else "resource_not_single")
+    return resources
+
+
+def _narrow_resources(
+    client: OAuthClientContext, requested: Sequence[str], granted: tuple[str, ...]
+) -> tuple[str, ...]:
+    """Narrow `granted` to the `requested` resources, see `resolve_resources()`"""
     if not requested:
         return granted
     allowed = allowed_resources(client)
     if not allowed:
         LOGGER.debug(
-            "Ignoring resource indicators, no resources are allowed for the provider",
+            "Ignoring resource indicators, no resources are allowed for the client",
             client_id=client.client_id,
         )
         return granted
@@ -126,3 +147,20 @@ def resolve_resources(
     if len(join_resources(resources) or "") > GRANT_RESOURCE_MAX_LENGTH:
         raise ResourceIndicatorError("resource_too_long")
     return resources
+
+
+def _default_resources(client: OAuthClientContext) -> tuple[str, ...]:
+    """Resources a grant of `client` is restricted to when nothing else restricts it"""
+    defaults = tuple(dict.fromkeys(client.default_resources()))
+    if not defaults:
+        return ()
+    if not allowed_resources(client).issuperset(defaults):
+        LOGGER.warning(
+            "Default resources of the client are not allowed",
+            client_id=client.client_id,
+            resources=defaults,
+        )
+        raise ResourceIndicatorError("resource_not_allowed")
+    if len(join_resources(defaults) or "") > GRANT_RESOURCE_MAX_LENGTH:
+        raise ResourceIndicatorError("resource_too_long")
+    return defaults

@@ -34,10 +34,15 @@ LOGGER = get_logger()
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-@method_decorator(protected_resource_view([SCOPE_OPENID]), name="dispatch")
+@method_decorator(
+    protected_resource_view([SCOPE_OPENID], registered_client_only=True), name="dispatch"
+)
 class UserInfoView(View):
     """Create a dictionary with all the requested claims about the End-User.
-    See: http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse"""
+    See: http://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse
+
+    Only tokens of the provider's registered client are accepted: the claims are those the
+    provider releases to its own application, not to the provider's other clients."""
 
     token: RefreshToken | None
 

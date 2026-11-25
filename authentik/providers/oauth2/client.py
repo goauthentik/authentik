@@ -16,26 +16,41 @@ its own client. Other registration kinds are supplied by components outside core
 which add their own selectors and adapters, and subclass ``OAuthClientContext`` to
 carry their own client attributes. Legacy resolution never fetches anything from the
 network; a registered ``client_id`` that happens to be an HTTPS URL is a static client.
+
+``OAuthClientContext`` also carries the per-client policy hooks the protocol endpoints
+consult: redirect URI matching, PKCE requirements, the authorization flow, resource
+indicators and refresh token rotation. Their defaults read the provider's configuration,
+so registered clients behave exactly as they always have; subclasses override them.
 """
 
-from collections.abc import Sequence
-from dataclasses import dataclass
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass, field
+from datetime import datetime
 from enum import StrEnum
 from hmac import compare_digest
+from re import error as RegexError
+from re import fullmatch
 from typing import TYPE_CHECKING
 
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.models import (
     ClientGrantBinding,
     ClientType,
     OAuth2Provider,
     RedirectURI,
+    RedirectURIMatchingMode,
 )
 
 if TYPE_CHECKING:
     from authentik.core.models import Application
+    from authentik.flows.models import Flow
+    from authentik.providers.oauth2.models import RefreshToken
+
+# Called with a configured regular expression redirect URI that failed to compile
+InvalidRedirectURIPatternHandler = Callable[[RedirectURI, RegexError], None]
 
 LOGGER = get_logger()
 
@@ -77,6 +92,12 @@ class OAuthClientContext:
     redirect_uris: tuple[RedirectURI, ...]
     # Effective grant types this client may use
     grant_types: frozenset[str]
+    # Whether an authorization code may only be issued and redeemed with PKCE (RFC 7636)
+    pkce_required: bool = field(default=False, kw_only=True)
+    # Code challenge methods this client may use. None allows every method core supports;
+    # a set is enforced at the authorization endpoint and again when redeeming the code,
+    # so a code issued with another method can never be redeemed.
+    pkce_methods: frozenset[str] | None = field(default=None, kw_only=True)
 
     @property
     def application(self) -> Application | None:
@@ -117,6 +138,68 @@ class OAuthClientContext:
         if self.is_confidential:
             return ClientAuthMethod.CLIENT_SECRET_BASIC
         return ClientAuthMethod.NONE
+
+    def allows_redirect_uri(
+        self,
+        redirect_uri: str,
+        on_invalid_pattern: InvalidRedirectURIPatternHandler | None = None,
+    ) -> bool:
+        """Check whether the authorization endpoint may redirect to `redirect_uri` for this
+        client. By default, it must match one of `redirect_uris`, exactly or by regular
+        expression. Regular expressions which fail to compile are reported to
+        `on_invalid_pattern`, or logged when none is given, and never match.
+
+        The token endpoint checks registered clients against their redirect URIs again;
+        other clients must redeem a code with the exact redirect URI it was issued for."""
+        for allowed in self.redirect_uris:
+            if allowed.matching_mode == RedirectURIMatchingMode.STRICT:
+                if redirect_uri == allowed.url:
+                    return True
+            if allowed.matching_mode == RedirectURIMatchingMode.REGEX:
+                try:
+                    if fullmatch(allowed.url, redirect_uri):
+                        return True
+                except RegexError as exc:
+                    if on_invalid_pattern:
+                        on_invalid_pattern(allowed, exc)
+                    else:
+                        LOGGER.warning(
+                            "Failed to parse regular expression",
+                            exc=exc,
+                            url=allowed.url,
+                            provider=self.provider,
+                        )
+        return False
+
+    @property
+    def authorization_flow(self) -> Flow | None:
+        """Flow users authorize this client with, by default the provider's"""
+        return self.provider.authorization_flow
+
+    def allowed_resources(self) -> frozenset[str]:
+        """Resources (RFC 8707) this client may request tokens for, by default the ones
+        configured on its provider. Empty when resource indicators are not supported, in
+        which case the ``resource`` parameter is ignored."""
+        return frozenset(self.provider.allowed_resources)
+
+    def default_resources(self) -> tuple[str, ...]:
+        """Resources a new grant is restricted to when the request names none. They must
+        be allowed. By default none, so that such grants are not restricted."""
+        return ()
+
+    @property
+    def requires_single_resource(self) -> bool:
+        """Whether every grant of this client must be restricted to exactly one resource,
+        so that its access tokens always have a resource as their audience, never the
+        client. False by default."""
+        return False
+
+    def rotates_refresh_tokens(self, refresh_token: RefreshToken, now: datetime) -> bool:
+        """Whether refreshing with `refresh_token` at `now` issues a new refresh token and
+        revokes `refresh_token`. By default, refresh tokens rotate when the provider's
+        refresh token threshold is zero, or once less than the threshold remains."""
+        threshold = timedelta_from_string(self.provider.refresh_token_threshold)
+        return threshold.total_seconds() == 0 or (refresh_token.expires - now) < threshold
 
     @property
     def grant_binding(self) -> ClientGrantBinding:

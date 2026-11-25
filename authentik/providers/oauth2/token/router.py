@@ -43,10 +43,13 @@ def parse_token_request(
     request: HttpRequest,
     client: OAuthClientContext,
     client_secret: str,
+    endpoint_url: str | None = None,
 ) -> TokenRequest:
+    """Parse a token request made to the token endpoint at `endpoint_url`, by default the
+    shared token endpoint"""
     grant_type = request.POST.get("grant_type", "")
     req_type = route_token_request(grant_type)
     LOGGER.debug("routing to token request", token_request_type=req_type)
-    req = req_type(client, client_secret)
+    req = req_type(client, client_secret, endpoint_url=endpoint_url)
     req.parse(request)
     return req

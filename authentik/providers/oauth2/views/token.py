@@ -5,6 +5,7 @@ from copy import copy
 from typing import Any
 
 from django.http import HttpRequest, HttpResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -68,6 +69,11 @@ class TokenView(View):
         """Resolver used to find the client (and its provider) for this request"""
         return OAuthClientResolver.legacy(self.provider_class)
 
+    def get_endpoint_url(self) -> str:
+        """Absolute URL of the token endpoint this view serves, which DPoP proofs are bound
+        to (`htu`). Views serving another token endpoint return the URL they serve."""
+        return self.request.build_absolute_uri(reverse("authentik_providers_oauth2:token"))
+
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
         cors_allow(self.request, response, self.provider.redirect_uris if self.provider else [])
@@ -88,7 +94,9 @@ class TokenView(View):
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
                 self.provider = self.client.provider
-                self.params = parse_token_request(request, self.client, client_secret)
+                self.params = parse_token_request(
+                    request, self.client, client_secret, endpoint_url=self.get_endpoint_url()
+                )
                 CTX_AUTH_VIA.set("oauth_client_secret")
 
             with active_tracer().start_span(
@@ -243,11 +251,7 @@ class TokenView(View):
             "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
         }
 
-        refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
-        if (
-            refresh_token_threshold.total_seconds() == 0
-            or (self.params.refresh_token.expires - now) < refresh_token_threshold
-        ):
+        if self.client.rotates_refresh_tokens(self.params.refresh_token, now):
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(
                 user=self.params.refresh_token.user,
