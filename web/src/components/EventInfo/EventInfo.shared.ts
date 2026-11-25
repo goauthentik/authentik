@@ -28,8 +28,8 @@ export interface RenderArgs {
 }
 
 export function getModelInfo(context: EventModel): TemplateResult {
-    if (context === null) {
-        return html`<span>-</span>`;
+    if (!context) {
+        return html`<span>${msg("-")}</span>`;
     }
 
     const modelFields: FieldLabelTuple[] = [
