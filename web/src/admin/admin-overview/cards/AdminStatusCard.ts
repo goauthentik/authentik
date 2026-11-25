@@ -118,7 +118,6 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for status display
      */
     private renderStatus(status: AdminStatus): SlottedTemplateResult {
-        console.log(status);
         return html`<div class="status-container">
             <h2 class="status-heading">
                 <ak-icon name="status-${status.tone}" aria-hidden="true"></ak-icon

@@ -55,6 +55,7 @@ const preview = {
         // Ensure the current theme choice is always active before rendering a story.
         (story, { globals }) => {
             applyThemeChoice(globals.theme);
+
             return story();
         },
     ],
