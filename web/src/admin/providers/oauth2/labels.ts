@@ -13,6 +13,9 @@ export const GrantTypeLabelRecord: Record<GrantTypeEnum, string> = {
     [GrantTypeEnum.Password]: msg("Password"),
     [GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode]: msg("Device-code"),
     [GrantTypeEnum.UrnIetfParamsOauthGrantTypeTokenExchange]: msg("Token exchange"),
+    [GrantTypeEnum.UrnIetfParamsOauthGrantTypeJwtBearer]: msg("JWT Bearer", {
+        id: "providers.oauth2.grant-type.jwt-bearer.label",
+    }),
     [GrantTypeEnum.UnknownDefaultOpenApi]: msg("Unknown Grant type"),
 };
 

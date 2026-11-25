@@ -43,6 +43,7 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_DEVICE_CODE,
     GRANT_TYPE_HYBRID,
     GRANT_TYPE_IMPLICIT,
+    GRANT_TYPE_JWT_BEARER,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
     GRANT_TYPE_TOKEN_EXCHANGE,
@@ -103,6 +104,7 @@ class GrantType(models.TextChoices):
     PASSWORD = GRANT_TYPE_PASSWORD
     DEVICE_CODE = GRANT_TYPE_DEVICE_CODE
     TOKEN_EXCHANGE = GRANT_TYPE_TOKEN_EXCHANGE
+    JWT_BEARER = GRANT_TYPE_JWT_BEARER, _("JWT Bearer")
 
 
 class ResponseMode(models.TextChoices):

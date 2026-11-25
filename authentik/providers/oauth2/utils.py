@@ -16,6 +16,7 @@ from django.utils.cache import patch_vary_headers
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import JWT_TYPE_ID_JAG
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.time import timedelta_from_string
@@ -382,3 +383,11 @@ def is_all_vschar(s: str) -> bool:
     """Ensure a string is fully VSCHAR, defined by the OAuth2 RFC
     https://datatracker.ietf.org/doc/html/rfc6749#appendix-A"""
     return all(VSCHAR_START <= ord(c) <= VSCHAR_END for c in s)
+
+
+def is_id_jag_typ(typ: Any) -> bool:
+    """Whether a JWT `typ` header names an ID-JAG. RFC 7515 §4.1.9: `typ` is compared
+    case-insensitively, and `application/` may be omitted."""
+    if not isinstance(typ, str):
+        return False
+    return typ.lower().removeprefix("application/") == JWT_TYPE_ID_JAG
