@@ -34,6 +34,20 @@ pub(super) fn nginx_forward_url(headers: &HeaderMap) -> EyreResult<Url> {
     Ok(Url::parse(original)?)
 }
 
+fn is_outpost_endpoint(path: &str) -> bool {
+    matches!(
+        path,
+        "/outpost.goauthentik.io/start"
+            | "/outpost.goauthentik.io/callback"
+            | "/outpost.goauthentik.io/sign_out"
+            | "/outpost.goauthentik.io/ping"
+            | "/outpost.goauthentik.io/auth/caddy"
+            | "/outpost.goauthentik.io/auth/envoy"
+            | "/outpost.goauthentik.io/auth/nginx"
+            | "/outpost.goauthentik.io/auth/traefik"
+    )
+}
+
 /// Path prefix Envoy's external authorization filter sends requests under.
 const ENVOY_PREFIX: &str = "/outpost.goauthentik.io/auth/envoy";
 
@@ -188,7 +202,7 @@ pub(crate) async fn handle_nginx(
         return Ok(StatusCode::OK.into_response());
     }
     // Let the outpost's own endpoints (callback, start, ...) through unauthenticated.
-    if fwd.path().starts_with("/outpost.goauthentik.io") {
+    if is_outpost_endpoint(fwd.path()) {
         return Ok(StatusCode::OK.into_response());
     }
 
@@ -227,7 +241,8 @@ mod tests {
     use url::Url;
 
     use super::{
-        ENVOY_PREFIX, envoy_forward_target, handle_envoy, nginx_forward_url, traefik_forward_url,
+        ENVOY_PREFIX, envoy_forward_target, handle_envoy, is_outpost_endpoint, nginx_forward_url,
+        traefik_forward_url,
     };
     use crate::outpost::proxy::{
         application::Application,
@@ -371,5 +386,71 @@ mod tests {
             .expect("state token")
             .redirect;
         assert_eq!(redirect, "//app.example.com/page?x=1");
+    }
+
+    const NON_ENDPOINT_PATHS: &[&str] = &[
+        "/outpost.goauthentik.io//../private",
+        "/outpost.goauthentik.io/%2f../private",
+        "/outpost.goauthentik.io/%2F../private",
+        "/outpost.goauthentik.io/..%2fprivate",
+        "/outpost.goauthentik.io%2f..%2fprivate",
+        "/outpost.goauthentik.io%2F%2e%2e%2Fprivate",
+        "/outpost.goauthentik.io%2fanything%2f..%2f..%2fprivate",
+        "/x/../outpost.goauthentik.io%2f..%2fprivate",
+        "/foo\\..\\outpost.goauthentik.io/boundary",
+        "/\toutpost.goauthentik.io/..%2fprivate",
+        "/outpost.goauthentik.io-spa/admin",
+        "/outpost.goauthentik.ioANYTHING",
+        "/outpost.goauthentik.io/auth/envoy/..%2f..%2fprivate",
+    ];
+
+    const ENDPOINT_PATHS: &[&str] = &[
+        "/outpost.goauthentik.io/start?rd=https%3A%2F%2Fapp.example.com%2F",
+        "/outpost.goauthentik.io/callback?state=state&code=code",
+        "/outpost.goauthentik.io/sign_out",
+        "/outpost.goauthentik.io/ping",
+        "/outpost.goauthentik.io/auth/caddy",
+        "/outpost.goauthentik.io/auth/envoy",
+        "/outpost.goauthentik.io/auth/nginx",
+        "/outpost.goauthentik.io/auth/traefik",
+    ];
+
+    fn forward_path(path: &str) -> String {
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            "x-original-url",
+            HeaderValue::from_str(&format!("http://app.example.com{path}")).expect("header value"),
+        );
+        nginx_forward_url(&headers)
+            .expect("forward url")
+            .path()
+            .to_owned()
+    }
+
+    // A forwarded path that only resembles an outpost endpoint still needs a session.
+    #[test]
+    fn non_endpoint_paths_are_not_exempt() {
+        let exempt: Vec<&str> = NON_ENDPOINT_PATHS
+            .iter()
+            .copied()
+            .filter(|path| is_outpost_endpoint(&forward_path(path)))
+            .collect();
+
+        assert!(exempt.is_empty(), "exempt without a session: {exempt:#?}");
+    }
+
+    // The outpost's own endpoints stay reachable without a session.
+    #[test]
+    fn outpost_endpoints_are_exempt() {
+        let denied: Vec<&str> = ENDPOINT_PATHS
+            .iter()
+            .copied()
+            .filter(|path| !is_outpost_endpoint(&forward_path(path)))
+            .collect();
+
+        assert!(
+            denied.is_empty(),
+            "outpost endpoint not exempt: {denied:#?}"
+        );
     }
 }
