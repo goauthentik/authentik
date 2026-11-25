@@ -142,6 +142,12 @@ sources:
   kerberos:
     task_timeout_hours: 2
 
+providers:
+  oauth2:
+    # Origins (scheme://host[:port]) that OAuth2 issuers may be built from when checking a
+    # token's audience. Empty: trust hosts that match a brand's domain.
+    trusted_issuer_origins: []
+
 reputation:
   expiry: 86400
 

@@ -69,6 +69,7 @@ from authentik.lib.models import (
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.policies.models import PolicyBindingModel
+from authentik.providers.oauth2.issuer import UntrustedIssuer, check_issuer_host
 from authentik.sources.oauth.models import OAuthSource
 
 if TYPE_CHECKING:
@@ -405,6 +406,19 @@ class OAuth2Provider(WebfingerProvider, Provider):
             return request.build_absolute_uri(url)
         except Provider.application.RelatedObjectDoesNotExist:
             return None
+
+    def get_canonical_issuer(self, request: HttpRequest) -> str:
+        """The issuer for checks that accept a token because it names this server, such as
+        an assertion's `aud`. Unlike `get_issuer`, it refuses a request host the
+        administrator hasn't configured (see `authentik.providers.oauth2.issuer`), so a token
+        minted for another server can't be replayed here with a spoofed `Host` header.
+
+        Raises `UntrustedIssuer`."""
+        check_issuer_host(request)
+        issuer = self.get_issuer(request)
+        if not issuer:
+            raise UntrustedIssuer("no_issuer")
+        return issuer
 
     @property
     def redirect_uris(self) -> list[RedirectURI]:

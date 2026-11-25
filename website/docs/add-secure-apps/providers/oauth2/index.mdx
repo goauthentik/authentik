@@ -131,6 +131,15 @@ Setting the issuer mode to **Same identifier is used for all providers** (referr
 Global issuer mode still serves the discovery document at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`, not at the root issuer URL.
 :::
 
+### Issuer in audience checks
+
+authentik builds the issuer from the host that a request was sent to. Some tokens are accepted only because their audience (`aud`) is the provider's issuer, for example an Identity Assertion JWT Authorization Grant (ID-JAG) or a client assertion. For these checks, authentik only trusts a host that you have configured, so that a token minted for an authorization server on another host can't be replayed against authentik with a forged `Host` header:
+
+- If [`AUTHENTIK_PROVIDERS__OAUTH2__TRUSTED_ISSUER_ORIGINS`](../../../install-config/configuration/configuration.mdx#authentik_providers__oauth2__trusted_issuer_origins) is set, the request's scheme, host, and port must match one of the listed origins.
+- Otherwise, the host must match the domain of a [brand](../../../customize/branding/index.mdx), either exactly or as a subdomain. The default brand counts only when the host matches its domain, not when it is used as the fallback for an unknown host.
+
+When the host isn't trusted, authentik rejects the token request (`invalid_grant` for an ID-JAG, `invalid_client` for a client assertion). Discovery documents and the tokens that authentik issues aren't affected.
+
 ## OAuth 2.0 flows and grant types
 
 authentik supports the following general OAuth 2.0 and OpenID Connect flows:
