@@ -45,7 +45,7 @@ export class AKCronInput extends WithLocale(HorizontalLightComponent<string>) {
         />`;
     }
 
-    get decode() {
+    public get decode() {
         return decodeCrontab(this.value, this.activeLanguageTag);
     }
 
