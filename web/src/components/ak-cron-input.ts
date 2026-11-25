@@ -49,7 +49,7 @@ export class AKCronInput extends WithLocale(HorizontalLightComponent<string>) {
         return decodeCrontab(this.value, this.activeLanguageTag);
     }
 
-    protected override renderHelp() {
+    protected override renderHelp(): SlottedTemplateResult {
         if (!this.value?.trim()) return nothing;
 
         return html`<p class="pf-c-form__helper-text">${this.decode}</p>`;
