@@ -72,7 +72,7 @@ class LogoutRequestParser:
         return request
 
     def parse(self, saml_request: str, relay_state: str | None = None) -> LogoutRequest:
-        """Validate and parse raw request with enveloped signautre."""
+        """Validate and parse raw request with enveloped signature."""
         try:
             decoded_xml = b64decode(saml_request.encode())
         except ValueError as exc:

@@ -89,6 +89,7 @@ class OutpostConfig:
     kubernetes_ingress_path_type: str | None = field(default=None)
     kubernetes_httproute_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_httproute_parent_refs: list[dict[str, str]] = field(default_factory=list)
+    kubernetes_listenerset_parent_ref: dict[str, str] = field(default_factory=dict)
     kubernetes_service_type: str = field(default="ClusterIP")
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
