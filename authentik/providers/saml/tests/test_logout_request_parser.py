@@ -1,12 +1,16 @@
 """logout request tests"""
 
+import tracemalloc
+
 from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_TRANSIENT
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
+from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.sources.saml.models import SAMLSource
 
 GET_LOGOUT_REQUEST = (
@@ -66,3 +70,19 @@ class TestLogoutRequest(TestCase):
         # The POST request has an empty NameID element with transient format
         self.assertIsNone(request.name_id)  # Empty NameID element returns None
         self.assertEqual(request.name_id_format, SAML_NAME_ID_FORMAT_TRANSIENT)
+
+    def test_redirect_over_size_limit(self):
+        """Test that a redirect-binding request that inflates beyond the size limit is refused"""
+        request = deflate_and_base64_encode(
+            '<samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'ID="_1" Version="2.0" IssueInstant="2022-02-21T22:50:33.999Z"/>'
+            + " " * (32 * 1024 * 1024)
+        )
+
+        tracemalloc.start()
+        self.addCleanup(tracemalloc.stop)
+        with self.assertRaises(CannotHandleAssertion):
+            LogoutRequestParser(self.provider).parse_detached(request)
+        _, peak = tracemalloc.get_traced_memory()
+
+        self.assertLess(peak, 32 * 1024 * 1024)
