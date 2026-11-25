@@ -642,8 +642,8 @@ importers:
         specifier: 16.2.4
         version: 16.2.4
       jquery:
-        specifier: ^3.7.1
-        version: 3.7.1
+        specifier: ^3.8.0
+        version: 3.8.0
       lit-html:
         specifier: ^1.4.1
         version: 1.4.1
@@ -4216,8 +4216,8 @@ packages:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
 
-  jquery@3.7.1:
-    resolution: {integrity: sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==}
+  jquery@3.8.0:
+    resolution: {integrity: sha512-AOYt0viqPysMUTq45O8gF9DuOnBT3Il/8WtM/TT8z/2QeGsZ70ImwSJtNFxznn2R71v8yIgaEunOGo82OY/f0g==}
 
   js-levenshtein-esm@2.0.0:
     resolution: {integrity: sha512-1n4LEPOL4wRXY8rOQcuA7Iuaphe5xCMayvufCzlLAi+hRsnBRDbSS6XPuV58CBVJxj5D9ApFLyjQ7KzFToyHBw==}
@@ -9118,7 +9118,7 @@ snapshots:
 
   joycon@3.1.1: {}
 
-  jquery@3.7.1: {}
+  jquery@3.8.0: {}
 
   js-levenshtein-esm@2.0.0: {}
 
