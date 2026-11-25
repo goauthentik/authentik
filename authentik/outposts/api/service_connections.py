@@ -21,6 +21,7 @@ from authentik.core.api.utils import (
     ModelSerializer,
     PassiveSerializer,
 )
+from authentik.outposts.controllers.kubernetes import check_kubeconfig_user
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
@@ -119,6 +120,7 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
             return kubeconfig
         config = Configuration()
         try:
+            check_kubeconfig_user(kubeconfig)
             load_kube_config_from_dict(kubeconfig, client_configuration=config)
         except ConfigException:
             raise serializers.ValidationError(_("Invalid kubeconfig")) from None
