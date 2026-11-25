@@ -246,6 +246,18 @@ importers:
         specifier: ^2.9.1
         version: 2.9.1
     devDependencies:
+      '@types/mdast':
+        specifier: ^4.0.4
+        version: 4.0.4
+      mdast-util-from-markdown:
+        specifier: ^2.0.3
+        version: 2.0.3(supports-color@8.1.1)
+      mdast-util-mdx:
+        specifier: ^3.0.0
+        version: 3.0.0(supports-color@8.1.1)
+      mdast-util-to-markdown:
+        specifier: ^2.1.2
+        version: 2.1.2
       oxfmt:
         specifier: 'catalog:'
         version: 0.79.0
@@ -546,8 +558,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       '@styleframe/theme':
-        specifier: 3.8.1
-        version: 3.8.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))
+        specifier: 3.10.0
+        version: 3.10.0(@styleframe/core@3.6.2(@styleframe/license@2.0.2))
       '@styleframe/transpiler':
         specifier: 3.4.2
         version: 3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)
@@ -555,8 +567,8 @@ importers:
         specifier: ^6.1.4
         version: 6.1.4
       styleframe:
-        specifier: 3.9.1
-        version: 3.9.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(@styleframe/plugin@3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.2)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.33))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.33)))(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))(typescript@6.0.3)
+        specifier: 3.9.2
+        version: 3.9.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(@styleframe/plugin@3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.2)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.33))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.33)))(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))
     devDependencies:
       '@goauthentik/fonts':
         specifier: link:../fonts
@@ -2878,15 +2890,6 @@ packages:
     peerDependencies:
       '@styleframe/loader': ^3.0.3
 
-  '@styleframe/cli@4.2.0':
-    resolution: {integrity: sha512-f2csbHzaNHLE1/jhKv+1iQC+O9gh1LnNq59ilxzhp3ldgBTjDTWfhxfbte5AbvG12Cee5aKmGZO+ZreV4K28TQ==}
-    peerDependencies:
-      '@styleframe/loader': ^3.0.3
-      typescript: '>=5'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   '@styleframe/core@3.6.2':
     resolution: {integrity: sha512-qGNMePrhDlZcGq1uAzAOTc2DF9QZ/rdoZ+AKV9XDbev7lMFGtGY4gK33zqZeAABihZa2QOhzuWdHrT4o9FZvtA==}
     peerDependencies:
@@ -2945,8 +2948,8 @@ packages:
       '@styleframe/core': ^3.6.1
       '@styleframe/license': ^2.0.2
 
-  '@styleframe/theme@3.8.1':
-    resolution: {integrity: sha512-G9XSG+b4HVzA4E2IaR0bsbH8IqZDlG3Zj180bX35Pbw48n17nTXNECb+9tfy1os/r7GbPD2RWnAWBbqko6/8iw==}
+  '@styleframe/theme@3.10.0':
+    resolution: {integrity: sha512-LR7g4gQXk6pVuujGyM5jMU7zt/PiXAAYAgipkwwuJc2bp0YNK1JFC+rnx0JEhop8dflktLA4qqnt3iGtIeTThA==}
     peerDependencies:
       '@styleframe/core': ^3.6.1
 
@@ -5209,8 +5212,8 @@ packages:
     resolution: {integrity: sha512-KvNT4XqAMzdcL6ka6Tl3i2lYeFDgXNCuIX+xNx6ZMVR1dFq+idXd9FLKNMOIx0t9mJ9/HudyX4oZWXZQ0UJHeg==}
     engines: {node: '>=14.16'}
 
-  launch-editor@2.14.1:
-    resolution: {integrity: sha512-QWBrQsMpH7gPr965dsKD/3cKWiNoTjpATQf++Xq63N6sKRGMwlVXz41O1IZTMfZQgBctD/K5Zt06+/I6pP6+HA==}
+  launch-editor@2.14.2:
+    resolution: {integrity: sha512-NHJEb30MGBCkmZXLZwz25t37QR4aY03ZzPYUJXOJaOa92uWwExI9SBQUuIznBYc1xkD7cJNGX7oc3Nl3sq2kQQ==}
 
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
@@ -7131,11 +7134,11 @@ packages:
   style-to-object@1.0.14:
     resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
 
-  styleframe@3.9.1:
-    resolution: {integrity: sha512-SJNDfefYQlYZAIImXCUeHjyVL4dFTJZ4p52x2pt7iNb240H3zNc/S2N+2au5Z5V7WfFSSWOZap0V01YESkNMrg==}
+  styleframe@3.9.2:
+    resolution: {integrity: sha512-e0yYn3duU/c3g9HkElNaKl4PwqT5qBkJ2UQRtt3gfR2Bj/gIZNe0D/VJvKsv6/m3+JspBsjRXeR2dO4zG/V08w==}
     hasBin: true
     peerDependencies:
-      '@styleframe/core': ^3.6.1
+      '@styleframe/core': ^3.7.0
       '@styleframe/loader': ^3.0.3
       '@styleframe/plugin': ^3.4.0
       '@styleframe/transpiler': ^3.4.1
@@ -10526,19 +10529,6 @@ snapshots:
     transitivePeerDependencies:
       - '@styleframe/license'
 
-  '@styleframe/cli@4.2.0(@styleframe/license@2.0.2)(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(typescript@6.0.3)':
-    dependencies:
-      '@styleframe/dtcg': 1.1.0
-      '@styleframe/figma': 2.1.2(@styleframe/license@2.0.2)
-      '@styleframe/loader': 3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))
-      citty: 0.2.2
-      consola: 3.4.2
-      magicast: 0.5.4
-    optionalDependencies:
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - '@styleframe/license'
-
   '@styleframe/core@3.6.2(@styleframe/license@2.0.2)':
     dependencies:
       '@styleframe/license': 2.0.2
@@ -10600,7 +10590,7 @@ snapshots:
       fast-glob: 3.3.3
       importree: 2.0.1
 
-  '@styleframe/theme@3.8.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))':
+  '@styleframe/theme@3.10.0(@styleframe/core@3.6.2(@styleframe/license@2.0.2))':
     dependencies:
       '@styleframe/core': 3.6.2(@styleframe/license@2.0.2)
       culori: 4.0.2
@@ -13191,7 +13181,7 @@ snapshots:
     dependencies:
       package-json: 8.1.1
 
-  launch-editor@2.14.1:
+  launch-editor@2.14.2:
     dependencies:
       picocolors: 1.1.1
       shell-quote: 1.12.0
@@ -15781,16 +15771,14 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  styleframe@3.9.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(@styleframe/plugin@3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.2)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.33))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.33)))(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))(typescript@6.0.3):
+  styleframe@3.9.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(@styleframe/plugin@3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.2)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.33))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.33)))(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)):
     dependencies:
-      '@styleframe/cli': 4.2.0(@styleframe/license@2.0.2)(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))(typescript@6.0.3)
+      '@styleframe/cli': 4.1.2(@styleframe/license@2.0.2)(@styleframe/loader@3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)))
       '@styleframe/core': 3.6.2(@styleframe/license@2.0.2)
       '@styleframe/license': 2.0.2
       '@styleframe/loader': 3.0.4(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)(@styleframe/transpiler@3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2))
       '@styleframe/plugin': 3.4.1(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(esbuild@0.28.2)(rolldown@1.2.19)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))(webpack@5.108.4(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.33))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.33))
       '@styleframe/transpiler': 3.4.2(@styleframe/core@3.6.2(@styleframe/license@2.0.2))(@styleframe/license@2.0.2)
-    transitivePeerDependencies:
-      - typescript
 
   stylehacks@6.1.1(postcss@8.5.32):
     dependencies:
@@ -16253,7 +16241,7 @@ snapshots:
       graceful-fs: 4.2.11
       http-proxy-middleware: 2.0.10(@types/express@4.17.25)(debug@4.4.3(supports-color@8.1.1))
       ipaddr.js: 2.4.0
-      launch-editor: 2.14.1
+      launch-editor: 2.14.2
       open: 10.2.0
       p-retry: 6.2.1
       schema-utils: 4.3.3

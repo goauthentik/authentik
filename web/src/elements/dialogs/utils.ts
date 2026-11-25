@@ -14,6 +14,42 @@ import { html, render } from "lit";
 
 //#region Rendering
 
+let clickPath: Element[] | null = null;
+
+// window.event is unset for listeners in shadow trees, so the click path is recorded here.
+window.addEventListener(
+    "click",
+    (event) => {
+        clickPath = event.composedPath().filter((target) => target instanceof Element);
+
+        setTimeout(() => {
+            clickPath = null;
+        });
+    },
+    { capture: true, passive: true },
+);
+
+/**
+ * Finds the element that opened a dialog, from the click being handled or the focused element.
+ *
+ * @returns The elements from the opener outward, innermost first.
+ */
+function resolveInvokerPath(ownerDocument: Document): Element[] {
+    if (clickPath) {
+        return clickPath;
+    }
+
+    const path: Element[] = [];
+    let activeElement = ownerDocument.activeElement;
+
+    while (activeElement) {
+        path.unshift(activeElement);
+        activeElement = activeElement.shadowRoot?.activeElement ?? null;
+    }
+
+    return path;
+}
+
 /**
  * Resolves the container element for a dialog, given an optional parent element or selector.
  *
@@ -87,6 +123,7 @@ export function renderDialog(
     }: DialogInit = {},
 ): Promise<void> {
     const eventAbortController = new AbortController();
+    const invokerPath = invokerElement ? [invokerElement] : resolveInvokerPath(ownerDocument);
 
     const dialog = ownerDocument.createElement("dialog");
     dialog.classList.add("ak-c-dialog", ...classList);
@@ -109,7 +146,7 @@ export function renderDialog(
         const { returnValue } = dialog;
 
         if (returnValue === "submitted") {
-            const dispatcher = invokerElement ?? dialog;
+            const dispatcher = invokerPath.find((element) => element.isConnected) ?? dialog;
             // TODO: Refresh might benefit from a namespace to avoid excess re-renders.
             dispatcher.dispatchEvent(new AKRefreshEvent());
         }

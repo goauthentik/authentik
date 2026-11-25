@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/web",
-    "version": "2026.11.0-rc1",
+    "version": "2027.2.0-rc1",
     "private": true,
     "license": "MIT",
     "type": "module",
@@ -242,7 +242,7 @@
         "playwright": "catalog:",
         "pmtiles": "^4.5.0",
         "pseudolocale": "^3.1.0",
-        "rapidoc": "^9.3.8",
+        "rapidoc": "^12.1.1",
         "rehype-highlight": "^7.0.2",
         "rehype-parse": "^9.0.1",
         "rehype-stringify": "^10.0.1",

@@ -289,9 +289,16 @@ export abstract class ModelForm<
 
     /**
      * Refreshes the instance by re-calling `loadInstance` with the current `instancePk`.
+     *
+     * Refresh events from descendants, such as a picker's upload dialog, are ignored so they
+     * do not discard unsaved edits.
      */
     @listen(AKRefreshEvent)
-    public refresh = async (): Promise<void> => {
+    public refresh = async (event?: Event): Promise<void> => {
+        if (event && event.composedPath()[0] !== this) {
+            return;
+        }
+
         if (!this.instancePk) {
             this.logger.info("Skipping refresh. No instance PK provided.");
 

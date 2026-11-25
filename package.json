@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/authentik",
-    "version": "2026.11.0-rc1",
+    "version": "2027.2.0-rc1",
     "private": true,
     "type": "module",
     "imports": {
@@ -39,6 +39,10 @@
         "yaml": "^2.9.1"
     },
     "devDependencies": {
+        "@types/mdast": "^4.0.4",
+        "mdast-util-from-markdown": "^2.0.3",
+        "mdast-util-mdx": "^3.0.0",
+        "mdast-util-to-markdown": "^2.1.2",
         "oxfmt": "catalog:",
         "oxlint": "catalog:"
     },

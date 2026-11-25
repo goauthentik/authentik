@@ -23,8 +23,8 @@ export interface DialogInit {
      * The element that invoked the dialog.
      * This determines the context where events are dispatched from the dialog.
      *
-     * If provided, a refresh event will be dispatched from this element when the dialog is closed
-     * or updated.
+     * A refresh event is dispatched from this element when the dialog is submitted.
+     * Defaults to the element that opened the dialog, found from the current event or focus.
      */
     invokerElement?: Element | null;
     /**
