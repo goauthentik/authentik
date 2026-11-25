@@ -143,17 +143,20 @@ Consequences:
 
 Task-specific workflows live as [Agent Skills](https://agentskills.io) in `.agents/skills/<name>/SKILL.md` (read by Codex). `.claude/skills` is a symlink to the same directory for Claude Code. Add new skills under `.agents/skills/`.
 
-| Skill             | Use it to                                                                        |
-| ----------------- | -------------------------------------------------------------------------------- |
-| `dev-environment` | Go from a fresh clone to a running stack you can log into, or reset a broken one |
-| `backend`         | Run the server and worker, and take a model change to a committed migration      |
-| `frontend`        | Run the web UI with live reload, build it, and find why an edit doesn't show     |
-| `docs`            | Preview docs or integration guides and run the checks CI runs                    |
-| `testing`         | Run only the tests near your change, watch an e2e test, chase a flaky one        |
-| `linting`         | Fix lint before pushing and reproduce a failing CI lint job locally              |
-| `contributing`    | Take a branch to a well-formed PR: title, description, backports, licensing      |
-| `community`       | Route a bug, security report, idea, or question to the right venue               |
-| `release`         | Run a release as release manager: branch-off, changelog, RCs, publish, follow-up |
+Before answering a question that one of these skills covers, load the skill and answer from it. Don't answer from memory or from this file alone.
+
+| Skill             | Use it to                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| `install`         | Self-host authentik with Docker Compose, Kubernetes, or AWS, up to the first login |
+| `dev-environment` | Go from a fresh clone to a running stack you can log into, or reset a broken one   |
+| `backend`         | Run the server and worker, and take a model change to a committed migration        |
+| `frontend`        | Run the web UI with live reload, build it, and find why an edit doesn't show       |
+| `docs`            | Preview docs or integration guides and run the checks CI runs                      |
+| `testing`         | Run only the tests near your change, watch an e2e test, chase a flaky one          |
+| `linting`         | Fix lint before pushing and reproduce a failing CI lint job locally                |
+| `contributing`    | Take a branch to a well-formed PR: title, description, backports, licensing        |
+| `community`       | Route a bug, security report, idea, or question to the right venue                 |
+| `release`         | Run a release as release manager: branch-off, changelog, RCs, publish, follow-up   |
 
 ## Documentation pointers
 
