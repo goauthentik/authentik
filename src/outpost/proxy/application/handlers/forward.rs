@@ -13,7 +13,9 @@ use eyre::{Result as EyreResult, eyre};
 use tracing::instrument;
 use url::Url;
 
-use crate::outpost::proxy::{application::Application, auth::Authenticated, oauth};
+use crate::outpost::proxy::{
+    allowlist::has_dot_segment, application::Application, auth::Authenticated, oauth,
+};
 
 fn header_str<'a>(headers: &'a HeaderMap, name: &str) -> Option<&'a str> {
     headers.get(name)?.to_str().ok()
@@ -129,7 +131,10 @@ async fn forward_header_auth(
             request.headers(),
         ));
     }
-    if app.is_allowlisted(&fwd) {
+    if app.is_allowlisted(
+        header_str(request.headers(), "x-forwarded-uri").unwrap_or_default(),
+        &fwd,
+    ) {
         return Ok(StatusCode::OK.into_response());
     }
 
@@ -198,7 +203,13 @@ pub(crate) async fn handle_nginx(
             request.headers(),
         ));
     }
-    if app.is_allowlisted(&fwd) {
+    let received = header_str(request.headers(), "x-original-url").unwrap_or_default();
+    // Parsing the URL drops `.` and `..` segments that the upstream still receives, so neither
+    // the allowlist nor the outpost endpoints below may let such a URL through.
+    if has_dot_segment(received) {
+        return Ok((StatusCode::UNAUTHORIZED, "unauthorized request").into_response());
+    }
+    if app.is_allowlisted(received, &fwd) {
         return Ok(StatusCode::OK.into_response());
     }
     // Let the outpost's own endpoints (callback, start, ...) through unauthenticated.
