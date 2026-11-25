@@ -161,7 +161,9 @@ export type APIErrorWithResponse = Pick<ResponseError, "response" | "message">;
  * @see {@linkcode parseAPIResponseError} to parse the response body into a {@linkcode APIError}.
  */
 export function isResponseErrorLike(errorLike: unknown): errorLike is APIErrorWithResponse {
-    if (!errorLike || typeof errorLike !== "object") return false;
+    if (!errorLike || typeof errorLike !== "object") {
+        return false;
+    }
 
     return "response" in errorLike && errorLike.response instanceof Response;
 }
@@ -179,12 +181,16 @@ export function composeResponseErrorDescriptor(descriptor: ResponseErrorDescript
 export const ErrorFieldFallbackKeys = [
     // ---
     "detail", // OpenAPI
-    "non_field_errors", // ValidationError.non_field_errors
+    "nonFieldErrors", // ValidationError, from gen-ts
+    "non_field_errors", // ValidationError, raw (often nested) response
     "message", // Error.prototype.message
     "string", // OpenAPI
 ] as const;
 
-export type FallbackError = Record<(typeof ErrorFieldFallbackKeys)[number], string | undefined>;
+export type FallbackError = Record<
+    (typeof ErrorFieldFallbackKeys)[number],
+    string | readonly unknown[] | undefined
+>;
 
 /**
  * Attempts to pluck a human readable error message from a {@linkcode ValidationError}.
@@ -219,12 +225,25 @@ export function pluckErrorDetail(errorLike: unknown, fallback?: string): string 
     }
 
     for (const fieldKey of ErrorFieldFallbackKeys) {
-        if (!(fieldKey in errorLike)) continue;
+        if (!(fieldKey in errorLike)) {
+            continue;
+        }
 
         const value = (errorLike as FallbackError)[fieldKey];
 
         if (typeof value === "string" && value) {
             return value;
+        }
+
+        // DRF sends non-field errors as a list
+        if (Array.isArray(value)) {
+            const messages = value.filter(
+                (item): item is string => typeof item === "string" && !!item,
+            );
+
+            if (messages.length > 1) {
+                return messages.join(", ");
+            }
         }
     }
 

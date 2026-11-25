@@ -133,7 +133,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                         <ak-aggregate-card
-                            icon="pf-icon pf-icon-server"
+                            icon="pf-icon pf-icon-applications"
                             label=${msg("Apps with most usage")}
                         >
                             <ak-top-applications-table></ak-top-applications-table>
