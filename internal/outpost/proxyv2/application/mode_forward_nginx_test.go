@@ -73,3 +73,62 @@ func TestForwardHandleNginx_Domain_Header(t *testing.T) {
 	s, _ := a.sessions.Get(req, a.SessionName())
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
 }
+
+// Only the outpost's own endpoints are reachable without a session. A forwarded
+// path that merely resembles one must still be authenticated.
+func TestForwardHandleNginx_Single_NonEndpointPrefix(t *testing.T) {
+	paths := []string{
+		"/outpost.goauthentik.io/../private",
+		"/outpost.goauthentik.io/%2e%2e/private",
+		"/outpost.goauthentik.io//../private",
+		"/outpost.goauthentik.io/%2f../private",
+		"/outpost.goauthentik.io/%2F../private",
+		"/outpost.goauthentik.io%2f..%2fprivate",
+		"/outpost.goauthentik.io/..%2fprivate",
+		"/outpost.goauthentik.io%2F%2e%2e%2Fprivate",
+		"/outpost.goauthentik.io%2fanything%2f..%2f..%2fprivate",
+		"/%6futpost.goauthentik.io/..%2fprivate",
+		"/outpost.goauthentik.io-spa/admin",
+		"/outpost.goauthentik.ioANYTHING",
+		"/outpost.goauthentik.io/static/../../private",
+		"/outpost.goauthentik.io/auth/envoy/../../private",
+	}
+	for _, p := range paths {
+		t.Run(p, func(t *testing.T) {
+			a := newTestApplication()
+			req, _ := http.NewRequest("GET", nginxPrefix, nil)
+			req.Header.Set("X-Original-URL", "http://test.goauthentik.io"+p)
+
+			rr := httptest.NewRecorder()
+			a.forwardHandleNginx(rr, req)
+
+			assert.Equal(t, http.StatusUnauthorized, rr.Code)
+		})
+	}
+}
+
+// The outpost's own endpoints stay reachable without a session.
+func TestForwardHandleNginx_Single_Endpoints(t *testing.T) {
+	paths := []string{
+		"/outpost.goauthentik.io/start",
+		"/outpost.goauthentik.io/callback",
+		"/outpost.goauthentik.io/sign_out",
+		"/outpost.goauthentik.io/ping",
+		"/outpost.goauthentik.io/auth/nginx",
+		"/outpost.goauthentik.io/auth/traefik",
+		"/outpost.goauthentik.io/auth/caddy",
+		"/outpost.goauthentik.io/auth/envoy",
+	}
+	for _, p := range paths {
+		t.Run(p, func(t *testing.T) {
+			a := newTestApplication()
+			req, _ := http.NewRequest("GET", nginxPrefix, nil)
+			req.Header.Set("X-Original-URL", "http://test.goauthentik.io"+p)
+
+			rr := httptest.NewRecorder()
+			a.forwardHandleNginx(rr, req)
+
+			assert.Equal(t, http.StatusOK, rr.Code)
+		})
+	}
+}
