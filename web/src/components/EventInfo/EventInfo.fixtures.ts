@@ -180,7 +180,7 @@ export const fixtures = {
     // ExpressionEvaluator.handle_error (authentik/core/expression/evaluator.py)
     propertyMappingException: sampleEvent(EventActions.PropertyMappingException, {
         message: "Failed to execute property mapping",
-        expression: 'return {"name": request.user.nmae}',
+        expression: 'return {"name": request.user.name}',
     }),
 
     // create_policy_event (authentik/policies/process.py)

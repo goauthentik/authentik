@@ -42,24 +42,27 @@ function newCol(key: string, value: DiffEntry) {
     </tr>`;
 }
 
-const renderDiff = (diff: DiffRecord | undefined | null) =>
-    diff
-        ? html`<div class="pf-l-split__item pf-m-fill">
-              <div class="pf-c-card__title">${msg("Changes made:")}</div>
-              <table class="pf-c-table pf-m-compact pf-m-grid-md">
-                  <thead>
-                      <tr>
-                          <th scope="col">${msg("Key")}</th>
-                          <th scope="col">${msg("Previous value")}</th>
-                          <th scope="col">${msg("New value")}</th>
-                      </tr>
-                  </thead>
-                  <tbody role="rowgroup">
-                      ${Object.entries(diff).map(([key, value]) => newCol(key, value))}
-                  </tbody>
-              </table>
-          </div>`
-        : null;
+function renderDiff(diff: DiffRecord | undefined | null) {
+    if (!diff) {
+        return null;
+    }
+
+    return html`<div class="pf-l-split__item pf-m-fill">
+        <div class="pf-c-card__title">${msg("Changes made:")}</div>
+        <table class="pf-c-table pf-m-compact pf-m-grid-md">
+            <thead>
+                <tr>
+                    <th scope="col">${msg("Key")}</th>
+                    <th scope="col">${msg("Previous value")}</th>
+                    <th scope="col">${msg("New value")}</th>
+                </tr>
+            </thead>
+            <tbody role="rowgroup">
+                ${Object.entries(diff).map(([key, value]) => newCol(key, value))}
+            </tbody>
+        </table>
+    </div>`;
+}
 
 export const renderModelChanged = (event: EventWithContext) =>
     html` <div class="pf-l-split">

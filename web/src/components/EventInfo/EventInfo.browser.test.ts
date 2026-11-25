@@ -53,7 +53,7 @@ describe("ak-event-info", () => {
         ["updateAvailable", ["New version available", "666.6.6"]],
         ["loginFailed", ["Attempted to log in as j-random-hacker"]],
         ["logout", ["No additional data available."]],
-        ["propertyMappingException", ["Exception", "Expression", "request.user.nmae"]],
+        ["propertyMappingException", ["Exception", "Expression", "request.user.name"]],
         ["policyException", ["Binding", "require-brains", "Policy failed to execute"]],
         ["policyExecution", ["Result", "Passing: true"]],
         ["policyExecutionDryRun", ["Dry-run", "Brains required.", "Raw result", "Cached: No"]],

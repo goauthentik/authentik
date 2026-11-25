@@ -96,7 +96,7 @@ export class RbacModelPermissionsList extends AKElement {
                             ? html`
                                   <i class="fas fa-check pf-m-success" aria-hidden="true"></i
                                   ><pf-tooltip position="top" content=${kind}>${name}</pf-tooltip
-                                  ><ak-label compact color="info">${tag}</ak-label>
+                                  ><ak-label compact status="info">${tag}</ak-label>
                               `
                             : html`
                                   <small
