@@ -1,6 +1,7 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/forms/ConfirmationForm";
 import "#elements/AppIcon";
+import "#elements/buttons/Dropdown";
 import "#elements/ak-mdx/ak-mdx";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";

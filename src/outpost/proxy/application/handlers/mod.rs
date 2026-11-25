@@ -227,9 +227,8 @@ pub(super) async fn handle_auth_callback(
         return Ok(StatusCode::BAD_REQUEST.into_response());
     };
 
-    let params = Query::<CallbackParams>::try_from_uri(request.uri())
-        .map(|query| query.0)
-        .unwrap_or_default();
+    let params =
+        Query::<CallbackParams>::try_from_uri(request.uri()).map_or_default(|query| query.0);
 
     // Validate the state JWT (signature + issuer) and that it belongs to this session.
     let Some(state_token) = params.state else {
