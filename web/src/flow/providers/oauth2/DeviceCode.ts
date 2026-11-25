@@ -7,8 +7,8 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
+import { AKFormErrors } from "#components/renderFormErrors";
 
 import { BaseStage } from "#flow/stages/base";
 
