@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from "@storybook/web-components";
 import { html } from "lit";
 
 const metadata: Meta<AKFormErrorsProps> = {
-    title: "Components / Field Errors",
+    title: "Components / Form Field Errors",
     parameters: {
         docs: {
             description: {
