@@ -41,3 +41,5 @@ jméno
 Anmeldename
 jpww
 fanything
+pyasn
+pyjwt
