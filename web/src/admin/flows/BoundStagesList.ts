@@ -23,6 +23,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
+    public static override verboseName = msg("Stage binding", {
+        id: "stage-bindings.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Stage bindings", {
+        id: "stage-bindings.verbose-name-plural.label",
+    });
+
     protected flowsAPI = aki(FlowsApi);
 
     public override expandable = true;
@@ -56,7 +63,6 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Stage binding(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: FlowStageBinding) => {
                 return [

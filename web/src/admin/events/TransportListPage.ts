@@ -30,6 +30,13 @@ const NOTIFICATION_MODEL = ModelEnum.AuthentikEventsNotificationtransport;
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
+    public static override verboseName = msg("Notification transport", {
+        id: "notification-transports.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Notification transports", {
+        id: "notification-transports.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
     public pageTitle = msg("Notification Transports");
     public pageDescription = msg(
@@ -60,7 +67,6 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Notification transport(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationTransport) => {
                 return aki(EventsApi).eventsTransportsUsedByList({

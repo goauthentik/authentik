@@ -67,7 +67,7 @@ export class ModalInvokerDirective extends Directive {
                     return (factory as ModalTemplate)(event);
                 }
 
-                const tagName = window.customElements.getName(factory);
+                const tagName = customElements.getName(factory);
 
                 if (!tagName) {
                     throw new TypeError("Provided constructor is not a registered custom element");
@@ -164,7 +164,7 @@ export function asInstanceInvoker<T extends ModelFormLikeConstructor>(
  */
 export function lookupElementConstructor<T extends CustomElementConstructor>(
     tagName: string,
-    registry: CustomElementRegistry = window.customElements,
+    registry: CustomElementRegistry = customElements,
 ): T {
     if (!tagName) {
         // eslint-disable-next-line no-console

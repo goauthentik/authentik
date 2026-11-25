@@ -50,11 +50,14 @@ export default defineConfig({
                 // `tsgo -p .` clean.
                 oxc: /** @type {import("vite").OxcOptions & { tsconfig: false }} */ ({
                     tsconfig: false,
+                    // Without tsconfig discovery, oxc no longer sees `experimentalDecorators`.
+                    decorator: { legacy: true },
                 }),
                 test: {
                     include: ["./test/unit/**/*.{test,spec}.ts", "**/*.unit.{test,spec}.ts"],
                     name: "Unit Tests",
                     environment: "node",
+                    setupFiles: ["./test/unit/setup.ts"],
                     typecheck: {
                         tsconfig: "./tsconfig.unit.json",
                     },

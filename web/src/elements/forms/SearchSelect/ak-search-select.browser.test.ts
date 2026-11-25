@@ -285,7 +285,7 @@ describe("ak-search-select", () => {
         await userEvent.click(outside);
         await element.updateComplete;
 
-        expect(element.renderRoot.activeElement, "Focus stayed in the input").toBe(input(element));
+        expect(element.shadowRoot?.activeElement, "Focus stayed in the input").toBe(input(element));
         expect(element.open, "Clicking outside closes it").toBe(false);
     });
 

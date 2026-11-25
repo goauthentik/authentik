@@ -1,0 +1,13 @@
+// @file TSConfig that also checks the colocated tests the root config excludes.
+{
+    "extends": "./tsconfig.json",
+    "exclude": [
+        // Keep in sync with tsconfig.json, minus the test exclusions.
+        "**/out/**/*",
+        "**/dist/**/*",
+        "storybook-static",
+        "packages/client-ts",
+        "packages/sfe",
+        "src/**/*.comp.ts"
+    ]
+}

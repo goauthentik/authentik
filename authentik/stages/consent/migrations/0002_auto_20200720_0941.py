@@ -10,7 +10,7 @@ import authentik.lib.utils.time
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("authentik_core", "0006_auto_20200709_1608"),
+        ("authentik_core", "0002_auto_20200523_1133_squashed_0011_provider_name_temp"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("authentik_stages_consent", "0001_initial"),
     ]

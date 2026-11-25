@@ -100,15 +100,16 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
         this.#warnings.clear();
     };
 
-    #timeoutId = -1;
+    #timeoutID = -1;
 
     public clearAfterIdle = () => {
-        clearTimeout(this.#timeoutId);
-        this.#timeoutId = window.setTimeout(this.clear, 1000);
+        clearTimeout(this.#timeoutID);
+        this.#timeoutID = setTimeout(this.clear, 1000);
     };
 
     constructor(protected readonly maxRequests: number = 10) {
         window.addEventListener("hashchange", this.clear, { passive: true });
+
         window.addEventListener(AKRefreshEvent.eventName, this.clear, { passive: true });
         window.addEventListener(AKEnterpriseRefreshEvent.eventName, this.clear, { passive: true });
 
@@ -117,6 +118,11 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
 
     public [Symbol.dispose]() {
         window.removeEventListener("hashchange", this.clear);
+
+        window.removeEventListener(AKRefreshEvent.eventName, this.clear);
+        window.removeEventListener(AKEnterpriseRefreshEvent.eventName, this.clear);
+
+        window.removeEventListener("click", this.clearAfterIdle);
     }
 
     public async pre(context: RequestContext): Promise<FetchParams | void> {

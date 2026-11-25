@@ -10,6 +10,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
+from authentik.crypto.apps import GAUGE_CERTIFICATE_EXPIRY
 from authentik.crypto.models import (
     CertificateKeyPair,
     detect_key_type,
@@ -17,6 +18,7 @@ from authentik.crypto.models import (
     generate_key_id,
     generate_key_id_legacy,
 )
+from authentik.root.monitoring import monitoring_set
 
 LOGGER = get_logger()
 
@@ -68,3 +70,20 @@ def certificate_key_pair_pre_save(
         legacy_kid = generate_key_id_legacy(instance.key_data)
         if instance.kid not in (new_kid, legacy_kid):
             instance.kid = new_kid
+
+
+@receiver(monitoring_set)
+def monitoring_set_certificates(sender, **kwargs):
+    """Set certificate expiry gauge"""
+    # A labelset stays in this process' mmap file under multiprocess collection until it is
+    # overwritten, so pairs that were deleted or renamed are set to NaN rather than left
+    # reporting their old expiry; 0 would read as a certificate that expired in 1970.
+    for metric in GAUGE_CERTIFICATE_EXPIRY.collect():
+        for sample in metric.samples:
+            GAUGE_CERTIFICATE_EXPIRY.labels(**sample.labels).set(float("nan"))
+    for kp in CertificateKeyPair.objects.filter(cert_expiry__isnull=False).only(
+        "kp_uuid", "name", "cert_expiry"
+    ):
+        GAUGE_CERTIFICATE_EXPIRY.labels(name=kp.name, kp_uuid=str(kp.kp_uuid)).set(
+            kp.cert_expiry.timestamp()
+        )
