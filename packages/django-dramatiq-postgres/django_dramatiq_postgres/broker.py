@@ -281,6 +281,7 @@ class _PostgresConsumer(Consumer):
 
         # Override because dramatiq doesn't allow us setting this manually
         self.timeout = Conf().worker["consumer_listen_timeout"]
+        self._next_pending_reconciliation = time.monotonic() + self.timeout
 
         self.task_purge_interval = timedelta(seconds=Conf().task_purge_interval)
         # Spread the first purge over the interval instead of running it on boot. Using
@@ -403,6 +404,10 @@ class _PostgresConsumer(Consumer):
         )
         return pending
 
+    def _reconcile_pending_messages(self) -> None:
+        self.pending.update(self._fetch_pending_messages())
+        self._next_pending_reconciliation = time.monotonic() + self.timeout
+
     def _poll_for_notify(self) -> set[str]:
         self.logger.debug("Polling for message notifications", queue=self.queue_name)
         with self.listen_connection.cursor() as cursor:
@@ -486,7 +491,7 @@ class _PostgresConsumer(Consumer):
         if self._listen_connection is None and not self.pending:
             # We might miss a notification between the initial query and the first time we wait for
             # notifications, it doesn't matter because we re-fetch for missed messages later on.
-            self.pending = self._fetch_pending_messages()
+            self._reconcile_pending_messages()
             # Force creation of listen connection
             _ = self.listen_connection
 
@@ -505,11 +510,15 @@ class _PostgresConsumer(Consumer):
         else:
             self.misses = 0
 
+        # A continuous notification stream can otherwise prevent the fallback query from running.
+        if time.monotonic() >= self._next_pending_reconciliation:
+            self._reconcile_pending_messages()
+
         if not self.pending:
             self.pending = self._poll_for_notify()
 
         if not self.pending:
-            self.pending = self._fetch_pending_messages()
+            self._reconcile_pending_messages()
 
         if not self.pending:
             self._backlog_waiting_for_dependencies()

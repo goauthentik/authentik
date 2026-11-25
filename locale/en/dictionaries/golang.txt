@@ -19,3 +19,4 @@ gorm
 gorm*
 logger
 nolint
+upgrader

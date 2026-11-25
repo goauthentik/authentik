@@ -1,5 +1,6 @@
 """Test AuthN Request generator and parser"""
 
+import tracemalloc
 from base64 import b64encode
 from json import loads
 from urllib.parse import parse_qs, urlparse
@@ -35,6 +36,7 @@ from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
+from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
@@ -770,3 +772,20 @@ class TestAuthNRequest(TestCase):
             CannotHandleAssertion, "XML document contains a DOCTYPE declaration"
         ):
             AuthNRequestParser(self.provider).parse(b64encode(request.encode()).decode())
+
+    def test_redirect_over_size_limit(self):
+        """Test that a redirect-binding request that inflates beyond the size limit is refused"""
+        request = deflate_and_base64_encode(
+            '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'ID="_1" Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z" '
+            'AssertionConsumerServiceURL="http://testserver/source/saml/provider/acs/"/>'
+            + " " * (32 * 1024 * 1024)
+        )
+
+        tracemalloc.start()
+        self.addCleanup(tracemalloc.stop)
+        with self.assertRaises(CannotHandleAssertion):
+            AuthNRequestParser(self.provider).parse_detached(request, None)
+        _, peak = tracemalloc.get_traced_memory()
+
+        self.assertLess(peak, 32 * 1024 * 1024)

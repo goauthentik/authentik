@@ -58,22 +58,22 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
             raise StopSync(exc) from exc
         except HttpLib2Error as exc:
             if isinstance(exc, HttpLib2ErrorWithResponse):
-                self._response_handle_status_code(request.body, exc.response.status, exc)
+                self._response_handle_status_code(exc.response.status, exc)
             raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
         except HttpError as exc:
-            self._response_handle_status_code(request.body, exc.status_code, exc)
+            self._response_handle_status_code(exc.status_code, exc)
             raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
         except Error as exc:
             raise TransientSyncException(f"Failed to send request: {str(exc)}") from exc
         return response
 
-    def _response_handle_status_code(self, request: dict, status_code: int, root_exc: Exception):
+    def _response_handle_status_code(self, status_code: int, root_exc: Exception):
         if status_code == HttpResponseNotFound.status_code:
-            raise NotFoundSyncException("Object not found") from root_exc
+            raise NotFoundSyncException(root_exc) from root_exc
         if status_code == HTTP_CONFLICT:
-            raise ObjectExistsSyncException("Object exists") from root_exc
+            raise ObjectExistsSyncException(root_exc) from root_exc
         if status_code == HttpResponseBadRequest.status_code:
-            raise BadRequestSyncException("Bad request", request) from root_exc
+            raise BadRequestSyncException(root_exc) from root_exc
 
     def check_email_valid(self, *emails: str):
         for email in emails:

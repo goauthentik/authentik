@@ -1,6 +1,9 @@
 use std::{net::IpAddr, sync::Arc};
 
-use ak_axum::{error::Result, extract::client_ip::ClientIp};
+use ak_axum::{
+    error::Result,
+    extract::{client_ip::ClientIp, host::Host},
+};
 use axum::{
     extract::{Request, State},
     http::{HeaderMap, StatusCode, Uri, header},
@@ -10,7 +13,9 @@ use eyre::{Result as EyreResult, eyre};
 use tracing::instrument;
 use url::Url;
 
-use crate::outpost::proxy::{application::Application, auth::Authenticated, oauth};
+use crate::outpost::proxy::{
+    allowlist::has_dot_segment, application::Application, auth::Authenticated, oauth,
+};
 
 fn header_str<'a>(headers: &'a HeaderMap, name: &str) -> Option<&'a str> {
     headers.get(name)?.to_str().ok()
@@ -31,25 +36,37 @@ pub(super) fn nginx_forward_url(headers: &HeaderMap) -> EyreResult<Url> {
     Ok(Url::parse(original)?)
 }
 
+fn is_outpost_endpoint(path: &str) -> bool {
+    matches!(
+        path,
+        "/outpost.goauthentik.io/start"
+            | "/outpost.goauthentik.io/callback"
+            | "/outpost.goauthentik.io/sign_out"
+            | "/outpost.goauthentik.io/ping"
+            | "/outpost.goauthentik.io/auth/caddy"
+            | "/outpost.goauthentik.io/auth/envoy"
+            | "/outpost.goauthentik.io/auth/nginx"
+            | "/outpost.goauthentik.io/auth/traefik"
+    )
+}
+
 /// Path prefix Envoy's external authorization filter sends requests under.
 const ENVOY_PREFIX: &str = "/outpost.goauthentik.io/auth/envoy";
 
 /// Reconstruct the original request target from an Envoy ext-authz request:
-/// strip the envoy prefix from the path and take the host from the `Host`
-/// header. Returns the request path and the scheme-less full target
-/// (`//host/path?query`), which
-/// leaves the envoy request's scheme empty.
-pub(super) fn envoy_forward_target(uri: &Uri, headers: &HeaderMap) -> Option<(String, String)> {
+/// strip the envoy prefix from the path and prepend the request host. Returns
+/// the request path and the scheme-less full target (`//host/path?query`),
+/// which leaves the envoy request's scheme empty.
+pub(super) fn envoy_forward_target(uri: &Uri, host: &str) -> (String, String) {
     let path = uri
         .path()
         .strip_prefix(ENVOY_PREFIX)
         .filter(|path| !path.is_empty())
         .unwrap_or("/");
-    let host = header_str(headers, "host")?;
     let query = uri
         .query()
         .map_or_else(String::new, |query| format!("?{query}"));
-    Some((path.to_owned(), format!("//{host}{path}{query}")))
+    (path.to_owned(), format!("//{host}{path}{query}"))
 }
 
 /// 200 response carrying the authenticated user's headers for the reverse proxy.
@@ -114,7 +131,10 @@ async fn forward_header_auth(
             request.headers(),
         ));
     }
-    if app.is_allowlisted(&fwd) {
+    if app.is_allowlisted(
+        header_str(request.headers(), "x-forwarded-uri").unwrap_or_default(),
+        &fwd,
+    ) {
         return Ok(StatusCode::OK.into_response());
     }
 
@@ -133,11 +153,13 @@ pub(crate) async fn handle_caddy(
 #[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle_envoy(
     State(app): State<Arc<Application>>,
+    Host(host): Host,
     request: Request,
 ) -> Result<Response> {
-    let Some((path, fwd)) = envoy_forward_target(request.uri(), request.headers()) else {
-        return Ok((StatusCode::BAD_REQUEST, "invalid envoy request").into_response());
-    };
+    // `Host` honors `X-Forwarded-Host` from trusted proxies, matching how the
+    // outpost picked this application. A front proxy may rewrite `:authority`
+    // to an internal name before the request reaches Envoy.
+    let (path, fwd) = envoy_forward_target(request.uri(), &host);
 
     if let Some(authed) = app.check_auth(request.headers()).await {
         return Ok(forward_authenticated_response(
@@ -181,11 +203,17 @@ pub(crate) async fn handle_nginx(
             request.headers(),
         ));
     }
-    if app.is_allowlisted(&fwd) {
+    let received = header_str(request.headers(), "x-original-url").unwrap_or_default();
+    // Parsing the URL drops `.` and `..` segments that the upstream still receives, so neither
+    // the allowlist nor the outpost endpoints below may let such a URL through.
+    if has_dot_segment(received) {
+        return Ok((StatusCode::UNAUTHORIZED, "unauthorized request").into_response());
+    }
+    if app.is_allowlisted(received, &fwd) {
         return Ok(StatusCode::OK.into_response());
     }
     // Let the outpost's own endpoints (callback, start, ...) through unauthenticated.
-    if fwd.path().starts_with("/outpost.goauthentik.io") {
+    if is_outpost_endpoint(fwd.path()) {
         return Ok(StatusCode::OK.into_response());
     }
 
@@ -204,9 +232,41 @@ pub(crate) async fn handle_traefik(
 
 #[cfg(test)]
 mod tests {
-    use axum::http::{HeaderMap, HeaderValue, Uri};
+    use std::sync::Arc;
 
-    use super::{ENVOY_PREFIX, envoy_forward_target, nginx_forward_url, traefik_forward_url};
+    use ak_axum::extract::{host::host_middleware, trusted_proxy::TrustedProxy};
+    use ak_client::{
+        apis::configuration::Configuration,
+        models::{OpenIdConnectConfiguration, ProxyMode, ProxyOutpostConfig},
+    };
+    use arc_swap::ArcSwapOption;
+    use axum::{
+        Extension, Router,
+        body::Body,
+        http::{HeaderMap, HeaderValue, Request, StatusCode, Uri, header},
+        middleware::from_fn,
+        routing::any,
+    };
+    use moka::future::Cache;
+    use tower::ServiceExt as _;
+    use url::Url;
+
+    use super::{
+        ENVOY_PREFIX, envoy_forward_target, handle_envoy, is_outpost_endpoint, nginx_forward_url,
+        traefik_forward_url,
+    };
+    use crate::outpost::proxy::{
+        application::Application,
+        backchannel::BackchannelClient,
+        cookie::SessionCookie,
+        endpoint::OidcEndpoint,
+        oauth_state::{OAuthState, issuer},
+        session::{SessionStore, filesystem::FsSessionStore},
+        upstream,
+    };
+
+    const CLIENT_ID: &str = "client-123";
+    const COOKIE_SECRET: &str = "0123456789abcdef0123456789abcdef";
 
     #[test]
     fn parses_traefik_forward_url() {
@@ -249,10 +309,8 @@ mod tests {
         let uri: Uri = "/outpost.goauthentik.io/auth/envoy/app/page?x=1"
             .parse()
             .expect("uri");
-        let mut headers = HeaderMap::new();
-        headers.insert("host", HeaderValue::from_static("app.example.com"));
 
-        let (path, full) = envoy_forward_target(&uri, &headers).expect("forward target");
+        let (path, full) = envoy_forward_target(&uri, "app.example.com");
         assert_eq!(path, "/app/page");
         // Scheme-less for envoy.
         assert_eq!(full, "//app.example.com/app/page?x=1");
@@ -261,11 +319,149 @@ mod tests {
     #[test]
     fn envoy_bare_prefix_maps_to_root() {
         let uri: Uri = ENVOY_PREFIX.parse().expect("uri");
-        let mut headers = HeaderMap::new();
-        headers.insert("host", HeaderValue::from_static("app.example.com"));
 
-        let (path, full) = envoy_forward_target(&uri, &headers).expect("forward target");
+        let (path, full) = envoy_forward_target(&uri, "app.example.com");
         assert_eq!(path, "/");
         assert_eq!(full, "//app.example.com/");
+    }
+
+    fn forward_single_app(session_dir: &std::path::Path) -> Application {
+        let provider = ProxyOutpostConfig {
+            name: "app".to_owned(),
+            external_host: "https://app.example.com".to_owned(),
+            client_id: Some(CLIENT_ID.to_owned()),
+            cookie_secret: Some(COOKIE_SECRET.to_owned()),
+            mode: Some(ProxyMode::ForwardSingle),
+            oidc_configuration: OpenIdConnectConfiguration {
+                authorization_endpoint: "https://authentik.example.com/application/o/authorize/"
+                    .to_owned(),
+                ..OpenIdConnectConfiguration::default()
+            },
+            ..ProxyOutpostConfig::default()
+        };
+        Application {
+            host: "app.example.com".to_owned(),
+            endpoint: OidcEndpoint::new(&provider.oidc_configuration, None, None, false),
+            session_store: SessionStore::Filesystem(
+                FsSessionStore::new(session_dir.to_path_buf()).expect("store"),
+            ),
+            session_cookie: SessionCookie::new(CLIENT_ID, COOKIE_SECRET, true, None)
+                .expect("cookie"),
+            provider,
+            router: Router::new(),
+            cert: None,
+            api_config: Configuration::default(),
+            backchannel_client: BackchannelClient::new(reqwest::Client::builder())
+                .expect("backchannel client"),
+            token_host: None,
+            auth_cache: Cache::new(1),
+            outpost_name: "outpost".to_owned(),
+            unauthenticated_regex: Vec::new(),
+            upstream_client: upstream::build_client(false).expect("upstream client"),
+            jwks_cache: ArcSwapOption::empty(),
+        }
+    }
+
+    /// A front proxy rewrote `:authority` to an internal name before the
+    /// request reached Envoy. The handler must build the post-login redirect
+    /// from the forwarded host, not the internal one. Whether an untrusted
+    /// peer's `X-Forwarded-Host` is ignored is covered by ak-axum's `Host`
+    /// extractor tests.
+    #[tokio::test]
+    async fn envoy_redirects_to_forwarded_host_from_trusted_proxy() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let router = Router::new()
+            .route(&format!("{ENVOY_PREFIX}{{*rest}}"), any(handle_envoy))
+            .with_state(Arc::new(forward_single_app(dir.path())))
+            .layer(from_fn(host_middleware))
+            .layer(Extension(TrustedProxy(true)));
+        let request = Request::builder()
+            .uri(format!("{ENVOY_PREFIX}/page?x=1"))
+            .header(header::HOST, "app.internal.example")
+            .header("x-forwarded-host", "app.example.com")
+            .body(Body::empty())
+            .expect("request");
+
+        let response = router.oneshot(request).await.expect("infallible");
+
+        assert_eq!(response.status(), StatusCode::FOUND);
+        let location = response.headers()[header::LOCATION]
+            .to_str()
+            .expect("location");
+        let state = Url::parse(location)
+            .expect("authorize url")
+            .query_pairs()
+            .find_map(|(key, value)| (key == "state").then(|| value.into_owned()))
+            .expect("state parameter");
+        let redirect = OAuthState::decode(&state, COOKIE_SECRET, &issuer(CLIENT_ID))
+            .expect("state token")
+            .redirect;
+        assert_eq!(redirect, "//app.example.com/page?x=1");
+    }
+
+    const NON_ENDPOINT_PATHS: &[&str] = &[
+        "/outpost.goauthentik.io//../private",
+        "/outpost.goauthentik.io/%2f../private",
+        "/outpost.goauthentik.io/%2F../private",
+        "/outpost.goauthentik.io/..%2fprivate",
+        "/outpost.goauthentik.io%2f..%2fprivate",
+        "/outpost.goauthentik.io%2F%2e%2e%2Fprivate",
+        "/outpost.goauthentik.io%2fanything%2f..%2f..%2fprivate",
+        "/x/../outpost.goauthentik.io%2f..%2fprivate",
+        "/foo\\..\\outpost.goauthentik.io/boundary",
+        "/\toutpost.goauthentik.io/..%2fprivate",
+        "/outpost.goauthentik.io-spa/admin",
+        "/outpost.goauthentik.ioANYTHING",
+        "/outpost.goauthentik.io/auth/envoy/..%2f..%2fprivate",
+    ];
+
+    const ENDPOINT_PATHS: &[&str] = &[
+        "/outpost.goauthentik.io/start?rd=https%3A%2F%2Fapp.example.com%2F",
+        "/outpost.goauthentik.io/callback?state=state&code=code",
+        "/outpost.goauthentik.io/sign_out",
+        "/outpost.goauthentik.io/ping",
+        "/outpost.goauthentik.io/auth/caddy",
+        "/outpost.goauthentik.io/auth/envoy",
+        "/outpost.goauthentik.io/auth/nginx",
+        "/outpost.goauthentik.io/auth/traefik",
+    ];
+
+    fn forward_path(path: &str) -> String {
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            "x-original-url",
+            HeaderValue::from_str(&format!("http://app.example.com{path}")).expect("header value"),
+        );
+        nginx_forward_url(&headers)
+            .expect("forward url")
+            .path()
+            .to_owned()
+    }
+
+    // A forwarded path that only resembles an outpost endpoint still needs a session.
+    #[test]
+    fn non_endpoint_paths_are_not_exempt() {
+        let exempt: Vec<&str> = NON_ENDPOINT_PATHS
+            .iter()
+            .copied()
+            .filter(|path| is_outpost_endpoint(&forward_path(path)))
+            .collect();
+
+        assert!(exempt.is_empty(), "exempt without a session: {exempt:#?}");
+    }
+
+    // The outpost's own endpoints stay reachable without a session.
+    #[test]
+    fn outpost_endpoints_are_exempt() {
+        let denied: Vec<&str> = ENDPOINT_PATHS
+            .iter()
+            .copied()
+            .filter(|path| !is_outpost_endpoint(&forward_path(path)))
+            .collect();
+
+        assert!(
+            denied.is_empty(),
+            "outpost endpoint not exempt: {denied:#?}"
+        );
     }
 }

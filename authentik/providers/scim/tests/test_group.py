@@ -9,10 +9,12 @@ from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.groups import SCIMGroupClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderGroup
 from authentik.providers.scim.tasks import scim_sync
+from authentik.tasks.models import Task, TaskStatus
 
 
 @patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
@@ -71,6 +73,47 @@ class SCIMGroupTests(TestCase):
                 "displayName": group.name,
                 "members": [],
             },
+        )
+
+    def _test_group_create_conflict_unmatched(self, mock: Mocker, search_response):
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={"filter": {"supported": True}},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            status_code=409,
+            json={
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+                "status": "409",
+                "detail": "Group already exists",
+            },
+        )
+        mock.get("https://localhost/Groups", json=search_response)
+
+        group = Group.objects.create(name=generate_id())
+
+        self.assertFalse(
+            SCIMProviderGroup.objects.filter(provider=self.provider, group=group).exists()
+        )
+        self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_TASK_EXCEPTION).exists())
+        log = Task.objects.get(_uid=f"{self.provider.name}:group:{group.pk}:direct").tasklogs.get(
+            log_level=TaskStatus.WARNING
+        )
+        self.assertIn(f"Failed to sync {group}", log.event)
+        self.assertIn("Group already exists", log.event)
+        self.assertIn("Delete or rename the conflicting object", log.event)
+
+    @Mocker()
+    def test_group_create_conflict_not_list_response(self, mock: Mocker):
+        """A conflict is reported when the search response isn't a SCIM ListResponse"""
+        self._test_group_create_conflict_unmatched(mock, [])
+
+    @Mocker()
+    def test_group_create_conflict_filter_ignored(self, mock: Mocker):
+        """A remote system that ignores the filter doesn't get another group linked"""
+        self._test_group_create_conflict_unmatched(
+            mock, {"Resources": [{"id": generate_id(), "displayName": generate_id()}]}
         )
 
     @Mocker()

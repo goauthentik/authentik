@@ -3,14 +3,30 @@
 import base64
 import zlib
 
+from structlog.stdlib import get_logger
+
+from authentik.providers.saml.exceptions import CannotHandleAssertion
+
+LOGGER = get_logger()
+MAX_INFLATED_SIZE_BYTES = 1 * 1024 * 1024
+
 
 def decode_base64_and_inflate(encoded: str, encoding="utf-8") -> str:
     """Base64 decode and ZLib decompress b64string"""
     decoded_data = base64.b64decode(encoded)
+    decompressor = zlib.decompressobj(-zlib.MAX_WBITS)  # raw deflate
     try:
-        return zlib.decompress(decoded_data, -15).decode(encoding)
+        inflated = decompressor.decompress(decoded_data, MAX_INFLATED_SIZE_BYTES + 1)
     except zlib.error:
         return decoded_data.decode(encoding)
+    if len(inflated) > MAX_INFLATED_SIZE_BYTES:
+        raise CannotHandleAssertion(
+            f"Inflated SAML message exceeds {MAX_INFLATED_SIZE_BYTES} bytes"
+        )
+    if not decompressor.eof:
+        LOGGER.warning("Incomplete deflate stream in SAML message")
+        return decoded_data.decode(encoding)
+    return inflated.decode(encoding)
 
 
 def deflate_and_base64_encode(inflated: str, encoding="utf-8"):
