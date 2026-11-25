@@ -15,6 +15,22 @@ const (
 	nginxPrefix   = "/outpost.goauthentik.io/auth/nginx"
 )
 
+func isOutpostEndpoint(path string) bool {
+	switch path {
+	case "/outpost.goauthentik.io/start",
+		"/outpost.goauthentik.io/callback",
+		"/outpost.goauthentik.io/sign_out",
+		"/outpost.goauthentik.io/ping",
+		nginxPrefix,
+		traefikPrefix,
+		caddyPrefix,
+		envoyPrefix:
+		return true
+	default:
+		return false
+	}
+}
+
 func (a *Application) configureForward() error {
 	a.mux.HandleFunc(traefikPrefix, a.forwardHandleTraefik)
 	a.mux.HandleFunc(caddyPrefix, a.forwardHandleCaddy)
@@ -145,8 +161,8 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 	}
 
 	if fwd.String() != r.URL.String() {
-		if strings.HasPrefix(fwd.Path, "/outpost.goauthentik.io") {
-			a.log.WithField("url", r.URL.String()).Trace("path begins with /outpost.goauthentik.io, allowing access")
+		if isOutpostEndpoint(fwd.Path) {
+			a.log.WithField("url", r.URL.String()).Trace("path is an outpost endpoint, allowing access")
 			return
 		}
 	}
