@@ -27,7 +27,7 @@ export class AKCronInput extends WithLocale(HorizontalLightComponent<string>) {
         this.value = (ev.target as HTMLInputElement).value;
     }
 
-    renderControl() {
+    protected override renderControl(): SlottedTemplateResult {
         return html`<input
             type="text"
             name=${this.name}
