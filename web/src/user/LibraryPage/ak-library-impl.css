@@ -27,8 +27,15 @@
         flex: 1 1 auto;
     }
 
-    .library-view-toggle {
+    .library-view-toggle-tooltip {
         flex: 0 0 auto;
+
+        @media (width < 768px) {
+            display: none;
+        }
+    }
+
+    .library-view-toggle {
         font-size: var(--pf-global--FontSize--xl);
         line-height: 1;
 
@@ -39,10 +46,6 @@
 
         @container (width < 800px) {
             margin-inline: 0;
-        }
-
-        @media (width < 768px) {
-            display: none;
         }
     }
 
