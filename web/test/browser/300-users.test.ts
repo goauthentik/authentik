@@ -73,6 +73,8 @@ test.describe("Users", () => {
             [fill, /^Path/, "users", dialog],
         );
 
+        await form.markAsTestData(dialog);
+
         await dialog.getByRole("button", { name: "Create" }).click();
 
         await expect(dialog, "Dialog closes after creating user").toBeHidden();
@@ -164,6 +166,8 @@ test.describe("Impersonation", () => {
                 [fill, /^Email Address/, `${username}@example.com`, createDialog],
                 [fill, /^Path/, "users", createDialog],
             );
+
+            await form.markAsTestData(createDialog);
 
             await createDialog.getByRole("button", { name: "Create" }).click();
 

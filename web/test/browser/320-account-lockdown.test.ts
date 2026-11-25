@@ -289,6 +289,8 @@ test.describe("Account lockdown", () => {
                 [fill, /^Path/, "users", dialog],
             );
 
+            await form.markAsTestData(dialog);
+
             await dialog.getByRole("button", { name: "Create" }).click();
             await expect(dialog, "Create dialog closes").toBeHidden({ timeout: 10_000 });
         });

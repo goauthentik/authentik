@@ -192,6 +192,8 @@ async function createInternalUser(
             [form.fill, /^Path/, "users", dialog],
         );
 
+        await form.markAsTestData(dialog);
+
         await dialog.getByRole("button", { name: "Create" }).click();
         await expect(dialog, "New user dialog closes").toBeHidden({ timeout: 10_000 });
     });

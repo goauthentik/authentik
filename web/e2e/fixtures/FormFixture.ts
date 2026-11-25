@@ -3,6 +3,11 @@ import type { LocatorContext } from "#e2e/selectors/types";
 
 import { expect, Locator, Page } from "@playwright/test";
 
+/**
+ * Attribute set on users, groups and other objects the e2e suite creates.
+ */
+export const E2E_ATTRIBUTE = "goauthentik.io/testing/e2e";
+
 export class FormFixture extends PageFixture {
     static fixtureName = "Form";
 
@@ -275,6 +280,26 @@ export class FormFixture extends PageFixture {
         } else {
             await expect(control).not.toHaveAttribute("open");
         }
+    };
+
+    /**
+     * Tag the object a form creates as e2e test data, by setting {@linkcode E2E_ATTRIBUTE} in the
+     * form's "Advanced settings" attributes editor. Test objects accumulate in dev databases by
+     * design; the tag lets tooling such as the authentik-dev database guard tell them apart from
+     * real ones.
+     */
+    public markAsTestData = async (context: LocatorContext = this.page): Promise<void> => {
+        await this.setFormGroup(/Advanced settings/, true, context);
+
+        const editor = context
+            .locator(`ak-form-element-horizontal[label="Attributes"]`)
+            .locator("ak-code-editor");
+
+        await expect(editor, "Attributes editor should be visible").toBeVisible();
+
+        await editor.click();
+        await this.page.keyboard.press("ControlOrMeta+a");
+        await this.page.keyboard.type(`${E2E_ATTRIBUTE}: true`);
     };
 
     //#endregion

@@ -69,6 +69,8 @@ test.describe("Passkeys", () => {
                     [fill, /^Path/, "users", dialog],
                 );
 
+                await form.markAsTestData(dialog);
+
                 await dialog.getByRole("button", { name: "Create" }).click();
 
                 await expect(dialog, "Dialog closes after creating user").toBeHidden();

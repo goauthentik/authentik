@@ -49,6 +49,8 @@ async function createInternalUser(
         [fill, /^Path/, "users", dialog],
     );
 
+    await form.markAsTestData(dialog);
+
     await dialog.getByRole("button", { name: "Create" }).click();
 
     await expect(dialog, "User wizard closes after creation").toBeHidden();
@@ -102,6 +104,7 @@ test.describe("Groups", () => {
             await expect(newGroupDialog, "Dialog opens").toBeVisible();
 
             await fill(/^Group Name/, groupName, newGroupDialog);
+            await form.markAsTestData(newGroupDialog);
 
             await newGroupDialog.getByRole("button", { name: "Create Group" }).click();
 
@@ -142,6 +145,8 @@ test.describe("Groups", () => {
                 [fill, /^Display Name/, displayName, dialog],
                 [fill, /^Email Address/, `${username}@example.com`, dialog],
             );
+
+            await form.markAsTestData(dialog);
 
             await dialog.getByRole("button", { name: "Create User" }).click();
 
@@ -201,6 +206,8 @@ test.describe("Groups", () => {
                 // ---
                 [fill, /^Group Name/, groupName, dialog],
             );
+
+            await form.markAsTestData(dialog);
 
             const createButton = dialog.getByRole("button", { name: "Create Group" });
 
@@ -292,6 +299,7 @@ test.describe("Groups", () => {
             await expect(newGroupDialog, "Dialog opens").toBeVisible();
 
             await fill(/^Group Name/, groupName, newGroupDialog);
+            await form.markAsTestData(newGroupDialog);
 
             await newGroupDialog.getByRole("button", { name: "Create Group" }).click();
 
@@ -359,6 +367,7 @@ test.describe("Groups", () => {
             await expect(newGroupDialog, "Dialog opens").toBeVisible();
 
             await fill(/^Group Name/, groupName, newGroupDialog);
+            await form.markAsTestData(newGroupDialog);
 
             await newGroupDialog.getByRole("button", { name: "Create Group" }).click();
 
