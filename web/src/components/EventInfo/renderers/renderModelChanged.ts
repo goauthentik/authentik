@@ -19,9 +19,10 @@ type DiffRecord = {
     [key: string]: DiffEntry;
 };
 
-const makeList = (value: string[], m: (s: string) => string) => html`<ul class="pf-c-list">
-    ${value.map((item) => html`<li>${m(item)}</li>`)}
-</ul>`;
+const makeList = (value: string[], m: (s: string) => string) =>
+    html`<ul class="pf-c-list">
+        ${value.map((item) => html`<li>${m(item)}</li>`)}
+    </ul>`;
 
 function newCol(key: string, value: DiffEntry) {
     // prettier-ignore
