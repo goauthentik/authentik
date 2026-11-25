@@ -38,3 +38,5 @@ qux
 qgqp
 jpww
 fanything
+pyasn
+pyjwt
