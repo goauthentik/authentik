@@ -27,9 +27,9 @@ import { property } from "lit/decorators.js";
 
 export class EventInfo extends AKElement {
     @property({ attribute: false })
-    event!: EventWithContext;
+    public event: EventWithContext | null = null;
 
-    static styles: CSSResult[] = [
+    public static readonly styles: CSSResult[] = [
         PFButton,
         PFFlex,
         PFCard,
@@ -44,7 +44,7 @@ export class EventInfo extends AKElement {
     // however, putting this return type creates a virtuous check of *all* the subrenderers to
     // ensure that all of them return what we're expecting.
 
-    render(): TemplateResult {
+    protected override render(): SlottedTemplateResult {
         const { event } = this;
 
         if (!event) {

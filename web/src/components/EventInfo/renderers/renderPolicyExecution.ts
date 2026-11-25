@@ -17,7 +17,7 @@ export function renderPolicyExecution(event: EventWithContext) {
                   id: "policies.bindings.dry-run.label",
               })}
           </ak-label>`
-        : nothing;
+        : null;
 
     const rawResult =
         result.raw_result !== null && result.raw_result !== undefined
