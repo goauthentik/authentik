@@ -2631,9 +2631,6 @@ export const styles = css`
     .fa-opera:before {
         content: "\\f26a";
     }
-    .fa-optin-monster:before {
-        content: "\\f23c";
-    }
     .fa-osi:before {
         content: "\\f41a";
     }
