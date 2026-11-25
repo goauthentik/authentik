@@ -36,7 +36,7 @@ catalog:
     "@docusaurus/utils": "^3.10.2"
     "@types/node": "^26.6.6"
     esbuild: "^0.28.2"
-    typescript: "^6.0.3"
+    typescript: "^7.0.2"
 
 overrides:
     "@goauthentik/docusaurus-config>react": "^19.2.6"
