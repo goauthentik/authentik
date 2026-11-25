@@ -17,7 +17,7 @@ import { parseArgs } from "node:util";
 
 import { checkGenerated, type Regenerate } from "./checks/generated.ts";
 import { lint } from "./checks/lint.ts";
-import { discover, publicEnvironment } from "./discovery.ts";
+import { LANGUAGE_SERVER_INSTALL, discover, publicEnvironment } from "./discovery.ts";
 import { evaluate, failedChecks, suggestedAllowlist } from "./guard.ts";
 import { HOOKS, type HookName, runHook } from "./hooks.ts";
 import { DEFAULT_BASE } from "./repo.ts";
@@ -49,6 +49,13 @@ async function status(json: boolean): Promise<number> {
     }
     if (verdict.allowlistChanged)
         console.log("Note: the database allowlist changed since the last run.");
+    const missing = Object.entries(env.languageServers).filter(([, v]) => v === null);
+    if (missing.length) {
+        console.log("\nOptional, for editors and Claude Code's LSP plugins:");
+        for (const [name] of missing) {
+            console.log(`  ${name} isn't installed: ${LANGUAGE_SERVER_INSTALL[name]}`);
+        }
+    }
     const snippet = suggestedAllowlist(env, verdict);
     if (snippet)
         console.log(`\nIf this is your dev database, add this to local.env.yml:\n\n${snippet}`);

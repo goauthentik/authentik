@@ -4,7 +4,7 @@
 
 import { checkGenerated } from "./checks/generated.ts";
 import { lint } from "./checks/lint.ts";
-import { discover, publicEnvironment } from "./discovery.ts";
+import { LANGUAGE_SERVER_INSTALL, discover, publicEnvironment } from "./discovery.ts";
 import { evaluate, suggestedAllowlist, type Verdict } from "./guard.ts";
 import * as jobs from "./jobs.ts";
 import { DEFAULT_BASE, ROOT, branch, mergeBase } from "./repo.ts";
@@ -82,9 +82,18 @@ export async function build(verdict?: Verdict): Promise<McpServer> {
                 databaseTools: startup.ok
                     ? "enabled"
                     : "disabled for this session; restart the server once the guard passes",
-                notes: now.allowlistChanged
-                    ? ["The database allowlist changed since the last run. Check that change."]
-                    : [],
+                notes: [
+                    ...(now.allowlistChanged
+                        ? ["The database allowlist changed since the last run. Check that change."]
+                        : []),
+                    ...Object.entries(env.languageServers)
+                        .filter(([, v]) => v === null)
+                        .map(
+                            ([name]) =>
+                                `Optional: ${name} isn't on PATH, so editors and Claude Code's ` +
+                                `LSP plugins can't use it. Install: ${LANGUAGE_SERVER_INSTALL[name]}`,
+                        ),
+                ],
             });
         },
     );

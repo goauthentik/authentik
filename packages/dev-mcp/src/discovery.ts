@@ -266,11 +266,19 @@ export interface Environment {
     postgres: Postgres;
     hostTools: Record<string, string | null>;
     toolchains: Record<string, string | null>;
+    /** Optional: language servers for editors and Claude Code's LSP plugins. */
+    languageServers: Record<string, string | null>;
 }
+
+/** How to install each language server `discover()` looks for. */
+export const LANGUAGE_SERVER_INSTALL: Record<string, string> = {
+    "typescript-language-server": "npm install -g typescript-language-server typescript",
+    "rust-analyzer": "rustup component add rust-analyzer",
+};
 
 export async function discover(): Promise<Environment> {
     const config = await loadConfig();
-    const [runtime, postgres, psql, createdb, dropdb, uv, node, pnpm, cargo, go, make] =
+    const [runtime, postgres, psql, createdb, dropdb, uv, node, pnpm, cargo, go, make, tsls, ra] =
         await Promise.all([
             containerRuntime(),
             classifyPostgres(config),
@@ -283,6 +291,8 @@ export async function discover(): Promise<Environment> {
             version("cargo"),
             version("go", ["version"]),
             version("make"),
+            version("typescript-language-server"),
+            version("rust-analyzer"),
         ]);
     return {
         config,
@@ -290,6 +300,7 @@ export async function discover(): Promise<Environment> {
         postgres,
         hostTools: { psql, createdb, dropdb },
         toolchains: { uv, node, pnpm, cargo, go, make },
+        languageServers: { "typescript-language-server": tsls, "rust-analyzer": ra },
     };
 }
 

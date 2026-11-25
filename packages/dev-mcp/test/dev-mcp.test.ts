@@ -53,6 +53,7 @@ function makeEnv(options: EnvOptions = {}): Environment {
         postgres: { kind, local, container: null, detail: "" },
         hostTools: {},
         toolchains: {},
+        languageServers: {},
     };
 }
 

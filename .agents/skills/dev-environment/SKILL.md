@@ -99,6 +99,10 @@ Locked out but the data is worth keeping? Mint a recovery link instead of resett
 
 ## Gotchas
 
+- **Language servers are optional, but Claude Code's LSP plugins need them on PATH.** The
+  `typescript-lsp` and `rust-analyzer-lsp` plugins warn at startup without them:
+  `npm install -g typescript-language-server typescript` and
+  `rustup component add rust-analyzer`. `make dev-status` says which ones are missing.
 - **pnpm doesn't run install scripts** unless the package is allow-listed in its workspace's
   `pnpm-workspace.yaml` (`onlyBuiltDependencies` and `allowBuilds`). If `esbuild`,
   `chromedriver` or `tree-sitter` is missing after install, see the install-scripts note in
