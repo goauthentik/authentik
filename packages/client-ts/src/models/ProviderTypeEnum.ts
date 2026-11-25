@@ -22,6 +22,7 @@ export const ProviderTypeEnum = {
     Github: "github",
     Gitlab: "gitlab",
     Google: "google",
+    Idjagissuer: "idjagissuer",
     Mailcow: "mailcow",
     Okta: "okta",
     Patreon: "patreon",

@@ -47378,10 +47378,13 @@ components:
           description: 'How an ID-JAG from this source finds its user: by the issuer''s
             subject, linked by email the first time, or by email on every redemption,
             for issuers whose subjects aren''t stable.'
+        id_jag_issuer:
+          type: string
+          description: Issuer identifier of an Identity Assertion Issuer source, as
+            it publishes it. ID-JAGs are accepted when their `iss` equals it exactly.
       required:
       - callback_url
       - component
-      - consumer_key
       - icon_themed_urls
       - icon_url
       - managed
@@ -47539,7 +47542,6 @@ components:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
-          minLength: 1
         consumer_secret:
           type: string
           writeOnly: true
@@ -47579,8 +47581,11 @@ components:
           description: 'How an ID-JAG from this source finds its user: by the issuer''s
             subject, linked by email the first time, or by email on every redemption,
             for issuers whose subjects aren''t stable.'
+        id_jag_issuer:
+          type: string
+          description: Issuer identifier of an Identity Assertion Issuer source, as
+            it publishes it. ID-JAGs are accepted when their `iss` equals it exactly.
       required:
-      - consumer_key
       - name
       - provider_type
       - slug
@@ -53345,7 +53350,6 @@ components:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
-          minLength: 1
         consumer_secret:
           type: string
           writeOnly: true
@@ -53385,6 +53389,10 @@ components:
           description: 'How an ID-JAG from this source finds its user: by the issuer''s
             subject, linked by email the first time, or by email on every redemption,
             for issuers whose subjects aren''t stable.'
+        id_jag_issuer:
+          type: string
+          description: Issuer identifier of an Identity Assertion Issuer source, as
+            it publishes it. ID-JAGs are accepted when their `iss` equals it exactly.
     PatchedObjectAttributeRequest:
       type: object
       properties:
@@ -56340,6 +56348,7 @@ components:
       - github
       - gitlab
       - google
+      - idjagissuer
       - mailcow
       - okta
       - patreon
@@ -60444,6 +60453,9 @@ components:
           type: string
         urls_customizable:
           type: boolean
+        assertion_only:
+          type: boolean
+          readOnly: true
         request_token_url:
           type: string
           readOnly: true
@@ -60470,6 +60482,7 @@ components:
           nullable: true
       required:
       - access_token_url
+      - assertion_only
       - authorization_url
       - name
       - oidc_jwks_url
