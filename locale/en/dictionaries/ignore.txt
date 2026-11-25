@@ -12,6 +12,7 @@ lxml
 mpvq
 pässwörd
 phlebotinum
+fprivate
 qewr
 quox
 recategorize
@@ -19,6 +20,7 @@ reinject
 tmpfs
 trixie
 vjgh
+cprivate
 XFCC
 xghcr
 xoxb
