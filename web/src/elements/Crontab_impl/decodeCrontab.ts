@@ -51,7 +51,9 @@ export function isValidDjangoCron(value: string): boolean {
 
 export function decodeCrontab(value: string, language: TargetLanguageTag): string {
     try {
-        if (!isValidDjangoCron(value)) throw new Error("Not a server-accepted crontab");
+        if (!isValidDjangoCron(value)) {
+          throw new TypeError(`Not a server-accepted crontab: ${value}`);
+        }
 
         return cronstrue.toString(value, {
             throwExceptionOnParseError: true,
