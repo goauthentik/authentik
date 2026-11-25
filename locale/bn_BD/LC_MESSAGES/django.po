@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-23 00:09+0000\n"
+"POT-Creation-Date: 2026-11-23 00:10+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Azharul Haque, 2026\n"
 "Language-Team: Bengali (Bangladesh) (https://app.transifex.com/authentik/teams/119923/bn_BD/)\n"
@@ -21,10 +21,15 @@ msgstr ""
 "Language: bn_BD\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: authentik/admin/api/settings.py
+#, python-brace-format
+msgid "Value for flag {flag_key} needs to be of type {type}."
+msgstr "ফ্ল্যাগ {flag_key}-এর মান অবশ্যই {type} টাইপের হতে হবে।"
+
 #: authentik/admin/files/api.py
 #, python-brace-format
-msgid "File size ({file.size}B) exceeds maximum allowed "
-msgstr "ফাইলের আকার ({file.size}B) সর্বোচ্চ সীমা অতিক্রম করেছে"
+msgid "File size ({size}B) exceeds maximum allowed size ({max_size}B)."
+msgstr ""
 
 #: authentik/admin/files/validation.py
 msgid "File name cannot be empty"
@@ -66,6 +71,93 @@ msgstr "ফাইলের নাম অনেক বড় (সর্বোচ�
 #, python-brace-format
 msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
 msgstr "পাথ কম্পোনেন্ট অনেক বড় (সর্বোচ্চ {MAX_PATH_COMPONENT_LENGTH} অক্ষর)"
+
+#: authentik/admin/models.py
+msgid "Configure how authentik should show avatars for users."
+msgstr ""
+"ব্যবহারকারীদের জন্য authentik কীভাবে অ্যাভাটার দেখাবে তা কনফিগার করুন।"
+
+#: authentik/admin/models.py
+msgid "Enter a valid URL, for example https://authentik.company"
+msgstr ""
+
+#: authentik/admin/models.py
+msgid ""
+"Configure the base URL under which this authentik instance is reachable, "
+"e.g. https://authentik.company"
+msgstr ""
+"যে বেস URL-এর অধীনে এই authentik ইনস্ট্যান্সটি প্রবেশযোগ্য তা কনফিগার করুন, "
+"যেমন https://authentik.company"
+
+#: authentik/admin/models.py
+msgid "Enable the ability for users to change their name."
+msgstr "ব্যবহারকারীদের তাদের নাম পরিবর্তনের ক্ষমতা সক্রিয় করুন।"
+
+#: authentik/admin/models.py
+msgid "Enable the ability for users to change their email address."
+msgstr "ব্যবহারকারীদের তাদের ইমেইল ঠিকানা পরিবর্তনের ক্ষমতা সক্রিয় করুন।"
+
+#: authentik/admin/models.py
+msgid "Enable the ability for users to change their username."
+msgstr "ব্যবহারকারীদের তাদের ইউজারনেম পরিবর্তনের ক্ষমতা সক্রিয় করুন।"
+
+#: authentik/admin/models.py
+msgid ""
+"Events will be deleted after this duration.(Format: "
+"weeks=3;days=2;hours=3,seconds=2)."
+msgstr ""
+"এই সময়কালের পর ইভেন্ট মুছে ফেলা হবে। (ফরম্যাট: "
+"weeks=3;days=2;hours=3,seconds=2)।"
+
+#: authentik/admin/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr "রেপুটেশন এই মানের চেয়ে কম হতে পারবে না। শূন্য অথবা ঋণাত্মক।"
+
+#: authentik/admin/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr "রেপুটেশন এই মানের চেয়ে বেশি হতে পারবে না। শূন্য অথবা ধনাত্মক।"
+
+#: authentik/admin/models.py
+msgid "The option configures the footer links on the flow executor pages."
+msgstr "এই অপশনটি ফ্লো এক্সিকিউটর পৃষ্ঠাগুলোর ফুটার লিঙ্ক কনফিগার করে।"
+
+#: authentik/admin/models.py
+msgid ""
+"When enabled, all the events caused by a user will be deleted upon the "
+"user's deletion."
+msgstr ""
+"সক্রিয় করা থাকলে, একজন ব্যবহারকারীর কারণে ঘটা সমস্ত ইভেন্ট ব্যবহারকারী মুছে"
+" ফেলার সাথে সাথে মুছে ফেলা হবে।"
+
+#: authentik/admin/models.py
+msgid "Globally enable/disable impersonation."
+msgstr "গ্লোবালভাবে ইমপারসনেশন সক্রিয়/নিষ্ক্রিয় করুন।"
+
+#: authentik/admin/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
+"একজন ব্যবহারকারীর ছদ্মবেশ ধারণ করার জন্য অ্যাডমিনিস্ট্রেটরদের একটি কারণ "
+"প্রদান করা বাধ্যতামূলক করুন।"
+
+#: authentik/admin/models.py
+msgid "Default token duration"
+msgstr "ডিফল্ট টোকেন সময়কাল"
+
+#: authentik/admin/models.py
+msgid "Default token length"
+msgstr "ডিফল্ট টোকেন দৈর্ঘ্য"
+
+#: authentik/admin/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr "কোনো সাইজের অনুরোধ না করা হলে API রেসপন্সের জন্য ডিফল্ট পৃষ্ঠার আকার।"
+
+#: authentik/admin/models.py
+msgid "Maximum page size"
+msgstr "সর্বোচ্চ পৃষ্ঠার আকার"
+
+#: authentik/admin/models.py
+msgid "System settings"
+msgstr ""
 
 #: authentik/admin/models.py
 msgid "Version history"
@@ -241,15 +333,15 @@ msgstr "ব্র্যান্ড ক্লায়েন্ট সার্�
 
 #: authentik/common/oauth/constants.py
 msgid "Based on the Hashed User ID"
-msgstr "হ্যাশড ব্যবহারকারী আইডির ভিত্তিতে"
+msgstr "হ্যাশড ইউজার আইডির ভিত্তিতে"
 
 #: authentik/common/oauth/constants.py
 msgid "Based on user ID"
-msgstr "ব্যবহারকারী আইডির ভিত্তিতে"
+msgstr "ইউজার আইডির ভিত্তিতে"
 
 #: authentik/common/oauth/constants.py
 msgid "Based on user UUID"
-msgstr "ব্যবহারকারী UUID-র ভিত্তিতে"
+msgstr "ইউজার UUID-র ভিত্তিতে"
 
 #: authentik/common/oauth/constants.py
 msgid "Based on the username"
@@ -268,9 +360,37 @@ msgstr ""
 "'upn' অ্যাট্রিবিউট সেট করা থাকে। শুধুমাত্র তখনই এই পদ্ধতি ব্যবহার করুন যখন "
 "আপনার ভিন্ন UPN এবং মেইল ডোমেইন থাকে।"
 
+#: authentik/common/saml/exceptions.py
+msgid "Cannot decode SAML request."
+msgstr ""
+
+#: authentik/common/saml/exceptions.py
+msgid "Verification Certificate configured, but request is not signed."
+msgstr ""
+
+#: authentik/common/saml/exceptions.py
+msgid "Failed to verify signature"
+msgstr ""
+
+#: authentik/common/saml/exceptions.py
+msgid ""
+"The ACS URL in the request does not match the ACS URL configured on the "
+"provider."
+msgstr ""
+
+#: authentik/common/saml/parsers/logout_response.py
+msgid "Cannot decode SAML response."
+msgstr ""
+
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr "ব্যবহারকারীর অ্যাপ্লিকেশনে অ্যাক্সেস নেই।"
+
+#: authentik/core/api/application_entitlements.py
+msgid ""
+"Entitlements assigned to this user, directly or through a group, regardless "
+"of the user's access to the application."
+msgstr ""
 
 #: authentik/core/api/applications.py
 #, python-brace-format
@@ -278,8 +398,26 @@ msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr "স্লাগ '{slug}' সংরক্ষিত এবং অ্যাপ্লিকেশনের জন্য ব্যবহার করা যাবে না।"
 
 #: authentik/core/api/groups.py
+#, python-brace-format
+msgid ""
+"User does not have permission to set superuser status to {superuser_status}."
+msgstr ""
+
+#: authentik/core/api/groups.py
 msgid "User does not have permission to add members to this group."
 msgstr "এই গ্রুপে সদস্য যোগ করার অনুমতি ব্যবহারকারীর নেই।"
+
+#: authentik/core/api/groups.py authentik/core/api/users.py
+msgid "User does not have permission to add members to a superuser group."
+msgstr "সুপারইউজার গ্রুপে সদস্য যোগ করার অনুমতি ব্যবহারকারীর নেই।"
+
+#: authentik/core/api/groups.py
+msgid "User does not have permission to add a superuser parent group."
+msgstr ""
+
+#: authentik/core/api/groups.py authentik/core/api/users.py
+msgid "User does not have permission to assign roles."
+msgstr "রোল বরাদ্দ করার অনুমতি ব্যবহারকারীর নেই।"
 
 #: authentik/core/api/object_attributes.py
 msgid "Unique cannot be enabled for arrays."
@@ -301,7 +439,7 @@ msgstr "শুরুতে বা শেষে স্ল্যাশ ব্য�
 
 #: authentik/core/api/users.py
 msgid "No empty segments in user path allowed."
-msgstr "ব্যবহারকারী পাথে কোনো খালি সেগমেন্টের অনুমতি নেই।"
+msgstr "ইউজার পাথে কোনো খালি সেগমেন্টের অনুমতি নেই।"
 
 #: authentik/core/api/users.py
 msgid "Can't create internal service accounts"
@@ -309,15 +447,7 @@ msgstr "ইন্টারনাল সার্ভিস অ্যাকাউ�
 
 #: authentik/core/api/users.py
 msgid "Can't change internal service account to other user type."
-msgstr "ইন্টারনাল সার্ভিস অ্যাকাউন্টকে অন্য ব্যবহারকারী টাইপে পরিবর্তন করা যাবে না।"
-
-#: authentik/core/api/users.py
-msgid "User does not have permission to add members to a superuser group."
-msgstr "সুপারইউজার গ্রুপে সদস্য যোগ করার অনুমতি ব্যবহারকারীর নেই।"
-
-#: authentik/core/api/users.py
-msgid "User does not have permission to assign roles."
-msgstr "রোল বরাদ্দ করার অনুমতি ব্যবহারকারীর নেই।"
+msgstr "ইন্টারনাল সার্ভিস অ্যাকাউন্টকে অন্য ইউজার টাইপে পরিবর্তন করা যাবে না।"
 
 #: authentik/core/api/users.py
 msgid "Cannot set both password and password_hash. Use only one."
@@ -334,12 +464,15 @@ msgid "This field is required."
 msgstr "এই ফিল্ডটি আবশ্যক।"
 
 #: authentik/core/api/users.py
-msgid "filter: failed to parse JSON"
-msgstr "filter: JSON পার্স করতে ব্যর্থ হয়েছে"
+msgid ""
+"Import a valid password hash even when its parameters do not match "
+"authentik's current password hashing settings."
+msgstr ""
 
 #: authentik/core/api/users.py
-msgid "filter: value must be key:value mapping"
-msgstr "filter: মান অবশ্যই key:value ম্যাপিং হতে হবে"
+#, python-format
+msgid "%(reason)s Set \"override\" to true to import it anyway."
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "No recovery flow set."
@@ -486,6 +619,7 @@ msgid "Hide this application from the user's My applications page."
 msgstr "ব্যবহারকারীর 'আমার অ্যাপ্লিকেশন' পৃষ্ঠা থেকে এই অ্যাপ্লিকেশনটি লুকান।"
 
 #: authentik/core/models.py
+#: authentik/stages/authenticator_validate/challenge.py
 msgid "Application"
 msgstr "অ্যাপ্লিকেশন"
 
@@ -617,11 +751,11 @@ msgstr "প্রপার্টি ম্যাপিংসমূহ"
 
 #: authentik/core/models.py
 msgid "Source User Property Mapping"
-msgstr "সোর্স ব্যবহারকারী প্রপার্টি ম্যাপিং"
+msgstr "সোর্স ইউজার প্রপার্টি ম্যাপিং"
 
 #: authentik/core/models.py
 msgid "Source User Property Mappings"
-msgstr "সোর্স ব্যবহারকারী প্রপার্টি ম্যাপিংসমূহ"
+msgstr "সোর্স ইউজার প্রপার্টি ম্যাপিংসমূহ"
 
 #: authentik/core/models.py
 msgid "Source Group Property Mapping"
@@ -641,11 +775,11 @@ msgstr "প্রোভাইডার প্রপার্টি ম্যা�
 
 #: authentik/core/models.py
 msgid "User Role"
-msgstr "ব্যবহারকারী রোল"
+msgstr "ইউজার রোল"
 
 #: authentik/core/models.py
 msgid "User Roles"
-msgstr "ব্যবহারকারী রোলসমূহ"
+msgstr "ইউজার রোলসমূহ"
 
 #: authentik/core/models.py
 msgid "Group Role"
@@ -657,11 +791,11 @@ msgstr "গ্রুপ রোলসমূহ"
 
 #: authentik/core/models.py
 msgid "User Group"
-msgstr "ব্যবহারকারী গ্রুপ"
+msgstr "ইউজার গ্রুপ"
 
 #: authentik/core/models.py
 msgid "User Groups"
-msgstr "ব্যবহারকারী গ্রুপসমূহ"
+msgstr "ইউজার গ্রুপসমূহ"
 
 #: authentik/core/models.py
 msgid "session data"
@@ -721,7 +855,7 @@ msgstr "মিরর পলিসি ইঞ্জিন"
 
 #: authentik/core/models.py
 msgid "Copy policy bindings"
-msgstr "পলিসি বাইন্ডিং কপি করুন"
+msgstr "নীতি বাইন্ডিং কপি করুন"
 
 #: authentik/core/models.py
 msgid "Don't inherit any policy bindings"
@@ -738,6 +872,10 @@ msgstr "অ্যাক্টরসমূহ"
 #: authentik/core/models.py
 msgid "Policy behavior cannot be changed after creation."
 msgstr "পলিসির আচরণ তৈরির পর পরিবর্তন করা যাবে না।"
+
+#: authentik/core/sources/flow_manager.py
+msgid "New users can't enroll while adding a user."
+msgstr ""
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
@@ -778,9 +916,28 @@ msgstr "মেয়াদোত্তীর্ণ অবজেক্ট সর�
 msgid "Remove temporary users created by SAML Sources."
 msgstr "SAML সোর্স দ্বারা তৈরি অস্থায়ী ব্যবহারকারীদের সরান।"
 
+#: authentik/core/templates/base/noscript.html
+msgid "Cannot load this page without JavaScript"
+msgstr ""
+
+#: authentik/core/templates/base/noscript.html
+msgid ""
+"This application requires JavaScript to function. JavaScript may be\n"
+"                disabled in your browser settings or blocked by a browser\n"
+"                extension."
+msgstr ""
+
+#: authentik/core/templates/base/noscript.html
+msgid "Learn more &rsaquo;"
+msgstr ""
+
 #: authentik/core/templates/base/skeleton.html
 msgid "Recovery session is active. Custom branding is disabled."
 msgstr "রিকভারি সেশন সক্রিয় আছে। কাস্টম ব্র্যান্ডিং নিষ্ক্রিয় করা হয়েছে।"
+
+#: authentik/core/templates/base/spinner.html
+msgid "Loading..."
+msgstr ""
 
 #: authentik/core/templates/if/error.html
 #: authentik/policies/templates/policies/denied.html
@@ -825,6 +982,10 @@ msgstr "ব্যবহারকারী পরিবর্তন নিষ্�
 msgid "Subject-alt name"
 msgstr "সাবজেক্ট-অল্ট নেম"
 
+#: authentik/crypto/api.py
+msgid "The selected algorithm is not supported in the current configuration."
+msgstr ""
+
 #: authentik/crypto/builder.py
 msgid "rsa"
 msgstr "rsa"
@@ -840,6 +1001,18 @@ msgstr "Ed25519"
 #: authentik/crypto/builder.py authentik/crypto/models.py
 msgid "Ed448"
 msgstr "Ed448"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "ML-DSA-44"
+msgstr ""
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "ML-DSA-65"
+msgstr ""
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "ML-DSA-87"
+msgstr ""
 
 #: authentik/crypto/models.py
 msgid "RSA"
@@ -909,6 +1082,19 @@ msgstr "সার্টিফিকেট-কী পেয়ারের প্
 msgid "Discover, import and update certificates from the filesystem."
 msgstr "ফাইলসিস্টেম থেকে সার্টিফিকেট আবিষ্কার, ইম্পোর্ট এবং আপডেট করুন।"
 
+#: authentik/crypto/validators.py
+#, python-brace-format
+msgid ""
+"Key type {key_type} is not supported. Supported key types are: {allowed}."
+msgstr ""
+
+#: authentik/crypto/validators.py
+#, python-brace-format
+msgid ""
+"Unable to determine the key type of this certificate. Supported key types "
+"are: {allowed}."
+msgstr ""
+
 #: authentik/endpoints/api/stages.py
 msgid "Selected connector is not compatible with this stage."
 msgstr "নির্বাচিত কানেক্টরটি এই স্টেজের সাথে সামঞ্জস্যপূর্ণ নয়।"
@@ -943,11 +1129,11 @@ msgstr "এজেন্ট কানেক্টর JWT ফেডারেশন
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Device User binding"
-msgstr "এজেন্ট ডিভাইস ব্যবহারকারী বাইন্ডিং"
+msgstr "এজেন্ট ডিভাইস ইউজার বাইন্ডিং"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Device User bindings"
-msgstr "এজেন্ট ডিভাইস ব্যবহারকারী বাইন্ডিংসমূহ"
+msgstr "এজেন্ট ডিভাইস ইউজার বাইন্ডিংসমূহ"
 
 #: authentik/endpoints/connectors/agent/models.py
 #: authentik/providers/oauth2/models.py
@@ -984,6 +1170,22 @@ msgid "Apple Nonces"
 msgstr "অ্যাপল ননসসমূহ"
 
 #: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Authorization Code"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Authorization Codes"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Unlock Key"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Unlock Keys"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
 msgid "Apple Independent Secure Enclave"
 msgstr "অ্যাপল ইনডিপেন্ডেন্ট সিকিউর এনক্লেভ"
 
@@ -1013,19 +1215,19 @@ msgstr "ডিভাইসসমূহ"
 
 #: authentik/endpoints/models.py
 msgid "Device User binding"
-msgstr "ডিভাইস ব্যবহারকারী বাইন্ডিং"
+msgstr "ডিভাইস ইউজার বাইন্ডিং"
 
 #: authentik/endpoints/models.py
 msgid "Device User bindings"
-msgstr "ডিভাইস ব্যবহারকারী বাইন্ডিংসমূহ"
+msgstr "ডিভাইস ইউজার বাইন্ডিংসমূহ"
 
 #: authentik/endpoints/models.py
 msgid "Device connection"
-msgstr "ডিভাইস সংযোগ"
+msgstr "ডিভাইস কানেকশন"
 
 #: authentik/endpoints/models.py
 msgid "Device connections"
-msgstr "ডিভাইস সংযোগসমূহ"
+msgstr "ডিভাইস কানেকশনসমূহ"
 
 #: authentik/endpoints/models.py
 msgid "Device fact snapshot"
@@ -1087,6 +1289,22 @@ msgstr "এই অবজেক্ট তৈরি/আপডেট করতে �
 msgid "Enterprise is required to use this endpoint."
 msgstr "এই এন্ডপয়েন্ট ব্যবহার করতে এন্টারপ্রাইজ প্রয়োজন।"
 
+#: authentik/enterprise/api.py
+msgid "Count steps must have a positive duration."
+msgstr ""
+
+#: authentik/enterprise/api.py
+msgid "Start and end must be specified together."
+msgstr ""
+
+#: authentik/enterprise/api.py
+msgid "Start must be earlier than end."
+msgstr ""
+
+#: authentik/enterprise/api.py
+msgid "Specify at least one count step or an absolute range."
+msgstr ""
+
 #: authentik/enterprise/audit/apps.py
 msgid ""
 "Include additional information in audit logs, may incur a performance "
@@ -1123,6 +1341,128 @@ msgstr "Google ডিভাইস ট্রাস্ট কানেক্টর
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
 msgid "Verifying your browser..."
 msgstr "আপনার ব্রাউজার যাচাই করা হচ্ছে..."
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid ""
+"Certificate authorities which issue device certificates via Intune (Cloud "
+"PKI, SCEP or PKCS profiles), used by the endpoint stage to validate "
+"certificates. This option has a higher priority than the "
+"`client_certificate` option on `Brand`."
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connectors"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector Certificate Authority"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
+msgid "Microsoft Intune Connector Certificate Authorities"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Select at least one user type."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Internal service accounts cannot be expired."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Inactivity duration must be positive."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Warning period must be positive."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "A warning period is required for notifications."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Warning period must be shorter than the inactivity duration."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Last login"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Last activity"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Measure inactivity from the last login or successful user activity."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Only expire members of this group (including descendant groups). Leave empty"
+" to apply to every user."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Only expire users of these types. Service accounts are excluded by default."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "How long a user may be inactive before they are expired."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Schedule the offboarding and notify the user this long before they expire. "
+"Leave empty to expire users without warning."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Select which transports should be used to warn the user. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Never expire members of a superuser group."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rule"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rules"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+#, python-format
+msgid ""
+"User %(username)s will be offboarded (%(action)s) on %(scheduled_at)s due to"
+" inactivity"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rule Notification Transport"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rule Notification Transports"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/tasks.py
+msgid "Apply all enabled user expiration rules."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/tasks.py
+msgid "Apply user expiration rule."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/offboarding/actions.py
 #, python-format
@@ -1197,19 +1537,19 @@ msgstr "যতবার এক্সিকিউশন চেষ্টা কর
 
 #: authentik/enterprise/lifecycle/offboarding/models.py
 msgid "User Offboarding"
-msgstr "ব্যবহারকারী অফবোর্ডিং"
+msgstr "ইউজার অফবোর্ডিং"
 
 #: authentik/enterprise/lifecycle/offboarding/models.py
 msgid "User Offboardings"
-msgstr "ব্যবহারকারী অফবোর্ডিংসমূহ"
+msgstr "ইউজার অফবোর্ডিংসমূহ"
 
 #: authentik/enterprise/lifecycle/offboarding/tasks.py
 msgid "Execute due user offboardings."
-msgstr "যেসব ব্যবহারকারীর অফবোর্ডিংয়ের নির্ধারিত সময় হয়েছে, সেগুলো কার্যকর করুন।"
+msgstr "নির্ধারিত সময়ে পৌঁছানো ইউজার অফবোর্ডিং কার্যকর করুন।"
 
 #: authentik/enterprise/lifecycle/offboarding/tasks.py
 msgid "Execute a single user offboarding."
-msgstr "একটি একক ব্যবহারকারী অফবোর্ডিং কার্যকর করুন।"
+msgstr "একটি একক ইউজার অফবোর্ডিং কার্যকর করুন।"
 
 #: authentik/enterprise/lifecycle/review/api/reviews.py
 msgid "You are not allowed to submit a review for this object."
@@ -1269,29 +1609,29 @@ msgid "Overdue"
 msgstr "মেয়াদোত্তীর্ণ"
 
 #: authentik/enterprise/lifecycle/review/models.py
-msgid "Go to {self._get_model_name()}"
-msgstr "{self._get_model_name()}-এ যান"
+#, python-brace-format
+msgid "Go to {model_name}"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/review/models.py
-msgid ""
-"Access review is due for {self.content_type.name.lower()} {object_label}"
+#, python-brace-format
+msgid "Access review is due for {model_name} {object_label}"
 msgstr ""
-"{self.content_type.name.lower()} {object_label}-এর জন্য অ্যাক্সেস রিভিউ "
-"প্রয়োজন"
 
 #: authentik/enterprise/lifecycle/review/models.py
-msgid ""
-"Access review is overdue for {self.content_type.name} {str(self.object)}"
+#, python-brace-format
+msgid "Access review is overdue for {model_name} {object_label}"
 msgstr ""
-"{self.content_type.name} {str(self.object)}-এর জন্য অ্যাক্সেস রিভিউ "
-"মেয়াদোত্তীর্ণ হয়ে গেছে"
 
 #: authentik/enterprise/lifecycle/review/models.py
-msgid ""
-"Access review completed for {self.content_type.name} {str(self.object)}"
+#, python-brace-format
+msgid "Access review completed for {model_name} {object_label}"
 msgstr ""
-"{self.content_type.name} {str(self.object)}-এর জন্য অ্যাক্সেস রিভিউ সম্পন্ন "
-"হয়েছে"
+
+#: authentik/enterprise/lifecycle/review/models.py
+#, python-brace-format
+msgid "Access review attested for {model_name} {object_label}"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Dispatch tasks to apply lifecycle rules."
@@ -1351,7 +1691,7 @@ msgstr "পাসওয়ার্ড ইউনিকনেস পলিসি�
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "User Password History"
-msgstr "ব্যবহারকারী পাসওয়ার্ড হিস্টরি"
+msgstr "ইউজার পাসওয়ার্ড হিস্টরি"
 
 #: authentik/enterprise/policies/unique_password/tasks.py
 msgid ""
@@ -1363,7 +1703,7 @@ msgstr ""
 
 #: authentik/enterprise/policies/unique_password/tasks.py
 msgid "Remove user password history that are too old."
-msgstr "ব্যবহারকারীর পাসওয়ার্ডের অতিরিক্ত পুরোনো ইতিহাস সরান।"
+msgstr "অনেক পুরনো ইউজার পাসওয়ার্ড হিস্টরি সরান।"
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -1375,11 +1715,11 @@ msgstr "ফিচারটি শুধুমাত্র ইন্টারন�
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider User"
-msgstr "Google Workspace প্রোভাইডার ব্যবহারকারী"
+msgstr "Google Workspace প্রোভাইডার ইউজার"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Users"
-msgstr "Google Workspace প্রোভাইডার ব্যবহারকারীগণ"
+msgstr "Google Workspace প্রোভাইডার ইউজারগণ"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Group"
@@ -1430,7 +1770,7 @@ msgstr "Google Workspace প্রোভাইডারের জন্য স�
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Sync a direct object (user, group) for Google Workspace provider."
 msgstr ""
-"Google Workspace প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্ট (ব্যবহারকারী, গ্রুপ) "
+"Google Workspace প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্ট (ইউজার, গ্রুপ) "
 "সিঙ্ক করুন।"
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
@@ -1438,20 +1778,20 @@ msgid ""
 "Dispatch deletions for an object (user, group) for Google Workspace "
 "providers."
 msgstr ""
-"Google Workspace প্রোভাইডারের জন্য একটি অবজেক্টের (ব্যবহারকারী, গ্রুপ) ডিলিশন "
+"Google Workspace প্রোভাইডারের জন্য একটি অবজেক্টের (ইউজার, গ্রুপ) ডিলিশন "
 "ডিসপ্যাচ করুন।"
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid "Delete an object (user, group) for Google Workspace provider."
 msgstr ""
-"Google Workspace প্রোভাইডারের জন্য একটি অবজেক্ট (ব্যবহারকারী, গ্রুপ) মুছে ফেলুন।"
+"Google Workspace প্রোভাইডারের জন্য একটি অবজেক্ট (ইউজার, গ্রুপ) মুছে ফেলুন।"
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
 msgstr ""
-"Google Workspace প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্টের (ব্যবহারকারী, গ্রুপ) "
+"Google Workspace প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্টের (ইউজার, গ্রুপ) "
 "সিঙ্ক ডিসপ্যাচ করুন।"
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
@@ -1470,7 +1810,7 @@ msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider User"
-msgstr "Microsoft Entra প্রোভাইডার ব্যবহারকারী"
+msgstr "Microsoft Entra প্রোভাইডার ইউজার"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Group"
@@ -1515,7 +1855,7 @@ msgstr "Microsoft Entra প্রোভাইডারের জন্য সম
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync a direct object (user, group) for Microsoft Entra provider."
 msgstr ""
-"Microsoft Entra প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্ট (ব্যবহারকারী, গ্রুপ) সিঙ্ক"
+"Microsoft Entra প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্ট (ইউজার, গ্রুপ) সিঙ্ক"
 " করুন।"
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
@@ -1523,20 +1863,20 @@ msgid ""
 "Dispatch syncs for a direct object (user, group) for Microsoft Entra "
 "providers."
 msgstr ""
-"Microsoft Entra প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্টের (ব্যবহারকারী, গ্রুপ) "
+"Microsoft Entra প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্টের (ইউজার, গ্রুপ) "
 "সিঙ্ক ডিসপ্যাচ করুন।"
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Delete an object (user, group) for Microsoft Entra provider."
 msgstr ""
-"Microsoft Entra প্রোভাইডারের জন্য একটি অবজেক্ট (ব্যবহারকারী, গ্রুপ) মুছে ফেলুন।"
+"Microsoft Entra প্রোভাইডারের জন্য একটি অবজেক্ট (ইউজার, গ্রুপ) মুছে ফেলুন।"
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid ""
 "Dispatch deletions for an object (user, group) for Microsoft Entra "
 "providers."
 msgstr ""
-"Microsoft Entra প্রোভাইডারের জন্য একটি অবজেক্টের (ব্যবহারকারী, গ্রুপ) ডিলিশন "
+"Microsoft Entra প্রোভাইডারের জন্য একটি অবজেক্টের (ইউজার, গ্রুপ) ডিলিশন "
 "ডিসপ্যাচ করুন।"
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
@@ -1647,6 +1987,14 @@ msgid "WS-Federation Providers"
 msgstr "WS-Federation প্রোভাইডারসমূহ"
 
 #: authentik/enterprise/providers/ws_federation/views.py
+msgid "Invalid WS-Federation action"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
+msgid "Invalid WS-Federation request"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
 #, python-brace-format
@@ -1675,6 +2023,10 @@ msgid "Generate data export."
 msgstr "ডেটা এক্সপোর্ট তৈরি করুন।"
 
 #: authentik/enterprise/requests/api/grant_requests.py
+msgid "Successfully requested access!"
+msgstr ""
+
+#: authentik/enterprise/requests/api/grant_requests.py
 msgid "Only agents can request access through this endpoint."
 msgstr ""
 "শুধুমাত্র এজেন্টরা এই এন্ডপয়েন্টের মাধ্যমে অ্যাক্সেসের অনুরোধ করতে পারবে।"
@@ -1688,6 +2040,10 @@ msgid "Only agents with an expiry can request access."
 msgstr ""
 "শুধুমাত্র মেয়াদোত্তীর্ণ সময়সীমাযুক্ত এজেন্টরাই অ্যাক্সেসের অনুরোধ করতে "
 "পারবে।"
+
+#: authentik/enterprise/requests/api/request_rules.py
+msgid "A request flow must either be set on this rule, or on the brand."
+msgstr ""
 
 #: authentik/enterprise/requests/models.py
 msgid "Everyone who can approve"
@@ -1787,6 +2143,20 @@ msgstr "গ্র্যান্ট রিকোয়েস্ট অনুম�
 msgid "Send access-request review notification."
 msgstr "অ্যাক্সেস-রিকোয়েস্ট পর্যালোচনা নোটিফিকেশন পাঠান।"
 
+#: authentik/enterprise/required_actions/api.py
+msgid ""
+"Required actions must reference existing flows that a logged-in user can "
+"run, other than authentication or invalidation flows."
+msgstr ""
+
+#: authentik/enterprise/required_actions/middleware.py
+msgid "The required actions are invalid. Contact your administrator."
+msgstr ""
+
+#: authentik/enterprise/required_actions/middleware.py
+msgid "Complete the required actions before continuing."
+msgstr ""
+
 #: authentik/enterprise/stages/account_lockdown/api.py
 msgid "User to lock. If omitted, locks the current user (self-service)."
 msgstr ""
@@ -1815,7 +2185,7 @@ msgstr "অনুমতি প্রত্যাখ্যাত (অন্য �
 
 #: authentik/enterprise/stages/account_lockdown/models.py
 msgid "Deactivate the user account (set is_active to False)"
-msgstr "ব্যবহারকারী অ্যাকাউন্ট নিষ্ক্রিয় করুন (is_active-কে False সেট করে)"
+msgstr "ইউজার অ্যাকাউন্ট নিষ্ক্রিয় করুন (is_active-কে False সেট করে)"
 
 #: authentik/enterprise/stages/account_lockdown/models.py
 msgid "Set an unusable password for the user"
@@ -1917,6 +2287,10 @@ msgstr "সার্টিফিকেট প্রয়োজন কিন্�
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "No user found for certificate."
 msgstr "সার্টিফিকেটের জন্য কোনো ব্যবহারকারী পাওয়া যায়নি।"
+
+#: authentik/enterprise/stages/password/api.py
+msgid "A service account's password cannot be locked."
+msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -2117,53 +2491,6 @@ msgstr ""
 msgid "Flow not applicable to current user/request: {messages}"
 msgstr "ফ্লোটি বর্তমান ব্যবহারকারী/রিকোয়েস্টের জন্য প্রযোজ্য নয়: {messages}"
 
-#: authentik/flows/api/flows_diagram.py
-#, python-brace-format
-msgid "Policy ({type})"
-msgstr "পলিসি ({type})"
-
-#: authentik/flows/api/flows_diagram.py
-#, python-brace-format
-msgid "Binding {order}"
-msgstr "বাইন্ডিং {order}"
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Policy passed"
-msgstr "পলিসি উত্তীর্ণ হয়েছে"
-
-#: authentik/flows/api/flows_diagram.py
-#, python-brace-format
-msgid "Stage ({type})"
-msgstr "স্টেজ ({type})"
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Policy denied"
-msgstr "পলিসি প্রত্যাখ্যাত"
-
-#: authentik/flows/api/flows_diagram.py
-msgid "End of the flow"
-msgstr "ফ্লোর সমাপ্তি"
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Requirement not fulfilled"
-msgstr "প্রয়োজনীয়তা পূরণ হয়নি"
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Flow authentication requirement"
-msgstr "ফ্লো প্রমাণীকরণ প্রয়োজনীয়তা"
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Requirement fulfilled"
-msgstr "প্রয়োজনীয়তা পূরণ হয়েছে"
-
-#: authentik/flows/api/flows_diagram.py
-msgid "Pre-flow policies"
-msgstr "প্রি-ফ্লো পলিসি"
-
-#: authentik/flows/api/flows_diagram.py authentik/flows/models.py
-msgid "Flow"
-msgstr "ফ্লো"
-
 #: authentik/flows/apps.py
 msgid ""
 "Upon successful authentication, re-start authentication in other open tabs."
@@ -2218,6 +2545,10 @@ msgstr ""
 msgid "Required level of authentication and authorization to access a flow."
 msgstr ""
 "একটি ফ্লো অ্যাক্সেস করার জন্য প্রয়োজনীয় প্রমাণীকরণ এবং অনুমোদনের স্তর।"
+
+#: authentik/flows/models.py
+msgid "Flow"
+msgstr "ফ্লো"
 
 #: authentik/flows/models.py
 msgid "Flows"
@@ -2327,15 +2658,13 @@ msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
 msgstr "%(value)s 'hours=3;minutes=1' ফরম্যাটে সঠিক নয়।"
 
 #: authentik/lib/validators.py
-msgid "Invalid password hash format. Must be a valid Django password hash."
-msgstr ""
-"পাসওয়ার্ড হ্যাশ ফরম্যাট অবৈধ। এটি অবশ্যই একটি বৈধ Django পাসওয়ার্ড হ্যাশ "
-"হতে হবে।"
-
-#: authentik/lib/validators.py
 #, python-brace-format
 msgid "The fields {field_names} must be used together."
 msgstr "{field_names} ফিল্ডগুলো অবশ্যই একসাথে ব্যবহার করতে হবে।"
+
+#: authentik/lib/views.py
+msgid "Bad Request"
+msgstr ""
 
 #: authentik/outposts/api/service_connections.py
 msgid ""
@@ -2358,11 +2687,11 @@ msgstr ""
 
 #: authentik/outposts/models.py
 msgid "Outpost Service-Connection"
-msgstr "আউটপোস্ট সার্ভিস-সংযোগ"
+msgstr "আউটপোস্ট সার্ভিস-কানেকশন"
 
 #: authentik/outposts/models.py
 msgid "Outpost Service-Connections"
-msgstr "আউটপোস্ট সার্ভিস-সংযোগসমূহ"
+msgstr "আউটপোস্ট সার্ভিস-কানেকশনসমূহ"
 
 #: authentik/outposts/models.py
 msgid ""
@@ -2390,11 +2719,11 @@ msgstr ""
 
 #: authentik/outposts/models.py
 msgid "Docker Service-Connection"
-msgstr "Docker সার্ভিস-সংযোগ"
+msgstr "Docker সার্ভিস-কানেকশন"
 
 #: authentik/outposts/models.py
 msgid "Docker Service-Connections"
-msgstr "Docker সার্ভিস-সংযোগসমূহ"
+msgstr "Docker সার্ভিস-কানেকশনসমূহ"
 
 #: authentik/outposts/models.py
 msgid ""
@@ -2410,18 +2739,18 @@ msgstr "Kubernetes API এন্ডপয়েন্টের SSL সার্�
 
 #: authentik/outposts/models.py
 msgid "Kubernetes Service-Connection"
-msgstr "Kubernetes সার্ভিস-সংযোগ"
+msgstr "Kubernetes সার্ভিস-কানেকশন"
 
 #: authentik/outposts/models.py
 msgid "Kubernetes Service-Connections"
-msgstr "Kubernetes সার্ভিস-সংযোগসমূহ"
+msgstr "Kubernetes সার্ভিস-কানেকশনসমূহ"
 
 #: authentik/outposts/models.py
 msgid ""
 "Select Service-Connection authentik should use to manage this outpost. Leave"
 " empty if authentik should not handle the deployment."
 msgstr ""
-"এই আউটপোস্ট পরিচালনা করতে authentik-এর যে সার্ভিস-সংযোগ ব্যবহার করা উচিত "
+"এই আউটপোস্ট পরিচালনা করতে authentik-এর যে সার্ভিস-কানেকশন ব্যবহার করা উচিত "
 "তা নির্বাচন করুন। authentik ডিপ্লয়মেন্ট পরিচালনা না করলে খালি রাখুন।"
 
 #: authentik/outposts/models.py
@@ -2442,7 +2771,7 @@ msgstr "আউটপোস্ট প্রোভাইডারসমূহ"
 
 #: authentik/outposts/tasks.py
 msgid "Update cached state of service connection."
-msgstr "সার্ভিস সংযোগের ক্যাশড স্টেট আপডেট করুন।"
+msgstr "সার্ভিস কানেকশনের ক্যাশড স্টেট আপডেট করুন।"
 
 #: authentik/outposts/tasks.py
 msgid "Create/update/monitor/delete the deployment of an Outpost."
@@ -2459,7 +2788,7 @@ msgstr "আউটপোস্টে আপডেট পাঠান"
 
 #: authentik/outposts/tasks.py
 msgid "Checks the local environment and create Service connections."
-msgstr "লোকাল এনভায়রনমেন্ট যাচাই করে সার্ভিস সংযোগ তৈরি করে।"
+msgstr "লোকাল এনভায়রনমেন্ট যাচাই করে সার্ভিস কানেকশন তৈরি করে।"
 
 #: authentik/outposts/tasks.py
 msgid "Terminate session on all outposts."
@@ -2514,6 +2843,26 @@ msgid ""
 msgstr ""
 "ইভেন্টের ক্লায়েন্ট IP মেলায় (কঠোর ম্যাচিং, নেটওয়ার্ক ম্যাচিং-এর জন্য একটি"
 " Expression Policy ব্যবহার করুন)"
+
+#: authentik/policies/event_matcher/models.py
+msgid "Query matched."
+msgstr ""
+
+#: authentik/policies/event_matcher/models.py
+msgid "Action matched."
+msgstr ""
+
+#: authentik/policies/event_matcher/models.py
+msgid "Client IP matched."
+msgstr ""
+
+#: authentik/policies/event_matcher/models.py
+msgid "App matched."
+msgstr ""
+
+#: authentik/policies/event_matcher/models.py
+msgid "Model matched."
+msgstr ""
 
 #: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policy"
@@ -2597,6 +2946,10 @@ msgstr "পলিসি বাইন্ডিং মডেল"
 #: authentik/policies/models.py
 msgid "Policy Binding Models"
 msgstr "পলিসি বাইন্ডিং মডেলসমূহ"
+
+#: authentik/policies/models.py
+msgid "Execute the policy but ignore its result."
+msgstr ""
 
 #: authentik/policies/models.py
 msgid "Negates the outcome of the policy. Messages are unaffected."
@@ -2699,6 +3052,10 @@ msgstr "অনুমতি প্রত্যাখ্যাত"
 #: authentik/policies/templates/policies/denied.html
 msgid "User's avatar"
 msgstr "ব্যবহারকারীর অ্যাভাটার"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Username"
+msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Not you?"
@@ -2883,6 +3240,18 @@ msgid "EdDSA (Asymmetric Encryption)"
 msgstr "EdDSA (অ্যাসিমেট্রিক এনক্রিপশন)"
 
 #: authentik/providers/oauth2/models.py
+msgid "ML-DSA-44 (Post-quantum, Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-65 (Post-quantum, Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ML-DSA-87 (Post-quantum, Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
 msgstr "ক্লায়েন্ট দ্বারা ব্যবহৃত স্কোপ"
 
@@ -2952,7 +3321,7 @@ msgid ""
 " access the userinfo endpoint."
 msgstr ""
 "যেসব অ্যাপ্লিকেশন userinfo এন্ডপয়েন্ট অ্যাক্সেস করে না, তাদের জন্য স্কোপ "
-"থেকে ব্যবহারকারী claim id_token-এ অন্তর্ভুক্ত করুন।"
+"থেকে ইউজার claim id_token-এ অন্তর্ভুক্ত করুন।"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -2985,7 +3354,7 @@ msgid ""
 "Configure what data should be used as unique User Identifier. For most "
 "cases, the default should be fine."
 msgstr ""
-"কোন ডেটা ইউনিক ব্যবহারকারী আইডেন্টিফায়ার হিসেবে ব্যবহার করা হবে তা কনফিগার করুন। "
+"কোন ডেটা ইউনিক ইউজার আইডেন্টিফায়ার হিসেবে ব্যবহার করা হবে তা কনফিগার করুন। "
 "বেশিরভাগ ক্ষেত্রে, ডিফল্ট মানই যথেষ্ট হওয়া উচিত।"
 
 #: authentik/providers/oauth2/models.py
@@ -3091,6 +3460,14 @@ msgstr "OAuth2 রিফ্রেশ টোকেন"
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Tokens"
 msgstr "OAuth2 রিফ্রেশ টোকেনসমূহ"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Session Login"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Session Logins"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Provider"
@@ -3205,7 +3582,7 @@ msgstr "কোডটি অবৈধ"
 
 #: authentik/providers/oauth2/views/userinfo.py
 msgid "GitHub Compatibility: Access your User Information"
-msgstr "GitHub কম্প্যাটিবিলিটি: আপনার অ্যাকাউন্টের তথ্য অ্যাক্সেস করুন"
+msgstr "GitHub কম্প্যাটিবিলিটি: আপনার ইউজার তথ্য অ্যাক্সেস করুন"
 
 #: authentik/providers/oauth2/views/userinfo.py
 msgid "GitHub Compatibility: Access you Email addresses"
@@ -3218,7 +3595,7 @@ msgstr "GitHub কম্প্যাটিবিলিটি: আপনার �
 #: authentik/providers/proxy/api.py
 msgid "User and password attributes must be set when basic auth is enabled."
 msgstr ""
-"বেসিক অথ সক্রিয় থাকলে ব্যবহারকারী এবং পাসওয়ার্ড অ্যাট্রিবিউট অবশ্যই সেট করতে "
+"বেসিক অথ সক্রিয় থাকলে ইউজার এবং পাসওয়ার্ড অ্যাট্রিবিউট অবশ্যই সেট করতে "
 "হবে।"
 
 #: authentik/providers/proxy/api.py
@@ -3267,37 +3644,37 @@ msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid "Set HTTP-Basic Authentication"
-msgstr "HTTP Basic প্রমাণীকরণ সেট করুন"
+msgstr "HTTP-বেসিক প্রমাণীকরণ সেট করুন"
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "Set a custom HTTP-Basic Authentication header based on values from "
 "authentik."
 msgstr ""
-"authentik থেকে প্রাপ্ত মানের উপর ভিত্তি করে একটি কাস্টম HTTP Basic "
+"authentik থেকে প্রাপ্ত মানের উপর ভিত্তি করে একটি কাস্টম HTTP-বেসিক "
 "প্রমাণীকরণ হেডার সেট করুন।"
 
 #: authentik/providers/proxy/models.py
 msgid "HTTP-Basic Username Key"
-msgstr "HTTP Basic ইউজারনেম কী"
+msgstr "HTTP-বেসিক ইউজারনেম কী"
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
 " set, the user's Email address is used."
 msgstr ""
-"HTTP Basic হেডারের ব্যবহারকারী অংশের জন্য ব্যবহৃত ব্যবহারকারী/গ্রুপ অ্যাট্রিবিউট। সেট "
+"HTTP-বেসিক হেডারের ইউজার অংশের জন্য ব্যবহৃত ইউজার/গ্রুপ অ্যাট্রিবিউট। সেট "
 "করা না থাকলে, ব্যবহারকারীর ইমেইল ঠিকানা ব্যবহৃত হয়।"
 
 #: authentik/providers/proxy/models.py
 msgid "HTTP-Basic Password Key"
-msgstr "HTTP Basic পাসওয়ার্ড কী"
+msgstr "HTTP-বেসিক পাসওয়ার্ড কী"
 
 #: authentik/providers/proxy/models.py
 msgid ""
 "User/Group Attribute used for the password part of the HTTP-Basic Header."
 msgstr ""
-"HTTP Basic হেডারের পাসওয়ার্ড অংশের জন্য ব্যবহৃত ব্যবহারকারী/গ্রুপ অ্যাট্রিবিউট।"
+"HTTP-বেসিক হেডারের পাসওয়ার্ড অংশের জন্য ব্যবহৃত ইউজার/গ্রুপ অ্যাট্রিবিউট।"
 
 #: authentik/providers/proxy/models.py
 msgid "Proxy Provider"
@@ -3306,6 +3683,18 @@ msgstr "প্রক্সি প্রোভাইডার"
 #: authentik/providers/proxy/models.py
 msgid "Proxy Providers"
 msgstr "প্রক্সি প্রোভাইডারসমূহ"
+
+#: authentik/providers/rac/models.py
+msgid ""
+"Only devices in this access group can be accessed through this provider. "
+"When left empty, every device the user has access to can be accessed."
+msgstr ""
+
+#: authentik/providers/rac/models.py
+msgid ""
+"Maximum concurrent connections to a single device. Can be set to -1 to "
+"disable the limit."
+msgstr ""
 
 #: authentik/providers/rac/models.py authentik/stages/user_login/models.py
 msgid ""
@@ -3318,7 +3707,7 @@ msgstr ""
 
 #: authentik/providers/rac/models.py
 msgid "When set to true, connection tokens will be deleted upon disconnect."
-msgstr "true সেট করা থাকলে, সংযোগ বিচ্ছিন্ন হলে সংযোগ টোকেন মুছে ফেলা হবে।"
+msgstr "true সেট করা থাকলে, ডিসকানেক্ট হওয়ার পর কানেকশন টোকেন মুছে ফেলা হবে।"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider"
@@ -3329,22 +3718,6 @@ msgid "RAC Providers"
 msgstr "RAC প্রোভাইডারসমূহ"
 
 #: authentik/providers/rac/models.py
-msgid "RAC Endpoint"
-msgstr "RAC এন্ডপয়েন্ট"
-
-#: authentik/providers/rac/models.py
-msgid "RAC Endpoints"
-msgstr "RAC এন্ডপয়েন্টসমূহ"
-
-#: authentik/providers/rac/models.py
-msgid "Endpoint Property Mapping"
-msgstr "এন্ডপয়েন্ট প্রপার্টি ম্যাপিং"
-
-#: authentik/providers/rac/models.py
-msgid "Endpoint Property Mappings"
-msgstr "এন্ডপয়েন্ট প্রপার্টি ম্যাপিংসমূহ"
-
-#: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mapping"
 msgstr "RAC প্রোভাইডার প্রপার্টি ম্যাপিং"
 
@@ -3353,16 +3726,28 @@ msgid "RAC Provider Property Mappings"
 msgstr "RAC প্রোভাইডার প্রপার্টি ম্যাপিংসমূহ"
 
 #: authentik/providers/rac/models.py
+msgid "Hostname/IP to connect to. Optionally specify the port."
+msgstr ""
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection override"
+msgstr ""
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection overrides"
+msgstr ""
+
+#: authentik/providers/rac/models.py
 msgid "RAC Connection token"
-msgstr "RAC সংযোগ টোকেন"
+msgstr "RAC কানেকশন টোকেন"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Connection tokens"
-msgstr "RAC সংযোগ টোকেনসমূহ"
+msgstr "RAC কানেকশন টোকেনসমূহ"
 
 #: authentik/providers/rac/views.py
 msgid "Maximum connection limit reached."
-msgstr "সংযোগের সর্বোচ্চ সীমায় পৌঁছেছে।"
+msgstr "সর্বোচ্চ কানেকশন সীমায় পৌঁছে গেছে।"
 
 #: authentik/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
@@ -3406,10 +3791,6 @@ msgid ""
 msgstr ""
 "একটি সাইনিং কীপেয়ার নির্বাচিত থাকলে, 'Sign assertion' এবং 'Sign "
 "Response'-এর মধ্যে অন্তত একটি নির্বাচন করতে হবে।"
-
-#: authentik/providers/saml/api/providers.py
-msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
-msgstr "SAML সাইনিং-এর জন্য শুধুমাত্র RSA, EC, এবং DSA কী টাইপ সমর্থিত।"
 
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
@@ -3624,8 +4005,41 @@ msgid "Encryption Keypair"
 msgstr "এনক্রিপশন কীপেয়ার"
 
 #: authentik/providers/saml/models.py
+msgid "AES128-CBC"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "AES256-CBC"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "AES128-GCM"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "AES256-GCM"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "Block cipher used to encrypt the assertion."
+msgstr ""
+
+#: authentik/providers/saml/models.py
 msgid "Default relay_state value for IDP-initiated logins"
 msgstr "IDP-initiated লগইনের জন্য ডিফল্ট relay_state মান"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"When enabled, the ForceAuthn attribute set by the Service Provider on an "
+"AuthnRequest is ignored and an existing session is used. When disabled, "
+"ForceAuthn requires the user to re-authenticate."
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"OAuth2 providers which can exchange their JWTs for a SAML Response of this "
+"provider via token exchange."
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider"
@@ -3634,6 +4048,14 @@ msgstr "SAML প্রোভাইডার"
 #: authentik/providers/saml/models.py
 msgid "SAML Providers"
 msgstr "SAML প্রোভাইডারসমূহ"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider JWT Federation Provider"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider JWT Federation Providers"
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider Property Mapping"
@@ -3678,6 +4100,32 @@ msgstr "SAML সেশন"
 #: authentik/providers/saml/models.py
 msgid "SAML Sessions"
 msgstr "SAML সেশনসমূহ"
+
+#: authentik/providers/saml/processors/authn_request_parser.py
+#, python-brace-format
+msgid ""
+"ACS URL of {request_acs_url} doesn't match Provider ACS URL of "
+"{provider_acs_url}."
+msgstr ""
+
+#: authentik/providers/saml/views/flows.py
+msgid "Invalid sp_binding specified"
+msgstr ""
+
+#: authentik/providers/saml/views/sp_slo.py
+#: authentik/providers/saml/views/sso.py
+#: authentik/providers/saml/views/unified.py
+msgid "The SAML request payload is missing."
+msgstr ""
+
+#: authentik/providers/saml/views/unified.py
+#, python-brace-format
+msgid "Unsupported SAML message type: {message_type}"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Basic"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "OAuth (Silent)"
@@ -3726,6 +4174,14 @@ msgstr "SCIM রিকোয়েস্টের বেস URL, সাধার
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
 msgstr "প্রমাণীকরণ টোকেন"
+
+#: authentik/providers/scim/models.py
+msgid "Username used for Basic authentication"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Password used for Basic authentication"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "OAuth Source used for authentication"
@@ -3795,22 +4251,22 @@ msgstr "SCIM প্রোভাইডারের জন্য সম্পূ�
 #: authentik/providers/scim/tasks.py
 msgid "Sync a direct object (user, group) for SCIM provider."
 msgstr ""
-"SCIM প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্ট (ব্যবহারকারী, গ্রুপ) সিঙ্ক করুন।"
+"SCIM প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্ট (ইউজার, গ্রুপ) সিঙ্ক করুন।"
 
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
 msgstr ""
-"SCIM প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্টের (ব্যবহারকারী, গ্রুপ) সিঙ্ক ডিসপ্যাচ"
+"SCIM প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্টের (ইউজার, গ্রুপ) সিঙ্ক ডিসপ্যাচ"
 " করুন।"
 
 #: authentik/providers/scim/tasks.py
 msgid "Delete an object (user, group) for SCIM provider."
-msgstr "SCIM প্রোভাইডারের জন্য একটি অবজেক্ট (ব্যবহারকারী, গ্রুপ) মুছে ফেলুন।"
+msgstr "SCIM প্রোভাইডারের জন্য একটি অবজেক্ট (ইউজার, গ্রুপ) মুছে ফেলুন।"
 
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch deletions for an object (user, group) for SCIM providers."
 msgstr ""
-"SCIM প্রোভাইডারের জন্য একটি অবজেক্টের (ব্যবহারকারী, গ্রুপ) ডিলিশন ডিসপ্যাচ করুন।"
+"SCIM প্রোভাইডারের জন্য একটি অবজেক্টের (ইউজার, গ্রুপ) ডিলিশন ডিসপ্যাচ করুন।"
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync a related object (memberships) for SCIM provider."
@@ -3822,6 +4278,62 @@ msgid "Dispatch syncs for a related object (memberships) for SCIM providers."
 msgstr ""
 "SCIM প্রোভাইডারের জন্য একটি সম্পর্কিত অবজেক্টের (মেম্বারশিপ) সিঙ্ক ডিসপ্যাচ "
 "করুন।"
+
+#: authentik/rbac/api/custom_permissions.py
+msgid "Unknown model."
+msgstr ""
+
+#: authentik/rbac/api/custom_permissions.py
+msgid "This cannot change."
+msgstr ""
+
+#: authentik/rbac/api/custom_permissions.py
+msgid ""
+"Start with custom_, followed by lowercase letters, digits, and underscores."
+msgstr ""
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Define at least one of {functions}."
+msgstr ""
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Unknown endpoint {id}."
+msgstr ""
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "Already bound to another check: {ids}."
+msgstr ""
+
+#: authentik/rbac/api/permission_checks.py
+#, python-brace-format
+msgid "{id} runs no functions defined for it."
+msgstr ""
+
+#: authentik/rbac/api/rbac.py
+#, python-brace-format
+msgid "Unknown permission {name}"
+msgstr ""
+
+#: authentik/rbac/apps.py
+msgid ""
+"Let permission checks decide API access. While enabled, every API request "
+"costs an additional database query."
+msgstr ""
+
+#: authentik/rbac/endpoint_checks.py
+msgid "A permission check failed."
+msgstr ""
+
+#: authentik/rbac/field_rules.py
+msgid "You cannot change this value."
+msgstr ""
+
+#: authentik/rbac/field_rules.py
+msgid "This field is hidden from you."
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Role"
@@ -3882,6 +4394,26 @@ msgstr "মিডিয়া ফাইল দেখতে পারবেন"
 #: authentik/rbac/models.py
 msgid "Can manage media files"
 msgstr "মিডিয়া ফাইল পরিচালনা করতে পারবেন"
+
+#: authentik/rbac/models.py
+msgid "Custom permission"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Custom permissions"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Permission check"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Permission checks"
+msgstr ""
+
+#: authentik/rbac/tasks.py
+msgid "Remove object-level permissions whose object no longer exists."
+msgstr ""
 
 #: authentik/recovery/management/commands/create_admin_group.py
 msgid "Create admin group if the default group gets deleted."
@@ -3985,19 +4517,19 @@ msgstr "Kerberos সোর্স প্রপার্টি ম্যাপি�
 
 #: authentik/sources/kerberos/models.py
 msgid "User Kerberos Source Connection"
-msgstr "ব্যবহারকারী Kerberos সোর্স সংযোগ"
+msgstr "ইউজার Kerberos সোর্স কানেকশন"
 
 #: authentik/sources/kerberos/models.py
 msgid "User Kerberos Source Connections"
-msgstr "ব্যবহারকারী Kerberos সোর্স সংযোগসমূহ"
+msgstr "ইউজার Kerberos সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/kerberos/models.py
 msgid "Group Kerberos Source Connection"
-msgstr "গ্রুপ Kerberos সোর্স সংযোগ"
+msgstr "গ্রুপ Kerberos সোর্স কানেকশন"
 
 #: authentik/sources/kerberos/models.py
 msgid "Group Kerberos Source Connections"
-msgstr "গ্রুপ Kerberos সোর্স সংযোগসমূহ"
+msgstr "গ্রুপ Kerberos সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/kerberos/tasks.py
 msgid "Check connectivity for Kerberos sources."
@@ -4029,6 +4561,29 @@ msgstr ""
 msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr "পাসওয়ার্ড সিঙ্ক্রোনাইজেশন সহ শুধুমাত্র একটি LDAP সোর্সের অনুমতি আছে"
 
+#: authentik/sources/ldap/api/sources.py
+#, python-brace-format
+msgid ""
+"When 'Sync {type}s' is enabled, '{type}s property mappings' cannot be empty."
+msgstr ""
+
+#: authentik/sources/ldap/api/sources.py
+msgid "SASL EXTERNAL requires a client certificate with a private key."
+msgstr ""
+
+#: authentik/sources/ldap/api/sources.py
+msgid ""
+"SASL EXTERNAL requires ldap:// with StartTLS or ldaps:// without StartTLS."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Simple or anonymous bind"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "SASL EXTERNAL"
+msgstr ""
+
 #: authentik/sources/ldap/models.py
 msgid "Server URI"
 msgstr "সার্ভার URI"
@@ -4053,6 +4608,10 @@ msgid "Bind CN"
 msgstr "Bind CN"
 
 #: authentik/sources/ldap/models.py
+msgid "Authentication method used for LDAP synchronization and writeback."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "Enable Start TLS"
 msgstr "Start TLS সক্রিয় করুন"
 
@@ -4066,11 +4625,11 @@ msgstr "Base DN"
 
 #: authentik/sources/ldap/models.py
 msgid "Prepended to Base DN for User-queries."
-msgstr "ব্যবহারকারী-কোয়েরির জন্য Base DN-এর আগে যুক্ত করা হয়।"
+msgstr "ইউজার-কোয়েরির জন্য Base DN-এর আগে যুক্ত করা হয়।"
 
 #: authentik/sources/ldap/models.py
 msgid "Addition User DN"
-msgstr "অতিরিক্ত ব্যবহারকারী DN"
+msgstr "অতিরিক্ত ইউজার DN"
 
 #: authentik/sources/ldap/models.py
 msgid "Prepended to Base DN for Group-queries."
@@ -4082,7 +4641,7 @@ msgstr "অতিরিক্ত গ্রুপ DN"
 
 #: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Users."
-msgstr "এই ফিল্টারের সাথে মেলে এমন অবজেক্টকে ব্যবহারকারী হিসেবে বিবেচনা করুন।"
+msgstr "এই ফিল্টারের সাথে মেলে এমন অবজেক্টকে ইউজার হিসেবে বিবেচনা করুন।"
 
 #: authentik/sources/ldap/models.py
 msgid "Attribute which matches the value of `group_membership_field`."
@@ -4122,7 +4681,7 @@ msgid ""
 "attribute. This allows nested group resolution on systems like FreeIPA and "
 "Active Directory"
 msgstr ""
-"একটি গ্রুপ অ্যাট্রিবিউটের পরিবর্তে একটি ব্যবহারকারী অ্যাট্রিবিউটের উপর ভিত্তি করে "
+"একটি গ্রুপ অ্যাট্রিবিউটের পরিবর্তে একটি ইউজার অ্যাট্রিবিউটের উপর ভিত্তি করে "
 "গ্রুপ মেম্বারশিপ লুকআপ করুন। এটি FreeIPA এবং Active Directory-এর মতো "
 "সিস্টেমে নেস্টেড গ্রুপ রেজোলিউশন সম্ভব করে"
 
@@ -4163,19 +4722,19 @@ msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connection"
-msgstr "ব্যবহারকারী LDAP সোর্স সংযোগ"
+msgstr "ইউজার LDAP সোর্স কানেকশন"
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connections"
-msgstr "ব্যবহারকারী LDAP সোর্স সংযোগসমূহ"
+msgstr "ইউজার LDAP সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/ldap/models.py
 msgid "Group LDAP Source Connection"
-msgstr "গ্রুপ LDAP সোর্স সংযোগ"
+msgstr "গ্রুপ LDAP সোর্স কানেকশন"
 
 #: authentik/sources/ldap/models.py
 msgid "Group LDAP Source Connections"
-msgstr "গ্রুপ LDAP সোর্স সংযোগসমূহ"
+msgstr "গ্রুপ LDAP সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
@@ -4199,7 +4758,7 @@ msgstr "কোনো টোকেন পাওয়া যায়নি।"
 
 #: authentik/sources/oauth/models.py
 msgid "HTTP Basic Authentication"
-msgstr "HTTP Basic প্রমাণীকরণ"
+msgstr "HTTP বেসিক প্রমাণীকরণ"
 
 #: authentik/sources/oauth/models.py
 msgid "Include the client ID and secret as request parameters"
@@ -4416,19 +4975,19 @@ msgstr "OAuth সোর্স প্রপার্টি ম্যাপিং�
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connection"
-msgstr "ব্যবহারকারী OAuth সোর্স সংযোগ"
+msgstr "ইউজার OAuth সোর্স কানেকশন"
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connections"
-msgstr "ব্যবহারকারী OAuth সোর্স সংযোগসমূহ"
+msgstr "ইউজার OAuth সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connection"
-msgstr "গ্রুপ OAuth সোর্স সংযোগ"
+msgstr "গ্রুপ OAuth সোর্স কানেকশন"
 
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connections"
-msgstr "গ্রুপ OAuth সোর্স সংযোগসমূহ"
+msgstr "গ্রুপ OAuth সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/oauth/tasks.py
 msgid ""
@@ -4481,19 +5040,19 @@ msgstr "Plex সোর্স প্রপার্টি ম্যাপিং�
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
-msgstr "ব্যবহারকারী Plex সোর্স সংযোগ"
+msgstr "ইউজার Plex সোর্স কানেকশন"
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connections"
-msgstr "ব্যবহারকারী Plex সোর্স সংযোগসমূহ"
+msgstr "ইউজার Plex সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connection"
-msgstr "গ্রুপ Plex সোর্স সংযোগ"
+msgstr "গ্রুপ Plex সোর্স কানেকশন"
 
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connections"
-msgstr "গ্রুপ Plex সোর্স সংযোগসমূহ"
+msgstr "গ্রুপ Plex সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/plex/tasks.py
 msgid "Check the validity of a Plex source."
@@ -4526,10 +5085,6 @@ msgstr "প্রমাণীকরণের আগে ব্যবহৃত ফ
 #: authentik/sources/saml/models.py
 msgid "Also known as Entity ID. Defaults to the Metadata URL."
 msgstr "এটি Entity ID নামেও পরিচিত। ডিফল্টভাবে মেটাডেটা URL ব্যবহৃত হয়।"
-
-#: authentik/sources/saml/models.py
-msgid "Audience value this IdP sends for authentik."
-msgstr "authentik-এর জন্য এই IdP যে অডিয়েন্স ভ্যালু পাঠায়।"
 
 #: authentik/sources/saml/models.py
 msgid "SSO URL"
@@ -4565,11 +5120,9 @@ msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid ""
-"NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
-"sent."
+"Format of the NameID Policy sent to the IdP. Select Unspecified to let the "
+"IdP choose the format of the NameID it returns."
 msgstr ""
-"IdP-তে পাঠানো NameID পলিসি। এটি আনসেট রাখা যেতে পারে, সেক্ষেত্রে কোনো পলিসি "
-"পাঠানো হবে না।"
 
 #: authentik/sources/saml/models.py
 msgid "Delete temporary users after"
@@ -4609,24 +5162,32 @@ msgstr "SAML সোর্স প্রপার্টি ম্যাপিং�
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connection"
-msgstr "ব্যবহারকারী SAML সোর্স সংযোগ"
+msgstr "ইউজার SAML সোর্স কানেকশন"
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connections"
-msgstr "ব্যবহারকারী SAML সোর্স সংযোগসমূহ"
+msgstr "ইউজার SAML সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/saml/models.py
 msgid "Group SAML Source Connection"
-msgstr "গ্রুপ SAML সোর্স সংযোগ"
+msgstr "গ্রুপ SAML সোর্স কানেকশন"
 
 #: authentik/sources/saml/models.py
 msgid "Group SAML Source Connections"
-msgstr "গ্রুপ SAML সোর্স সংযোগসমূহ"
+msgstr "গ্রুপ SAML সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/saml/views.py
+msgid "Failed to build the SAML request."
+msgstr ""
 
 #: authentik/sources/saml/views.py
 #, python-brace-format
 msgid "Continue to {source_name}"
 msgstr "{source_name}-এ চালিয়ে যান"
+
+#: authentik/sources/saml/views.py
+msgid "Failed to process the SAML response."
+msgstr ""
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
@@ -4679,19 +5240,19 @@ msgstr "Telegram সোর্স প্রপার্টি ম্যাপি�
 
 #: authentik/sources/telegram/models.py
 msgid "User Telegram Source Connection"
-msgstr "ব্যবহারকারী Telegram সোর্স সংযোগ"
+msgstr "ইউজার Telegram সোর্স কানেকশন"
 
 #: authentik/sources/telegram/models.py
 msgid "User Telegram Source Connections"
-msgstr "ব্যবহারকারী Telegram সোর্স সংযোগসমূহ"
+msgstr "ইউজার Telegram সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/telegram/models.py
 msgid "Group Telegram Source Connection"
-msgstr "গ্রুপ Telegram সোর্স সংযোগ"
+msgstr "গ্রুপ Telegram সোর্স কানেকশন"
 
 #: authentik/sources/telegram/models.py
 msgid "Group Telegram Source Connections"
-msgstr "গ্রুপ Telegram সোর্স সংযোগসমূহ"
+msgstr "গ্রুপ Telegram সোর্স কানেকশনসমূহ"
 
 #: authentik/sources/telegram/telegram.py
 msgid "Authentication date is too old"
@@ -4700,6 +5261,22 @@ msgstr "প্রমাণীকরণের তারিখ অনেক পু
 #: authentik/sources/telegram/telegram.py
 msgid "Invalid hash"
 msgstr "হ্যাশ অবৈধ"
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo: TLS certificate verification failed."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo: TLS error."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "An internal error occurred while importing devices."
+msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
@@ -4747,6 +5324,10 @@ msgstr ""
 msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
 msgstr ""
 "পাঠানো টোকেন যে সময় পর্যন্ত বৈধ (ফরম্যাট: hours=3,minutes=17,seconds=300)।"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "authentik Sign-in code"
+msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Authenticator Setup Stage"
@@ -4943,6 +5524,23 @@ msgstr ""
 "ডিভাইস টাইপ অবৈধ। সাহায্যের জন্য আপনার {brand} অ্যাডমিনিস্ট্রেটরের সাথে "
 "যোগাযোগ করুন।"
 
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Assertion failed"
+msgstr ""
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Invalid security key. Please re-register or contact an administrator."
+msgstr ""
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid "Domain"
+msgstr "ডোমেইন"
+
+#: authentik/stages/authenticator_validate/challenge.py
+#, python-brace-format
+msgid "{brand_name} Login request"
+msgstr ""
+
 #: authentik/stages/authenticator_validate/models.py
 msgid "Static"
 msgstr "স্ট্যাটিক"
@@ -4990,6 +5588,11 @@ msgid "Enforce user verification for WebAuthn devices."
 msgstr "WebAuthn ডিভাইসের জন্য ব্যবহারকারী ভেরিফিকেশন বাধ্যতামূলক করুন।"
 
 #: authentik/stages/authenticator_validate/models.py
+msgid ""
+"Additional trusted origins for WebAuthn authentication. Matched exactly."
+msgstr ""
+
+#: authentik/stages/authenticator_validate/models.py
 msgid "Authenticator Validation Stage"
 msgstr "অথেন্টিকেটর ভ্যালিডেশন স্টেজ"
 
@@ -5016,6 +5619,10 @@ msgstr "অথেন্টিকেটর ভ্যালিডেট স্ট�
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
 msgstr "কোনো (অনুমোদিত) MFA অথেন্টিকেটর কনফিগার করা নেই।"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Additional trusted origins for WebAuthn registration. Matched exactly."
+msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
@@ -5049,12 +5656,24 @@ msgstr "অথেন্টিকেটর WebAuthn স্টেজ ডিভা�
 msgid "Authenticator WebAuthn Stage Device Type Restrictions"
 msgstr "অথেন্টিকেটর WebAuthn স্টেজ ডিভাইস টাইপ রেস্ট্রিকশনসমূহ"
 
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid ""
+"Exceeded maximum attempts. Contact your {brand} administrator for help."
+msgstr ""
+
 #: authentik/stages/authenticator_webauthn/tasks.py
 msgid ""
 "Background task to import FIDO Alliance MDS blob and AAGUIDs into database."
 msgstr ""
 "FIDO Alliance MDS blob এবং AAGUID ডেটাবেজে ইম্পোর্ট করার ব্যাকগ্রাউন্ড "
 "টাস্ক।"
+
+#: authentik/stages/authenticator_webauthn/utils.py
+msgid ""
+"Enter a non-empty origin without whitespace or wildcards. The value 'null' "
+"is not allowed."
+msgstr ""
 
 #: authentik/stages/captcha/models.py
 msgid "Form encoded"
@@ -5121,11 +5740,11 @@ msgstr "সম্মতি স্টেজসমূহ"
 
 #: authentik/stages/consent/models.py
 msgid "User Consent"
-msgstr "ব্যবহারকারীর সম্মতি"
+msgstr "ইউজার সম্মতি"
 
 #: authentik/stages/consent/models.py
 msgid "User Consents"
-msgstr "ব্যবহারকারীর সম্মতিসমূহ"
+msgstr "ইউজার সম্মতিসমূহ"
 
 #: authentik/stages/consent/stage.py
 msgid "Invalid consent token, re-showing prompt"
@@ -5430,19 +6049,19 @@ msgstr ""
 #: authentik/stages/identification/api.py
 msgid "When no user fields are selected, at least one source must be selected"
 msgstr ""
-"কোনো ব্যবহারকারী ফিল্ড নির্বাচন করা না থাকলে, অন্তত একটি সোর্স নির্বাচন করতে হবে"
+"কোনো ইউজার ফিল্ড নির্বাচন করা না থাকলে, অন্তত একটি সোর্স নির্বাচন করতে হবে"
 
 #: authentik/stages/identification/models.py
 msgid ""
 "Fields of the user object to match against. (Hold shift to select multiple "
 "options)"
 msgstr ""
-"ব্যবহারকারী অবজেক্টের যেসব ফিল্ডের মানের সাথে মেলানো হবে। (একাধিক অপশন নির্বাচন করতে "
+"যে ইউজার অবজেক্টের ফিল্ডের বিপরীতে মেলানো হবে। (একাধিক অপশন নির্বাচন করতে "
 "shift চেপে ধরুন)"
 
 #: authentik/stages/identification/models.py
 msgid "When enabled, user fields are matched regardless of their casing."
-msgstr "সক্রিয় করা থাকলে, বড় ও ছোট হাতের অক্ষরের পার্থক্য উপেক্ষা করে ব্যবহারকারীর ফিল্ডের মান মেলানো হয়।"
+msgstr "সক্রিয় করা থাকলে, ইউজার ফিল্ড তাদের কেসিং নির্বিশেষে মেলানো হয়।"
 
 #: authentik/stages/identification/models.py
 msgid ""
@@ -5459,7 +6078,7 @@ msgid ""
 "When enabled, the stage will succeed and continue even when incorrect user "
 "info is entered."
 msgstr ""
-"সক্রিয় করা থাকলে, ভুল ব্যবহারকারী তথ্য প্রবেশ করানো হলেও স্টেজটি সফল হবে এবং চলতে"
+"সক্রিয় করা থাকলে, ভুল ইউজার তথ্য প্রবেশ করানো হলেও স্টেজটি সফল হবে এবং চলতে"
 " থাকবে।"
 
 #: authentik/stages/identification/models.py
@@ -5543,7 +6162,7 @@ msgstr "সক্রিয় করা থাকলে, ব্যবহার�
 
 #: authentik/stages/invitation/models.py
 msgid "Optional fixed data to enforce on user enrollment."
-msgstr "ব্যবহারকারী এনরোলমেন্টে বাধ্যতামূলক করার জন্য ঐচ্ছিক স্থির ডেটা।"
+msgstr "ইউজার এনরোলমেন্টে বাধ্যতামূলক করার জন্য ঐচ্ছিক স্থির ডেটা।"
 
 #: authentik/stages/invitation/models.py
 msgid "Invitations"
@@ -5555,19 +6174,19 @@ msgstr "আমন্ত্রণ অবৈধ/আমন্ত্রণ পাও
 
 #: authentik/stages/password/models.py
 msgid "User database + standard password"
-msgstr "ব্যবহারকারী ডেটাবেজ + স্ট্যান্ডার্ড পাসওয়ার্ড"
+msgstr "ইউজার ডেটাবেজ + স্ট্যান্ডার্ড পাসওয়ার্ড"
 
 #: authentik/stages/password/models.py
 msgid "User database + app passwords"
-msgstr "ব্যবহারকারী ডেটাবেজ + অ্যাপ পাসওয়ার্ড"
+msgstr "ইউজার ডেটাবেজ + অ্যাপ পাসওয়ার্ড"
 
 #: authentik/stages/password/models.py
 msgid "User database + LDAP password"
-msgstr "ব্যবহারকারী ডেটাবেজ + LDAP পাসওয়ার্ড"
+msgstr "ইউজার ডেটাবেজ + LDAP পাসওয়ার্ড"
 
 #: authentik/stages/password/models.py
 msgid "User database + Kerberos password"
-msgstr "ব্যবহারকারী ডেটাবেজ + Kerberos পাসওয়ার্ড"
+msgstr "ইউজার ডেটাবেজ + Kerberos পাসওয়ার্ড"
 
 #: authentik/stages/password/models.py
 msgid "Selection of backends to test the password against."
@@ -5575,12 +6194,27 @@ msgstr "যে ব্যাকএন্ডগুলোর বিপরীতে 
 
 #: authentik/stages/password/models.py
 msgid ""
-"How many attempts a user has before the flow is canceled. To lock the user "
-"out, use a reputation policy and a user_write stage."
+"How many attempts a user has before the flow is canceled. This only cancels "
+"the flow, it does not lock the user's password."
 msgstr ""
-"ফ্লোটি বাতিল হওয়ার আগে একজন ব্যবহারকারীর কতগুলো প্রচেষ্টা থাকে। "
-"ব্যবহারকারীকে লক আউট করতে, একটি reputation policy এবং একটি user_write স্টেজ "
-"ব্যবহার করুন।"
+
+#: authentik/stages/password/models.py
+msgid ""
+"How many consecutive failed attempts lock the user's password until an "
+"administrator unlocks it. Set to 0 to never lock."
+msgstr ""
+
+#: authentik/stages/password/models.py
+msgid ""
+"Warning shown when the user has one password attempt remaining. Leave blank "
+"to show no warning."
+msgstr ""
+
+#: authentik/stages/password/models.py
+msgid ""
+"Message shown when the user's password has been locked. Leave blank to show "
+"a generic authentication error."
+msgstr ""
 
 #: authentik/stages/password/models.py
 msgid ""
@@ -5597,6 +6231,14 @@ msgstr "পাসওয়ার্ড স্টেজ"
 #: authentik/stages/password/models.py
 msgid "Password Stages"
 msgstr "পাসওয়ার্ড স্টেজসমূহ"
+
+#: authentik/stages/password/models.py
+msgid "Password Device"
+msgstr ""
+
+#: authentik/stages/password/models.py
+msgid "Password Devices"
+msgstr ""
 
 #: authentik/stages/password/stage.py
 msgid "Invalid password"
@@ -5761,11 +6403,11 @@ msgstr "রিডাইরেক্ট স্টেজসমূহ"
 
 #: authentik/stages/user_delete/models.py
 msgid "User Delete Stage"
-msgstr "ব্যবহারকারী ডিলিট স্টেজ"
+msgstr "ইউজার ডিলিট স্টেজ"
 
 #: authentik/stages/user_delete/models.py
 msgid "User Delete Stages"
-msgstr "ব্যবহারকারী ডিলিট স্টেজসমূহ"
+msgstr "ইউজার ডিলিট স্টেজসমূহ"
 
 #: authentik/stages/user_delete/stage.py
 msgid "No Pending User."
@@ -5807,11 +6449,11 @@ msgstr ""
 
 #: authentik/stages/user_login/models.py
 msgid "User Login Stage"
-msgstr "ব্যবহারকারী লগইন স্টেজ"
+msgstr "ইউজার লগইন স্টেজ"
 
 #: authentik/stages/user_login/models.py
 msgid "User Login Stages"
-msgstr "ব্যবহারকারী লগইন স্টেজসমূহ"
+msgstr "ইউজার লগইন স্টেজসমূহ"
 
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
@@ -5821,13 +6463,17 @@ msgstr "লগইন করার জন্য কোনো অপেক্ষ�
 msgid "The selected session is no longer available. Please try again."
 msgstr "নির্বাচিত সেশনটি আর উপলব্ধ নেই। অনুগ্রহ করে আবার চেষ্টা করুন।"
 
+#: authentik/stages/user_login/stage.py
+msgid "Only internal users can be added to user switching."
+msgstr ""
+
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"
-msgstr "ব্যবহারকারী লগআউট স্টেজ"
+msgstr "ইউজার লগআউট স্টেজ"
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stages"
-msgstr "ব্যবহারকারী লগআউট স্টেজসমূহ"
+msgstr "ইউজার লগআউট স্টেজসমূহ"
 
 #: authentik/stages/user_write/models.py
 msgid "When set, newly created users are inactive and cannot login."
@@ -5841,11 +6487,11 @@ msgstr "ঐচ্ছিকভাবে নতুন তৈরি হওয়া
 
 #: authentik/stages/user_write/models.py
 msgid "User Write Stage"
-msgstr "ব্যবহারকারী রাইট স্টেজ"
+msgstr "ইউজার রাইট স্টেজ"
 
 #: authentik/stages/user_write/models.py
 msgid "User Write Stages"
-msgstr "ব্যবহারকারী রাইট স্টেজসমূহ"
+msgstr "ইউজার রাইট স্টেজসমূহ"
 
 #: authentik/stages/user_write/stage.py
 msgid "No Pending data."
@@ -5865,10 +6511,6 @@ msgstr ""
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Tasks that must complete for this task to run."
 msgstr "এই টাস্কটি চালানোর জন্য যে টাস্কগুলো সম্পন্ন হতে হবে।"
-
-#: authentik/tasks/models.py
-msgid "Tenant this task belongs to"
-msgstr "যে টেন্যান্টের অন্তর্গত এই টাস্কটি"
 
 #: authentik/tasks/models.py
 msgid "Retry failed task"
@@ -5904,7 +6546,7 @@ msgstr "ইউনিক শিডিউল আইডেন্টিফায়�
 
 #: authentik/tasks/schedules/models.py
 msgid "User schedule identifier"
-msgstr "ব্যবহারকারী শিডিউল আইডেন্টিফায়ার"
+msgstr "ইউজার শিডিউল আইডেন্টিফায়ার"
 
 #: authentik/tasks/schedules/models.py
 msgid "Manually trigger a schedule"
@@ -5913,114 +6555,6 @@ msgstr "একটি শিডিউল ম্যানুয়ালি ট্
 #: authentik/tasks/tasks.py
 msgid "Remove old worker statuses."
 msgstr "পুরনো ওয়ার্কার স্ট্যাটাস সরান।"
-
-#: authentik/tenants/api/settings.py
-#, python-brace-format
-msgid "Value for flag {flag_key} needs to be of type {type}."
-msgstr "ফ্ল্যাগ {flag_key}-এর মান অবশ্যই {type} টাইপের হতে হবে।"
-
-#: authentik/tenants/models.py
-msgid ""
-"Schema name must start with t_, only contain lowercase letters and numbers "
-"and be less than 63 characters."
-msgstr ""
-"স্কিমার নাম অবশ্যই t_ দিয়ে শুরু হতে হবে, শুধুমাত্র ছোট হাতের অক্ষর এবং "
-"সংখ্যা থাকতে হবে এবং 63 অক্ষরের কম হতে হবে।"
-
-#: authentik/tenants/models.py
-msgid "Configure how authentik should show avatars for users."
-msgstr ""
-"ব্যবহারকারীদের জন্য authentik কীভাবে অ্যাভাটার দেখাবে তা কনফিগার করুন।"
-
-#: authentik/tenants/models.py
-msgid ""
-"Configure the base URL under which this authentik instance is reachable, "
-"e.g. https://authentik.company"
-msgstr ""
-"যে বেস URL-এর অধীনে এই authentik ইনস্ট্যান্সটি প্রবেশযোগ্য তা কনফিগার করুন, "
-"যেমন https://authentik.company"
-
-#: authentik/tenants/models.py
-msgid "Enable the ability for users to change their name."
-msgstr "ব্যবহারকারীদের তাদের নাম পরিবর্তনের ক্ষমতা সক্রিয় করুন।"
-
-#: authentik/tenants/models.py
-msgid "Enable the ability for users to change their email address."
-msgstr "ব্যবহারকারীদের তাদের ইমেইল ঠিকানা পরিবর্তনের ক্ষমতা সক্রিয় করুন।"
-
-#: authentik/tenants/models.py
-msgid "Enable the ability for users to change their username."
-msgstr "ব্যবহারকারীদের তাদের ইউজারনেম পরিবর্তনের ক্ষমতা সক্রিয় করুন।"
-
-#: authentik/tenants/models.py
-msgid ""
-"Events will be deleted after this duration.(Format: "
-"weeks=3;days=2;hours=3,seconds=2)."
-msgstr ""
-"এই সময়কালের পর ইভেন্ট মুছে ফেলা হবে। (ফরম্যাট: "
-"weeks=3;days=2;hours=3,seconds=2)।"
-
-#: authentik/tenants/models.py
-msgid "Reputation cannot decrease lower than this value. Zero or negative."
-msgstr "রেপুটেশন এই মানের চেয়ে কম হতে পারবে না। শূন্য অথবা ঋণাত্মক।"
-
-#: authentik/tenants/models.py
-msgid "Reputation cannot increase higher than this value. Zero or positive."
-msgstr "রেপুটেশন এই মানের চেয়ে বেশি হতে পারবে না। শূন্য অথবা ধনাত্মক।"
-
-#: authentik/tenants/models.py
-msgid "The option configures the footer links on the flow executor pages."
-msgstr "এই অপশনটি ফ্লো এক্সিকিউটর পৃষ্ঠাগুলোর ফুটার লিঙ্ক কনফিগার করে।"
-
-#: authentik/tenants/models.py
-msgid ""
-"When enabled, all the events caused by a user will be deleted upon the "
-"user's deletion."
-msgstr ""
-"সক্রিয় করা থাকলে, একজন ব্যবহারকারীর কারণে ঘটা সমস্ত ইভেন্ট ব্যবহারকারী মুছে"
-" ফেলার সাথে সাথে মুছে ফেলা হবে।"
-
-#: authentik/tenants/models.py
-msgid "Globally enable/disable impersonation."
-msgstr "গ্লোবালভাবে ইমপারসনেশন সক্রিয়/নিষ্ক্রিয় করুন।"
-
-#: authentik/tenants/models.py
-msgid "Require administrators to provide a reason for impersonating a user."
-msgstr ""
-"একজন ব্যবহারকারীর ছদ্মবেশ ধারণ করার জন্য অ্যাডমিনিস্ট্রেটরদের একটি কারণ "
-"প্রদান করা বাধ্যতামূলক করুন।"
-
-#: authentik/tenants/models.py
-msgid "Default token duration"
-msgstr "ডিফল্ট টোকেন সময়কাল"
-
-#: authentik/tenants/models.py
-msgid "Default token length"
-msgstr "ডিফল্ট টোকেন দৈর্ঘ্য"
-
-#: authentik/tenants/models.py
-msgid "Default page size for API responses, if no size was requested."
-msgstr "কোনো সাইজের অনুরোধ না করা হলে API রেসপন্সের জন্য ডিফল্ট পৃষ্ঠার আকার।"
-
-#: authentik/tenants/models.py
-msgid "Maximum page size"
-msgstr "সর্বোচ্চ পৃষ্ঠার আকার"
-
-#: authentik/tenants/models.py
-msgid "Tenant"
-msgstr "টেন্যান্ট"
-
-#: authentik/tenants/models.py
-msgid "Tenants"
-msgstr "টেন্যান্টসমূহ"
-
-#: authentik/tenants/models.py
-msgid "Domain"
-msgstr "ডোমেইন"
-
-#: authentik/tenants/models.py
-msgid "Domains"
-msgstr "ডোমেইনসমূহ"
 
 #: packages/ak-guardian/guardian/models.py
 msgid "object ID"

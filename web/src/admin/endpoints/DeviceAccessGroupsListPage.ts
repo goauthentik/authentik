@@ -33,7 +33,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    public override pageIcon = "pf-icon pf-icon-server-group	";
+    public override pageIcon = "pf-icon pf-icon-server-group";
     public override pageTitle = msg("Device access groups");
     public override pageDescription = msg("Create groups of devices to manage access.");
     public override searchPlaceholder = msg("Search device groups by name...");
