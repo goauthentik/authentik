@@ -14,7 +14,7 @@ use tokio::time::Instant;
 use tracing::{instrument, warn};
 use url::Url;
 
-use crate::outpost::proxy::{application::Application, error_page, oauth, reverse_proxy};
+use crate::outpost::proxy::{application::Application, error_page, reverse_proxy};
 
 #[instrument(skip_all, fields(user = tracing::field::Empty))]
 pub(crate) async fn handle(
@@ -35,12 +35,14 @@ pub(crate) async fn handle(
         app.add_upstream_headers(request.headers_mut(), claims, via_header_auth);
     } else {
         // Unauthenticated: allow only allowlisted paths through; otherwise start auth.
-        let request_url = Url::parse(&oauth::url_join(
-            &app.provider.external_host,
-            request.uri().path(),
-        ))
-        .ok();
-        if !request_url.is_some_and(|url| app.is_allowlisted(&url)) {
+        let path = request.uri().path();
+        let request_url = Url::parse(&app.provider.external_host)
+            .map(|mut url| {
+                url.set_path(path);
+                url
+            })
+            .ok();
+        if !request_url.is_some_and(|url| app.is_allowlisted(path, &url)) {
             return super::redirect_to_start(&app, request.headers(), request.uri());
         }
     }
