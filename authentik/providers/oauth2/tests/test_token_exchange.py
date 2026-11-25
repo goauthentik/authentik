@@ -379,23 +379,107 @@ class TestTokenExchange(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(loads(response.content.decode())["error"], "invalid_target")
 
-    def test_resource_rejected(self):
-        """test that a requested resource is refused rather than silently ignored"""
-        response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
-            {
-                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
-                "scope": SCOPES,
-                "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
-                "subject_token": self.subject_token,
-                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
-                "resource": "https://api.example.com/orders",
-            },
+    def _decode_unverified_aud(self, provider: OAuth2Provider, access_token: str) -> dict:
+        _, alg = provider.jwt_key
+        return decode(
+            access_token,
+            key=provider.signing_key.public_key,
+            algorithms=[alg],
+            options={"verify_aud": False},
+        )
+
+    def test_resource(self):
+        """test that an allowed resource restricts the issued token to it (RFC 8707)"""
+        self.provider.allowed_resources = ["https://api.example.com/orders", "https://b.example/"]
+        self.provider.save()
+        response = self._exchange(resource="https://api.example.com/orders")
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content.decode())
+        jwt = self._decode_unverified_aud(self.provider, body["access_token"])
+        self.assertEqual(jwt["aud"], "https://api.example.com/orders")
+        self.assertEqual(jwt["client_id"], self.provider.client_id)
+        access_token = AccessToken.objects.get(token=body["access_token"])
+        self.assertEqual(access_token.resources, ("https://api.example.com/orders",))
+
+    def test_resource_multiple(self):
+        """test that several allowed resources become a list audience"""
+        resources = ["https://api.example.com/orders", "https://b.example/"]
+        self.provider.allowed_resources = resources
+        self.provider.save()
+        response = self._exchange(resource=resources)
+        self.assertEqual(response.status_code, 200, response.content)
+        jwt = self._decode_unverified_aud(
+            self.provider, loads(response.content.decode())["access_token"]
+        )
+        self.assertEqual(jwt["aud"], resources)
+
+    def test_resource_not_allowed(self):
+        """test that a resource the provider does not allow is refused"""
+        self.provider.allowed_resources = ["https://api.example.com/orders"]
+        self.provider.save()
+        response = self._exchange(resource="https://evil.example/")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(loads(response.content.decode())["error"], "invalid_target")
+        self.assertFalse(AccessToken.objects.filter(provider=self.provider).exists())
+
+    def test_resource_invalid(self):
+        """test that a malformed resource is refused"""
+        self.provider.allowed_resources = ["https://api.example.com/orders"]
+        self.provider.save()
+        response = self._exchange(resource="/relative#frag")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(loads(response.content.decode())["error"], "invalid_target")
+
+    def test_resource_ignored_when_none_allowed(self):
+        """test that a provider allowing no resources ignores the parameter"""
+        response = self._exchange(resource="https://api.example.com/orders")
+        self.assertEqual(response.status_code, 200, response.content)
+        jwt = decode(
+            loads(response.content.decode())["access_token"],
+            key=self.cert.public_key,
+            algorithms=[self.provider.jwt_key[1]],
+            audience=self.provider.client_id,
+        )
+        self.assertEqual(jwt["aud"], self.provider.client_id)
+
+    def test_no_resource(self):
+        """test that without a resource the token keeps its client audience"""
+        self.provider.allowed_resources = ["https://api.example.com/orders"]
+        self.provider.save()
+        response = self._exchange()
+        self.assertEqual(response.status_code, 200, response.content)
+        access_token = AccessToken.objects.get(
+            token=loads(response.content.decode())["access_token"]
+        )
+        self.assertEqual(access_token.resources, ())
+        jwt = decode(
+            access_token.token,
+            key=self.cert.public_key,
+            algorithms=[self.provider.jwt_key[1]],
+            audience=self.provider.client_id,
+        )
+        self.assertEqual(jwt["aud"], self.provider.client_id)
+
+    def test_resource_audience_provider(self):
+        """test that resources are allowed by the provider the token is issued on"""
+        self.target_provider.allowed_resources = ["https://target.example/"]
+        self.target_provider.save()
+        response = self._exchange(
+            audience=self.target_provider.client_id, resource="https://target.example/"
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        jwt = self._decode_unverified_aud(
+            self.target_provider, loads(response.content.decode())["access_token"]
+        )
+        self.assertEqual(jwt["aud"], "https://target.example/")
+        # The requesting provider's resources don't apply to a token for another provider
+        self.provider.allowed_resources = ["https://api.example.com/orders"]
+        self.provider.save()
+        response = self._exchange(
+            audience=self.target_provider.client_id, resource="https://api.example.com/orders"
         )
         self.assertEqual(response.status_code, 400)
-        body = loads(response.content.decode())
-        self.assertEqual(body["error"], "invalid_target")
+        self.assertEqual(loads(response.content.decode())["error"], "invalid_target")
 
     def test_invalid_signature(self):
         """test subject token whose signature does not verify"""

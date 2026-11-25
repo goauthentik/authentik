@@ -40,7 +40,9 @@ def route_token_request(grant_type: str) -> type[TokenRequest]:
 
 
 def parse_token_request(
-    request: HttpRequest, client: OAuthClientContext, client_secret: str
+    request: HttpRequest,
+    client: OAuthClientContext,
+    client_secret: str,
 ) -> TokenRequest:
     grant_type = request.POST.get("grant_type", "")
     req_type = route_token_request(grant_type)
