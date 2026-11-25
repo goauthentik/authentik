@@ -455,6 +455,7 @@ class NotificationTransport(TasksModel, SerializerModel):
                     self.webhook_url,
                     json=default_body,
                     headers=headers,
+                    allow_redirects=False,
                     **kwargs,
                 )
                 response.raise_for_status()
@@ -464,7 +465,6 @@ class NotificationTransport(TasksModel, SerializerModel):
                 ) from exc
             return [
                 response.status_code,
-                response.text,
             ]
 
         if self.webhook_ca:
@@ -520,14 +520,13 @@ class NotificationTransport(TasksModel, SerializerModel):
         if notification.event:
             body["attachments"][0]["title"] = notification.event.action
         try:
-            response = get_http_session().post(self.webhook_url, json=body)
+            response = get_http_session().post(self.webhook_url, json=body, allow_redirects=False)
             response.raise_for_status()
         except RequestException as exc:
             text = exc.response.text if exc.response is not None else str(exc)
             raise NotificationTransportError(text) from exc
         return [
             response.status_code,
-            response.text,
         ]
 
     def send_email(self, notification: Notification) -> list[str]:

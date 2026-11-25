@@ -119,6 +119,24 @@ class TestEventTransports(TestCase):
                 {"email": self.user.email, "pk": self.user.pk, "username": self.user.username},
             )
 
+    def test_transport_webhook_redirect(self):
+        """Test webhook transport doesn't follow redirects"""
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.WEBHOOK,
+            webhook_url="http://localhost:1234/test",
+        )
+        with Mocker() as mocker:
+            mocker.post(
+                "http://localhost:1234/test",
+                status_code=302,
+                headers={"Location": "http://localhost:1234/redirect"},
+            )
+            mocker.get("http://localhost:1234/redirect")
+            transport.send(self.notification)
+            self.assertEqual(mocker.call_count, 1)
+            self.assertEqual(mocker.request_history[0].method, "POST")
+
     def test_transport_webhook_slack(self):
         """Test webhook transport (slack)"""
         transport: NotificationTransport = NotificationTransport.objects.create(
@@ -158,6 +176,24 @@ class TestEventTransports(TestCase):
                     ],
                 },
             )
+
+    def test_transport_webhook_slack_redirect(self):
+        """Test webhook transport (slack) doesn't follow redirects"""
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.WEBHOOK_SLACK,
+            webhook_url="http://localhost:1234/test",
+        )
+        with Mocker() as mocker:
+            mocker.post(
+                "http://localhost:1234/test",
+                status_code=302,
+                headers={"Location": "http://localhost:1234/redirect"},
+            )
+            mocker.get("http://localhost:1234/redirect")
+            transport.send(self.notification)
+            self.assertEqual(mocker.call_count, 1)
+            self.assertEqual(mocker.request_history[0].method, "POST")
 
     def test_transport_email(self):
         """Test email transport"""
