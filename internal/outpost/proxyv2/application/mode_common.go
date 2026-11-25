@@ -138,7 +138,22 @@ func (a *Application) ReportMisconfiguration(r *http.Request, msg string, fields
 	}
 }
 
+// Besides "/", some servers split segments on "\" and drop ";" parameters.
+func hasDotSegment(p string) bool {
+	for _, segment := range strings.FieldsFunc(p, func(r rune) bool { return r == '/' || r == '\\' }) {
+		name, _, _ := strings.Cut(segment, ";")
+		if name == "." || name == ".." {
+			return true
+		}
+	}
+	return false
+}
+
 func (a *Application) IsAllowlisted(u *url.URL) bool {
+	// The upstream may resolve a path with dot segments to a different one.
+	if hasDotSegment(u.Path) {
+		return false
+	}
 	for _, ur := range a.UnauthenticatedRegex {
 		var testString string
 		if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
