@@ -47,7 +47,11 @@ from authentik.providers.oauth2.resources import (
 from authentik.providers.oauth2.token.base import TokenRequest
 from authentik.providers.oauth2.utils import is_all_vschar, is_id_jag_typ
 from authentik.sources.oauth.jwks import cache_max_age, refresh_jwks
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from authentik.sources.oauth.models import (
+    IdJagUserMatching,
+    OAuthSource,
+    UserOAuthSourceConnection,
+)
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 # draft-06 §3.1 REQUIRED claims
@@ -444,7 +448,13 @@ class IdJagTokenRequest(TokenRequest):
         `email` claim can identify a user who exists here already, as the MCP enterprise-managed
         authorization extension describes, but only in email domains the source is trusted for,
         as an issuer can assert any address. Users aren't created (no JIT provisioning), so an
-        unknown subject isn't provisioned here (§4.4.3 `access_denied`)."""
+        unknown subject isn't provisioned here (§4.4.3 `access_denied`).
+
+        A source can match by email instead, for issuers whose subjects aren't stable (Claude
+        finds the users it issues for by email, and storing `sub` is optional): the user is
+        found by email on every redemption, and connections are neither read nor written."""
+        if self.source.id_jag_user_matching == IdJagUserMatching.EMAIL:
+            return self.find_id_jag_user_by_email()
         connection = (
             UserOAuthSourceConnection.objects.filter(
                 source=self.source, identifier=self.id_jag["sub"]
@@ -465,11 +475,23 @@ class IdJagTokenRequest(TokenRequest):
         return user
 
     def resolve_id_jag_user_by_email(self) -> User:
+        """The user to connect to a new subject: found by email, and not connected yet"""
+        user = self.find_id_jag_user_by_email()
+        # A user has one connection per source: one for another subject means the email
+        # now names someone (or something) else at the issuer
+        if UserOAuthSourceConnection.objects.filter(source=self.source, user=user).exists():
+            self.logger.warning(
+                "User is connected to another ID-JAG subject", source=self.source.slug
+            )
+            raise TokenError("access_denied").with_cause("subject_conflict")
+        return user
+
+    def find_id_jag_user_by_email(self) -> User:
         """The one active user whose email matches the ID-JAG's, in a trusted domain"""
         email = self.id_jag.get("email")
         trusted_domains = self.source.id_jag_email_domains
         if email is None or not trusted_domains:
-            self.logger.info("ID-JAG subject has no connection", source=self.source.slug)
+            self.logger.info("ID-JAG has no email to match", source=self.source.slug)
             raise TokenError("access_denied").with_cause("subject_not_provisioned")
         if not isinstance(email, str):
             raise TokenError("invalid_grant").with_cause("invalid_email_claim")
@@ -497,15 +519,7 @@ class IdJagTokenRequest(TokenRequest):
         if len(users) > 1:
             self.logger.warning("Several users have the ID-JAG email", source=self.source.slug)
             raise TokenError("access_denied").with_cause("email_not_unique")
-        user = users[0]
-        # A user has one connection per source: one for another subject means the email
-        # now names someone (or something) else at the issuer
-        if UserOAuthSourceConnection.objects.filter(source=self.source, user=user).exists():
-            self.logger.warning(
-                "User is connected to another ID-JAG subject", source=self.source.slug
-            )
-            raise TokenError("access_denied").with_cause("subject_conflict")
-        return user
+        return users[0]
 
     def email_eligible_q(self) -> Q:
         """Users whose email address may identify them: those connected to an enabled

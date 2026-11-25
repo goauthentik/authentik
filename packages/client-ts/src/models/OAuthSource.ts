@@ -20,6 +20,11 @@ import {
     GroupMatchingModeEnumFromJSON,
     GroupMatchingModeEnumToJSON,
 } from "./GroupMatchingModeEnum.js";
+import type { IdJagUserMatchingEnum } from "./IdJagUserMatchingEnum.js";
+import {
+    IdJagUserMatchingEnumFromJSON,
+    IdJagUserMatchingEnumToJSON,
+} from "./IdJagUserMatchingEnum.js";
 import type { PKCEMethodEnum } from "./PKCEMethodEnum.js";
 import { PKCEMethodEnumFromJSON, PKCEMethodEnumToJSON } from "./PKCEMethodEnum.js";
 import type { PolicyEngineMode } from "./PolicyEngineMode.js";
@@ -146,6 +151,11 @@ export interface OAuthSource {
      * or members of this group, as users who registered themselves may not own their address.
      */
     idJagEmailGroup?: string | null;
+    /**
+     * How an ID-JAG from this source finds its user: by the issuer's subject, linked by email the
+     * first time, or by email on every redemption, for issuers whose subjects aren't stable.
+     */
+    idJagUserMatching?: IdJagUserMatchingEnum;
 }
 
 /**
@@ -315,6 +325,10 @@ export function OAuthSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
                 : json["id_jag_email_group"] === null
                   ? null
                   : json["id_jag_email_group"],
+        idJagUserMatching:
+            json["id_jag_user_matching"] == null
+                ? undefined
+                : IdJagUserMatchingEnumFromJSON(json["id_jag_user_matching"]),
     };
 }
 
@@ -372,5 +386,6 @@ export function OAuthSourceToJSONTyped(
         ),
         id_jag_email_domains: value["idJagEmailDomains"],
         id_jag_email_group: value["idJagEmailGroup"],
+        id_jag_user_matching: IdJagUserMatchingEnumToJSON(value["idJagUserMatching"]),
     };
 }

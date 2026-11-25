@@ -28,6 +28,13 @@ class AuthorizationCodeAuthMethod(models.TextChoices):
     POST_BODY = "post_body", _("Include the client ID and secret as request parameters")
 
 
+class IdJagUserMatching(models.TextChoices):
+    """How an ID-JAG from a source identifies its user"""
+
+    IDENTIFIER = "identifier", _("By the issuer's subject, linked once by email")
+    EMAIL = "email", _("By email address, on every redemption")
+
+
 class PKCEMethod(models.TextChoices):
     NONE = "none", _("No PKCE")
     PLAIN = "plain", _("Plain")
@@ -99,6 +106,17 @@ class OAuthSource(NonCreatableType, Source):
             "ID-JAG email addresses only match users connected to an enabled source, such as "
             "a directory, or members of this group, as users who registered themselves may "
             "not own their address."
+        ),
+    )
+    id_jag_user_matching = models.TextField(
+        choices=IdJagUserMatching.choices,
+        default=IdJagUserMatching.IDENTIFIER,
+        db_default=IdJagUserMatching.IDENTIFIER,
+        verbose_name=_("ID-JAG user matching"),
+        help_text=_(
+            "How an ID-JAG from this source finds its user: by the issuer's subject, linked by "
+            "email the first time, or by email on every redemption, for issuers whose subjects "
+            "aren't stable."
         ),
     )
 

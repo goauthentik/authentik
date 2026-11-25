@@ -63,7 +63,11 @@ from authentik.providers.oauth2.token.id_jag import (
     issuer_metadata_urls,
 )
 from authentik.providers.oauth2.views.jwks import JWKSView
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from authentik.sources.oauth.models import (
+    IdJagUserMatching,
+    OAuthSource,
+    UserOAuthSourceConnection,
+)
 from authentik.sources.oauth.types.oidc import OpenIDConnectType
 
 IDP_ISSUER = "https://idp.example.com/tenant-a"
@@ -805,6 +809,87 @@ class TestTokenIdJagGrant(OAuthTestCase):
             self.id_jag(sub=sub, email=user.email), "access_denied", "policy_denied"
         )
         self.assertFalse(UserOAuthSourceConnection.objects.filter(user=user).exists())
+
+    def test_email_matching(self):
+        """A source matching by email finds the user by email on every redemption, whatever
+        the subject, and neither reads nor writes connections"""
+        self.user.email = "first@corp.example"
+        self.user.save()
+        other = self.email_user(email="second@corp.example")
+        self.source.id_jag_user_matching = IdJagUserMatching.EMAIL
+        self.source.save()
+        new_subject = generate_id()
+        # A subject never seen before, with a known email
+        response = self.redeem(self.id_jag(sub=new_subject, email="First@CORP.example"))
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertTrue(AccessToken.objects.filter(provider=self.provider, user=self.user).exists())
+        # A subject connected to one user, with another user's email
+        response = self.redeem(self.id_jag(email=other.email))
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertTrue(AccessToken.objects.filter(provider=self.provider, user=other).exists())
+        self.assertEqual(
+            list(
+                UserOAuthSourceConnection.objects.filter(source=self.source).values_list(
+                    "user", "identifier"
+                )
+            ),
+            [(self.user.pk, self.subject)],
+        )
+        self.assertFalse(Event.objects.filter(action=EventAction.SOURCE_LINKED).exists())
+
+    def test_email_matching_refused(self):
+        """Matching by email never falls back to the subject's connection"""
+        self.user.email = "first@corp.example"
+        self.user.save()
+        self.source.id_jag_email_domains = ["corp.example"]
+        self.source.id_jag_user_matching = IdJagUserMatching.EMAIL
+        self.source.save()
+        for email, cause in (
+            (None, "subject_not_provisioned"),
+            ("first@other.example", "email_domain_not_trusted"),
+            ("nobody@corp.example", "subject_not_provisioned"),
+        ):
+            with self.subTest(email=email):
+                self.assert_rejected(self.id_jag(email=email), "access_denied", cause)
+        self.assert_rejected(
+            self.id_jag(email=self.user.email, email_verified=False),
+            "access_denied",
+            "email_not_verified",
+        )
+        self.user.is_active = False
+        self.user.save()
+        self.assert_rejected(
+            self.id_jag(email=self.user.email), "access_denied", "subject_not_provisioned"
+        )
+
+    def test_email_matching_api(self):
+        """Matching by email needs email domains"""
+        self.client.force_login(create_test_admin_user())
+        url = reverse("authentik_api:oauthsource-detail", kwargs={"slug": self.source.slug})
+        urls = {
+            "enabled": False,
+            "authorization_url": self.source.authorization_url,
+            "access_token_url": self.source.access_token_url,
+            "profile_url": self.source.profile_url,
+        }
+        response = self.client.patch(
+            url, {**urls, "id_jag_user_matching": "email"}, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertIn("id_jag_user_matching", loads(response.content))
+        response = self.client.patch(
+            url,
+            {**urls, "id_jag_user_matching": "email", "id_jag_email_domains": ["corp.example"]},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.source.refresh_from_db()
+        self.assertEqual(self.source.id_jag_user_matching, IdJagUserMatching.EMAIL)
+        # Domains can't be emptied while matching by email
+        response = self.client.patch(
+            url, {**urls, "id_jag_email_domains": []}, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400, response.content)
 
     def test_email_domains_api(self):
         """Domains are normalized; invalid ones are refused"""
