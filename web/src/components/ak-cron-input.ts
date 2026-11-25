@@ -50,7 +50,9 @@ export class AKCronInput extends WithLocale(HorizontalLightComponent<string>) {
     }
 
     protected override renderHelp(): SlottedTemplateResult {
-        if (!this.value?.trim()) return nothing;
+        if (!this.value?.trim()) {
+          return null;
+        }
 
         return html`<p class="pf-c-form__helper-text">${this.decode}</p>`;
     }
