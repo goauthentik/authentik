@@ -7,7 +7,6 @@ import "#flow/tabs/broadcast";
 import { FlowIframeMessageController } from "./controllers/FlowIframeMessageController";
 import { FlowMultitabController } from "./controllers/FlowMultitabController";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
-import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -104,7 +103,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         PFButton,
         PFTitle,
         PFList,
-        PFBackgroundImage,
         PFSpinner,
         Styles,
     ];
