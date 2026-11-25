@@ -51,6 +51,27 @@ export interface Agent {
      * Identifier of the agent's API token, so its key can be retrieved/copied later.
      */
     readonly tokenIdentifier: string | null;
+    /**
+     * Applications that may use this agent.
+     */
+    applications?: Array<string>;
+    /**
+     * Policy binding target of a system agent. Policies bound to it decide which users may obtain
+     * ID-JAGs for the agent's audience.
+     */
+    readonly policyTarget: string | null;
+    /**
+     * Issuer of the authorization server ID-JAGs are minted for.
+     */
+    idJagAudience?: string;
+    /**
+     * Identifier of the client at that authorization server.
+     */
+    idJagClientId?: string;
+    /**
+     * Resources an ID-JAG may be requested for at that server.
+     */
+    idJagResources?: Array<string>;
 }
 
 /**
@@ -75,6 +96,13 @@ export function instanceOfAgent(value: object): value is Agent {
             !("token_identifier" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["tokenIdentifier"] === undefined &&
             (value as Record<string, any>)["token_identifier"] === undefined)
+    )
+        return false;
+    if (
+        (!("policyTarget" in (value as Record<string, any>)) &&
+            !("policy_target" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["policyTarget"] === undefined &&
+            (value as Record<string, any>)["policy_target"] === undefined)
     )
         return false;
     return true;
@@ -113,6 +141,11 @@ export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Age
         parent: PartialUserFromJSON(json["parent"]),
         policyBehavior: PolicyBehaviorEnumFromJSON(json["policy_behavior"]),
         tokenIdentifier: json["token_identifier"],
+        applications: json["applications"] == null ? undefined : json["applications"],
+        policyTarget: json["policy_target"],
+        idJagAudience: json["id_jag_audience"] == null ? undefined : json["id_jag_audience"],
+        idJagClientId: json["id_jag_client_id"] == null ? undefined : json["id_jag_client_id"],
+        idJagResources: json["id_jag_resources"] == null ? undefined : json["id_jag_resources"],
     };
 }
 
@@ -123,7 +156,7 @@ export function AgentToJSON(json: any): Agent {
 export function AgentToJSONTyped(
     value?: Omit<
         Agent,
-        "pk" | "uid" | "uuid" | "parent" | "policyBehavior" | "tokenIdentifier"
+        "pk" | "uid" | "uuid" | "parent" | "policyBehavior" | "tokenIdentifier" | "policyTarget"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -141,5 +174,9 @@ export function AgentToJSONTyped(
         attributes: value["attributes"],
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
+        applications: value["applications"],
+        id_jag_audience: value["idJagAudience"],
+        id_jag_client_id: value["idJagClientId"],
+        id_jag_resources: value["idJagResources"],
     };
 }

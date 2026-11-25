@@ -115,7 +115,7 @@ class IDToken:
         id_token.aud = client_audience(provider, token)
         id_token.claims = {}
 
-        id_token.sub = id_token._resolve_sub(provider, token.user)
+        id_token.sub = IDToken.resolve_sub(provider, token.user)
 
         # Convert datetimes into timestamps.
         now = timezone.now()
@@ -157,13 +157,14 @@ class IDToken:
         # nested under the new actor, or kept as-is when there is no new actor.
         actor = getattr(token, "actor", None)
         if actor:
-            act = {"sub": id_token._resolve_sub(provider, actor)}
+            act = {"sub": IDToken.resolve_sub(provider, actor)}
             if id_token.act:
                 act["act"] = id_token.act
             id_token.act = act
         return id_token
 
-    def _resolve_sub(self, provider: OAuth2Provider, user: User) -> str:
+    @staticmethod
+    def resolve_sub(provider: OAuth2Provider, user: User) -> str:
         """Resolve a `sub`-shaped identifier for `user`, per `provider.sub_mode`."""
         if provider.sub_mode == SubModes.HASHED_USER_ID:
             return user.uid
