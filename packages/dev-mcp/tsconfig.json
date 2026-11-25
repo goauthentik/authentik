@@ -1,0 +1,5 @@
+{
+    "extends": "@goauthentik/tsconfig/node",
+    "include": ["src/**/*.ts", "test/**/*.ts", "*.config.ts"],
+    "exclude": ["out", "node_modules"]
+}

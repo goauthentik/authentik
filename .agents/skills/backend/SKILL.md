@@ -69,8 +69,11 @@ moving on. Run from the repo root.
 6. **[shell]** If a serializer, viewset or model field the API exposes changed: `make gen`.
    It rebuilds `schema.yml` and `blueprints/schema.json` and the Go, Rust and TS clients.
    Commit `schema.yml` and `blueprints/schema.json`; never hand-edit either.
-7. **[verify]** `make ci-lint-pending-migrations` (`makemigrations --check`) reports no
-   changes. `make ci-lint-migrations` lints the migrations added since `origin/main`
+7. **[verify]** `make check-gen` reports nothing stale: missing migrations, `schema.yml`,
+   `blueprints/schema.json`, locales, and API clients that probably need regenerating. It
+   runs the same checks as CI's `test-gen` and `pending-migrations` jobs without writing
+   anything. From an agent, the `akdev_generated` tool does the same.
+   `make ci-lint-pending-migrations` (`makemigrations --check`) is the single CI check. `make ci-lint-migrations` lints the migrations added since `origin/main`
    (override with `MIGRATIONS_BASE=`).
 8. Commit the model change and its migration together.
 

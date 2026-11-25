@@ -81,7 +81,7 @@ closes #1234
 1. **[shell]** Lint and format the areas you touched (see the linting skill).
 2. **[shell]** Model, serializer or viewset changes: `make gen` and commit `schema.yml`,
    `blueprints/schema.json`, `packages/client-*` and the migration. CI's `test-gen` job
-   fails on any diff.
+   fails on any diff. `make check-gen` tells you whether anything is still stale.
 3. **[shell]** Docs changes: `make docs` (spellcheck, format, build).
 4. **[verify]** Tests cover what a customer does through the product. Don't add a test
    that only mirrors the patch.

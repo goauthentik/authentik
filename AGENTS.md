@@ -145,6 +145,8 @@ Task-specific workflows live as [Agent Skills](https://agentskills.io) in `.agen
 
 Before answering a question that one of these skills covers, load the skill and answer from it. Don't answer from memory or from this file alone.
 
+The `authentik-dev` MCP server (`packages/dev-mcp`, configured in `.mcp.json` and `.codex/config.toml`) checks a change the way CI will: `akdev_generated` for stale migrations, schemas, locales and clients, `akdev_lint` for the CI lint jobs covering the change. It holds no credentials and only touches a local dev database. Without MCP, `make check-gen`, `make lint-changed` and `make dev-status` run the same checks. Results list what they skipped or couldn't tell; repeat that when you report.
+
 | Skill             | Use it to                                                                          |
 | ----------------- | ---------------------------------------------------------------------------------- |
 | `install`         | Self-host authentik with Docker Compose, Kubernetes, or AWS, up to the first login |

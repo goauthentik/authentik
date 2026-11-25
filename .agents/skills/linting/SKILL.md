@@ -33,6 +33,9 @@ Steps are tagged: `[shell]` local command, `[verify]` check before moving on.
    `schema.yml`, `blueprints/schema.json` and `packages/client-*`. Commit the migration
    too.
 5. **[verify]** `make lint` (bandit, mypy, cargo deny, cargo machete, golangci-lint).
+6. **[verify]** `make lint-changed` runs every CI lint job that covers the files changed
+   since `origin/main`, with CI's commands, and lists the jobs it couldn't map (`fix=1`
+   applies fixes first). From an agent, the `akdev_lint` tool does the same.
 
 `make all` chains `lint-fix lint gen web test`. It is the PR template's checklist item,
 but it runs the whole Python test suite, so it is slow.

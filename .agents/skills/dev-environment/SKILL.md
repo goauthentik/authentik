@@ -45,7 +45,9 @@ Steps are tagged: `[shell]` run a command, `[verify]` check before moving on. Ru
    `createdb` on the host.
 2. **[shell]** Start the services: `docker compose -f scripts/compose.yml up -d`. This runs
    PostgreSQL 18 on `127.0.0.1:5432` (trust auth, database `authentik`) and a Zenko S3
-   server on port `8020`. There is no Redis; Dramatiq uses Postgres as its broker.
+   server on port `8020`. There is no Redis; Dramatiq uses Postgres as its broker. With
+   Podman, use `podman compose`. A native Postgres works too: create the `authentik`
+   database and point `postgresql.*` in `local.env.yml` at it.
 3. **[shell]** `make install`. It runs `node-install` (root pnpm install and the shared lint
    configs), `web-install`, and `core-install` (`uv sync --frozen`; on machines with
    Homebrew it also rebuilds `lxml` and `xmlsec` from source).
@@ -53,13 +55,17 @@ Steps are tagged: `[shell]` run a command, `[verify]` check before moving on. Ru
    Postgres user `postgres`, file storage, `web.base_url: http://localhost:9000`, and one
    worker process with one thread. Edit that file for local overrides; rerunning the
    target overwrites it (and generates a new `secret_key`).
-5. **[shell]** `make migrate` (runs `lifecycle/migrate.py`: system migrations, then Django
+5. **[verify]** `make dev-status` shows how this machine runs Postgres and containers,
+   where each config value came from, and whether the dev MCP server's database guard
+   accepts the database. If the guard flags a dev database (an e2e run leaves many users;
+   a test license counts too), it prints the `local.env.yml` allowlist entry to review.
+6. **[shell]** `make migrate` (runs `lifecycle/migrate.py`: system migrations, then Django
    migrations).
-6. **[shell]** `make web-build`. No compiled UI ships in the repo, so the pages are blank
+7. **[shell]** `make web-build`. No compiled UI ships in the repo, so the pages are blank
    without it, even if you only work on the backend.
-7. **[shell]** `make run` (server and worker via `uv run ak allinone`). The first boot
+8. **[shell]** `make run` (server and worker via `uv run ak allinone`). The first boot
    applies the bootstrap blueprints and drains the initial task queue, so give it a minute.
-8. **[verify]** Open http://localhost:9000 and follow the prompts to set a password for
+9. **[verify]** Open http://localhost:9000 and follow the prompts to set a password for
    `akadmin`.
 
 To skip the prompt, or to match what the Playwright e2e suite expects, export the bootstrap

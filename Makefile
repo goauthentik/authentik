@@ -1,4 +1,4 @@
-.PHONY: gen dev-reset all test web docs core-install i18n-extract gen-locales locales-normalize install bump gen-changelog integrations
+.PHONY: gen dev-reset all test web docs core-install i18n-extract gen-locales locales-normalize install bump gen-changelog integrations dev-status check-gen lint-changed
 
 SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
@@ -158,6 +158,15 @@ dev-create-db:
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the authentik PostgreSQL instance to a "fresh install" state.
+
+dev-status:  ## Show how this machine runs Postgres and containers, and whether the dev MCP database guard passes
+	node packages/dev-mcp/src/main.ts status
+
+check-gen:  ## Check migrations, schemas, locales and API clients are up to date, like CI's test-gen (`json=1` for JSON)
+	node packages/dev-mcp/src/main.ts check-gen $(if $(json),--json)
+
+lint-changed:  ## Run the CI lint jobs that cover files changed since origin/main (`fix=1` applies fixes, `json=1` for JSON)
+	node packages/dev-mcp/src/main.ts lint-changed $(if $(json),--json) $(if $(fix),--fix)
 
 make-migrations:  ## Create Django migrations for model changes (pgtrigger-aware)
 	$(UV) run ak makemigrations

@@ -1,0 +1,57 @@
+{
+    "name": "@goauthentik/dev-mcp",
+    "version": "0.1.0",
+    "private": true,
+    "description": "authentik-dev: a local MCP server and checks for authentik contributors",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/dev-mcp"
+    },
+    "bin": {
+        "authentik-dev": "./src/main.ts"
+    },
+    "type": "module",
+    "scripts": {
+        "build:types": "tsc -p . --noEmit",
+        "check": "run-s lint:check build:types format:check test",
+        "fix": "run-s lint format",
+        "format": "oxfmt --write .",
+        "format:check": "oxfmt --check .",
+        "lint": "oxlint --fix",
+        "lint:check": "oxlint --max-warnings=0",
+        "serve": "node src/main.ts serve",
+        "smoke": "node test/smoke.ts",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "@modelcontextprotocol/server": "^2.4.0",
+        "pg": "^8.23.1",
+        "yaml": "^2.9.1",
+        "zod": "^4.6.7"
+    },
+    "devDependencies": {
+        "@goauthentik/oxfmt-config": "link:../oxfmt-config",
+        "@goauthentik/oxlint-config": "link:../oxlint-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@modelcontextprotocol/client": "^2.4.0",
+        "@types/node": "catalog:",
+        "@types/pg": "^8.23.1",
+        "npm-run-all": "^4.1.5",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": "^24.22.3 || >=26.13.1",
+            "onFail": "warn"
+        }
+    },
+    "engines": {
+        "node": "^24.22.3 || >=26.13.1"
+    }
+}
