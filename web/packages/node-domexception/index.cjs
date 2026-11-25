@@ -1,8 +1,7 @@
 /**
- * @file Vendored DOMException for Node.js environments.
- *
- * @author Jimmy Wärting
  * @license MIT
+ * @file Vendored DOMException for Node.js environments.
+ * @author Jimmy Wärting
  * @see https://github.com/jimmywarting/node-domexception
  */
 

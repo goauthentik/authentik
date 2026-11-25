@@ -353,7 +353,8 @@ class SessionEndStage(ChallengeStageView):
             )
         if application:
             data["application_name"] = application.name
-            data["application_launch_url"] = application.get_launch_url(self.get_pending_user())
+            if launch_url := application.get_launch_url(self.get_pending_user()):
+                data["application_launch_url"] = launch_url
         if self.request.brand.flow_invalidation:
             data["invalidation_flow_url"] = reverse(
                 "authentik_core:if-flow",

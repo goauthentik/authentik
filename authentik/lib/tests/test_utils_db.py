@@ -1,4 +1,4 @@
-"""PostgreSQL regression tests for bounded deletion."""
+"""PostgreSQL regression tests for database utilities."""
 
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
@@ -6,14 +6,24 @@ from threading import Event
 
 from django.db import connection, connections, transaction
 from django.db.models.signals import pre_delete
-from django.test import TransactionTestCase
+from django.test import TestCase, TransactionTestCase
 from django.test.utils import CaptureQueriesContext
 from django.utils.timezone import now
 from django_channels_postgres.models import GroupChannel, Message
 from django_postgres_cache.models import CacheEntry
 from django_postgres_cache.tasks import clear_expired_cache
 
-from authentik.lib.utils.db import delete_in_batches
+from authentik.core.models import Application
+from authentik.lib.generators import generate_id
+from authentik.lib.utils.db import delete_in_batches, distinct_values
+
+
+class TestDistinctValues(TestCase):
+    def test_unfiltered_queryset(self):
+        for name in ("beta", "alpha", "alpha"):
+            Application.objects.create(name=name, slug=generate_id())
+
+        self.assertEqual(distinct_values(Application.objects.all(), "name"), ["alpha", "beta"])
 
 
 class TestDeleteInBatches(TransactionTestCase):

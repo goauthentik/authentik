@@ -650,6 +650,33 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - web/stages: Fix stage type errors (cherry-pick #25689 to version-2026.8) (#26194)
 - web/user: fix agents tab flashing without license (cherry-pick #27069 to version-2026.8) (#27073)
 
+## Fixed in 2026.8.6
+
+- core: batch expired cache and channel record cleanup (cherry-pick #27587 to version-2026.8) (#27634)
+- core: don't add DISTINCT to users list when filtering by type (cherry-pick #26413 to version-2026.8) (#27463)
+- core: split users list superuser annotation in API into two EXISTS subqueries (cherry-pick #26275 to version-2026.8) (#27462)
+- enterprise/lifecycle: record each review and its note as an event (cherry-pick #27286 to version-2026.8) (#27349)
+- enterprise/requests: record requester and reviewer notes on events (cherry-pick #27285 to version-2026.8) (#27334)
+- flows: fix blip of un-templated flow title placeholder (cherry-pick #26905 to version-2026.8) (#27141)
+- flows: format titles correct on first render if possible (cherry-pick #27589 to version-2026.8) (#27596)
+- lib: fix capture_logs not thread safe (cherry-pick #27355 to version-2026.8) (#27633)
+- outposts: refresh channel groups on hello (cherry-pick #27136 to version-2026.8) (#27737)
+- packages/ak-common/config: keep watching files that are replaced (cherry-pick #27833 to version-2026.8) (#27834)
+- packages/django-channels-postgres: skip expired group channels in group_send (cherry-pick #27717 to version-2026.8) (#27738)
+- packages/django-dramatiq-postgres: batch task purge and stagger first run (cherry-pick #27810 to version-2026.8) (#27927)
+- packages/django-dramatiq-postgres: limit task fetching (cherry-pick #27197 to version-2026.8) (#27739)
+- root: disable MPTCP on Go listeners (cherry-pick #27425 to version-2026.8) (#27427)
+- root: require Node.js 24.22.1 (cherry-pick #27093 to version-2026.8) (#27389)
+- server, lifecycle: drop idle upstream connections before uvicorn does (cherry-pick #27192 to version-2026.8) (#27353)
+- sources/saml: log response processing errors and show users a generic message (cherry-pick #27012 to version-2026.8) (#27356)
+- stages/authenticator_webauthn: don't offer signature algorithms OpenSSL can't verify when FIPS is enabled (cherry-pick #27116 to version-2026.8) (#27439)
+- stages/prompt: use stable metric label for validation policy engine (cherry-pick #27735 to version-2026.8) (#27736)
+- web: Keep brand form state after uploading a file (cherry-pick #27405 to version-2026.8) (#27467)
+- web/admin: keep earlier picks when assigning users to a group (cherry-pick #27468 to version-2026.8) (#27469)
+- web/elements: compile ak-mdx API content as CommonMark (cherry-pick #24524 to version-2026.8) (#27115)
+- web/elements: fix the wizard next button staying disabled (cherry-pick #27660 to version-2026.8) (#27904)
+- web/elements: keep dialog messages after the dialog closes (cherry-pick #27413 to version-2026.8) (#27440)
+
 ## API Changes
 
 ### authentik (v 2026.8.3)
