@@ -1,5 +1,4 @@
 import "#components/ak-event-info";
-
 import { EventActions } from "@goauthentik/api";
 
 import { expect, onTestFinished, test } from "vitest";
