@@ -1,7 +1,15 @@
 ---
 title: macOS local device login
 sidebar_label: macOS
-tags: [authentik Agent, device login, device authentication, macos, platform sso, psso]
+tags:
+    [
+        authentik Agent,
+        device login,
+        device authentication,
+        macos,
+        platform sso,
+        psso,
+    ]
 authentik_enterprise: true
 authentik_preview: true
 authentik_version: "2026.11"
@@ -23,7 +31,7 @@ authentik supports the following Platform SSO authentication methods:
 - Platform SSO can only be configured through an MDM tool. Apple does not apply Platform SSO configuration from profiles that are installed manually.
 - The authentication method cannot currently be selected in authentik. To use web login, you must [edit the MDM policy](#enable-web-login) before deploying it.
 - When the Platform SSO configuration of a Mac changes, its users are prompted to register again. Refer to [Update the MDM policy](#update-the-mdm-policy).
-- Password-based Platform SSO is not supported.
+- Password-based Platform SSO is currently not supported.
 
 :::
 
