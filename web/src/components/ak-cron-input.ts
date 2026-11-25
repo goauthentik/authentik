@@ -8,7 +8,7 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-cron-input")
-export class AkCronInput extends WithLocale(HorizontalLightComponent<string>) {
+export class AKCronInput extends WithLocale(HorizontalLightComponent<string>) {
     /**
      * @property *
      * @attribute
