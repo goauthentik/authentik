@@ -229,7 +229,7 @@
         "lit": "^3.3.3",
         "lit-analyzer": "^2.0.3",
         "lit-element": "^4.2.2",
-        "lit-html": "^3.3.3",
+        "lit-html": "^2.8.0",
         "maplibre-gl": "^6.9.1",
         "md-front-matter": "^1.0.4",
         "mermaid": "^12.3.0",

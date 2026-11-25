@@ -446,8 +446,8 @@ importers:
         specifier: ^4.2.2
         version: 4.2.2
       lit-html:
-        specifier: ^3.3.3
-        version: 3.3.3
+        specifier: ^2.8.0
+        version: 2.8.0
       maplibre-gl:
         specifier: ^6.9.1
         version: 6.18.0
@@ -645,8 +645,8 @@ importers:
         specifier: ^3.7.1
         version: 3.7.1
       lit-html:
-        specifier: ^1.4.1
-        version: 1.4.1
+        specifier: ^2.8.0
+        version: 2.8.0
       rollup:
         specifier: ^4.68.8
         version: 4.68.8
@@ -4371,8 +4371,8 @@ packages:
   lit-element@4.2.2:
     resolution: {integrity: sha512-aFKhNToWxoyhkNDmWZwEva2SlQia+jfG0fjIWV//YeTaWrVnOxD89dPKfigCUspXFmjzOEUQpOkejH5Ly6sG0w==}
 
-  lit-html@1.4.1:
-    resolution: {integrity: sha512-B9btcSgPYb1q4oSOb/PrOT6Z/H+r6xuNzfH4lFli/AWhYwdtrgQkQWBbIc6mdnf6E2IL3gDXdkkqNktpU0OZQA==}
+  lit-html@2.8.0:
+    resolution: {integrity: sha512-o9t+MQM3P4y7M7yNzqAyjp7z+mQGa4NS4CxiyLqFPyFWyc4O+nodLrkrxSaCTrla6M5YOLaT3RpbbqjszB5g3Q==}
 
   lit-html@3.3.3:
     resolution: {integrity: sha512-el8M6jK2o3RXBnrSHX3ZKrsN8zEV63pSExTO1wYJz7QndGYZ8353e2a5PPX+qHe2aGayfnchQmkAojaWAREOIA==}
@@ -9256,7 +9256,9 @@ snapshots:
       '@lit/reactive-element': 2.1.2
       lit-html: 3.3.3
 
-  lit-html@1.4.1: {}
+  lit-html@2.8.0:
+    dependencies:
+      '@types/trusted-types': 2.0.7
 
   lit-html@3.3.3:
     dependencies:
