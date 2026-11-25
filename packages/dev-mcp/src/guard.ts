@@ -12,6 +12,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import type { AllowEntry, Environment } from "./discovery.ts";
+import { isDevTestLicense, verifyLicense } from "./license.ts";
 import { storeDir } from "./store.ts";
 
 import pg from "pg";
@@ -114,7 +115,6 @@ const EXTERNAL_LOGINS_SQL =
     `AND NOT (${PRIVATE_RANGES.map((r) => `client_ip <<= inet '${r}'`).join(" OR ")})`;
 
 const SIGNAL_SQL = {
-    license: "SELECT count(*) FROM authentik_enterprise_license",
     users: "SELECT count(*) FROM authentik_core_user WHERE type IN ('internal', 'external')",
     external_logins: EXTERNAL_LOGINS_SQL,
 } as const;
@@ -128,6 +128,45 @@ async function count(client: pg.Client, sql: string): Promise<number | null> {
         if ((error as { code?: string }).code === "42P01") return null;
         throw error;
     }
+}
+
+/** Installed license keys, or null when the table doesn't exist yet. */
+async function licenseKeys(client: pg.Client): Promise<string[] | null> {
+    try {
+        const res = await client.query<{ key: string }>(
+            "SELECT key FROM authentik_enterprise_license",
+        );
+        return res.rows.map((r) => r.key);
+    } catch (error) {
+        if ((error as { code?: string }).code === "42P01") return null;
+        throw error;
+    }
+}
+
+/**
+ * The license signal fires when any installed license lacks a verified `dev_test` claim. A
+ * license authentik's licensing CA issued for development and testing is evidence of a dev
+ * database; any other license, or one whose signature doesn't verify, is treated as production.
+ */
+export function licenseSignal(
+    keys: string[] | null,
+    root?: Buffer,
+): { tripped: boolean; detail: string } {
+    if (!keys?.length) return { tripped: false, detail: "no enterprise license installed" };
+    const checks = keys.map((key) => verifyLicense(key, root));
+    const dev = checks.filter(isDevTestLicense).length;
+    if (dev === keys.length) {
+        return {
+            tripped: false,
+            detail: `${keys.length} enterprise license(s), all verified dev_test licenses`,
+        };
+    }
+    const unverified = checks
+        .map((c) => (c.verified ? null : c.reason))
+        .filter((r): r is string => r !== null);
+    let detail = `${keys.length} enterprise license(s), ${keys.length - dev} without a verified dev_test claim`;
+    if (unverified.length) detail += ` (${[...new Set(unverified)].join("; ")})`;
+    return { tripped: true, detail };
 }
 
 /** Read-only heuristics on the database's contents: does it look like production? */
@@ -157,7 +196,7 @@ export async function databaseChecks(env: Environment): Promise<Check[]> {
     }
     try {
         // One connection runs one query at a time.
-        const licenses = await count(client, SIGNAL_SQL.license);
+        const license = licenseSignal(await licenseKeys(client));
         const users = await count(client, SIGNAL_SQL.users);
         const logins = await count(client, SIGNAL_SQL.external_logins);
         const signal = (name: string, tripped: boolean, detail: string): Check =>
@@ -177,7 +216,7 @@ export async function databaseChecks(env: Environment): Promise<Check[]> {
                   };
         return [
             { name: "reachable", ok: true, detail: "connected read-only" },
-            signal("license", !!licenses, `${licenses ?? 0} enterprise license(s) installed`),
+            signal("license", license.tripped, license.detail),
             signal(
                 "users",
                 (users ?? 0) >= USER_THRESHOLD,

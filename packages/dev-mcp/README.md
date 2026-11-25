@@ -30,18 +30,21 @@ guard judges the database the configuration resolves to, not the setup:
 1. `debug` is true.
 2. The connection is local (loopback, socket, or a container on this machine), or the host is listed.
 3. The database is `authentik` or `test_authentik`, or is listed.
-4. The database doesn't look like production: no enterprise license, fewer than 50 human users, no
-   logins from public addresses in the last week.
+4. The database doesn't look like production: every installed license is a verified `dev_test`
+   license, fewer than 50 human users, no logins from public addresses in the last week. A
+   `dev_test` claim counts only when the license's certificate chain leads to authentik's
+   licensing CA (`authentik/enterprise/public.pem`) and its signature verifies, the same checks
+   as `LicenseKey.validate()`.
 5. `AUTHENTIK_TOKEN` isn't set in the shell.
 
-A dev database often trips check 4: an e2e run leaves hundreds of users, and maintainers test with
-licenses. `make dev-status` prints the entry to add to `local.env.yml` after you've checked:
+A dev database often trips check 4: an e2e run leaves hundreds of users. Use a `dev_test` license
+for enterprise features. `make dev-status` prints the entry to add to `local.env.yml` after you've checked:
 
 ```yaml
 dev_mcp:
     allowed_databases:
         - name: authentik
-          ignore_signals: [license, users]
+          ignore_signals: [users]
 ```
 
 The guard stops accidents, such as a shell still pointing at production. An agent with a shell can
