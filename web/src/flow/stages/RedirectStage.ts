@@ -151,7 +151,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // so keep showing the spinner instead of a misleading "close" message.
         if (!url.protocol.startsWith("http") && url.protocol !== "com.apple.platformsso:") {
             return html`<ak-flow-card .challenge=${this.challenge}>
-                <ak-empty-state icon="fas fa-check"
+                <ak-empty-state icon="fas fa-check-circle pf-m-success"
                     ><span>${msg("You may close this page now.")}</span>
                 </ak-empty-state>
             </ak-flow-card>`;

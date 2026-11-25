@@ -1,4 +1,5 @@
 import "#admin/policies/PolicyTestForm";
+import "#elements/Label";
 import "#admin/policies/ak-policy-wizard";
 import "#admin/policies/dummy/DummyPolicyForm";
 import "#admin/policies/event_matcher/EventMatcherPolicyForm";
@@ -13,6 +14,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
+import { plural } from "#common/ui/locale/plurals";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
@@ -31,6 +33,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
+    public static override verboseName = msg("Policy", { id: "policies.verbose-name.label" });
+    public static override verboseNamePlural = msg("Policies", {
+        id: "policies.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override pageTitle = msg("Policies");
@@ -63,7 +70,16 @@ export class PolicyListPage extends TablePage<Policy> {
                 ${
                     (item.boundTo || 0) > 0
                         ? html`<ak-label status="success" compact>
-                              ${msg(str`Assigned to ${item.boundTo} object(s).`)}
+                              ${plural(item.boundTo, {
+                                  one: (formattedCount) =>
+                                      msg(str`Assigned to ${formattedCount} object.`, {
+                                          id: "policies.bound-to.label.one",
+                                      }),
+                                  other: (formattedCount) =>
+                                      msg(str`Assigned to ${formattedCount} objects.`, {
+                                          id: "policies.bound-to.label.other",
+                                      }),
+                              })}
                           </ak-label>`
                         : html`<ak-label status="warning" compact>
                               ${msg("Warning: Policy is not assigned.")}
@@ -100,7 +116,6 @@ export class PolicyListPage extends TablePage<Policy> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Policy / Policies")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Policy) => {
                 return aki(PoliciesApi).policiesAllUsedByList({

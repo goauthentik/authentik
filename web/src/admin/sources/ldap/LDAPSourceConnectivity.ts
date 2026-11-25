@@ -44,12 +44,12 @@ export class LDAPSourceConnectivity extends AKElement {
                     ${
                         server.status === "ok"
                             ? html`<pf-tooltip position="top">
-                              <ul slot="content" class="pf-c-list">
-                        <li>${msg("Vendor")}: ${server.vendor}</Li>
-                        <li>${msg("Version")}: ${server.version}</li>
-                              </ul>
-                              ${content}
-                          </pf-tooltip>`
+                                  <ul slot="content" class="pf-c-list">
+                                      <li>${msg("Vendor")}: ${server.vendor}</Li>
+                                      <li>${msg("Version")}: ${server.version}</li>
+                                  </ul>
+                                  ${content}
+                              </pf-tooltip>`
                             : content
                     }
                 </li>`;

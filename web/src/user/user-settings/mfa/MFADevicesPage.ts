@@ -28,6 +28,11 @@ export const stageToAuthenticatorName = (stage: UserSetting) =>
 
 @customElement("ak-user-settings-mfa")
 export class MFADevicesPage extends Table<Device> {
+    public static override verboseName = msg("Device", { id: "mfa-devices.verbose-name.label" });
+    public static override verboseNamePlural = msg("Devices", {
+        id: "mfa-devices.verbose-name-plural.label",
+    });
+
     @property({ attribute: false })
     userSettings?: UserSetting[];
 
@@ -136,7 +141,6 @@ export class MFADevicesPage extends Table<Device> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Device) => {
                 return this.deleteWrapper(item);

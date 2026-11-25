@@ -55,7 +55,6 @@ export class UserReputationList extends Table<Reputation> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Reputation score(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
                 return aki(PoliciesApi).policiesReputationScoresUsedByList({

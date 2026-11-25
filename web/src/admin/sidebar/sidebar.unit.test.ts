@@ -1,11 +1,13 @@
+import { SidebarItem } from "#elements/sidebar/types";
+
 import { ROUTES } from "#admin/Routes";
 import { createAdminSidebarEntries } from "#admin/sidebar/constants";
-import { findSidebarSectionByRoute, resolveSidebarEntries } from "#admin/sidebar/sidebarTools";
+import { findCurrentSidebarSectionLabel, resolveSidebarEntries } from "#admin/sidebar/sidebarTools";
 import { type SidebarEntry, ExtendedSidebarItem } from "#admin/sidebar/types";
 
 import { describe, expect, it } from "vitest";
 
-describe("findSidebarSectionByRoute", () => {
+describe("findCurrentSidebarSectionLabel", () => {
     const entries = resolveSidebarEntries(createAdminSidebarEntries(true), {
         licensed: false,
         canEnterprise: false,
@@ -19,13 +21,24 @@ describe("findSidebarSectionByRoute", () => {
         ["flow-view", "Flows"],
         ["system-tasks", "System Tasks"],
     ])("names the entry that lists %s", (routeName, section) => {
-        expect(findSidebarSectionByRoute(entries, routeName)).toBe(section);
+        expect(findCurrentSidebarSectionLabel(entries, routeName, "")).toBe(section);
     });
 
     it("returns null for a route no entry lists", () => {
-        expect(findSidebarSectionByRoute(entries, "outposts")).toBeNull();
-        expect(findSidebarSectionByRoute(entries, "stage-prompts")).toBeNull();
-        expect(findSidebarSectionByRoute(entries, null)).toBeNull();
+        expect(findCurrentSidebarSectionLabel(entries, "outposts", "")).toBeNull();
+        expect(findCurrentSidebarSectionLabel(entries, "stage-prompts", "")).toBeNull();
+        expect(findCurrentSidebarSectionLabel(entries, null, "")).toBeNull();
+    });
+
+    it("matches Licenses by key when enterprise entries point at the licenses page", () => {
+        const unlicensed = resolveSidebarEntries(createAdminSidebarEntries(true), {
+            licensed: false,
+            canEnterprise: true,
+        });
+
+        expect(findCurrentSidebarSectionLabel(unlicensed, null, "/enterprise/licenses")).toBe(
+            "Licenses",
+        );
     });
 });
 
@@ -84,13 +97,13 @@ describe("resolveSidebarEntries", () => {
         });
 
         expect(lifecycleRules?.path).toBe("/if/admin/enterprise/licenses");
-        expect(lifecycleRules?.notice).toBe("Enterprise only");
+        expect(lifecycleRules?.notice).toBe("Enterprise");
     });
 
     it("honors readonly on entries it is given", () => {
         const resolved = resolveSidebarEntries(entries, { canEnterprise: true, licensed: false });
 
-        expect(getChildren(resolved)[1].notice).toBe("Enterprise only");
+        expect(getChildren(resolved)[1].notice).toBe("Enterprise");
         const children = getChildren(resolved);
         expect(children[1]?.path).not.toBe("/if/admin/events/lifecycle-rules");
     });
@@ -118,5 +131,20 @@ describe("sidebar routes", () => {
 
     it.each(collectPaths(createAdminSidebarEntries(true)))("%s resolves to a route", (path) => {
         expect(ROUTES.some((route) => route.test(path))).toBe(true);
+    });
+});
+
+describe("sidebar item conformance", () => {
+    it("has a path or children (or both) for every entry", () => {
+        const resolved = resolveSidebarEntries(createAdminSidebarEntries(true), {
+            canEnterprise: true,
+            licensed: true,
+        });
+
+        const nonConforming = ({ path, children }: SidebarItem) =>
+            (!path && !(children && children.length > 0)) ||
+            (children && children.find(nonConforming));
+
+        expect(resolved.find(nonConforming)).toBeFalsy();
     });
 });

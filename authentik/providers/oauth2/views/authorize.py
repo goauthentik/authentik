@@ -93,7 +93,7 @@ class OAuthAuthorizationParams:
     response_type: str
     response_mode: str | None
     scope: set[str]
-    state: str
+    state: str | None
     nonce: str | None
     prompt: set[str]
     grant_type: str
@@ -109,6 +109,7 @@ class OAuthAuthorizationParams:
     dpop_jkt: str | None = None
 
     github_compat: InitVar[bool] = False
+    raw_max_age: InitVar[str | None] = None
 
     @staticmethod
     def from_request(request: HttpRequest, github_compat=False) -> OAuthAuthorizationParams:
@@ -121,7 +122,6 @@ class OAuthAuthorizationParams:
         # Because in this endpoint we handle both GET
         # and POST request.
         query_dict = request.POST if request.method == "POST" else request.GET
-        state = query_dict.get("state")
         redirect_uri = query_dict.get("redirect_uri", "")
 
         response_type = query_dict.get("response_type", "")
@@ -130,7 +130,6 @@ class OAuthAuthorizationParams:
         # Set to Query or Fragment if not defined in request
         response_mode = query_dict.get("response_mode", False)
 
-        max_age = query_dict.get("max_age")
         dpop_jkt = query_dict.get("dpop_jkt")
         return OAuthAuthorizationParams(
             client_id=query_dict.get("client_id", ""),
@@ -139,18 +138,18 @@ class OAuthAuthorizationParams:
             response_mode=response_mode,
             grant_type="",
             scope=set(query_dict.get("scope", "").split()),
-            state=state,
+            state=query_dict.get("state"),
             nonce=query_dict.get("nonce"),
             prompt=ALLOWED_PROMPT_PARAMS.intersection(set(query_dict.get("prompt", "").split())),
             request=query_dict.get("request", None),
-            max_age=int(max_age) if max_age else None,
             code_challenge=query_dict.get("code_challenge"),
             code_challenge_method=query_dict.get("code_challenge_method", "plain"),
             dpop_jkt=dpop_jkt,
             github_compat=github_compat,
+            raw_max_age=query_dict.get("max_age"),
         )
 
-    def __post_init__(self, github_compat=False):
+    def __post_init__(self, github_compat=False, raw_max_age=None):
         self.provider: OAuth2Provider = OAuth2Provider.objects.filter(
             client_id=self.client_id
         ).first()
@@ -177,6 +176,7 @@ class OAuthAuthorizationParams:
         self.check_dpop_jkt()
         self.check_nonce()
         self.check_code_challenge()
+        self.check_max_age(raw_max_age)
 
     def resolve_grant_type(self) -> str | None:
         """Map the response_type to the grant_type/flow it implies, without validation."""
@@ -401,6 +401,23 @@ class OAuthAuthorizationParams:
                 description=f"Unsupported challenge method {self.code_challenge_method}",
             )
 
+    def check_max_age(self, raw_max_age: str | None):
+        """max_age is a number of seconds, so it must be a non-negative integer"""
+        if not raw_max_age:
+            return
+        try:
+            self.max_age = int(raw_max_age)
+        except ValueError:
+            self.max_age = None
+        if self.max_age is None or self.max_age < 0:
+            raise AuthorizeError(
+                redirect_uri=self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                response_mode=self.response_mode,
+            ).with_cause("max_age_invalid")
+
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""
         auth_event = get_login_event(request)
@@ -515,7 +532,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
             if isinstance(response, HttpResponseRedirect):
                 parsed_url = urlparse(response.url)
-                args = parse_qs(parsed_url.query)
+                args = parse_qs(parsed_url.query, keep_blank_values=True)
                 args["locale"] = selected_language
                 response["Location"] = urlunparse(
                     parsed_url._replace(query=urlencode(args, quote_via=quote, doseq=True))
@@ -551,9 +568,11 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 # in case this request has both max_age and prompt=login
                 self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
                 return self.handle_no_permission()
-        # If prompt=login, we need to re-authenticate the user regardless
+        # If prompt=login, we need to re-authenticate the user regardless. max_age=0 is
+        # defined as equivalent to prompt=login, see
+        # https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest
         # Check if we're not already doing the re-authentication
-        if PROMPT_LOGIN in self.params.prompt:
+        if PROMPT_LOGIN in self.params.prompt or self.params.max_age == 0:
             # No previous login UID saved, so save the current uid and trigger
             # re-login, or previous login UID matches current one, so no re-login happened yet
             if (
@@ -628,7 +647,8 @@ class OAuthFulfillmentStage(StageView):
             # this picks the first item in the list if the value is a list,
             # otherwise just the value as-is
             query_params = dict(
-                (k, v[0] if isinstance(v, list) else v) for k, v in parse_qs(parsed.query).items()
+                (k, v[0] if isinstance(v, list) else v)
+                for k, v in parse_qs(parsed.query, keep_blank_values=True).items()
             )
 
             challenge = AutosubmitChallenge(
@@ -707,7 +727,8 @@ class OAuthFulfillmentStage(StageView):
             if self.params.response_mode == ResponseMode.QUERY:
                 query_params = parse_qs(uri.query)
                 query_params["code"] = code.code
-                query_params["state"] = [str(self.params.state) if self.params.state else ""]
+                if self.params.state is not None:
+                    query_params["state"] = self.params.state
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
@@ -716,7 +737,8 @@ class OAuthFulfillmentStage(StageView):
                 query_fragment = {}
                 if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     query_fragment["code"] = code.code
-                    query_fragment["state"] = [str(self.params.state) if self.params.state else ""]
+                    if self.params.state is not None:
+                        query_fragment["state"] = self.params.state
                 else:
                     query_fragment = self.create_implicit_response(code)
 
@@ -730,7 +752,8 @@ class OAuthFulfillmentStage(StageView):
                 post_params = {}
                 if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     post_params["code"] = code.code
-                    post_params["state"] = [str(self.params.state) if self.params.state else ""]
+                    if self.params.state is not None:
+                        post_params["state"] = self.params.state
                 else:
                     post_params = self.create_implicit_response(code)
 
@@ -806,5 +829,6 @@ class OAuthFulfillmentStage(StageView):
         query_fragment["expires_in"] = int(
             timedelta_from_string(self.provider.access_token_validity).total_seconds()
         )
-        query_fragment["state"] = self.params.state if self.params.state else ""
+        if self.params.state is not None:
+            query_fragment["state"] = self.params.state
         return query_fragment

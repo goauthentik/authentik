@@ -25,11 +25,11 @@
     "dependencies": {
         "@goauthentik/tsconfig": "link:../../../packages/tsconfig",
         "@types/node": "catalog:",
-        "@types/semver": "^7.7.1",
-        "semver": "^7.8.5",
+        "@types/semver": "^7.8.0",
+        "semver": "^7.8.6",
         "typescript": "catalog:"
     },
     "engines": {
-        "node": "^24.22.1 || >=26.12.1"
+        "node": "^24.22.3 || >=26.13.1"
     }
 }
