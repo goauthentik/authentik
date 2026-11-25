@@ -13,6 +13,6 @@ export function renderEmailSent(event: EventWithContext) {
     return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
         <div class="pf-c-card__body">${getEmailInfo(event.context)}</div>
         <ak-expand>
-            <iframe srcdoc=${body}></iframe>
+            <iframe sandbox srcdoc=${body}></iframe>
         </ak-expand>`;
 }
