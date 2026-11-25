@@ -115,8 +115,8 @@ msgid ""
 "Events will be deleted after this duration.(Format: "
 "weeks=3;days=2;hours=3,seconds=2)."
 msgstr ""
-"По истечении этого времени события будут удалены. (Формат: недели=3; дни=2; "
-"часы=3, секунды=2)."
+"По истечении этого времени события будут удалены. (Формат: "
+"weeks=3;days=2;hours=3;seconds=2.)"
 
 #: authentik/admin/models.py
 msgid "Reputation cannot decrease lower than this value. Zero or negative."
@@ -2712,7 +2712,7 @@ msgstr ""
 #: authentik/lib/utils/time.py
 #, python-format
 msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
-msgstr "%(value)s не соответствует формату 'часов=3;минут=1'."
+msgstr "%(value)s не соответствует формату 'hours=3;minutes=1'."
 
 #: authentik/lib/validators.py
 #, python-brace-format
@@ -3770,8 +3770,8 @@ msgid ""
 "Determines how long a session lasts. Default of 0 means that the sessions "
 "lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
-"Определяет время жизни сессии. Значение по умолчанию 0 означает, что сессии "
-"будут истекать при закрытии браузера. (Формат: часы=-1;минуты=-2;секунды=-3)"
+"Определяет срок действия сеанса. По умолчанию (0) сеанс действует до "
+"закрытия браузера. (Формат: hours=-1;minutes=-2;seconds=-3.)"
 
 #: authentik/providers/rac/models.py
 msgid "When set to true, connection tokens will be deleted upon disconnect."
