@@ -77,6 +77,9 @@ class DockerClient(UpstreamDockerClient, BaseClient):
             return OutpostServiceConnectionState(version="", healthy=False)
 
     def __exit__(self, exc_type, exc_value, traceback):
+        # This overrides docker.DockerClient.__exit__, which is what closes the
+        # connection; without it every ssh:// client leaks a paramiko session
+        self.close()
         if self.tls:
             self.logger.debug("Cleaning up TLS")
             self.tls.cleanup()

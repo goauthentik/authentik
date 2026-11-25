@@ -77,40 +77,39 @@ If you want Arcane to assign roles from authentik, create one application entitl
 
 ## Arcane configuration
 
-Arcane can be configured from the web interface or with environment variables. Use the web interface unless you manage Arcane configuration through deployment files.
+Arcane can be configured from the web interface or with environment variables. Use the web interface unless you manage Arcane configuration through deployment files. Settings set by environment variables are read-only in the web interface.
 
 ### Configure OIDC in the web interface
 
 1. Log in to Arcane as an administrator.
-2. Navigate to **Settings** > **Security** > **OIDC Authentication**.
+2. Navigate to **System** > **Authentication** and click the **OIDC** tab.
 3. Configure the following values:
-    - **Enable OIDC Authentication**: enable this option.
-    - **OIDC Client ID**: enter the **Client ID** from authentik.
-    - **OIDC Client Secret**: enter the **Client Secret** from authentik.
-    - **OIDC Issuer URL**: `https://authentik.company/application/o/<application_slug>`
+    - **OIDC Authentication**: enable this option.
+    - **Client ID**: enter the **Client ID** from authentik.
+    - **Client Secret**: enter the **Client Secret** from authentik.
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>`
     - **Provider Display Name**: `authentik`
-    - **OIDC Account Merging**: enable this option if you want OIDC logins to link to existing Arcane accounts by matching email address. If you enable this option, use the custom email scope mapping in the authentik provider.
-4. Copy the **Redirect URI** shown by Arcane and verify that it matches `https://arcane.company/auth/oidc/callback`.
-5. Save and test the connection.
+    - **Link OIDC with Existing Accounts**: enable this option if you want OIDC logins to link to existing Arcane accounts by matching email address. If you enable this option, use the custom email scope mapping in the authentik provider.
+4. Verify that the redirect URI under **Redirect URI Configuration** matches `https://arcane.company/auth/oidc/callback`.
+5. Click **Save**.
 
 ### Configure environment variables _(optional)_
 
 Add the following environment variables to your Arcane `.env` file:
 
 ```env title=".env"
-APP_URL=https://arcane.company
-OIDC_ENABLED=true
-OIDC_CLIENT_ID=<Client ID from authentik>
-OIDC_CLIENT_SECRET=<Client Secret from authentik>
-OIDC_ISSUER_URL=https://authentik.company/application/o/<application_slug>
-OIDC_PROVIDER_NAME=authentik
-OIDC_SCOPES="openid email profile"
+ARCANE_APP_URL=https://arcane.company
+ARCANE_OIDC_ENABLED=true
+ARCANE_OIDC_CLIENT_ID=<Client ID from authentik>
+ARCANE_OIDC_CLIENT_SECRET=<Client Secret from authentik>
+ARCANE_OIDC_ISSUER_URL=https://authentik.company/application/o/<application_slug>
+ARCANE_OIDC_PROVIDER_NAME=authentik
 ```
 
 If you want OIDC logins to link to existing Arcane accounts by matching email address, also add the following setting and use the custom email scope mapping in the authentik provider:
 
 ```env title=".env"
-OIDC_MERGE_ACCOUNTS=true
+ARCANE_OIDC_MERGE_ACCOUNTS=true
 ```
 
 Restart Arcane to apply the changes.
@@ -121,18 +120,18 @@ Arcane can map OIDC claim values to Arcane roles. This guide uses authentik appl
 
 If you configured Arcane in the web interface:
 
-1. In Arcane, navigate to **Settings** > **Security** > **OIDC Authentication**.
+1. In Arcane, navigate to **System** > **Authentication** and click the **OIDC** tab.
 2. Set **Scopes** to `openid email profile entitlements`.
-3. Set **OIDC Groups Claim** to `roles`.
-4. Under **OIDC Mappings**, click **Create OIDC mapping**.
-5. Set **Claim value** to the authentik application entitlement name, select the Arcane **Role**, select the **Environment scope**, and save the mapping.
+3. Set **Groups Claim** to `roles`, and click **Save**.
+4. Click the **Role Mappings** tab and add a role mapping.
+5. Set **Group** to the authentik application entitlement name, select the Arcane **Role**, select the **Agent scope**, and click **Create**.
 
 If you configured Arcane with environment variables, update your `.env` file:
 
 ```env title=".env"
-OIDC_SCOPES="openid email profile entitlements"
-OIDC_GROUPS_CLAIM=roles
-OIDC_ROLE_MAPPINGS='[{"claimValue":"arcane-admins","roleId":"role_admin"}]'
+ARCANE_OIDC_SCOPES="openid email profile entitlements"
+ARCANE_OIDC_GROUPS_CLAIM=roles
+ARCANE_OIDC_ROLE_MAPPINGS='[{"claimValue":"arcane-admins","roleId":"role_admin"}]'
 ```
 
 Restart Arcane to apply the changes.
@@ -143,4 +142,5 @@ To confirm that authentik is properly configured with Arcane, open Arcane and se
 
 ## Resources
 
-- [Arcane Docs - OIDC Single Sign-On](https://getarcane.app/docs/configuration/sso)
+- [Arcane Docs - OIDC Single Sign-On](https://getarcane.app/docs/access/sso)
+- [Arcane Docs - Environment variables](https://getarcane.app/docs/reference/environment-variables)
