@@ -37,10 +37,10 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_stages_identification", "0001_initial"),
-        ("authentik_core", "0021_alter_application_slug"),
-        ("authentik_flows", "0003_auto_20200523_1133"),
+        ("authentik_core", "0018_auto_20210330_1345_squashed_0028_alter_token_intent"),
+        ("authentik_flows", "0001_squashed_0007_auto_20200703_2059"),
         ("authentik_stages_password", "0005_auto_20210402_2221"),
-        ("authentik_flows", "0007_auto_20200703_2059"),
+        ("authentik_flows", "0001_squashed_0007_auto_20200703_2059"),
         ("authentik_flows", "0020_flowtoken"),
     ]
 

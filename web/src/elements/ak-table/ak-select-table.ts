@@ -78,8 +78,8 @@ export interface ISelectTable extends ISimpleTable {
  * cannot access the select-cell via `cell-0`; that would be the first data column. This is due to a
  * limitation on the `part::` semantics.
  *
- * @element ak-select-table
  * @class SelectTable
+ * @element ak-select-table
  */
 
 @customElement("ak-select-table")

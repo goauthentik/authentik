@@ -54,8 +54,9 @@ const container = (content: TemplateResult) =>
                 display: inline-block;
                 width: 32rem;
                 max-width: 32rem;
-            }</style
-        >${content}
+            }
+        </style>
+        ${content}
     </div>`;
 
 type Story = StoryObj<ExpandProps>;

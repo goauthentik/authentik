@@ -1,9 +1,13 @@
 from django.core.management.base import BaseCommand
-from fido2.mds3 import parse_blob
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_http_session
-from authentik.stages.authenticator_webauthn.tasks import AAGUID_BLOB_PATH, MDS_BLOB_PATH, mds_ca
+from authentik.stages.authenticator_webauthn.tasks import (
+    AAGUID_BLOB_PATH,
+    MDS_BLOB_PATH,
+    mds_ca,
+    parse_mds_blob,
+)
 
 MDS3_URL = "https://mds3.fidoalliance.org/"
 AAGUID_URL = "https://passkeydeveloper.github.io/passkey-authenticator-aaguids/aaguid.json"
@@ -21,7 +25,7 @@ class Command(BaseCommand):
             _raw_file.write(get_http_session().get(MDS3_URL).text)
         self.logger.info("Updated MDS blob")
         with open(MDS_BLOB_PATH, mode="rb") as _raw_blob:
-            parse_blob(_raw_blob.read(), mds_ca())
+            parse_mds_blob(_raw_blob.read(), mds_ca())
         self.logger.info("Successfully validated MDS blob")
 
     def update_passkey_aaguids(self):

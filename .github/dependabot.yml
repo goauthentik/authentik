@@ -335,10 +335,10 @@ updates:
       - dependencies
     cooldown:
       default-days: 3
-    groups:
-      pnpm:
-        patterns:
-          - "*pnpm/pnpm"
+    ignore:
+      # Dependabot can't update the `packageManager` pins, so it would leave them
+      # behind the image and fail `make lint-catalogs`. Bump pnpm by hand.
+      - dependency-name: "*pnpm/pnpm"
   - package-ecosystem: docker-compose
     directories:
       - /packages/client-go

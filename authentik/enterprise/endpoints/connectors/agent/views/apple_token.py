@@ -1,5 +1,6 @@
 from base64 import b64encode, urlsafe_b64decode, urlsafe_b64encode
 from typing import Any
+from urllib.parse import parse_qs, urlparse
 from uuid import UUID
 
 from cryptography import x509
@@ -263,40 +264,49 @@ class TokenView(View):
             apv=self.jwt_request["jwe_crypto"]["apv"],
         )
 
+    def redeem_authorization_code(self, code: str | None) -> User:
+        """Redeem the authorization code of a web login, and return the user it was issued to"""
+        auth_code = None
+        if code:
+            # Bound to the device, so that no other device of the connector can redeem it
+            auth_code = AppleAuthorizationCode.objects.filter(
+                code=code,
+                connector=self.connector,
+                device_connection=self.device_connection,
+            ).first()
+        if not auth_code or auth_code.is_expired:
+            LOGGER.warning("Invalid authorization code")
+            raise ValidationError("Invalid request")
+        user = auth_code.user
+        auth_code.delete()
+        # Platform SSO doesn't call the extension to register the user for web logins, and
+        # requests the user's keys right after this, which needs the binding
+        device = self.device_connection.device
+        if not AgentDeviceUserBinding.objects.filter(target=device, user=user).exists():
+            AgentDeviceUserBinding.objects.create(
+                target=device,
+                user=user,
+                connector=self.connector,
+                is_primary=not AgentDeviceUserBinding.objects.filter(target=device).exists(),
+                order=0,
+            )
+        return user
+
     def handle_v1_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self) -> HttpResponse:
         if self.jwt_request.get("grant_type") == "urn:ietf:params:oauth:grant-type:token-exchange":
-            device_user = AgentDeviceUserBinding.objects.filter(
-                target=self.device_connection.device, user__username=self.jwt_request["sub"]
-            ).first()
-            if not device_user:
-                LOGGER.warning("No device user binding for token exchange")
-                raise ValidationError("Invalid request")
-        else:
-            try:
-                device_user, _ = self.validate_embedded_assertion(self.jwt_request["assertion"])
-            except PyJWTError as exc:
-                LOGGER.warning("failed to validate inner assertion", exc=exc)
-                raise ValidationError("Invalid request") from exc
+            # Web login. The subject token is the callback URL the authorization endpoint
+            # redirected to, which carries the authorization code
+            query = parse_qs(urlparse(self.jwt_request.get("subject_token", "")).query)
+            return self.login_response(self.redeem_authorization_code(query.get("code", [""])[0]))
+        try:
+            device_user, _ = self.validate_embedded_assertion(self.jwt_request["assertion"])
+        except PyJWTError as exc:
+            LOGGER.warning("failed to validate inner assertion", exc=exc)
+            raise ValidationError("Invalid request") from exc
         return self.login_response(device_user.user)
 
     def handle_v1_0_authorization_code(self) -> HttpResponse:
-        code = self.request.POST.get("code")
-        if not code:
-            return HttpResponse(status=400)
-        auth_code = AppleAuthorizationCode.objects.filter(
-            code=code,
-            connector=self.connector,
-        ).first()
-        if not auth_code:
-            LOGGER.warning("Authorization code not found")
-            return HttpResponse(status=400)
-        # Without this, any other device enrolled in the same connector could redeem the code
-        if auth_code.device_connection_id != self.device_connection.pk:
-            LOGGER.warning("Authorization code redeemed by a different device")
-            return HttpResponse(status=400)
-        user = auth_code.user
-        auth_code.delete()
-        return self.login_response(user)
+        return self.login_response(self.redeem_authorization_code(self.request.POST.get("code")))
 
     def handle_v2_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self) -> HttpResponse:
         request_type = self.jwt_request.get("request_type")

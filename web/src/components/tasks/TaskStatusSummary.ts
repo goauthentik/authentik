@@ -33,7 +33,7 @@ export class TaskStatusSummary extends AKElement {
         return [
             [
                 msg("Running tasks"),
-                "pf-icon pf-icon-in-progress",
+                "fas fa-fw fa-spinner",
                 this.status
                     ? this.status.running + this.status.preprocess + this.status.postprocess
                     : null,

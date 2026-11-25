@@ -414,7 +414,7 @@ class TestFilterPolicyEngine(TestCase):
         self.assertEqual(second, {self.user_a.pk, self.user_b.pk, self.user_c.pk})
         mock_get_many.assert_called_once()
 
-    def _mirror_actor(self, parent: User) -> Actor:
+    def _mirror_actor(self, parent: User | None) -> Actor:
         uid = generate_id()
         return Actor.objects.create(
             username=uid,
@@ -452,3 +452,56 @@ class TestFilterPolicyEngine(TestCase):
         result = set(engine.build().result.values_list("pk", flat=True))
         # Only the actor passes (via user_a's membership); user_a itself is not in the result set.
         self.assertEqual(result, {actor_a.pk})
+
+    def test_mirror_actor_query_count_independent_of_service_accounts(self):
+        """Finding MIRROR actors must not issue a query per service account in the set."""
+        service_accounts = [create_test_user(type=UserTypes.SERVICE_ACCOUNT).pk for _ in range(25)]
+        actor_a = self._mirror_actor(self.user_a)
+        users = User.objects.filter(pk__in=[*service_accounts, actor_a.pk])
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, group=self.group_a, order=0)
+
+        engine = FilterPolicyEngine(pbm, users)
+        with CaptureQueriesContext(connections["default"]) as ctx:
+            result = set(engine.build().result.values_list("pk", flat=True))
+        self.assertEqual(result, {actor_a.pk})
+        self.assertLess(len(ctx.captured_queries), 15)
+
+    def test_mirror_actor_chain(self):
+        """An actor mirroring another MIRROR actor is evaluated as the end of the chain."""
+        actor_a = self._mirror_actor(self.user_a)  # user_a is in group_a
+        actor_of_actor = self._mirror_actor(actor_a)
+        actor_c = self._mirror_actor(self.user_c)  # user_c is in no group
+        users = User.objects.filter(pk__in=[actor_of_actor.pk, actor_c.pk])
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, group=self.group_a, order=0)
+
+        result = set(FilterPolicyEngine(pbm, users).build().result.values_list("pk", flat=True))
+        self.assertEqual(result, {actor_of_actor.pk})
+
+    def test_mirror_actor_without_parent_evaluated_as_itself(self):
+        """A MIRROR actor with no parent has nothing to mirror and is evaluated as itself."""
+        actor = self._mirror_actor(None)
+        users = User.objects.filter(pk__in=[actor.pk])
+        pbm = PolicyBindingModel.objects.create()
+
+        result = set(FilterPolicyEngine(pbm, users).build().result.values_list("pk", flat=True))
+        self.assertEqual(result, {actor.pk})
+
+        PolicyBinding.objects.create(target=pbm, group=self.group_a, order=0)
+        result = set(FilterPolicyEngine(pbm, users).build().result.values_list("pk", flat=True))
+        self.assertEqual(result, set())
+
+    def test_mirror_actor_expired(self):
+        """An expired MIRROR actor is hidden from the default Actor manager, so it does not
+        mirror its parent and is evaluated as itself."""
+        actor_a = self._mirror_actor(self.user_a)  # user_a is in group_a
+        actor_a.expiring = True
+        actor_a.expires = now() - timedelta(minutes=10)
+        actor_a.save()
+        users = User.objects.filter(pk__in=[actor_a.pk])
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, group=self.group_a, order=0)
+
+        result = set(FilterPolicyEngine(pbm, users).build().result.values_list("pk", flat=True))
+        self.assertEqual(result, set())
