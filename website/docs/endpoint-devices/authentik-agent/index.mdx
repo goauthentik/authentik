@@ -19,14 +19,15 @@ The authentik Agent is a service that can be installed on Linux, macOS, and Wind
 
 The authentik Agent consists of several components:
 
-| Platform                  | Component                           | Description                                                                                                                                                                                                                               | Dependencies      |
-| ------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| **Linux, macOS, Windows** | `authentik-cli`                     | Provides CLI commands for interacting with `authentik-agent`.                                                                                                                                                                             | `authentik-agent` |
-| **Linux, macOS, Windows** | `authentik-agent`                   | Authentication within a user's context, for CLI tools.                                                                                                                                                                                    | `authentik-sysd`  |
-| **Linux, macOS, Windows** | `authentik-sysd`                    | Responsible for handling device-level authentication and compliance checks.                                                                                                                                                               | None              |
-| **Linux only**            | `libpam-authentik`                  | PAM Module for token-based and interactive authentication via authentik. Used for [SSH authentication](./device-authentication/ssh-authentication.mdx) and [local device login](./device-authentication/local-device-login/index.mdx).    | `authentik-sysd`  |
-| **Linux only**            | `libnss-authentik`                  | NSS Module that makes Linux aware of authentik users. All authentik users are visible to Linux but cannot log in unless configured through device access groups. Provides a consistent `uid` and `gid` for users on all endpoint devices. | `authentik-sysd`  |
-| **Windows only**          | `Windows Credential Provider` (WCP) | Enables logging in to Windows devices using authentik credentials.                                                                                                                                                                        | `authentik-sysd`  |
+| Platform                  | Component                                | Description                                                                                                                                                                                                                               | Dependencies      |
+| ------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| **Linux, macOS, Windows** | `authentik-cli`                          | Provides CLI commands for interacting with `authentik-agent`.                                                                                                                                                                             | `authentik-agent` |
+| **Linux, macOS, Windows** | `authentik-agent`                        | User agent that handles authentication within a user's context, for CLI tools, SSH, and the browser extension. On desktop devices, it runs inside the authentik Agent app.                                                                | `authentik-sysd`  |
+| **Linux, macOS, Windows** | [authentik Agent app](./desktop-app.mdx) | Desktop application that runs the user agent. Used to manage profiles, review authorization requests, and set up SSH and MCP clients.                                                                                                     | `authentik-sysd`  |
+| **Linux, macOS, Windows** | `authentik-sysd`                         | Responsible for handling device-level authentication and compliance checks.                                                                                                                                                               | None              |
+| **Linux only**            | `libpam-authentik`                       | PAM Module for token-based and interactive authentication via authentik. Used for [SSH authentication](./device-authentication/ssh-authentication.mdx) and [local device login](./device-authentication/local-device-login/index.mdx).    | `authentik-sysd`  |
+| **Linux only**            | `libnss-authentik`                       | NSS Module that makes Linux aware of authentik users. All authentik users are visible to Linux but cannot log in unless configured through device access groups. Provides a consistent `uid` and `gid` for users on all endpoint devices. | `authentik-sysd`  |
+| **Windows only**          | `Windows Credential Provider` (WCP)      | Enables logging in to Windows devices using authentik credentials.                                                                                                                                                                        | `authentik-sysd`  |
 
 ## Technical information
 
@@ -39,9 +40,21 @@ All authentik Agent components communicate via gRPC and Unix domain sockets/Wind
 - `sys.sock`/`*sysd.sock` for general communication
 - `*-ctrl.sock` for domain join
 
-## Important considerations
+The user agent provides the following sockets and named pipes in the user's context:
 
-Sentry reporting is currently enabled by default and cannot be disabled. This will be configurable in a future release.
+| Platform | `ak` CLI                                             | SSH agent                                                |
+| -------- | ---------------------------------------------------- | -------------------------------------------------------- |
+| Linux    | `~/.local/share/authentik/agent.sock`                | `~/.local/share/authentik/agent-ssh.sock`                |
+| macOS    | `~/Library/Application Support/authentik/agent.sock` | `~/Library/Application Support/authentik/agent-ssh.sock` |
+| Windows  | `\\.\pipe\authentik\socket-<session_id>`             | `\\.\pipe\authentik\socket-ssh`                          |
+
+The user agent also provides an SSH agent socket for each profile. Refer to [SSH authentication](./device-authentication/ssh-authentication.mdx#use-a-specific-profile-for-a-host).
+
+## Telemetry
+
+The authentik Agent reports errors to authentik's Sentry by default. The authentik Agent app also checks daily whether a newer release exists and sends an anonymous analytics request when it starts.
+
+For the authentik Agent app, error reporting and the update check can be disabled with the `telemetry` settings. Refer to [Agent settings and policies](./settings.mdx). Error reporting of the other components, such as `authentik-sysd` and `authentik-cli`, can't currently be disabled.
 
 ## Report issues
 

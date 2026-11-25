@@ -76,6 +76,8 @@ ak config setup --authentik-url https://authentik.company
 
 2. Your default browser opens the authentik login page. After you authenticate, the authentik Agent is configured.
 
+Alternatively, open the [authentik Agent app](../desktop-app.mdx#add-a-profile) and click **Add profile**.
+
 ## Check version of installed components
 
 You can check the version of all installed authentik components by running the following command:
@@ -102,14 +104,22 @@ log show --predicate 'process == "ak-agent-desktop"'
 
 ## Troubleshooting
 
-### The Agent shows "disconnected" or lists no profiles
+### The Agent app shows "Connect to authentik" or lists no profiles
 
-Joining the device to a domain enrolls the _device_, but the desktop Agent stays disconnected until a _user profile_ exists. If the Agent app shows **disconnected** with no profiles, or `ak whoami` returns `profile not found`, you haven't yet completed [SSH client authentication and CLI application authentication](#enable-ssh-client-authentication-and-cli-application-authentication):
+Joining the device to a domain enrolls the _device_, but the [authentik Agent app](../desktop-app.mdx) can't be used until a _user profile_ exists. If the app shows **Connect to authentik**, or `ak whoami` returns `profile not found`, you haven't yet completed [SSH client authentication and CLI application authentication](#enable-ssh-client-authentication-and-cli-application-authentication):
 
-1. Run `ak config setup --authentik-url https://authentik.company` and complete the browser sign-in.
+1. Run `ak config setup --authentik-url https://authentik.company` and complete the browser sign-in, or click **Add profile** in the app.
 2. Confirm that a profile now exists with `ak config list-profiles`, then verify with `ak whoami`.
 
-If `ak config setup` doesn't open a login page, or reports an unknown client or a missing device code flow, your deployment is missing the OAuth prerequisites. Return to [configuring your authentik deployment](../configuration.mdx) and confirm that a **Device code flow** is set on the brand, that the `authentik-cli` OAuth application and provider exist, and that the Agent connector federates the `authentik-cli` provider under **Federated OIDC Providers**.
+If `ak config setup` doesn't open a login page, or reports an unknown client or a missing device code flow, your deployment is missing the OAuth prerequisites. Return to [configuring your authentik deployment](../configuration.mdx) and confirm that a **Device code flow** is set on the brand, that the `authentik-cli` OAuth application and provider exist, and that the Agent connector federates the `authentik-cli` provider under **Federated OAuth2/OpenID Providers**.
+
+### The Agent app shows "System: disconnected"
+
+The footer of the app shows **System: disconnected** when the app can't reach the system agent (`ak-sysd`). This is unrelated to profiles. Check that the system agent is running and review its [logs](#view-logs):
+
+```sh
+sudo launchctl print system/io.goauthentik.platform.sysd
+```
 
 ## Report issues
 
