@@ -1,8 +1,6 @@
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
-import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
 import { type SlottedTemplateResult, type Spread } from "#elements/types";
@@ -101,7 +99,7 @@ export class EmptyState extends AKElement implements IEmptyState {
                 ${
                     loading
                         ? html`<div part="spinner" class="pf-c-empty-state__icon">
-                              <ak-spinner size=${PFSize.XLarge}></ak-spinner>
+                              <ak-spinner size="xl"></ak-spinner>
                           </div>`
                         : html`<i
                               part="icon"

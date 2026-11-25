@@ -1,4 +1,4 @@
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import { aki } from "#common/api/client";
 import { withNext } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";

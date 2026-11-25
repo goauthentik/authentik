@@ -1,5 +1,5 @@
 import "#elements/cards/AggregateCard";
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 

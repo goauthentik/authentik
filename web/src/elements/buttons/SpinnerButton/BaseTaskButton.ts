@@ -1,9 +1,8 @@
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 
 import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "#common/constants";
-import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
 import { ifPresent } from "#elements/utils/attributes";
@@ -137,7 +136,7 @@ export abstract class BaseTaskButton<R = unknown> extends AKElement {
     }
 
     #spinner = html`<span class="pf-c-button__progress">
-        <ak-spinner size=${PFSize.Medium}></ak-spinner>
+        <ak-spinner size="md"></ak-spinner>
     </span>`;
 
     public get buttonClasses() {

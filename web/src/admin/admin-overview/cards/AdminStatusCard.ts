@@ -1,4 +1,4 @@
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";

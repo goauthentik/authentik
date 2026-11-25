@@ -1,4 +1,4 @@
-import "#elements/Spinner";
+import "#elements/ak-spinner";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 import { aki } from "#common/api/client";
