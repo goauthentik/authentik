@@ -11,15 +11,18 @@ For VS Code, for example, add these entries to your `settings.json`:
         "!Context scalar",
         "!Enumerate sequence",
         "!Env scalar",
+        "!Env sequence",
         "!File scalar",
         "!File sequence",
         "!Find sequence",
+        "!FindObject sequence",
         "!Format sequence",
         "!If sequence",
         "!Index scalar",
         "!KeyOf scalar",
         "!Value scalar",
-        "!AtIndex scalar"
+        "!AtIndex scalar",
+        "!ParseJSON scalar"
     ]
 }
 ```
@@ -44,7 +47,7 @@ Example:
 password: !Env my_env_var
 ```
 
-Returns the value of the given environment variable. Can be used as a scalar with `!Env my_env_var, default` to return a default value.
+Returns the value of the given environment variable. To return a default value when the variable is not set or is empty, use a sequence: `!Env [my_env_var, default]`.
 
 #### `!File`
 
@@ -54,7 +57,7 @@ Example:
 password: !File /path/to/file
 ```
 
-Returns the contents of the file at the given path. Can be used as a scalar with `!File /file/to/path, default` to return a default value.
+Returns the contents of the file at the given path. To return a default value when the file cannot be read, use a sequence: `!File [/path/to/file, default]`.
 
 #### `!Find`
 
@@ -397,3 +400,15 @@ default_value: !AtIndex [["first"], 100] # Throws an error
 Resolves to the value at a specific index in a sequence or a mapping.
 
 If no value can be found at the specified index and no default is provided, an error is raised and the blueprint is invalid.
+
+#### `!ParseJSON`:ak-version[2025.8]
+
+Example:
+
+```yaml
+attributes: !ParseJSON '{"foo": "bar"}' # Resolves to {"foo": "bar"}
+```
+
+Parses the given string as JSON and returns the resulting value.
+
+If the string is not valid JSON, an error is raised and the blueprint is invalid.

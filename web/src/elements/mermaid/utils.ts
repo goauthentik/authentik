@@ -5,7 +5,6 @@ import { ResolvedUITheme } from "#common/theme";
 
 import { MermaidThemeAdapter } from "#elements/mermaid/theme";
 
-import elkLayouts from "@mermaid-js/layout-elk";
 import type { Mermaid, MermaidConfig } from "mermaid";
 
 export const DefaultMermaidConfig: Readonly<MermaidConfig> = {
@@ -14,6 +13,7 @@ export const DefaultMermaidConfig: Readonly<MermaidConfig> = {
     htmlLabels: true,
     fontFamily: "var(--ak-font-family-sans-serif)",
     layout: "elk",
+    look: "classic",
     flowchart: {
         curve: "linear",
 
@@ -46,7 +46,6 @@ export async function loadMermaid(uiTheme: ResolvedUITheme): Promise<Mermaid> {
     if (!mermaid) {
         const mermaidModule = await import("mermaid");
         mermaid = mermaidModule.default;
-        mermaid.registerLayoutLoaders(elkLayouts);
     }
 
     if (uiTheme && uiTheme === lastActiveTheme) {

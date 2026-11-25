@@ -169,7 +169,8 @@ export class UserInfoCard extends AKElement {
             }
             ${showEnterpriseActions ? this.renderOffboardingButton(user) : nothing}
             <ak-forms-delete-bulk
-                object-label=${msg("User")}
+                verbose-name=${msg("User", { id: "users.verbose-name.label" })}
+                verbose-name-plural=${msg("Users", { id: "users.verbose-name-plural.label" })}
                 .objects=${[user]}
                 .metadata=${(item: User) => [
                     { key: msg("Username"), value: item.username },

@@ -65,7 +65,7 @@ export type UIThemeHint = CSSColorSchemeValue | UiThemeEnum;
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList | MDN}
  */
 export function createColorSchemeTarget(colorScheme: ResolvedCSSColorSchemeValue): MediaQueryList {
-    return window.matchMedia(`(prefers-color-scheme: ${colorScheme})`);
+    return matchMedia(`(prefers-color-scheme: ${colorScheme})`);
 }
 
 /**

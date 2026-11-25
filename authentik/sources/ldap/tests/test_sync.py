@@ -1,6 +1,6 @@
 """LDAP Source tests"""
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock, patch
 
 from django.db.models import Q
@@ -35,6 +35,7 @@ from authentik.sources.ldap.sync.membership import (
 )
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
+from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_page
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_freeipa import mock_freeipa_connection
@@ -509,6 +510,34 @@ class LDAPSyncTests(TestCase):
 
             user.refresh_from_db()
             self.assertFalse(user.has_usable_password())
+
+    def test_sync_users_password_reset_once(self):
+        """Test a directory password change resets the password once, not on every sync"""
+        for syncer, attribute, mock in (
+            (MicrosoftActiveDirectory, "pwdLastSet", mock_ad_connection()),
+            (FreeIPA, "krbLastPwdChange", mock_freeipa_connection(LDAP_PASSWORD)),
+        ):
+            with (
+                self.subTest(syncer=syncer.name()),
+                patch(
+                    "authentik.sources.ldap.models.LDAPSource.connection",
+                    MagicMock(return_value=mock),
+                ),
+            ):
+                user = User.objects.create(username=generate_id())
+                PasswordDevice.set_password(user, generate_id())
+                # FreeIPA stores whole seconds
+                changed_at = (datetime.now(UTC) + timedelta(seconds=1)).replace(microsecond=0)
+                vendor_sync = syncer(self.source, Task())
+
+                vendor_sync.sync({attribute: changed_at}, User.objects.get(pk=user.pk), False)
+                user = User.objects.get(pk=user.pk)
+                self.assertFalse(user.has_usable_password())
+                self.assertEqual(user.password_change_date, changed_at)
+                session_hash = user.get_session_auth_hash()
+
+                vendor_sync.sync({attribute: changed_at}, User.objects.get(pk=user.pk), False)
+                self.assertEqual(User.objects.get(pk=user.pk).get_session_auth_hash(), session_hash)
 
     def test_sync_group_hierarchy_ad(self):
         """Test group hierarchy sync"""

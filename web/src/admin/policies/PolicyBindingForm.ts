@@ -17,6 +17,7 @@ import { ToggleGroupEvent } from "#elements/ToggleGroup";
 import { AKSearchSelect } from "#components/ak-search-select-field";
 
 import { groupSource, policySource, userSource } from "#admin/common/search-sources";
+import { renderDryRunHelp } from "#admin/policies/renderDryRunHelp";
 
 import { Group, PoliciesApi, PolicyBinding, User } from "@goauthentik/api";
 
@@ -105,6 +106,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
 
     @state()
     protected defaultOrder = 0;
+
+    protected supportsDryRun = true;
 
     public override reset(): void {
         super.reset();
@@ -258,6 +261,16 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 ?checked=${this.instance?.enabled ?? true}
             >
             </ak-switch-input>
+            ${
+                this.supportsDryRun
+                    ? html`<ak-switch-input
+                          name="dryRun"
+                          label=${msg("Dry-run", { id: "policies.bindings.dry-run.label" })}
+                          ?checked=${this.instance?.dryRun ?? false}
+                          .help=${renderDryRunHelp()}
+                      ></ak-switch-input>`
+                    : nothing
+            }
             <ak-switch-input
                 name="negate"
                 label=${msg("Negate Result")}

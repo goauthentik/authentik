@@ -1,12 +1,14 @@
 """Docker controller tests"""
 
+from unittest.mock import patch
+
 from django.test import TestCase
 from docker.models.containers import Container
 
 from authentik.blueprints.tests import reconcile_app
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.base import ControllerException
-from authentik.outposts.controllers.docker import DockerController
+from authentik.outposts.controllers.docker import DockerClient, DockerController
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostType
 from authentik.providers.proxy.controllers.docker import ProxyDockerController
 
@@ -123,3 +125,13 @@ class DockerControllerTests(TestCase):
             self.assertFalse(controller._comp_ports(container_no_ports))
             self.assertTrue(controller._comp_ports(container_missing_port))
             self.assertTrue(controller._comp_ports(container_mismatched_host))
+
+    def test_client_exit_closes_connection(self):
+        """Leaving the client context closes the docker connection"""
+        client = DockerClient.__new__(DockerClient)
+        client.tls = None
+        client.ssh = None
+        with patch.object(DockerClient, "close") as close:
+            with client:
+                pass
+        close.assert_called_once()

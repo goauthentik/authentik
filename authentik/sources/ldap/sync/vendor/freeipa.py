@@ -29,7 +29,7 @@ class FreeIPA(BaseLDAPSynchronizer):
             return
         pwd_last_set: datetime = flatten(attributes.get("krbLastPwdChange", datetime.now()))
         pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
-        if created or pwd_last_set >= user.password_change_date:
+        if created or pwd_last_set > user.password_change_date:
             self._task.info(f"'{user.username}': Reset user's password")
             self._logger.debug(
                 "Reset user's password",
@@ -37,7 +37,9 @@ class FreeIPA(BaseLDAPSynchronizer):
                 created=created,
                 pwd_last_set=pwd_last_set,
             )
-            PasswordDevice.set_unusable_password(user)
+            # Record the directory's change date, or every later sync resets the password
+            # again, and each new unusable hash ends the user's sessions.
+            PasswordDevice.set_unusable_password(user, password_change_date=pwd_last_set)
 
     def get_account_active(self, attributes: dict[str, Any]) -> bool | None:
         """https://www.port389.org/docs/389ds/howto/howto-account-inactivation.html"""

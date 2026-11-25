@@ -115,3 +115,21 @@ class TestInvalidatePolicyCache(TestCase):
 
         mock_cache.keys.assert_any_call(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}_*")
         mock_cache.delete_many.assert_any_call(["policy-cache-key"])
+
+
+class TestMonitoringSetPolicies(TestCase):
+    """Test the cached policies gauge."""
+
+    def test_gauge_counts_keys_in_database(self):
+        """The gauge is set from a count query instead of fetching every key."""
+        with (
+            mock.patch.object(signals, "cache") as mock_cache,
+            mock.patch.object(signals, "GAUGE_POLICIES_CACHED") as mock_gauge,
+        ):
+            mock_cache.keys_count.return_value = 3
+
+            signals.monitoring_set_policies(sender=None)
+
+        mock_cache.keys_count.assert_called_once_with(f"{CACHE_PREFIX}*")
+        mock_cache.keys.assert_not_called()
+        mock_gauge.set.assert_called_once_with(3)
