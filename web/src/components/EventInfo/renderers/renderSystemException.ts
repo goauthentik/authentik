@@ -12,9 +12,9 @@ import { html } from "lit";
  * 2023](https://saturncloud.io/blog/what-is-the-maximum-length-of-a-url-in-different-browsers/),
  * the longest URL (not query string, **URL**) passable via this method is 2048 bytes.
  *
- * This is a bit of a hack, but it will get the top of the context across even if it exceeds the limit of the more
- * restrictive browsers.
- * 
+ * This is a bit of a hack, but it will get the top of the context across even if it exceeds the
+ * limit of the more restrictive browsers.
+ *
  * @see {@link https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/about-automation-for-issues-and-pull-requests-with-query-parameters | GitHub Automation for Issues and Pull Requests}
  */
 const githubIssueMessageBody = (context: EventContext) => `

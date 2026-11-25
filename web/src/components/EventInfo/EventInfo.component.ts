@@ -17,12 +17,13 @@ import { PFSize } from "#common/enums";
 import { EventWithContext } from "#common/events";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { EventActions } from "@goauthentik/api";
 
 import { match, P } from "ts-pattern";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 export class EventInfo extends AKElement {

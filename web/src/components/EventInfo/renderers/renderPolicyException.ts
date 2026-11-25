@@ -2,6 +2,8 @@ import { getModelInfo, renderDefault } from "../EventInfo.shared";
 
 import { EventContext, EventModel, EventWithContext } from "#common/events";
 
+import { akAttributeView } from "#elements/ak-attribute-view";
+
 import { msg } from "@lit/localize";
 import { html } from "lit";
 
@@ -23,14 +25,8 @@ export const renderPolicyRequest = (context: EventContext) =>
                     <li>
                         <span
                             >${msg("Context")}:
-                            <code
-                                >${JSON.stringify(
-                                    (context.request as EventContext).context,
-                                    null,
-                                    4,
-                                )}</code
-                            ></span
-                        >
+                            ${akAttributeView({ value: (context.request as EventContext).context })}
+                        </span>
                     </li>
                 </ul>
             </div>
