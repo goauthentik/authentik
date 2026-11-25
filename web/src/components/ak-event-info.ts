@@ -373,7 +373,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre>`;
         return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
             <div class="pf-c-card__body">${this.getEmailInfo(this.event.context)}</div>
             <ak-expand>
-                <iframe srcdoc=${body}></iframe>
+                <iframe sandbox srcdoc=${body}></iframe>
             </ak-expand>`;
     }
 
