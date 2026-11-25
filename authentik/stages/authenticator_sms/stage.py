@@ -46,10 +46,13 @@ class AuthenticatorSMSChallengeResponse(ChallengeResponse):
     def validate(self, attrs: dict) -> dict:
         """Check"""
         if "code" not in attrs:
-            if "phone_number" not in attrs:
-                raise ValidationError("phone_number required")
-            self.device.phone_number = attrs["phone_number"]
-            self.stage.validate_and_send(attrs["phone_number"])
+            phone_number = self.stage._has_phone_number()
+            if phone_number is None:
+                if "phone_number" not in attrs:
+                    raise ValidationError("phone_number required")
+                phone_number = attrs["phone_number"]
+            self.device.phone_number = phone_number
+            self.stage.validate_and_send(phone_number)
             return super().validate(attrs)
         if not self.device.verify_token(str(attrs["code"])):
             raise ValidationError(_("Code does not match"))
