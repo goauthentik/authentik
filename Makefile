@@ -366,7 +366,7 @@ ci-lint-spellcheck: ci--meta-debug
 ci-lint-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
-ci-lint-pending-migrations: ci--meta-debug
+ci-lint-pending-migrations: ci--meta-debug  ## Fail if a model change has no migration (`makemigrations --check`)
 	$(UV) run python -m manage makemigrations --check
 
 ci-lint-migrations: ci--meta-debug  ## Lint migrations added since MIGRATIONS_BASE (default: origin/main)
