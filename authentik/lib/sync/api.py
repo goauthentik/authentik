@@ -27,6 +27,12 @@ class SyncStatusMixin:
 
     sync_task: Actor
 
+    def is_sync_running(self, target: Any) -> bool:
+        """Whether a sync is currently running for the target"""
+        with target.sync_lock as lock_acquired:
+            # If we could not acquire the lock, a task holds it and a sync is running.
+            return not lock_acquired
+
     @extend_schema(responses={200: SyncStatusSerializer()})
     @action(
         methods=["GET"],
@@ -38,9 +44,7 @@ class SyncStatusMixin:
     def sync_status(self, request: Request, *args, **kwargs) -> Response:
         """Get provider's sync status"""
         target = self.get_object()
-        with target.sync_lock as lock_acquired:
-            # If we could not acquire the lock, a task holds it and a sync is running.
-            status: dict[str, Any] = {"is_running": not lock_acquired}
+        status: dict[str, Any] = {"is_running": self.is_sync_running(target)}
 
         sync_schedule: Schedule | None = None
         for schedule in target.schedules.all():

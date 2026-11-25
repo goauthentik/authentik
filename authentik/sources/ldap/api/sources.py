@@ -180,6 +180,11 @@ class LDAPSourceViewSet(SyncStatusMixin, UsedByMixin, ModelViewSet):
     ordering = ["name"]
     sync_task = ldap_sync
 
+    def is_sync_running(self, target: LDAPSource) -> bool:
+        # Checked without taking the lock: holding it, even briefly, would make a sync requested
+        # at the same moment look like a running one and skip
+        return target.is_sync_running()
+
     @extend_schema(
         responses={
             200: inline_serializer(

@@ -27,6 +27,8 @@ LOGGER = get_logger()
 CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
 CACHE_KEY_SYNC_REQUESTED = "goauthentik.io/sources/ldap/sync_requested/"
+# A request outlives the longest sync it can wait for (the time limit of ldap_sync)
+SYNC_REQUESTED_TIMEOUT = int(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 3.5)
 
 
 @actor(description=_("Check connectivity for LDAP source."))
@@ -64,63 +66,67 @@ def ldap_sync(source_pk: str):
     if not source:
         return
     sync_requested_key = CACHE_KEY_SYNC_REQUESTED + source.slug
-    with source.sync_lock as lock_acquired:
-        if not lock_acquired:
-            # The running sync may have read the directory before the change this request is
-            # for, so it runs once more when it is done
-            cache.set(sync_requested_key, True, None)
-            task.info("Synchronization is already running. Another one runs after it")
-            LOGGER.debug("Failed to acquire lock for LDAP sync, will run again", source=source.slug)
-            return
-        # This run covers every request made before it started
-        cache.delete(sync_requested_key)
+    # Set before trying the lock: if a sync holds it, that sync has not released it yet, so its
+    # check after the release is sure to see this request
+    cache.set(sync_requested_key, True, timeout=SYNC_REQUESTED_TIMEOUT)
+    lock_acquired = False
+    try:
+        with source.sync_lock as lock_acquired:
+            if not lock_acquired:
+                task.info("Synchronization is already running. Another one runs after it")
+                LOGGER.debug(
+                    "Failed to acquire lock for LDAP sync, will run again", source=source.slug
+                )
+                return
+            # This run covers every request made before it started
+            cache.delete(sync_requested_key)
 
-        user_group_tasks = group(
-            ldap_sync_paginator(task, source, UserLDAPSynchronizer)
-            + ldap_sync_paginator(task, source, GroupLDAPSynchronizer)
-        )
+            user_group_tasks = group(
+                ldap_sync_paginator(task, source, UserLDAPSynchronizer)
+                + ldap_sync_paginator(task, source, GroupLDAPSynchronizer)
+            )
 
-        membership_tasks = group(
-            ldap_sync_paginator(task, source, MembershipLDAPSynchronizer)
-            + ldap_sync_paginator(task, source, GroupHierarchyLDAPSynchronizer)
-        )
+            membership_tasks = group(
+                ldap_sync_paginator(task, source, MembershipLDAPSynchronizer)
+                + ldap_sync_paginator(task, source, GroupHierarchyLDAPSynchronizer)
+            )
 
-        deletion_tasks = group(
-            ldap_sync_paginator(task, source, UserLDAPForwardDeletion)
-            + ldap_sync_paginator(task, source, GroupLDAPForwardDeletion),
-        )
+            deletion_tasks = group(
+                ldap_sync_paginator(task, source, UserLDAPForwardDeletion)
+                + ldap_sync_paginator(task, source, GroupLDAPForwardDeletion),
+            )
 
-        # User and group sync can happen at once, they have no dependencies on each other
-        user_group_tasks.run().wait(
-            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000
-        )
-        # Membership sync needs to run afterwards
-        membership_tasks.run().wait(
-            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000
-        )
-        # Finally, deletions. What we'd really like to do here is something like
-        # ```
-        # user_identifiers = <ldap query>
-        # User.objects.exclude(
-        #     usersourceconnection__identifier__in=user_uniqueness_identifiers,
-        # ).delete()
-        # ```
-        # This runs into performance issues in large installations. So instead we spread the
-        # work out into three steps:
-        # 1. Get every object from the LDAP source.
-        # 2. Mark every object as "safe" in the database. This is quick, but any error could
-        #    mean deleting users which should not be deleted, so we do it immediately, in
-        #    large chunks, and only queue the deletion step afterwards.
-        # 3. Delete every unmarked item. This is slow, so we spread it over many tasks in
-        #    small chunks.
-        deletion_tasks.run().wait(
-            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
-        )
-
-    # Checked after the lock is released, so a request made while this sync was finishing is
-    # not lost
-    if cache.delete(sync_requested_key):
-        ldap_sync.send(source.pk)
+            # User and group sync can happen at once, they have no dependencies on each other
+            user_group_tasks.run().wait(
+                timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000
+            )
+            # Membership sync needs to run afterwards
+            membership_tasks.run().wait(
+                timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000
+            )
+            # Finally, deletions. What we'd really like to do here is something like
+            # ```
+            # user_identifiers = <ldap query>
+            # User.objects.exclude(
+            #     usersourceconnection__identifier__in=user_uniqueness_identifiers,
+            # ).delete()
+            # ```
+            # This runs into performance issues in large installations. So instead we spread the
+            # work out into three steps:
+            # 1. Get every object from the LDAP source.
+            # 2. Mark every object as "safe" in the database. This is quick, but any error could
+            #    mean deleting users which should not be deleted, so we do it immediately, in
+            #    large chunks, and only queue the deletion step afterwards.
+            # 3. Delete every unmarked item. This is slow, so we spread it over many tasks in
+            #    small chunks.
+            deletion_tasks.run().wait(
+                timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
+            )
+    finally:
+        # After the lock is released, and also when the sync failed: a request made while it
+        # ran may need data it did not read
+        if lock_acquired and cache.delete(sync_requested_key):
+            ldap_sync.send_with_options(args=(source.pk,), rel_obj=task.rel_obj)
 
     if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.DEFERRED_END:
         for outgoing_sync_provider_cls in all_subclasses(OutgoingSyncProvider):
