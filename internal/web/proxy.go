@@ -49,6 +49,10 @@ func (ws *WebServer) configureProxy() {
 	director := func(req *http.Request) {
 		req.URL.Scheme = ws.upstreamURL.Scheme
 		req.URL.Host = ws.upstreamURL.Host
+		// The application server only handles WebSocket upgrades.
+		if !strings.EqualFold(req.Header.Get("Upgrade"), "websocket") {
+			req.Header.Del("Upgrade")
+		}
 		if _, ok := req.Header["User-Agent"]; !ok {
 			// explicitly disable User-Agent so it's not set to default value
 			req.Header.Set("User-Agent", "")
