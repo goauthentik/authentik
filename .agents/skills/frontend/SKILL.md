@@ -20,9 +20,8 @@ The web UI (`web/`) is three Lit apps (Admin, User, Flow) bundled by esbuild int
 from that.
 
 Architecture, conventions, i18n and the API client rules are in
-[`web/AGENTS.md`](../../../web/AGENTS.md). Read it before changing components. Its command
-examples say `npm`, but the repo uses **pnpm** (see `packageManager` in `web/package.json`).
-Use the `make` targets or `pnpm --dir web ...`.
+[`web/AGENTS.md`](../../../web/AGENTS.md). Read it before changing components. The repo uses
+**pnpm**; use the `make` targets or `pnpm --dir web ...` from the root.
 
 Setup docs: `website/docs/developer-docs/setup/frontend-dev-environment.mdx` (UI only,
 against a container backend) and `full-dev-environment.mdx` (everything local).

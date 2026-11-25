@@ -27,7 +27,7 @@ scar tissue, not coverage. Prefer extending an existing flow-level or e2e path.
 
 Conventions for web tests are in `web/test/AGENTS.md` and `web/test/browser/AGENTS.md`.
 E2E setup is in `website/docs/developer-docs/setup/full-dev-environment.mdx`
-("End-to-end (E2E) setup").
+("End-to-end tests").
 
 ## Workflow
 

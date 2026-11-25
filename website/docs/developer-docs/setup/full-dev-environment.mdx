@@ -13,320 +13,137 @@ import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 import InstallScriptsAdmonition from "./_install-scripts-admonition.mdx";
 
+This page sets up the backend, worker, and web UI on your machine. To work only on the UI against a containerized backend, use the [frontend development environment](./frontend-dev-environment.mdx) instead.
+
+authentik is a Django application served by gunicorn behind a Rust front server, which also serves the static files. Background tasks run in a Dramatiq worker that uses PostgreSQL as its broker.
+
 ## Prerequisites
 
-Before you begin, ensure you have the following tools installed. You can run the [provided script](#3-installing-platform-specific-dependencies) below in **Installing platform-specific dependencies** to install these required tools.
+- [Python](https://www.python.org/) 3.14 and [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- [Rust](https://rust-lang.org/learn/get-started/) through rustup. The repository's `rust-toolchain.toml` pins the version; formatting also needs the nightly toolchain.
+- [Go](https://go.dev/) 1.26 or later, for the outposts
+- [Node.js](https://nodejs.org/en) 24 or later, installed with [nvm](https://github.com/nvm-sh/nvm), and [pnpm](https://pnpm.io/installation). pnpm switches itself to the version pinned in `package.json`.
+- [Docker](https://www.docker.com/) with Compose v2
+- [Make](https://www.gnu.org/software/make/) and [CMake](https://cmake.org/)
 
-- [Python](https://www.python.org/) (3.14)
-- [uv](https://docs.astral.sh/uv/getting-started/installation/) (Latest stable release)
-- [Rust](https://rust-lang.org/learn/get-started/) (We provide a `rust-toolchain.toml` file for the correct version, and we use the nightly toolchain to run formatting with rustfmt.)
-- [Go](https://go.dev/) (1.26 or later)
-- [Node.js](https://nodejs.org/en) (24 or later), installed with [nvm](https://github.com/nvm-sh/nvm)
-- [pnpm](https://pnpm.io/installation) (12.4 or later), the package manager used across every JavaScript workspace in the repository
-- [PostgreSQL](https://www.postgresql.org/) (16 or later)
-- [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
-- [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
-- [Make](https://www.gnu.org/software/make/) (3 or later)
-- [CMake](https://cmake.org/) (Latest stable release)
+Run every command on this page from the root of your authentik checkout.
 
-### Understanding the architecture
-
-authentik is primarily a Django application running under gunicorn, proxied by a Go application that serves static files. Most functions and classes have type hints and docstrings. For better code navigation, we recommend installing a Python type-checking extension in your IDE.
-
-## 1. Prepare your local working repository
-
-Verify that you have a local working repository of authentik and that it is initialized and up-to-date with the [authentik repository](https://github.com/goauthentik/authentik).
-
-Unless otherwise specified, all commands described below should be run from the project root of your local authentik repository.
-
-## 2. Set up required services
-
-authentik depends on several external services:
-
-- [PostgreSQL](https://www.postgresql.org/) for database storage
-- [Zenko CloudServer (S3)](https://www.zenko.io/cloudserver/) for object storage
-
-The easiest way to set up these services is using the provided Docker Compose configuration:
-
-```shell
-docker compose -f scripts/compose.yml up -d
-```
-
-## 3. Installing platform-specific dependencies
+## 1. Install native dependencies
 
 <Tabs defaultValue="macOS">
 <TabItem value="macOS">
 
-Install the required native dependencies on macOS using Homebrew. You can edit the following command if you already have some of these and want to skip installing them again, or run `brew install --dry-run` to preview the changes:
-
 ```shell
-brew install \
-libxmlsec1 \
-libpq \
-pkg-config \
-uv \
-postgresql \
-golangci-lint \
-krb5 \
-cmake
+brew install libxmlsec1 libpq pkg-config uv postgresql golangci-lint krb5 cmake
 ```
 
 </TabItem>
 <TabItem value="Linux">
 
-For Debian/Ubuntu-based distributions (you can edit the following command if you already have some of these and want to skip installing them again):
+For Debian and Ubuntu; adjust the package names for other distributions:
 
 ```shell
 pip install uv
-sudo apt-get install -y \
-libgss-dev \
-krb5-config \
-libkrb5-dev \
-libxml2 \
-libxslt1-dev \
-libxmlsec1 \
-xmlsec1 \
-postgresql-server-dev-all \
-postgresql \
-cmake
+sudo apt-get install -y libgss-dev krb5-config libkrb5-dev libxml2 libxslt1-dev \
+    libxmlsec1 xmlsec1 postgresql-server-dev-all postgresql cmake
 ```
 
-For other distributions (Red Hat, SUSE, Arch), adjust the package names as needed.
+Install `golangci-lint` with the [official instructions](https://golangci-lint.run/welcome/install/#other-ci).
 
-Install `golangci-lint` by following the [official installation instructions](https://golangci-lint.run/welcome/install/#other-ci).
+:::warning
+[aws-lc-rs](https://github.com/aws/aws-lc-rs) fails to build its FIPS module with GCC 14 or later ([issue](https://github.com/aws/aws-lc-rs/issues/569)). Install [Clang](https://clang.llvm.org) and `export AWS_LC_FIPS_SYS_CC=clang`.
+:::
 
 </TabItem>
 <TabItem value="Windows">
 
-We're currently seeking community input on running the full development environment on Windows. If you have experience with this setup, please consider contributing to this documentation.
+The full environment isn't documented for Windows yet. If you run it there, consider contributing the steps.
 
 </TabItem>
 </Tabs>
 
-:::warning
+The PostgreSQL client tools are needed on the host: `make dev-reset` calls `dropdb` and `createdb`.
 
-[aws-lc-rs](https://github.com/aws/aws-lc-rs) currently has an [issue](https://github.com/aws/aws-lc-rs/issues/569) building its FIPS module with GCC >= 14. If you encounter this issue, you have two options:
-
-- Use an older version of GCC.
-- Install [Clang](https://clang.llvm.org) and `export AWS_LC_FIPS_SYS_CC=clang`.
-
-:::
-
-### Installing Node.js and pnpm
-
-Install Node.js with [nvm](https://github.com/nvm-sh/nvm), one of the version managers recommended on the Node.js download page. It keeps the toolchain scoped to your shell rather than installed system-wide, so switching versions between projects doesn't require reinstalling:
+## 2. Start the services
 
 ```shell
-nvm install 24
-nvm use 24
+docker compose -f scripts/compose.yml up -d
 ```
 
-Then install pnpm by following the [pnpm installation guide](https://pnpm.io/installation). Any recent pnpm works: on each run it automatically switches to the version pinned in `package.json`.
+This starts PostgreSQL and a [Zenko CloudServer](https://www.zenko.io/cloudserver/) for S3-compatible storage.
 
-:::info
-nvm runs on macOS and Linux; on Windows, use [nvm-windows](https://github.com/coreybutler/nvm-windows), a separate project with its own command set.
-:::
-
-## 4. Set up the backend
-
-:::info
-All `make` commands must be executed from the root directory of your local authentik Git repository.
-:::
-
-### Install dependencies
-
-Install all required JavaScript and Python dependencies and create an isolated Python environment:
+## 3. Install and configure
 
 ```shell
+nvm install 24 && nvm use 24
 make install
-```
-
-<InstallScriptsAdmonition />
-
-### Generate development configuration
-
-Create a local configuration file that uses the local databases for development:
-
-```shell
 make gen-dev-config
-```
-
-### Initialize the database
-
-Run all migrations with the following command:
-
-```shell
 make migrate
 ```
 
-:::info
-If you ever want to start over, use `make dev-reset`, which drops and restores the authentik PostgreSQL database to the state it was in after you ran `make migrate`.
-:::
+`make install` installs the JavaScript and Python dependencies. `make gen-dev-config` writes `local.env.yml`, which you can edit for local overrides; rerunning it overwrites the file. To start over later, `make dev-reset` drops the database and migrates it again.
 
-## 5. Running authentik
+<InstallScriptsAdmonition />
 
-Now that the backend has been set up and built, you can start authentik. Run the following command from the root of your installation directory:
+## 4. Build the UI and run authentik
 
-```shell
-make run
-```
-
-:::info
-The very first time authentik runs, it might need some time to clear the initial task queue. Adjust [`AUTHENTIK_WORKER__THREADS`](../../../install-config/configuration/#authentik_worker__threads) as required.
-:::
-
-### Hot-reloading
-
-When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environment), the authentik server automatically reloads whenever changes are made to the code.
-
-Install [watchexec](https://github.com/watchexec/watchexec), and run:
-
-```shell
-make run-watch
-```
-
-## 6. Build the frontend
-
-Even if you're not planning to develop the UI, you need to build the frontend because no compiled bundle is included by default. Run the following command to build the authentik UI:
+No compiled UI ships in the repository, so build it once even if you only work on the backend:
 
 ```shell
 make web-build
+make run
 ```
 
-For real-time feedback you can view the UI as you make changes. Run this command and then in your browser go to http://localhost:9000/.
+The first start applies the default blueprints and works through the initial task queue, which takes a minute. Then open http://localhost:9000 and follow the prompts to set a password for **akadmin**.
+
+While you work:
+
+- `make run-watch` restarts the server and worker when `.py` or `.rs` files change. It needs [watchexec](https://github.com/watchexec/watchexec).
+- `make web-watch` rebuilds the UI on save and reloads the browser.
+
+If you lock yourself out, create a [recovery key](../../troubleshooting/login.mdx).
+
+## End-to-end tests
+
+authentik has two end-to-end suites, both run by `ci-main.yml`:
+
+- **Selenium** (`tests/e2e/`), the `test-e2e` jobs.
+- **Playwright** (`web/test/browser/`), the `test-e2e (web)` job. It runs against a live server.
+
+### Selenium
 
 ```shell
-make web-watch
+COMPOSE_PROFILES=selenium docker compose -f tests/e2e/compose.yml up -d
+make web-build
+pnpm --dir web run build:sfe
+make test tests/e2e/test_flows_login.py
 ```
 
-## 7. Initial setup
-
-After the frontend build completes, set a password for the default admin user (**akadmin**):
-
-1. Navigate to http://localhost:9000 in your browser.
-2. Follow the prompts to set up your admin account.
-
-From now on, you can access authentik at http://localhost:9000 using the credentials that you set during initial setup.
-
-## Troubleshooting
-
-### Recovery key
-
-If you can no longer log in or the authentication flow repeats (perhaps due to an incorrectly configured stage or a failed flow import), you can create a recovery key by running this command in your terminal:
-
-`uv run ak create_recovery_key 10 akadmin`
-
-Copy the generated recovery key and paste it into the URL, after the domain. For example:
-
-`http://localhost:9000/recovery/use-token/ChFk2nJKJKJKY9OdIc8yv6RCgpGYp5rdndBhR6qHoHoJoWDdlvLuvU/`
+Watch the browser at http://localhost:7900 (password `secret`), or over VNC on port 5900.
 
 :::info
-
-The recovery token is valid for a short time, but anyone can use it to log in as the admin user. Using the recovery token will also disable custom CSS in case you've accidentally locked yourself out of the admin interface with a broken theme.
-
+Docker Desktop needs host networking: **Settings** > **Resources** > **Network** > **Enable host networking**.
 :::
 
-## End-to-end (E2E) setup
+### Playwright
 
-authentik ships two end-to-end test suites:
-
-- The Django/Selenium suite under `tests/e2e/` — driven by Django's test runner. It is exercised in CI by the `test-e2e` job in `ci-main.yml`.
-- The browser-side Playwright suite under `web/test/browser/` — driven by `web/playwright.config.js`. It is exercised in CI by the `e2e (playwright)` job in `ci-web.yml` and runs against a live authentik server.
-
-### Django/Selenium suite
-
-Start the E2E test services with the following command:
-
-```shell
-docker compose -f tests/e2e/compose.yml up -d
-```
-
-You can then view the Selenium Chrome browser via http://localhost:7900/ using the password: `secret`.
-
-Alternatively, you can connect directly via VNC on port `5900` using the password: `secret`.
-
-:::info
-When using Docker Desktop, host networking needs to be enabled via **Docker Settings** > **Resources** > **Network** > **Enable host networking**.
-:::
-
-### Playwright suite
-
-The Playwright suite assumes that:
-
-- An authentik stack is reachable at `http://localhost:9000` (override with `AK_TEST_RUNNER_PAGE_URL`).
-- The `akadmin` user can log in as `test-admin@goauthentik.io` with the password `test-runner`.
-
-Both are satisfied by the development environment described above, as long as the bootstrap credentials match what the tests expect. Set them before authentik first starts — the bootstrap blueprint only applies them while `akadmin` still has no usable password:
+The suite logs in to `http://localhost:9000` (override with `AK_TEST_RUNNER_PAGE_URL`) as `test-admin@goauthentik.io` with the password `test-runner`. Set those bootstrap credentials before authentik first starts; the bootstrap blueprint applies them only while **akadmin** has no usable password:
 
 ```shell
 export AUTHENTIK_BOOTSTRAP_EMAIL=test-admin@goauthentik.io
 export AUTHENTIK_BOOTSTRAP_PASSWORD=test-runner
-
 make run
 ```
 
-If your instance already has an `akadmin` password, either reset it to `test-runner` through the UI or point the suite at a different account via `SessionFixture`'s defaults.
-
-Install Playwright's browsers (one-time) and run the suite — these are the same scripts CI runs:
+Then install the browser once and run the suite:
 
 ```shell
 pnpm --dir web exec playwright install --with-deps chromium
 pnpm --dir web run test:e2e
 ```
 
-After a failing run, open the HTML report to inspect traces, screenshots, and (in CI) videos:
+After a failure, `pnpm --dir web exec playwright show-report` opens the traces and screenshots. CI uploads the same files as the `playwright-report` and `playwright-traces` artifacts.
 
-```shell
-pnpm --dir web exec playwright show-report
-```
+## Next steps
 
-In CI, the same artifacts are uploaded under the `playwright-report` and `playwright-traces` artifact names on the workflow run.
-
-## Contributing code
-
-### Before submitting a pull request
-
-Ensure your code meets our quality standards by running:
-
-1. **Code linting**:
-
-    ```shell
-    make lint-fix
-    make lint
-    ```
-
-2. **Generate updated API documentation**:
-
-    ```shell
-    make gen
-    ```
-
-3. **Format frontend code**:
-
-    ```shell
-    make web
-    ```
-
-4. **Run tests**:
-
-    ```shell
-    make test
-    ```
-
-You can run all these checks at once with:
-
-```shell
-make all
-```
-
-### Submit your changes
-
-After your code passes all checks, submit a pull request on [GitHub](https://github.com/goauthentik/authentik/pulls). Be sure to:
-
-- Provide a clear description of your changes
-- Reference any related issues
-- Update any related documentation
-- Follow our code and documentation [style guidelines](../../contributing/#style-guides)
-- Include tests for your changes where appropriate
-
-Thank you for contributing to authentik!
+Before you open a pull request, read [Contributing to authentik](../contributing.mdx). It covers branch and PR naming, the checks CI runs, and the style guides.
