@@ -51,27 +51,15 @@ def _table_counts(model: type[Model]) -> tuple[int, int]:
 
 
 @contextmanager
-def count_rows(model: type[Model]) -> Generator[RowCounts]:
+def table_row_counts(model: type[Model]) -> Generator[RowCounts]:
     """Count the rows the enclosed code reads from and deletes in `model`'s table.
 
-    Unlike timing, this gives the same result on every machine, so tests can bound rows read
-    per row deleted to catch queries that scan the whole table instead of an index range.
-
-    Postgres plans small test tables differently from large production ones: a sequential
-    scan is cheapest when everything fits in a few pages. Sequential and bitmap scans are
-    disabled while counting, so queries get the index plans they would get at scale."""
-    with connection.cursor() as cursor:
-        cursor.execute(f"ANALYZE {model._meta.db_table}")
+    Reads Postgres' statistics counters only, so it doesn't change how queries are planned or
+    run. Unlike timing, the counts are the same on every machine. Note that Postgres plans
+    small test tables differently from large ones, so a query that is cheap here can still
+    scan a whole table in production."""
     counts = RowCounts()
     read, deleted = _table_counts(model)
-    with connection.cursor() as cursor:
-        cursor.execute("SET enable_seqscan = off")
-        cursor.execute("SET enable_bitmapscan = off")
-    try:
-        yield counts
-    finally:
-        with connection.cursor() as cursor:
-            cursor.execute("RESET enable_seqscan")
-            cursor.execute("RESET enable_bitmapscan")
+    yield counts
     after_read, after_deleted = _table_counts(model)
     counts.read, counts.deleted = after_read - read, after_deleted - deleted

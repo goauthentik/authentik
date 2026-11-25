@@ -27,7 +27,7 @@ from authentik.core.tasks import (
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import count_rows
+from authentik.lib.tests.utils import table_row_counts
 
 
 class TestTasks(APITestCase):
@@ -84,7 +84,10 @@ class TestTasks(APITestCase):
         with CaptureQueriesContext(connection) as ctx:
             clean_expired_models.send()
         self.assertFalse(Event.objects.including_expired().exists())
-        self.assertLessEqual(len(ctx.captured_queries), 500)
+        # Only count event queries, other expiring models add their own
+        event_queries = [q for q in ctx.captured_queries if Event._meta.db_table in q["sql"]]
+        # 3 batches and an empty probe, measured at 32
+        self.assertLessEqual(len(event_queries), 40)
 
     def test_expire_scan_stops_at_cutoff(self):
         """Cleanup batches must not scan live events. If they do, every batch once fewer
@@ -99,12 +102,14 @@ class TestTasks(APITestCase):
             Event(action=EventAction.CUSTOM_PREFIX, app="test", expires=now() - timedelta(days=1))
             for _ in range(10)
         )
-        with count_rows(Event) as rows:
+        with table_row_counts(Event) as rows:
             clean_expired_models.send()
         self.assertEqual(rows.deleted, 10)
         self.assertEqual(Event.objects.including_expired().count(), 5_000)
-        # Finding and deleting a row reads it a few times; scanning live events reads thousands
-        self.assertLessEqual(rows.read, rows.deleted * 10)
+        # Finding and deleting a row reads it about 3 times (measured 30 for 10 rows).
+        # The old exclude() predicate, an unsorted select and sorting by pk each read all
+        # 5,000 live events, twice (measured 10,030).
+        self.assertLessEqual(rows.read, rows.deleted * 4)
 
     def test_clean_temporary_users(self):
         """Test clean_temporary_users task"""

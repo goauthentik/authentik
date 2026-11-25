@@ -30,7 +30,7 @@ def clean_expired_models():
         # filtering every row once fewer than a batch's worth have expired.
         objects = cls.objects.including_expired().filter(expiring=True, expires__lte=now())
         if cls.expire_action is ExpiringModel.expire_action:
-            amount = delete_in_batches(objects)
+            amount = delete_in_batches(objects, order_by="expires")
         else:
             amount = objects.count()
             for obj in chunked_queryset(objects):
@@ -39,7 +39,7 @@ def clean_expired_models():
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
     clear_expired_cache()
     for cls in [Message, GroupChannel]:
-        amount = delete_in_batches(cls.objects.filter(expires__lt=now()))
+        amount = delete_in_batches(cls.objects.filter(expires__lt=now()), order_by="expires")
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
     for cls in Sync.__subclasses__():

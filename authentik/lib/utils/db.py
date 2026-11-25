@@ -40,7 +40,9 @@ def chunked_queryset[T: Model](queryset: QuerySet[T], chunk_size: int = 1_000) -
         yield from chunk.iterator(chunk_size=chunk_size)
 
 
-def delete_in_batches[T: Model](queryset: QuerySet[T], batch_size: int = 1_000) -> int:
+def delete_in_batches[T: Model](
+    queryset: QuerySet[T], batch_size: int = 1_000, order_by: str = "pk"
+) -> int:
     """Delete matching rows in short transactions, returning the target model's count.
 
     Call outside an enclosing transaction to release locks after each batch. Use only
@@ -58,9 +60,10 @@ def delete_in_batches[T: Model](queryset: QuerySet[T], batch_size: int = 1_000) 
     deleted_total = 0
     while True:
         with transaction.atomic(using=database):
-            # Any matching rows will do, so don't sort: ordering by a column the filter doesn't
-            # range over makes Postgres read every match or walk a whole index each batch.
-            pks = list(queryset.order_by().values_list("pk", flat=True)[:batch_size])
+            # Order by the column the filter ranges over, so Postgres scans just that index
+            # range. Without an order, Postgres may pick a sequential scan that reads most of
+            # the table when matching rows aren't spread evenly through it.
+            pks = list(queryset.order_by(order_by).values_list("pk", flat=True)[:batch_size])
             if not pks:
                 return deleted_total
             # Hold the locks through Django's collector and DELETE so that a cache
