@@ -3,6 +3,8 @@ import { renderPolicyRequest } from "./renderPolicyException";
 
 import { EventContext, EventWithContext } from "#common/events";
 
+import { serializeJSON } from "#elements/utils/serializers";
+
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 
@@ -23,7 +25,7 @@ export function renderPolicyExecution(event: EventWithContext) {
                   ${msg("Raw result", {
                       id: "events.policy-execution.raw-result.label",
                   })}:
-                  <pre>${JSON.stringify(result.raw_result, null, 4)}</pre>
+                  <pre>${serializeJSON(result.raw_result)}</pre>
               </li>`
             : nothing;
 

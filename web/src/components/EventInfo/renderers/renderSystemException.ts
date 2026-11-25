@@ -49,7 +49,7 @@ ${context.message as string}
 Add any other context about the problem here.
         `;
 
-function buildGitHubIssueUrl(context: EventContext): string {
+function buildGitHubIssueURL(context: EventContext): string {
     const httpRequest = context.http_request as EventContext;
     const title = httpRequest ? `${httpRequest?.method} ${httpRequest?.path}` : "";
 
@@ -71,7 +71,7 @@ export const renderSystemException = (event: EventWithContext) =>
                     <a
                         class="pf-c-button pf-m-primary"
                         target="_blank"
-                        href=${buildGitHubIssueUrl(event.context)}
+                        href=${buildGitHubIssueURL(event.context)}
                     >
                         ${msg("Open issue on GitHub...")}
                     </a>
