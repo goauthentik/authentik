@@ -1,0 +1,193 @@
+---
+title: macOS local device login
+sidebar_label: macOS
+tags: [authentik Agent, device login, device authentication, macos, platform sso, psso]
+authentik_enterprise: true
+authentik_preview: true
+authentik_version: "2026.11"
+---
+
+## Platform SSO
+
+[Platform SSO](https://support.apple.com/guide/deployment/platform-sso-for-mac-dep7bbb05313/web) is a macOS feature that connects the local account on a Mac to an identity provider. The authentik Agent includes a Platform SSO extension that allows users to register their Mac with authentik, and to log in to and unlock their Mac with their authentik account.
+
+authentik supports the following Platform SSO authentication methods:
+
+| Authentication method          | Requirements      | Description                                                                                                                                  |
+| ------------------------------ | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Secure Enclave key _(default)_ | macOS 15 or later | The user registers with authentik once. The Mac then authenticates to authentik with a key that is stored in its Secure Enclave.             |
+| Web login                      | macOS 27 or later | The user logs in at the macOS login window and lock screen through an authentik flow, including any stages that the flow is configured with. |
+
+:::warning
+
+- Platform SSO can only be configured through an MDM tool. Apple does not apply Platform SSO configuration from profiles that are installed manually.
+- The authentication method cannot currently be selected in authentik. To use web login, you must [edit the MDM policy](#enable-web-login) before deploying it.
+- When the Platform SSO configuration of a Mac changes, its users are prompted to register again. Refer to [Update the MDM policy](#update-the-mdm-policy).
+- Password-based Platform SSO is not supported.
+
+:::
+
+## Prerequisites
+
+- An MDM tool that manages your Mac devices.
+- The authentik Agent, version 0.62 or later, deployed on the Mac. See [Deploy the authentik Agent on macOS](../../agent-deployment/macos.mdx) for more details.
+- An authorization flow configured on the Agent connector. See [Configure the Agent connector](#configure-the-agent-connector).
+- A **[device access group](../device-access-groups.mdx)** configured with the appropriate user or group bindings. See [Configure device access](#configure-device-access).
+
+## How it works
+
+After the MDM policy is installed, the authentik Agent registers the device with authentik, and macOS prompts the user to register with authentik.
+
+With the Secure Enclave key method, the user authenticates with authentik during registration, and a key is created in the Secure Enclave of the Mac. The Mac uses this key to obtain tokens from authentik whenever the user logs in or unlocks the Mac.
+
+With the web login method:
+
+- macOS requests an authorization URL from authentik and opens it in a web view at the login window or lock screen. The request is signed by the device, allowing authentik to know which Mac the login is executed on.
+- The end user logs in normally using the standard authentik interface and flows. authentik then checks whether the user has access to the device and runs the authorization flow of the Agent connector.
+- After authorization finishes, the Mac exchanges the result for tokens, and the user is logged in. The first time that a user logs in to a Mac, authentik associates the user with the device.
+
+## Configure the Agent connector
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors** and edit your authentik Agent connector.
+3. Configure the following settings:
+    - **Authorization Flow**: select the flow that is run when a user registers or logs in. This setting is required for local device login.
+    - **Session duration**: set how long an authenticated session is valid for.
+4. Click **Update**.
+
+When an authorization flow is configured and an enterprise license is active, the connector's page shows **Local authentication** as **Available**.
+
+## Configure device access
+
+Platform SSO requires the authenticating user to have access to the device. Access is controlled via [device access groups](../device-access-groups.mdx), which always apply. On Enterprise, direct device bindings for users, groups, or policies also affect access. Without an appropriately configured device access group or direct binding, **all login attempts are denied**.
+
+1. In the Admin interface, navigate to **Endpoint Devices** > **Device access groups** and click **New Device Access Group**.
+2. Provide a **Group Name** (e.g. `macos-devices`) and click **Create Device Access Group**.
+3. Expand the newly created device access group and click **Bind existing Policy / Group / User**.
+4. Select **Group** and choose a group that contains the users who should be allowed to log in to the device. Alternatively, bind a specific **User** or a **Policy**.
+5. Click **Create**.
+6. Navigate to **Endpoint Devices** > **Devices** and edit the device for which you want to enable login.
+7. Set the **Access group** to the device access group you created.
+8. Click **Update**.
+
+:::info
+You can also assign a device access group during enrollment by selecting a **Device Group** when creating the enrollment token.
+:::
+
+Device access is checked when a user registers and on every web login. With the Secure Enclave key method, device access is only checked when the user registers.
+
+## Deploy the MDM policy
+
+The MDM policy that authentik generates for macOS configures the authentik Agent and Platform SSO with the Secure Enclave key method.
+
+Follow the instructions for [deploying the authentik Agent on macOS via MDM](../../agent-deployment/automated.mdx#macos) to download the policy and deploy it with your MDM tool. To use web login, [edit the policy](#enable-web-login) before deploying it.
+
+### Enable web login
+
+To use the web login method on macOS 27 or later, change the Platform SSO configuration in the downloaded policy:
+
+1. Open the downloaded `.mobileconfig` file in a text editor.
+2. Locate the `PlatformSSO` dictionary in the payload with the type `com.apple.extensiblesso`.
+3. Change the value of `AuthenticationMethod` from `UserSecureEnclaveKey` to `OpenID`.
+4. Add the `WebLoginURLAllowList` key with the URL of your authentik deployment.
+5. Save the file and deploy it with your MDM tool.
+
+The `PlatformSSO` dictionary should then look like this:
+
+```xml
+<key>PlatformSSO</key>
+<dict>
+    <key>AccountDisplayName</key>
+    <string>authentik</string>
+    <key>AllowDeviceIdentifiersInAttestation</key>
+    <true/>
+    <key>AuthenticationMethod</key>
+    <string>OpenID</string>
+    <key>EnableAuthorization</key>
+    <true/>
+    <key>UseSharedDeviceKeys</key>
+    <true/>
+    <key>WebLoginURLAllowList</key>
+    <array>
+        <string>https://authentik.company/</string>
+    </array>
+</dict>
+```
+
+:::info Allowed URLs
+macOS only loads pages from the URLs in `WebLoginURLAllowList` during a web login. Each entry consists of a scheme and a hostname, and wildcards are not supported. If your flows redirect users to another host, such as an external identity provider that is configured as a [source](../../../../users-sources/sources/index.mdx), add its URL to the list.
+:::
+
+### Offline access
+
+With the web login method, users authenticate with authentik every time they log in. To allow users to log in with the password of their local account when authentik cannot be reached, add an offline grace period to the `PlatformSSO` dictionary:
+
+```xml
+<key>LoginPolicy</key>
+<array>
+    <string>AllowOfflineGracePeriod</string>
+</array>
+<key>UnlockPolicy</key>
+<array>
+    <string>AllowOfflineGracePeriod</string>
+</array>
+<key>FileVaultPolicy</key>
+<array>
+    <string>AllowOfflineGracePeriod</string>
+</array>
+<key>OfflineGracePeriod</key>
+<integer>86400</integer>
+<key>NonPlatformSSOAccounts</key>
+<array>
+    <string>localadmin</string>
+</array>
+```
+
+- `OfflineGracePeriod` is the time in seconds after the last successful login during which the local account password can be used.
+- `NonPlatformSSOAccounts` is a list of local accounts that are exempt from Platform SSO. Add a local administrator account, so that the Mac can still be accessed when authentik cannot be reached.
+
+Refer to the [Apple Platform SSO documentation](https://support.apple.com/guide/deployment/platform-sso-for-mac-dep7bbb05313/web) for more information on these settings.
+
+### Update the MDM policy
+
+Each time the MDM policy is downloaded from authentik, it contains new payload identifiers. When a policy with different identifiers or different Platform SSO settings is installed on a Mac, macOS treats it as a new Platform SSO configuration and prompts its users to register again.
+
+To avoid this, keep the policy file that you deployed, and only download a new policy when it's required, for example when the enrollment token changes. If you use web login, apply [your changes](#enable-web-login) to the new policy before deploying it.
+
+:::warning
+The MDM policy contains the enrollment token. Store the file securely.
+:::
+
+## How to log in to a macOS device
+
+After the MDM policy is installed, macOS shows a notification asking the user to register with authentik. The user clicks the notification and authenticates with authentik.
+
+After registration:
+
+- With the Secure Enclave key method, the user logs in to and unlocks their Mac as before, and the Mac authenticates with authentik in the background.
+- With the web login method, the macOS login window and lock screen show the authentik login page. After the user authenticates, they are logged in to the Mac.
+
+The registration status is shown on the Mac under **System Settings** > **Users & Groups**.
+
+## Remove a device
+
+To remove the Platform SSO registration of a Mac:
+
+1. In the Admin interface, navigate to **Endpoint Devices** > **Devices** and delete the device. This removes the tokens and keys that authentik issued to the device and its users.
+2. Remove the MDM policy from the Mac with your MDM tool.
+
+## Troubleshooting
+
+To retrieve the logs of the Platform SSO extension, run the following command on the Mac:
+
+```sh
+log show --predicate 'subsystem BEGINSWITH "io.goauthentik.platform"'
+```
+
+If users are not prompted to register, or cannot log in, check that:
+
+- The MDM policy was installed by an MDM tool, and not manually.
+- The Mac reports a serial number. Some hypervisors don't set a serial number for virtual machines.
+- An **Authorization Flow** is configured on the Agent connector.
+- The user has access to the device through a [device access group](#configure-device-access).
+- For web login, all hosts that are used during the login are listed in `WebLoginURLAllowList`.
