@@ -1,8 +1,8 @@
 :root {
-  --pf-c-spinner--Color: var(--pf-global--primary-color--100);
-  --pf-c-spinner--m-sm--diameter: var(--pf-global--icon--FontSize--sm);
-  --pf-c-spinner--m-md--diameter: var(--pf-global--icon--FontSize--md);
-  --pf-c-spinner--m-lg--diameter: var(--pf-global--icon--FontSize--lg);
-  --pf-c-spinner--m-xl--diameter: var(--pf-global--icon--FontSize--xl);
-  --pf-c-spinner--m-inline--diameter: 1em;
+    --pf-c-spinner--Color: var(--pf-global--primary-color--100);
+    --pf-c-spinner--m-sm--diameter: var(--pf-global--icon--FontSize--sm);
+    --pf-c-spinner--m-md--diameter: var(--pf-global--icon--FontSize--md);
+    --pf-c-spinner--m-lg--diameter: var(--pf-global--icon--FontSize--lg);
+    --pf-c-spinner--m-xl--diameter: var(--pf-global--icon--FontSize--xl);
+    --pf-c-spinner--m-inline--diameter: 1em;
 }

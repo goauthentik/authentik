@@ -1,6 +1,5 @@
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
-
 import { UsedByListItem } from "#elements/entities/used-by";
 import { StaticTable } from "#elements/table/StaticTable";
 import { TableColumn } from "#elements/table/TableColumn";
@@ -82,9 +81,7 @@ export class UsedByTable<T extends object> extends StaticTable<T> {
         };
 
         return html`${
-            this.usedBy
-                ? until(handler(), html`<ak-spinner size="lg"></ak-spinner>`)
-                : null
+            this.usedBy ? until(handler(), html`<ak-spinner size="lg"></ak-spinner>`) : null
         }`;
     }
 

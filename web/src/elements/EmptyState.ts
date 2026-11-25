@@ -2,7 +2,6 @@ import "#elements/ak-spinner";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-
 import { AKElement } from "#elements/Base";
 import { type SlottedTemplateResult, type Spread } from "#elements/types";
 
