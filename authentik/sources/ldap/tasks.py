@@ -26,6 +26,7 @@ if TYPE_CHECKING:
 LOGGER = get_logger()
 CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
+CACHE_KEY_SYNC_REQUESTED = "goauthentik.io/sources/ldap/sync_requested/"
 
 
 @actor(description=_("Check connectivity for LDAP source."))
@@ -62,11 +63,17 @@ def ldap_sync(source_pk: str):
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk, enabled=True).first()
     if not source:
         return
+    sync_requested_key = CACHE_KEY_SYNC_REQUESTED + source.slug
     with source.sync_lock as lock_acquired:
         if not lock_acquired:
-            task.info("Synchronization is already running. Skipping")
-            LOGGER.debug("Failed to acquire lock for LDAP sync, skipping task", source=source.slug)
+            # The running sync may have read the directory before the change this request is
+            # for, so it runs once more when it is done
+            cache.set(sync_requested_key, True, None)
+            task.info("Synchronization is already running. Another one runs after it")
+            LOGGER.debug("Failed to acquire lock for LDAP sync, will run again", source=source.slug)
             return
+        # This run covers every request made before it started
+        cache.delete(sync_requested_key)
 
         user_group_tasks = group(
             ldap_sync_paginator(task, source, UserLDAPSynchronizer)
@@ -109,6 +116,11 @@ def ldap_sync(source_pk: str):
         deletion_tasks.run().wait(
             timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
         )
+
+    # Checked after the lock is released, so a request made while this sync was finishing is
+    # not lost
+    if cache.delete(sync_requested_key):
+        ldap_sync.send(source.pk)
 
     if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.DEFERRED_END:
         for outgoing_sync_provider_cls in all_subclasses(OutgoingSyncProvider):
