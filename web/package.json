@@ -232,7 +232,7 @@
         "lit-analyzer": "^2.0.3",
         "lit-element": "^4.2.2",
         "lit-html": "^3.3.3",
-        "maplibre-gl": "^6.9.1",
+        "maplibre-gl": "^6.19.0",
         "md-front-matter": "^1.0.4",
         "mermaid": "^12.3.0",
         "node-domexception": "workspace:*",
