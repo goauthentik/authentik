@@ -34,11 +34,11 @@ These apply everywhere in `test/`:
 ## Running
 
 ```bash
-npm test                                 # Both projects (unit + browser)
+pnpm test                                # Both projects (unit + browser)
 npx vitest run test/unit                 # Just unit tests
 npx vitest run test/browser              # Just browser tests
 npx vitest run path/to/single.test.ts    # One file
-npm run test:e2e                         # Playwright e2e CLI path (same test/browser sources)
+pnpm run test:e2e                        # Playwright e2e CLI path (same test/browser sources)
 ```
 
 Browser tests require a running authentik instance reachable at `AK_TEST_RUNNER_PAGE_URL` (defaults to `http://localhost:9000`). The `prerequisites.setup.ts` health check will fail loudly if it isn't up.

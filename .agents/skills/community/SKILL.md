@@ -89,9 +89,7 @@ considered, and any context.
   look fully AI-driven. Trim generic text, verify every claim, and keep it short. If you
   are drafting for someone, hand them the draft to edit and submit; don't file it for
   them.
-- **Stale template links in the contributing guide.** `contributing.mdx` links to
-  `template=question.md` and `template=feature_request.md`, which no longer exist. Use the
-  chooser at <https://github.com/goauthentik/authentik/issues/new/choose> instead.
+
 - **Security announcements** come through the mailing list linked in `SECURITY.md` and the
   Discord server. Point people there instead of asking about an embargoed fix in public.
 - **Email isn't for vulnerability reports.** `security@goauthentik.io` is for general
