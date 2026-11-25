@@ -10,18 +10,18 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-cron-input")
 export class AKCronInput extends WithLocale(HorizontalLightComponent<string>) {
     /**
-     * @property *
+     * @property
      * @attribute
      */
     @property({ type: String })
     public value = "";
 
     /**
-     * @property *
+     * @property
      * @attribute
      */
     @property({ type: Boolean, attribute: "readonly" })
-    readOnly = false;
+    public readOnly = false;
 
     #inputListener(ev: InputEvent) {
         this.value = (ev.target as HTMLInputElement).value;
