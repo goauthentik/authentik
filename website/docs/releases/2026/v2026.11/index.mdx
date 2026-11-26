@@ -10,6 +10,7 @@ import APIChanges from "./_api-changes.mdx";
 ## Highlights
 
 - **macOS 27 Platform SSO**: :ak-enterprise The authentik Agent supports Platform SSO on macOS 27, including browser-based sign-in and unlocking the lock screen.
+- **Microsoft Intune connector**: :ak-enterprise Use information about Intune-managed devices and their compliance state in access decisions, and identify devices by a certificate deployed through Intune.
 - **Password lockout**: :ak-enterprise Lock password login after a configured number of consecutive failed attempts.
 - **Required actions**: :ak-enterprise Require users to complete flows, such as changing their password or setting up an authenticator, before they can continue.
 - **RAC for enrolled devices**: RAC providers connect to devices enrolled through the authentik Agent and sign users in without storing credentials for the device.
@@ -157,6 +158,10 @@ The following API changes may require updates to scripts and API clients:
 ### Web-based login support for macOS 27 Platform SSO :ak-enterprise
 
 Users can now authenticate directly into their macOS devices using a customizable web-based flow. This skips an additional credential separate from the user's macOS password. The user completes the login flow in the browser, and authentik manages the authentication instead of macOS handling the password entry. For more details, refer to the [macOS deployment documentation](../../../endpoint-devices/authentik-agent/agent-deployment/macos.mdx).
+
+### Microsoft Intune connector :ak-enterprise
+
+The new [Microsoft Intune connector](../../../endpoint-devices/device-compliance/connectors/microsoft-intune.mdx) imports the devices that are managed by Microsoft Intune, including their operating system, disk encryption status, and Intune compliance state. Combined with the Endpoint stage, authentik can identify a device by a client certificate that Intune deployed to it, and policies can require the device to be compliant in Intune. For more details, refer to [Intune conditional access](../../../endpoint-devices/device-compliance/intune-conditional-access.mdx).
 
 ### Password lockout :ak-enterprise
 
