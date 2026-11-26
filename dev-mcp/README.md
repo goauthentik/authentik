@@ -21,6 +21,15 @@ trusted projects. Both run `node dev-mcp/main.ts serve` from the repo root; Node
 TypeScript directly. Claude Code hooks in `.claude/settings.json` lint each edited file and remind the
 agent to check generated files before it stops.
 
+## On a fresh clone
+
+Without `pnpm install` the server can't load the MCP SDK, so `serve` starts a setup-mode server
+instead (`lib/server/fallback.ts`, Node built-ins only). Its instructions and `akdev_status` say
+what's missing, and `akdev_install` runs `make install`; Claude Code asks the person before every
+call. Once the dependencies are in place, from that tool or from `make install` run anywhere,
+the setup server starts the real one, hands the session over and sends `tools/list_changed`, so
+the full tools appear without a restart.
+
 ## The database guard
 
 `akdev_generated` runs Django management commands against the configured database, so it's only

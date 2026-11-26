@@ -37,8 +37,10 @@ function sessionStart(): void {
     // The server's own dependency stands in for the whole root install.
     if (!isInstalled("@modelcontextprotocol/server")) {
         context +=
-            " Dependencies aren't installed yet, so the authentik-dev MCP server and those " +
-            `make targets can't run. ${INSTALL_HINT} Then restart the session.`;
+            " Dependencies aren't installed yet. The authentik-dev MCP server is in setup mode: " +
+            "ask the person whether to install, then call its akdev_install tool (it runs " +
+            "`make install`), and its full tools appear without a restart. Until then, " +
+            `\`make check-gen\` and \`make lint-changed\` can't run. ${INSTALL_HINT}`;
     }
 
     emit("SessionStart", context);

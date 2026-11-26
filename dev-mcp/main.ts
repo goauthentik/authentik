@@ -117,12 +117,20 @@ async function serve(): Promise<number> {
     const server = await import("#dev-mcp/server/serve").catch(missing);
 
     if (!server) {
-        // Shows up in the MCP client's server log.
-        console.error(
-            `authentik-dev can't start: its dependencies aren't installed. ${INSTALL_HINT}`,
-        );
+        const { NO_FALLBACK, serveFallback } = await import("#dev-mcp/server/fallback");
 
-        return 1;
+        // The real server started by the fallback: don't nest another fallback inside it.
+        if (process.env[NO_FALLBACK]) {
+            console.error(
+                `authentik-dev can't start: its dependencies aren't installed. ${INSTALL_HINT}`,
+            );
+
+            return 1;
+        }
+
+        serveFallback();
+
+        return -1;
     }
 
     await server.serve();
