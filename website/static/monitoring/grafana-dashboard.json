@@ -4,28 +4,21 @@
             {
                 "builtIn": 1,
                 "datasource": {
-                    "type": "datasource",
-                    "uid": "grafana"
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
                 },
                 "enable": true,
                 "hide": true,
                 "iconColor": "rgba(0, 211, 255, 1)",
                 "name": "Annotations & Alerts",
-                "target": {
-                    "limit": 100,
-                    "matchAny": false,
-                    "tags": [],
-                    "type": "dashboard"
-                },
                 "type": "dashboard"
             }
         ]
     },
     "description": "Grafana Dashboard for Prometheus metrics exposed by authentik.",
     "editable": true,
-    "fiscalYearStartMonth": 0,
     "graphTooltip": 1,
-    "id": 0,
+    "id": null,
     "links": [],
     "panels": [
         {
@@ -36,9 +29,9 @@
                 "x": 0,
                 "y": 0
             },
-            "id": 23,
+            "id": 1,
             "panels": [],
-            "title": "authentik Core",
+            "title": "Overview",
             "type": "row"
         },
         {
@@ -46,171 +39,42 @@
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
             },
+            "description": "Connected background workers.",
             "fieldConfig": {
                 "defaults": {
                     "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
-                        "drawStyle": "line",
-                        "fillOpacity": 10,
-                        "gradientMode": "hue",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "linear",
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "never",
-                        "showValues": false,
-                        "spanNulls": true,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
+                        "mode": "thresholds"
                     },
                     "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": 0
+                                "color": "red",
+                                "value": null
                             },
                             {
-                                "color": "red",
-                                "value": 80
+                                "color": "green",
+                                "value": 1
                             }
                         ]
                     },
-                    "unit": "s"
+                    "unit": "short"
                 },
                 "overrides": []
             },
             "gridPos": {
-                "h": 12,
-                "w": 17,
+                "h": 4,
+                "w": 3,
                 "x": 0,
                 "y": 1
             },
-            "id": 8,
+            "id": 2,
             "options": {
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
-                },
-                "tooltip": {
-                    "hideZeros": false,
-                    "mode": "single",
-                    "sort": "none"
-                }
-            },
-            "pluginVersion": "12.3.1",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
-                    },
-                    "editorMode": "code",
-                    "exemplar": true,
-                    "expr": "sum by (flow_slug) (rate(authentik_flows_plan_time_sum{namespace=~\"$namespace\"}[$__rate_interval]))",
-                    "interval": "",
-                    "legendFormat": "{{ stage_type }}",
-                    "range": true,
-                    "refId": "A"
-                }
-            ],
-            "title": "FlowPlanner time by flow",
-            "transparent": true,
-            "type": "timeseries"
-        },
-        {
-            "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        }
-                    },
-                    "mappings": []
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "Successful"
-                        },
-                        "properties": [
-                            {
-                                "id": "color",
-                                "value": {
-                                    "fixedColor": "green",
-                                    "mode": "fixed"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "Failed"
-                        },
-                        "properties": [
-                            {
-                                "id": "color",
-                                "value": {
-                                    "fixedColor": "red",
-                                    "mode": "fixed"
-                                }
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 6,
-                "w": 3,
-                "x": 17,
-                "y": 1
-            },
-            "id": 10,
-            "options": {
-                "displayLabels": [],
-                "legend": {
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true,
-                    "values": []
-                },
-                "pieType": "donut",
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
                         "lastNotNull"
@@ -218,15 +82,8 @@
                     "fields": "",
                     "values": false
                 },
-                "sort": "desc",
-                "text": {},
-                "tooltip": {
-                    "hideZeros": false,
-                    "mode": "single",
-                    "sort": "none"
-                }
+                "textMode": "auto"
             },
-            "pluginVersion": "12.3.1",
             "targets": [
                 {
                     "datasource": {
@@ -234,55 +91,434 @@
                         "uid": "${DS_PROMETHEUS}"
                     },
                     "editorMode": "code",
-                    "exemplar": true,
-                    "expr": "sum(rate(authentik_tasks_errors_total{namespace=~\"$namespace\"}[$__rate_interval]))",
-                    "format": "time_series",
-                    "instant": true,
-                    "interval": "",
-                    "legendFormat": "Failed",
+                    "expr": "sum(max by (namespace, version) (authentik_tasks_workers{namespace=~\"$namespace\"}))",
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "instant": false,
                     "refId": "A"
+                }
+            ],
+            "title": "Workers",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "Workers running a different version than the server.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 1
+                            }
+                        ]
+                    },
+                    "unit": "short"
                 },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 4,
+                "w": 3,
+                "x": 3,
+                "y": 1
+            },
+            "id": 3,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
                 {
                     "datasource": {
                         "type": "prometheus",
                         "uid": "${DS_PROMETHEUS}"
                     },
                     "editorMode": "code",
-                    "exemplar": true,
-                    "expr": "sum(authentik_tasks_total{namespace=~\"$namespace\"})",
-                    "hide": false,
-                    "instant": true,
-                    "interval": "",
-                    "legendFormat": "Successful",
-                    "refId": "B"
+                    "expr": "sum(max by (namespace, version) (authentik_tasks_workers{namespace=~\"$namespace\", version_matched=\"False\"})) or vector(0)",
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
                 }
             ],
-            "title": "Task status",
-            "transparent": true,
-            "type": "piechart"
+            "title": "Outdated workers",
+            "type": "stat"
         },
         {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "Outpost instances with at least one open websocket connection to authentik.",
             "fieldConfig": {
-                "defaults": {},
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
                 "overrides": []
             },
             "gridPos": {
-                "h": 5,
-                "w": 4,
-                "x": 20,
+                "h": 4,
+                "w": 3,
+                "x": 6,
                 "y": 1
             },
-            "id": 13,
+            "id": 4,
             "options": {
-                "code": {
-                    "language": "plaintext",
-                    "showLineNumbers": false,
-                    "showMiniMap": false
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
                 },
-                "content": "\n\n<img src=\"https://goauthentik.io/img/icon_top_brand.svg\">",
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "count(max by (namespace, outpost, uid) (authentik_outposts_connected{namespace=~\"$namespace\"}) > 0) or vector(0)",
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Outposts connected",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "reqps"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 4,
+                "w": 3,
+                "x": 9,
+                "y": 1
+            },
+            "id": 5,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum(rate(authentik_main_request_duration_seconds_count{namespace=~\"$namespace\"}[$__rate_interval]))",
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Requests",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 0.01
+                            },
+                            {
+                                "color": "red",
+                                "value": 0.05
+                            }
+                        ]
+                    },
+                    "unit": "percentunit"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 4,
+                "w": 3,
+                "x": 12,
+                "y": 1
+            },
+            "id": 6,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum(rate(authentik_tasks_errors_total{namespace=~\"$namespace\"}[$__rate_interval])) / sum(rate(authentik_tasks_total{namespace=~\"$namespace\"}[$__rate_interval])) or vector(0)",
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Task error ratio",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 100
+                            },
+                            {
+                                "color": "red",
+                                "value": 1000
+                            }
+                        ]
+                    },
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 4,
+                "w": 3,
+                "x": 15,
+                "y": 1
+            },
+            "id": 7,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum(max by (namespace, queue_name, actor_name) (authentik_tasks_queued{namespace=~\"$namespace\"}))",
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Queued tasks",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "Time until the enterprise license expires.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 0
+                            },
+                            {
+                                "color": "green",
+                                "value": 2592000
+                            }
+                        ]
+                    },
+                    "unit": "dtdurations"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 4,
+                "w": 3,
+                "x": 18,
+                "y": 1
+            },
+            "id": 8,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "min(authentik_enterprise_license_expiry_seconds{namespace=~\"$namespace\"})",
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "License expires in",
+            "type": "stat"
+        },
+        {
+            "gridPos": {
+                "h": 4,
+                "w": 3,
+                "x": 21,
+                "y": 1
+            },
+            "id": 9,
+            "options": {
+                "content": "<img height=\"100%\" src=\"https://goauthentik.io/img/icon_top_brand.svg\">",
                 "mode": "html"
             },
-            "pluginVersion": "12.3.1",
             "title": "",
             "transparent": true,
             "type": "text"
@@ -292,46 +528,38 @@
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
             },
+            "description": "",
             "fieldConfig": {
                 "defaults": {
                     "color": {
                         "mode": "thresholds"
                     },
-                    "mappings": [
-                        {
-                            "options": {
-                                "0": {
-                                    "text": "None"
-                                }
-                            },
-                            "type": "value"
-                        }
-                    ],
+                    "mappings": [],
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
                             {
                                 "color": "green",
-                                "value": 0
+                                "value": null
                             }
                         ]
-                    }
+                    },
+                    "unit": "short"
                 },
                 "overrides": []
             },
             "gridPos": {
-                "h": 3,
-                "w": 4,
-                "x": 20,
-                "y": 6
+                "h": 4,
+                "w": 3,
+                "x": 0,
+                "y": 5
             },
-            "id": 4,
+            "id": 10,
             "options": {
                 "colorMode": "value",
-                "graphMode": "none",
+                "graphMode": "area",
                 "justifyMode": "auto",
                 "orientation": "auto",
-                "percentChangeColorMode": "standard",
                 "reduceOptions": {
                     "calcs": [
                         "lastNotNull"
@@ -339,27 +567,23 @@
                     "fields": "",
                     "values": false
                 },
-                "showPercentChange": false,
-                "text": {},
-                "textMode": "auto",
-                "wideLayout": true
+                "textMode": "auto"
             },
-            "pluginVersion": "12.3.1",
             "targets": [
                 {
                     "datasource": {
                         "type": "prometheus",
                         "uid": "${DS_PROMETHEUS}"
                     },
-                    "exemplar": true,
-                    "expr": "max(authentik_admin_workers{namespace=~\"$namespace\"})",
-                    "interval": "",
-                    "legendFormat": "",
+                    "editorMode": "code",
+                    "expr": "sum(max by (namespace) (authentik_flows_cached{namespace=~\"$namespace\"}))",
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "instant": false,
                     "refId": "A"
                 }
             ],
-            "title": "Connected Workers",
-            "transparent": true,
+            "title": "Cached flows",
             "type": "stat"
         },
         {
@@ -379,102 +603,26 @@
                         "steps": [
                             {
                                 "color": "green",
-                                "value": 0
+                                "value": null
                             }
                         ]
-                    }
-                },
-                "overrides": []
-            },
-            "gridPos": {
-                "h": 6,
-                "w": 3,
-                "x": 17,
-                "y": 7
-            },
-            "id": 6,
-            "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                    "calcs": [
-                        "lastNotNull"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-            },
-            "pluginVersion": "12.3.1",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
                     },
-                    "editorMode": "code",
-                    "exemplar": true,
-                    "expr": "sum(authentik_policies_cached{namespace=~\"$namespace\"})",
-                    "instant": true,
-                    "interval": "",
-                    "legendFormat": "Cached policies",
-                    "refId": "A"
-                }
-            ],
-            "title": "Cached policies",
-            "transparent": true,
-            "type": "stat"
-        },
-        {
-            "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [
-                        {
-                            "options": {
-                                "0": {
-                                    "text": "None"
-                                }
-                            },
-                            "type": "value"
-                        }
-                    ],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": 0
-                            }
-                        ]
-                    }
+                    "unit": "short"
                 },
                 "overrides": []
             },
             "gridPos": {
                 "h": 4,
-                "w": 4,
-                "x": 20,
-                "y": 9
+                "w": 3,
+                "x": 3,
+                "y": 5
             },
-            "id": 16,
+            "id": 11,
             "options": {
                 "colorMode": "value",
                 "graphMode": "area",
                 "justifyMode": "auto",
                 "orientation": "auto",
-                "percentChangeColorMode": "standard",
                 "reduceOptions": {
                     "calcs": [
                         "lastNotNull"
@@ -482,12 +630,8 @@
                     "fields": "",
                     "values": false
                 },
-                "showPercentChange": false,
-                "text": {},
-                "textMode": "auto",
-                "wideLayout": true
+                "textMode": "auto"
             },
-            "pluginVersion": "12.3.1",
             "targets": [
                 {
                     "datasource": {
@@ -495,16 +639,14 @@
                         "uid": "${DS_PROMETHEUS}"
                     },
                     "editorMode": "code",
-                    "exemplar": true,
-                    "expr": "sum(authentik_outposts_connected{namespace=~\"$namespace\"}) by (outpost)",
-                    "interval": "",
+                    "expr": "sum(max by (namespace) (authentik_policies_cached{namespace=~\"$namespace\"}))",
                     "legendFormat": "__auto",
                     "range": true,
+                    "instant": false,
                     "refId": "A"
                 }
             ],
-            "title": "Connected Outposts",
-            "transparent": true,
+            "title": "Cached policies",
             "type": "stat"
         },
         {
@@ -512,44 +654,11 @@
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
             },
+            "description": "",
             "fieldConfig": {
                 "defaults": {
                     "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
-                        "drawStyle": "line",
-                        "fillOpacity": 10,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "linear",
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "never",
-                        "showValues": false,
-                        "spanNulls": true,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
+                        "mode": "thresholds"
                     },
                     "mappings": [],
                     "thresholds": {
@@ -557,39 +666,43 @@
                         "steps": [
                             {
                                 "color": "green",
-                                "value": 0
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 90
                             },
                             {
                                 "color": "red",
-                                "value": 80
+                                "value": 100
                             }
                         ]
                     },
-                    "unit": "s"
+                    "unit": "percent"
                 },
                 "overrides": []
             },
             "gridPos": {
-                "h": 8,
-                "w": 14,
-                "x": 0,
-                "y": 13
+                "h": 4,
+                "w": 6,
+                "x": 6,
+                "y": 5
             },
-            "id": 2,
+            "id": 12,
             "options": {
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
                 },
-                "tooltip": {
-                    "hideZeros": false,
-                    "mode": "single",
-                    "sort": "none"
-                }
+                "textMode": "auto"
             },
-            "pluginVersion": "12.3.1",
             "targets": [
                 {
                     "datasource": {
@@ -597,16 +710,395 @@
                         "uid": "${DS_PROMETHEUS}"
                     },
                     "editorMode": "code",
-                    "exemplar": true,
-                    "expr": "topk(5, avg by(binding_target_type, mode) (rate(authentik_policies_execution_time_bucket{namespace=~\"$namespace\"}[$__rate_interval])))",
-                    "interval": "",
-                    "legendFormat": "{{ binding_target_type }} {{ mode }}",
+                    "expr": "max by (user_type) (authentik_enterprise_license_usage{namespace=~\"$namespace\"})",
+                    "legendFormat": "{{ user_type }}",
                     "range": true,
+                    "instant": false,
                     "refId": "A"
                 }
             ],
-            "title": "PolicyEngine Execution time by binding type (Top 5)",
-            "transparent": true,
+            "title": "License usage",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "Days until each certificate expires. Negative means already expired.",
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 0
+                            },
+                            {
+                                "color": "green",
+                                "value": 30
+                            }
+                        ]
+                    },
+                    "unit": "d",
+                    "custom": {
+                        "cellOptions": {
+                            "type": "color-text"
+                        }
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 5
+            },
+            "id": 13,
+            "options": {
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "displayName": "Days left",
+                        "desc": false
+                    }
+                ]
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "(max by (name) (authentik_crypto_certificate_expiry_timestamp_seconds{namespace=~\"$namespace\"}) - time()) / 86400",
+                    "legendFormat": "__auto",
+                    "range": false,
+                    "instant": true,
+                    "refId": "A",
+                    "format": "table"
+                }
+            ],
+            "title": "Certificate expiry",
+            "transformations": [
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "Time": true
+                        },
+                        "renameByName": {
+                            "name": "Certificate",
+                            "Value": "Days left"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "Time since each outpost last reported to authentik.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        }
+                    },
+                    "min": 0,
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 4,
+                "w": 12,
+                "x": 0,
+                "y": 9
+            },
+            "id": 14,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "time() - max by (outpost) (authentik_outposts_last_update{namespace=~\"$namespace\"})",
+                    "legendFormat": "{{ outpost }}",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Outpost last update",
+            "type": "timeseries"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 13
+            },
+            "id": 15,
+            "panels": [],
+            "title": "HTTP",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "normal"
+                        }
+                    },
+                    "min": 0,
+                    "unit": "reqps"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 14
+            },
+            "id": 16,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum by (app) (label_replace(rate(django_http_requests_latency_seconds_by_view_method_count{namespace=~\"$namespace\", view!~\"metrics|health-.*\"}[$__rate_interval]), \"app\", \"$1\", \"view\", \"(?:authentik_)?([^:]+).*\"))",
+                    "legendFormat": "{{ app }}",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Requests by app",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "Time spent in the authentik core, grouped by the Django app (URL namespace) that handled the request.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        }
+                    },
+                    "min": 0,
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 14
+            },
+            "id": 17,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "histogram_quantile(0.95, sum by (le, app) (label_replace(rate(django_http_requests_latency_seconds_by_view_method_bucket{namespace=~\"$namespace\", view!~\"metrics|health-.*\"}[$__rate_interval]), \"app\", \"$1\", \"view\", \"(?:authentik_)?([^:]+).*\")))",
+                    "legendFormat": "{{ app }}",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Request latency by app (p95)",
+            "type": "timeseries"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 22
+            },
+            "id": 18,
+            "panels": [],
+            "title": "Flows",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        }
+                    },
+                    "min": 0,
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 23
+            },
+            "id": 19,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "histogram_quantile(0.95, sum by (le, flow_slug) (rate(authentik_flows_plan_time_bucket{namespace=~\"$namespace\"}[$__rate_interval])))",
+                    "legendFormat": "{{ flow_slug }}",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Flow planning time (p95)",
             "type": "timeseries"
         },
         {
@@ -621,181 +1113,571 @@
                         "mode": "palette-classic"
                     },
                     "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
                         "drawStyle": "line",
-                        "fillOpacity": 0,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "linear",
+                        "fillOpacity": 10,
                         "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "auto",
-                        "showValues": false,
-                        "spanNulls": false,
+                        "showPoints": "never",
+                        "spanNulls": true,
                         "stacking": {
                             "group": "A",
                             "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
                         }
                     },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": 0
-                            },
-                            {
-                                "color": "red",
-                                "value": 800000
-                            }
-                        ]
+                    "min": 0,
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 23
+            },
+            "id": 20,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
                     },
+                    "editorMode": "code",
+                    "expr": "label_replace(histogram_quantile(0.95, sum by (le, stage_type, method) (rate(authentik_flows_execution_stage_time_bucket{namespace=~\"$namespace\"}[$__rate_interval]))), \"short_name\", \"$1\", \"stage_type\", \".*\\\\.([^.]+)$\")",
+                    "legendFormat": "{{ short_name }} {{ method }}",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Stage execution time (p95)",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "normal"
+                        }
+                    },
+                    "min": 0,
+                    "unit": "ops"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 31
+            },
+            "id": 21,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "label_replace(sum by (stage_type, method) (rate(authentik_flows_execution_stage_time_count{namespace=~\"$namespace\"}[$__rate_interval])), \"short_name\", \"$1\", \"stage_type\", \".*\\\\.([^.]+)$\")",
+                    "legendFormat": "{{ short_name }} {{ method }}",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Stage executions",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        }
+                    },
+                    "min": 0,
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 31
+            },
+            "id": 22,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "topk(10, histogram_quantile(0.95, sum by (le, mapping_name) (rate(authentik_property_mapping_execution_time_bucket{namespace=~\"$namespace\"}[$__rate_interval]))))",
+                    "legendFormat": "{{ mapping_name }}",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Property mapping execution time (p95, top 10)",
+            "type": "timeseries"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 39
+            },
+            "id": 23,
+            "panels": [],
+            "title": "Policies",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "Total time the policy engine took to evaluate all bindings of an object.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        }
+                    },
+                    "min": 0,
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 40
+            },
+            "id": 24,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "label_replace(histogram_quantile(0.95, sum by (le, obj_type) (rate(authentik_policies_engine_time_total_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval]))), \"short_name\", \"$1\", \"obj_type\", \".*\\\\.([^.]+)$\")",
+                    "legendFormat": "{{ short_name }}",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Policy engine time (p95)",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "Execution time of individual policies, users and groups bound to objects.",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        }
+                    },
+                    "min": 0,
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 40
+            },
+            "id": 25,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "topk(10, histogram_quantile(0.95, sum by (le, binding_target_type, binding_target_name, mode) (rate(authentik_policies_execution_time_bucket{namespace=~\"$namespace\"}[$__rate_interval]))))",
+                    "legendFormat": "{{ binding_target_type }} {{ binding_target_name }} ({{ mode }})",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Policy execution time (p95, top 10)",
+            "type": "timeseries"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 48
+            },
+            "id": 26,
+            "panels": [],
+            "title": "Tasks",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        }
+                    },
+                    "min": 0,
+                    "unit": "ops"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 49
+            },
+            "id": 27,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "topk(10, sum by (actor_name) (rate(authentik_tasks_total{namespace=~\"$namespace\"}[$__rate_interval])))",
+                    "legendFormat": "{{ actor_name }}",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "Tasks processed (top 10)",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        }
+                    },
+                    "min": 0,
+                    "unit": "ops"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 49
+            },
+            "id": 28,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum by (actor_name) (rate(authentik_tasks_errors_total{namespace=~\"$namespace\"}[$__rate_interval]))",
+                    "legendFormat": "{{ actor_name }} errored",
+                    "range": true,
+                    "instant": false,
+                    "refId": "A"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum by (actor_name) (rate(authentik_tasks_retries_total{namespace=~\"$namespace\"}[$__rate_interval]))",
+                    "legendFormat": "{{ actor_name }} retried",
+                    "range": true,
+                    "instant": false,
+                    "refId": "B"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum by (actor_name) (rate(authentik_tasks_rejected_total{namespace=~\"$namespace\"}[$__rate_interval]))",
+                    "legendFormat": "{{ actor_name }} dead-lettered",
+                    "range": true,
+                    "instant": false,
+                    "refId": "C"
+                }
+            ],
+            "title": "Task failures",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineWidth": 1,
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        }
+                    },
+                    "min": 0,
                     "unit": "ms"
                 },
                 "overrides": []
             },
             "gridPos": {
                 "h": 8,
-                "w": 10,
-                "x": 14,
-                "y": 13
-            },
-            "id": 15,
-            "options": {
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
-                },
-                "tooltip": {
-                    "hideZeros": false,
-                    "mode": "single",
-                    "sort": "none"
-                }
-            },
-            "pluginVersion": "12.3.1",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
-                    },
-                    "editorMode": "code",
-                    "exemplar": true,
-                    "expr": "avg by (actor_name) (rate(authentik_tasks_duration_milliseconds_bucket{namespace=~\"$namespace\"}[$__rate_interval]))",
-                    "instant": false,
-                    "interval": "",
-                    "legendFormat": "{{ task_name }}",
-                    "range": true,
-                    "refId": "A"
-                }
-            ],
-            "title": "System task duration",
-            "transparent": true,
-            "type": "timeseries"
-        },
-        {
-            "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
-                        "drawStyle": "line",
-                        "fillOpacity": 10,
-                        "gradientMode": "hue",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "linear",
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "never",
-                        "showValues": false,
-                        "spanNulls": true,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": 0
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                        ]
-                    },
-                    "unit": "s"
-                },
-                "overrides": []
-            },
-            "gridPos": {
-                "h": 8,
-                "w": 14,
+                "w": 12,
                 "x": 0,
-                "y": 21
+                "y": 57
             },
-            "id": 11,
+            "id": 29,
             "options": {
                 "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
                 },
                 "tooltip": {
-                    "hideZeros": false,
-                    "mode": "single",
-                    "sort": "none"
+                    "mode": "multi",
+                    "sort": "desc"
                 }
             },
-            "pluginVersion": "12.3.1",
             "targets": [
                 {
                     "datasource": {
@@ -803,16 +1685,14 @@
                         "uid": "${DS_PROMETHEUS}"
                     },
                     "editorMode": "code",
-                    "exemplar": true,
-                    "expr": "topk(5, avg by(object_type, mode) (rate(authentik_policies_execution_time_sum{namespace=~\"$namespace\"}[$__rate_interval])))",
-                    "interval": "",
-                    "legendFormat": "{{ object_type }} {{ mode }}",
+                    "expr": "topk(10, histogram_quantile(0.95, sum by (le, actor_name) (rate(authentik_tasks_duration_milliseconds_bucket{namespace=~\"$namespace\"}[$__rate_interval]))))",
+                    "legendFormat": "{{ actor_name }}",
                     "range": true,
+                    "instant": false,
                     "refId": "A"
                 }
             ],
-            "title": "PolicyEngine Execution time by binding target (Top 5)",
-            "transparent": true,
+            "title": "Task duration (p95, top 10)",
             "type": "timeseries"
         },
         {
@@ -827,77 +1707,45 @@
                         "mode": "palette-classic"
                     },
                     "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
                         "drawStyle": "line",
-                        "fillOpacity": 0,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "linear",
+                        "fillOpacity": 10,
                         "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "auto",
-                        "showValues": false,
-                        "spanNulls": false,
+                        "showPoints": "never",
+                        "spanNulls": true,
                         "stacking": {
                             "group": "A",
                             "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
                         }
                     },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": 0
-                            },
-                            {
-                                "color": "red",
-                                "value": 800000
-                            }
-                        ]
-                    }
+                    "min": 0,
+                    "unit": "short"
                 },
                 "overrides": []
             },
             "gridPos": {
                 "h": 8,
-                "w": 10,
-                "x": 14,
-                "y": 21
+                "w": 12,
+                "x": 12,
+                "y": 57
             },
-            "id": 32,
+            "id": 30,
             "options": {
                 "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
+                    "calcs": [
+                        "mean",
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
                 },
                 "tooltip": {
-                    "hideZeros": false,
-                    "mode": "single",
-                    "sort": "none"
+                    "mode": "multi",
+                    "sort": "desc"
                 }
             },
-            "pluginVersion": "12.3.1",
             "targets": [
                 {
                     "datasource": {
@@ -905,17 +1753,26 @@
                         "uid": "${DS_PROMETHEUS}"
                     },
                     "editorMode": "code",
-                    "exemplar": true,
-                    "expr": "sum(authentik_tasks_queued{namespace=~\"$namespace\"})",
-                    "instant": false,
-                    "interval": "",
-                    "legendFormat": "{{ task_name }}",
+                    "expr": "sum by (queue_name) (max by (namespace, queue_name, actor_name) (authentik_tasks_queued{namespace=~\"$namespace\"}))",
+                    "legendFormat": "{{ queue_name }} queued",
                     "range": true,
+                    "instant": false,
                     "refId": "A"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum by (queue_name) (authentik_tasks_in_progress{namespace=~\"$namespace\"})",
+                    "legendFormat": "{{ queue_name }} in progress",
+                    "range": true,
+                    "instant": false,
+                    "refId": "B"
                 }
             ],
-            "title": "Pending Tasks",
-            "transparent": true,
+            "title": "Queued and in-progress tasks",
             "type": "timeseries"
         },
         {
@@ -924,68 +1781,34 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 29
+                "y": 65
             },
-            "id": 18,
+            "id": 33,
             "panels": [
                 {
                     "datasource": {
                         "type": "prometheus",
                         "uid": "${DS_PROMETHEUS}"
                     },
+                    "description": "",
                     "fieldConfig": {
                         "defaults": {
                             "color": {
                                 "mode": "palette-classic"
                             },
                             "custom": {
-                                "axisBorderShow": false,
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisLabel": "",
-                                "axisPlacement": "auto",
-                                "barAlignment": 0,
-                                "barWidthFactor": 0.6,
                                 "drawStyle": "line",
-                                "fillOpacity": 0,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "insertNulls": false,
-                                "lineInterpolation": "linear",
+                                "fillOpacity": 10,
                                 "lineWidth": 1,
-                                "pointSize": 5,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "showPoints": "auto",
-                                "showValues": false,
-                                "spanNulls": false,
+                                "showPoints": "never",
+                                "spanNulls": true,
                                 "stacking": {
                                     "group": "A",
-                                    "mode": "none"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
+                                    "mode": "normal"
                                 }
                             },
-                            "mappings": [],
-                            "thresholds": {
-                                "mode": "absolute",
-                                "steps": [
-                                    {
-                                        "color": "green",
-                                        "value": 0
-                                    },
-                                    {
-                                        "color": "red",
-                                        "value": 80
-                                    }
-                                ]
-                            }
+                            "min": 0,
+                            "unit": "reqps"
                         },
                         "overrides": []
                     },
@@ -993,124 +1816,26 @@
                         "h": 8,
                         "w": 12,
                         "x": 0,
-                        "y": 126
-                    },
-                    "id": 20,
-                    "options": {
-                        "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": true
-                        },
-                        "tooltip": {
-                            "hideZeros": false,
-                            "mode": "single",
-                            "sort": "none"
-                        }
-                    },
-                    "pluginVersion": "12.3.1",
-                    "targets": [
-                        {
-                            "datasource": {
-                                "type": "prometheus",
-                                "uid": "${DS_PROMETHEUS}"
-                            },
-                            "editorMode": "code",
-                            "exemplar": true,
-                            "expr": "sum(rate(authentik_outpost_proxy_request_duration_seconds_count{namespace=~\"$namespace\", outpost_name=\"$outpost_proxy\"}[$__rate_interval])) by (host)",
-                            "interval": "",
-                            "legendFormat": "{{ host }} {{ path }}",
-                            "range": true,
-                            "refId": "A"
-                        }
-                    ],
-                    "title": "Outpost requests (per 5 minutes)",
-                    "transparent": true,
-                    "type": "timeseries"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
-                    },
-                    "fieldConfig": {
-                        "defaults": {
-                            "color": {
-                                "mode": "palette-classic"
-                            },
-                            "custom": {
-                                "axisBorderShow": false,
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisLabel": "",
-                                "axisPlacement": "auto",
-                                "barAlignment": 0,
-                                "barWidthFactor": 0.6,
-                                "drawStyle": "line",
-                                "fillOpacity": 0,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "insertNulls": false,
-                                "lineInterpolation": "linear",
-                                "lineWidth": 1,
-                                "pointSize": 5,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "showPoints": "auto",
-                                "showValues": false,
-                                "spanNulls": false,
-                                "stacking": {
-                                    "group": "A",
-                                    "mode": "none"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
-                                }
-                            },
-                            "mappings": [],
-                            "thresholds": {
-                                "mode": "absolute",
-                                "steps": [
-                                    {
-                                        "color": "green",
-                                        "value": 0
-                                    },
-                                    {
-                                        "color": "red",
-                                        "value": 80
-                                    }
-                                ]
-                            }
-                        },
-                        "overrides": []
-                    },
-                    "gridPos": {
-                        "h": 8,
-                        "w": 12,
-                        "x": 12,
-                        "y": 126
+                        "y": 66
                     },
                     "id": 31,
                     "options": {
                         "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": true
+                            "calcs": [
+                                "mean",
+                                "max"
+                            ],
+                            "displayMode": "table",
+                            "placement": "right",
+                            "showLegend": true,
+                            "sortBy": "Max",
+                            "sortDesc": true
                         },
                         "tooltip": {
-                            "hideZeros": false,
-                            "mode": "single",
-                            "sort": "none"
+                            "mode": "multi",
+                            "sort": "desc"
                         }
                     },
-                    "pluginVersion": "12.3.1",
                     "targets": [
                         {
                             "datasource": {
@@ -1118,410 +1843,15 @@
                                 "uid": "${DS_PROMETHEUS}"
                             },
                             "editorMode": "code",
-                            "exemplar": true,
-                            "expr": "sum(rate(authentik_outpost_proxy_upstream_response_duration_seconds_count{namespace=~\"$namespace\", outpost_name=\"$outpost_proxy\"}[$__rate_interval])) by (host)",
-                            "interval": "",
+                            "expr": "sum by (host) (rate(authentik_outpost_proxy_request_duration_seconds_count{namespace=~\"$namespace\", outpost_name=~\"$outpost_proxy\", type!=\"ping\"}[$__rate_interval]))",
                             "legendFormat": "{{ host }}",
                             "range": true,
+                            "instant": false,
                             "refId": "A"
                         }
                     ],
-                    "title": "Outpost upstream requests (per 5 minutes)",
-                    "transparent": true,
+                    "title": "Requests by host",
                     "type": "timeseries"
-                }
-            ],
-            "repeat": "outpost_proxy",
-            "title": "authentik Proxy Outpost $outpost_proxy",
-            "type": "row"
-        },
-        {
-            "collapsed": true,
-            "gridPos": {
-                "h": 1,
-                "w": 24,
-                "x": 0,
-                "y": 31
-            },
-            "id": 25,
-            "panels": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
-                    },
-                    "fieldConfig": {
-                        "defaults": {
-                            "color": {
-                                "mode": "palette-classic"
-                            },
-                            "custom": {
-                                "axisBorderShow": false,
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisLabel": "",
-                                "axisPlacement": "auto",
-                                "barAlignment": 0,
-                                "barWidthFactor": 0.6,
-                                "drawStyle": "line",
-                                "fillOpacity": 0,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "insertNulls": false,
-                                "lineInterpolation": "linear",
-                                "lineWidth": 1,
-                                "pointSize": 5,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "showPoints": "auto",
-                                "showValues": false,
-                                "spanNulls": false,
-                                "stacking": {
-                                    "group": "A",
-                                    "mode": "none"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
-                                }
-                            },
-                            "mappings": [],
-                            "thresholds": {
-                                "mode": "absolute",
-                                "steps": [
-                                    {
-                                        "color": "green",
-                                        "value": 0
-                                    },
-                                    {
-                                        "color": "red",
-                                        "value": 80
-                                    }
-                                ]
-                            }
-                        },
-                        "overrides": []
-                    },
-                    "gridPos": {
-                        "h": 8,
-                        "w": 12,
-                        "x": 0,
-                        "y": 128
-                    },
-                    "id": 27,
-                    "options": {
-                        "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": true
-                        },
-                        "tooltip": {
-                            "hideZeros": false,
-                            "mode": "single",
-                            "sort": "none"
-                        }
-                    },
-                    "pluginVersion": "12.3.1",
-                    "targets": [
-                        {
-                            "datasource": {
-                                "type": "prometheus",
-                                "uid": "${DS_PROMETHEUS}"
-                            },
-                            "exemplar": true,
-                            "expr": "avg by (dn) (rate(authentik_outpost_ldap_requests_bucket{namespace=~\"$namespace\", outpost_name=\"$outpost_ldap\"}[5m]))",
-                            "interval": "",
-                            "legendFormat": "{{ dn }}",
-                            "refId": "A"
-                        }
-                    ],
-                    "title": "LDAP Requests (per 5 minutes)",
-                    "transparent": true,
-                    "type": "timeseries"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
-                    },
-                    "fieldConfig": {
-                        "defaults": {
-                            "color": {
-                                "mode": "palette-classic"
-                            },
-                            "custom": {
-                                "axisBorderShow": false,
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisLabel": "",
-                                "axisPlacement": "auto",
-                                "barAlignment": 0,
-                                "barWidthFactor": 0.6,
-                                "drawStyle": "line",
-                                "fillOpacity": 0,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "insertNulls": false,
-                                "lineInterpolation": "linear",
-                                "lineWidth": 1,
-                                "pointSize": 5,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "showPoints": "auto",
-                                "showValues": false,
-                                "spanNulls": false,
-                                "stacking": {
-                                    "group": "A",
-                                    "mode": "none"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
-                                }
-                            },
-                            "mappings": [],
-                            "thresholds": {
-                                "mode": "absolute",
-                                "steps": [
-                                    {
-                                        "color": "green",
-                                        "value": 0
-                                    },
-                                    {
-                                        "color": "red",
-                                        "value": 80
-                                    }
-                                ]
-                            }
-                        },
-                        "overrides": []
-                    },
-                    "gridPos": {
-                        "h": 8,
-                        "w": 12,
-                        "x": 12,
-                        "y": 128
-                    },
-                    "id": 28,
-                    "options": {
-                        "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": true
-                        },
-                        "tooltip": {
-                            "hideZeros": false,
-                            "mode": "single",
-                            "sort": "none"
-                        }
-                    },
-                    "pluginVersion": "12.3.1",
-                    "targets": [
-                        {
-                            "datasource": {
-                                "type": "prometheus",
-                                "uid": "${DS_PROMETHEUS}"
-                            },
-                            "exemplar": true,
-                            "expr": "avg by (reason) (rate(authentik_outpost_ldap_requests_rejected{namespace=~\"$namespace\", outpost_name=\"$outpost_ldap\"}[5m]))",
-                            "interval": "",
-                            "legendFormat": "{{ reason }}",
-                            "refId": "A"
-                        }
-                    ],
-                    "title": "LDAP Rejected Requests (per 5 minutes)",
-                    "transparent": true,
-                    "type": "timeseries"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
-                    },
-                    "fieldConfig": {
-                        "defaults": {
-                            "color": {
-                                "mode": "palette-classic"
-                            },
-                            "custom": {
-                                "axisBorderShow": false,
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisLabel": "",
-                                "axisPlacement": "auto",
-                                "barAlignment": 0,
-                                "barWidthFactor": 0.6,
-                                "drawStyle": "line",
-                                "fillOpacity": 0,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "insertNulls": false,
-                                "lineInterpolation": "linear",
-                                "lineWidth": 1,
-                                "pointSize": 5,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "showPoints": "auto",
-                                "showValues": false,
-                                "spanNulls": false,
-                                "stacking": {
-                                    "group": "A",
-                                    "mode": "none"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
-                                }
-                            },
-                            "mappings": [],
-                            "thresholds": {
-                                "mode": "absolute",
-                                "steps": [
-                                    {
-                                        "color": "green",
-                                        "value": 0
-                                    },
-                                    {
-                                        "color": "red",
-                                        "value": 80
-                                    }
-                                ]
-                            }
-                        },
-                        "overrides": []
-                    },
-                    "gridPos": {
-                        "h": 8,
-                        "w": 16,
-                        "x": 0,
-                        "y": 136
-                    },
-                    "id": 26,
-                    "options": {
-                        "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": true
-                        },
-                        "tooltip": {
-                            "hideZeros": false,
-                            "mode": "single",
-                            "sort": "none"
-                        }
-                    },
-                    "pluginVersion": "12.3.1",
-                    "targets": [
-                        {
-                            "datasource": {
-                                "type": "prometheus",
-                                "uid": "${DS_PROMETHEUS}"
-                            },
-                            "exemplar": true,
-                            "expr": "avg by (flow) (rate(authentik_outpost_flow_timing_get_bucket{namespace=~\"$namespace\"}[5m]))",
-                            "hide": false,
-                            "interval": "",
-                            "legendFormat": "{{ flow }} GET",
-                            "refId": "A"
-                        },
-                        {
-                            "datasource": {
-                                "type": "prometheus",
-                                "uid": "${DS_PROMETHEUS}"
-                            },
-                            "exemplar": true,
-                            "expr": "avg by (flow) (rate(authentik_outpost_flow_timing_post_bucket{namespace=~\"$namespace\"}[5m]))",
-                            "hide": false,
-                            "interval": "",
-                            "legendFormat": "{{ flow }} POST",
-                            "refId": "B"
-                        }
-                    ],
-                    "title": "FlowExecutor Timings",
-                    "transparent": true,
-                    "type": "timeseries"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
-                    },
-                    "fieldConfig": {
-                        "defaults": {
-                            "color": {
-                                "mode": "palette-classic"
-                            },
-                            "custom": {
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                }
-                            },
-                            "mappings": []
-                        },
-                        "overrides": []
-                    },
-                    "gridPos": {
-                        "h": 8,
-                        "w": 4,
-                        "x": 16,
-                        "y": 136
-                    },
-                    "id": 29,
-                    "options": {
-                        "legend": {
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": true
-                        },
-                        "pieType": "pie",
-                        "reduceOptions": {
-                            "calcs": [
-                                "lastNotNull"
-                            ],
-                            "fields": "",
-                            "values": false
-                        },
-                        "sort": "desc",
-                        "tooltip": {
-                            "hideZeros": false,
-                            "mode": "single",
-                            "sort": "none"
-                        }
-                    },
-                    "pluginVersion": "12.3.1",
-                    "targets": [
-                        {
-                            "datasource": {
-                                "type": "prometheus",
-                                "uid": "${DS_PROMETHEUS}"
-                            },
-                            "exemplar": true,
-                            "expr": "group by (type) (authentik_outpost_ldap_requests_sum)",
-                            "hide": false,
-                            "interval": "",
-                            "legendFormat": "{{ type }}",
-                            "refId": "A"
-                        }
-                    ],
-                    "title": "LDAP Requests by type",
-                    "transparent": true,
-                    "type": "piechart"
                 },
                 {
                     "datasource": {
@@ -1535,231 +1865,18 @@
                                 "mode": "palette-classic"
                             },
                             "custom": {
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                }
-                            },
-                            "mappings": []
-                        },
-                        "overrides": []
-                    },
-                    "gridPos": {
-                        "h": 8,
-                        "w": 4,
-                        "x": 20,
-                        "y": 136
-                    },
-                    "id": 30,
-                    "options": {
-                        "legend": {
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": true
-                        },
-                        "pieType": "pie",
-                        "reduceOptions": {
-                            "calcs": [
-                                "lastNotNull"
-                            ],
-                            "fields": "",
-                            "values": false
-                        },
-                        "sort": "desc",
-                        "tooltip": {
-                            "hideZeros": false,
-                            "mode": "single",
-                            "sort": "none"
-                        }
-                    },
-                    "pluginVersion": "12.3.1",
-                    "targets": [
-                        {
-                            "datasource": {
-                                "type": "prometheus",
-                                "uid": "${DS_PROMETHEUS}"
-                            },
-                            "exemplar": true,
-                            "expr": "group by (reason) (authentik_outpost_ldap_requests_rejected)",
-                            "hide": false,
-                            "interval": "",
-                            "legendFormat": "{{ reason }}",
-                            "refId": "A"
-                        }
-                    ],
-                    "title": "LDAP Rejected Requests by reason",
-                    "transparent": true,
-                    "type": "piechart"
-                }
-            ],
-            "repeat": "outpost_ldap",
-            "title": "authentik LDAP Outpost $outpost_ldap",
-            "type": "row"
-        },
-        {
-            "collapsed": true,
-            "gridPos": {
-                "h": 1,
-                "w": 24,
-                "x": 0,
-                "y": 32
-            },
-            "id": 34,
-            "panels": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
-                    },
-                    "fieldConfig": {
-                        "defaults": {
-                            "color": {
-                                "mode": "palette-classic"
-                            },
-                            "custom": {
-                                "axisBorderShow": false,
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisLabel": "",
-                                "axisPlacement": "auto",
-                                "barAlignment": 0,
-                                "barWidthFactor": 0.6,
                                 "drawStyle": "line",
-                                "fillOpacity": 0,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "insertNulls": false,
-                                "lineInterpolation": "linear",
+                                "fillOpacity": 10,
                                 "lineWidth": 1,
-                                "pointSize": 5,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "showPoints": "auto",
-                                "showValues": false,
-                                "spanNulls": false,
+                                "showPoints": "never",
+                                "spanNulls": true,
                                 "stacking": {
                                     "group": "A",
                                     "mode": "none"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
                                 }
                             },
-                            "mappings": [],
-                            "thresholds": {
-                                "mode": "absolute",
-                                "steps": [
-                                    {
-                                        "color": "green",
-                                        "value": 0
-                                    },
-                                    {
-                                        "color": "red",
-                                        "value": 80
-                                    }
-                                ]
-                            }
-                        },
-                        "overrides": []
-                    },
-                    "gridPos": {
-                        "h": 8,
-                        "w": 12,
-                        "x": 0,
-                        "y": 161
-                    },
-                    "id": 33,
-                    "options": {
-                        "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": true
-                        },
-                        "tooltip": {
-                            "hideZeros": false,
-                            "mode": "single",
-                            "sort": "none"
-                        }
-                    },
-                    "pluginVersion": "12.3.1",
-                    "targets": [
-                        {
-                            "editorMode": "code",
-                            "expr": "authentik_outpost_radius_request_duration_seconds_count{namespace=~\"$namespace\", outpost_name=~\"$outpost_radius\"}",
-                            "legendFormat": "{{app}}",
-                            "range": true,
-                            "refId": "A"
-                        }
-                    ],
-                    "title": "Radius request duration",
-                    "transparent": true,
-                    "type": "timeseries"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
-                    },
-                    "fieldConfig": {
-                        "defaults": {
-                            "color": {
-                                "mode": "palette-classic"
-                            },
-                            "custom": {
-                                "axisBorderShow": false,
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisLabel": "",
-                                "axisPlacement": "auto",
-                                "barAlignment": 0,
-                                "barWidthFactor": 0.6,
-                                "drawStyle": "line",
-                                "fillOpacity": 0,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "insertNulls": false,
-                                "lineInterpolation": "linear",
-                                "lineWidth": 1,
-                                "pointSize": 5,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "showPoints": "auto",
-                                "showValues": false,
-                                "spanNulls": false,
-                                "stacking": {
-                                    "group": "A",
-                                    "mode": "none"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
-                                }
-                            },
-                            "mappings": [],
-                            "thresholds": {
-                                "mode": "absolute",
-                                "steps": [
-                                    {
-                                        "color": "green",
-                                        "value": 0
-                                    },
-                                    {
-                                        "color": "red",
-                                        "value": 80
-                                    }
-                                ]
-                            }
+                            "min": 0,
+                            "unit": "s"
                         },
                         "overrides": []
                     },
@@ -1767,23 +1884,26 @@
                         "h": 8,
                         "w": 12,
                         "x": 12,
-                        "y": 161
+                        "y": 66
                     },
-                    "id": 35,
+                    "id": 32,
                     "options": {
                         "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": true
+                            "calcs": [
+                                "mean",
+                                "max"
+                            ],
+                            "displayMode": "table",
+                            "placement": "right",
+                            "showLegend": true,
+                            "sortBy": "Max",
+                            "sortDesc": true
                         },
                         "tooltip": {
-                            "hideZeros": false,
-                            "mode": "single",
-                            "sort": "none"
+                            "mode": "multi",
+                            "sort": "desc"
                         }
                     },
-                    "pluginVersion": "12.3.1",
                     "targets": [
                         {
                             "datasource": {
@@ -1791,12 +1911,531 @@
                                 "uid": "${DS_PROMETHEUS}"
                             },
                             "editorMode": "code",
-                            "exemplar": true,
-                            "expr": "avg by (flow) (rate(authentik_outpost_flow_timing_get_seconds_count{namespace=~\"$namespace\"}[$__rate_interval]))",
-                            "hide": false,
-                            "interval": "",
+                            "expr": "sum by (upstream_host) (rate(authentik_outpost_proxy_upstream_response_duration_seconds_sum{namespace=~\"$namespace\", outpost_name=~\"$outpost_proxy\"}[$__rate_interval])) / sum by (upstream_host) (rate(authentik_outpost_proxy_upstream_response_duration_seconds_count{namespace=~\"$namespace\", outpost_name=~\"$outpost_proxy\"}[$__rate_interval]))",
+                            "legendFormat": "{{ upstream_host }}",
+                            "range": true,
+                            "instant": false,
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Upstream response time (avg)",
+                    "type": "timeseries"
+                }
+            ],
+            "title": "Proxy outpost $outpost_proxy",
+            "type": "row",
+            "repeat": "outpost_proxy"
+        },
+        {
+            "collapsed": true,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 66
+            },
+            "id": 37,
+            "panels": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "description": "",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "lineWidth": 1,
+                                "showPoints": "never",
+                                "spanNulls": true,
+                                "stacking": {
+                                    "group": "A",
+                                    "mode": "normal"
+                                }
+                            },
+                            "min": 0,
+                            "unit": "reqps"
+                        },
+                        "overrides": []
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 8,
+                        "x": 0,
+                        "y": 67
+                    },
+                    "id": 34,
+                    "options": {
+                        "legend": {
+                            "calcs": [
+                                "mean",
+                                "max"
+                            ],
+                            "displayMode": "table",
+                            "placement": "right",
+                            "showLegend": true,
+                            "sortBy": "Max",
+                            "sortDesc": true
+                        },
+                        "tooltip": {
+                            "mode": "multi",
+                            "sort": "desc"
+                        }
+                    },
+                    "targets": [
+                        {
+                            "datasource": {
+                                "type": "prometheus",
+                                "uid": "${DS_PROMETHEUS}"
+                            },
+                            "editorMode": "code",
+                            "expr": "sum by (type) (rate(authentik_outpost_ldap_request_duration_seconds_count{namespace=~\"$namespace\", outpost_name=~\"$outpost_ldap\"}[$__rate_interval]))",
+                            "legendFormat": "{{ type }}",
+                            "range": true,
+                            "instant": false,
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Requests by type",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "description": "",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "lineWidth": 1,
+                                "showPoints": "never",
+                                "spanNulls": true,
+                                "stacking": {
+                                    "group": "A",
+                                    "mode": "none"
+                                }
+                            },
+                            "min": 0,
+                            "unit": "s"
+                        },
+                        "overrides": []
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 8,
+                        "x": 8,
+                        "y": 67
+                    },
+                    "id": 35,
+                    "options": {
+                        "legend": {
+                            "calcs": [
+                                "mean",
+                                "max"
+                            ],
+                            "displayMode": "table",
+                            "placement": "right",
+                            "showLegend": true,
+                            "sortBy": "Max",
+                            "sortDesc": true
+                        },
+                        "tooltip": {
+                            "mode": "multi",
+                            "sort": "desc"
+                        }
+                    },
+                    "targets": [
+                        {
+                            "datasource": {
+                                "type": "prometheus",
+                                "uid": "${DS_PROMETHEUS}"
+                            },
+                            "editorMode": "code",
+                            "expr": "histogram_quantile(0.95, sum by (le, type) (rate(authentik_outpost_ldap_request_duration_seconds_bucket{namespace=~\"$namespace\", outpost_name=~\"$outpost_ldap\"}[$__rate_interval])))",
+                            "legendFormat": "{{ type }}",
+                            "range": true,
+                            "instant": false,
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Request duration (p95)",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "description": "",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "lineWidth": 1,
+                                "showPoints": "never",
+                                "spanNulls": true,
+                                "stacking": {
+                                    "group": "A",
+                                    "mode": "none"
+                                }
+                            },
+                            "min": 0,
+                            "unit": "reqps"
+                        },
+                        "overrides": []
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 8,
+                        "x": 16,
+                        "y": 67
+                    },
+                    "id": 36,
+                    "options": {
+                        "legend": {
+                            "calcs": [
+                                "mean",
+                                "max"
+                            ],
+                            "displayMode": "table",
+                            "placement": "right",
+                            "showLegend": true,
+                            "sortBy": "Max",
+                            "sortDesc": true
+                        },
+                        "tooltip": {
+                            "mode": "multi",
+                            "sort": "desc"
+                        }
+                    },
+                    "targets": [
+                        {
+                            "datasource": {
+                                "type": "prometheus",
+                                "uid": "${DS_PROMETHEUS}"
+                            },
+                            "editorMode": "code",
+                            "expr": "sum by (type, reason) (rate(authentik_outpost_ldap_requests_rejected_total{namespace=~\"$namespace\", outpost_name=~\"$outpost_ldap\"}[$__rate_interval]))",
+                            "legendFormat": "{{ type }}: {{ reason }}",
+                            "range": true,
+                            "instant": false,
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Rejected requests",
+                    "type": "timeseries"
+                }
+            ],
+            "title": "LDAP outpost $outpost_ldap",
+            "type": "row",
+            "repeat": "outpost_ldap"
+        },
+        {
+            "collapsed": true,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 67
+            },
+            "id": 41,
+            "panels": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "description": "",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "lineWidth": 1,
+                                "showPoints": "never",
+                                "spanNulls": true,
+                                "stacking": {
+                                    "group": "A",
+                                    "mode": "normal"
+                                }
+                            },
+                            "min": 0,
+                            "unit": "reqps"
+                        },
+                        "overrides": []
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 8,
+                        "x": 0,
+                        "y": 68
+                    },
+                    "id": 38,
+                    "options": {
+                        "legend": {
+                            "calcs": [
+                                "mean",
+                                "max"
+                            ],
+                            "displayMode": "table",
+                            "placement": "right",
+                            "showLegend": true,
+                            "sortBy": "Max",
+                            "sortDesc": true
+                        },
+                        "tooltip": {
+                            "mode": "multi",
+                            "sort": "desc"
+                        }
+                    },
+                    "targets": [
+                        {
+                            "datasource": {
+                                "type": "prometheus",
+                                "uid": "${DS_PROMETHEUS}"
+                            },
+                            "editorMode": "code",
+                            "expr": "sum by (app) (rate(authentik_outpost_radius_request_duration_seconds_count{namespace=~\"$namespace\", outpost_name=~\"$outpost_radius\"}[$__rate_interval]))",
+                            "legendFormat": "{{ app }}",
+                            "range": true,
+                            "instant": false,
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Requests by application",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "description": "",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "lineWidth": 1,
+                                "showPoints": "never",
+                                "spanNulls": true,
+                                "stacking": {
+                                    "group": "A",
+                                    "mode": "none"
+                                }
+                            },
+                            "min": 0,
+                            "unit": "s"
+                        },
+                        "overrides": []
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 8,
+                        "x": 8,
+                        "y": 68
+                    },
+                    "id": 39,
+                    "options": {
+                        "legend": {
+                            "calcs": [
+                                "mean",
+                                "max"
+                            ],
+                            "displayMode": "table",
+                            "placement": "right",
+                            "showLegend": true,
+                            "sortBy": "Max",
+                            "sortDesc": true
+                        },
+                        "tooltip": {
+                            "mode": "multi",
+                            "sort": "desc"
+                        }
+                    },
+                    "targets": [
+                        {
+                            "datasource": {
+                                "type": "prometheus",
+                                "uid": "${DS_PROMETHEUS}"
+                            },
+                            "editorMode": "code",
+                            "expr": "histogram_quantile(0.95, sum by (le, app) (rate(authentik_outpost_radius_request_duration_seconds_bucket{namespace=~\"$namespace\", outpost_name=~\"$outpost_radius\"}[$__rate_interval])))",
+                            "legendFormat": "{{ app }}",
+                            "range": true,
+                            "instant": false,
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Request duration (p95)",
+                    "type": "timeseries"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "description": "",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "lineWidth": 1,
+                                "showPoints": "never",
+                                "spanNulls": true,
+                                "stacking": {
+                                    "group": "A",
+                                    "mode": "none"
+                                }
+                            },
+                            "min": 0,
+                            "unit": "reqps"
+                        },
+                        "overrides": []
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 8,
+                        "x": 16,
+                        "y": 68
+                    },
+                    "id": 40,
+                    "options": {
+                        "legend": {
+                            "calcs": [
+                                "mean",
+                                "max"
+                            ],
+                            "displayMode": "table",
+                            "placement": "right",
+                            "showLegend": true,
+                            "sortBy": "Max",
+                            "sortDesc": true
+                        },
+                        "tooltip": {
+                            "mode": "multi",
+                            "sort": "desc"
+                        }
+                    },
+                    "targets": [
+                        {
+                            "datasource": {
+                                "type": "prometheus",
+                                "uid": "${DS_PROMETHEUS}"
+                            },
+                            "editorMode": "code",
+                            "expr": "sum by (app, reason) (rate(authentik_outpost_radius_requests_rejected_total{namespace=~\"$namespace\", outpost_name=~\"$outpost_radius\"}[$__rate_interval]))",
+                            "legendFormat": "{{ app }}: {{ reason }}",
+                            "range": true,
+                            "instant": false,
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "Rejected requests",
+                    "type": "timeseries"
+                }
+            ],
+            "title": "RADIUS outpost $outpost_radius",
+            "type": "row",
+            "repeat": "outpost_radius"
+        },
+        {
+            "collapsed": true,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 68
+            },
+            "id": 43,
+            "panels": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${DS_PROMETHEUS}"
+                    },
+                    "description": "Time LDAP and RADIUS outposts spend executing authentication flows against authentik.",
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "palette-classic"
+                            },
+                            "custom": {
+                                "drawStyle": "line",
+                                "fillOpacity": 10,
+                                "lineWidth": 1,
+                                "showPoints": "never",
+                                "spanNulls": true,
+                                "stacking": {
+                                    "group": "A",
+                                    "mode": "none"
+                                }
+                            },
+                            "min": 0,
+                            "unit": "s"
+                        },
+                        "overrides": []
+                    },
+                    "gridPos": {
+                        "h": 8,
+                        "w": 24,
+                        "x": 0,
+                        "y": 69
+                    },
+                    "id": 42,
+                    "options": {
+                        "legend": {
+                            "calcs": [
+                                "mean",
+                                "max"
+                            ],
+                            "displayMode": "table",
+                            "placement": "right",
+                            "showLegend": true,
+                            "sortBy": "Max",
+                            "sortDesc": true
+                        },
+                        "tooltip": {
+                            "mode": "multi",
+                            "sort": "desc"
+                        }
+                    },
+                    "targets": [
+                        {
+                            "datasource": {
+                                "type": "prometheus",
+                                "uid": "${DS_PROMETHEUS}"
+                            },
+                            "editorMode": "code",
+                            "expr": "histogram_quantile(0.95, sum by (le, flow) (rate(authentik_outpost_flow_timing_get_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))",
                             "legendFormat": "{{ flow }} GET",
                             "range": true,
+                            "instant": false,
                             "refId": "A"
                         },
                         {
@@ -1805,27 +2444,22 @@
                                 "uid": "${DS_PROMETHEUS}"
                             },
                             "editorMode": "code",
-                            "exemplar": true,
-                            "expr": "avg by (flow) (rate(authentik_outpost_flow_timing_post_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval]))",
-                            "hide": false,
-                            "interval": "",
+                            "expr": "histogram_quantile(0.95, sum by (le, flow) (rate(authentik_outpost_flow_timing_post_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))",
                             "legendFormat": "{{ flow }} POST",
                             "range": true,
+                            "instant": false,
                             "refId": "B"
                         }
                     ],
-                    "title": "FlowExecutor Timings",
-                    "transparent": true,
+                    "title": "Flow executor time (p95)",
                     "type": "timeseries"
                 }
             ],
-            "repeat": "outpost_radius",
-            "title": "authentik Radius Outpost $outpost_radius",
+            "title": "Outpost flow executor",
             "type": "row"
         }
     ],
-    "preload": false,
-    "refresh": "",
+    "refresh": "1m",
     "schemaVersion": 42,
     "tags": [
         "authentik"
@@ -1833,55 +2467,40 @@
     "templating": {
         "list": [
             {
+                "current": {},
+                "hide": 0,
+                "includeAll": false,
+                "label": "Datasource",
+                "name": "DS_PROMETHEUS",
+                "options": [],
+                "query": "prometheus",
+                "refresh": 1,
+                "regex": "",
+                "type": "datasource"
+            },
+            {
                 "current": {
-                    "text": [
-                        "authentik"
-                    ],
-                    "value": [
-                        "authentik"
-                    ]
+                    "text": "All",
+                    "value": "$__all"
                 },
                 "datasource": {
                     "type": "prometheus",
                     "uid": "${DS_PROMETHEUS}"
                 },
-                "definition": "authentik_outpost_connection",
+                "definition": "label_values(authentik_tasks_workers,namespace)",
                 "includeAll": true,
                 "label": "Namespace",
                 "multi": true,
                 "name": "namespace",
                 "options": [],
                 "query": {
-                    "query": "authentik_outpost_connection",
-                    "refId": "StandardVariableQuery"
+                    "qryType": 1,
+                    "query": "label_values(authentik_tasks_workers,namespace)",
+                    "refId": "PrometheusVariableQueryEditor-VariableQuery"
                 },
-                "refresh": 1,
-                "regex": "/.*namespace=\"([^\"]*).*/",
-                "type": "query"
-            },
-            {
-                "current": {
-                    "text": "All",
-                    "value": [
-                        "$__all"
-                    ]
-                },
-                "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                },
-                "definition": "authentik_outpost_info{outpost_type=\"proxy\"}",
-                "includeAll": true,
-                "label": "Outposts (Proxy)",
-                "multi": true,
-                "name": "outpost_proxy",
-                "options": [],
-                "query": {
-                    "query": "authentik_outpost_info{outpost_type=\"proxy\"}",
-                    "refId": "StandardVariableQuery"
-                },
-                "refresh": 1,
-                "regex": "/.*outpost_name=\"([^\"]*).*/",
+                "refresh": 2,
+                "regex": "",
+                "sort": 1,
                 "type": "query"
             },
             {
@@ -1893,61 +2512,71 @@
                     "type": "prometheus",
                     "uid": "${DS_PROMETHEUS}"
                 },
-                "definition": "authentik_outpost_info{outpost_type=\"ldap\"}",
+                "definition": "label_values(authentik_outpost_info{namespace=~\"$namespace\", outpost_type=\"proxy\"},outpost_name)",
+                "includeAll": true,
+                "label": "Outposts (Proxy)",
+                "multi": true,
+                "name": "outpost_proxy",
+                "options": [],
+                "query": {
+                    "qryType": 1,
+                    "query": "label_values(authentik_outpost_info{namespace=~\"$namespace\", outpost_type=\"proxy\"},outpost_name)",
+                    "refId": "PrometheusVariableQueryEditor-VariableQuery"
+                },
+                "refresh": 2,
+                "regex": "",
+                "sort": 1,
+                "type": "query"
+            },
+            {
+                "current": {
+                    "text": "All",
+                    "value": "$__all"
+                },
+                "datasource": {
+                    "type": "prometheus",
+                    "uid": "${DS_PROMETHEUS}"
+                },
+                "definition": "label_values(authentik_outpost_info{namespace=~\"$namespace\", outpost_type=\"ldap\"},outpost_name)",
                 "includeAll": true,
                 "label": "Outposts (LDAP)",
                 "multi": true,
                 "name": "outpost_ldap",
                 "options": [],
                 "query": {
-                    "query": "authentik_outpost_info{outpost_type=\"ldap\"}",
-                    "refId": "StandardVariableQuery"
+                    "qryType": 1,
+                    "query": "label_values(authentik_outpost_info{namespace=~\"$namespace\", outpost_type=\"ldap\"},outpost_name)",
+                    "refId": "PrometheusVariableQueryEditor-VariableQuery"
                 },
-                "refresh": 1,
-                "regex": "/.*outpost_name=\"([^\"]*).*/",
+                "refresh": 2,
+                "regex": "",
+                "sort": 1,
                 "type": "query"
             },
             {
                 "current": {
                     "text": "All",
-                    "value": [
-                        "$__all"
-                    ]
+                    "value": "$__all"
                 },
                 "datasource": {
                     "type": "prometheus",
                     "uid": "${DS_PROMETHEUS}"
                 },
-                "definition": "authentik_outpost_info{outpost_type=\"radius\"}",
+                "definition": "label_values(authentik_outpost_info{namespace=~\"$namespace\", outpost_type=\"radius\"},outpost_name)",
                 "includeAll": true,
-                "label": "Outposts (Radius)",
+                "label": "Outposts (RADIUS)",
                 "multi": true,
                 "name": "outpost_radius",
                 "options": [],
                 "query": {
-                    "qryType": 4,
-                    "query": "authentik_outpost_info{outpost_type=\"radius\"}",
+                    "qryType": 1,
+                    "query": "label_values(authentik_outpost_info{namespace=~\"$namespace\", outpost_type=\"radius\"},outpost_name)",
                     "refId": "PrometheusVariableQueryEditor-VariableQuery"
                 },
-                "refresh": 1,
-                "regex": "/.*outpost_name=\"([^\"]*).*/",
-                "type": "query"
-            },
-            {
-                "current": {
-                    "selected": false,
-                    "text": "Prometheus",
-                    "value": "Prometheus"
-                },
-                "hide": 2,
-                "includeAll": false,
-                "label": "Datasource",
-                "name": "DS_PROMETHEUS",
-                "options": [],
-                "query": "prometheus",
-                "refresh": 1,
+                "refresh": 2,
                 "regex": "",
-                "type": "datasource"
+                "sort": 1,
+                "type": "query"
             }
         ]
     },
@@ -1959,5 +2588,5 @@
     "timezone": "",
     "title": "authentik",
     "uid": "authentik",
-    "version": 69
+    "version": 70
 }
