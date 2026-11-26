@@ -25,6 +25,6 @@
         // Note that references are in the order we want them to be built.
         // TODO: Left blank until TypeScript workspaces are complete.
         { "path": "./scripts/node" },
-        { "path": "./dev-mcp" }
+        { "path": "./dev" }
     ]
 }

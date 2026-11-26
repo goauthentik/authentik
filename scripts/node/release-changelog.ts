@@ -22,10 +22,9 @@ import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { parseArgs, promisify } from "node:util";
 
-import { reportAndExit } from "./utils/commands.ts";
-import { resolveRepoRoot } from "./utils/git.ts";
-import { compareVersions } from "./utils/node.ts";
-
+import { reportAndExit } from "#dev/lib/commands";
+import { resolveRepoRoot } from "#dev/lib/git";
+import { compareVersions } from "#dev/lib/packages";
 import { ConsoleLogger } from "#logger";
 
 import type { List, ListItem, Nodes, PhrasingContent } from "mdast";

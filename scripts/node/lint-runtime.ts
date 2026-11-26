@@ -8,9 +8,9 @@
 import * as assert from "node:assert/strict";
 import { parseArgs } from "node:util";
 
-import { parseCWD, reportAndExit } from "./utils/commands.ts";
-import { resolveRepoRoot } from "./utils/git.ts";
-import type { PackageJSON } from "./utils/node.ts";
+import { parseCWD, reportAndExit } from "#dev/lib/commands";
+import { resolveRepoRoot } from "#dev/lib/git";
+import type { PackageJSON } from "#dev/lib/packages";
 import {
     findNPMPackage,
     formatPackageManager,
@@ -20,8 +20,7 @@ import {
     pnpm,
     resolvePackageManagerHash,
     satisfiesRange,
-} from "./utils/node.ts";
-
+} from "#dev/lib/packages";
 import { ConsoleLogger } from "#logger";
 
 const logger = ConsoleLogger.prefix("lint-runtime");

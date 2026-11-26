@@ -5,5 +5,9 @@
     // import points `types` at. Its `default` stays a relative path so the scripts
     // still resolve before `pnpm install` has run.
     "references": [{ "path": "../../packages/logger-js" }],
+    "compilerOptions": {
+        // The scripts import their helpers from dev/lib through #dev/*.
+        "rootDir": "../.."
+    },
     "include": ["**/*.ts"]
 }

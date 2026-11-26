@@ -20,9 +20,8 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-import { reportAndExit } from "./utils/commands.ts";
-import { resolveRepoRoot } from "./utils/git.ts";
-
+import { reportAndExit } from "#dev/lib/commands";
+import { resolveRepoRoot } from "#dev/lib/git";
 import { ConsoleLogger } from "#logger";
 
 import { parse as parseYAML } from "yaml";

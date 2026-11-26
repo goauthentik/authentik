@@ -8,25 +8,25 @@
             "types": "./packages/logger-js/out/lib/node.d.ts",
             "default": "./packages/logger-js/lib/node.ts"
         },
-        "#dev-mcp/*": "./dev-mcp/lib/*.ts",
-        "#scripts/*": "./scripts/node/*.ts"
+        "#dev-mcp/*": "./dev/mcp/lib/*.ts",
+        "#dev/*": "./dev/*.ts"
     },
     "scripts": {
         "build:lint-config": "pnpm --filter @goauthentik/oxlint-config --filter @goauthentik/oxfmt-config run build",
         "build:types": "tsc -b",
         "check": "run-s lint:check format:check build:types test:dev-mcp lint:runtime lint:catalogs lint:spellcheck check:workspaces",
         "check:workspaces": "pnpm -r run check",
-        "dev-mcp": "node dev-mcp/main.ts",
+        "dev-mcp": "node dev/mcp/main.ts",
         "fix": "run-s lint format fix:workspaces",
         "fix:workspaces": "pnpm -r run fix",
-        "format": "oxfmt --write scripts/node dev-mcp *.config.ts *.json *.jsonc",
-        "format:check": "oxfmt --check scripts/node dev-mcp *.config.ts *.json *.jsonc",
-        "lint": "oxlint --fix scripts/node dev-mcp *.config.ts *.json *.jsonc",
+        "format": "oxfmt --write scripts/node dev *.config.ts *.json *.jsonc",
+        "format:check": "oxfmt --check scripts/node dev *.config.ts *.json *.jsonc",
+        "lint": "oxlint --fix scripts/node dev *.config.ts *.json *.jsonc",
         "lint:catalogs": "node ./scripts/node/lint-catalogs.ts",
-        "lint:check": "oxlint --max-warnings=0 scripts/node dev-mcp *.config.ts *.json *.jsonc",
+        "lint:check": "oxlint --max-warnings=0 scripts/node dev *.config.ts *.json *.jsonc",
         "lint:runtime": "node ./scripts/node/lint-runtime.ts",
         "lint:spellcheck": "cspell . --config cspell.config.jsonc --no-progress",
-        "test:dev-mcp": "vitest run --config dev-mcp/vite.config.ts"
+        "test:dev-mcp": "vitest run --config dev/mcp/vite.config.ts"
     },
     "dependencies": {
         "@goauthentik/docusaurus-config": "workspace:*",

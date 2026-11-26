@@ -160,13 +160,13 @@ dev-create-db:
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the authentik PostgreSQL instance to a "fresh install" state.
 
 dev-status:  ## Show how this machine runs Postgres and containers, and whether the dev MCP database guard passes
-	node dev-mcp/main.ts status
+	node dev/mcp/main.ts status
 
 check-gen:  ## Check migrations, schemas, locales and API clients are up to date, like CI's test-gen (`json=1` for JSON)
-	node dev-mcp/main.ts check-gen $(if $(json),--json)
+	node dev/mcp/main.ts check-gen $(if $(json),--json)
 
 lint-changed:  ## Run the CI lint jobs that cover files changed since origin/main (`fix=1` applies fixes, `json=1` for JSON)
-	node dev-mcp/main.ts lint-changed $(if $(json),--json) $(if $(fix),--fix)
+	node dev/mcp/main.ts lint-changed $(if $(json),--json) $(if $(fix),--fix)
 
 make-migrations:  ## Create Django migrations for model changes (pgtrigger-aware)
 	$(UV) run ak makemigrations

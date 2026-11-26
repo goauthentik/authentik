@@ -1,6 +1,6 @@
 # Codex only uses project MCP servers in trusted projects.
 # authentik-dev holds no credentials and only touches a local dev database;
-# dev-mcp/lib/guard/ decides what counts as one.
+# dev/mcp/lib/guard/ decides what counts as one.
 [mcp_servers.authentik-dev]
 command = "node"
-args = ["dev-mcp/main.ts", "serve"]
+args = ["dev/mcp/main.ts", "serve"]

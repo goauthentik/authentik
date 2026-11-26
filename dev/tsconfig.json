@@ -1,0 +1,7 @@
+// TypeScript Project Configuration
+{
+    "extends": "@goauthentik/tsconfig/node",
+    // lib/commands.ts imports #logger, whose types are the logger's built declarations.
+    "references": [{ "path": "../packages/logger-js" }],
+    "include": ["**/*.ts"]
+}
