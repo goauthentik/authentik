@@ -4,6 +4,7 @@
  */
 
 import { consolePaddingRule } from "./console-padding-plugin.js";
+import { iframeSandboxRule } from "./iframe-sandbox-plugin.js";
 import { multilineStatementPaddingRule } from "./multiline-statement-plugin.js";
 import { paddingRule } from "./padding-plugin.js";
 import type { Plugin } from "./plugin-types.js";
@@ -14,6 +15,7 @@ const authentikPlugin: Plugin = {
         "padding-lines": paddingRule,
         "console-padding": consolePaddingRule,
         "multiline-statement-padding": multilineStatementPaddingRule,
+        "iframe-sandbox": iframeSandboxRule,
     },
 };
 

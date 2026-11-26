@@ -4,7 +4,7 @@
  *   oxlint's JS-plugin host is ESLint v9-compatible, so it loads these ESLint plugins directly via
  *   `jsPlugins` — authentik consumes them unmodified rather than re-implementing the rules. The
  *   enabled set mirrors each plugin's `flat/recommended` config, which is the exact set the former
- *   `@goauthentik/eslint-config` applied.
+ *   `@goauthentik/eslint-config` applied. authentik's own lit-html rules switch on with them.
  */
 
 /** A `jsPlugins` entry aliasing an ESLint plugin so its rules resolve under a short namespace. */
@@ -40,4 +40,9 @@ export const WebComponentRules: Record<string, string> = {
     "lit/no-invalid-html": "error",
     "lit/no-legacy-template-syntax": "error",
     "lit/no-property-change-update": "error",
+};
+
+/** authentik's own lit-html template rules, from the bundled `goauthentik` plugin. */
+export const LitTemplateRules: Record<string, string> = {
+    "goauthentik/iframe-sandbox": "error",
 };

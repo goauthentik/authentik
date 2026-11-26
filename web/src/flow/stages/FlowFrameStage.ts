@@ -24,6 +24,9 @@ export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResp
             return nothing;
         }
 
+        // The frame loads authentik's own device verification views from this origin. They need the
+        // session, and they run a script that tells the flow to continue.
+        /* oxlint-disable goauthentik/iframe-sandbox */
         return html`<ak-flow-card .challenge=${this.challenge}>
             ${
                 this.challenge.loadingOverlay
@@ -41,6 +44,7 @@ export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResp
                 src=${this.challenge.url}
             ></iframe>
         </ak-flow-card>`;
+        /* oxlint-enable goauthentik/iframe-sandbox */
     }
 }
 

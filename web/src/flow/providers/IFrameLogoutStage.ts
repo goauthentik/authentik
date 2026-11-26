@@ -139,6 +139,8 @@ export class IFrameLogoutStage extends BaseStage<
     }
 
     protected createLogoutIframe(logoutData: LogoutURL, index: number): void {
+        // The logout URLs come from provider settings and load on each provider's own origin.
+        // oxlint-disable-next-line goauthentik/iframe-sandbox
         const iframe = document.createElement("iframe");
         iframe.style.display = "none";
         iframe.name = `saml-logout-${index}`;
