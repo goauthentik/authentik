@@ -669,7 +669,7 @@ class _PostgresConsumer(Consumer):
                     mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
                     result_expiry__lte=timezone.now(),
                 ),
-                order_by="result_expiry",
+                order_by="mtime",
             )
         except Error:
             self.logger.warning(
