@@ -91,10 +91,26 @@ func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResu
 			sb.log.Error("user flags not set after bind")
 			return result, err
 		}
+		if flags.Session == nil {
+			sb.log.WithField("bindDN", req.BindDN).Debug("session cookie not set after bind, skipping bind cache")
+			return result, err
+		}
+		if flags.Session.Expires.IsZero() {
+			sb.log.WithField("bindDN", req.BindDN).Warning("session cookie has no expiry (session_duration=0), skipping bind cache")
+			return result, err
+		}
+		// ttlcache/v3 treats any TTL <= 0 as never expiring, so never cache
+		// an already-expired session (for example stale flags kept across a
+		// failed bind after the previous session lapsed).
+		ttl := time.Until(flags.Session.Expires)
+		if ttl <= 0 {
+			sb.log.WithField("bindDN", req.BindDN).Debug("session already expired, skipping bind cache")
+			return result, err
+		}
 		sb.sessions.Set(Credentials{
 			DN:       req.BindDN,
 			Password: req.Password,
-		}, result, time.Until(flags.Session.Expires))
+		}, result, ttl)
 	}
 	return result, err
 }
