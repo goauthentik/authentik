@@ -237,7 +237,7 @@ class StreamEvent(InternallyManagedMixin, CreatedUpdatedModel, ExpiringModel):
     def __str__(self):
         return f"Stream event {self.type}"
 
-    class Meta:
+    class Meta(ExpiringModel.Meta):
         verbose_name = _("SSF Stream Event")
         verbose_name_plural = _("SSF Stream Events")
         ordering = ("-created",)

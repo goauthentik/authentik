@@ -39,7 +39,7 @@ class ProxySession(InternallyManagedMixin, ExpiringModel):
     class Meta:
         verbose_name = _("Proxy Session")
         verbose_name_plural = _("Proxy Sessions")
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["user_id"]),
         ]
 

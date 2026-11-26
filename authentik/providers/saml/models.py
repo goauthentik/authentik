@@ -413,7 +413,7 @@ class SAMLSession(InternallyManagedMixin, SerializerModel, ExpiringModel):
         verbose_name = _("SAML Session")
         verbose_name_plural = _("SAML Sessions")
         unique_together = [("session_index", "provider")]
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["session_index"]),
             models.Index(fields=["provider", "user"]),
             models.Index(fields=["session"]),
