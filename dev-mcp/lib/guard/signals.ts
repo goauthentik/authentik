@@ -45,6 +45,7 @@ const isUndefinedTable = (error: unknown) => (error as { code?: string }).code =
 async function count(client: Client, sql: string): Promise<number | null> {
     try {
         const res = await client.query<{ count: string }>(sql);
+
         return Number(res.rows[0]?.count ?? 0);
     } catch (error) {
         if (isUndefinedTable(error)) return null;
@@ -58,6 +59,7 @@ async function licenseKeys(client: Client): Promise<string[] | null> {
         const res = await client.query<{ key: string }>(
             "SELECT key FROM authentik_enterprise_license",
         );
+
         return res.rows.map((r) => r.key);
     } catch (error) {
         if (isUndefinedTable(error)) return null;
@@ -77,22 +79,28 @@ export function licenseSignal(
     if (!keys?.length) return { tripped: false, detail: "no enterprise license installed" };
     const checks = keys.map((key) => verifyLicense(key, root));
     const dev = checks.filter(isDevTestLicense).length;
+
     if (dev === keys.length) {
         return {
             tripped: false,
             detail: `${keys.length} enterprise license(s), all verified dev_test licenses`,
         };
     }
+
     const unverified = checks
         .map((c) => (c.verified ? null : c.reason))
         .filter((r): r is string => r !== null);
+
     let detail = `${keys.length} enterprise license(s), ${keys.length - dev} without a verified dev_test claim`;
+
     if (unverified.length) detail += ` (${[...new Set(unverified)].join("; ")})`;
+
     return { tripped: true, detail };
 }
 
 export async function databaseChecks(env: Environment): Promise<Check[]> {
     const pg = await import("pg").catch(missing);
+
     if (!pg) {
         return [
             {
@@ -102,8 +110,10 @@ export async function databaseChecks(env: Environment): Promise<Check[]> {
             },
         ];
     }
+
     const { config } = env;
     const ignored = new Set(allowEntry(env)?.ignore_signals ?? []);
+
     const client = new pg.default.Client({
         host: String(config.pgHost.value),
         port: Number(config.pgPort.value),
@@ -113,6 +123,7 @@ export async function databaseChecks(env: Environment): Promise<Check[]> {
         connectionTimeoutMillis: 3_000,
         options: "-c default_transaction_read_only=on",
     });
+
     try {
         await client.connect();
     } catch (error) {
@@ -125,11 +136,13 @@ export async function databaseChecks(env: Environment): Promise<Check[]> {
             },
         ];
     }
+
     try {
         // One connection runs one query at a time.
         const license = licenseSignal(await licenseKeys(client));
         const users = await count(client, SIGNAL_SQL.users);
         const logins = await count(client, SIGNAL_SQL.external_logins);
+
         const signal = (name: string, tripped: boolean, detail: string): Check =>
             tripped && ignored.has(name)
                 ? {
@@ -145,6 +158,7 @@ export async function databaseChecks(env: Environment): Promise<Check[]> {
                           `If this is a dev database, add \`ignore_signals: [${name}]\` to its ` +
                           "`dev_mcp.allowed_databases` entry.",
                   };
+
         return [
             { name: "reachable", ok: true, detail: "connected read-only" },
             signal("license", license.tripped, license.detail),

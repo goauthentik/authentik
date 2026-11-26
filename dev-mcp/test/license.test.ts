@@ -28,6 +28,7 @@ function der(pem: string): string {
 
 function makeCA(name: string, issuer?: string): void {
     openssl("ecparam", "-name", "secp384r1", "-genkey", "-noout", "-out", `${name}.key`);
+
     if (!issuer) {
         openssl(
             "req",
@@ -46,13 +47,17 @@ function makeCA(name: string, issuer?: string): void {
             "-addext",
             "keyUsage=critical,keyCertSign",
         );
+
         return;
     }
+
     writeFileSync(
         join(dir, `${name}.ext`),
         "basicConstraints=critical,CA:TRUE\nkeyUsage=critical,keyCertSign,digitalSignature\n",
     );
+
     openssl("req", "-new", "-key", `${name}.key`, "-subj", `/CN=${name}`, "-out", `${name}.csr`);
+
     openssl(
         "x509",
         "-req",
@@ -75,10 +80,12 @@ function makeCA(name: string, issuer?: string): void {
 function license(claims: Record<string, unknown>, x5c = chain): string {
     const encode = (v: object) => Buffer.from(JSON.stringify(v)).toString("base64url");
     const input = `${encode({ alg: "ES512", typ: "JWT", x5c })}.${encode(claims)}`;
+
     const signature = sign("sha512", Buffer.from(input), {
         key: createPrivateKey(leafKey),
         dsaEncoding: "ieee-p1363",
     });
+
     return `${input}.${signature.toString("base64url")}`;
 }
 

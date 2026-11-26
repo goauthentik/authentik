@@ -22,16 +22,20 @@ export function registerStatus(server: McpServer, startup: Verdict): void {
         },
         async () => {
             const { env, verdict } = await inspect();
+
             const notes = verdict.allowlistChanged
                 ? ["The database allowlist changed since the last run. Check that change."]
                 : [];
+
             for (const [name, found] of Object.entries(env?.languageServers ?? {})) {
                 if (found !== null) continue;
+
                 notes.push(
                     `Optional: ${name} isn't on PATH, so editors and Claude Code's LSP plugins ` +
                         `can't use it. Install: ${LANGUAGE_SERVER_INSTALL[name]}`,
                 );
             }
+
             return reply({
                 repo: ROOT,
                 branch: branch(),

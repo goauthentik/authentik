@@ -37,10 +37,12 @@ type Tree = Record<string, unknown>;
 
 function at(tree: unknown, path: string): unknown {
     let node = tree;
+
     for (const part of path.split(".")) {
         if (node === null || typeof node !== "object") return undefined;
         node = (node as Tree)[part];
     }
+
     return node;
 }
 
@@ -49,6 +51,7 @@ export function configFiles(): string[] {
     const env = process.env.AUTHENTIK_ENV ?? "local";
     const files = [join(ROOT, "authentik/lib/default.yml"), "/etc/authentik/config.yml"];
     files.push(...[".yml", ".env.yml", ".yaml", ".env.yaml"].map((ext) => join(ROOT, env + ext)));
+
     try {
         for (const f of readdirSync("/etc/authentik/config.d")) {
             if (f.endsWith(".yml")) files.push(join("/etc/authentik/config.d", f));
@@ -56,6 +59,7 @@ export function configFiles(): string[] {
     } catch {
         // No config.d.
     }
+
     return files.filter((f) => existsSync(f));
 }
 
@@ -65,9 +69,11 @@ const display = (file: string) =>
 /** Each config file's contents, for attributing values. Empty without the `yaml` package. */
 async function readFiles(files: string[]): Promise<(readonly [string, Tree])[]> {
     const yaml = await import("yaml").catch(missing);
+
     return files.map((file) => {
         try {
             const data: unknown = yaml?.parse(readFileSync(file, "utf8"));
+
             return [file, data && typeof data === "object" ? (data as Tree) : {}] as const;
         } catch {
             return [file, {}] as const;
@@ -84,26 +90,32 @@ export async function loadConfig(): Promise<Config> {
     const result = await python(["-m", "authentik.lib.config"], { timeoutMs: 60_000 });
     let tree: Tree = {};
     let error: string | null = null;
+
     try {
         tree = JSON.parse(result.stdout) as Tree;
     } catch {
         const reason = result.stderr.trim().split("\n").at(-1) ?? "";
         error = `couldn't read authentik's config (exit ${result.code}): ${reason}`;
     }
+
     const parsed = await readFiles(files);
 
     function resolved(path: string, fallback: unknown): ConfigValue {
         const envName = `AUTHENTIK_${path.toUpperCase().replaceAll(".", "__")}`;
         let source = "built-in default";
+
         for (const [file, data] of parsed) {
             if (at(data, path) !== undefined) source = display(file);
         }
+
         if (envName in process.env) source = `$${envName}`;
         const value = at(tree, path);
+
         return { value: value === undefined ? fallback : value, source };
     }
 
     const allowed = at(tree, "dev_mcp.allowed_databases");
+
     return {
         debug: resolved("debug", false),
         pgHost: resolved("postgresql.host", "localhost"),

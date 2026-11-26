@@ -33,12 +33,14 @@ function sessionStart(): void {
         "the authentik-dev MCP tools (akdev_generated after model, serializer or API changes; " +
         "akdev_lint for the whole change), or `make check-gen` and `make lint-changed`. Results " +
         "list what they skipped; repeat that in your summary.";
+
     // The server's own dependency stands in for the whole root install.
     if (!isInstalled("@modelcontextprotocol/server")) {
         context +=
             " Dependencies aren't installed yet, so the authentik-dev MCP server and those " +
             `make targets can't run. ${INSTALL_HINT} Then restart the session.`;
     }
+
     emit("SessionStart", context);
 }
 
@@ -48,6 +50,7 @@ function sessionStart(): void {
  */
 function bin(dir: string, tool: string): string | null {
     const path = join(ROOT, dir, "node_modules", ".bin", tool);
+
     return existsSync(path) ? path : null;
 }
 
@@ -56,6 +59,7 @@ const notSpawned = (output: string) => output.includes("Failed to spawn");
 
 async function lintFile(rel: string): Promise<string | null> {
     const commands: { cmd: string[]; cwd: string }[] = [];
+
     if (rel.endsWith(".py")) {
         commands.push(
             { cmd: [...UV_RUN, "ruff", "check", rel], cwd: ROOT },
@@ -64,35 +68,46 @@ async function lintFile(rel: string): Promise<string | null> {
     } else if (rel.startsWith("web/") && /\.(ts|js|css)$/.test(rel)) {
         const oxlint = bin("web", "oxlint");
         const web = join(ROOT, "web");
+
         if (oxlint) commands.push({ cmd: [oxlint, "--max-warnings=0", rel.slice(4)], cwd: web });
     } else if (/^(dev-mcp|scripts\/node)\/.*\.ts$/.test(rel)) {
         const oxlint = bin(".", "oxlint");
+
         if (oxlint) commands.push({ cmd: [oxlint, "--max-warnings=0", rel], cwd: ROOT });
     }
+
     const problems = [];
+
     for (const { cmd, cwd } of commands) {
         const [command, ...args] = cmd;
         const out = await run(command!, args, { cwd, timeoutMs: 60_000 });
+
         if (out.code === 0 || notSpawned(tail(out))) continue;
         problems.push(`$ ${cmd.join(" ").replace(`${ROOT}/`, "")}\n${tail(out, 1500)}`);
     }
+
     return problems.length ? problems.join("\n") : null;
 }
 
 async function postEdit(input: HookInput): Promise<void> {
     const raw = input.tool_input?.file_path;
+
     if (!raw || !existsSync(raw)) return;
     const rel = relative(ROOT, realpathSync(raw));
+
     if (rel.startsWith("..")) return;
     const notes = [];
     const findings = await lintFile(rel);
+
     if (findings) notes.push(`Lint findings in ${rel}:\n${findings}`);
+
     if (rel.startsWith("authentik/") && GENERATED_TRIGGERS.includes(basename(rel))) {
         notes.push(
             "This file can change migrations, schema.yml or the API clients. Run " +
                 "akdev_generated (or `make check-gen`) before reporting the change done.",
         );
     }
+
     if (notes.length) emit("PostToolUse", notes.join("\n\n"));
 }
 
@@ -102,11 +117,15 @@ function stop(input: HookInput): void {
     const session = String(input.session_id ?? "");
     const marker = join(storeDir(), "stop-blocked");
     const blocked = new Set(existsSync(marker) ? readFileSync(marker, "utf8").split("\n") : []);
+
     if (blocked.has(session)) return;
+
     if (!changedFiles().some((p) => p.startsWith("authentik/") && p.endsWith(".py"))) return;
+
     if (loadCurrent("generated")) return;
     blocked.add(session);
     writeFileSync(marker, [...blocked].filter(Boolean).slice(-200).join("\n"));
+
     process.stdout.write(
         `${JSON.stringify({
             decision: "block",
@@ -119,6 +138,7 @@ function stop(input: HookInput): void {
 }
 
 export const HOOKS = { "session-start": sessionStart, "post-edit": postEdit, stop };
+
 export type HookName = keyof typeof HOOKS;
 
 export async function runHook(name: HookName): Promise<number> {
@@ -128,5 +148,6 @@ export async function runHook(name: HookName): Promise<number> {
     } catch {
         // A broken hook must never block a session or an edit.
     }
+
     return 0;
 }

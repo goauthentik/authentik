@@ -101,8 +101,10 @@ const CHERRY_PICK = /cherry-pick (#\d+)/g;
 const EXCLUDED_ENTRY = /^- (ci:|website)/;
 const KEPT_ENTRY = /^- security:|\b(CVE-\d{4}-\d+|GHSA(-[\w]{4}){3})\b/;
 const DEPENDABOT_ENTRY = /^- (revert: )?([^:]+: )?bump (\S+ from \S+ to \S+|the \S+ group)\b/;
+
 const TRANSLATION_ENTRY =
     /^- (translate: Updates for project authentik and language (?<locale>\S+)|core, web: update translations) \(#\d+\)$/;
+
 const PULL_REQUEST_SUFFIX = / \((#\d+)\)$/;
 const DIFF_VERSION_HEADING = /^(#+ authentik \(v )\S+\)/m;
 
@@ -387,6 +389,7 @@ async function main(): Promise<void> {
 
     if (review) {
         process.stdout.write(content);
+
         return;
     }
 

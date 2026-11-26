@@ -29,12 +29,14 @@ export function run(command: string, args: string[], options: RunOptions = {}): 
         let stdout = "";
         let stderr = "";
         let settled = false;
+
         const child = spawn(command, args, {
             cwd,
             // Make targets and scripts shell out to git too, with the same config to ignore.
             env: { ...process.env, ...GIT_ENV, ...env },
             stdio: ["pipe", "pipe", "pipe"],
         });
+
         const timer = setTimeout(() => {
             child.kill("SIGTERM");
             finish({ code: 124, stdout, stderr: `${stderr}\ntimed out after ${timeoutMs}ms` });
@@ -65,11 +67,13 @@ export function which(command: string): boolean {
     for (const dir of (process.env.PATH ?? "").split(delimiter)) {
         try {
             accessSync(join(dir, command), constants.X_OK);
+
             return true;
         } catch {
             // Not in this directory.
         }
     }
+
     return false;
 }
 
@@ -77,8 +81,10 @@ export function which(command: string): boolean {
 export async function version(command: string, args = ["--version"]): Promise<string | null> {
     if (!which(command)) return null;
     const result = await run(command, args, { timeoutMs: 5_000 });
+
     if (result.code !== 0) return null;
     const match = /\d+\.\d+(\.\d+)?/.exec(`${result.stdout}${result.stderr}`);
+
     return match ? match[0] : result.stdout.trim().split("\n")[0] || null;
 }
 
@@ -92,5 +98,6 @@ export const UV_RUN = ["uv", "run", "--frozen", "--no-sync"] as const;
 /** Run Python in the repo's environment, from the repo root. */
 export function python(args: string[], options: RunOptions = {}): Promise<RunResult> {
     const [uv, ...uvArgs] = UV_RUN;
+
     return run(uv, [...uvArgs, "python", ...args], options);
 }

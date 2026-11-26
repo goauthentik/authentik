@@ -19,9 +19,11 @@ export function allowlistChanged(env: Environment): boolean {
     const digest = createHash("sha256")
         .update(JSON.stringify(env.config.allowedDatabases))
         .digest("hex");
+
     const marker = join(storeDir(), "allowlist.sha256");
     const previous = existsSync(marker) ? readFileSync(marker, "utf8").trim() : null;
     writeFileSync(marker, digest);
+
     return previous !== null && previous !== digest;
 }
 
@@ -30,10 +32,15 @@ export function suggestedAllowlist(env: Environment, failed: Check[]): string | 
     const signals = failed
         .filter((c) => c.name.startsWith("signal_"))
         .map((c) => c.name.slice("signal_".length));
+
     const remote = failed.some((c) => c.name === "connection");
+
     if (!signals.length && !remote) return null;
     const lines = ["dev_mcp:", "  allowed_databases:", `    - name: ${env.config.pgName.value}`];
+
     if (remote) lines.push(`      host: ${env.config.pgHost.value}`);
+
     if (signals.length) lines.push(`      ignore_signals: [${signals.join(", ")}]`);
+
     return lines.join("\n");
 }

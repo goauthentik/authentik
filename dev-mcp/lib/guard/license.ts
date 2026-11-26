@@ -23,7 +23,9 @@ export type LicenseCheck =
 
 function decodeJSON(segment: string): Record<string, unknown> {
     const value: unknown = JSON.parse(Buffer.from(segment, "base64url").toString("utf8"));
+
     if (!value || typeof value !== "object") throw new TypeError("not a JSON object");
+
     return value as Record<string, unknown>;
 }
 
@@ -36,11 +38,13 @@ export function verifyLicense(
     root: Buffer = readFileSync(LICENSING_ROOT),
 ): LicenseCheck {
     const parts = jwt.trim().split(".");
+
     if (parts.length !== 3) return { verified: false, reason: "not a JWT" };
     const [headerPart, payloadPart, signaturePart] = parts as [string, string, string];
 
     let header: Record<string, unknown>;
     let claims: Record<string, unknown>;
+
     try {
         header = decodeJSON(headerPart);
         claims = decodeJSON(payloadPart);
@@ -49,17 +53,22 @@ export function verifyLicense(
     }
 
     const hash = ALGORITHMS[String(header.alg)];
+
     if (!hash) return { verified: false, reason: `unexpected algorithm ${String(header.alg)}` };
 
     const x5c = header.x5c;
+
     if (!Array.isArray(x5c) || x5c.length < 2) {
         return { verified: false, reason: "no certificate chain in the header" };
     }
+
     let leaf: X509Certificate;
     let intermediate: X509Certificate;
+
     try {
         leaf = new X509Certificate(Buffer.from(String(x5c[0]), "base64"));
         intermediate = new X509Certificate(Buffer.from(String(x5c[1]), "base64"));
+
         if (!issuedBy(leaf, intermediate) || !issuedBy(intermediate, new X509Certificate(root))) {
             return {
                 verified: false,
@@ -77,6 +86,7 @@ export function verifyLicense(
         { key: leaf.publicKey, dsaEncoding: "ieee-p1363" },
         Buffer.from(signaturePart, "base64url"),
     );
+
     return signed
         ? { verified: true, claims }
         : { verified: false, reason: "signature doesn't verify" };

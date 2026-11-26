@@ -19,14 +19,18 @@ export interface Postgres {
 
 function loopbackAddress(address: string): boolean {
     if (isIP(address) === 4) return address.startsWith("127.");
+
     return address === "::1" || address === "::ffff:127.0.0.1";
 }
 
 export async function isLoopback(host: string): Promise<boolean> {
     if (host === "" || host === "localhost") return true;
+
     if (isIP(host)) return loopbackAddress(host);
+
     try {
         const addresses = await lookup(host, { all: true });
+
         return addresses.length > 0 && addresses.every((a) => loopbackAddress(a.address));
     } catch {
         return false;
@@ -36,6 +40,7 @@ export async function isLoopback(host: string): Promise<boolean> {
 export async function classifyPostgres(cfg: Config): Promise<Postgres> {
     const host = String(cfg.pgHost.value ?? "");
     const port = Number(cfg.pgPort.value);
+
     if (!Number.isInteger(port)) {
         return {
             kind: "unknown",
@@ -44,11 +49,14 @@ export async function classifyPostgres(cfg: Config): Promise<Postgres> {
             detail: `port ${JSON.stringify(cfg.pgPort.value)} isn't a number`,
         };
     }
+
     if (host.startsWith("/")) {
         return { kind: "socket", local: true, container: null, detail: `Unix socket in ${host}` };
     }
+
     if (await isLoopback(host)) {
         const owner = await portOwner(port);
+
         if (owner) {
             return {
                 kind: "container",
@@ -57,6 +65,7 @@ export async function classifyPostgres(cfg: Config): Promise<Postgres> {
                 detail: `port ${port} is published by ${owner}`,
             };
         }
+
         return {
             kind: "local",
             local: true,
@@ -66,6 +75,7 @@ export async function classifyPostgres(cfg: Config): Promise<Postgres> {
                 "(a native service, or a runtime discovery doesn't know)",
         };
     }
+
     return {
         kind: "remote",
         local: false,

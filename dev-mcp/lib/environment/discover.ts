@@ -33,6 +33,7 @@ export const LANGUAGE_SERVER_INSTALL: Record<string, string> = {
 
 export async function discover(): Promise<Environment> {
     const config = await loadConfig();
+
     const [runtime, postgres, psql, createdb, dropdb, uv, node, pnpm, cargo, go, make, tsls, ra] =
         await Promise.all([
             containerRuntime(),
@@ -63,5 +64,6 @@ export async function discover(): Promise<Environment> {
 /** Everything except the database password. */
 export function publicEnvironment(env: Environment): Record<string, unknown> {
     const { password: _password, ...config } = env.config;
+
     return { ...env, config };
 }

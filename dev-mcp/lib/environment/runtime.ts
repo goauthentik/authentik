@@ -20,6 +20,7 @@ let runtimeCache: Promise<Runtime> | null = null;
 
 export function containerRuntime(): Promise<Runtime> {
     runtimeCache ??= detectRuntime();
+
     return runtimeCache;
 }
 
@@ -30,7 +31,9 @@ async function detectRuntime(): Promise<Runtime> {
             run("docker", ["info", "--format", "{{.ID}}"], { timeoutMs: 10_000 }),
             run("docker", ["compose", "version"], { timeoutMs: 5_000 }),
         ]);
+
         const detail = ver.stdout.trim();
+
         return {
             kind: detail.toLowerCase().includes("podman") ? "podman-docker-shim" : "docker",
             running: info.code === 0,
@@ -39,12 +42,14 @@ async function detectRuntime(): Promise<Runtime> {
             detail,
         };
     }
+
     if (which("podman")) {
         const [ver, info, compose] = await Promise.all([
             run("podman", ["--version"], { timeoutMs: 5_000 }),
             run("podman", ["info", "--format", "{{.Host.Arch}}"], { timeoutMs: 10_000 }),
             run("podman", ["compose", "version"], { timeoutMs: 5_000 }),
         ]);
+
         return {
             kind: "podman",
             running: info.code === 0,
@@ -53,6 +58,7 @@ async function detectRuntime(): Promise<Runtime> {
             detail: ver.stdout.trim(),
         };
     }
+
     return {
         kind: "none",
         running: false,
@@ -65,15 +71,21 @@ async function detectRuntime(): Promise<Runtime> {
 /** The running container that publishes `port` on this host, if any. */
 export async function portOwner(port: number): Promise<string | null> {
     const rt = await containerRuntime();
+
     if (!rt.running) return null;
     const binary = rt.kind === "podman" ? "podman" : "docker";
+
     const ps = await run(binary, ["ps", "--format", "{{.Names}}\t{{.Ports}}"], {
         timeoutMs: 10_000,
     });
+
     if (ps.code !== 0) return null;
+
     for (const line of ps.stdout.split("\n")) {
         const [name, ports = ""] = line.split("\t");
+
         if (name && ports.includes(`:${port}->`)) return name;
     }
+
     return null;
 }

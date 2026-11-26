@@ -19,6 +19,7 @@ export const WRITES_TREE: ToolAnnotations = {
 /** A tool result with the same data as text and as structured content. */
 export function reply(data: object) {
     const structured = JSON.parse(JSON.stringify(data)) as Record<string, unknown>;
+
     return {
         content: [{ type: "text" as const, text: JSON.stringify(structured, null, 2) }],
         structuredContent: structured,

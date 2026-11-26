@@ -25,6 +25,7 @@ async function migrations(result: Result, stale: string[]): Promise<void> {
     const out = await python(["-m", "manage", "makemigrations", "--check", "--dry-run"], {
         timeoutMs: DJANGO_TIMEOUT,
     });
+
     if (out.code === 0) {
         result.checked.push("migrations");
     } else if (out.code === 1 && /Migrations for/.test(out.stdout)) {
@@ -42,17 +43,21 @@ function diffLines(before: string, after: string): number {
     const a = before.split("\n");
     const b = after.split("\n");
     let changed = Math.abs(a.length - b.length);
+
     for (let i = 0; i < Math.min(a.length, b.length); i++) if (a[i] !== b[i]) changed++;
+
     return changed;
 }
 
 /** Build both schemas into a temp dir with `build_schema`, then compare with the files. */
 async function schemas(result: Result, stale: string[], write: boolean): Promise<boolean> {
     const dir = mkdtempSync(join(tmpdir(), "akdev-schema-"));
+
     const built = {
         "schema.yml": join(dir, "schema.yml"),
         "blueprints/schema.json": join(dir, "schema.json"),
     };
+
     try {
         const out = await python(
             [
@@ -66,32 +71,41 @@ async function schemas(result: Result, stale: string[], write: boolean): Promise
             ],
             { timeoutMs: DJANGO_TIMEOUT, env: GEN_ENV },
         );
+
         if (out.code !== 0) {
             for (const path of SCHEMA_FILES) {
                 result.unsure(path, `build_schema failed (exit ${out.code}): ${tail(out, 300)}`);
             }
+
             return false;
         }
+
         let anyStale = false;
         const files = [];
         const written = [];
+
         for (const path of SCHEMA_FILES) {
             const next = readFileSync(built[path], "utf8");
             let current = "";
+
             try {
                 current = readFileSync(join(ROOT, path), "utf8");
             } catch {
                 // Missing counts as stale.
             }
+
             result.checked.push(path);
             const isStale = next !== current;
+
             files.push({
                 path,
                 stale: isStale,
                 changedLines: isStale ? diffLines(current, next) : 0,
             });
+
             if (!isStale) continue;
             anyStale = true;
+
             if (write) {
                 copyFileSync(built[path], join(ROOT, path));
                 written.push(path);
@@ -101,7 +115,9 @@ async function schemas(result: Result, stale: string[], write: boolean): Promise
                 result.command("make gen-build");
             }
         }
+
         result.data.schema = { files, written };
+
         return anyStale;
     } finally {
         rmSync(dir, { recursive: true, force: true });
@@ -115,12 +131,15 @@ async function schemas(result: Result, stale: string[], write: boolean): Promise
 async function clients(result: Result, schemaChanged: boolean, base: string): Promise<void> {
     const rt = await containerRuntime();
     const clients = (await genDiffPaths()).filter((p) => p.startsWith("packages/client-"));
+
     for (const client of clients) {
         if (schemaChanged && !changedSinceBase(client, base)) {
             let reason = "schema.yml changed but this client didn't, so it's probably stale";
+
             if (!rt.dockerComposeWorks) {
                 reason += `; regenerating needs a working \`docker compose\` (found: ${rt.kind})`;
             }
+
             result.unsure(client, reason);
             result.command("make gen-clients");
         } else {
@@ -132,6 +151,7 @@ async function clients(result: Result, schemaChanged: boolean, base: string): Pr
 async function locales(result: Result, stale: string[]): Promise<void> {
     const out = await python(["scripts/locales.py", "check"], { timeoutMs: 5 * 60_000 });
     result.checked.push("locales");
+
     if (out.code !== 0) {
         stale.push("locales");
         result.fail();
@@ -146,21 +166,26 @@ export async function checkGenerated(
 ): Promise<Result> {
     const result = new Result("akdev_generated");
     const stale: string[] = [];
+
     // Each starts its own Django process; running them together roughly halves the wait.
     const [, schemaStale] = await Promise.all([
         migrations(result, stale),
         schemas(result, stale, regenerate === "schema"),
         locales(result, stale),
     ]);
+
     await clients(result, schemaStale || changedSinceBase("schema.yml", base), base);
 
     const written = (result.data.schema as { written?: string[] } | undefined)?.written ?? [];
     result.data.stale = stale;
+
     let headline = stale.length
         ? `Stale: ${stale.join(", ")}`
         : "Migrations, schemas and locales are up to date";
+
     if (written.length) headline += `. Regenerated: ${written.join(", ")}`;
     // A schema write changes the tree, so fingerprint after it.
     result.fingerprint = fingerprint();
+
     return result.finish(headline);
 }

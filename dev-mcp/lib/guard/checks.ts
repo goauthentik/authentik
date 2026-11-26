@@ -17,6 +17,7 @@ export interface Check {
 export function allowEntry(env: Environment): AllowEntry | null {
     const host = String(env.config.pgHost.value);
     const name = String(env.config.pgName.value);
+
     return (
         env.config.allowedDatabases.find(
             (e) => String(e.name) === name && (e.host === undefined || String(e.host) === host),
@@ -40,6 +41,7 @@ export function staticChecks(env: Environment, environ = process.env): Check[] {
             fix: "Run `make install` so `uv run` works, then try again.",
         });
     }
+
     checks.push(
         {
             name: "debug",
@@ -70,5 +72,6 @@ export function staticChecks(env: Environment, environ = process.env): Check[] {
                 "from another shell. The server never reads it either way.",
         },
     );
+
     return checks;
 }

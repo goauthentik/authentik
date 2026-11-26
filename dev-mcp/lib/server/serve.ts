@@ -16,12 +16,14 @@ export async function build(verdict?: Verdict): Promise<McpServer> {
         { name: "authentik-dev", version: "0.1.0" },
         { instructions: INSTRUCTIONS },
     );
+
     const startup = verdict ?? (await inspect()).verdict;
 
     registerStatus(server, startup);
     await registerSkills(server);
     registerJob(server);
     registerLint(server);
+
     if (startup.ok) registerGenerated(server);
 
     return server;

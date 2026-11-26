@@ -27,6 +27,7 @@ export function notInstalled(pkg: string): string {
 export function isInstalled(pkg: string): boolean {
     try {
         import.meta.resolve(pkg);
+
         return true;
     } catch {
         return false;

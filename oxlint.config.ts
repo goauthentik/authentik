@@ -6,4 +6,4 @@
 
 import { createOxlintConfig } from "@goauthentik/oxlint-config";
 
-export default createOxlintConfig();
+export default createOxlintConfig({ padding: true });

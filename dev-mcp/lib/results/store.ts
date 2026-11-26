@@ -14,6 +14,7 @@ import type { Result, ResultData } from "#dev-mcp/results/result";
 export function storeDir(...sub: string[]): string {
     const dir = join(gitDir(), "akdev", ...sub);
     mkdirSync(dir, { recursive: true });
+
     return dir;
 }
 
@@ -32,5 +33,6 @@ export function load(name: string): ResultData | null {
 
 export function loadCurrent(name: string): ResultData | null {
     const data = load(name);
+
     return data && data.fingerprint === fingerprint() ? data : null;
 }

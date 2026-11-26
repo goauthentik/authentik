@@ -29,6 +29,7 @@ export async function registerSkills(server: McpServer): Promise<void> {
         async ({ name }) => {
             if (!name) return reply({ skills: await listSkills() });
             const content = readSkill(name);
+
             return reply(
                 content === null
                     ? {

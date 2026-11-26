@@ -25,6 +25,7 @@ export async function findNPMPackage(
 
         try {
             await Promise.all([fs.access(packageJSONPath), fs.access(packageLockPath)]);
+
             return {
                 packageJSONPath,
                 packageLockPath,
@@ -108,6 +109,7 @@ export function compareVersions(a: string, b: string): number {
         const right = pb[i] ?? 0;
 
         if (left > right) return 1;
+
         if (left < right) return -1;
     }
 

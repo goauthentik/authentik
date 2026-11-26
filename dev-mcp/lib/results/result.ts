@@ -56,9 +56,12 @@ export class Result implements ResultData {
     public finish(headline: string): this {
         const parts = [`${headline.replace(/\.$/, "")}.`];
         const list = (items: Item[]) => items.map((i) => `${i.what} (${i.reason})`).join("; ");
+
         if (this.skipped.length) parts.push(`Skipped: ${list(this.skipped)}.`);
+
         if (this.unknown.length) parts.push(`Unknown: ${list(this.unknown)}.`);
         this.summary = parts.join(" ");
+
         return this;
     }
 
@@ -79,9 +82,13 @@ export class Result implements ResultData {
     /** A human summary for terminals and clients without structured output. */
     public toText(): string {
         const lines = [`${this.ok ? "OK" : "FAIL"} [${this.tool}] ${this.summary}`];
+
         for (const i of this.skipped) lines.push(`  skipped: ${i.what}: ${i.reason}`);
+
         for (const i of this.unknown) lines.push(`  unknown: ${i.what}: ${i.reason}`);
+
         for (const c of this.commands) lines.push(`  run: ${c}`);
+
         return lines.join("\n");
     }
 }

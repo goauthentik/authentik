@@ -30,12 +30,15 @@ export function skillNames(): string[] {
 
 export async function listSkills(): Promise<SkillSummary[]> {
     const yaml = await import("yaml").catch(missing);
+
     return skillNames().map((name) => {
         const text = readFileSync(join(SKILLS_DIR, name, "SKILL.md"), "utf8");
         const front = /^---\n([\s\S]*?)\n---/.exec(text)?.[1];
         const meta: unknown = front && yaml ? yaml.parse(front) : {};
+
         const description =
             meta && typeof meta === "object" ? (meta as { description?: unknown }).description : "";
+
         return {
             name,
             description: String(description ?? "")
@@ -48,5 +51,6 @@ export async function listSkills(): Promise<SkillSummary[]> {
 /** A skill's SKILL.md by name. Only names of skill directories; no path traversal. */
 export function readSkill(name: string): string | null {
     if (!/^[a-z0-9-]+$/.test(name) || !skillNames().includes(name)) return null;
+
     return readFileSync(join(SKILLS_DIR, name, "SKILL.md"), "utf8");
 }

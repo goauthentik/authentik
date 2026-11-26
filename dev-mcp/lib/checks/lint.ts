@@ -23,15 +23,19 @@ type Covers = (path: string) => boolean;
 
 const basename = (p: string) => p.slice(p.lastIndexOf("/") + 1);
 const isPython: Covers = (p) => p.endsWith(".py") && PY_DIRS.some((d) => p.startsWith(d));
+
 const isCargoManifest: Covers = (p) =>
     ["Cargo.toml", "Cargo.lock"].includes(basename(p)) || p === ".cargo/deny.toml";
+
 const isRust: Covers = (p) => p.endsWith(".rs") || isCargoManifest(p);
 const isWeb: Covers = (p) => p.startsWith("web/") && !p.startsWith("web/xliff/");
+
 /** The root package's own TypeScript: scripts/node and dev-mcp. */
 const isNodeScript: Covers = (p) =>
     p.startsWith("scripts/node/") ||
     p.startsWith("dev-mcp/") ||
     (!p.includes("/") && (p.endsWith(".config.ts") || p.endsWith(".json") || p.endsWith(".jsonc")));
+
 const isLocale: Covers = (p) =>
     p.startsWith("locale/") ||
     p.startsWith("web/xliff/") ||
@@ -74,6 +78,7 @@ export function jobs(): Job[] {
         covers,
         ci: "ci-main.yml",
     }));
+
     for (const script of ["lint:check", "tsc", "format:check", "lit-analyse"]) {
         found.push({
             name: `web-${script}`,
@@ -82,37 +87,45 @@ export function jobs(): Job[] {
             ci: "ci-web.yml",
         });
     }
+
     found.push({
         name: "dev-mcp-test",
         command: ["pnpm", "run", "test:dev-mcp"],
         covers: (p) => p.startsWith("dev-mcp/"),
         ci: "none yet: lint, format and types run in CI as scripts and check-types",
     });
+
     found.push({
         name: "website-check",
         command: ["pnpm", "--dir", "website", "run", "check"],
         covers: (p) => p.startsWith("website/"),
         ci: "ci-docs.yml",
     });
+
     return found;
 }
 
 /** CI lint jobs this module doesn't know how to map. A drift test keeps this empty. */
 export async function unmappedJobs(): Promise<Set<string>> {
     const all = new Set([...makefileLintTargets(), ...(await lintMatrix())]);
+
     for (const name of Object.keys(MAKE_JOBS)) all.delete(name);
+
     return all;
 }
 
 function ensurePlaceholders(): string[] {
     const created = [];
+
     for (const rel of CI_PLACEHOLDERS) {
         const path = join(ROOT, rel);
+
         if (existsSync(path)) continue;
         mkdirSync(dirname(path), { recursive: true });
         writeFileSync(path, "empty\n");
         created.push(rel);
     }
+
     return created;
 }
 
@@ -140,17 +153,22 @@ async function fix(changed: string[], result: Result): Promise<void> {
             ],
         ],
     ];
+
     const fixes: Record<string, unknown> = {};
+
     for (const [name, applies, commands] of steps) {
         if (!applies) continue;
+
         for (const [cmd, ...args] of commands) {
             const out = await run(cmd!, args, { timeoutMs: JOB_TIMEOUT });
+
             fixes[`${name}: ${[cmd, ...args].join(" ")}`] = {
                 exit: out.code,
                 output: tail(out, 1000),
             };
         }
     }
+
     result.data.fixes = fixes;
 }
 
@@ -161,9 +179,11 @@ export async function lint(
 ): Promise<Result> {
     const result = new Result("akdev_lint");
     const changed = paths.length ? paths : changedFiles(base);
+
     if (!changed.length) {
         result.fingerprint = fingerprint();
         result.data.jobs = [];
+
         return result.finish(`No files changed since ${base}; nothing to lint`);
     }
 
@@ -171,20 +191,26 @@ export async function lint(
         result.skip(`ci-lint-${name}`, "no path rule for this job yet");
         result.command(`make ci-lint-${name}`);
     }
+
     if (!which("make")) result.unsure("make-based jobs", "make isn't on PATH");
+
     if (!which("pnpm")) result.unsure("web and docs jobs", "pnpm isn't on PATH");
 
     if (applyFixes) await fix(changed, result);
     const created = ensurePlaceholders();
+
     if (created.length) result.data.placeholdersCreated = created;
 
     const ran = [];
+
     for (const job of jobs()) {
         const files = changed.filter(job.covers);
+
         if (!files.length) continue;
         const [cmd, ...args] = job.command;
         const out = await run(cmd!, args, { timeoutMs: JOB_TIMEOUT });
         const command = job.command.join(" ");
+
         ran.push({
             job: job.name,
             command,
@@ -194,7 +220,9 @@ export async function lint(
             files: files.slice(0, 20),
             output: out.code === 0 ? "" : tail(out),
         });
+
         result.checked.push(job.name);
+
         if (out.code !== 0) {
             result.fail();
             result.command(command);
@@ -206,6 +234,7 @@ export async function lint(
     result.data.changedFiles = changed.length;
     // Fixes rewrite files, so fingerprint after them.
     result.fingerprint = fingerprint();
+
     return result.finish(
         `Ran ${ran.length} lint job(s) for ${changed.length} changed file(s): ` +
             (failed.length ? `${failed.length} failed (${failed.join(", ")})` : "all passed"),

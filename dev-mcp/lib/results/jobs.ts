@@ -49,7 +49,9 @@ export function start(tool: string, storeAs: string, fn: () => Promise<Result>):
         result: null,
         error: null,
     };
+
     registry.set(job.id, job);
+
     fn().then(
         (result) => {
             save(storeAs, result);
@@ -61,10 +63,12 @@ export function start(tool: string, storeAs: string, fn: () => Promise<Result>):
             job.finished = Date.now();
         },
     );
+
     return view(job);
 }
 
 export function get(id: string): JobState | null {
     const job = registry.get(id);
+
     return job ? view(job) : null;
 }

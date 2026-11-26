@@ -26,6 +26,7 @@ export const failedChecks = (verdict: Verdict) => verdict.checks.filter((c) => !
 
 export async function evaluate(env: Environment, connect = true): Promise<Verdict> {
     const checks = staticChecks(env);
+
     if (connect && checks.every((c) => c.ok)) {
         checks.push(...(await databaseChecks(env)));
     } else if (connect) {
@@ -35,6 +36,7 @@ export async function evaluate(env: Environment, connect = true): Promise<Verdic
             detail: "not checked: an earlier check failed",
         });
     }
+
     return {
         ok: checks.every((c) => c.ok),
         // A fix only means something for a check that failed.
@@ -65,8 +67,10 @@ function unavailable(error: unknown): Verdict {
  */
 export async function inspect(): Promise<{ env: Environment | null; verdict: Verdict }> {
     let env: Environment | null = null;
+
     try {
         env = await discover();
+
         return { env, verdict: await evaluate(env) };
     } catch (error) {
         return { env, verdict: unavailable(error) };

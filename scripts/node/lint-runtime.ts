@@ -55,6 +55,7 @@ async function main() {
 
     const pnpmVersion = await pnpm`--version`({ cwd }).catch((error) => {
         logger.warn(`Failed to read pnpm version: ${error.message}`);
+
         return null;
     });
 
@@ -114,11 +115,13 @@ async function lintPackageManager(packageManager: string, requiredPnpmVersion?: 
 
     if (!spec.hash) {
         logger.warn("packageManager has no integrity suffix; skipping hash check.");
+
         return;
     }
 
     const expectedHash = await resolvePackageManagerHash(spec.name, spec.version).catch((error) => {
         logger.warn(`Skipping integrity check: ${error.message}`);
+
         return null;
     });
 

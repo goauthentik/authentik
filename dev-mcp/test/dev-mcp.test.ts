@@ -31,6 +31,7 @@ function makeEnv(options: EnvOptions = {}): Environment {
         local = true,
         allowed = [],
     } = options;
+
     return {
         config: {
             debug: { value: debug, source: "local.env.yml" },
@@ -76,9 +77,11 @@ describe("guard", () => {
     it("needs a remote database listed by host, not just by name", () => {
         const remote = { host: "devvm.lan", kind: "remote", local: false } as const;
         expect(failed(makeEnv(remote))).toEqual(["connection"]);
+
         expect(failed(makeEnv({ ...remote, allowed: [{ name: "authentik" }] }))).toEqual([
             "connection",
         ]);
+
         expect(
             failed(makeEnv({ ...remote, allowed: [{ name: "authentik", host: "devvm.lan" }] })),
         ).toEqual([]);
@@ -103,9 +106,11 @@ describe("guard", () => {
                 { name: "signal_external_logins", ok: false, detail: "" },
             ],
         };
+
         const snippet = suggestedAllowlist(makeEnv(), verdict) ?? "";
         expect(snippet).toContain("ignore_signals: [license, external_logins]");
         expect(snippet).not.toContain("host:");
+
         expect(
             suggestedAllowlist(makeEnv(), { ok: true, checks: [], allowlistChanged: false }),
         ).toBeNull();
@@ -119,7 +124,9 @@ describe("drift with CI", () => {
 
     it("checks the same generated paths as test-gen", async () => {
         const paths = await genDiffPaths();
+
         for (const path of SCHEMA_FILES) expect(paths).toContain(path);
+
         expect(
             paths.filter((p) => !(SCHEMA_FILES as readonly string[]).includes(p)).sort(),
         ).toEqual(["packages/client-go", "packages/client-rust", "packages/client-ts"]);
@@ -134,9 +141,11 @@ describe("lint mapping", () => {
 
     it("maps Python, migrations included only for migration files", () => {
         const py = jobsFor("authentik/core/models.py");
+
         expect(py).toEqual(
             expect.arrayContaining(["ruff", "black", "mypy", "bandit", "pending-migrations"]),
         );
+
         expect(py).not.toContain("migrations");
         expect(jobsFor("authentik/core/migrations/0099_x.py")).toContain("migrations");
     });
@@ -151,6 +160,7 @@ describe("lint mapping", () => {
         expect(jobsFor("src/server/static.rs")).toEqual(
             expect.arrayContaining(["clippy", "rustfmt"]),
         );
+
         expect(jobsFor("website/docs/index.mdx")).toContain("website-check");
     });
 });
@@ -174,9 +184,11 @@ describe("skills and instructions", () => {
 
     it("keeps the rules in the first 512 characters, for Codex", () => {
         const head = INSTRUCTIONS.slice(0, 512);
+
         for (const rule of ["akdev_generated", "akdev_lint", "akdev_skill", "skipped"]) {
             expect(head).toContain(rule);
         }
+
         expect(INSTRUCTIONS.length).toBeLessThanOrEqual(4096);
     });
 });

@@ -25,6 +25,7 @@ export function git(args: string[], check = true): string {
         }).trim();
     } catch (error) {
         if (check) throw error;
+
         return "";
     }
 }
@@ -42,14 +43,18 @@ export const mergeBase = (base = DEFAULT_BASE) => git(["merge-base", "HEAD", bas
 export function changedFiles(base = DEFAULT_BASE): string[] {
     const files = new Set<string>();
     const mb = mergeBase(base);
+
     for (const f of git(["diff", "--name-only", mb ?? "HEAD"]).split("\n")) files.add(f);
+
     for (const f of git(["ls-files", "--others", "--exclude-standard"]).split("\n")) files.add(f);
     files.delete("");
+
     return [...files].sort();
 }
 
 export function changedSinceBase(path: string, base = DEFAULT_BASE): boolean {
     const prefix = `${path.replace(/\/$/, "")}/`;
+
     return changedFiles(base).some((f) => f === path || f.startsWith(prefix));
 }
 
@@ -60,12 +65,15 @@ export function changedSinceBase(path: string, base = DEFAULT_BASE): boolean {
  */
 export function fingerprint(...paths: string[]): string {
     const status = git(["status", "--porcelain", "--untracked-files=all", "--", ...paths]);
+
     const hash = createHash("sha256")
         .update(git(["rev-parse", "HEAD"]))
         .update(status);
+
     for (const line of status.split("\n")) {
         if (!line) continue;
         const name = line.slice(3).split(" -> ").at(-1)!.replace(/^"|"$/g, "");
+
         try {
             const st = statSync(join(ROOT, name));
             hash.update(`${name}:${st.mtimeMs}:${st.size}`);
@@ -73,5 +81,6 @@ export function fingerprint(...paths: string[]): string {
             // Deleted files are covered by the status text.
         }
     }
+
     return hash.digest("hex").slice(0, 16);
 }
