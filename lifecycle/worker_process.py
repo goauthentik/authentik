@@ -19,6 +19,19 @@ LOGGER = get_logger()
 INITIAL_WORKER_ID = 1000
 
 
+def crashed_threads(worker: Worker) -> list[str]:
+    """Worker and consumer threads that exited without being stopped.
+
+    dramatiq only catches `Exception` in them, so a time limit that hits outside a task ends
+    the thread, and nothing starts a replacement.
+    """
+    return [
+        thread.name
+        for thread in [*worker.workers, *worker.consumers.values()]
+        if thread.running and not thread.is_alive()
+    ]
+
+
 class HttpHandler(BaseHTTPRequestHandler):
     def check_db(self):
         from django.db import connections
@@ -112,12 +125,19 @@ def main(worker_id: int, socket_path: str):
     worker.start()
     logger.info("Worker process is ready for action.")
 
-    Thread(target=srv.serve_forever).start()
+    # Daemon, so that the process still exits if shutting down below fails
+    Thread(target=srv.serve_forever, daemon=True).start()
 
     # Notify rust process that we are ready
     os.kill(os.getppid(), signal.SIGUSR2)
 
-    shutdown.wait()
+    # Exit instead of running without the crashed threads. The rust process exits when one of
+    # its workers does, so the container is restarted.
+    crashed: list[str] = []
+    while not shutdown.wait(timeout=5):
+        if crashed := crashed_threads(worker):
+            logger.error("Worker threads have crashed, shutting down", threads=crashed)
+            break
 
     logger.info("Shutting down worker...")
 
@@ -128,6 +148,8 @@ def main(worker_id: int, socket_path: str):
 
     broker.close()
     logger.info("Worker shut down.")
+    if crashed:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
