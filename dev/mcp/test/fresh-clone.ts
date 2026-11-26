@@ -8,8 +8,8 @@
  *      answers when the install ends, and the server hands over. Both must end with
  *      `notifications/tools/list_changed` and the real tools answering, with no restart. A stand-in
  *      `make` runs the real `node-install`, which is all the server needs, and skips `web-install`
- *      and `core-install`, the slow ones. Tests HEAD: commit first. Run with `node
- *      dev/mcp/test/fresh-clone.ts`.
+ *      and `core-install`, the slow ones. Tests HEAD, or the commit given as the first argument:
+ *      `node dev/mcp/test/fresh-clone.ts [ref]`.
  */
 
 import { execFileSync, spawn } from "node:child_process";
@@ -223,7 +223,7 @@ const scratch = mkdtempSync(join(tmpdir(), "akdev-fresh-clone-"));
 const worktree = join(scratch, "authentik");
 const path = [fakeMake(scratch), process.env.PATH].join(delimiter);
 
-git("worktree", "add", "--detach", worktree, "HEAD");
+git("worktree", "add", "--detach", worktree, process.argv[2] ?? "HEAD");
 
 try {
     assert(!existsSync(join(worktree, "node_modules")), "the worktree starts without node_modules");

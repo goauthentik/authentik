@@ -117,7 +117,7 @@ async function serve(): Promise<number> {
     const server = await import("#dev-mcp/server/serve").catch(delegateImportError);
 
     if (!server) {
-        const { NO_FALLBACK, serveFallback } = await import("#dev-mcp/server/fallback");
+        const { NO_FALLBACK, serveFallback } = await import("#dev-mcp/setup/serve");
 
         // The real server started by the fallback: don't nest another fallback inside it.
         if (process.env[NO_FALLBACK]) {

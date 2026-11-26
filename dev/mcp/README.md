@@ -25,7 +25,7 @@ agent to check generated files before it stops.
 ## On a fresh clone
 
 Without `pnpm install` the server can't load the MCP SDK, so `serve` starts a setup-mode server
-instead (`lib/server/fallback.ts`, Node built-ins only). Its instructions and `akdev_status` say
+instead (`lib/setup/`, Node built-ins only). Its instructions and `akdev_status` say
 what's missing, and `akdev_install` runs `make install`; Claude Code asks the person before every
 call. Once the dependencies are in place, from that tool or from `make install` run anywhere,
 the setup server starts the real one, hands the session over and sends `tools/list_changed`, so
@@ -96,6 +96,7 @@ server imports from `dev/lib/` uses Node built-ins only and never writes to stdo
 | `checks/`                                                      | `check-gen` and `lint-changed`, and the CI files they read                   |
 | `agent/`                                                       | What agents read directly: Claude Code hooks and the repo's skills           |
 | `server/`                                                      | The MCP server and its tools                                                 |
+| `setup/`                                                       | Setup mode for a fresh clone: protocol, tools, `make install`, handover      |
 | Root `lint`, `format` and `build:types` cover it,              |
 | and CI runs them as the `scripts` and `check-types` lint jobs. |
 
