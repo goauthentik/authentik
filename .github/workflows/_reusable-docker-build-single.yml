@@ -74,9 +74,6 @@ jobs:
           context: .
           file: lifecycle/container/Dockerfile
           push: ${{ steps.ev.outputs.shouldPush == 'true' }}
-          secrets: |
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
           build-args: |
             ${{ steps.ev.outputs.imageBuildArgs }}
           tags: ${{ steps.ev.outputs.imageTags }}
