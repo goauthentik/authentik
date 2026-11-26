@@ -59,6 +59,11 @@ def table_row_counts(model: type[Model]) -> Generator[RowCounts]:
     small test tables differently from large ones, so a query that is cheap here can still
     scan a whole table in production."""
     counts = RowCounts()
+    # https://pgpedia.info/p/pg_stat_force_next_flush.html
+    min_postgres_version = 15
+    # https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQSERVERVERSION
+    if connection.pg_version // 10000 < min_postgres_version:
+        yield counts
     read, deleted = _table_counts(model)
     yield counts
     after_read, after_deleted = _table_counts(model)
