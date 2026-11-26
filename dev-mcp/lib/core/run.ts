@@ -34,7 +34,8 @@ export function run(command: string, args: string[], options: RunOptions = {}): 
             cwd,
             // Make targets and scripts shell out to git too, with the same config to ignore.
             env: { ...process.env, ...GIT_ENV, ...env },
-            stdio: ["pipe", "pipe", "pipe"],
+            // No stdin unless there is input: a child that exits early can't break a write.
+            stdio: [input === undefined ? "ignore" : "pipe", "pipe", "pipe"],
         });
 
         const timer = setTimeout(() => {
@@ -49,11 +50,16 @@ export function run(command: string, args: string[], options: RunOptions = {}): 
             resolve(result);
         }
 
-        child.stdout.on("data", (chunk: Buffer) => (stdout += chunk.toString()));
-        child.stderr.on("data", (chunk: Buffer) => (stderr += chunk.toString()));
+        child.stdout?.on("data", (chunk: Buffer) => (stdout += chunk.toString()));
+        child.stderr?.on("data", (chunk: Buffer) => (stderr += chunk.toString()));
         child.on("error", (error) => finish({ code: 127, stdout, stderr: error.message }));
         child.on("close", (code) => finish({ code: code ?? 1, stdout, stderr }));
-        child.stdin.end(input ?? "");
+
+        if (child.stdin) {
+            // EPIPE when the child exits before reading; unhandled, it would crash the server.
+            child.stdin.on("error", () => {});
+            child.stdin.end(input);
+        }
     });
 }
 
