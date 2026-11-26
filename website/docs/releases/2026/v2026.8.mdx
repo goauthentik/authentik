@@ -677,6 +677,29 @@ The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecat
 - web/elements: fix the wizard next button staying disabled (cherry-pick #27660 to version-2026.8) (#27904)
 - web/elements: keep dialog messages after the dialog closes (cherry-pick #27413 to version-2026.8) (#27440)
 
+## Fixed in 2026.8.7
+
+- core: exclude the edited object from unique attribute checks (cherry-pick #27693 to version-2026.8) (#27700)
+- flows: keep next on the access denied page's cancel link (cherry-pick #27364 to version-2026.8) (#27698)
+- lib/sync/outgoing: report conflicting objects instead of failing sync (cherry-pick #27287 to version-2026.8) (#27348)
+- outposts, internal/outpost: keep the web path when outposts connect to authentik (cherry-pick #27290 to version-2026.8) (#27347)
+- outposts/proxy: honor X-Forwarded-Host in envoy forward auth (cherry-pick #26888 to version-2026.8) (#27351)
+- packages/django-dramatiq-postgres: reconcile pending tasks during continuous notifications (cherry-pick #26152 to version-2026.8) (#27999)
+- root: bump cargo deps (2026.8) (#27996)
+- security: automated internal backport of patch 1812-notification-webhook-response.sec.patch to authentik-2026.8 (#28122)
+- security: automated internal backport of patch 1819-forward-auth-allowlist.sec.patch to authentik-2026.8 (#28123)
+- security: automated internal backport of patch 1885-kubeconfig-validation.sec.patch to authentik-2026.8 (#28124)
+- security: automated internal backport of patch `1987-nginx-forward-auth-path-normalisation.sec.patch` to authentik-2026.8 (#28125)
+- security: automated internal backport of patch 2044-jwt-federation-user-matching.sec.patch to authentik-2026.8 (#28126)
+- security: automated internal backport of patch 2119-saml-inflate-size-limit.sec.patch to authentik-2026.8 (#28127)
+- security: automated internal backport of patch 2243-event-email-preview.sec.patch to authentik-2026.8 (#28128)
+- security: automated internal backport of patch 2244-notification-hyperlink-scheme.sec.patch to authentik-2026.8 (#28129)
+- security: automated internal backport of patch 2293-request-smuggling.sec.patch to authentik-2026.8 (#28130)
+- security: automated internal backport of patch 2349-sms-override.sec.patch to authentik-2026.8 (#28131)
+- security: automated internal backport of patch 3017-policy-engine-fail-open.sec.patch to authentik-2026.8 (#28132)
+- web/flow: fix SessionEnd not using brand title (cherry-pick #27636 to version-2026.8) (#27995)
+- web: share one brand CSS style sheet across elements (cherry-pick #27362 to version-2026.8) (#27454)
+
 ## API Changes
 
 ### authentik (v 2026.8.3)
