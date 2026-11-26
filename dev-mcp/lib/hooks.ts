@@ -8,7 +8,7 @@ import { basename, join, relative } from "node:path";
 
 import { INSTALL_HINT, isInstalled } from "#dev-mcp/optional";
 import { ROOT, changedFiles } from "#dev-mcp/repo";
-import { run, tail } from "#dev-mcp/run";
+import { UV_RUN, run, tail } from "#dev-mcp/run";
 import { skillNames } from "#dev-mcp/skills";
 import { loadCurrent, storeDir } from "#dev-mcp/store";
 
@@ -42,22 +42,39 @@ function sessionStart(): void {
     emit("SessionStart", context);
 }
 
+/**
+ * An installed JS tool's binary, or null. `pnpm exec` would install the whole workspace first on
+ * a fresh clone, so the hook runs binaries directly and skips tools that aren't there.
+ */
+function bin(dir: string, tool: string): string | null {
+    const path = join(ROOT, dir, "node_modules", ".bin", tool);
+    return existsSync(path) ? path : null;
+}
+
+/** `uv run --no-sync` reports a tool missing from an uninstalled environment this way. */
+const notSpawned = (output: string) => output.includes("Failed to spawn");
+
 async function lintFile(rel: string): Promise<string | null> {
-    let commands: string[][] = [];
+    const commands: { cmd: string[]; cwd: string }[] = [];
     if (rel.endsWith(".py")) {
-        commands = [
-            ["uv", "run", "--frozen", "ruff", "check", rel],
-            ["uv", "run", "--frozen", "black", "--check", "-q", rel],
-        ];
+        commands.push(
+            { cmd: [...UV_RUN, "ruff", "check", rel], cwd: ROOT },
+            { cmd: [...UV_RUN, "black", "--check", "-q", rel], cwd: ROOT },
+        );
     } else if (rel.startsWith("web/") && /\.(ts|js|css)$/.test(rel)) {
-        commands = [["pnpm", "--dir", "web", "exec", "oxlint", "--max-warnings=0", rel.slice(4)]];
+        const oxlint = bin("web", "oxlint");
+        const web = join(ROOT, "web");
+        if (oxlint) commands.push({ cmd: [oxlint, "--max-warnings=0", rel.slice(4)], cwd: web });
     } else if (/^(dev-mcp|scripts\/node)\/.*\.ts$/.test(rel)) {
-        commands = [["pnpm", "exec", "oxlint", "--max-warnings=0", rel]];
+        const oxlint = bin(".", "oxlint");
+        if (oxlint) commands.push({ cmd: [oxlint, "--max-warnings=0", rel], cwd: ROOT });
     }
     const problems = [];
-    for (const [cmd, ...args] of commands) {
-        const out = await run(cmd!, args, { timeoutMs: 60_000 });
-        if (out.code !== 0) problems.push(`$ ${[cmd, ...args].join(" ")}\n${tail(out, 1500)}`);
+    for (const { cmd, cwd } of commands) {
+        const [command, ...args] = cmd;
+        const out = await run(command!, args, { cwd, timeoutMs: 60_000 });
+        if (out.code === 0 || notSpawned(tail(out))) continue;
+        problems.push(`$ ${cmd.join(" ").replace(`${ROOT}/`, "")}\n${tail(out, 1500)}`);
     }
     return problems.length ? problems.join("\n") : null;
 }

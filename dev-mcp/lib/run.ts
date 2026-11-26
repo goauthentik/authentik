@@ -82,7 +82,15 @@ export async function version(command: string, args = ["--version"]): Promise<st
     return match ? match[0] : result.stdout.trim().split("\n")[0] || null;
 }
 
-/** Run Python the way the Makefile does (`uv run`), from the repo root. */
+/**
+ * `uv run` that never installs: plain `uv run` syncs the whole environment first, which on a fresh
+ * clone means building it, about 1 GB. Without an environment the command fails, and the caller
+ * reports that `make install` is needed.
+ */
+export const UV_RUN = ["uv", "run", "--frozen", "--no-sync"] as const;
+
+/** Run Python in the repo's environment, from the repo root. */
 export function python(args: string[], options: RunOptions = {}): Promise<RunResult> {
-    return run("uv", ["run", "--frozen", "python", ...args], options);
+    const [uv, ...uvArgs] = UV_RUN;
+    return run(uv, [...uvArgs, "python", ...args], options);
 }
