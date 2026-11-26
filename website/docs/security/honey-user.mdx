@@ -10,7 +10,7 @@ authentik includes an example blueprint that creates two decoy users and a notif
 
 ## What the blueprint creates
 
-- **Two users without a password.** `svc-backup-admin` looks like a backup service account. `ldap-admin` looks like a directory administrator, which attracts attackers who enumerate users through the [LDAP provider](../add-secure-apps/providers/ldap/index.mdx). No login can succeed. Each attempt fails at the password stage and creates a `login_failed` event. The response and the time it takes are the same as for any wrong password, so the attacker cannot tell a decoy apart from a real account.
+- **Two users without a password.** `svc-backup-admin` looks like a backup service account. `ldap-admin` looks like a directory administrator, which attracts attackers who enumerate users through the [LDAP provider](../add-secure-apps/providers/ldap/index.mdx). No login can succeed. Each attempt fails at the password stage and creates a `login_failed` event. The response and the time it takes match those for a wrong password, so a failed attempt does not reveal that the account is a decoy.
 - **Two [Event Matcher policies](../customize/policies/types/event-matcher.mdx)** that match `login_failed` and `login` events for either user. A successful `login` should never happen. If it does, someone changed a decoy or linked another authentication method to it.
 - **A [notification rule](../sys-mgmt/events/notifications.mdx)** with the `alert` severity. It notifies the members of the configured group, `authentik Admins` by default, in the authentik UI and by email. The emails come from a dedicated transport, so their subject reads `[authentik] honey_user_login_failed`. That makes them easy to tell apart from ordinary failed logins and to filter.
 - **An optional webhook.** When you set `webhook_url`, the blueprint adds a [webhook transport](../sys-mgmt/events/transports.mdx) that posts one message per event, with a readable summary in the `text` field. For example: `Honey user alert: Login attempt as decoy account svc-backup-admin from 203.0.113.7 (Berlin, DE). No legitimate user owns this account.` The payload also carries the client IP, GeoIP and ASN data, and the user agent as separate fields for a SIEM.
@@ -22,22 +22,24 @@ LDAP and RADIUS providers run the authentication flow on the authentik server, s
 ## Apply the blueprint
 
 1. Log in to authentik as an administrator and open the Admin interface.
-2. Navigate to **Customization** > **Blueprints** and click **Create**.
+2. Navigate to **Customization** > **Blueprints** and click **New Blueprint**.
 3. Configure the blueprint instance:
+
     - **Name**: enter a descriptive name.
-    - **Blueprint**: select **Local path** and choose `example/events-honey-user.yaml`.
+    - **Path**: select **Local path**, and then choose `example/events-honey-user.yaml`.
     - **Context**: set the decoy usernames and the group to notify, for example:
 
         ```yaml
         username: svc-backup-admin
         ldap_admin_username: ldap-admin
         group_name: authentik Admins
-        webhook_url: https://hooks.slack.com/services/...
+        webhook_url: https://hooks.slack.com/services/<webhook_path>
         ```
 
         To create only the first decoy, set `ldap_admin_username` to `""`. To skip the webhook, leave `webhook_url` empty.
 
-4. Click **Create**.
+4. Click **Create Blueprint**.
+5. In the row of the new blueprint instance, click the **Apply** icon. Creating the instance does not apply it.
 
 To create more decoy users, create another blueprint instance with different usernames.
 
@@ -50,7 +52,7 @@ The `text` field matches the format of Slack incoming webhooks. For other tools,
 - Do not set a password for a decoy. With a password, a login could succeed.
 - Do not mark a decoy with attributes. Clients that can search the LDAP provider can read user attributes.
 - Do not assign applications or groups to a decoy. A group named like a real administrator group could grant access in applications that read group membership.
-- To rename a decoy, change its username in the blueprint instance context instead of editing the user. The policies match usernames exactly.
+- To rename a decoy, change its username in the blueprint instance context instead of editing the user, apply the blueprint again, and then delete the old user. The policies match usernames exactly. If you change `username`, also delete the old `honey-user-*` objects, which otherwise keep sending alerts.
 
 ## Plant the decoy
 
@@ -63,4 +65,5 @@ To catch attackers who are already inside your network, leave the decoy's userna
 
 - The alert covers login attempts that reach the password stage. Flows that skip the password stage, for example passwordless or source logins, do not create a `login_failed` event for this user.
 - With an LDAP provider in [cached bind mode](../add-secure-apps/providers/ldap/index.mdx#cached-bind), the outpost answers repeated binds with the same DN and password from its cache. The first attempt with each password creates an event, and repeated attempts with that password do not.
+- [Password lockout](../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) never applies to a decoy, so a decoy never shows a configured last-attempt warning or lockout message.
 - Honey users cover login attempts only. Decoy API tokens and other credentials are not covered yet; support is planned for a future release.
