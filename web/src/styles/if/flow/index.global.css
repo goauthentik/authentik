@@ -30,12 +30,15 @@
 @import "#styles/authentik/components/Placeholder/placeholder.css" layer(components);
 @import "#elements/ak-drawer/ak-drawer.root.css" layer(components);
 @import "#elements/Divider_impl/Divider.root.css" layer(components);
+@import "#elements/ExpansionToggle_impl/ExpansionToggle.root.css" layer(components);
+@import "#elements/Expand_impl/Expand.root.css" layer(components);
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);
 @import "#styles/global/locales/zh/globals.css" layer(components);
 /* `vendor` because it's from Patternfly and we need it to be easily overridable. */
 @import "@patternfly/patternfly/components/Alert/alert.css" layer(vendor);
 @import "#elements/locale/ak-locale-select.css" layer(components);
+@import "#elements/Tooltip/Tooltip.root.css" layer(components);
 @import "#styles/if/flow/login.css" layer(components);
 @import "#styles/if/flow/tokens.css" layer(components);
 @import "#styles/if/flow/pre-registration.css" layer(components);

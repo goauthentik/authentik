@@ -8,7 +8,7 @@ from kubernetes.client.configuration import Configuration
 from kubernetes.client.exceptions import OpenApiException
 from kubernetes.config.config_exception import ConfigException
 from kubernetes.config.incluster_config import load_incluster_config
-from kubernetes.config.kube_config import load_kube_config_from_dict
+from kubernetes.config.kube_config import KubeConfigLoader, load_kube_config_from_dict
 from urllib3.exceptions import HTTPError
 from yaml import dump_all
 
@@ -28,6 +28,16 @@ from authentik.outposts.models import (
 )
 
 
+def check_kubeconfig_user(kubeconfig: dict):
+    """Refuse credential plugins, auth providers and token files for the current context's user"""
+    user = KubeConfigLoader(config_dict=kubeconfig)._user
+    if not user:
+        return
+    for key in ("exec", "auth-provider", "tokenFile"):
+        if key in user:
+            raise ConfigException(f"Unsupported kubeconfig user credential: {key}")
+
+
 class KubernetesClient(ApiClient, BaseClient):
     """Custom kubernetes client based on service connection"""
 
@@ -37,6 +47,7 @@ class KubernetesClient(ApiClient, BaseClient):
             if connection.local:
                 load_incluster_config(client_configuration=config)
             else:
+                check_kubeconfig_user(connection.kubeconfig)
                 load_kube_config_from_dict(connection.kubeconfig, client_configuration=config)
             config.verify_ssl = connection.verify_ssl
             super().__init__(config)

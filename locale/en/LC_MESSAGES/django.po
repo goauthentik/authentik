@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 00:10+0000\n"
+"POT-Creation-Date: 2026-11-26 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5818,6 +5818,12 @@ msgstr ""
 msgid ""
 "Password: Masked input, multiple inputs of this type on the same prompt need "
 "to be identical."
+msgstr ""
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password with show button: Masked input w/show button, multiple inputs of "
+"this type on the same prompt need to be identical."
 msgstr ""
 
 #: authentik/stages/prompt/models.py

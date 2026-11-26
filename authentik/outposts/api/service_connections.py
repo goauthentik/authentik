@@ -118,8 +118,11 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
         from kubernetes.config.config_exception import ConfigException
         from kubernetes.config.kube_config import load_kube_config_from_dict
 
+        from authentik.outposts.controllers.kubernetes import check_kubeconfig_user
+
         config = Configuration()
         try:
+            check_kubeconfig_user(kubeconfig)
             load_kube_config_from_dict(kubeconfig, client_configuration=config)
         except ConfigException:
             raise serializers.ValidationError(_("Invalid kubeconfig")) from None
