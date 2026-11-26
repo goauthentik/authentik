@@ -59,7 +59,9 @@ export function registerLint(server: McpServer): void {
     );
 }
 
-/** Only registered when the database guard passes: it runs Django against the database. */
+/**
+ * Only registered when the database guard passes: it runs Django against the database.
+ */
 export function registerGenerated(server: McpServer): void {
     server.registerTool(
         "akdev_generated",

@@ -10,7 +10,7 @@ import { chooseNode, describeNode } from "#dev-mcp/environment/node";
 import { UV_RUN } from "#dev-mcp/environment/python";
 import { loadCurrent, storeDir } from "#dev-mcp/results/store";
 import { ROOT, changedFiles } from "#dev/lib/git";
-import { INSTALL_HINT, isInstalled } from "#dev/lib/optional";
+import { INSTALL_HINT, resolvePackagePath } from "#dev/lib/optional";
 import { run, tail } from "#dev/lib/process";
 
 const GENERATED_TRIGGERS = ["models.py", "serializers.py", "api.py", "urls.py", "views.py"];
@@ -36,7 +36,7 @@ function sessionStart(): void {
         "list what they skipped; repeat that in your summary.";
 
     // The server's own dependency stands in for the whole root install.
-    if (!isInstalled("@modelcontextprotocol/server")) {
+    if (!resolvePackagePath("@modelcontextprotocol/server")) {
         context +=
             " Dependencies aren't installed yet. The authentik-dev MCP server is in setup mode: " +
             "ask the person whether to install, then call its akdev_install tool (it runs " +

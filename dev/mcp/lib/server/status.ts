@@ -2,7 +2,7 @@
  * @file `akdev_status`: what the server sees, and the guard's verdict.
  */
 
-import { LANGUAGE_SERVER_INSTALL, publicEnvironment } from "#dev-mcp/environment/discover";
+import { LANGUAGE_SERVER_COMMANDS, publicEnvironment } from "#dev-mcp/environment/discover";
 import { type Verdict, inspect, suggestedAllowlist } from "#dev-mcp/guard/verdict";
 import { READ_ONLY, reply } from "#dev-mcp/server/shared";
 import { DEFAULT_BASE, ROOT, branch, mergeBase } from "#dev/lib/git";
@@ -32,7 +32,7 @@ export function registerStatus(server: McpServer, startup: Verdict): void {
 
                 notes.push(
                     `Optional: ${name} isn't on PATH, so editors and Claude Code's LSP plugins ` +
-                        `can't use it. Install: ${LANGUAGE_SERVER_INSTALL[name]}`,
+                        `can't use it. Install: ${LANGUAGE_SERVER_COMMANDS[name]}`,
                 );
             }
 
@@ -41,9 +41,9 @@ export function registerStatus(server: McpServer, startup: Verdict): void {
                 branch: branch(),
                 base: DEFAULT_BASE,
                 mergeBase: mergeBase(),
-                environment: env && publicEnvironment(env),
+                environment: env ? publicEnvironment(env) : null,
                 guard: verdict,
-                allowlistSuggestion: env && suggestedAllowlist(env, verdict),
+                allowlistSuggestion: env ? suggestedAllowlist(env, verdict) : null,
                 databaseTools: startup.ok
                     ? "enabled"
                     : "disabled for this session; restart the server once the guard passes",

@@ -5,7 +5,7 @@
 import type { Environment } from "#dev-mcp/environment/discover";
 import { type Check, allowEntry } from "#dev-mcp/guard/checks";
 import { isDevTestLicense, verifyLicense } from "#dev-mcp/guard/license";
-import { missing, notInstalled } from "#dev/lib/optional";
+import { delegateImportError, formatPackageMissingMessage } from "#dev/lib/optional";
 
 import type { Client } from "pg";
 
@@ -104,14 +104,14 @@ export function licenseSignal(
 }
 
 export async function databaseChecks(env: Environment): Promise<Check[]> {
-    const pg = await import("pg").catch(missing);
+    const pg = await import("pg").catch(delegateImportError);
 
     if (!pg) {
         return [
             {
                 name: "reachable",
                 ok: false,
-                detail: `can't check the database: ${notInstalled("pg")}`,
+                detail: `can't check the database: ${formatPackageMissingMessage("pg")}`,
             },
         ];
     }

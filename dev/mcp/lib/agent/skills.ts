@@ -6,7 +6,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 import { ROOT } from "#dev/lib/git";
-import { missing } from "#dev/lib/optional";
+import { delegateImportError } from "#dev/lib/optional";
 
 export const SKILLS_DIR = join(ROOT, ".agents", "skills");
 
@@ -29,7 +29,7 @@ export function skillNames(): string[] {
 }
 
 export async function listSkills(): Promise<SkillSummary[]> {
-    const yaml = await import("yaml").catch(missing);
+    const yaml = await import("yaml").catch(delegateImportError);
 
     return skillNames().map((name) => {
         const text = readFileSync(join(SKILLS_DIR, name, "SKILL.md"), "utf8");

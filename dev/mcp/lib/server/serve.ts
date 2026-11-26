@@ -5,7 +5,7 @@
 import { containerRuntime } from "#dev-mcp/environment/runtime";
 import { type Verdict, inspect } from "#dev-mcp/guard/verdict";
 import { registerGenerated, registerJob, registerLint } from "#dev-mcp/server/checks";
-import { INSTRUCTIONS } from "#dev-mcp/server/instructions";
+import { INSTRUCTIONS } from "#dev-mcp/server/constants";
 import { registerServices } from "#dev-mcp/server/services";
 import { registerSkills } from "#dev-mcp/server/skills";
 import { registerStatus } from "#dev-mcp/server/status";
@@ -22,9 +22,13 @@ export async function build(verdict?: Verdict): Promise<McpServer> {
     const startup = verdict ?? (await inspect()).verdict;
 
     registerStatus(server, startup);
+
     await registerSkills(server);
+
     registerJob(server);
+
     registerLint(server);
+
     registerServices(server, await containerRuntime(), startup);
 
     if (startup.ok) registerGenerated(server);

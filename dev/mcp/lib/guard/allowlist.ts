@@ -38,12 +38,19 @@ export function suggestedAllowlist(env: Environment, failed: Check[]): string | 
 
     const remote = failed.some((c) => c.name === "connection");
 
-    if (!signals.length && !remote) return null;
+    if (!signals.length && !remote) {
+        return null;
+    }
+
     const lines = ["dev_mcp:", "  allowed_databases:", `    - name: ${env.config.pgName.value}`];
 
-    if (remote) lines.push(`      host: ${env.config.pgHost.value}`);
+    if (remote) {
+        lines.push(`      host: ${env.config.pgHost.value}`);
+    }
 
-    if (signals.length) lines.push(`      ignore_signals: [${signals.join(", ")}]`);
+    if (signals.length) {
+        lines.push(`      ignore_signals: [${signals.join(", ")}]`);
+    }
 
     return lines.join("\n");
 }

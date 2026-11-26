@@ -58,7 +58,9 @@ export async function runJob(
 
     const job = jobs.start(tool, storeAs, () => fn(progress));
 
-    if (token === undefined) return reply(job);
+    if (token === undefined) {
+        return reply(job);
+    }
 
     // Before any step reports, so even a step that never finishes leaves the jobId behind.
     progress(0, 0, `job ${job.jobId} started`);

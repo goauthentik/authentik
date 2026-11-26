@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { ROOT } from "#dev/lib/git";
-import { missing, notInstalled } from "#dev/lib/optional";
+import { delegateImportError, formatPackageMissingMessage } from "#dev/lib/optional";
 
 interface Workflow {
     jobs?: Record<
@@ -19,9 +19,11 @@ interface Workflow {
 }
 
 async function workflow(root: string, name: string): Promise<Workflow> {
-    const yaml = await import("yaml").catch(missing);
+    const yaml = await import("yaml").catch(delegateImportError);
 
-    if (!yaml) throw new Error(notInstalled("yaml"));
+    if (!yaml) {
+        throw new Error(formatPackageMissingMessage("yaml"));
+    }
 
     return yaml.parse(readFileSync(join(root, ".github", "workflows", name), "utf8")) as Workflow;
 }

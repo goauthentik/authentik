@@ -29,6 +29,7 @@ export class Result implements ResultData {
     public commands: string[] = [];
     public fingerprint: string | null = null;
     public data: Record<string, unknown> = {};
+
     /**
      * The headline the summary was built from, so a caller can add an item and finish again.
      */
@@ -54,15 +55,23 @@ export class Result implements ResultData {
         if (!this.commands.includes(cmd)) this.commands.push(cmd);
     }
 
-    /** Set the summary from a headline plus the skipped and unknown items. */
+    /**
+     * Set the summary from a headline plus the skipped and unknown items.
+     */
     public finish(headline: string): this {
         this.headline = headline;
+
         const parts = [`${headline.replace(/\.$/, "")}.`];
         const list = (items: Item[]) => items.map((i) => `${i.what} (${i.reason})`).join("; ");
 
-        if (this.skipped.length) parts.push(`Skipped: ${list(this.skipped)}.`);
+        if (this.skipped.length) {
+            parts.push(`Skipped: ${list(this.skipped)}.`);
+        }
 
-        if (this.unknown.length) parts.push(`Unknown: ${list(this.unknown)}.`);
+        if (this.unknown.length) {
+            parts.push(`Unknown: ${list(this.unknown)}.`);
+        }
+
         this.summary = parts.join(" ");
 
         return this;
@@ -82,15 +91,23 @@ export class Result implements ResultData {
         };
     }
 
-    /** A human summary for terminals and clients without structured output. */
+    /**
+     * A human summary for terminals and clients without structured output.
+     */
     public toText(): string {
         const lines = [`${this.ok ? "OK" : "FAIL"} [${this.tool}] ${this.summary}`];
 
-        for (const i of this.skipped) lines.push(`  skipped: ${i.what}: ${i.reason}`);
+        for (const i of this.skipped) {
+            lines.push(`  skipped: ${i.what}: ${i.reason}`);
+        }
 
-        for (const i of this.unknown) lines.push(`  unknown: ${i.what}: ${i.reason}`);
+        for (const i of this.unknown) {
+            lines.push(`  unknown: ${i.what}: ${i.reason}`);
+        }
 
-        for (const c of this.commands) lines.push(`  run: ${c}`);
+        for (const c of this.commands) {
+            lines.push(`  run: ${c}`);
+        }
 
         return lines.join("\n");
     }

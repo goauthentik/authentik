@@ -9,7 +9,7 @@ import { jobs, unmappedJobs } from "#dev-mcp/checks/lint";
 import type { AllowEntry, Environment, PostgresKind } from "#dev-mcp/environment/discover";
 import { type Verdict, staticChecks, suggestedAllowlist } from "#dev-mcp/guard/verdict";
 import { Result } from "#dev-mcp/results/result";
-import { INSTRUCTIONS } from "#dev-mcp/server/instructions";
+import { INSTRUCTIONS } from "#dev-mcp/server/constants";
 
 import { describe, expect, it } from "vitest";
 

@@ -7,7 +7,9 @@ import { join } from "node:path";
 
 import { python } from "#dev-mcp/environment/python";
 import { ROOT } from "#dev/lib/git";
-import { missing } from "#dev/lib/optional";
+import { delegateImportError } from "#dev/lib/optional";
+
+// #region Types
 
 export interface ConfigValue {
     value: unknown;
@@ -35,11 +37,23 @@ export interface Config {
 
 type Tree = Record<string, unknown>;
 
+// #endregion
+
+// #region Helpers
+
+/**
+ * Access a nested value in a tree by its dot-separated path.
+ *
+ * @returns `undefined` if any part of the path is missing.
+ */
 function at(tree: unknown, path: string): unknown {
     let node = tree;
 
     for (const part of path.split(".")) {
-        if (node === null || typeof node !== "object") return undefined;
+        if (node === null || typeof node !== "object") {
+            return undefined;
+        }
+
         node = (node as Tree)[part];
     }
 
@@ -72,7 +86,7 @@ const display = (file: string) =>
  * Each config file's contents, for attributing values. Empty without the `yaml` package.
  */
 async function readFiles(files: string[]): Promise<(readonly [string, Tree])[]> {
-    const yaml = await import("yaml").catch(missing);
+    const yaml = await import("yaml").catch(delegateImportError);
 
     return files.map((file) => {
         try {
@@ -134,3 +148,5 @@ export async function loadConfig(): Promise<Config> {
         error,
     };
 }
+
+// #endregion

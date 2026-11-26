@@ -19,7 +19,7 @@ import { parseArgs } from "node:util";
 import type { Result } from "#dev-mcp/results/result";
 import { save } from "#dev-mcp/results/store";
 import { DEFAULT_BASE } from "#dev/lib/git";
-import { INSTALL_HINT, missing } from "#dev/lib/optional";
+import { INSTALL_HINT, delegateImportError } from "#dev/lib/optional";
 
 const HOOK_NAMES = ["session-start", "post-edit", "stop"] as const;
 
@@ -32,7 +32,7 @@ function print(result: Result, json: boolean): number {
 }
 
 async function status(json: boolean): Promise<number> {
-    const { LANGUAGE_SERVER_INSTALL, publicEnvironment } =
+    const { LANGUAGE_SERVER_COMMANDS: LANGUAGE_SERVER_INSTALL, publicEnvironment } =
         await import("#dev-mcp/environment/discover");
 
     const { inspect, suggestedAllowlist } = await import("#dev-mcp/guard/verdict");
@@ -114,7 +114,7 @@ async function lintChanged(paths: string[], base: string, fix: boolean) {
 }
 
 async function serve(): Promise<number> {
-    const server = await import("#dev-mcp/server/serve").catch(missing);
+    const server = await import("#dev-mcp/server/serve").catch(delegateImportError);
 
     if (!server) {
         const { NO_FALLBACK, serveFallback } = await import("#dev-mcp/server/fallback");

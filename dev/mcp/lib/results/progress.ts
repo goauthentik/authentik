@@ -21,6 +21,7 @@ export function counter(progress: Progress, total: number) {
         const value = await work;
 
         done++;
+
         progress(done, total, `${name} done (${done} of ${total})`);
 
         return value;
