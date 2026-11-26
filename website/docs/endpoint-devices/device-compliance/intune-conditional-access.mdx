@@ -25,7 +25,6 @@ The Endpoint stage only identifies the device. It does not check whether the dev
 - The [Microsoft Intune connector](./connectors/microsoft-intune.mdx) must be configured in authentik, and must have synchronized your devices.
 - A private certificate authority that issues certificates to devices through Intune, such as [Microsoft Cloud PKI](https://learn.microsoft.com/en-us/intune/cloud-pki/) or Active Directory Certificate Services.
 - authentik must receive client certificates, either from a reverse proxy or by terminating TLS itself. Refer to the [Mutual TLS stage documentation](../../add-secure-apps/flows-stages/stages/mtls/index.mdx#reverse-proxy-configuration) for more information.
-- Device names must be unique in Intune. Refer to [Device matching](./connectors/microsoft-intune.mdx#device-matching) for more information.
 
 ## Configure Intune and devices
 
@@ -34,12 +33,14 @@ Create a SCEP or PKCS certificate profile in Intune and assign it to every devic
 Configure the certificate profile with the following settings:
 
 - **Certificate type**: `User`. Browsers only use certificates from the user's certificate store.
-- **Subject alternative name**: add an attribute of type `URI` with the value `ID:Intune:GUID:{{DeviceId}}`.
+- **Subject alternative name**: add an attribute of type `URI` with the value `ID:Intune:GUID:{{DeviceId}}` or `ID:Microsoft Endpoint Manager:GUID:{{DeviceId}}`.
 - **Extended key usage**: `Client Authentication`
 
 :::warning Subject alternative name is required
 authentik rejects certificates that do not have a subject alternative name, and only reads the device ID from a URI in the format `ID:<name>:GUID:<device ID>`. A certificate that only contains the device ID in its subject is not accepted.
 :::
+
+The `ID:<name>:GUID:<device ID>` format is the subject alternative name URI scheme that [Cisco ISE uses for Intune integration](https://www.cisco.com/c/en/us/td/docs/security/ise/UEM-MDM-Server-Integration/b_MDM_UEM_Servers_CiscoISE.pdf), which is commonly used in Intune SCEP and PKCS certificate profiles.
 
 authentik matches the device ID against both the Intune device ID and the Entra ID device ID of the imported devices. You can therefore also use `ID:Intune:GUID:{{AAD_Device_ID}}` for devices that are joined to or registered with Entra ID.
 
@@ -93,6 +94,7 @@ To only allow devices that are compliant in Intune, add a [Deny stage](../../add
 5. Click **Finish**.
 6. Expand the Deny stage that you just created and click **Create and bind Policy**.
 7. Select **Expression policy** as the policy type, click **Next**, and configure the following settings:
+
     - **Name**: provide a descriptive name for the policy
     - **Expression**:
 
@@ -118,15 +120,6 @@ You can extend the expression with other [device facts](./connectors/microsoft-i
 
 - To also allow devices that are within their compliance grace period, check for `intune.get("compliance_state") not in ("compliant", "inGracePeriod")`.
 - To only allow devices that are owned by your organization, check for `intune.get("managed_device_owner_type") != "company"`.
-- To ensure that the certificate was issued to the device whose facts are evaluated, compare the device ID from the certificate with the Intune device ID:
-
-    ```python
-    certificate = flow_plan.context.get("certificate", {})
-    uris = certificate.get("san", {}).get("UniformResourceIdentifier", [])
-    device_ids = [uri.rpartition("GUID:")[2].lower() for uri in uris]
-    if intune.get("id", "").lower() not in device_ids:
-        return True
-    ```
 
 :::note Compliance changes are not immediate
 authentik synchronizes devices from Intune every 15 minutes. A change to the compliance state of a device in Intune only takes effect in authentik after the next synchronization.
@@ -135,4 +128,4 @@ authentik synchronizes devices from Intune every 15 minutes. A change to the com
 ## Troubleshooting
 
 - **Certificate required but no certificate was given**: the browser did not present a certificate, or the certificate could not be verified. Check that the certificate is installed in the user's certificate store, that it has a subject alternative name and the `Client Authentication` extended key usage, that it was issued by the certificate authority that is selected on the connector, and that your reverse proxy forwards client certificates to authentik.
-- **Failed to find device**: the certificate is valid, but no imported device has the device ID from the certificate. Check that the subject alternative name uses the format `ID:Intune:GUID:{{DeviceId}}`, and that the device is shown under **Endpoint Devices** > **Devices**.
+- **Failed to find device**: the certificate is valid, but no imported device has the device ID from the certificate. Check that the subject alternative name uses the format `ID:Intune:GUID:{{DeviceId}}` or `ID:Microsoft Endpoint Manager:GUID:{{DeviceId}}`, and that the device is shown under **Endpoint Devices** > **Devices**.
