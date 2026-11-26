@@ -5,7 +5,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "cd \"$CLAUDE_PROJECT_DIR\" && node packages/dev-mcp/src/main.ts hook session-start",
+                        "command": "cd \"$CLAUDE_PROJECT_DIR\" && node dev-mcp/main.ts hook session-start",
                         "timeout": 30
                     }
                 ]
@@ -17,7 +17,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "cd \"$CLAUDE_PROJECT_DIR\" && node packages/dev-mcp/src/main.ts hook post-edit",
+                        "command": "cd \"$CLAUDE_PROJECT_DIR\" && node dev-mcp/main.ts hook post-edit",
                         "timeout": 90
                     }
                 ]
@@ -28,7 +28,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "cd \"$CLAUDE_PROJECT_DIR\" && node packages/dev-mcp/src/main.ts hook stop",
+                        "command": "cd \"$CLAUDE_PROJECT_DIR\" && node dev-mcp/main.ts hook stop",
                         "timeout": 30
                     }
                 ]

@@ -1,0 +1,5 @@
+// TypeScript Project Configuration
+{
+    "extends": "@goauthentik/tsconfig/node",
+    "include": ["**/*.ts"]
+}

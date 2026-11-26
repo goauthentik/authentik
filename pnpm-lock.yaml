@@ -224,6 +224,9 @@ importers:
       '@goauthentik/tsconfig':
         specifier: workspace:*
         version: link:packages/tsconfig
+      '@modelcontextprotocol/server':
+        specifier: ^2.4.0
+        version: 2.4.0
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.6
@@ -233,6 +236,9 @@ importers:
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
+      pg:
+        specifier: ^8.23.1
+        version: 8.23.1
       pino:
         specifier: ^10.4.0
         version: 10.4.0
@@ -245,10 +251,19 @@ importers:
       yaml:
         specifier: ^2.9.1
         version: 2.9.1
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
     devDependencies:
+      '@modelcontextprotocol/client':
+        specifier: ^2.4.0
+        version: 2.4.0
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
+      '@types/pg':
+        specifier: ^8.23.1
+        version: 8.23.1
       mdast-util-from-markdown:
         specifier: ^2.1.0
         version: 2.1.0(supports-color@8.1.1)
@@ -264,6 +279,9 @@ importers:
       oxlint:
         specifier: 'catalog:'
         version: 1.94.0
+      vitest:
+        specifier: 'catalog:'
+        version: 5.1.1(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))
 
   lifecycle/aws:
     devDependencies:
@@ -300,55 +318,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
-
-  packages/dev-mcp:
-    dependencies:
-      '@modelcontextprotocol/server':
-        specifier: ^2.4.0
-        version: 2.4.0
-      pg:
-        specifier: ^8.23.1
-        version: 8.23.1
-      yaml:
-        specifier: ^2.9.1
-        version: 2.9.1
-      zod:
-        specifier: ^4.6.7
-        version: 4.6.7
-    devDependencies:
-      '@goauthentik/oxfmt-config':
-        specifier: link:../oxfmt-config
-        version: link:../oxfmt-config
-      '@goauthentik/oxlint-config':
-        specifier: link:../oxlint-config
-        version: link:../oxlint-config
-      '@goauthentik/tsconfig':
-        specifier: link:../tsconfig
-        version: link:../tsconfig
-      '@modelcontextprotocol/client':
-        specifier: ^2.4.0
-        version: 2.4.0
-      '@types/node':
-        specifier: 'catalog:'
-        version: 26.6.6
-      '@types/pg':
-        specifier: ^8.23.1
-        version: 8.23.1
-      npm-run-all:
-        specifier: ^4.1.5
-        version: 4.1.5
-      oxfmt:
-        specifier: 'catalog:'
-        version: 0.79.0
-      oxlint:
-        specifier: 'catalog:'
-        version: 1.94.0
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.3
-      vitest:
-        specifier: 'catalog:'
-        version: 5.1.1(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))
 
   packages/docusaurus-config:
     dependencies:

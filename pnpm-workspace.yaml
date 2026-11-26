@@ -5,7 +5,6 @@ packages:
   - "packages/docusaurus-config"
   - "packages/esbuild-plugin-live-reload"
   - "packages/fonts"
-  - "packages/dev-mcp"
   - "packages/geo"
   - "packages/logger-js"
   - "packages/theme"

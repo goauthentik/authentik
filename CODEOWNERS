@@ -62,7 +62,7 @@ pnpm-workspace.yaml                     @goauthentik/frontend
 /.claude/settings.json                  @goauthentik/backend @goauthentik/frontend
 /.codex/                                @goauthentik/backend @goauthentik/frontend
 /.mcp.json                              @goauthentik/backend @goauthentik/frontend
-/packages/dev-mcp                       @goauthentik/backend @goauthentik/frontend
+/dev-mcp/                               @goauthentik/backend @goauthentik/frontend
 # Docs
 /website/                               @goauthentik/docs
 CODE_OF_CONDUCT.md                      @goauthentik/docs
