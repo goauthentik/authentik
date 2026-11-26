@@ -11,6 +11,7 @@ import { pluckErrorDetail } from "#common/errors/network";
 import { actionToLabel, severityToLevel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
 import { plural } from "#common/ui/locale/plurals";
+import { isHTTPURL } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
@@ -70,7 +71,7 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
     //#region Rendering
 
     protected renderHyperlink(item: Notification) {
-        if (!item.hyperlink) {
+        if (!item.hyperlink || !isHTTPURL(item.hyperlink)) {
             return nothing;
         }
 

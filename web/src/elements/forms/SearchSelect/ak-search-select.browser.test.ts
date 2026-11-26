@@ -3,8 +3,8 @@ import { SearchSelect } from "./ak-search-select.js";
 import { SearchSelectActionEvent, SearchSelectChangeEvent } from "./events.js";
 import { formatOptionID, type SearchSelectSource } from "./shared.js";
 
-import { userEvent } from "@vitest/browser/context";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { userEvent } from "vitest/browser";
 
 interface Item {
     pk: string;

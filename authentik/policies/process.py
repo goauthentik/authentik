@@ -5,6 +5,7 @@ from multiprocessing.connection import Connection
 from time import perf_counter
 
 from django.core.cache import cache
+from django.db import DatabaseError
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
@@ -99,11 +100,14 @@ class PolicyProcess(PROCESS_CLASS):
                 policy_result.passing = not policy_result.passing
             if self.binding.policy and not self.request.debug and not self.binding.dry_run:
                 if self.binding.policy.execution_logging:
-                    self.create_event(
-                        EventAction.POLICY_EXECUTION,
-                        message="Policy Execution",
-                        result=policy_result,
-                    )
+                    try:
+                        self.create_event(
+                            EventAction.POLICY_EXECUTION,
+                            message="Policy Execution",
+                            result=policy_result,
+                        )
+                    except DatabaseError as exc:
+                        LOGGER.warning("Failed to log policy execution", exc=exc)
         except PolicyException as exc:
             # Either use passed original exception or whatever we have
             src_exc = exc.src_exc if exc.src_exc else exc
@@ -130,7 +134,10 @@ class PolicyProcess(PROCESS_CLASS):
         should_cache = self.use_cache and self.request.should_cache
         if should_cache:
             key = cache_key(self.binding, self.request)
-            cache.set(key, policy_result, CACHE_TIMEOUT)
+            try:
+                cache.set(key, policy_result, CACHE_TIMEOUT)
+            except DatabaseError as exc:
+                LOGGER.warning("Failed to cache policy result", exc=exc)
         LOGGER.debug(
             "P_ENG(proc): finished",
             policy=self.binding.policy,
@@ -163,6 +170,7 @@ class PolicyProcess(PROCESS_CLASS):
             result._exec_time = max((end - start), 0)
         except Exception as exc:  # noqa
             LOGGER.warning("Policy failed to run", exc=exc)
-            result = PolicyResult(False, str(exc))
+            result = PolicyResult(self.binding.failure_result, str(exc))
+            result.source_binding = self.binding
         finally:
             self.connection.send(result)
