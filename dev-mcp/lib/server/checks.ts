@@ -1,6 +1,5 @@
 /**
- * @file The long-running check tools, `akdev_lint` and `akdev_generated`, and `akdev_job` to poll
- *   them.
+ * @file Register long-running lint and generated-file checks.
  */
 
 import { checkGenerated } from "#dev-mcp/checks/generated";

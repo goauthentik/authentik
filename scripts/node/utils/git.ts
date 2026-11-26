@@ -1,8 +1,7 @@
 import { $ } from "./commands.ts";
 
 /**
- * Environment for git plumbing: no user configuration is needed, and a global config file the
- * process cannot read is fatal to git rather than a warning.
+ * @file Run Git plumbing without user or system configuration.
  */
 const GIT_ENV: NodeJS.ProcessEnv = {
     ...process.env,

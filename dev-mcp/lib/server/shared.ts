@@ -37,11 +37,7 @@ export const JOB_NOTE =
     "way the run is a job, and the first progress message names it, so a call that times out " +
     "can be picked up with akdev_job.";
 
-/**
- * Run `fn` as a job. With a progress token from the client, keep the call open, forward each
- * progress report as `notifications/progress`, and return the finished job. Without one,
- * return the running job at once for the agent to poll.
- */
+/** Run `fn` as a job, reporting progress when the client supports it. */
 export async function runJob(
     ctx: ServerContext,
     tool: string,

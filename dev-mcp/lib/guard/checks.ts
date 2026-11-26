@@ -14,7 +14,9 @@ export interface Check {
     fix?: string;
 }
 
-/** The allowlist entry naming this database, matched on name and, when given, host. */
+/**
+ * The allowlist entry naming this database, matched on name and, when given, host.
+ */
 export function allowEntry(env: Environment): AllowEntry | null {
     const host = String(env.config.pgHost.value);
     const name = String(env.config.pgName.value);

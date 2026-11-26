@@ -24,7 +24,9 @@ interface Job {
     finished: number | null;
     result: Result | null;
     error: string | null;
-    /** Settles when the job finishes, whether it passed or threw. */
+    /**
+     * Settles when the job finishes, whether it passed or threw.
+     */
     settled: Promise<void>;
 }
 
@@ -41,7 +43,9 @@ function view(job: Job): JobState {
     };
 }
 
-/** Start `fn` in the background, saving its result to the store under `storeAs`. */
+/**
+ * Start `fn` in the background, saving its result to the store under `storeAs`.
+ */
 export function start(tool: string, storeAs: string, fn: () => Promise<Result>): JobState {
     const job: Job = {
         id: randomUUID().slice(0, 8),
@@ -73,7 +77,9 @@ export function start(tool: string, storeAs: string, fn: () => Promise<Result>):
     return view(job);
 }
 
-/** The job's state once it has finished, for a tool call that stays open until then. */
+/**
+ * The job's state once it has finished, for a tool call that stays open until then.
+ */
 export async function wait(id: string): Promise<JobState | null> {
     const job = registry.get(id);
 

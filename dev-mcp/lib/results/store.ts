@@ -1,8 +1,5 @@
 /**
- * @file Results written under the git directory, so hooks and make wrappers can read them.
- *   Hooks run as separate processes, and a make wrapper run by hand has no server, so results can't
- *   live only in the server's memory. Each result carries the tree fingerprint it was computed
- *   against; a result whose fingerprint doesn't match the current tree counts as missing.
+ * @file Persist check results under the Git directory for hooks and command-line wrappers.
  */
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";

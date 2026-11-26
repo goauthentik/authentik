@@ -1,7 +1,5 @@
 /**
- * @file Claude Code hooks. Each reads the hook's JSON on stdin and never blocks on its own errors.
- *   Hooks use only Node built-ins and repo sources that load without installed packages
- *   (scripts/node/utils): SessionStart fires on a fresh clone, before `pnpm install`.
+ * @file Claude Code hooks; keep dependencies to Node built-ins for fresh clones.
  */
 
 import { existsSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
@@ -52,10 +50,7 @@ function sessionStart(): void {
     emit("SessionStart", context);
 }
 
-/**
- * An installed JS tool's binary, or null. `pnpm exec` would install the whole workspace first on
- * a fresh clone, so the hook runs binaries directly and skips tools that aren't there.
- */
+/** Resolve an installed tool binary without triggering workspace installation. */
 function bin(dir: string, tool: string): string | null {
     const path = join(ROOT, dir, "node_modules", ".bin", tool);
 
@@ -119,7 +114,7 @@ async function postEdit(input: HookInput): Promise<void> {
     if (notes.length) emit("PostToolUse", notes.join("\n\n"));
 }
 
-/** Block once per session if Django code changed and generated files weren't checked. */
+/** Block once per session when Django changes have not had generated-file checks. */
 function stop(input: HookInput): void {
     if (input.stop_hook_active) return;
     const session = String(input.session_id ?? "");

@@ -1,10 +1,5 @@
 /**
- * @file Whether the active Node.js fits `engines.node`, and if not, an nvm-installed one that does.
- *   `make install` stops at `node-preinstall` (scripts/node/lint-runtime.ts) when the active Node
- *   is out of range. Setup mode checks the same range first and, when nvm already has a version
- *   that fits, puts it first on PATH for `make install` and the real server, so no download and
- *   no shell function is needed. The range check is lint-runtime's own, from
- *   scripts/node/utils/versions.ts, which runs before `pnpm install` too.
+ * @file Select an installed Node.js version that satisfies `engines.node`, if available.
  */
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
@@ -45,7 +40,9 @@ export function nvmDir(): string {
     return process.env.NVM_DIR || join(homedir(), ".nvm");
 }
 
-/** Versions nvm has installed, newest first, each with its `bin` directory. */
+/**
+ * Versions nvm has installed, newest first, each with its `bin` directory.
+ */
 export function nvmVersions(dir = nvmDir()): { version: string; bin: string }[] {
     const root = join(dir, "versions", "node");
 
@@ -58,7 +55,9 @@ export function nvmVersions(dir = nvmDir()): { version: string; bin: string }[] 
         .sort((a, b) => compareVersions(b.version, a.version));
 }
 
-/** The newest major the range allows, for an `nvm install` suggestion. */
+/**
+ * The newest major the range allows, for an `nvm install` suggestion.
+ */
 function suggestedMajor(range: string): string | null {
     const majors = range
         .split("||")

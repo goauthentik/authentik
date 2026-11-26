@@ -1,6 +1,5 @@
 /**
- * @file Load an installed dependency lazily, so commands that don't need it work before
- *   `pnpm install`. The same approach as `pino` in packages/logger-js/lib/node.ts.
+ * @file Load optional dependencies lazily so commands can run before `pnpm install`.
  */
 
 import { existsSync } from "node:fs";
@@ -23,12 +22,16 @@ export function missing(error: unknown): null {
     throw error;
 }
 
-/** Why something couldn't run, for a result's `unknown` list or a failed check. */
+/**
+ * Why something couldn't run, for a result's `unknown` list or a failed check.
+ */
 export function notInstalled(pkg: string): string {
     return `\`${pkg}\` isn't installed. ${INSTALL_HINT}`;
 }
 
-/** Whether `pkg` resolves from here, by Node's own resolution rules. */
+/**
+ * Whether `pkg` resolves from here, by Node's own resolution rules.
+ */
 export function isInstalled(pkg: string): boolean {
     try {
         import.meta.resolve(pkg);

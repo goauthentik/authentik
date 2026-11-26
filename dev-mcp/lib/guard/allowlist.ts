@@ -12,8 +12,9 @@ import type { Check } from "#dev-mcp/guard/checks";
 import { storeDir } from "#dev-mcp/results/store";
 
 /**
- * Report when the allowlist differs from the last run. The person may not have read the diff
- * that changed it.
+ * Report when the allowlist differs from the last run.
+ *
+ * The person may not have read the diff that changed it.
  */
 export function allowlistChanged(env: Environment): boolean {
     const digest = createHash("sha256")
@@ -27,7 +28,9 @@ export function allowlistChanged(env: Environment): boolean {
     return previous !== null && previous !== digest;
 }
 
-/** The local.env.yml entry that would admit this database, for the person to review. */
+/**
+ * The local.env.yml entry that would admit this database, for the person to review.
+ */
 export function suggestedAllowlist(env: Environment, failed: Check[]): string | null {
     const signals = failed
         .filter((c) => c.name.startsWith("signal_"))

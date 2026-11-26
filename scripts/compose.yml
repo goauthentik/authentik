@@ -30,7 +30,7 @@ services:
     # Only run when explicitly invoked (e.g. `make gen-diff`), never on `docker compose up`.
     profiles:
       - diff
-    # Quoted: unquoted, YAML reads `no` as false, which podman-compose passes on as "False".
+    # Quote `no` so YAML parsers keep it as a string.
     restart: "no"
     network_mode: none
     volumes:

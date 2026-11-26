@@ -68,7 +68,9 @@ async function detectRuntime(): Promise<Runtime> {
     };
 }
 
-/** The running container that publishes `port` on this host, if any. */
+/**
+ * The running container that publishes `port` on this host, if any.
+ */
 export async function portOwner(port: number): Promise<string | null> {
     const rt = await containerRuntime();
 

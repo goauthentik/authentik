@@ -1,5 +1,5 @@
 /**
- * @file The authentik-dev MCP server: stdio, no credentials, local dev database only.
+ * @file MCP server entry point.
  */
 
 import { containerRuntime } from "#dev-mcp/environment/runtime";

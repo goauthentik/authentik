@@ -1,7 +1,5 @@
 /**
- * @file The result shape every tool and make wrapper returns.
- *   `skipped` means the check chose not to look at something. `unknown` means it tried and couldn't
- *   tell. The summary names both, so an agent repeating it verbatim stays accurate.
+ * @file Shared result shape for checks and their command-line wrappers.
  */
 
 export interface Item {
@@ -31,7 +29,9 @@ export class Result implements ResultData {
     public commands: string[] = [];
     public fingerprint: string | null = null;
     public data: Record<string, unknown> = {};
-    /** The headline the summary was built from, so a caller can add an item and finish again. */
+    /**
+     * The headline the summary was built from, so a caller can add an item and finish again.
+     */
     public headline = "";
 
     constructor(tool: string) {

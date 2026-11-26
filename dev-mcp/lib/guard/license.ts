@@ -14,7 +14,9 @@ import { ROOT } from "#dev-mcp/core/repo";
 
 export const LICENSING_ROOT = join(ROOT, "authentik", "enterprise", "public.pem");
 
-/** JWT algorithms authentik licenses use, and the hash each one signs with. */
+/**
+ * JWT algorithms authentik licenses use, and the hash each one signs with.
+ */
 const ALGORITHMS: Record<string, string> = { ES384: "sha384", ES512: "sha512" };
 
 export type LicenseCheck =

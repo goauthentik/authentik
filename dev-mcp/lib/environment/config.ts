@@ -46,7 +46,9 @@ function at(tree: unknown, path: string): unknown {
     return node;
 }
 
-/** The config files authentik's loader reads, in its order (see `SEARCH_PATHS`). */
+/**
+ * The config files authentik's loader reads, in its order (see `SEARCH_PATHS`).
+ */
 export function configFiles(): string[] {
     const env = process.env.AUTHENTIK_ENV ?? "local";
     const files = [join(ROOT, "authentik/lib/default.yml"), "/etc/authentik/config.yml"];
@@ -66,7 +68,9 @@ export function configFiles(): string[] {
 const display = (file: string) =>
     file.startsWith(`${ROOT}/`) ? file.slice(ROOT.length + 1) : file;
 
-/** Each config file's contents, for attributing values. Empty without the `yaml` package. */
+/**
+ * Each config file's contents, for attributing values. Empty without the `yaml` package.
+ */
 async function readFiles(files: string[]): Promise<(readonly [string, Tree])[]> {
     const yaml = await import("yaml").catch(missing);
 

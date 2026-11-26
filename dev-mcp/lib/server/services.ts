@@ -1,6 +1,5 @@
 /**
- * @file `akdev_services`: bring the dev containers in scripts/compose.yml up or down. Registered
- *   only when this machine has Docker or Podman with compose; a native Postgres needs none of it.
+ * @file Register tools for managing the local development containers.
  */
 
 import type { Runtime } from "#dev-mcp/environment/runtime";

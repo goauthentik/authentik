@@ -12,7 +12,10 @@ import type { Client } from "pg";
 export const USER_THRESHOLD = 50;
 export const LOGIN_WINDOW_DAYS = 7;
 export const SIGNALS = ["license", "users", "external_logins"] as const;
-/** Keep in step with `E2E_ATTRIBUTE` in web/e2e/fixtures/FormFixture.ts. */
+
+/**
+ * Keep in step with `E2E_ATTRIBUTE` in web/e2e/fixtures/FormFixture.ts.
+ */
 export const E2E_ATTRIBUTE = "goauthentik.io/testing/e2e";
 
 const PRIVATE_RANGES = [
@@ -39,7 +42,9 @@ const SIGNAL_SQL = {
     external_logins: EXTERNAL_LOGINS_SQL,
 } as const;
 
-/** 42P01: the table doesn't exist yet (an unmigrated database). */
+/**
+ * 42P01: the table doesn't exist yet (an unmigrated database).
+ */
 const isUndefinedTable = (error: unknown) => (error as { code?: string }).code === "42P01";
 
 async function count(client: Client, sql: string): Promise<number | null> {

@@ -1,5 +1,5 @@
 /**
- * @file The repo's Agent Skills from `.agents/skills/`, for clients that didn't load them.
+ * @file Read repository skills for clients that do not load them directly.
  */
 
 import { readdirSync, readFileSync, statSync } from "node:fs";

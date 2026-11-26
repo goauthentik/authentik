@@ -1,5 +1,5 @@
 /**
- * @file Git helpers: repo root, changed files, and the tree fingerprint.
+ * @file Git helpers for repository paths, changed files, and tree fingerprints.
  */
 
 import { execFileSync } from "node:child_process";
@@ -7,13 +7,20 @@ import { createHash } from "node:crypto";
 import { statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
-/** dev-mcp/lib/core/ → the repo root. */
+/**
+ * dev-mcp/lib/core/ → the repo root.
+ */
 export const ROOT = resolve(import.meta.dirname, "..", "..", "..");
 export const DEFAULT_BASE = "origin/main";
 
-/** Plumbing needs no user config, and an unreadable global config is fatal to git. */
+/**
+ * Plumbing needs no user config, and an unreadable global config is fatal to git.
+ */
 export const GIT_ENV = { GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_NOSYSTEM: "1" };
 
+/**
+ * Run a git command in the repo root, optionally checking for errors.
+ */
 export function git(args: string[], check = true): string {
     try {
         return execFileSync("git", args, {
@@ -30,7 +37,9 @@ export function git(args: string[], check = true): string {
     }
 }
 
-/** The per-worktree git directory, so each worktree keeps its own results. */
+/**
+ * The per-worktree git directory, so each worktree keeps its own results.
+ */
 export function gitDir(): string {
     return git(["rev-parse", "--absolute-git-dir"]);
 }
@@ -59,9 +68,7 @@ export function changedSinceBase(path: string, base = DEFAULT_BASE): boolean {
 }
 
 /**
- * HEAD, the dirty file list, and each dirty file's mtime and size.
- *
- * Hashing every file on each call would cost more than it saves, so only dirty files are stat'ed.
+ * HEAD and metadata for dirty files, used to detect changes without hashing the full tree.
  */
 export function fingerprint(...paths: string[]): string {
     const status = git(["status", "--porcelain", "--untracked-files=all", "--", ...paths]);

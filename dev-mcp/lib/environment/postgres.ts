@@ -8,7 +8,9 @@ import { createConnection, isIP } from "node:net";
 import type { Config } from "#dev-mcp/environment/config";
 import { portOwner } from "#dev-mcp/environment/runtime";
 
-/** `down`: the host is this machine, but nothing accepts connections on the port. */
+/**
+ * `down`: the host is this machine, but nothing accepts connections on the port.
+ */
 export type PostgresKind = "container" | "socket" | "local" | "down" | "remote" | "unknown";
 
 export interface Postgres {
@@ -38,7 +40,9 @@ export async function isLoopback(host: string): Promise<boolean> {
     }
 }
 
-/** Whether anything accepts a TCP connection on `host:port`. */
+/**
+ * Whether anything accepts a TCP connection on `host:port`.
+ */
 export function listening(host: string, port: number, timeoutMs = 1_500): Promise<boolean> {
     return new Promise((resolve) => {
         const socket = createConnection({ host: host || "localhost", port });

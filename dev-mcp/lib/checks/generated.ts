@@ -1,6 +1,5 @@
 /**
- * @file Are migrations, schemas, locales and API clients in step with the code?
- *   Mirrors the `test-gen` and `pending-migrations` CI jobs, through the same management commands.
+ * @file Check generated files and migrations using the CI management commands.
  */
 
 import { copyFileSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
@@ -172,7 +171,7 @@ export async function checkGenerated(
 
     progress(0, 4, "migrations, schemas and locales (in parallel)");
 
-    // Each starts its own Django process; running them together roughly halves the wait.
+    // Each command starts Django, so run them concurrently.
     const [, schemaStale] = await Promise.all([
         step("migrations", migrations(result, stale)),
         step("schemas", schemas(result, stale, regenerate === "schema")),
@@ -192,7 +191,7 @@ export async function checkGenerated(
         : "Migrations, schemas and locales are up to date";
 
     if (written.length) headline += `. Regenerated: ${written.join(", ")}`;
-    // A schema write changes the tree, so fingerprint after it.
+    // Record the fingerprint after regeneration changes the tree.
     result.fingerprint = fingerprint();
 
     return result.finish(headline);

@@ -1,5 +1,5 @@
 /**
- * @file Run a command and capture its output. Never throws for a failed or missing command.
+ * @file Run a command and capture its output, including failures.
  */
 
 import { spawn } from "node:child_process";
@@ -63,12 +63,16 @@ export function run(command: string, args: string[], options: RunOptions = {}): 
     });
 }
 
-/** The output a person would see: both streams, trimmed to the last `limit` characters. */
+/**
+ * The output a person would see: both streams, trimmed to the last `limit` characters.
+ */
 export function tail(result: RunResult, limit = 3000): string {
     return `${result.stdout}${result.stderr}`.trim().slice(-limit);
 }
 
-/** Whether `command` is on PATH. */
+/**
+ * Whether `command` is on PATH.
+ */
 export function which(command: string): boolean {
     for (const dir of (process.env.PATH ?? "").split(delimiter)) {
         try {
@@ -83,7 +87,9 @@ export function which(command: string): boolean {
     return false;
 }
 
-/** The first `x.y` or `x.y.z` version in a command's output, or null if it isn't installed. */
+/**
+ * The first `x.y` or `x.y.z` version in a command's output, or null if it isn't installed.
+ */
 export async function version(command: string, args = ["--version"]): Promise<string | null> {
     if (!which(command)) return null;
     const result = await run(command, args, { timeoutMs: 5_000 });
@@ -95,13 +101,13 @@ export async function version(command: string, args = ["--version"]): Promise<st
 }
 
 /**
- * `uv run` that never installs: plain `uv run` syncs the whole environment first, which on a fresh
- * clone means building it, about 1 GB. Without an environment the command fails, and the caller
- * reports that `make install` is needed.
+ * Run `uv` without syncing the environment; callers can report when setup is required.
  */
 export const UV_RUN = ["uv", "run", "--frozen", "--no-sync"] as const;
 
-/** Run Python in the repo's environment, from the repo root. */
+/**
+ * Run Python in the repo's environment, from the repo root.
+ */
 export function python(args: string[], options: RunOptions = {}): Promise<RunResult> {
     const [uv, ...uvArgs] = UV_RUN;
 

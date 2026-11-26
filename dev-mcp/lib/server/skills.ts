@@ -1,5 +1,5 @@
 /**
- * @file The repo's skills, as `akdev_skill` and through the Skills-over-MCP extension.
+ * @file Expose repository skills through MCP.
  */
 
 import { SKILLS_DIR, listSkills, readSkill } from "#dev-mcp/agent/skills";

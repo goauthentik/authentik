@@ -1,8 +1,5 @@
 /**
- * @file Find out how this machine runs authentik's dev dependencies, without assuming.
- *   Contributors run Postgres in Docker, in Podman, natively, or on a dev VM. Discovery reads; it
- *   never starts, stops or installs anything. Whatever it can't classify is reported as unknown,
- *   with the raw facts it found.
+ * @file Read-only discovery of local development dependencies and runtime details.
  */
 
 import { version } from "#dev-mcp/core/run";
@@ -25,7 +22,9 @@ export interface Environment {
     languageServers: Record<string, string | null>;
 }
 
-/** How to install each language server `discover()` looks for. */
+/**
+ * How to install each language server `discover()` looks for.
+ */
 export const LANGUAGE_SERVER_INSTALL: Record<string, string> = {
     "typescript-language-server": "npm install -g typescript-language-server typescript",
     "rust-analyzer": "rustup component add rust-analyzer",
@@ -61,7 +60,9 @@ export async function discover(): Promise<Environment> {
     };
 }
 
-/** Everything except the database password. */
+/**
+ * Everything except the database password.
+ */
 export function publicEnvironment(env: Environment): Record<string, unknown> {
     const { password: _password, ...config } = env.config;
 

@@ -45,7 +45,9 @@ export async function evaluate(env: Environment, connect = true): Promise<Verdic
     };
 }
 
-/** A verdict for a guard that couldn't run at all, so the reason still reaches the person. */
+/**
+ * A verdict for a guard that couldn't run at all, so the reason still reaches the person.
+ */
 function unavailable(error: unknown): Verdict {
     return {
         ok: false,
@@ -62,8 +64,8 @@ function unavailable(error: unknown): Verdict {
 }
 
 /**
- * The environment and its verdict, without throwing: a setup this can't read at all, such as a
- * git or config command that fails, becomes a failed check.
+ * The environment and its verdict, without throwing: a setup this can't read at all,
+ * such as a git or config command that fails, becomes a failed check.
  */
 export async function inspect(): Promise<{ env: Environment | null; verdict: Verdict }> {
     let env: Environment | null = null;
@@ -77,7 +79,9 @@ export async function inspect(): Promise<{ env: Environment | null; verdict: Ver
     }
 }
 
-/** The local.env.yml entry that would admit this database, for the person to review. */
+/**
+ * The local.env.yml entry that would admit this database, for the person to review.
+ */
 export function suggestedAllowlist(env: Environment, verdict: Verdict): string | null {
     return suggest(env, failedChecks(verdict));
 }

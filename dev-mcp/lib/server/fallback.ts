@@ -1,11 +1,5 @@
 /**
- * @file The setup-mode MCP server, for a clone whose dependencies aren't installed yet.
- *   Without the MCP SDK the real server can't start, and an MCP client only sees a closed
- *   connection. This speaks just enough of the protocol, with Node built-ins, to connect and say
- *   what's missing: its instructions and `akdev_status` explain, and `akdev_install` runs
- *   `make install` once the person approves. When the dependencies appear, from that tool or from
- *   a `make install` run anywhere, it starts the real server as a child, hands the session over,
- *   and tells the client its tool list changed. No restart.
+ * @file Minimal MCP server used until project dependencies are installed.
  */
 
 import { spawn } from "node:child_process";

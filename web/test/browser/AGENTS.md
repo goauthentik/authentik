@@ -12,7 +12,7 @@ These are Playwright tests run under Vitest's browser runner (Chromium). They ex
 
 **No explicit cleanup.** Entity names are seeded with `IDGenerator.randomID(...)` so each run produces unique slugs. Stale entities from prior runs don't collide and are expected to accumulate in dev environments. Don't add `try/finally` cleanup blocks — they obscure the assertion at the end of the test and tend to swallow the real failure when the UI flow breaks.
 
-**Tag what you create.** Before submitting a form that creates a user or group, call `form.markAsTestData(dialog)`. It sets `goauthentik.io/testing/e2e: true` in the form's attributes editor, so tooling can tell accumulated test data from real objects. The authentik-dev MCP server's database guard, for one, doesn't count tagged users when it judges whether a database looks like production.
+**Tag created users and groups.** Call `form.markAsTestData(dialog)` before submitting their forms. This sets `goauthentik.io/testing/e2e: true`, which the development database guard uses to exclude test users from its production heuristic.
 
 ## Imports
 

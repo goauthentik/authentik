@@ -22,11 +22,15 @@ export const SERVICES = ["postgresql", "s3"] as const;
 
 export type ServicesAction = "up" | "down" | "status";
 
-/** Where scripts/compose.yml publishes Postgres. */
+/**
+ * Where scripts/compose.yml publishes Postgres.
+ */
 const COMPOSE_POSTGRES = { host: "127.0.0.1", port: 5432 };
 const READY_TIMEOUT_MS = 60_000;
 
-/** The compose command for `action` on this machine, or null when there's no runtime or compose. */
+/**
+ * The compose command for `action` on this machine, or null when there's no runtime or compose.
+ */
 export function composeCommand(runtime: Runtime, action: ServicesAction): string[] | null {
     if (runtime.kind === "none" || !runtime.compose) return null;
 

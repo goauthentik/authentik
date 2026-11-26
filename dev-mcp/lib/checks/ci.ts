@@ -1,6 +1,5 @@
 /**
- * @file Read the lint jobs and generated paths from the Makefile and CI workflows, so rules
- *   aren't copied by hand.
+ * @file Read lint jobs and generated paths from the Makefile and CI workflows.
  */
 
 import { readFileSync } from "node:fs";

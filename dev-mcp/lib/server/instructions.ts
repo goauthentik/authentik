@@ -1,6 +1,5 @@
 /**
- * @file The server instructions clients put in front of the model.
- *   The first 512 characters carry the rules: Codex only guarantees that much.
+ * @file Instructions supplied to MCP clients.
  */
 
 export const INSTRUCTIONS = `\

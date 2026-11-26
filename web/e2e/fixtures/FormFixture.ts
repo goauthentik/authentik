@@ -3,9 +3,7 @@ import type { LocatorContext } from "#e2e/selectors/types";
 
 import { expect, Locator, Page } from "@playwright/test";
 
-/**
- * Attribute set on users, groups and other objects the e2e suite creates.
- */
+/** Attribute used to identify objects created by e2e tests. */
 export const E2E_ATTRIBUTE = "goauthentik.io/testing/e2e";
 
 export class FormFixture extends PageFixture {
@@ -282,12 +280,7 @@ export class FormFixture extends PageFixture {
         }
     };
 
-    /**
-     * Tag the object a form creates as e2e test data, by setting {@linkcode E2E_ATTRIBUTE} in the
-     * form's "Advanced settings" attributes editor. Test objects accumulate in dev databases by
-     * design; the tag lets tooling such as the authentik-dev database guard tell them apart from
-     * real ones.
-     */
+    /** Mark the form's object as e2e test data in its attributes. */
     public markAsTestData = async (context: LocatorContext = this.page): Promise<void> => {
         await this.setFormGroup(/Advanced settings/, true, context);
 
