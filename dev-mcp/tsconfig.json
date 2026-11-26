@@ -2,7 +2,7 @@
 {
     "extends": "@goauthentik/tsconfig/node",
     "compilerOptions": {
-        // lib/environment/node.ts reuses scripts/node/utils, lint-runtime's version checks.
+        // lib/environment/node.ts imports #scripts/utils/versions, lint-runtime's version checks.
         "rootDir": ".."
     },
     "include": ["**/*.ts"]

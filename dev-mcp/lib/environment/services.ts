@@ -6,6 +6,7 @@
  */
 
 import { run, tail } from "#dev-mcp/core/run";
+import { loadConfig } from "#dev-mcp/environment/config";
 import { listening } from "#dev-mcp/environment/postgres";
 import type { Runtime } from "#dev-mcp/environment/runtime";
 import { type Progress, noProgress } from "#dev-mcp/results/progress";
@@ -21,7 +22,8 @@ export const SERVICES = ["postgresql", "s3"] as const;
 
 export type ServicesAction = "up" | "down" | "status";
 
-const POSTGRES = { host: "127.0.0.1", port: 5432 };
+/** Where scripts/compose.yml publishes Postgres. */
+const COMPOSE_POSTGRES = { host: "127.0.0.1", port: 5432 };
 const READY_TIMEOUT_MS = 60_000;
 
 /** The compose command for `action` on this machine, or null when there's no runtime or compose. */
@@ -62,11 +64,34 @@ export function composeUpFix(runtime: Runtime): string | null {
     return `Start the dev containers with akdev_services or \`${up}\` ${tail}`;
 }
 
-async function waitForPostgres(): Promise<boolean> {
+export interface PostgresTarget {
+    host: string;
+    port: number;
+}
+
+/**
+ * Where authentik will connect, from its resolved config, so `up` waits on the same address the
+ * guard checks. The compose file's address when the config can't be read; null for a Unix
+ * socket, which has no port to watch.
+ */
+export async function postgresTarget(): Promise<PostgresTarget | null> {
+    const config = await loadConfig();
+
+    if (config.error) return COMPOSE_POSTGRES;
+
+    const host = String(config.pgHost.value ?? "");
+    const port = Number(config.pgPort.value);
+
+    if (host.startsWith("/")) return null;
+
+    return { host: host || "localhost", port: Number.isInteger(port) ? port : 5432 };
+}
+
+async function waitForPostgres({ host, port }: PostgresTarget): Promise<boolean> {
     const deadline = Date.now() + READY_TIMEOUT_MS;
 
     while (Date.now() < deadline) {
-        if (await listening(POSTGRES.host, POSTGRES.port)) return true;
+        if (await listening(host, port)) return true;
 
         await new Promise((r) => setTimeout(r, 1_000));
     }
@@ -78,6 +103,7 @@ export async function services(
     runtime: Runtime,
     action: ServicesAction,
     progress: Progress = noProgress,
+    target?: PostgresTarget | null,
 ): Promise<Result> {
     const result = new Result("akdev_services");
     const cmd = composeCommand(runtime, action);
@@ -113,21 +139,35 @@ export async function services(
     }
 
     if (action === "up") {
-        progress(1, total, "waiting for Postgres to accept connections");
-        const ready = await waitForPostgres();
+        const address = target === undefined ? await postgresTarget() : target;
+
+        if (!address) {
+            result.unsure("Postgres", "configured on a Unix socket; there is no port to wait on");
+
+            return result.finish(`Started ${SERVICES.join(" and ")}`);
+        }
+
+        const where = `${address.host}:${address.port}`;
+
+        progress(1, total, `waiting for Postgres on ${where}`);
+
+        const ready = await waitForPostgres(address);
+
         progress(2, total, ready ? "Postgres is ready" : "Postgres didn't answer in time");
         result.data.postgresReady = ready;
 
         if (!ready) {
             result.unsure(
                 "Postgres",
-                `nothing listened on ${POSTGRES.host}:${POSTGRES.port} within ${READY_TIMEOUT_MS / 1000}s`,
+                `nothing listened on ${where} within ${READY_TIMEOUT_MS / 1000}s; if that isn't ` +
+                    `where ${COMPOSE_FILE} publishes it (${COMPOSE_POSTGRES.host}:` +
+                    `${COMPOSE_POSTGRES.port}), check postgresql.host and port in local.env.yml`,
             );
         }
 
         return result.finish(
             ready
-                ? `Started ${SERVICES.join(" and ")}; Postgres accepts connections`
+                ? `Started ${SERVICES.join(" and ")}; Postgres accepts connections on ${where}`
                 : `Started ${SERVICES.join(" and ")}`,
         );
     }

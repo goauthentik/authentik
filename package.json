@@ -8,7 +8,8 @@
             "types": "./packages/logger-js/out/lib/node.d.ts",
             "default": "./packages/logger-js/lib/node.ts"
         },
-        "#dev-mcp/*": "./dev-mcp/lib/*.ts"
+        "#dev-mcp/*": "./dev-mcp/lib/*.ts",
+        "#scripts/*": "./scripts/node/*.ts"
     },
     "scripts": {
         "build:lint-config": "pnpm --filter @goauthentik/oxlint-config --filter @goauthentik/oxfmt-config run build",

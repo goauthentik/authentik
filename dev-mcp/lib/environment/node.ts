@@ -4,16 +4,15 @@
  *   is out of range. Setup mode checks the same range first and, when nvm already has a version
  *   that fits, puts it first on PATH for `make install` and the real server, so no download and
  *   no shell function is needed. The range check is lint-runtime's own, from
- *   scripts/node/utils/node.ts, which runs before `pnpm install` too.
+ *   scripts/node/utils/versions.ts, which runs before `pnpm install` too.
  */
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { delimiter, join } from "node:path";
 
-import { compareVersions, satisfiesRange } from "../../../scripts/node/utils/node.ts";
-
 import { ROOT } from "#dev-mcp/core/repo";
+import { compareVersions, satisfiesRange } from "#scripts/utils/versions";
 
 export interface NodeChoice {
     /** The active Node, without the `v`. */
