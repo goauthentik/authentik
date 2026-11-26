@@ -60,7 +60,7 @@ export function serveFallback(): void {
             check();
         });
 
-        // Refused before starting: nothing will call back, so answer now.
+        // Refused before starting: no callback will answer, so answer now.
         if (!started) text(id, message);
     }
 

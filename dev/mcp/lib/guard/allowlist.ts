@@ -1,6 +1,6 @@
 /**
  * @file The `dev_mcp.allowed_databases` allowlist: noticing when it changes, and suggesting an
- *   entry. Suggestions are printed, never written; adding a database is the person's decision.
+ *   entry. Suggestions are printed, never written. The person decides whether to add a database.
  */
 
 import { createHash } from "node:crypto";

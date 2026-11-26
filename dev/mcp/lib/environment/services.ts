@@ -1,6 +1,6 @@
 /**
- * @file The dev containers in scripts/compose.yml: PostgreSQL 18 and S3. Nothing here assumes a
- *   container runtime. With neither Docker nor Podman, there is no compose command, the guard skips
+ * @file The dev containers in scripts/compose.yml: PostgreSQL 18 and S3. This module works without a
+ *   container runtime. With neither Docker nor Podman, there's no compose command, the guard skips
  *   its `running` check, and `akdev_services` isn't registered: a native Postgres is a supported
  *   setup too.
  */
@@ -15,7 +15,7 @@ import { run, tail } from "#dev/lib/process";
 export const COMPOSE_FILE = "scripts/compose.yml";
 
 /**
- * Named on every call: older podman-compose releases ignore `profiles` and would start the
+ * Listed on every call: older podman-compose releases ignore `profiles` and would start the
  * `diff` service too.
  */
 export const SERVICES = ["postgresql", "s3"] as const;
@@ -49,7 +49,7 @@ export function composeCommand(runtime: Runtime, action: ServicesAction): string
 
 /**
  * How to bring up the dev containers, for a failed guard check. Null without a container runtime,
- * since a native Postgres is just as valid.
+ * since a native Postgres is equally valid.
  */
 export function composeUpFix(runtime: Runtime): string | null {
     if (runtime.kind === "none") return null;
@@ -75,8 +75,8 @@ export interface PostgresTarget {
 
 /**
  * Where authentik will connect, from its resolved config, so `up` waits on the same address the
- * guard checks. The compose file's address when the config can't be read; null for a Unix
- * socket, which has no port to watch.
+ * guard checks. Falls back to the compose file's address when the config can't be read. Returns
+ * null for a Unix socket, since a socket has no port to watch.
  */
 export async function postgresTarget(): Promise<PostgresTarget | null> {
     const config = await loadConfig();

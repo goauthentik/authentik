@@ -10,15 +10,15 @@ It holds no credentials and only touches a local dev database.
 | `akdev_lint`      | `make lint-changed` | The CI lint jobs that cover the files changed since `origin/main`, with CI's commands            |
 | `akdev_skill`     |                     | The repo's skills in `.agents/skills/`, for clients without Skills-over-MCP                      |
 | `akdev_job`       |                     | The result of a long-running tool call                                                           |
-| `akdev_services`  |                     | Bring the `scripts/compose.yml` containers (Postgres, S3) up or down; only with Docker or Podman |
+| `akdev_services`  |                     | Starts or stops the `scripts/compose.yml` containers (Postgres, S3). Needs Docker or Podman      |
 
-Every result says what it checked, what it skipped and what it couldn't tell, so an agent's summary
-can't quietly drop the caveat.
+Every result lists what it checked, what it skipped and what it couldn't tell, so an agent's summary
+keeps the caveat.
 
 ## Setup
 
 Claude Code reads `.mcp.json` and asks before starting the server. Codex reads `.codex/config.toml` in
-trusted projects. Both run `node dev/mcp/main.ts serve` from the repo root; Node runs the
+trusted projects. Both run `node dev/mcp/main.ts serve` from the repo root. Node runs the
 TypeScript directly. Claude Code hooks in `.claude/settings.json` lint each edited file and remind the
 agent to check generated files before it stops.
 
@@ -35,15 +35,15 @@ Both modes check the active Node against `engines.node` in `package.json`, with 
 check `make node-preinstall` runs (`dev/lib/versions.ts`). When it doesn't fit and nvm
 already has a version that does, `make install` and the server's checks run with that version
 first on `PATH`, and `akdev_status` and the SessionStart hook give the agent the `nvm use`
-command for its own shell. When no installed version fits, `akdev_install` refuses and says
-which `nvm install` to run.
+command for its own shell. When no installed version fits, `akdev_install` refuses and gives
+the `nvm install` command to run.
 
 ## The database guard
 
 Long checks run as jobs that `akdev_job` returns. When the client sends a progress token,
 `akdev_lint`, `akdev_generated` and `akdev_services` (`up`, `down`) keep the call open instead,
 send a `notifications/progress` for each step, and return the finished result. The first
-message names the job, so a call that times out can still be picked up. Setup mode's
+message gives the job ID, so a call that times out can still be picked up. Setup mode's
 `akdev_install` does the same for each `make install` prerequisite. Claude Code shows the
 messages inline and the bar in the expanded view (ctrl+o).
 
@@ -53,21 +53,22 @@ Claude Code asks the person before every call. Without Docker or Podman the tool
 registered and the guard's `running` check is skipped: a native Postgres is a supported setup.
 
 `akdev_generated` runs Django management commands against the configured database, so it's only
-registered when the guard passes. Postgres can run in Docker, Podman, natively or on a dev VM; the
-guard judges the database the configuration resolves to, not the setup:
+registered when the guard passes. Postgres can run in Docker, Podman, natively or on a dev VM. The
+guard judges the database the configuration resolves to, whatever the setup:
 
 1. `debug` is true.
 2. The connection is local (loopback, socket, or a container on this machine), or the host is listed.
 3. The database is `authentik` or `test_authentik`, or is listed.
 4. The database doesn't look like production: every installed license is a verified `dev_test`
-   license, fewer than 50 human users, no logins from public addresses in the last week. A
+   license, fewer than 50 human users, and no logins from public addresses in the last week. A
    `dev_test` claim counts only when the license's certificate chain leads to authentik's
    licensing CA (`authentik/enterprise/public.pem`) and its signature verifies, the same checks
    as `LicenseKey.validate()`.
 5. `AUTHENTIK_TOKEN` isn't set in the shell.
 
-A dev database often trips check 4: an e2e run leaves hundreds of users. Use a `dev_test` license
-for enterprise features. `make dev-status` prints the entry to add to `local.env.yml` after you've checked:
+The users the e2e suite creates are tagged and don't count toward check 4, so a database trips it
+through a non-`dev_test` license, 50 or more of its own users, or recent public logins. Use a
+`dev_test` license for enterprise features. `make dev-status` prints the entry to add to `local.env.yml` after you've checked:
 
 ```yaml
 dev_mcp:

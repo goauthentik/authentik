@@ -1,5 +1,5 @@
 /**
- * @file Claude Code hooks; keep dependencies to Node built-ins for fresh clones.
+ * @file Claude Code hooks. Keep dependencies to Node built-ins for fresh clones.
  */
 
 import { existsSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
@@ -115,7 +115,7 @@ async function postEdit(input: HookInput): Promise<void> {
     if (notes.length) emit("PostToolUse", notes.join("\n\n"));
 }
 
-/** Block once per session when Django changes have not had generated-file checks. */
+/** Block once per session when Django changes haven't had generated-file checks. */
 function stop(input: HookInput): void {
     if (input.stop_hook_active) return;
     const session = String(input.session_id ?? "");

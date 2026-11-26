@@ -5,7 +5,7 @@
 import { type RunOptions, type RunResult, run } from "#dev/lib/process";
 
 /**
- * Run `uv` without syncing the environment; callers can report when setup is required.
+ * Run `uv` without syncing the environment, so callers can report when setup is required.
  */
 export const UV_RUN = ["uv", "run", "--frozen", "--no-sync"] as const;
 

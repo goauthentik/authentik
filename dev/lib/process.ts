@@ -11,7 +11,7 @@ import { delimiter, join } from "node:path";
 import { GIT_ENV, ROOT } from "#dev/lib/git";
 
 export interface RunResult {
-    /** Exit code; 127 when the command couldn't start, 124 on timeout. */
+    /** Exit code: 127 when the command couldn't start, 124 on timeout. */
     code: number;
     stdout: string;
     stderr: string;
@@ -36,7 +36,7 @@ export function run(command: string, args: string[], options: RunOptions = {}): 
             cwd,
             // Make targets and scripts shell out to git too, with the same config to ignore.
             env: { ...process.env, ...GIT_ENV, ...env },
-            // No stdin unless there is input: a child that exits early can't break a write.
+            // No stdin unless there's input: a child that exits early can't break a write.
             stdio: [input === undefined ? "ignore" : "pipe", "pipe", "pipe"],
         });
 
@@ -58,7 +58,7 @@ export function run(command: string, args: string[], options: RunOptions = {}): 
         child.on("close", (code) => finish({ code: code ?? 1, stdout, stderr }));
 
         if (child.stdin) {
-            // EPIPE when the child exits before reading; unhandled, it would crash the server.
+            // EPIPE when the child exits before reading. Unhandled, it would crash the server.
             child.stdin.on("error", () => {});
             child.stdin.end(input);
         }

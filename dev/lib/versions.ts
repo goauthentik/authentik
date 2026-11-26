@@ -30,7 +30,7 @@ export function compareVersions(a: string, b: string): number {
 /**
  * Checks a version against a range of `||`-separated comparators.
  *
- * Supports `>=1.2.3`, `^1.2.3`, and exact versions; missing parts count as zero.
+ * Supports `>=1.2.3`, `^1.2.3`, and exact versions. A part left out counts as zero.
  */
 export function satisfiesRange(version: string, range: string): boolean {
     return range.split("||").some((part) => {

@@ -77,7 +77,7 @@ export function staticChecks(env: Environment, environ = process.env): Check[] {
     );
 
     // Only with a container runtime: the fix is the compose stack. Without one, Postgres may be
-    // native, and the database check says whether it answers.
+    // native, and the database check reports whether it answers.
     const fix = composeUpFix(runtime);
 
     if (fix) {

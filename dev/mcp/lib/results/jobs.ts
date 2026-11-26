@@ -1,5 +1,5 @@
 /**
- * @file Long-running tool calls run in the background; the agent polls `akdev_job` for the
+ * @file Long-running tool calls run in the background. The agent polls `akdev_job` for the
  *   result. Jobs live in memory and are dropped when the server exits.
  */
 

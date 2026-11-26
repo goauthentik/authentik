@@ -94,7 +94,7 @@ export function verifyLicense(
         : { verified: false, reason: "signature doesn't verify" };
 }
 
-/** Whether a verified license says it was issued for development and testing. */
+/** Whether a verified license's claims mark it as issued for development and testing. */
 export function isDevTestLicense(check: LicenseCheck): boolean {
     return check.verified && check.claims.dev_test === true;
 }

@@ -1,5 +1,5 @@
 /**
- * @file The slice of MCP's JSON-RPC that setup mode speaks, with Node built-ins only.
+ * @file The subset of MCP's JSON-RPC that setup mode implements, with Node built-ins only.
  */
 
 export interface Message {

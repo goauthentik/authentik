@@ -49,10 +49,10 @@ export async function runJob(
     const progress: Progress = (done, total, message) => {
         if (token === undefined) return;
 
-        // No total until the work knows its steps: a bar of 0 of 0 means nothing.
+        // No total until the work knows its steps: a bar of 0 of 0 shows no progress.
         const params = { progressToken: token, progress: done, total: total || undefined, message };
 
-        // The client may have gone; the job carries on and keeps its result.
+        // The client may have gone. The job keeps running and keeps its result.
         ctx.mcpReq.notify({ method: "notifications/progress", params }).catch(() => {});
     };
 

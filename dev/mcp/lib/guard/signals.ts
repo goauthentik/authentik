@@ -75,7 +75,7 @@ async function licenseKeys(client: Client): Promise<string[] | null> {
 /**
  * The license signal fires when any installed license lacks a verified `dev_test` claim. A
  * license authentik's licensing CA issued for development and testing is evidence of a dev
- * database; any other license, or one whose signature doesn't verify, is treated as production.
+ * database. Any other license, or one whose signature doesn't verify, is treated as production.
  */
 export function licenseSignal(
     keys: string[] | null,

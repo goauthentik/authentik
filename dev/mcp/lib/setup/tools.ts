@@ -3,7 +3,7 @@
  */
 
 /**
- * The first 512 characters carry the rules: Codex only guarantees that much.
+ * The first 512 characters hold the rules: Codex only guarantees that much.
  */
 export const SETUP_INSTRUCTIONS = `\
 authentik-dev is in setup mode: this clone's dependencies aren't installed, so its checks aren't \

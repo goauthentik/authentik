@@ -1,7 +1,7 @@
 /**
  * @file Git plumbing for the scripts and the dev MCP server, without user or system configuration.
  *   Node built-ins only: the MCP server's setup mode imports this before `pnpm install`, and
- *   nothing here may write to stdout.
+ *   this module writes only to stderr, never to stdout.
  */
 
 import { execFile, execFileSync } from "node:child_process";
@@ -15,7 +15,7 @@ export const ROOT = resolve(import.meta.dirname, "..", "..");
 export const DEFAULT_BASE = "origin/main";
 
 /**
- * Plumbing needs no user config, and an unreadable global config is fatal to git.
+ * Git plumbing commands need no user config, and an unreadable global config is fatal to git.
  */
 export const GIT_ENV = { GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_NOSYSTEM: "1" };
 

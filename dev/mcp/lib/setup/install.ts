@@ -12,7 +12,7 @@ import { GIT_ENV, ROOT } from "#dev/lib/git";
 import { INSTALL_HINT, isLinked } from "#dev/lib/optional";
 
 /**
- * What the real server needs to start; the rest degrades on its own.
+ * What the real server needs to start. The rest degrades on its own.
  */
 const REQUIRED = ["@modelcontextprotocol/server", "zod"];
 const TARGET_TIMEOUT_MS = 30 * 60_000;
@@ -68,7 +68,7 @@ export class Installer {
     }
 
     /**
-     * Missing packages, the active Node, and how the install is going.
+     * The missing packages, the active Node, and the install's progress.
      */
     public status(): string {
         const lines = [
@@ -96,7 +96,7 @@ export class Installer {
 
     /**
      * Start the install. `update` hears each target start; `done` runs when the install ends.
-     * Returns what to tell the agent, and whether an install actually started.
+     * Returns what to tell the agent, and whether an install started.
      */
     public start(
         update: Progress = noProgress,
@@ -106,7 +106,7 @@ export class Installer {
 
         const node = chooseNode();
 
-        // `make install` would stop at node-preinstall; say why now instead.
+        // `make install` would stop at node-preinstall. Say why now instead.
         if (!node.ok && !node.switchTo) {
             return { message: `Not started. ${describeNode(node)}`, started: false };
         }

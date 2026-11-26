@@ -130,7 +130,7 @@ interface PackageManagerSpec {
     version: string;
 
     /**
-     * The `sha512.<hex>` suffix, if the pin carries one.
+     * The `sha512.<hex>` suffix, if the pin has one.
      */
     hash: string | null;
 }
@@ -138,8 +138,8 @@ interface PackageManagerSpec {
 const PACKAGE_MANAGER_PATTERN = /^(?<name>@?[^@]+)@(?<version>[^+]+)(?:\+(?<hash>.+))?$/;
 
 /**
- * The named groups of {@linkcode PACKAGE_MANAGER_PATTERN}. Only `hash` is optional
- * in the pattern, so a match always carries the other two.
+ * The capture groups of {@linkcode PACKAGE_MANAGER_PATTERN}. Only `hash` is optional
+ * in the pattern, so a match always includes the other two.
  */
 interface PackageManagerGroups {
     name: string;

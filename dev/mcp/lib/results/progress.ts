@@ -12,7 +12,7 @@ export const noProgress: Progress = () => {};
 /**
  * A counter for steps that finish in any order, such as checks run with `Promise.all`.
  *
- * Call `step(name)` around each one; each finish reports what has completed so far.
+ * Call `step(name)` around each one. Each finish reports what's completed so far.
  */
 export function counter(progress: Progress, total: number) {
     let done = 0;

@@ -1,10 +1,9 @@
 /**
  * @file Decide whether the configured database is a dev database the server may touch.
- *   The guard judges the database the configuration actually resolves to, not the setup we expect.
+ *   The guard judges the database the configuration resolves to, whatever setup we expect.
  *   Every check must pass. A failed check reduces the tool set instead of refusing to start, and
- *   the reason is reported. The guard stops accidents; an agent with a shell can edit the
- *   allowlist, which is why database contents are judged too, and why allowlist changes are
- *   reported back.
+ *   the reason is reported. The guard stops accidents. An agent with a shell can still edit the
+ *   allowlist, so the guard judges database contents too and reports allowlist changes back.
  */
 
 import { type Environment, discover } from "#dev-mcp/environment/discover";

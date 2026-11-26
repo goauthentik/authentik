@@ -15,7 +15,7 @@ export interface SkillSummary {
     description: string;
 }
 
-/** Skill names, from their directories. Needs nothing installed. */
+/** Skill names, from their directories. Works before any install. */
 export function skillNames(): string[] {
     return readdirSync(SKILLS_DIR)
         .filter((name) => {
@@ -48,7 +48,7 @@ export async function listSkills(): Promise<SkillSummary[]> {
     });
 }
 
-/** A skill's SKILL.md by name. Only names of skill directories; no path traversal. */
+/** A skill's SKILL.md by name. Only names of skill directories resolve, so paths can't escape. */
 export function readSkill(name: string): string | null {
     if (!/^[a-z0-9-]+$/.test(name) || !skillNames().includes(name)) return null;
 

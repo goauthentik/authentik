@@ -22,7 +22,7 @@ const DJANGO_TIMEOUT = 10 * 60_000;
 const GEN_ENV = { AUTHENTIK_DEBUG: "true", AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST: "true" };
 
 async function migrations(result: Result, stale: string[]): Promise<void> {
-    // The same check as `ci-lint-pending-migrations`, plus --dry-run so nothing is written.
+    // The same check as `ci-lint-pending-migrations`, plus --dry-run so it writes no files.
     const out = await python(["-m", "manage", "makemigrations", "--check", "--dry-run"], {
         timeoutMs: DJANGO_TIMEOUT,
     });
@@ -92,7 +92,7 @@ async function schemas(result: Result, stale: string[], write: boolean): Promise
             try {
                 current = readFileSync(join(ROOT, path), "utf8");
             } catch {
-                // Missing counts as stale.
+                // A missing file counts as stale.
             }
 
             result.checked.push(path);
@@ -126,7 +126,7 @@ async function schemas(result: Result, stale: string[], write: boolean): Promise
 }
 
 /**
- * Regenerating the clients needs a working `docker compose`, because the client Makefiles call it
+ * Client regeneration needs a working `docker compose`, because the client Makefiles call it
  * by name. Phase A reports a heuristic instead of regenerating.
  */
 async function clients(result: Result, schemaChanged: boolean, base: string): Promise<void> {

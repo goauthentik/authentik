@@ -9,7 +9,7 @@ import type { Config } from "#dev-mcp/environment/config";
 import { portOwner } from "#dev-mcp/environment/runtime";
 
 /**
- * `down`: the host is this machine, but nothing accepts connections on the port.
+ * `down`: the host is this machine, but connections to the port are refused or time out.
  */
 export type PostgresKind = "container" | "socket" | "local" | "down" | "remote" | "unknown";
 

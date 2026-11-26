@@ -18,7 +18,7 @@ export interface NodeChoice {
     ok: boolean;
     /** An nvm-installed Node that fits, when the active one doesn't. */
     switchTo: { version: string; bin: string } | null;
-    /** What to do when nothing installed fits. */
+    /** What to do when no installed version fits. */
     hint: string | null;
 }
 

@@ -23,8 +23,8 @@ const line = (message: object) => `${JSON.stringify({ jsonrpc: "2.0", ...message
 
 /**
  * Start the real server. `initialize` is the client's original handshake, or null after the
- * stateless `server/discover`, which has nothing to replay. `ready` gets the child's stdin once
- * it's taking messages; the client is then told its tool list changed.
+ * stateless `server/discover`, which leaves no handshake to replay. `ready` gets the child's stdin
+ * once it's taking messages. The client is then told its tool list changed.
  */
 export function handover(
     initialize: Message["params"] | null,
@@ -54,7 +54,7 @@ export function handover(
     createInterface({ input: proc.stdout }).on("line", (output) => {
         if (proxying) return void process.stdout.write(`${output}\n`);
 
-        // The real server's answer to the replayed handshake; the client already has one.
+        // The real server's answer to the replayed handshake. The client already has one.
         if ((JSON.parse(output) as Message).id !== HANDOVER_ID) return;
 
         proc.stdin.write(line({ method: "notifications/initialized" }));
