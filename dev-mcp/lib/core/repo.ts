@@ -7,8 +7,8 @@ import { createHash } from "node:crypto";
 import { statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
-/** dev-mcp/lib/ → the repo root. */
-export const ROOT = resolve(import.meta.dirname, "..", "..");
+/** dev-mcp/lib/core/ → the repo root. */
+export const ROOT = resolve(import.meta.dirname, "..", "..", "..");
 export const DEFAULT_BASE = "origin/main";
 
 /** Plumbing needs no user config, and an unreadable global config is fatal to git. */

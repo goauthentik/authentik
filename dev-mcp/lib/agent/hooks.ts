@@ -6,11 +6,11 @@
 import { existsSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { basename, join, relative } from "node:path";
 
-import { INSTALL_HINT, isInstalled } from "#dev-mcp/optional";
-import { ROOT, changedFiles } from "#dev-mcp/repo";
-import { UV_RUN, run, tail } from "#dev-mcp/run";
-import { skillNames } from "#dev-mcp/skills";
-import { loadCurrent, storeDir } from "#dev-mcp/store";
+import { skillNames } from "#dev-mcp/agent/skills";
+import { INSTALL_HINT, isInstalled } from "#dev-mcp/core/optional";
+import { ROOT, changedFiles } from "#dev-mcp/core/repo";
+import { UV_RUN, run, tail } from "#dev-mcp/core/run";
+import { loadCurrent, storeDir } from "#dev-mcp/results/store";
 
 const GENERATED_TRIGGERS = ["models.py", "serializers.py", "api.py", "urls.py", "views.py"];
 

@@ -10,7 +10,7 @@ import { X509Certificate, verify } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { ROOT } from "#dev-mcp/repo";
+import { ROOT } from "#dev-mcp/core/repo";
 
 export const LICENSING_ROOT = join(ROOT, "authentik", "enterprise", "public.pem");
 

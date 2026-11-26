@@ -5,8 +5,8 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-import { missing } from "#dev-mcp/optional";
-import { ROOT } from "#dev-mcp/repo";
+import { missing } from "#dev-mcp/core/optional";
+import { ROOT } from "#dev-mcp/core/repo";
 
 export const SKILLS_DIR = join(ROOT, ".agents", "skills");
 

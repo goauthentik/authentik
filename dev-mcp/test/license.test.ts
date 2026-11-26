@@ -9,8 +9,8 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { licenseSignal } from "#dev-mcp/guard";
-import { isDevTestLicense, verifyLicense } from "#dev-mcp/license";
+import { isDevTestLicense, verifyLicense } from "#dev-mcp/guard/license";
+import { licenseSignal } from "#dev-mcp/guard/verdict";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 

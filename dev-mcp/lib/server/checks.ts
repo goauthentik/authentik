@@ -5,8 +5,8 @@
 
 import { checkGenerated } from "#dev-mcp/checks/generated";
 import { lint } from "#dev-mcp/checks/lint";
-import * as jobs from "#dev-mcp/jobs";
-import { DEFAULT_BASE } from "#dev-mcp/repo";
+import { DEFAULT_BASE } from "#dev-mcp/core/repo";
+import * as jobs from "#dev-mcp/results/jobs";
 import { READ_ONLY, WRITES_TREE, reply } from "#dev-mcp/server/shared";
 
 import type { McpServer } from "@modelcontextprotocol/server";

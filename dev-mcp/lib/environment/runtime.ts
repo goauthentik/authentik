@@ -2,7 +2,7 @@
  * @file The container runtime, if any: Docker, Podman, or Podman behind a `docker` shim.
  */
 
-import { run, which } from "#dev-mcp/run";
+import { run, which } from "#dev-mcp/core/run";
 
 export type RuntimeKind = "docker" | "podman" | "podman-docker-shim" | "none";
 

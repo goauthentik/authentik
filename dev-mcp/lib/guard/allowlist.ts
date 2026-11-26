@@ -7,9 +7,9 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import type { Environment } from "#dev-mcp/discovery";
+import type { Environment } from "#dev-mcp/environment/discover";
 import type { Check } from "#dev-mcp/guard/checks";
-import { storeDir } from "#dev-mcp/store";
+import { storeDir } from "#dev-mcp/results/store";
 
 /**
  * Report when the allowlist differs from the last run. The person may not have read the diff

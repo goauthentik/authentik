@@ -2,7 +2,7 @@
  * @file Guard checks that need no database connection.
  */
 
-import type { AllowEntry, Environment } from "#dev-mcp/discovery";
+import type { AllowEntry, Environment } from "#dev-mcp/environment/discover";
 
 export const DEV_DATABASE_NAMES = ["authentik", "test_authentik"];
 

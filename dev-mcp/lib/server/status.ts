@@ -2,9 +2,9 @@
  * @file `akdev_status`: what the server sees, and the guard's verdict.
  */
 
-import { LANGUAGE_SERVER_INSTALL, publicEnvironment } from "#dev-mcp/discovery";
-import { type Verdict, inspect, suggestedAllowlist } from "#dev-mcp/guard";
-import { DEFAULT_BASE, ROOT, branch, mergeBase } from "#dev-mcp/repo";
+import { DEFAULT_BASE, ROOT, branch, mergeBase } from "#dev-mcp/core/repo";
+import { LANGUAGE_SERVER_INSTALL, publicEnvironment } from "#dev-mcp/environment/discover";
+import { type Verdict, inspect, suggestedAllowlist } from "#dev-mcp/guard/verdict";
 import { READ_ONLY, reply } from "#dev-mcp/server/shared";
 
 import type { McpServer } from "@modelcontextprotocol/server";

@@ -16,10 +16,10 @@
 
 import { parseArgs } from "node:util";
 
-import { INSTALL_HINT, missing } from "#dev-mcp/optional";
-import { DEFAULT_BASE } from "#dev-mcp/repo";
-import type { Result } from "#dev-mcp/result";
-import { save } from "#dev-mcp/store";
+import { INSTALL_HINT, missing } from "#dev-mcp/core/optional";
+import { DEFAULT_BASE } from "#dev-mcp/core/repo";
+import type { Result } from "#dev-mcp/results/result";
+import { save } from "#dev-mcp/results/store";
 
 const HOOK_NAMES = ["session-start", "post-edit", "stop"] as const;
 type HookName = (typeof HOOK_NAMES)[number];
@@ -30,8 +30,9 @@ function print(result: Result, json: boolean): number {
 }
 
 async function status(json: boolean): Promise<number> {
-    const { LANGUAGE_SERVER_INSTALL, publicEnvironment } = await import("#dev-mcp/discovery");
-    const { inspect, suggestedAllowlist } = await import("#dev-mcp/guard");
+    const { LANGUAGE_SERVER_INSTALL, publicEnvironment } =
+        await import("#dev-mcp/environment/discover");
+    const { inspect, suggestedAllowlist } = await import("#dev-mcp/guard/verdict");
     const { env, verdict } = await inspect();
     if (json) {
         const environment = env && publicEnvironment(env);
@@ -66,7 +67,7 @@ async function status(json: boolean): Promise<number> {
 }
 
 async function checkGen(json: boolean, regenerate: "none" | "schema", base: string) {
-    const { failedChecks, inspect } = await import("#dev-mcp/guard");
+    const { failedChecks, inspect } = await import("#dev-mcp/guard/verdict");
     const { verdict } = await inspect();
     if (!verdict.ok) {
         const failed = failedChecks(verdict)
@@ -90,7 +91,7 @@ async function lintChanged(paths: string[], base: string, fix: boolean) {
 }
 
 async function serve(): Promise<number> {
-    const server = await import("#dev-mcp/server").catch(missing);
+    const server = await import("#dev-mcp/server/serve").catch(missing);
     if (!server) {
         // Shows up in the MCP client's server log.
         console.error(
@@ -134,7 +135,7 @@ async function main(argv: string[]): Promise<number> {
                 console.error(`Unknown hook. Expected one of: ${HOOK_NAMES.join(", ")}`);
                 return 2;
             }
-            const { runHook } = await import("#dev-mcp/hooks");
+            const { runHook } = await import("#dev-mcp/agent/hooks");
             return runHook(name);
         }
         default:

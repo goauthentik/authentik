@@ -5,8 +5,8 @@
 
 import { randomUUID } from "node:crypto";
 
-import type { Result, ResultData } from "#dev-mcp/result";
-import { save } from "#dev-mcp/store";
+import type { Result, ResultData } from "#dev-mcp/results/result";
+import { save } from "#dev-mcp/results/store";
 
 export interface JobState {
     jobId: string;

@@ -5,10 +5,10 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
-import { lintMatrix, makefileLintTargets } from "#dev-mcp/ci";
-import { DEFAULT_BASE, ROOT, changedFiles, fingerprint } from "#dev-mcp/repo";
-import { Result } from "#dev-mcp/result";
-import { run, tail, which } from "#dev-mcp/run";
+import { lintMatrix, makefileLintTargets } from "#dev-mcp/checks/ci";
+import { DEFAULT_BASE, ROOT, changedFiles, fingerprint } from "#dev-mcp/core/repo";
+import { run, tail, which } from "#dev-mcp/core/run";
+import { Result } from "#dev-mcp/results/result";
 
 const JOB_TIMEOUT = 30 * 60_000;
 const PY_DIRS = ["authentik/", "packages/", "tests/", "scripts/", "lifecycle/"];

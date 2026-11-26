@@ -7,11 +7,11 @@ import { copyFileSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { genDiffPaths } from "#dev-mcp/ci";
-import { containerRuntime } from "#dev-mcp/discovery";
-import { DEFAULT_BASE, ROOT, changedSinceBase, fingerprint } from "#dev-mcp/repo";
-import { Result } from "#dev-mcp/result";
-import { python, tail } from "#dev-mcp/run";
+import { genDiffPaths } from "#dev-mcp/checks/ci";
+import { DEFAULT_BASE, ROOT, changedSinceBase, fingerprint } from "#dev-mcp/core/repo";
+import { python, tail } from "#dev-mcp/core/run";
+import { containerRuntime } from "#dev-mcp/environment/discover";
+import { Result } from "#dev-mcp/results/result";
 
 export type Regenerate = "none" | "schema";
 export const SCHEMA_FILES = ["schema.yml", "blueprints/schema.json"] as const;

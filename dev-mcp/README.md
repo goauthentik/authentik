@@ -53,8 +53,19 @@ edit the allowlist, so changes to it are reported back in `akdev_status`.
 ## Development
 
 The code is part of the root package: its dependencies are in the root `package.json`, and
-`#dev-mcp/*` imports map to `dev-mcp/lib/*.ts`. Root `lint`, `format` and `build:types` cover it,
-and CI runs them as the `scripts` and `check-types` lint jobs.
+`#dev-mcp/*` imports map to `dev-mcp/lib/*.ts`. `lib/` is grouped by purpose:
+
+| Folder                                                         | Holds                                                                        |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `core/`                                                        | Git and the repo root, running commands, loading optional dependencies       |
+| `results/`                                                     | The result envelope, the result store under `.git/akdev`, background jobs    |
+| `environment/`                                                 | Discovery: resolved config, container runtime, where Postgres runs           |
+| `guard/`                                                       | The database guard: static checks, database signals, licenses, the allowlist |
+| `checks/`                                                      | `check-gen` and `lint-changed`, and the CI files they read                   |
+| `agent/`                                                       | What agents read directly: Claude Code hooks and the repo's skills           |
+| `server/`                                                      | The MCP server and its tools                                                 |
+| Root `lint`, `format` and `build:types` cover it,              |
+| and CI runs them as the `scripts` and `check-types` lint jobs. |
 
 ```shell
 pnpm run test:dev-mcp         # vitest

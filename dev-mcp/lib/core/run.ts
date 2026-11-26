@@ -6,7 +6,7 @@ import { spawn } from "node:child_process";
 import { accessSync, constants } from "node:fs";
 import { delimiter, join } from "node:path";
 
-import { GIT_ENV, ROOT } from "#dev-mcp/repo";
+import { GIT_ENV, ROOT } from "#dev-mcp/core/repo";
 
 export interface RunResult {
     /** Exit code; 127 when the command couldn't start, 124 on timeout. */

@@ -8,8 +8,8 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { fingerprint, gitDir } from "#dev-mcp/repo";
-import type { Result, ResultData } from "#dev-mcp/result";
+import { fingerprint, gitDir } from "#dev-mcp/core/repo";
+import type { Result, ResultData } from "#dev-mcp/results/result";
 
 export function storeDir(...sub: string[]): string {
     const dir = join(gitDir(), "akdev", ...sub);

@@ -2,14 +2,14 @@
  * @file Unit and drift tests for the dev MCP server's pure parts.
  */
 
+import { readSkill } from "#dev-mcp/agent/skills";
+import { genDiffPaths } from "#dev-mcp/checks/ci";
 import { SCHEMA_FILES } from "#dev-mcp/checks/generated";
 import { jobs, unmappedJobs } from "#dev-mcp/checks/lint";
-import { genDiffPaths } from "#dev-mcp/ci";
-import type { AllowEntry, Environment, PostgresKind } from "#dev-mcp/discovery";
-import { type Verdict, staticChecks, suggestedAllowlist } from "#dev-mcp/guard";
-import { Result } from "#dev-mcp/result";
+import type { AllowEntry, Environment, PostgresKind } from "#dev-mcp/environment/discover";
+import { type Verdict, staticChecks, suggestedAllowlist } from "#dev-mcp/guard/verdict";
+import { Result } from "#dev-mcp/results/result";
 import { INSTRUCTIONS } from "#dev-mcp/server/instructions";
-import { readSkill } from "#dev-mcp/skills";
 
 import { describe, expect, it } from "vitest";
 

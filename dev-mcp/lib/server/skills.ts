@@ -2,8 +2,8 @@
  * @file The repo's skills, as `akdev_skill` and through the Skills-over-MCP extension.
  */
 
+import { SKILLS_DIR, listSkills, readSkill } from "#dev-mcp/agent/skills";
 import { READ_ONLY, reply } from "#dev-mcp/server/shared";
-import { SKILLS_DIR, listSkills, readSkill } from "#dev-mcp/skills";
 
 import type { McpServer } from "@modelcontextprotocol/server";
 import { loadSkills } from "@modelcontextprotocol/server/ext/skills/node";

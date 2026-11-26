@@ -5,7 +5,7 @@
  *   the guard's verdict). Run with `node dev-mcp/test/smoke.ts`.
  */
 
-import { ROOT } from "#dev-mcp/repo";
+import { ROOT } from "#dev-mcp/core/repo";
 
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";

@@ -7,7 +7,7 @@
  *   reported back.
  */
 
-import { type Environment, discover } from "#dev-mcp/discovery";
+import { type Environment, discover } from "#dev-mcp/environment/discover";
 import { allowlistChanged, suggestedAllowlist as suggest } from "#dev-mcp/guard/allowlist";
 import { type Check, staticChecks } from "#dev-mcp/guard/checks";
 import { databaseChecks } from "#dev-mcp/guard/signals";

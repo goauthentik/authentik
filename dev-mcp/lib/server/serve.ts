@@ -2,7 +2,7 @@
  * @file The authentik-dev MCP server: stdio, no credentials, local dev database only.
  */
 
-import { type Verdict, inspect } from "#dev-mcp/guard";
+import { type Verdict, inspect } from "#dev-mcp/guard/verdict";
 import { registerGenerated, registerJob, registerLint } from "#dev-mcp/server/checks";
 import { INSTRUCTIONS } from "#dev-mcp/server/instructions";
 import { registerSkills } from "#dev-mcp/server/skills";

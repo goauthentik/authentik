@@ -5,15 +5,15 @@
  *   with the raw facts it found.
  */
 
-import { type Config, loadConfig } from "#dev-mcp/discovery/config";
-import { type Postgres, classifyPostgres } from "#dev-mcp/discovery/postgres";
-import { type Runtime, containerRuntime } from "#dev-mcp/discovery/runtime";
-import { version } from "#dev-mcp/run";
+import { version } from "#dev-mcp/core/run";
+import { type Config, loadConfig } from "#dev-mcp/environment/config";
+import { type Postgres, classifyPostgres } from "#dev-mcp/environment/postgres";
+import { type Runtime, containerRuntime } from "#dev-mcp/environment/runtime";
 
-export type { AllowEntry, Config, ConfigValue } from "#dev-mcp/discovery/config";
-export type { Postgres, PostgresKind } from "#dev-mcp/discovery/postgres";
-export type { Runtime, RuntimeKind } from "#dev-mcp/discovery/runtime";
-export { containerRuntime } from "#dev-mcp/discovery/runtime";
+export type { AllowEntry, Config, ConfigValue } from "#dev-mcp/environment/config";
+export type { Postgres, PostgresKind } from "#dev-mcp/environment/postgres";
+export type { Runtime, RuntimeKind } from "#dev-mcp/environment/runtime";
+export { containerRuntime } from "#dev-mcp/environment/runtime";
 
 export interface Environment {
     config: Config;
@@ -49,6 +49,7 @@ export async function discover(): Promise<Environment> {
             version("typescript-language-server"),
             version("rust-analyzer"),
         ]);
+
     return {
         config,
         runtime,

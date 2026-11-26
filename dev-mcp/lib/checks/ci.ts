@@ -6,8 +6,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { missing, notInstalled } from "#dev-mcp/optional";
-import { ROOT } from "#dev-mcp/repo";
+import { missing, notInstalled } from "#dev-mcp/core/optional";
+import { ROOT } from "#dev-mcp/core/repo";
 
 interface Workflow {
     jobs?: Record<

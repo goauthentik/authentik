@@ -2,10 +2,10 @@
  * @file Read-only heuristics on the database's contents: does it look like production?
  */
 
-import type { Environment } from "#dev-mcp/discovery";
+import { missing, notInstalled } from "#dev-mcp/core/optional";
+import type { Environment } from "#dev-mcp/environment/discover";
 import { type Check, allowEntry } from "#dev-mcp/guard/checks";
-import { isDevTestLicense, verifyLicense } from "#dev-mcp/license";
-import { missing, notInstalled } from "#dev-mcp/optional";
+import { isDevTestLicense, verifyLicense } from "#dev-mcp/guard/license";
 
 import type { Client } from "pg";
 

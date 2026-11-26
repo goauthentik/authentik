@@ -5,8 +5,8 @@
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
 
-import type { Config } from "#dev-mcp/discovery/config";
-import { portOwner } from "#dev-mcp/discovery/runtime";
+import type { Config } from "#dev-mcp/environment/config";
+import { portOwner } from "#dev-mcp/environment/runtime";
 
 export type PostgresKind = "container" | "socket" | "local" | "remote" | "unknown";
 
