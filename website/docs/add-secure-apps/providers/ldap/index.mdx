@@ -118,6 +118,8 @@ In this mode, the outpost will always execute the configured flow when a new bin
 
 This mode uses the same logic as direct bind, however the result is cached for the entered credentials, and saved in memory for the standard session duration. Sessions are saved independently, meaning that revoking sessions does _not_ remove them from the outpost, and neither will changing a users credentials.
 
+To cache binds, the [User Login stage](../../flows-stages/stages/user_login/index.mdx) in the provider's **Bind Flow** must set a non-zero **Session duration**. When **Session duration** is `seconds=0` (the default browser session), the session cookie has no expiration timestamp, so binds are not cached.
+
 ## Searching
 
 A user must have access to the LDAP application before they can bind and search the directory. If the application uses [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access), they must allow the user access according to the application's **Policy engine mode**.
