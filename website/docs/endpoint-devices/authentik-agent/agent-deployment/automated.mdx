@@ -47,7 +47,7 @@ The following two registry keys (`REG_SZ`) are added by the configuration snippe
 4. Under **Setup**, select the enrollment token that you wish to use for enrolling devices.
 5. Click **macOS** and then click either **Download** or **Copy** to obtain your MDM policy.
 
-This policy can be used by Apple Business Manager, Fleet, and other MDM tools to deploy the changes required to support the authentik Agent.
+This policy can be used by Apple Business Manager, Fleet, and other MDM tools to deploy the changes required to support the authentik Agent. It also configures [Platform SSO](../device-authentication/local-device-login/macos.mdx), which allows users to log in to and unlock their Mac with authentik credentials.
 
 :::warning MDM only
 Apple requires an MDM tool to apply this policy to a device. The policy does not work when applied manually.
@@ -56,3 +56,5 @@ Apple requires an MDM tool to apply this policy to a device. The policy does not
 ### User registration
 
 After the authentik Agent is deployed to a device, the user receives a notification asking them to register with authentik. The registration flow prompts the user to authenticate with authentik. After authentication, authentik enrolls the device and associates it with the user.
+
+Each time the policy is downloaded, it contains new payload identifiers. Installing a newly downloaded policy on a device that is already registered prompts its users to register again. Refer to [macOS local device login](../device-authentication/local-device-login/macos.mdx#update-the-mdm-policy) for more information.
