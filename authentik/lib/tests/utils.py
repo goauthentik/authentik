@@ -64,6 +64,8 @@ def table_row_counts(model: type[Model]) -> Generator[RowCounts]:
     # https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQSERVERVERSION
     if connection.pg_version // 10000 < min_postgres_version:
         yield counts
+    with connection.cursor() as cursor:
+        cursor.execute(f"ANALYZE {model._meta.db_table}")
     read, deleted = _table_counts(model)
     yield counts
     after_read, after_deleted = _table_counts(model)
