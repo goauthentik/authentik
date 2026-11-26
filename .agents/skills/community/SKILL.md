@@ -14,14 +14,18 @@ description: >
 
 ## Purpose
 
-Each venue has one job. Issues are for defects and well-formed requests that maintainers
-will act on. Questions go to Discussions or Discord. Vulnerabilities go to a private
-advisory and nowhere public. The wrong venue wastes maintainer time or, for security,
-exposes users before a fix exists.
+Each venue has one job. Issues are for defects and well-formed requests that maintainers will act on.
+Questions go to Discussions or Discord. Vulnerabilities go to a private advisory rather than a public issue.
+The wrong venue wastes maintainer time or, for security, exposes users before a fix exists.
 
-Sources: `.github/ISSUE_TEMPLATE/`, `SECURITY.md`, `CONTRIBUTING.md`, `AI_POLICY.md`,
-`website/docs/developer-docs/contributing.mdx` and
-`website/docs/enterprise/enterprise-support.mdx`.
+Sources:
+
+- `.github/ISSUE_TEMPLATE/`
+- `SECURITY.md`
+- `CONTRIBUTING.md`
+- `AI_POLICY.md`
+- `website/docs/developer-docs/contributing.mdx`
+- `website/docs/enterprise/enterprise-support.mdx`
 
 ## Decision tree
 
@@ -33,8 +37,7 @@ Sources: `.github/ISSUE_TEMPLATE/`, `SECURITY.md`, `CONTRIBUTING.md`, `AI_POLICY
    token-free open redirects and unfiltered outgoing requests are by design.
 2. **Is it a paid Enterprise customer needing support?** Customer Portal ticket at
    <https://customers.goauthentik.io/>. Never for vulnerabilities. Those still go to step 1.
-3. **Is the documentation wrong, unclear or broken?** Issue with the
-   "Documentation suggestion/problem" form.
+3. **Is the documentation wrong, unclear or broken?** Issue with the "Documentation suggestion/problem" form.
 4. **Does authentik do something wrong that you can reproduce on a supported version?**
    Issue with the "Bug report" form.
 5. **Is it a feature you've thought through: the problem, the solution, the alternatives?**
@@ -44,8 +47,7 @@ Sources: `.github/ISSUE_TEMPLATE/`, `SECURITY.md`, `CONTRIBUTING.md`, `AI_POLICY
    something others will search for later; [Discord](https://goauthentik.io/discord) for
    quick back-and-forth.
 
-Blank issues are disabled. The issue chooser offers only the three forms plus links to
-Discussions and Discord.
+Blank issues are disabled. The issue chooser offers only the three forms plus links to Discussions and Discord.
 
 ## What to include
 
@@ -56,7 +58,7 @@ Discussions and Discord.
 - Impact: how it can be exploited and what it affects.
 - Logs, configuration and suggested mitigations if you have them.
 - Don't disclose publicly until the team has confirmed and fixed it. Don't request a CVE
-  from another CNA. GitHub assigns it through the advisory.
+  from another CNA. GitHub will assign it through the advisory.
 
 **Bug report** (the form's fields):
 
@@ -82,13 +84,13 @@ considered, and any context.
 
 ## Gotchas
 
-- **Check the version first.** `SECURITY.md` lists the supported versions. A bug on an
-  unsupported version should be retested on the latest patch release before filing.
+- **Check the version first.** `SECURITY.md` lists the supported versions.
+  A bug on an unsupported version should be retested on the latest patch release before filing.
 - **AI-assisted reports need a human edit.** `AI_POLICY.md` requires that a person review
   and edit any AI-generated issue or discussion text, and maintainers close reports that
-  look fully AI-driven. Trim generic text, check each claim against your own setup, and keep
-  it short. If you're drafting for someone, hand them the draft to edit and submit. Don't
-  file it for them.
+  look fully AI-driven. Trim generic text, check each claim against your own setup,
+  and keep it short. If you're drafting for someone, hand them the draft to edit and submit.
+  Don't file it for them.
 
 - **Security announcements** come through the mailing list linked in `SECURITY.md` and the
   Discord server. Point people there instead of asking about an embargoed fix in public.

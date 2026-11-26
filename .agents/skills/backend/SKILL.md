@@ -13,12 +13,12 @@ description: >
 
 ## Purpose
 
-The backend is a Django app served by gunicorn behind a Rust front server, plus a Dramatiq
-worker that uses Postgres as its broker. Day to day you run both, change code, and keep
-models, migrations and the generated API schema in sync. CI fails a PR on any of the
-three drifting. Setup is in the
-[full development environment](../../../website/docs/developer-docs/setup/full-dev-environment.mdx)
-doc. Debugger setup is in [debugging](../../../website/docs/developer-docs/setup/debugging.mdx).
+The backend is a Django app served by gunicorn behind a Rust front server,
+plus a Dramatiq worker that uses Postgres as its broker.
+
+Day to day you run both, change code, and keep models, migrations and the generated API schema in sync.
+CI fails a PR on any of the three drifting. Setup is in the [full development environment](../../../website/docs/developer-docs/setup/full-dev-environment.mdx) doc.
+Debugger setup is in [debugging](../../../website/docs/developer-docs/setup/debugging.mdx).
 
 ## When to invoke
 

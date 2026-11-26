@@ -15,8 +15,8 @@ description: >
 
 ## Purpose
 
-CI runs one lint job per tool, each a thin `make ci-lint-<job>` wrapper. Locally you can
-run the same targets, so a red CI job is almost always reproducible from the repo root.
+CI runs one lint job per tool, each a thin `make ci-lint-<job>` wrapper.
+Locally you can run the same targets, so a red CI job is almost always reproducible from the repo root.
 This skill gives the one-shot fix, then the job-to-command map, then the traps.
 
 Steps are tagged: `[shell]` local command, `[verify]` check before moving on.
@@ -101,15 +101,15 @@ Read the diff after `oxlint --fix`. Its autofix can change meaning. It once stri
   `cargo clippy --version` against `rustc --version`. Fix by putting the toolchain's bin dir
   first: `export PATH="$(dirname "$(rustup which cargo)"):$PATH"`.
 - **rustfmt needs nightly.** `lint-fix-rust` and `ci-lint-rustfmt` call `cargo +nightly
-fmt`. Install it once: `rustup toolchain install nightly --profile minimal --component
-rustfmt`. Never run bare `cargo fmt`: without `--config-path .cargo/rustfmt.toml` it
+  fmt`. Install it once: `rustup toolchain install nightly --profile minimal --component
+  rustfmt`. Never run bare `cargo fmt`: without `--config-path .cargo/rustfmt.toml` it
   reorders imports and rewrites the generated `packages/client-rust/`.
 - **Rust tests or builds abort with a dyld error** about `Python3.framework/Versions/3.9`.
   The `core` feature links pyo3 against Xcode's Python. Set `PYO3_PYTHON` to the project's
   Python 3.14 interpreter.
 - **The proxy image builds a feature set PR CI doesn't lint.**
   `lifecycle/container/proxy.Dockerfile` builds with `--no-default-features --features
-proxy`, and this once broke a release candidate. If you touch `src/`
+  proxy`, and this once broke a release candidate. If you touch `src/`
   or `packages/ak-*`, also run
   `cargo clippy --workspace --no-default-features --features proxy -- -D warnings`. Put
   server-only code behind `#[cfg(feature = "core")]`.

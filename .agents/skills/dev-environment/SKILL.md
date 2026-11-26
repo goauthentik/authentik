@@ -13,12 +13,12 @@ description: >
 
 ## Purpose
 
-A first run needs toolchains, two dependency installs, Postgres and S3 containers, a local
-config file, a migrated database and a built web UI. This skill is the fast path and the
-traps. The full reference is
-[Full development environment](../../../website/docs/developer-docs/setup/full-dev-environment.mdx).
-For web-only work, see
-[Frontend development environment](../../../website/docs/developer-docs/setup/frontend-dev-environment.mdx).
+A first run needs toolchains, two dependency installs, Postgres and S3 containers,
+a local config file, a migrated database and a built web UI.
+
+This skill is the fast path and handles common setup and recovery traps.
+The full reference is [Full development environment](../../../website/docs/developer-docs/setup/full-dev-environment.mdx).
+For web-only work, see [Frontend development environment](../../../website/docs/developer-docs/setup/frontend-dev-environment.mdx), though a full setup is recommended for most development tasks.
 
 ## When to invoke
 
@@ -27,13 +27,12 @@ For web-only work, see
 - "How do I log in the first time?" / "I locked myself out of akadmin."
 - "My dev database is broken, start me over."
 
-Not this skill: running and restarting the server, migrations for a model change, and the
-`ak` shell (backend).
+Not this skill: running and restarting the server, migrations for a model change, and the `ak` shell (backend).
 
 ## Workflow
 
-Steps are tagged: `[shell]` run a command, `[verify]` check before moving on. Run every
-`make` target from the repo root.
+Steps are tagged: `[shell]` run a command, `[verify]` check before moving on.
+Run every `make` target from the repo root.
 
 ### 1. Fresh clone to first login
 
@@ -96,8 +95,7 @@ Pick the smallest reset that fixes the problem.
 5. **[verify]** `make run` comes up and you can log in.
 
 Locked out, and want to keep the data? Mint a recovery link instead of resetting:
-`uv run ak create_recovery_key 10 akadmin`, then open
-`http://localhost:9000/recovery/use-token/<key>/`.
+`uv run ak create_recovery_key 10 akadmin`, then open `http://localhost:9000/recovery/use-token/<key>/`.
 
 ## Gotchas
 
@@ -125,8 +123,4 @@ Locked out, and want to keep the data? Mint a recovery link instead of resetting
   which shows up as odd compiler or clippy errors. Put rustup's toolchain first on `PATH`.
 - **aws-lc-rs FIPS fails to build with GCC 14+** (Linux). Install Clang and
   `export AWS_LC_FIPS_SYS_CC=clang`.
-- **macOS: gunicorn workers crash on their first DNS lookup** ("crashed on child side of
-  fork pre-exec"). With `debug` or `debugger` true, `lifecycle/gunicorn.conf.py` starts the
-  debugpy server in the gunicorn master before it forks, and macOS aborts forked children
-  of a multithreaded process. `debug: false` in `local.env.yml` avoids it, at the cost of
-  debug mode.
+- **macOS: Disable fork-safety in gunicorn.** Setting `export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES` in your shell disables fork-safety, which avoids crashes on the first DNS lookup in gunicorn workers.

@@ -75,9 +75,9 @@ That project is configured headless.
 
 ### 3. Debug a flaky test
 
-1. **[shell] Python order dependence:** tests run in random order (pytest-randomly). Rerun
-   with the seed from the failing log: `--randomly-seed=<n>` (CI sets `CI_TEST_SEED`, and the
-   runner reads it as the default).
+1. **[shell] Python order dependence:** tests run in random order (pytest-randomly).
+   Rerun with the seed from the failing log: `--randomly-seed=<n>` (CI sets `CI_TEST_SEED`,
+   and the runner reads it as the default).
 2. **[shell] Python repeat:** `--count 20` reruns the selection (pytest-flakefinder).
    `--no-capture` shows prints.
 3. **[shell] Playwright load:** rerun only the failing file with
@@ -88,8 +88,8 @@ That project is configured headless.
 
 ### 4. A suite won't start, or hangs
 
-- **Python tests hang with dramatiq "connection is closed ... retried in 5 seconds".** Not a
-  test failure: a background task hit a column your dev DB lacks. Scroll up for the
+- **Python tests hang with dramatiq "connection is closed ... retried in 5 seconds".**
+  Not a test failure: a background task hit a column your dev DB lacks. Scroll up for the
   `ProgrammingError`, then `make migrate`. If a rebased migration was renamed and migrate
   fails with `column ... already exists`, fix the row in `django_migrations` or `make dev-reset`
   (it also drops the `test_` database).

@@ -27,16 +27,15 @@ before moving on, `[ask]` confirm with the person first.
 
 ## 1. Branch
 
-1. **[shell]** Never work on `main`. Outside contributors open PRs from a fork's feature
-   branch. The PR template rejects PRs from `main`.
+1. **[shell]** Never work on `main`. Outside contributors open PRs from a fork's feature branch.
+   The PR template rejects PRs from `main`.
 2. **[shell]** Name the branch after the area, the way maintainers do:
    `web/bug/<topic>`, `web/maint/<topic>`, `website/docs/<topic>`,
    `providers/oauth2/<topic>`. The docs' example `feature/<name>` also works.
 
 ## 2. Title and commits
 
-Format: `<area>: <verb> <description>`, lowercase after the colon and without a trailing
-period.
+Format: `<area>: <verb> <description>`, lowercase after the colon and without a trailing period.
 The area is the package path, the same structure as `authentik/` and the top-level
 folders. Real titles from `git log`:
 
@@ -47,21 +46,22 @@ folders. Real titles from `git log`:
 - `website/integrations: Arcane: update for Arcane 3.x`
 - `ci: leave rust build-warnings setting default`
 
-Several areas: join them, as in `core, web: update translations`. Security fixes use
-`security:`. The changelog keeps those entries, so don't bury a CVE fix under another
-area. Because of the squash merge, commits inside the PR can have any message.
+Several areas: join them, as in `core, web: update translations`.
+Security fixes use `security:`. The changelog keeps those entries,
+so don't bury a CVE fix under another area.
+Because of the squash merge, commits inside the PR can have any message.
 
-Commit attribution: don't add a Claude or other AI co-author trailer. Credit human
-collaborators with `Co-authored-by:` instead.
+Commit attribution: don't add a Claude or other AI co-author trailer.
+Credit human collaborators with `Co-authored-by:` instead.
 
 ## 3. Description
 
 Fill `.github/pull_request_template.md`. Maintainers keep it short:
 
-```markdown
+```md
 ## Details
 
-This PR fixes <what> in <where>. <At most one sentence on the cause.>
+This PR fixes {{what}} in {{where}}. {{At most one sentence on the cause.}}
 
 - Keep the host's `value` as the selection; store user choices in state.
 - Compare selections by option name.
@@ -74,8 +74,8 @@ closes #1234
 - No testing paragraph.
 - `closes #N` closes an issue on merge. `refs #N` links without closing.
 - Outside contributors must keep the checklist and the AI disclosure: `AI_POLICY.md`
-  requires saying which AI tools were used and how much. A human must understand and be
-  able to explain every line.
+  requires saying which AI tools were used and how much.
+  A human must understand and be able to explain every line.
 
 ## 4. Before pushing
 
@@ -118,19 +118,18 @@ enabling or wiring PR last. For a dependent series, a stacked set of PRs works w
 ## 8. Backports
 
 Add a `backport/version-<year>.<minor>` label (list them with
-`gh label list --search backport`) to a PR on `main`. After merge, the
-`authentik-cherry-pick` app opens `cherry-pick/<pr>-to-version-<year>.<minor>`. A failed
-cherry-pick needs a manual PR against the release branch. Supported versions are listed
-in `SECURITY.md`. `backport/main` brings a fix made on a release branch forward.
+`gh label list --search backport`) to a PR on `main`.
+After merge, the `authentik-cherry-pick` app opens `cherry-pick/<pr>-to-version-<year>.<minor>`.
+A failed cherry-pick needs a manual PR against the release branch.
+Supported versions are listed in `SECURITY.md`. `backport/main` brings a fix made on a release branch forward.
 
 ## Gotchas
 
 - **Teammates push to shared PR branches.** Before a rebase and force-push, run
-  `git fetch` then `git log --format='%h %an %s' HEAD..origin/<branch>`. If it lists
-  commits, rebase onto `origin/<branch>`. `--force-with-lease` doesn't help once the fetch
+  `git fetch` then `git log --format='%h %an %s' HEAD..origin/<branch>`.
+  If it lists commits, rebase onto `origin/<branch>`. `--force-with-lease` doesn't help once the fetch
   has moved the tracking ref.
-- **Push one branch per `git push`.** A push with several refs at once hits a repository rule
-  (GH013).
+- **Push one branch per `git push`.** A push with several refs at once hits a repository rule (GH013).
 - **Dependabot and translation PRs** follow their own titles (`web: bump …`,
   `translate: Updates for …`). Don't copy those as a model.
 - **[ask]** Confirm before anything visible to others: opening or retitling a PR,

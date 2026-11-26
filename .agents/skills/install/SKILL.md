@@ -16,12 +16,11 @@ description: >
 
 - **Run authentik** as the sign-in for your apps (homelab, company, evaluation): this skill.
 - **Develop authentik** from this checkout (change code, run tests): the dev-environment
-  skill. Its `make` targets build a development stack for working on the code. A
-  deployment follows the published guides below.
+  skill. Its `make` targets build a development stack for working on the code.
+  A deployment follows the published guides below.
 
-The published guides hold the authoritative steps. This skill picks the right one and adds the
-traps. Guides live in `website/docs/install-config/` and are published at
-<https://docs.goauthentik.io/install-config/>.
+The published guides hold the authoritative steps.
+Guides live in `website/docs/install-config/` and are published at <https://docs.goauthentik.io/install-config/>.
 
 ## Pick an install method
 
@@ -53,8 +52,8 @@ Work in an empty directory outside this repository.
 3. **[shell]** Optional: set ports (`COMPOSE_PORT_HTTP`, `COMPOSE_PORT_HTTPS`) and email
    in `.env`, as the guide describes.
 4. **[shell]** `docker compose pull && docker compose up -d`.
-5. **[verify]** `docker compose ps` shows the containers healthy. The first start runs
-   migrations and takes a minute or two.
+5. **[verify]** `docker compose ps` shows the containers healthy.
+   The first start runs migrations and takes a minute or two.
 6. **[verify]** Open `http://<host>:9000/` and set the **akadmin** password when prompted.
 
 For Kubernetes, follow `install/kubernetes.mdx`: generate the secrets, write
@@ -64,8 +63,8 @@ After the first login, `first-steps/` walks through adding the first application
 
 ## Gotchas
 
-- **Start at the root URL.** A direct visit to `/if/flow/initial-setup/` shows "Access
-  denied" by design. If setup still fails, restart the containers. If that doesn't help,
+- **Start at the root URL.** A direct visit to `/if/flow/initial-setup/` shows "Access denied" by design.
+  If setup still fails, restart the containers. If that doesn't help,
   set the password directly with `docker compose exec server ak changepassword akadmin`
   (see `troubleshooting/login.mdx`).
 - **Don't mount `/etc/timezone` or `/etc/localtime`** into the containers. authentik runs
@@ -76,5 +75,5 @@ After the first login, `first-steps/` walks through adding the first application
 - **Behind a reverse proxy,** follow `reverse-proxy.mdx` for the headers and WebSocket
   settings. The proxy must speak HTTP/1.1 or newer and pass the `Host` and WebSocket
   upgrade headers, or outposts and host checks fail.
-- **Locked out of akadmin?** Create a recovery key (`troubleshooting/login.mdx`). With
-  Compose: `docker compose run --rm server create_recovery_key 10 akadmin`.
+- **Locked out of akadmin?** Create a recovery key (`troubleshooting/login.mdx`).
+  With Compose: `docker compose run --rm server create_recovery_key 10 akadmin`.

@@ -37,13 +37,12 @@ Never hand-edit API reference pages. Change the Python API, run `make gen`, then
 - "The docs build fails with a broken link / anchor."
 - "Run the docs checks before I push."
 
-Not this skill: what to write and how (style guide), the web UI (frontend), cspell
-dictionaries and lint config (linting).
+Not this skill: what to write and how (style guide), the web UI (frontend), cspell dictionaries and lint config (linting).
 
 ## Workflow
 
-Steps are tagged: `[shell]` run a command, `[edit]` change a file, `[verify]` check before
-moving on. Run commands from the repo root. The package manager is **pnpm**.
+Steps are tagged: `[shell]` run a command, `[edit]` change a file, `[verify]` check before moving on.
+Run commands from the repo root. The package manager is **pnpm**.
 
 ### 1. Preview with live reload
 

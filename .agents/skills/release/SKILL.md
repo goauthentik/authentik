@@ -14,15 +14,15 @@ description: >
 
 ## Purpose
 
-A release spans a few weeks of checklist work and a handful of GitHub Actions. Most of it is
-routine, but several steps fail in ways that are easy to misread, and a few are hard to undo
-because they publish tags, images or messages. This skill walks the release in order and
-calls out the traps found in past releases.
+A release spans a few weeks of checklist work and a handful of GitHub Actions.
+Most of it is routine, but several steps fail in ways that are easy to misread,
+and a few are hard to undo because they publish tags, images or messages.
 
 The release manager's Notion pages hold the internal plan: the per-release page
 (the dated checklist) and the release task created from the **Release xxxx.xx** template
-(the per-version steps). Read both first. Where this skill and Notion disagree, ask the
-release manager and fix whichever is stale.
+(the per-version steps). Read both first.
+
+Where this skill and Notion disagree, ask the previous release manager and fix whichever is stale.
 
 ## When to invoke
 
@@ -37,16 +37,16 @@ Not this skill: normal PR conventions or running the test suites (see AGENTS.md)
 ## Ground rules
 
 - **Ask before anything outward-facing.** A tag workflow dispatch, a published release,
-  and a Discord or Slack post all reach people outside the session. Confirm each one with
-  the release manager, every time.
+  and a Discord or Slack post all reach people outside the session.
+  Confirm each one with the release manager, every time.
 - **Report what happened, from the PR states.** When closing or merging a batch of PRs, check each
-  PR's final state (`merged` vs `closed`, and by whom). Someone else may have merged one
-  before you got to it.
+  PR's final state (`merged` vs `closed`, and by whom).
+  Someone else may have merged one before you got to it.
 - **Before a force-push**, `git fetch` and check `git log HEAD..origin/<branch>` for
   teammates' commits.
 - **Recompute the dates.** The checklist is written as D-minus-N days from the release
-  date. If the schedule slips, work out where you are from the finished steps. The date
-  printed next to a step is out of date by then.
+  date. If the schedule slips, work out where you are from the finished steps.
+  The date printed next to a step is out of date by then.
 
 ## Workflow
 
@@ -55,11 +55,10 @@ moving on, `[ask]` confirm with the release manager first.
 
 ### 1. Before branch-off
 
-1. **[gh]** Every item in the release's "Required" GitHub milestone is done or explicitly
-   moved.
+1. **[gh]** Every item in the release's "Required" GitHub milestone is done or explicitly moved.
 2. **[gh]** Run **Translation - Extract and compile** on `main` and merge its PR.
-3. **[gh]** Transifex sync (a maintainer starts it, with a 60% threshold). It opens one PR
-   per language.
+3. **[gh]** Transifex sync (a maintainer starts it, with a 60% threshold).
+   It opens one PR per language.
     - Approve and merge them all. If one fails CI, turn on auto-merge and rerun the failed
       jobs (`gh run rerun <id> --failed`). Flaky e2e jobs are the common cause.
     - Then run **Translation - Extract and compile** again and merge the
@@ -74,9 +73,8 @@ moving on, `[ask]` confirm with the release manager first.
 1. **[ask][gh]** Run **Release - Branch-off** with the **next** version (for example
    `2027.2` when releasing 2026.11). It creates `version-<year>.<minor>` and a version-bump
    PR for `main`. Merge that PR.
-2. From now on, fixes reach the release by backport: add the
-   `backport/version-<year>.<minor>` label and the cherry-pick bot opens the PR. Watch for
-   failed cherry-picks. Those need a manual PR.
+2. From now on, fixes reach the release by backport: add the `backport/version-<year>.<minor>`
+   label and the cherry-pick bot opens the PR. Watch for failed cherry-picks. Those need a manual PR.
 3. Tell the team that branch-off happened so feature merges to `main` can resume.
 
 ### 3. Generate the changelog and API diff
@@ -147,11 +145,12 @@ is safe. Title CVE fixes `security: …`. It's the only way they survive the `.0
     The workflow only writes the first line. For later rcs, list the PRs merged into the
     release branch since the previous rc.
 
-2. **[verify]** Open the release notes link. **Don't publish until it loads.** The `next`
-   docs site is built from the `next` branch. **Release - Update next branch** force-pushes
-   that branch from `main` daily at noon UTC. Netlify can skip or fail that build without
-   a GitHub status. If the page 404s, trigger "Clear cache and deploy site" on the docs
-   site in Netlify. Use `/releases/<year>.<minor>`, not `/docs/releases/…` (that redirects).
+2. **[verify]** Open the release notes link. **Don't publish until it loads.**
+   The `next` docs site is built from the `next` branch.
+   **Release - Update next branch** force-pushes that branch from `main` daily at noon UTC.
+   Netlify can skip or fail that build without a GitHub status.
+   If the page 404s, trigger "Clear cache and deploy site" on the docs site in Netlify.
+   Use `/releases/<year>.<minor>`, not `/docs/releases/…` (that redirects).
 3. **[ask][gh]** Publish. For an rc, keep it a prerelease and leave "Set latest version"
    off: `gh release edit <tag> --draft=false --prerelease --latest=false`.
 

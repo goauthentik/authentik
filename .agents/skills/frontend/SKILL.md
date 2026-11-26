@@ -13,18 +13,17 @@ description: >
 
 ## Purpose
 
-The web UI (`web/`) is three Lit apps (Admin, User, Flow) bundled by esbuild into
-`web/dist/`. The server doesn't proxy a dev server: it serves whatever files are in
-`web/dist/` at the moment of the request. So "running the frontend" means keeping
-`web/dist/` up to date while `make run` serves it. Most "my edit doesn't show" problems come
-from that.
+The web UI (`web/`) is three Lit apps (Admin, User, Flow) bundled by esbuild into `web/dist/`.
+The server doesn't proxy a dev server: it serves whatever files are in `web/dist/` at the moment of the request.
+So "running the frontend" means keeping `web/dist/` up to date while `make run` serves it.
+Most "my edit doesn't show" problems come from that.
 
 Architecture, conventions, i18n and the API client rules are in
-[`web/AGENTS.md`](../../../web/AGENTS.md). Read it before changing components. The repo uses
-**pnpm**. Use the `make` targets or `pnpm --dir web ...` from the root.
+[`web/AGENTS.md`](../../../web/AGENTS.md). Read it before changing components.
+The repo uses **pnpm**. Use the `make` targets or `pnpm --dir web ...` from the root.
 
-Setup docs: `website/docs/developer-docs/setup/frontend-dev-environment.mdx` (UI only,
-against a container backend) and `full-dev-environment.mdx` (everything local).
+Setup docs: `website/docs/developer-docs/setup/frontend-dev-environment.mdx`
+(UI only, against a container backend) and `full-dev-environment.mdx` (everything local).
 
 ## When to invoke
 
@@ -38,8 +37,8 @@ backend (backend), web tests (testing), lint and `tsc` (linting).
 
 ## Workflow
 
-Steps are tagged: `[shell]` run a command, `[verify]` check before moving on. Commands run
-from the repo root.
+Steps are tagged: `[shell]` run a command, `[verify]` check before moving on.
+Commands run from the repo root.
 
 ### 1. Run the UI with live reload
 
