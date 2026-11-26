@@ -15,7 +15,6 @@ import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -39,6 +38,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
+    public static override verboseName = msg("Outpost integration", {
+        id: "outpost-integrations.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Outpost integrations", {
+        id: "outpost-integrations.verbose-name-plural.label",
+    });
+
     public pageTitle = msg("Outpost integrations");
     public pageDescription = msg(
         "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
@@ -97,10 +103,8 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             html`<ak-status-label type="info" ?good=${item.local}></ak-status-label>`,
             html`${
                 itemState?.healthy
-                    ? html`<ak-label color=${PFColor.Green}
-                          >${ifDefined(itemState.version)}</ak-label
-                      >`
-                    : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`
+                    ? html`<ak-label status="success">${ifDefined(itemState.version)}</ak-label>`
+                    : html`<ak-label status="danger">${msg("Unhealthy")}</ak-label>`
             }`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.component, item.pk, item.verboseName)}
@@ -123,7 +127,6 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Outpost integration(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ServiceConnection) => {
                 return aki(OutpostsApi).outpostsServiceConnectionsAllUsedByList({

@@ -1,0 +1,146 @@
+---
+title: Integrate with OpenCode
+sidebar_label: OpenCode
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is OpenCode?
+
+> OpenCode is an open source coding agent. Use it in the desktop app, in the terminal, on your phone or from your own code with the SDK.
+>
+> -- https://opencode.ai/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `example.company` is the email domain that your OpenCode users sign in with.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info OpenCode requirements
+You must be an owner of the OpenCode Console workspace to configure SSO. Each workspace supports one SSO connection, using either OIDC or SAML.
+:::
+
+## Integration configuration
+
+To support the integration of OpenCode with authentik, you need to create an [application/provider pair](/docs/add-secure-apps/applications/manage_apps/#create-an-application-and-provider-pair) in authentik. Select the tab for the protocol that you want to use.
+
+<Tabs
+  defaultValue="oidc"
+  values={[
+    { label: "OIDC", value: "oidc" },
+    { label: "SAML", value: "saml" },
+  ]}>
+  <TabItem value="oidc">
+
+### authentik configuration
+
+<RedirectURI20265Note />
+
+#### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Take note of the **Client ID** and **Client Secret** values because they are required later.
+        - Temporarily add a **Redirect URI** of type `Strict` `Authorization` as `https://temp.temp`.
+        - Select any available **Signing Key**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Create Application** to save the new application and provider.
+
+### OpenCode configuration
+
+1. Log in to the [OpenCode Console](https://opencode.ai/console) as a workspace owner.
+2. Navigate to **Settings** > **Security**, click **Configure SSO**, and select **OpenID Connect**.
+3. Select the generic OIDC provider and set the following values:
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Client ID**: enter the Client ID from authentik.
+    - **Client Secret**: enter the Client Secret from authentik.
+    - **Display Name**: `authentik`
+4. Click **Save**, and then copy the **Callback URL** that OpenCode displays.
+
+### Update the authentik provider
+
+1. Return to the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the OpenCode provider.
+3. Under **Protocol settings**, replace the temporary **Redirect URI** with the **Callback URL** from OpenCode.
+4. Click **Save Changes**.
+
+  </TabItem>
+  <TabItem value="saml">
+
+### authentik configuration
+
+<SAMLProvider20265Warning />
+
+#### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Temporarily set the **ACS URL** and **Audience** to `https://temp.temp`.
+        - Under **Advanced protocol settings**:
+            - Select any available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Create Application** to save the new application and provider.
+
+#### Copy the metadata URL
+
+1. Navigate to **Applications** > **Providers** and click the name of the OpenCode provider.
+2. Under **Related objects** > **Metadata**, click **Copy download URL**. This URL is required in the next section.
+
+### OpenCode configuration
+
+1. Log in to the [OpenCode Console](https://opencode.ai/console) as a workspace owner.
+2. Navigate to **Settings** > **Security**, click **Configure SSO**, and select **SAML 2.0**.
+3. Select the generic SAML provider, and then copy the **ACS URL** and **SP Entity ID** values that OpenCode displays.
+4. Add the identity provider metadata by URL, using the metadata URL that you copied from authentik.
+5. Keep the OpenCode setup flow open.
+
+### Update the authentik provider
+
+1. Return to the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the OpenCode provider.
+3. Under **Protocol settings**, set the following values:
+    - **ACS URL**: set to the **ACS URL** from OpenCode.
+    - **Audience**: set to the **SP Entity ID** from OpenCode.
+4. Click **Save Changes**.
+5. Return to the OpenCode setup flow, review the details, and click **Activate SSO**.
+
+  </TabItem>
+</Tabs>
+
+## Verify the email domain in OpenCode
+
+OpenCode only redirects users to authentik when their email address belongs to a verified domain.
+
+1. In the OpenCode Console, navigate to **Settings** > **Security**.
+2. Under **Email domains**, click **Add domain** and enter `example.company`.
+3. Publish the TXT record that OpenCode displays with your DNS provider.
+4. Click **Verify Domain**. DNS changes can take some time to propagate.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with OpenCode, log out of the OpenCode Console and sign in with an `example.company` email address. You should be redirected to authentik and, after authenticating, redirected back to the OpenCode Console.
+
+Use a workspace admin or member account to test. Workspace owners can still sign in without SSO, so that a misconfigured identity provider cannot lock them out.
+
+## Resources
+
+- [OpenCode Docs - SSO](https://opencode.ai/docs/console/sso/)

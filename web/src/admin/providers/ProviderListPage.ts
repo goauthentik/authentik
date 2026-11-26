@@ -31,6 +31,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
+    public static override verboseName = msg("Provider", { id: "providers.verbose-name.label" });
+    public static override verboseNamePlural = msg("Providers", {
+        id: "providers.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     override pageTitle = msg("Providers");
@@ -65,7 +70,6 @@ export class ProviderListPage extends TablePage<Provider> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Provider(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Provider) => {
                 return aki(ProvidersApi).providersAllUsedByList({
@@ -104,8 +108,8 @@ export class ProviderListPage extends TablePage<Provider> {
                 >`;
         }
 
-        return html`<i aria-hidden="true" class="pf-icon pf-icon-warning-triangle pf-m-warning"></i
-            ><span>${msg("Provider not assigned to any application.")}</span>`;
+        return html`<i aria-hidden="true" class="fa fa-exclamation-triangle pf-m-warning"></i
+            ><span> ${msg("Provider not assigned to any application.")}</span>`;
     }
 
     override row(item: Provider): SlottedTemplateResult[] {

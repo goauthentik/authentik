@@ -1,4 +1,4 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/Alert";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
@@ -210,12 +210,12 @@ export class BrandForm extends ModelForm<Brand, string> {
                             msg("Custom CSS"),
                         )}
 
-                        <ak-codemirror
+                        <ak-code-editor
                             id="branding-custom-css"
                             mode="css"
                             value=${brandingCustomCss}
                         >
-                        </ak-codemirror>
+                        </ak-code-editor>
                         <p class="pf-c-form__helper-text">
                             ${msg("Custom CSS to apply to pages when this brand is active.")}
                         </p>
@@ -382,14 +382,14 @@ export class BrandForm extends ModelForm<Brand, string> {
                             },
                             msg("Attributes"),
                         )}
-                        <ak-codemirror
+                        <ak-code-editor
                             id="attributes"
                             name="attributes"
                             mode="yaml"
                             value="${YAML.stringify(this.instance?.attributes ?? {})}"
                             aria-describedby="attributes-help"
                         >
-                        </ak-codemirror>
+                        </ak-code-editor>
                         <p class="pf-c-form__helper-text" id="attributes-help">
                             ${msg(
                                 "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.",

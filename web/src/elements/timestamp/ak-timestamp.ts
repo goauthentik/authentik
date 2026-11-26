@@ -7,6 +7,8 @@ import { intersectionObserver } from "#elements/decorators/intersection-observer
 import { ifPresent } from "#elements/utils/attributes";
 import { dateProperty } from "#elements/utils/properties";
 
+import { SlotController } from "@patternfly/pfe-core/controllers/slot-controller.js";
+
 import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -46,6 +48,8 @@ export class AKTimestamp extends AKElement {
     public refresh: boolean = false;
 
     protected static reducedMotionMediaQuery: MediaQueryList | null = null;
+
+    protected slots = new SlotController(this, { slots: [null] });
 
     #timestamp: Date | null = null;
 
@@ -91,9 +95,7 @@ export class AKTimestamp extends AKElement {
         }
 
         if (!AKTimestamp.reducedMotionMediaQuery) {
-            AKTimestamp.reducedMotionMediaQuery = window.matchMedia(
-                "(prefers-reduced-motion: reduce)",
-            );
+            AKTimestamp.reducedMotionMediaQuery = matchMedia("(prefers-reduced-motion: reduce)");
         }
 
         AKTimestamp.reducedMotionMediaQuery.addEventListener("change", this.startInterval);
@@ -111,7 +113,7 @@ export class AKTimestamp extends AKElement {
         // then every minute afterwards.
 
         if (startWithinInterval && !reducedMotionMediaQuery.matches) {
-            this.#interval = self.setInterval(() => {
+            this.#interval = setInterval(() => {
                 if (!this.visible || document.visibilityState !== "visible") return;
 
                 this.requestUpdate();
@@ -123,7 +125,7 @@ export class AKTimestamp extends AKElement {
                 }
             }, 1000);
         } else {
-            this.#interval = self.setInterval(() => {
+            this.#interval = setInterval(() => {
                 if (!this.visible || document.visibilityState !== "visible") return;
 
                 this.requestUpdate();
@@ -143,10 +145,15 @@ export class AKTimestamp extends AKElement {
             aria-labelledby="timestamp-label"
             aria-describedby=${ifPresent(!this.hideElapsed, "elapsed")}
         >
-            <div part="label" id="timestamp-label">
+            <div part="label" id="timestamp-label" ?hidden=${!this.slots.hasSlotted(null)}>
                 <slot></slot>
             </div>
-            ${!this.hideElapsed ? html`<div part="elapsed" id="elapsed">${elapsed}</div>` : nothing}
+            ${
+                !this.hideElapsed
+                    ? html`<div part="elapsed" id="elapsed">${elapsed}</div>
+                          <br />`
+                    : nothing
+            }
             ${
                 this.datetime
                     ? html`<small part="datetime" id="datetime"

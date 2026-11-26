@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2026.11.0-rc1
+  version: 2027.2.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -7765,6 +7765,196 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/microsoft_intune/connectors/:
+    get:
+      operationId: endpoints_microsoft_intune_connectors_list
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMicrosoftIntuneConnectorList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_microsoft_intune_connectors_create
+      description: MicrosoftIntuneConnector Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MicrosoftIntuneConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/microsoft_intune/connectors/{connector_uuid}/:
+    get:
+      operationId: endpoints_microsoft_intune_connectors_retrieve
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_microsoft_intune_connectors_update
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MicrosoftIntuneConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_microsoft_intune_connectors_partial_update
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMicrosoftIntuneConnectorRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicrosoftIntuneConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_microsoft_intune_connectors_destroy
+      description: MicrosoftIntuneConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/microsoft_intune/connectors/{connector_uuid}/used_by/:
+    get:
+      operationId: endpoints_microsoft_intune_connectors_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Microsoft Intune Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/:
     get:
       operationId: enterprise_license_list
@@ -10180,6 +10370,286 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_expiration_rules/:
+    get:
+      operationId: lifecycle_user_expiration_rules_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: query
+        name: action
+        schema:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: group
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserExpirationRuleList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: lifecycle_user_expiration_rules_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserExpirationRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_expiration_rules/{id}/:
+    get:
+      operationId: lifecycle_user_expiration_rules_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: lifecycle_user_expiration_rules_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserExpirationRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: lifecycle_user_expiration_rules_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserExpirationRuleRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: lifecycle_user_expiration_rules_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_expiration_rules/{id}/preview/:
+    get:
+      operationId: lifecycle_user_expiration_rules_preview_retrieve
+      description: |-
+        Preview new offboardings and changes to pending rows if this rule is enabled.
+
+        POST accepts unsaved edits to the rule. Neither method saves the rule, changes
+        offboardings, or sends warnings. Existing policy bindings still apply.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRulePreview'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: lifecycle_user_expiration_rules_preview_create
+      description: |-
+        Preview new offboardings and changes to pending rows if this rule is enabled.
+
+        POST accepts unsaved edits to the rule. Neither method saves the rule, changes
+        offboardings, or sends warnings. Existing policy bindings still apply.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserExpirationRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserExpirationRulePreview'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_expiration_rules/{id}/used_by/:
+    get:
+      operationId: lifecycle_user_expiration_rules_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Expiration Rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /lifecycle/user_offboarding/:
     get:
       operationId: lifecycle_user_offboarding_list
@@ -10188,9 +10658,22 @@ paths:
         name: action
         schema:
           $ref: '#/components/schemas/OffboardingActionEnum'
+      - in: query
+        name: generated
+        schema:
+          type: boolean
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: rule
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: rule__isnull
+        schema:
+          type: boolean
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: status
@@ -20073,6 +20556,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: ignore_force_authn
+        schema:
+          type: boolean
+      - in: query
         name: invalidation_flow
         schema:
           type: string
@@ -21247,6 +21734,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: ignore_force_authn
+        schema:
+          type: boolean
       - in: query
         name: invalidation_flow
         schema:
@@ -35848,6 +36339,11 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
+    ActivityBasisEnum:
+      enum:
+      - last_login
+      - successful_events
+      type: string
     Agent:
       type: object
       description: |-
@@ -36396,6 +36892,7 @@ components:
       - authentik.enterprise.endpoints.connectors.agent
       - authentik.enterprise.endpoints.connectors.fleet
       - authentik.enterprise.endpoints.connectors.google_chrome
+      - authentik.enterprise.endpoints.connectors.microsoft_intune
       - authentik.enterprise.lifecycle
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
@@ -36531,7 +37028,9 @@ components:
         launch_url:
           type: string
           nullable: true
-          description: Allow formatting of launch URL
+          description: |-
+            Format the launch URL for the user given as `for_user` in the context, or else the
+            requesting user
           readOnly: true
         open_in_new_tab:
           type: boolean
@@ -37677,6 +38176,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        webauthn_additional_accepted_origins:
+          type: array
+          items:
+            type: string
+          description: Additional trusted origins for WebAuthn authentication. Matched
+            exactly.
         webauthn_allowed_device_types:
           type: array
           items:
@@ -37743,6 +38248,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        webauthn_additional_accepted_origins:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Additional trusted origins for WebAuthn authentication. Matched
+            exactly.
         webauthn_allowed_device_types:
           type: array
           items:
@@ -37906,6 +38418,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        additional_accepted_origins:
+          type: array
+          items:
+            type: string
+          description: Additional trusted origins for WebAuthn registration. Matched
+            exactly.
         device_type_restrictions:
           type: array
           items:
@@ -37956,6 +38474,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        additional_accepted_origins:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Additional trusted origins for WebAuthn registration. Matched
+            exactly.
         device_type_restrictions:
           type: array
           items:
@@ -41041,6 +41566,7 @@ components:
       - logout
       - user_write
       - user_offboarded
+      - user_expiration_warning
       - suspicious_request
       - password_set
       - authenticator_locked
@@ -45778,6 +46304,90 @@ components:
       - microsoft_id
       - provider
       - user
+    MicrosoftIntuneConnector:
+      type: object
+      description: MicrosoftIntuneConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        client_id:
+          type: string
+        tenant_id:
+          type: string
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificate authorities which issue device certificates via
+            Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage
+            to validate certificates. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+      required:
+      - client_id
+      - component
+      - meta_model_name
+      - name
+      - tenant_id
+      - verbose_name
+      - verbose_name_plural
+    MicrosoftIntuneConnectorRequest:
+      type: object
+      description: MicrosoftIntuneConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        client_id:
+          type: string
+          minLength: 1
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        tenant_id:
+          type: string
+          minLength: 1
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificate authorities which issue device certificates via
+            Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage
+            to validate certificates. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+      required:
+      - client_id
+      - client_secret
+      - name
+      - tenant_id
     ModelEnum:
       enum:
       - authentik_core.group
@@ -45891,10 +46501,12 @@ components:
       - authentik_agents.agent
       - authentik_endpoints_connectors_fleet.fleetconnector
       - authentik_endpoints_connectors_google_chrome.googlechromeconnector
+      - authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector
       - authentik_lifecycle.lifecyclerule
       - authentik_lifecycle.lifecycleiteration
       - authentik_lifecycle.review
       - authentik_lifecycle.useroffboarding
+      - authentik_lifecycle.userexpirationrule
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -48724,6 +49336,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedMicrosoftIntuneConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrosoftIntuneConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedMutualTLSStageList:
       type: object
       properties:
@@ -49804,6 +50431,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedUserExpirationRuleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserExpirationRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedUserKerberosSourceConnectionList:
       type: object
       properties:
@@ -50121,6 +50763,20 @@ components:
       - pk
       - uid
       - username
+    PartialUserExpirationRule:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
     PasswordChallenge:
       type: object
       description: Password challenge UI fields
@@ -50922,6 +51578,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        webauthn_additional_accepted_origins:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Additional trusted origins for WebAuthn authentication. Matched
+            exactly.
         webauthn_allowed_device_types:
           type: array
           items:
@@ -50966,6 +51629,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnHintEnum'
+        additional_accepted_origins:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: Additional trusted origins for WebAuthn registration. Matched
+            exactly.
         device_type_restrictions:
           type: array
           items:
@@ -52489,6 +53159,37 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+    PatchedMicrosoftIntuneConnectorRequest:
+      type: object
+      description: MicrosoftIntuneConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        client_id:
+          type: string
+          minLength: 1
+        client_secret:
+          type: string
+          writeOnly: true
+          minLength: 1
+        tenant_id:
+          type: string
+          minLength: 1
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificate authorities which issue device certificates via
+            Intune (Cloud PKI, SCEP or PKCS profiles), used by the endpoint stage
+            to validate certificates. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
     PatchedMutualTLSStageRequest:
       type: object
       description: MutualTLSStage Serializer
@@ -53745,6 +54446,11 @@ components:
           type: boolean
         sign_logout_response:
           type: boolean
+        ignore_force_authn:
+          type: boolean
+          description: When enabled, the ForceAuthn attribute set by the Service Provider
+            on an AuthnRequest is ignored and an existing session is used. When disabled,
+            ForceAuthn requires the user to re-authenticate.
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -54448,6 +55154,65 @@ components:
         name:
           type: string
           minLength: 1
+    PatchedUserExpirationRuleRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        activity_basis:
+          allOf:
+          - $ref: '#/components/schemas/ActivityBasisEnum'
+          description: Measure inactivity from the last login or successful user activity.
+        group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only expire members of this group (including descendant groups).
+            Leave empty to apply to every user.
+        user_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserTypeEnum'
+          description: Only expire users of these types. Service accounts are excluded
+            by default.
+        inactivity_duration:
+          type: string
+          minLength: 1
+          description: How long a user may be inactive before they are expired.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+        revoke_tokens:
+          type: boolean
+        warn_before:
+          type: string
+          nullable: true
+          description: Schedule the offboarding and notify the user this long before
+            they expire. Leave empty to expire users without warning.
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to warn the user. If
+            none are selected, the notification will only be shown in the authentik
+            UI.
+        exclude_superusers:
+          type: boolean
+          description: Never expire members of a superuser group.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
     PatchedUserKerberosSourceConnectionRequest:
       type: object
       description: User source connection
@@ -55612,6 +56377,7 @@ components:
       - username
       - email
       - password
+      - password_viewable
       - number
       - checkbox
       - radio-button-group
@@ -57741,6 +58507,11 @@ components:
           type: boolean
         sign_logout_response:
           type: boolean
+        ignore_force_authn:
+          type: boolean
+          description: When enabled, the ForceAuthn attribute set by the Service Provider
+            on an AuthnRequest is ignored and an existing session is used. When disabled,
+            ForceAuthn requires the user to re-authenticate.
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -57962,6 +58733,11 @@ components:
           type: boolean
         sign_logout_response:
           type: boolean
+        ignore_force_authn:
+          type: boolean
+          description: When enabled, the ForceAuthn attribute set by the Service Provider
+            on an AuthnRequest is ignored and an existing session is used. When disabled,
+            ForceAuthn requires the user to re-authenticate.
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -61326,6 +62102,267 @@ components:
           minLength: 1
       required:
       - name
+    UserExpirationRule:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Id
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        enabled:
+          type: boolean
+        activity_basis:
+          allOf:
+          - $ref: '#/components/schemas/ActivityBasisEnum'
+          description: Measure inactivity from the last login or successful user activity.
+        group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only expire members of this group (including descendant groups).
+            Leave empty to apply to every user.
+        group_obj:
+          allOf:
+          - $ref: '#/components/schemas/UserExpirationRuleGroup'
+          readOnly: true
+        user_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserTypeEnum'
+          description: Only expire users of these types. Service accounts are excluded
+            by default.
+        inactivity_duration:
+          type: string
+          description: How long a user may be inactive before they are expired.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+        revoke_tokens:
+          type: boolean
+        warn_before:
+          type: string
+          nullable: true
+          description: Schedule the offboarding and notify the user this long before
+            they expire. Leave empty to expire users without warning.
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to warn the user. If
+            none are selected, the notification will only be shown in the authentik
+            UI.
+        exclude_superusers:
+          type: boolean
+          description: Never expire members of a superuser group.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - group_obj
+      - name
+      - pbm_uuid
+    UserExpirationRuleGroup:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+    UserExpirationRulePendingPreview:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserExpirationRuleUser'
+          readOnly: true
+        previous_action:
+          allOf:
+          - $ref: '#/components/schemas/OffboardingActionEnum'
+          readOnly: true
+        action:
+          allOf:
+          - $ref: '#/components/schemas/OffboardingActionEnum'
+          readOnly: true
+          nullable: true
+        previous_scheduled_at:
+          type: string
+          format: date-time
+          readOnly: true
+        scheduled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        previous_revoke_sessions:
+          type: boolean
+          readOnly: true
+        revoke_sessions:
+          type: boolean
+          readOnly: true
+          nullable: true
+        previous_revoke_tokens:
+          type: boolean
+          readOnly: true
+        revoke_tokens:
+          type: boolean
+          readOnly: true
+          nullable: true
+      required:
+      - action
+      - id
+      - previous_action
+      - previous_revoke_sessions
+      - previous_revoke_tokens
+      - previous_scheduled_at
+      - revoke_sessions
+      - revoke_tokens
+      - scheduled_at
+      - user
+    UserExpirationRulePendingPreviewGroup:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        count:
+          type: integer
+          readOnly: true
+        offboardings:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserExpirationRulePendingPreview'
+          readOnly: true
+      required:
+      - count
+      - offboardings
+    UserExpirationRulePreview:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        count:
+          type: integer
+          readOnly: true
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserExpirationRuleUser'
+          readOnly: true
+        updated:
+          allOf:
+          - $ref: '#/components/schemas/UserExpirationRulePendingPreviewGroup'
+          readOnly: true
+        taken_over:
+          allOf:
+          - $ref: '#/components/schemas/UserExpirationRulePendingPreviewGroup'
+          readOnly: true
+        removed:
+          allOf:
+          - $ref: '#/components/schemas/UserExpirationRulePendingPreviewGroup'
+          readOnly: true
+      required:
+      - count
+      - removed
+      - taken_over
+      - updated
+      - users
+    UserExpirationRuleRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        activity_basis:
+          allOf:
+          - $ref: '#/components/schemas/ActivityBasisEnum'
+          description: Measure inactivity from the last login or successful user activity.
+        group:
+          type: string
+          format: uuid
+          nullable: true
+          description: Only expire members of this group (including descendant groups).
+            Leave empty to apply to every user.
+        user_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserTypeEnum'
+          description: Only expire users of these types. Service accounts are excluded
+            by default.
+        inactivity_duration:
+          type: string
+          minLength: 1
+          description: How long a user may be inactive before they are expired.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+        revoke_tokens:
+          type: boolean
+        warn_before:
+          type: string
+          nullable: true
+          description: Schedule the offboarding and notify the user this long before
+            they expire. Leave empty to expire users without warning.
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to warn the user. If
+            none are selected, the notification will only be shown in the authentik
+            UI.
+        exclude_superusers:
+          type: boolean
+          description: Never expire members of a superuser group.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - name
+    UserExpirationRuleUser:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - username
     UserFieldsEnum:
       enum:
       - email
@@ -61735,11 +62772,26 @@ components:
           format: date-time
           readOnly: true
           nullable: true
+        rule:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        rule_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUserExpirationRule'
+          readOnly: true
+        generated:
+          type: boolean
+          readOnly: true
       required:
       - created_at
       - created_by_obj
       - executed_at
+      - generated
       - id
+      - rule
+      - rule_obj
       - scheduled_at
       - status
       - user
@@ -62358,6 +63410,7 @@ components:
       - goauthentik.io/platform
       - fleetdm.com
       - chrome.google.com
+      - intune.microsoft.com
       type: string
     Version:
       type: object

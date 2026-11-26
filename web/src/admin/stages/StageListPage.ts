@@ -2,12 +2,12 @@ import "#admin/stages/register";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#elements/Label";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { PFColor } from "#elements/Label";
 import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -24,6 +24,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
+    public static override verboseName = msg("Stage", { id: "stages.verbose-name.label" });
+    public static override verboseNamePlural = msg("Stages", {
+        id: "stages.verbose-name-plural.label",
+    });
+
     public override pageTitle = msg("Stages");
     public override pageDescription = msg(
         "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
@@ -51,7 +56,6 @@ export class StageListPage extends TablePage<Stage> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Stage(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Stage) => {
                 return aki(StagesApi).stagesAllUsedByList({
@@ -101,7 +105,7 @@ export class StageListPage extends TablePage<Stage> {
                   </ul>`
                 : // Not necessarily wrong: some stages are only referenced by other stages,
                   // e.g. a password stage set on an identification stage.
-                  html`<ak-label color=${PFColor.Orange} compact>
+                  html`<ak-label color="orange" compact>
                       ${msg("Not bound to any flow", { id: "stage.list.unbound.label" })}
                   </ak-label>`,
             html`<div class="ak-c-table__actions">

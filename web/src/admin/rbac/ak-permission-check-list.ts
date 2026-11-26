@@ -5,7 +5,6 @@ import "#elements/Label";
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
-import { PFColor } from "#elements/Label";
 import { setPageDetails } from "#elements/router/meta";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -21,6 +20,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-permission-check-list")
 export class PermissionCheckListPage extends TablePage<PermissionCheck> {
+    public static override verboseName = msg("Permission Check", {
+        id: "permission-checks.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Permission Checks", {
+        id: "permission-checks.verbose-name-plural.label",
+    });
+
     protected override searchEnabled = true;
 
     public override checkbox = true;
@@ -50,7 +56,6 @@ export class PermissionCheckListPage extends TablePage<PermissionCheck> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Permission Checks")}
             .objects=${this.selectedElements}
             .usedBy=${(item: PermissionCheck) => {
                 return aki(RbacApi).rbacPermissionChecksUsedByList({ checkUuid: item.pk });
@@ -78,7 +83,7 @@ export class PermissionCheckListPage extends TablePage<PermissionCheck> {
                 (endpoint) =>
                     html`<code>${endpoint}</code> ${
                             item.unknownEndpoints.includes(endpoint)
-                                ? html`<ak-label color=${PFColor.Orange} compact>
+                                ? html`<ak-label color="orange" compact>
                                       ${msg("No longer exists")}
                                   </ak-label>`
                                 : nothing

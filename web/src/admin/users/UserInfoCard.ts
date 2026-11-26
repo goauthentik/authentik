@@ -169,7 +169,8 @@ export class UserInfoCard extends AKElement {
             }
             ${showEnterpriseActions ? this.renderOffboardingButton(user) : nothing}
             <ak-forms-delete-bulk
-                object-label=${msg("User")}
+                verbose-name=${msg("User", { id: "users.verbose-name.label" })}
+                verbose-name-plural=${msg("Users", { id: "users.verbose-name-plural.label" })}
                 .objects=${[user]}
                 .metadata=${(item: User) => [
                     { key: msg("Username"), value: item.username },
@@ -182,7 +183,7 @@ export class UserInfoCard extends AKElement {
             >
                 ${
                     user.pk === this.currentUserPk
-                        ? html`<ak-label slot="notice" color="warning">
+                        ? html`<ak-label slot="notice" status="warning">
                               ${msg(
                                   str`Warning: You are about to delete user ${user.username}, but you are currently logged in as this user. Proceed at your own risk.`,
                                   { id: "users.delete.self-warning.description" },

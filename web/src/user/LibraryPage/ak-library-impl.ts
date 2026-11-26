@@ -1,6 +1,6 @@
 import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/ak-tooltip";
 import "./ak-library-application-empty-list.js";
 import Styles from "./ak-library-impl.css";
 import AKLibraryApplicationListStyles from "./ApplicationList.css";
@@ -21,6 +21,7 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import { StorageAccessor } from "#common/storage/accessor";
 import type { PersistenceKey } from "#common/storage/shared";
+import { plural } from "#common/ui/locale/plurals";
 import { groupBy } from "#common/utils";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
@@ -242,7 +243,7 @@ export class LibraryPage extends WithSession(AKElement) {
 
     constructor() {
         super();
-        this.#gridModeMatcher = window.matchMedia("(width > 768px)");
+        this.#gridModeMatcher = matchMedia("(width > 768px)");
 
         this.#gridModeMatcher.addEventListener("change", this.#gridModeMediaQueryListener, {
             passive: true,
@@ -427,23 +428,20 @@ export class LibraryPage extends WithSession(AKElement) {
         return guard([viewMode], () => {
             const [tooltipContent, icon] = createViewToggleContent(viewMode);
 
-            return html`<button
-                id="library-view-toggle-button"
-                class="pf-c-button pf-m-plain library-view-toggle"
-                part="view-toggle"
-                type="button"
-                aria-label=${tooltipContent}
-                aria-pressed=${viewMode === ViewMode.List}
-                @click=${this.#viewToggleListener}
-            >
-                <pf-tooltip
-                    position="top"
-                    content=${tooltipContent}
-                    trigger="library-view-toggle-button"
+            return html`<ak-tooltip class="library-view-toggle-tooltip" placement="top">
+                <button
+                    id="library-view-toggle-button"
+                    class="pf-c-button pf-m-plain library-view-toggle"
+                    part="view-toggle"
+                    type="button"
+                    aria-labelledby="library-view-toggle-label"
+                    aria-pressed=${viewMode === ViewMode.List}
+                    @click=${this.#viewToggleListener}
                 >
                     ${icon}
-                </pf-tooltip>
-            </button>`;
+                </button>
+                <span slot="tooltip" id="library-view-toggle-label">${tooltipContent}</span>
+            </ak-tooltip>`;
         });
     }
 
@@ -536,23 +534,27 @@ export class LibraryPage extends WithSession(AKElement) {
                 // We must present the count within the label to ensure that the screen reader
                 // considers the update significant enough to read on each change,
                 // rather than the on just the first render.
-                message =
-                    count === 1
-                        ? msg(str`${count} application found for "${query}"`, {
-                              id: "user.library.application-count-singular-with-query",
-                          })
-                        : msg(str`${count} applications found for "${query}"`, {
-                              id: "user.library.application-count-plural-with-query",
-                          });
+                message = plural(count, {
+                    one: (formattedCount) =>
+                        msg(str`${formattedCount} application found for "${query}"`, {
+                            id: "user.library.application-count.search-result.one",
+                        }),
+                    other: (formattedCount) =>
+                        msg(str`${formattedCount} applications found for "${query}"`, {
+                            id: "user.library.application-count.search-result.other",
+                        }),
+                });
             } else {
-                message =
-                    count === 1
-                        ? msg(str`${count} application available`, {
-                              id: "user.library.application-count-singular",
-                          })
-                        : msg(str`${count} applications available`, {
-                              id: "user.library.application-count-plural",
-                          });
+                message = plural(count, {
+                    one: (formattedCount) =>
+                        msg(str`${formattedCount} application available`, {
+                            id: "user.library.application-count.available.one",
+                        }),
+                    other: (formattedCount) =>
+                        msg(str`${formattedCount} applications available`, {
+                            id: "user.library.application-count.available.other",
+                        }),
+                });
             }
 
             return html`<output

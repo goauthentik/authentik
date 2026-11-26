@@ -16,7 +16,7 @@ from authentik.core.models import (
 )
 from authentik.lib.models import ExpiringModel
 from authentik.lib.sync.models import Sync
-from authentik.lib.utils.db import chunked_queryset
+from authentik.lib.utils.db import chunked_queryset, delete_in_batches
 from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
@@ -32,17 +32,17 @@ def clean_expired_models():
             .exclude(expiring=False)
             .exclude(expiring=True, expires__gt=now())
         )
-        amount = objects.count()
-        for obj in chunked_queryset(objects):
-            obj.expire_action()
+        if cls.expire_action is ExpiringModel.expire_action:
+            amount = delete_in_batches(objects)
+        else:
+            amount = objects.count()
+            for obj in chunked_queryset(objects):
+                obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
     clear_expired_cache()
     for cls in [Message, GroupChannel]:
-        objects = cls.objects.all().filter(expires__lt=now())
-        amount = objects.count()
-        for obj in chunked_queryset(objects):
-            obj.delete()
+        amount = delete_in_batches(cls.objects.filter(expires__lt=now()))
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
     for cls in Sync.__subclasses__():

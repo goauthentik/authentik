@@ -1,5 +1,5 @@
 import "#components/ak-text-input";
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/Label";
@@ -9,7 +9,6 @@ import { docLink } from "#common/global";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
-import { PFColor } from "#elements/Label";
 
 import { PermissionCheck, RbacApi } from "@goauthentik/api";
 
@@ -25,7 +24,7 @@ function bindingPair(id: string, functions?: string, unknownFields?: string[]): 
             ${functions ? html`<div class="selection-desc">${functions}</div>` : nothing}
             ${
                 unknownFields?.length
-                    ? html`<ak-label color=${PFColor.Orange} compact>
+                    ? html`<ak-label color="orange" compact>
                           ${msg(str`Paths started with fields it lacks: ${unknownFields.join(", ")}`)}
                       </ak-label>`
                     : nothing
@@ -106,8 +105,8 @@ export class PermissionCheckForm extends ModelForm<PermissionCheck, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Expression")} required name="expression">
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
-                </ak-codemirror>
+                <ak-code-editor mode="python" value="${ifDefined(this.instance?.expression)}">
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg("Python code defining permission checks.")}
                     <a

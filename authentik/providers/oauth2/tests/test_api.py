@@ -108,7 +108,7 @@ class TestAPI(APITestCase):
             {
                 "signing_key": [
                     "Key type DSA is not supported. Supported key types are: "
-                    "RSA, Elliptic Curve, Ed25519, Ed448."
+                    "RSA, Elliptic Curve, Ed25519, Ed448, ML-DSA-44, ML-DSA-65, ML-DSA-87."
                 ]
             },
         )

@@ -11,7 +11,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import { aki } from "#common/api/client";
 
 import { ModalInvokerButton } from "#elements/dialogs";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -27,6 +26,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
+    public static override verboseName = msg("Certificate-Key Pair", {
+        id: "certificate-key-pairs.verbose-name.label",
+    });
+    public static override verboseNamePlural = msg("Certificate-Key Pairs", {
+        id: "certificate-key-pairs.verbose-name-plural.label",
+    });
+
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     public override expandable = true;
@@ -59,10 +65,8 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
-        const count = this.selectedElements.length;
 
         return html`<ak-forms-delete-bulk
-            object-label=${count === 1 ? msg("Certificate-Key Pair") : msg("Certificate-Key Pairs")}
             .objects=${this.selectedElements}
             .metadata=${(item: CertificateKeyPair) => {
                 return [
@@ -94,7 +98,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             managedSubText = msg("Managed by authentik (Discovered)");
         }
 
-        let color = PFColor.Green;
+        let color = "green";
 
         if (item.certExpiry) {
             const now = new Date();
@@ -102,11 +106,11 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             inAMonth.setDate(inAMonth.getDate() + 30);
 
             if (item.certExpiry <= inAMonth) {
-                color = PFColor.Orange;
+                color = "orange";
             }
 
             if (item.certExpiry <= now) {
-                color = PFColor.Red;
+                color = "red";
             }
         }
 

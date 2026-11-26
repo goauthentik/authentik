@@ -83,10 +83,7 @@ jobs:
           context: .
           file: "${{ inputs.image-dockerfile }}"
           target: "${{ inputs.image-target }}"
-          build-args: "${{ inputs.image-build-args }}"
-          secrets: |
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
+          build-args: ${{ inputs.image-build-args }}
           # outputs
           push: false
           cache-from: |

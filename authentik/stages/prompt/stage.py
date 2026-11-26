@@ -6,6 +6,7 @@ from types import MethodType
 from typing import Any
 
 from django.contrib.messages import INFO, add_message
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
@@ -101,7 +102,7 @@ class PromptChallengeResponse(ChallengeResponse):
                 )
             # Check if we have a password field, add a handler that sends a signal
             # to validate it
-            if field.type == FieldTypes.PASSWORD:
+            if field.type in (FieldTypes.PASSWORD, FieldTypes.PASSWORD_VIEWABLE):
                 setattr(
                     self,
                     f"validate_{field.field_key}",
@@ -141,12 +142,13 @@ class PromptChallengeResponse(ChallengeResponse):
 
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
-            type=FieldTypes.PASSWORD
+            Q(type=FieldTypes.PASSWORD) | Q(type=FieldTypes.PASSWORD_VIEWABLE)
         )
         if password_fields.exists() and password_fields.count() == 2:  # noqa: PLR2004
             self._validate_password_fields(*[field.field_key for field in password_fields])
 
         engine = PromptValidationPolicyEngine(
+            self.stage_instance,
             self.stage_instance.validation_policies.all(),
             self.stage.get_pending_user(),
             self.request,
@@ -195,8 +197,16 @@ def password_single_validator_factory() -> Callable[[PromptChallengeResponse, st
 class PromptValidationPolicyEngine(PolicyEngine):
     """Slightly modified policy engine, which uses a list instead of a PolicyBindingModel"""
 
-    def __init__(self, policies: list[Policy], user: User, request: HttpRequest = None) -> None:
-        super().__init__(PolicyBindingModel(), user, request)
+    def __init__(
+        self,
+        stage: PromptStage,
+        policies: list[Policy],
+        user: User,
+        request: HttpRequest = None,
+    ) -> None:
+        # Use the stage's primary key so that the engine's metric labels (obj_pk)
+        # are stable per stage instead of a random UUID per submission
+        super().__init__(PolicyBindingModel(pbm_uuid=stage.pk), user, request)
         self.__list = policies
         self.use_cache = False
 

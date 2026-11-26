@@ -1,4 +1,4 @@
-import "#elements/CodeMirror";
+import "#elements/CodeEditor";
 import "#elements/forms/HorizontalFormElement";
 import "#flow/stages/prompt/PromptStage";
 import "#components/ak-switch-input";
@@ -142,6 +142,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             [PromptTypeEnum.Username, msg("Username: Same as Text input, but checks for and prevents duplicate usernames.")],
             [PromptTypeEnum.Email, msg("Email: Text field with Email type.")],
             [PromptTypeEnum.Password, msg("Password: Masked input, multiple inputs of this type on the same prompt need to be identical.")],
+            [PromptTypeEnum.PasswordViewable, msg("Password w/show button: Masked input w/show button, multiple inputs of this type on the same prompt need to be identical.")],
             [PromptTypeEnum.Number, msg("Number")],
             [PromptTypeEnum.Checkbox, msg("Checkbox")],
             [PromptTypeEnum.RadioButtonGroup, msg("Radio Button Group (fixed choice)")],
@@ -298,14 +299,14 @@ export class PromptForm extends ModelForm<Prompt, string> {
             If the evaluation fails, the placeholder itself is returned.`)}
             ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Placeholder")} name="placeholder">
-                <ak-codemirror
+                <ak-code-editor
                     mode="python"
                     value="${ifDefined(this.instance?.placeholder)}"
                     @change=${() => {
                         this._shouldRefresh = true;
                     }}
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         `Optionally provide a short hint that describes the expected input value.
@@ -325,8 +326,8 @@ export class PromptForm extends ModelForm<Prompt, string> {
             If the evaluation fails, the initial value itself is returned.`)}
             ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Initial value")} name="initialValue">
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.initialValue)}">
-                </ak-codemirror>
+                <ak-code-editor mode="python" value="${ifDefined(this.instance?.initialValue)}">
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         `Optionally pre-fill the input with an initial value.
@@ -336,14 +337,14 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Help text")} name="subText">
-                <ak-codemirror
+                <ak-code-editor
                     mode="html"
                     value="${ifDefined(this.instance?.subText)}"
                     @change=${() => {
                         this._shouldRefresh = true;
                     }}
                 >
-                </ak-codemirror>
+                </ak-code-editor>
                 <p class="pf-c-form__helper-text">${msg("Any HTML can be used.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Order")} required name="order">

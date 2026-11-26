@@ -8,6 +8,8 @@ from ua_parser.user_agent_parser import Parse
 
 from authentik.core.views.interface import InterfaceView
 from authentik.flows.models import Flow
+from authentik.flows.stage import format_flow_title
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 
 # Oldest WebKit that can parse the default flow executor bundle. Earlier versions
 # fail to parse it and render an empty page, so they are sent to the simplified
@@ -33,18 +35,25 @@ def version_below(version: dict[str, Any], minimum: tuple[int, int]) -> bool:
 class FlowInterfaceView(InterfaceView):
     """Flow interface"""
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
-        # Flow title formatted with a default dict, as we don't know the keys used
+    def get_formatted_flow_title(self, flow: Flow) -> str:
+        if "%(" not in flow.title:
+            return flow.title
+        if plan := self.request.session.get(SESSION_KEY_PLAN):
+            return format_flow_title(plan, flow, self.request)
+        # Fallback if we don't have a flow plan yet, format the title with an empty defaultdict
         # Only format titles with named placeholders, as a bare "% s" would
         # otherwise inline the dict's repr
-        if "%(" in flow.title:
-            try:
-                flow.title = (flow.title % defaultdict(str)).strip()
-            except TypeError, ValueError:
-                # If title formatting is invalid, keep the original title unchanged.
-                pass
+        try:
+            return (flow.title % defaultdict(str)).strip()
+        except TypeError, ValueError:
+            # If title formatting is invalid, keep the original title unchanged.
+            pass
+        return flow.title
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
         kwargs["flow"] = flow
+        kwargs["flow_title"] = self.get_formatted_flow_title(flow)
         kwargs["flow_background_url"] = flow.background_url(self.request)
         kwargs["flow_background_themed_urls"] = flow.background_themed_urls(self.request)
         kwargs["inspector"] = "inspector" in self.request.GET

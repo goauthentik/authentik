@@ -1,7 +1,4 @@
 import "#components/ak-status-label";
-import { MessageFormatter } from "#common/ui/locale/format";
-
-import { PFColor } from "#elements/Label";
 import { LitFC, LitPropertyRecord } from "#elements/types";
 
 import AkStatusLabel from "#components/ak-status-label";
@@ -28,21 +25,21 @@ export const LifecycleIterationStatus: LitFC<LifecycleIterationStatusProps> = ({
     return match(status)
         .with(
             LifecycleIterationStateEnum.Pending,
-            () => html`<ak-label color=${PFColor.Orange}>${msg("Pending review")}</ak-label>`,
+            () => html`<ak-label status="warning">${msg("Pending review")}</ak-label>`,
         )
         .with(
             LifecycleIterationStateEnum.Reviewed,
-            () => html`<ak-label color=${PFColor.Green}>${msg("Reviewed")}</ak-label>`,
+            () => html`<ak-label status="success">${msg("Reviewed")}</ak-label>`,
         )
         .with(
             LifecycleIterationStateEnum.Overdue,
-            () => html`<ak-label color=${PFColor.Red}>${msg("Overdue")}</ak-label>`,
+            () => html`<ak-label status="danger">${msg("Overdue")}</ak-label>`,
         )
         .with(
             LifecycleIterationStateEnum.Canceled,
-            () => html`<ak-label color=${PFColor.Gray}>${msg("Canceled")}</ak-label>`,
+            () => html`<ak-label>${msg("Canceled")}</ak-label>`,
         )
-        .otherwise(() => html`<ak-label color=${PFColor.Gray}>${msg("Unknown")}</ak-label>`);
+        .otherwise(() => html`<ak-label>${msg("Unknown")}</ak-label>`);
 };
 
 export interface OffboardingStatusProps {
@@ -75,14 +72,14 @@ export const OffboardingStatus: LitFC<OffboardingStatusProps> = ({ status }) => 
     return html`<ak-status-label ${spread(props)}></ak-status-label>`;
 };
 
-const OffboardingActionLabelRecord: Record<OffboardingActionEnum, MessageFormatter<string>> = {
-    [OffboardingActionEnum.Deactivate]: () => msg("Deactivate"),
-    [OffboardingActionEnum.Delete]: () => msg("Delete"),
-    [OffboardingActionEnum.UnknownDefaultOpenApi]: () => msg("Unknown"),
+const OffboardingActionLabelRecord: Record<OffboardingActionEnum, string> = {
+    [OffboardingActionEnum.Deactivate]: msg("Deactivate"),
+    [OffboardingActionEnum.Delete]: msg("Delete"),
+    [OffboardingActionEnum.UnknownDefaultOpenApi]: msg("Unknown"),
 };
 
 export function offboardingActionLabel(
     action: OffboardingActionEnum = OffboardingActionEnum.UnknownDefaultOpenApi,
 ): string {
-    return OffboardingActionLabelRecord[action]();
+    return OffboardingActionLabelRecord[action];
 }

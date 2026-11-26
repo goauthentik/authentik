@@ -18,7 +18,6 @@ from rest_framework.fields import (
     EmailField,
     HiddenField,
     IntegerField,
-    ReadOnlyField,
 )
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
@@ -64,6 +63,13 @@ class FieldTypes(models.TextChoices):
         _(
             "Password: Masked input, multiple inputs of this type on the same prompt "
             "need to be identical."
+        ),
+    )
+    PASSWORD_VIEWABLE = (
+        "password_viewable",
+        _(
+            "Password with show button: Masked input w/show button, multiple inputs of this type"
+            " on the same prompt need to be identical."
         ),
     )
     NUMBER = "number"
@@ -278,9 +284,7 @@ class Prompt(SerializerModel):
             case FieldTypes.TEXT | FieldTypes.TEXT_AREA:
                 kwargs["trim_whitespace"] = False
                 kwargs["allow_blank"] = not self.required
-            case FieldTypes.TEXT_READ_ONLY, FieldTypes.TEXT_AREA_READ_ONLY:
-                field_class = ReadOnlyField
-                # required can't be set for ReadOnlyField
+            case FieldTypes.TEXT_READ_ONLY | FieldTypes.TEXT_AREA_READ_ONLY:
                 kwargs["required"] = False
                 kwargs["allow_blank"] = True
             case FieldTypes.EMAIL:
@@ -328,7 +332,7 @@ class Prompt(SerializerModel):
                         value = choice.get("value", "")
                     kwargs["choices"].append((value, label))
 
-        if default:
+        if default is not None:
             kwargs["default"] = default
         # May not set both `required` and `default`
         if "default" in kwargs:

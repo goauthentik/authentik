@@ -10,6 +10,8 @@ import { isAPIResultReady } from "#common/api/responses";
 import { pluckErrorDetail } from "#common/errors/network";
 import { actionToLabel, severityToLevel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
+import { plural } from "#common/ui/locale/plurals";
+import { isHTTPURL } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
@@ -69,7 +71,7 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
     //#region Rendering
 
     protected renderHyperlink(item: Notification) {
-        if (!item.hyperlink) {
+        if (!item.hyperlink || !isHTTPURL(item.hyperlink)) {
             return nothing;
         }
 
@@ -202,9 +204,17 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                             ${msg("Notifications")}
                         </h2>
                         <span aria-live="polite" aria-atomic="true">
-                            ${msg(str`${unreadCount} unread`, {
-                                id: "notification-unread-count",
-                                desc: "Indicates the number of unread notifications in the notification drawer",
+                            ${plural(unreadCount, {
+                                one: (formattedCount) =>
+                                    msg(str`${formattedCount} unread`, {
+                                        id: "notifications.unread-count.label.one",
+                                        desc: "Indicates the number of unread notifications in the notification drawer",
+                                    }),
+                                other: (formattedCount) =>
+                                    msg(str`${formattedCount} unread`, {
+                                        id: "notifications.unread-count.label.other",
+                                        desc: "Indicates the number of unread notifications in the notification drawer",
+                                    }),
                             })}
                         </span>
                     </div>

@@ -82,10 +82,10 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_policies", "0004_policy_execution_logging"),
-        ("authentik_core", "0016_auto_20201202_2234"),
+        ("authentik_core", "0012_auto_20201003_1737_squashed_0016_auto_20201202_2234"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("authentik_policies_event_matcher", "0003_auto_20210110_1907"),
-        ("authentik_core", "0028_alter_token_intent"),
+        ("authentik_policies_event_matcher", "0001_squashed_0018_alter_eventmatcherpolicy_action"),
+        ("authentik_core", "0018_auto_20210330_1345_squashed_0028_alter_token_intent"),
     ]
 
     operations = [
