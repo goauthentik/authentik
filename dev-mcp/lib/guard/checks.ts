@@ -3,6 +3,7 @@
  */
 
 import type { AllowEntry, Environment } from "#dev-mcp/environment/discover";
+import { composeUpFix } from "#dev-mcp/environment/services";
 
 export const DEV_DATABASE_NAMES = ["authentik", "test_authentik"];
 
@@ -26,7 +27,7 @@ export function allowEntry(env: Environment): AllowEntry | null {
 }
 
 export function staticChecks(env: Environment, environ = process.env): Check[] {
-    const { config, postgres } = env;
+    const { config, postgres, runtime } = env;
     const entry = allowEntry(env);
     const hostListed = entry?.host !== undefined;
     const name = String(config.pgName.value);
@@ -72,6 +73,19 @@ export function staticChecks(env: Environment, environ = process.env): Check[] {
                 "from another shell. The server never reads it either way.",
         },
     );
+
+    // Only with a container runtime: the fix is the compose stack. Without one, Postgres may be
+    // native, and the database check says whether it answers.
+    const fix = composeUpFix(runtime);
+
+    if (fix) {
+        checks.push({
+            name: "running",
+            ok: postgres.kind !== "down",
+            detail: postgres.kind === "down" ? postgres.detail : "Postgres accepts connections",
+            fix,
+        });
+    }
 
     return checks;
 }

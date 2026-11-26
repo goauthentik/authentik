@@ -31,6 +31,8 @@ export class Result implements ResultData {
     public commands: string[] = [];
     public fingerprint: string | null = null;
     public data: Record<string, unknown> = {};
+    /** The headline the summary was built from, so a caller can add an item and finish again. */
+    public headline = "";
 
     constructor(tool: string) {
         this.tool = tool;
@@ -54,6 +56,7 @@ export class Result implements ResultData {
 
     /** Set the summary from a headline plus the skipped and unknown items. */
     public finish(headline: string): this {
+        this.headline = headline;
         const parts = [`${headline.replace(/\.$/, "")}.`];
         const list = (items: Item[]) => items.map((i) => `${i.what} (${i.reason})`).join("; ");
 

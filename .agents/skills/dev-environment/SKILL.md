@@ -46,7 +46,7 @@ Steps are tagged: `[shell]` run a command, `[verify]` check before moving on. Ru
 2. **[shell]** Start the services: `docker compose -f scripts/compose.yml up -d`. This runs
    PostgreSQL 18 on `127.0.0.1:5432` (trust auth, database `authentik`) and a Zenko S3
    server on port `8020`. There is no Redis; Dramatiq uses Postgres as its broker. With
-   Podman, use `podman compose`. A native Postgres works too: create the `authentik`
+   Podman, use `podman compose`. From an agent, the `akdev_services` tool does the same. A native Postgres works too: create the `authentik`
    database and point `postgresql.*` in `local.env.yml` at it.
 3. **[shell]** `make install`. It runs `node-install` (root pnpm install and the shared lint
    configs), `web-install`, and `core-install` (`uv sync --frozen`; on machines with
@@ -109,7 +109,9 @@ Locked out but the data is worth keeping? Mint a recovery link instead of resett
   the developer doc, then `pnpm rebuild <package>`. Allow-listing a package is a reviewed
   change.
 - **`make node-install` checks your Node and pnpm versions** (`node-preinstall`) against
-  `package.json` and stops if they don't match. Switch with `nvm use 24`.
+  `package.json` and stops if they don't match. Switch with `nvm use 24`. The authentik-dev
+  MCP server does this by itself for `akdev_install` and its checks when nvm has a version
+  that fits, and `akdev_status` names the version to `nvm use` in your own shell.
 - **`make dev-reset` fails with "database is being accessed by other users".** A
   `make run` that didn't fully exit still holds connections. Kill the leftover `gunicorn`
   and `dramatiq` processes, then retry.

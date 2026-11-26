@@ -133,6 +133,10 @@ async function serve(): Promise<number> {
         return -1;
     }
 
+    // Its checks run make and pnpm: give them an nvm Node that fits when the active one doesn't.
+    const { chooseNode, withNode } = await import("#dev-mcp/environment/node");
+    process.env.PATH = withNode(process.env, chooseNode()).PATH;
+
     await server.serve();
 
     // Keeps running until stdin closes.

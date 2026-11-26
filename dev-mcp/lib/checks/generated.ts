@@ -11,6 +11,7 @@ import { genDiffPaths } from "#dev-mcp/checks/ci";
 import { DEFAULT_BASE, ROOT, changedSinceBase, fingerprint } from "#dev-mcp/core/repo";
 import { python, tail } from "#dev-mcp/core/run";
 import { containerRuntime } from "#dev-mcp/environment/discover";
+import { type Progress, counter, noProgress } from "#dev-mcp/results/progress";
 import { Result } from "#dev-mcp/results/result";
 
 export type Regenerate = "none" | "schema";
@@ -163,18 +164,25 @@ async function locales(result: Result, stale: string[]): Promise<void> {
 export async function checkGenerated(
     regenerate: Regenerate = "none",
     base = DEFAULT_BASE,
+    progress: Progress = noProgress,
 ): Promise<Result> {
     const result = new Result("akdev_generated");
     const stale: string[] = [];
+    const step = counter(progress, 4);
+
+    progress(0, 4, "migrations, schemas and locales (in parallel)");
 
     // Each starts its own Django process; running them together roughly halves the wait.
     const [, schemaStale] = await Promise.all([
-        migrations(result, stale),
-        schemas(result, stale, regenerate === "schema"),
-        locales(result, stale),
+        step("migrations", migrations(result, stale)),
+        step("schemas", schemas(result, stale, regenerate === "schema")),
+        step("locales", locales(result, stale)),
     ]);
 
-    await clients(result, schemaStale || changedSinceBase("schema.yml", base), base);
+    await step(
+        "API clients",
+        clients(result, schemaStale || changedSinceBase("schema.yml", base), base),
+    );
 
     const written = (result.data.schema as { written?: string[] } | undefined)?.written ?? [];
     result.data.stale = stale;

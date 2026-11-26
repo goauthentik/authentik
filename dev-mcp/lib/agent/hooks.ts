@@ -1,6 +1,7 @@
 /**
  * @file Claude Code hooks. Each reads the hook's JSON on stdin and never blocks on its own errors.
- *   Hooks use only Node built-ins: SessionStart fires on a fresh clone, before `pnpm install`.
+ *   Hooks use only Node built-ins and repo sources that load without installed packages
+ *   (scripts/node/utils): SessionStart fires on a fresh clone, before `pnpm install`.
  */
 
 import { existsSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
@@ -10,6 +11,7 @@ import { skillNames } from "#dev-mcp/agent/skills";
 import { INSTALL_HINT, isInstalled } from "#dev-mcp/core/optional";
 import { ROOT, changedFiles } from "#dev-mcp/core/repo";
 import { UV_RUN, run, tail } from "#dev-mcp/core/run";
+import { chooseNode, describeNode } from "#dev-mcp/environment/node";
 import { loadCurrent, storeDir } from "#dev-mcp/results/store";
 
 const GENERATED_TRIGGERS = ["models.py", "serializers.py", "api.py", "urls.py", "views.py"];
@@ -42,6 +44,10 @@ function sessionStart(): void {
             "`make install`), and its full tools appear without a restart. Until then, " +
             `\`make check-gen\` and \`make lint-changed\` can't run. ${INSTALL_HINT}`;
     }
+
+    const node = chooseNode();
+
+    if (!node.ok) context += ` ${describeNode(node)}`;
 
     emit("SessionStart", context);
 }

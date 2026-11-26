@@ -62,4 +62,16 @@ if (tools.some((t) => t.name === "akdev_generated")) {
     console.log(`akdev_generated: ${job.state}: ${job.result?.summary ?? job.error}`);
 }
 
+// With a progress callback the client sends a token: the call stays open and reports each job.
+let updates = 0;
+
+const lint = await client.callTool(
+    { name: "akdev_lint", arguments: { paths: ["dev-mcp/README.md"] } },
+    { onprogress: () => void updates++ },
+);
+
+const lintJob = (lint.structuredContent ?? {}) as Payload;
+
+console.log(`akdev_lint: ${lintJob.state} with ${updates} progress update(s)`);
+
 await client.close();

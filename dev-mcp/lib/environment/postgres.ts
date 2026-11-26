@@ -3,12 +3,13 @@
  */
 
 import { lookup } from "node:dns/promises";
-import { isIP } from "node:net";
+import { createConnection, isIP } from "node:net";
 
 import type { Config } from "#dev-mcp/environment/config";
 import { portOwner } from "#dev-mcp/environment/runtime";
 
-export type PostgresKind = "container" | "socket" | "local" | "remote" | "unknown";
+/** `down`: the host is this machine, but nothing accepts connections on the port. */
+export type PostgresKind = "container" | "socket" | "local" | "down" | "remote" | "unknown";
 
 export interface Postgres {
     kind: PostgresKind;
@@ -37,6 +38,22 @@ export async function isLoopback(host: string): Promise<boolean> {
     }
 }
 
+/** Whether anything accepts a TCP connection on `host:port`. */
+export function listening(host: string, port: number, timeoutMs = 1_500): Promise<boolean> {
+    return new Promise((resolve) => {
+        const socket = createConnection({ host: host || "localhost", port });
+
+        const done = (ok: boolean) => {
+            socket.destroy();
+            resolve(ok);
+        };
+
+        socket.setTimeout(timeoutMs, () => done(false));
+        socket.once("connect", () => done(true));
+        socket.once("error", () => done(false));
+    });
+}
+
 export async function classifyPostgres(cfg: Config): Promise<Postgres> {
     const host = String(cfg.pgHost.value ?? "");
     const port = Number(cfg.pgPort.value);
@@ -63,6 +80,15 @@ export async function classifyPostgres(cfg: Config): Promise<Postgres> {
                 local: true,
                 container: owner,
                 detail: `port ${port} is published by ${owner}`,
+            };
+        }
+
+        if (!(await listening(host, port))) {
+            return {
+                kind: "down",
+                local: true,
+                container: null,
+                detail: `nothing is listening on ${host || "localhost"}:${port}`,
             };
         }
 

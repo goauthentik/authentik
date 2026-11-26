@@ -24,6 +24,8 @@ interface Job {
     finished: number | null;
     result: Result | null;
     error: string | null;
+    /** Settles when the job finishes, whether it passed or threw. */
+    settled: Promise<void>;
 }
 
 const registry = new Map<string, Job>();
@@ -48,21 +50,36 @@ export function start(tool: string, storeAs: string, fn: () => Promise<Result>):
         finished: null,
         result: null,
         error: null,
+        settled: Promise.resolve(),
     };
 
     registry.set(job.id, job);
 
-    fn().then(
-        (result) => {
-            save(storeAs, result);
-            job.result = result;
-            job.finished = Date.now();
-        },
-        (error: unknown) => {
-            job.error = error instanceof Error ? (error.stack ?? error.message) : String(error);
-            job.finished = Date.now();
-        },
-    );
+    // A microtask later, so the caller can report the jobId before the work reports anything.
+    job.settled = Promise.resolve()
+        .then(fn)
+        .then(
+            (result) => {
+                save(storeAs, result);
+                job.result = result;
+                job.finished = Date.now();
+            },
+            (error: unknown) => {
+                job.error = error instanceof Error ? (error.stack ?? error.message) : String(error);
+                job.finished = Date.now();
+            },
+        );
+
+    return view(job);
+}
+
+/** The job's state once it has finished, for a tool call that stays open until then. */
+export async function wait(id: string): Promise<JobState | null> {
+    const job = registry.get(id);
+
+    if (!job) return null;
+
+    await job.settled;
 
     return view(job);
 }

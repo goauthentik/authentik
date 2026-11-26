@@ -3,6 +3,11 @@
  *   `pnpm install`. The same approach as `pino` in packages/logger-js/lib/node.ts.
  */
 
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
+import { ROOT } from "#dev-mcp/core/repo";
+
 export const INSTALL_HINT = "Run `make install` (or `pnpm install`) at the repo root.";
 
 function isMissingModule(error: unknown): boolean {
@@ -32,4 +37,13 @@ export function isInstalled(pkg: string): boolean {
     } catch {
         return false;
     }
+}
+
+/**
+ * Whether `pkg` is linked into the root `node_modules`, read from disk on every call. For a
+ * process that waits for an install to finish: once `import.meta.resolve` has failed for a
+ * package, it can keep failing in that process after the package is installed.
+ */
+export function isLinked(pkg: string): boolean {
+    return existsSync(join(ROOT, "node_modules", pkg, "package.json"));
 }

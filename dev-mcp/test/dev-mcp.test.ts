@@ -70,6 +70,21 @@ describe("guard", () => {
         expect(failed(makeEnv({ host: "/tmp", kind: "socket" }))).toEqual([]);
     });
 
+    it("says to start the compose stack when nothing listens", () => {
+        const env = makeEnv({ kind: "down" });
+        expect(failed(env)).toEqual(["running"]);
+
+        const check = staticChecks(env, {}).find((c) => c.name === "running");
+        expect(check?.fix).toContain("`docker compose -f scripts/compose.yml up -d postgresql s3`");
+    });
+
+    it("skips the running check without a container runtime", () => {
+        const env = makeEnv({ kind: "down" });
+        env.runtime = { ...env.runtime, kind: "none", running: false, compose: null };
+
+        expect(staticChecks(env, {}).map((c) => c.name)).not.toContain("running");
+    });
+
     it("refuses debug off", () => {
         expect(failed(makeEnv({ debug: false }))).toEqual(["debug"]);
     });

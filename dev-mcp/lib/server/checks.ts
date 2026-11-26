@@ -7,7 +7,7 @@ import { checkGenerated } from "#dev-mcp/checks/generated";
 import { lint } from "#dev-mcp/checks/lint";
 import { DEFAULT_BASE } from "#dev-mcp/core/repo";
 import * as jobs from "#dev-mcp/results/jobs";
-import { READ_ONLY, WRITES_TREE, reply } from "#dev-mcp/server/shared";
+import { JOB_NOTE, READ_ONLY, WRITES_TREE, reply, runJob } from "#dev-mcp/server/shared";
 
 import type { McpServer } from "@modelcontextprotocol/server";
 import * as z from "zod";
@@ -39,9 +39,9 @@ export function registerLint(server: McpServer): void {
             description:
                 "Run the CI lint jobs that cover an authentik change (ruff, black, mypy, bandit, " +
                 "cspell, clippy, rustfmt, oxlint, tsc, docs checks) with the commands CI uses. " +
-                "Use before saying a change is done, or when a CI lint job failed. Returns a " +
-                "jobId to poll with akdev_job. Writes files only with fix=true; a missing CI " +
-                "placeholder file may be created.",
+                "Use before saying a change is done, or when a CI lint job failed. Writes files " +
+                "only with fix=true; a missing CI placeholder file may be created. " +
+                JOB_NOTE,
             inputSchema: z.object({
                 paths: z
                     .array(z.string())
@@ -55,8 +55,8 @@ export function registerLint(server: McpServer): void {
             }),
             annotations: WRITES_TREE,
         },
-        async ({ paths, base, fix }) =>
-            reply(jobs.start("akdev_lint", "lint", () => lint(paths ?? [], base, fix))),
+        async ({ paths, base, fix }, ctx) =>
+            runJob(ctx, "akdev_lint", "lint", (progress) => lint(paths ?? [], base, fix, progress)),
     );
 }
 
@@ -70,7 +70,7 @@ export function registerGenerated(server: McpServer): void {
                 "missing Django migrations, schema.yml, blueprints/schema.json, the API " +
                 "clients, and locales. The same checks as the test-gen and pending-migrations " +
                 "CI jobs. Use after changing a model, serializer, viewset or API view. " +
-                "Returns a jobId to poll with akdev_job.",
+                JOB_NOTE,
             inputSchema: z.object({
                 regenerate: z
                     .enum(["none", "schema"])
@@ -80,9 +80,9 @@ export function registerGenerated(server: McpServer): void {
             }),
             annotations: WRITES_TREE,
         },
-        async ({ regenerate, base }) =>
-            reply(
-                jobs.start("akdev_generated", "generated", () => checkGenerated(regenerate, base)),
+        async ({ regenerate, base }, ctx) =>
+            runJob(ctx, "akdev_generated", "generated", (progress) =>
+                checkGenerated(regenerate, base, progress),
             ),
     );
 }

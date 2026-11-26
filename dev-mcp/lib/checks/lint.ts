@@ -8,6 +8,7 @@ import { dirname, join } from "node:path";
 import { lintMatrix, makefileLintTargets } from "#dev-mcp/checks/ci";
 import { DEFAULT_BASE, ROOT, changedFiles, fingerprint } from "#dev-mcp/core/repo";
 import { run, tail, which } from "#dev-mcp/core/run";
+import { type Progress, noProgress } from "#dev-mcp/results/progress";
 import { Result } from "#dev-mcp/results/result";
 
 const JOB_TIMEOUT = 30 * 60_000;
@@ -176,6 +177,7 @@ export async function lint(
     paths: string[] = [],
     base = DEFAULT_BASE,
     applyFixes = false,
+    onProgress: Progress = noProgress,
 ): Promise<Result> {
     const result = new Result("akdev_lint");
     const changed = paths.length ? paths : changedFiles(base);
@@ -203,10 +205,12 @@ export async function lint(
 
     const ran = [];
 
-    for (const job of jobs()) {
-        const files = changed.filter(job.covers);
+    const planned = jobs()
+        .map((job) => ({ job, files: changed.filter(job.covers) }))
+        .filter(({ files }) => files.length);
 
-        if (!files.length) continue;
+    for (const [index, { job, files }] of planned.entries()) {
+        onProgress(index, planned.length, `${job.name} (${index + 1} of ${planned.length})`);
         const [cmd, ...args] = job.command;
         const out = await run(cmd!, args, { timeoutMs: JOB_TIMEOUT });
         const command = job.command.join(" ");
@@ -230,6 +234,13 @@ export async function lint(
     }
 
     const failed = ran.filter((r) => !r.ok).map((r) => r.job);
+
+    onProgress(
+        planned.length,
+        planned.length,
+        failed.length ? `${failed.length} failed: ${failed.join(", ")}` : "all passed",
+    );
+
     result.data.jobs = ran;
     result.data.changedFiles = changed.length;
     // Fixes rewrite files, so fingerprint after them.

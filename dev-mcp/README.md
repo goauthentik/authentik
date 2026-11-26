@@ -10,6 +10,7 @@ It holds no credentials and only touches a local dev database.
 | `akdev_lint`      | `make lint-changed` | The CI lint jobs that cover the files changed since `origin/main`, with CI's commands            |
 | `akdev_skill`     |                     | The repo's skills in `.agents/skills/`, for clients without Skills-over-MCP                      |
 | `akdev_job`       |                     | The result of a long-running tool call                                                           |
+| `akdev_services`  |                     | Bring the `scripts/compose.yml` containers (Postgres, S3) up or down; only with Docker or Podman |
 
 Every result says what it checked, what it skipped and what it couldn't tell, so an agent's summary
 can't quietly drop the caveat.
@@ -30,7 +31,26 @@ call. Once the dependencies are in place, from that tool or from `make install` 
 the setup server starts the real one, hands the session over and sends `tools/list_changed`, so
 the full tools appear without a restart.
 
+Both modes check the active Node against `engines.node` in `package.json`, with the same range
+check `make node-preinstall` runs (`scripts/node/utils/node.ts`). When it doesn't fit and nvm
+already has a version that does, `make install` and the server's checks run with that version
+first on `PATH`, and `akdev_status` and the SessionStart hook give the agent the `nvm use`
+command for its own shell. When no installed version fits, `akdev_install` refuses and says
+which `nvm install` to run.
+
 ## The database guard
+
+Long checks run as jobs that `akdev_job` returns. When the client sends a progress token,
+`akdev_lint`, `akdev_generated` and `akdev_services` (`up`, `down`) keep the call open instead,
+send a `notifications/progress` for each step, and return the finished result. The first
+message names the job, so a call that times out can still be picked up. Setup mode's
+`akdev_install` does the same for each `make install` prerequisite. Claude Code shows the
+messages inline and the bar in the expanded view (ctrl+o).
+
+`akdev_services` runs this machine's compose command against `scripts/compose.yml`, naming the
+`postgresql` and `s3` services. `down` never passes `-v`, so the volumes and their data stay.
+Claude Code asks the person before every call. Without Docker or Podman the tool isn't
+registered and the guard's `running` check is skipped: a native Postgres is a supported setup.
 
 `akdev_generated` runs Django management commands against the configured database, so it's only
 registered when the guard passes. Postgres can run in Docker, Podman, natively or on a dev VM; the

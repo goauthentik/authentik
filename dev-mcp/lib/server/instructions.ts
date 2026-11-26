@@ -13,6 +13,8 @@ contacts GitHub.
 Tool guide:
 - akdev_status first: it shows how this machine runs Postgres and containers, and whether the \
 database guard allowed the database tools. If a tool is missing, the guard said why.
+- If the guard says Postgres isn't running and akdev_services is listed, ask the person, then \
+call it with action 'up' to start the dev containers from scripts/compose.yml.
 - akdev_generated and akdev_lint can take minutes. They return a jobId; poll akdev_job.
 - Commands in results are written for this machine's setup. Show them to the person rather than \
 running ones that change the database.

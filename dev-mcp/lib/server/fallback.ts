@@ -9,12 +9,15 @@
  */
 
 import { spawn } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createInterface } from "node:readline";
 import type { Writable } from "node:stream";
 
-import { INSTALL_HINT, isInstalled } from "#dev-mcp/core/optional";
+import { INSTALL_HINT, isLinked } from "#dev-mcp/core/optional";
 import { GIT_ENV, ROOT } from "#dev-mcp/core/repo";
+import { chooseNode, describeNode, nodeBinary, withNode } from "#dev-mcp/environment/node";
+import { type Progress, noProgress } from "#dev-mcp/results/progress";
 
 /** What the real server needs to start; the rest degrades on its own. */
 const REQUIRED = ["@modelcontextprotocol/server", "zod"];
@@ -57,9 +60,12 @@ const TOOLS = [
         name: "akdev_install",
         description:
             "Install authentik's development dependencies with `make install` (Node and Python " +
-            "packages; takes several minutes and downloads from the network). Ask the person " +
-            "before calling it. Returns at once; poll akdev_status. When it finishes, the full " +
-            "authentik-dev tools appear without a restart.",
+            "packages; takes several minutes and downloads from the network). When the active " +
+            "Node doesn't fit package.json, it uses an nvm-installed one that does. Ask the " +
+            "person before calling it. With a progress token, the call reports each make target " +
+            "and answers when the install ends; otherwise it returns at once, and akdev_status " +
+            "shows progress. When it finishes, the full authentik-dev tools appear without a " +
+            "restart.",
         inputSchema: { type: "object", properties: {} },
         annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
         // Claude Code asks the person every time, whatever their allow rules say.
@@ -73,6 +79,30 @@ interface Install {
     finished: number | null;
     output: string;
     exit: number | null;
+    /** The make target running now, or the one that failed. */
+    step: string | null;
+}
+
+/**
+ * `install`'s prerequisites in the Makefile, run one at a time so each can be reported. Falls
+ * back to `install` itself when it has a recipe of its own or can't be read.
+ */
+export function installTargets(makefile = readMakefile()): string[] {
+    const match = /^install:([^#\n]*)(?:#[^\n]*)?\n(\t)?/m.exec(makefile);
+
+    if (!match || match[2]) return ["install"];
+
+    const targets = match[1]!.trim().split(/\s+/).filter(Boolean);
+
+    return targets.length ? targets : ["install"];
+}
+
+function readMakefile(): string {
+    try {
+        return readFileSync(join(ROOT, "Makefile"), "utf8");
+    } catch {
+        return "";
+    }
 }
 
 export function serveFallback(): void {
@@ -95,17 +125,23 @@ export function serveFallback(): void {
         result(id, { content: [{ type: "text", text: body }], isError });
     }
 
-    const missing = () => REQUIRED.filter((pkg) => !isInstalled(pkg));
+    // Read from disk each time: in-process resolution can stay stale after the install.
+    const missing = () => REQUIRED.filter((pkg) => !isLinked(pkg));
 
     function status(): string {
-        const lines = [`Missing: ${missing().join(", ") || "nothing"}.`];
+        const lines = [
+            `Missing: ${missing().join(", ") || "nothing"}.`,
+            describeNode(chooseNode()),
+        ];
 
         if (!install) {
             lines.push(`No install started. Call akdev_install, or: ${INSTALL_HINT}`);
         } else {
             const seconds = Math.round(((install.finished ?? Date.now()) - install.started) / 1000);
 
-            lines.push(`make install: ${install.state} after ${seconds}s.`);
+            const step = install.step ? ` (${install.step})` : "";
+
+            lines.push(`make install: ${install.state}${step} after ${seconds}s.`);
 
             if (install.state !== "running") lines.push(`Output (last lines):\n${install.output}`);
         }
@@ -113,8 +149,19 @@ export function serveFallback(): void {
         return lines.join("\n");
     }
 
-    function startInstall(): string {
+    /**
+     * Run `install`'s prerequisites one at a time, calling `update` as each starts and `done`
+     * when the install finishes, before any handover to the real server.
+     */
+    function startInstall(update: Progress = noProgress, done: () => void = () => {}): string {
         if (install?.state === "running") return "make install is already running.";
+
+        const node = chooseNode();
+
+        // `make install` would stop at node-preinstall; say why now instead.
+        if (!node.ok && !node.switchTo) return `Not started. ${describeNode(node)}`;
+
+        const targets = installTargets();
 
         const started: Install = {
             state: "running",
@@ -122,38 +169,87 @@ export function serveFallback(): void {
             finished: null,
             output: "",
             exit: null,
+            step: null,
         };
-
-        const proc = spawn("make", ["install"], {
-            cwd: ROOT,
-            env: { ...process.env, ...GIT_ENV },
-            stdio: ["ignore", "pipe", "pipe"],
-        });
 
         const keep = (chunk: Buffer) => {
             started.output = (started.output + chunk.toString()).slice(-4000);
         };
 
-        const timer = setTimeout(() => proc.kill("SIGTERM"), INSTALL_TIMEOUT_MS);
-
-        proc.stdout.on("data", keep);
-        proc.stderr.on("data", keep);
-
-        proc.on("error", (error) => {
-            started.output += `\n${error.message}`;
-        });
-
-        proc.on("close", (code) => {
-            clearTimeout(timer);
+        function finish(code: number | null): void {
             started.exit = code;
             started.state = code === 0 ? "done" : "failed";
             started.finished = Date.now();
+
+            const failed = code === 0 ? "" : `make ${started.step ?? "install"} failed`;
+            update(targets.length, targets.length, failed || "installed");
+            done();
             check();
-        });
+        }
+
+        function next(index: number): void {
+            if (index === targets.length) return finish(0);
+
+            const target = targets[index]!;
+            started.step = target;
+            update(index, targets.length, `make ${target} (${index + 1} of ${targets.length})`);
+
+            const proc = spawn("make", [target], {
+                cwd: ROOT,
+                env: withNode({ ...process.env, ...GIT_ENV }, node),
+                stdio: ["ignore", "pipe", "pipe"],
+            });
+
+            const timer = setTimeout(() => proc.kill("SIGTERM"), INSTALL_TIMEOUT_MS);
+
+            proc.stdout.on("data", keep);
+            proc.stderr.on("data", keep);
+
+            proc.on("error", (error) => {
+                started.output += `\n${error.message}`;
+            });
+
+            proc.on("close", (code) => {
+                clearTimeout(timer);
+
+                if (code === 0) return next(index + 1);
+
+                finish(code);
+            });
+        }
 
         install = started;
+        next(0);
 
-        return "Started `make install`. Poll akdev_status; the full tools appear when it's done.";
+        const using = node.switchTo ? ` with nvm's Node ${node.switchTo.version}` : "";
+
+        return `Started \`make install\`${using}. Poll akdev_status; the full tools appear when it's done.`;
+    }
+
+    /**
+     * With a progress token, keep the call open: report each make target, and answer with the
+     * status when the install ends. Without one, answer at once and let the agent poll.
+     */
+    function callInstall(id: Message["id"], params: Message["params"]): void {
+        const meta = params?._meta as { progressToken?: string | number } | undefined;
+        const token = meta?.progressToken;
+
+        if (token === undefined || install?.state === "running") {
+            return text(id, startInstall());
+        }
+
+        const update: Progress = (progress, total, message) =>
+            send({
+                jsonrpc: "2.0",
+                method: "notifications/progress",
+                params: { progressToken: token, progress, total, message },
+            });
+
+        const before = install;
+        const reply = startInstall(update, () => text(id, status(), install?.state === "failed"));
+
+        // Refused before starting (no new install): nothing will call back, so answer now.
+        if (install === before) text(id, reply);
     }
 
     function handle(message: Message): void {
@@ -198,7 +294,7 @@ export function serveFallback(): void {
 
                 if (name === "akdev_status") return text(id, status());
 
-                if (name === "akdev_install") return text(id, startInstall());
+                if (name === "akdev_install") return callInstall(id, message.params);
 
                 return text(
                     id,
@@ -220,9 +316,12 @@ export function serveFallback(): void {
         mode = "handover";
         process.stderr.write("authentik-dev: dependencies found, starting the full server\n");
 
-        const proc = spawn(process.execPath, [join(ROOT, "dev-mcp", "main.ts"), "serve"], {
+        // The real server's checks run make and pnpm, so they need the fitting Node too.
+        const node = chooseNode();
+
+        const proc = spawn(nodeBinary(node), [join(ROOT, "dev-mcp", "main.ts"), "serve"], {
             cwd: ROOT,
-            env: { ...process.env, [NO_FALLBACK]: "1" },
+            env: withNode({ ...process.env, [NO_FALLBACK]: "1" }, node),
             stdio: ["pipe", "pipe", "inherit"],
         });
 
@@ -299,5 +398,7 @@ export function serveFallback(): void {
             if (!child) process.exit(0);
         });
 
-    process.stderr.write(`authentik-dev: setup mode, missing ${missing().join(", ")}\n`);
+    process.stderr.write(
+        `authentik-dev: setup mode, missing ${missing().join(", ")}. ${describeNode(chooseNode())}\n`,
+    );
 }
