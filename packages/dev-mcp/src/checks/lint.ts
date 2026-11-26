@@ -29,7 +29,7 @@ const isRust: Covers = (p) => p.endsWith(".rs") || isCargoManifest(p);
 const isWeb: Covers = (p) => p.startsWith("web/") && !p.startsWith("web/xliff/");
 const isNodeScript: Covers = (p) =>
     p.startsWith("scripts/node/") ||
-    (!p.includes("/") && (p.endsWith(".config.ts") || p === "tsconfig.json"));
+    (!p.includes("/") && (p.endsWith(".config.ts") || p.endsWith(".json") || p.endsWith(".jsonc")));
 const isLocale: Covers = (p) =>
     p.startsWith("locale/") ||
     p.startsWith("web/xliff/") ||
@@ -54,6 +54,7 @@ export const MAKE_JOBS: Record<string, Covers> = {
     "clippy": isRust,
     "rustfmt": (p) => p.endsWith(".rs"),
     "check-types": isNodeScript,
+    "scripts": isNodeScript,
 };
 
 export interface Job {

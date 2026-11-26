@@ -6,7 +6,7 @@ import { spawn } from "node:child_process";
 import { accessSync, constants } from "node:fs";
 import { delimiter, join } from "node:path";
 
-import { ROOT } from "./repo.ts";
+import { GIT_ENV, ROOT } from "./repo.ts";
 
 export interface RunResult {
     /** Exit code; 127 when the command couldn't start, 124 on timeout. */
@@ -31,7 +31,8 @@ export function run(command: string, args: string[], options: RunOptions = {}): 
         let settled = false;
         const child = spawn(command, args, {
             cwd,
-            env: { ...process.env, ...env },
+            // Make targets and scripts shell out to git too, with the same config to ignore.
+            env: { ...process.env, ...GIT_ENV, ...env },
             stdio: ["pipe", "pipe", "pipe"],
         });
         const timer = setTimeout(() => {

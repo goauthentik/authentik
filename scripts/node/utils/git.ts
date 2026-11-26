@@ -1,13 +1,23 @@
 import { $ } from "./commands.ts";
 
 /**
+ * Environment for git plumbing: no user configuration is needed, and a global config file the
+ * process cannot read is fatal to git rather than a warning.
+ */
+const GIT_ENV: NodeJS.ProcessEnv = {
+    ...process.env,
+    GIT_CONFIG_GLOBAL: "/dev/null",
+    GIT_CONFIG_NOSYSTEM: "1",
+};
+
+/**
  * Checks whether the given file has uncommitted changes in git.
  */
 export async function gitStatus(
     filePath: string,
     cwd = process.cwd(),
 ): Promise<{ clean: boolean; available: boolean }> {
-    return $`git status --porcelain ${filePath}`({ cwd })
+    return $`git status --porcelain ${filePath}`({ cwd, env: GIT_ENV })
         .then((output) => ({ clean: !output, available: true }))
         .catch(() => ({ clean: false, available: false }));
 }
@@ -19,5 +29,5 @@ export async function gitStatus(
  * @throws {Error} If the command fails (e.g., not a git repository).
  */
 export function resolveRepoRoot(cwd = process.cwd()): Promise<string> {
-    return $`git rev-parse --show-toplevel`({ cwd });
+    return $`git rev-parse --show-toplevel`({ cwd, env: GIT_ENV });
 }

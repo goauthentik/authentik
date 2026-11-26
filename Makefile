@@ -406,6 +406,10 @@ ci-lint-oxlint-fixtures: ci--meta-debug
 ci-lint-check-types: ci--meta-debug
 	pnpm run build:types
 
+ci-lint-scripts: ci--meta-debug
+	pnpm run lint:check
+	pnpm run format:check
+
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik
 	$(UV) run coverage combine

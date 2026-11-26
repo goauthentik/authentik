@@ -10,11 +10,15 @@ import { join, resolve } from "node:path";
 export const ROOT = resolve(import.meta.dirname, "..", "..", "..");
 export const DEFAULT_BASE = "origin/main";
 
+/** Plumbing needs no user config, and an unreadable global config is fatal to git. */
+export const GIT_ENV = { GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_NOSYSTEM: "1" };
+
 export function git(args: string[], check = true): string {
     try {
         return execFileSync("git", args, {
             cwd: ROOT,
             encoding: "utf8",
+            env: { ...process.env, ...GIT_ENV },
             stdio: ["ignore", "pipe", "pipe"],
             timeout: 30_000,
         }).trim();
@@ -30,7 +34,7 @@ export function gitDir(): string {
 }
 
 export const head = () => git(["rev-parse", "--short", "HEAD"]);
-export const branch = () => git(["rev-parse", "--abbrev-ref", "HEAD"]);
+export const branch = () => git(["rev-parse", "--abbrev-ref", "HEAD"], false) || null;
 export const mergeBase = (base = DEFAULT_BASE) => git(["merge-base", "HEAD", base], false) || null;
 
 /** Files changed since the merge base with `base`: committed, staged, unstaged and untracked. */

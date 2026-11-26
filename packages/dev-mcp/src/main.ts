@@ -17,8 +17,8 @@ import { parseArgs } from "node:util";
 
 import { checkGenerated, type Regenerate } from "./checks/generated.ts";
 import { lint } from "./checks/lint.ts";
-import { LANGUAGE_SERVER_INSTALL, discover, publicEnvironment } from "./discovery.ts";
-import { evaluate, failedChecks, suggestedAllowlist } from "./guard.ts";
+import { LANGUAGE_SERVER_INSTALL, publicEnvironment } from "./discovery.ts";
+import { failedChecks, inspect, suggestedAllowlist } from "./guard.ts";
 import { HOOKS, type HookName, runHook } from "./hooks.ts";
 import { DEFAULT_BASE } from "./repo.ts";
 import type { Result } from "./result.ts";
@@ -31,39 +31,40 @@ function print(result: Result, json: boolean): number {
 }
 
 async function status(json: boolean): Promise<number> {
-    const env = await discover();
-    const verdict = await evaluate(env);
+    const { env, verdict } = await inspect();
     if (json) {
         console.log(
-            JSON.stringify({ environment: publicEnvironment(env), guard: verdict }, null, 2),
+            JSON.stringify({ environment: env && publicEnvironment(env), guard: verdict }, null, 2),
         );
         return verdict.ok ? 0 : 1;
     }
-    const { postgres, runtime, config } = env;
-    console.log(`Postgres: ${postgres.kind} (${postgres.detail})`);
-    console.log(`Containers: ${runtime.kind}, compose: ${runtime.compose ?? "none"}`);
-    console.log(`Config files: ${config.files.join(", ") || "none"}`);
+    if (env) {
+        const { postgres, runtime, config } = env;
+        console.log(`Postgres: ${postgres.kind} (${postgres.detail})`);
+        console.log(`Containers: ${runtime.kind}, compose: ${runtime.compose ?? "none"}`);
+        console.log(`Config files: ${config.files.join(", ") || "none"}`);
+    }
     for (const check of verdict.checks) {
         console.log(`  ${check.ok ? "ok  " : "FAIL"} ${check.name}: ${check.detail}`);
         if (!check.ok && check.fix) console.log(`       ${check.fix}`);
     }
     if (verdict.allowlistChanged)
         console.log("Note: the database allowlist changed since the last run.");
-    const missing = Object.entries(env.languageServers).filter(([, v]) => v === null);
+    const missing = Object.entries(env?.languageServers ?? {}).filter(([, v]) => v === null);
     if (missing.length) {
         console.log("\nOptional, for editors and Claude Code's LSP plugins:");
         for (const [name] of missing) {
             console.log(`  ${name} isn't installed: ${LANGUAGE_SERVER_INSTALL[name]}`);
         }
     }
-    const snippet = suggestedAllowlist(env, verdict);
+    const snippet = env && suggestedAllowlist(env, verdict);
     if (snippet)
         console.log(`\nIf this is your dev database, add this to local.env.yml:\n\n${snippet}`);
     return verdict.ok ? 0 : 1;
 }
 
 async function checkGen(json: boolean, regenerate: Regenerate, base: string): Promise<number> {
-    const verdict = await evaluate(await discover());
+    const { verdict } = await inspect();
     if (!verdict.ok) {
         const failed = failedChecks(verdict)
             .map((c) => `${c.name}: ${c.detail}`)

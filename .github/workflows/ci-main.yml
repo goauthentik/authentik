@@ -94,6 +94,10 @@ jobs:
             deps: python
           - job: oxlint-fixtures
             deps: node
+          - job: scripts
+            deps: node
+          - job: check-types
+            deps: node
           - job: pending-migrations
             deps: python,runtime
           - job: ruff

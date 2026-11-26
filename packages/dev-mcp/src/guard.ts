@@ -11,7 +11,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import type { AllowEntry, Environment } from "./discovery.ts";
+import { discover, type AllowEntry, type Environment } from "./discovery.ts";
 import { isDevTestLicense, verifyLicense } from "./license.ts";
 import { storeDir } from "./store.ts";
 
@@ -270,6 +270,36 @@ export async function evaluate(env: Environment, connect = true): Promise<Verdic
         checks: checks.map(({ fix, ...check }) => (check.ok ? check : { ...check, fix })),
         allowlistChanged: allowlistChanged(env),
     };
+}
+
+/** A verdict for a guard that couldn't run at all, so the reason still reaches the person. */
+function unavailable(error: unknown): Verdict {
+    return {
+        ok: false,
+        checks: [
+            {
+                name: "guard",
+                ok: false,
+                detail: `couldn't run: ${error instanceof Error ? error.message : String(error)}`,
+                fix: "Run `make dev-status` for the full error.",
+            },
+        ],
+        allowlistChanged: false,
+    };
+}
+
+/**
+ * The environment and its verdict, without throwing: a setup this can't read at all, such as a
+ * git or config command that fails, becomes a failed check.
+ */
+export async function inspect(): Promise<{ env: Environment | null; verdict: Verdict }> {
+    let env: Environment | null = null;
+    try {
+        env = await discover();
+        return { env, verdict: await evaluate(env) };
+    } catch (error) {
+        return { env, verdict: unavailable(error) };
+    }
 }
 
 /**

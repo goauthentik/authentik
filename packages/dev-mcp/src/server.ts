@@ -4,8 +4,8 @@
 
 import { checkGenerated } from "./checks/generated.ts";
 import { lint } from "./checks/lint.ts";
-import { LANGUAGE_SERVER_INSTALL, discover, publicEnvironment } from "./discovery.ts";
-import { evaluate, suggestedAllowlist, type Verdict } from "./guard.ts";
+import { LANGUAGE_SERVER_INSTALL, publicEnvironment } from "./discovery.ts";
+import { inspect, suggestedAllowlist, type Verdict } from "./guard.ts";
 import * as jobs from "./jobs.ts";
 import { DEFAULT_BASE, ROOT, branch, mergeBase } from "./repo.ts";
 import { SKILLS_DIR, listSkills, readSkill } from "./skills.ts";
@@ -56,7 +56,7 @@ export async function build(verdict?: Verdict): Promise<McpServer> {
         { name: "authentik-dev", version: "0.1.0" },
         { instructions: INSTRUCTIONS },
     );
-    const startup = verdict ?? (await evaluate(await discover()));
+    const startup = verdict ?? (await inspect()).verdict;
 
     server.registerTool(
         "akdev_status",
@@ -69,23 +69,12 @@ export async function build(verdict?: Verdict): Promise<McpServer> {
             annotations: READ_ONLY,
         },
         async () => {
-            const env = await discover();
-            const now = await evaluate(env);
-            return reply({
-                repo: ROOT,
-                branch: branch(),
-                base: DEFAULT_BASE,
-                mergeBase: mergeBase(),
-                environment: publicEnvironment(env),
-                guard: now,
-                allowlistSuggestion: suggestedAllowlist(env, now),
-                databaseTools: startup.ok
-                    ? "enabled"
-                    : "disabled for this session; restart the server once the guard passes",
-                notes: [
-                    ...(now.allowlistChanged
-                        ? ["The database allowlist changed since the last run. Check that change."]
-                        : []),
+            const { env, verdict: now } = await inspect();
+            const notes = now.allowlistChanged
+                ? ["The database allowlist changed since the last run. Check that change."]
+                : [];
+            if (env) {
+                notes.push(
                     ...Object.entries(env.languageServers)
                         .filter(([, v]) => v === null)
                         .map(
@@ -93,7 +82,20 @@ export async function build(verdict?: Verdict): Promise<McpServer> {
                                 `Optional: ${name} isn't on PATH, so editors and Claude Code's ` +
                                 `LSP plugins can't use it. Install: ${LANGUAGE_SERVER_INSTALL[name]}`,
                         ),
-                ],
+                );
+            }
+            return reply({
+                repo: ROOT,
+                branch: branch(),
+                base: DEFAULT_BASE,
+                mergeBase: mergeBase(),
+                environment: env && publicEnvironment(env),
+                guard: now,
+                allowlistSuggestion: env && suggestedAllowlist(env, now),
+                databaseTools: startup.ok
+                    ? "enabled"
+                    : "disabled for this session; restart the server once the guard passes",
+                notes,
             });
         },
     );
