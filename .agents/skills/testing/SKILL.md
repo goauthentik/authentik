@@ -4,26 +4,26 @@ description: >
     Run the authentik tests that touch your change, run one e2e test in a visible browser,
     chase a flaky test, and work out why a suite won't start or hangs. Covers Python/Django
     (`make test <path>`), Go, Rust, the web Vitest tests, the Playwright suite under
-    web/test/browser, and the Selenium e2e suite under tests/e2e. Use when someone says
-    "run just my tests", "run one test", "watch the e2e test in a browser", "this test is
+    web/test/browser, and the Selenium e2e suite under tests/e2e. Use for requests like
+    "run only my tests", "run one test", "watch the e2e test in a browser", "this test is
     flaky", "the tests hang", or "the e2e suite won't start". Lint and type checks belong to
-    linting; installing tools and resetting the database to dev-environment; running the
-    server to backend.
+    linting. Installing tools and resetting the database belong to dev-environment, and
+    running the server to backend.
 ---
 
 # authentik testing
 
 ## Purpose
 
-authentik has five test runners. Running all of them takes far too long to do on every
+authentik has five test runners. All of them together take far too long to run on every
 change, so the fast path is to run only the ones near your change and leave the rest to CI.
 This skill gives the narrow command for each, plus the traps that make a suite hang, time
 out, or fail for reasons unrelated to your change.
 
 **What to test.** Tests follow customer paths through the product: a user logs in, enrolls
-MFA, finishes a flow, an admin creates a provider. A fix earns coverage when such a path
-would have caught it. Don't add a narrow test that restates the bug you just fixed; that's
-scar tissue, not coverage. Prefer extending an existing flow-level or e2e path.
+MFA, finishes a flow, an admin creates a provider. A fix gets a test when such a path would
+have caught it. Don't add a narrow test that restates the bug you fixed. That test pins one
+bug and covers no customer path. Prefer extending an existing flow-level or e2e path.
 
 Conventions for web tests are in `web/test/AGENTS.md` and `web/test/browser/AGENTS.md`.
 E2E setup is in `website/docs/developer-docs/setup/full-dev-environment.mdx`
@@ -45,7 +45,7 @@ repo root.
 - **[shell] Rust:** `cargo nextest run <filter>` (all: `make rust-test`).
 - **[shell] Web unit tests:** `pnpm --dir web exec vitest run --project "Unit Tests" <file>`
   (what CI runs). `make web-test` starts Vitest in watch mode; `make web-test-unit` runs once.
-- **[verify]** The run reports the test count you expect. A label that resolves to nothing
+- **[verify]** The run reports the test count you expect. A label that resolves to no test
   logs `Test file not found` and exits 1.
 
 ### 2. One e2e test in a visible browser
@@ -53,7 +53,7 @@ repo root.
 **Selenium (`tests/e2e/`).** Tests drive a remote Chrome at `localhost:4444`.
 
 1. **[shell]** `COMPOSE_PROFILES=selenium docker compose -f tests/e2e/compose.yml up -d`.
-   The Chrome service is behind the `selenium` profile; without it only mailpit starts.
+   The Chrome service is behind the `selenium` profile. Without it only mailpit starts.
 2. **[shell]** Build the UI the live server will serve: `make web-build` and
    `pnpm --dir web run build:sfe` (CI does both).
 3. **[shell]** `make test tests/e2e/test_flows_login.py`, or one method with `::` as above.
@@ -70,20 +70,20 @@ the bootstrap env vars).
    (`--ui` or `--debug` to step through).
 3. **[verify]** After a failure: `pnpm --dir web exec playwright show-report`.
 
-Colocated component tests (`*.browser.test.ts`) run in Vitest's "Browser Tests" project,
-which is configured headless.
+Colocated component tests (`*.browser.test.ts`) run in Vitest's "Browser Tests" project.
+That project is configured headless.
 
 ### 3. Debug a flaky test
 
 1. **[shell] Python order dependence:** tests run in random order (pytest-randomly). Rerun
-   with the seed from the failing log: `--randomly-seed=<n>` (CI sets `CI_TEST_SEED`; the
+   with the seed from the failing log: `--randomly-seed=<n>` (CI sets `CI_TEST_SEED`, and the
    runner reads it as the default).
 2. **[shell] Python repeat:** `--count 20` reruns the selection (pytest-flakefinder).
    `--no-capture` shows prints.
-3. **[shell] Playwright load:** rerun the failing file alone with
+3. **[shell] Playwright load:** rerun only the failing file with
    `--workers=1 --max-failures=0`, and `--repeat-each=10` to reproduce. Read the failure
    screenshot before blaming your change.
-4. **[verify]** Selenium tests retry only in CI (`RETRIES`, default 3); locally a test runs
+4. **[verify]** Selenium tests retry only in CI (`RETRIES`, default 3). Locally a test runs
    once, so a flake shows up locally that CI hides.
 
 ### 4. A suite won't start, or hangs
@@ -91,29 +91,30 @@ which is configured headless.
 - **Python tests hang with dramatiq "connection is closed ... retried in 5 seconds".** Not a
   test failure: a background task hit a column your dev DB lacks. Scroll up for the
   `ProgrammingError`, then `make migrate`. If a rebased migration was renamed and migrate
-  says `column ... already exists`, fix the row in `django_migrations` or `make dev-reset`
+  fails with `column ... already exists`, fix the row in `django_migrations` or `make dev-reset`
   (it also drops the `test_` database).
 - **Selenium: `Webdriver failed after 1`.** Chrome isn't up on 4444: missing
   `COMPOSE_PROFILES=selenium`, or Docker Desktop without host networking (Settings >
-  Resources > Network > Enable host networking; the service uses `network_mode: host`).
+  Resources > Network > Enable host networking. The service uses `network_mode: host`).
 - **Playwright fails in `prerequisites.setup.ts`.** No server at the base URL, or default
   blueprints not applied yet. It polls for 90 s, then fails.
 - **Rust tests or server won't compile on a fresh clone:** `include_str!` needs
-  `web/dist/standalone/loading/startup.html`; run `make web-build` once.
+  `web/dist/standalone/loading/startup.html`. Run `make web-build` once.
 - **Rust test binary aborts with a `Python3.framework` dyld error (macOS):** set
   `PYO3_PYTHON` to the project's Python before building.
 
 ## Gotchas
 
 - **Parallel Playwright runs time out under load.** Default is 50% workers against one dev
-  server; wizards sit on skeletons and tables never render. Confirm with `--workers=1`.
-- **Stale selectors fail as 30 s timeouts, not "not found".** Use the fixtures
-  (`session.login()`, `session.signOut()`; sign-out sits behind the "Switch user" menu)
-  instead of re-deriving locators.
+  server. Wizards sit on skeletons and tables never render. Confirm with `--workers=1`.
+- **Stale selectors fail as 30 s timeouts instead of "not found" errors.** Use the fixtures
+  (`session.login()` and `session.signOut()`, where sign-out sits behind the "Switch user"
+  menu) instead of re-deriving locators.
 - **Leftover test data breaks stock defaults.** Pickers load one page, so dozens of extra
   flows can push `default-*` entries off it. Never seed flows with the `authentication`
   designation and a slug sorting before `default-`: with no brand flow set, the executor
   picks the first by slug and every login breaks.
-- **`@vendor-network` CAPTCHA tests** need the vendors' servers; CI skips them.
-- **Colocated `src/**/*.test.ts` files aren't type-checked** by `tsc`; type errors in
-  them pass CI. Test Lit components through their public surface, not protected members.
+- **`@vendor-network` CAPTCHA tests** need the vendors' servers. CI skips them.
+- **Colocated `src/**/*.test.ts` files aren't type-checked** by `tsc`, so type errors in
+  them pass CI. Test Lit components through their public surface instead of their
+  `protected` members.

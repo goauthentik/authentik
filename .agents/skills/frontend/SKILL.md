@@ -2,7 +2,7 @@
 name: frontend
 description: >
     Run the authentik web UI against your local backend with live reload, build the
-    production bundle, and find out why a UI edit isn't showing up. Use when someone says
+    production bundle, and find out why a UI edit isn't showing up. Use when someone asks to
     "start the web UI in watch mode", "rebuild the frontend", "my change doesn't appear in
     the browser", "the admin page is still the old version", or "build web/dist". First-time
     setup belongs to dev-environment, the Django server to backend, lint and type checks to
@@ -21,7 +21,7 @@ from that.
 
 Architecture, conventions, i18n and the API client rules are in
 [`web/AGENTS.md`](../../../web/AGENTS.md). Read it before changing components. The repo uses
-**pnpm**; use the `make` targets or `pnpm --dir web ...` from the root.
+**pnpm**. Use the `make` targets or `pnpm --dir web ...` from the root.
 
 Setup docs: `website/docs/developer-docs/setup/frontend-dev-environment.mdx` (UI only,
 against a container backend) and `full-dev-environment.mdx` (everything local).
@@ -57,7 +57,7 @@ from the repo root.
 
 - **[shell]** `make web-build` (`pnpm --dir web run build`, wireit-orchestrated, writes
   `web/dist/`).
-- **[shell]** The simplified flow executor for old browsers is a separate package and is not
+- **[shell]** The simplified flow executor for old browsers is a separate package and isn't
   part of `build` or `watch`: `pnpm --dir web run build:sfe`. CI builds both before the
   Selenium e2e jobs.
 - **[verify]** `web/dist/` has fresh timestamps and the UI loads under `make run`.
@@ -74,22 +74,22 @@ Work down this list. Each step rules out one layer.
 3. **[verify] Is the server serving this checkout's `web/dist/`?** The Rust server
    (`src/server/static.rs`) serves `./web/dist/` relative to its working directory under
    `/static/dist/` and `/if/{admin,user,flow/<slug>,rac/<slug>}/assets/`. Start `make run`
-   from the repo root of the same worktree you are editing. A second worktree or a
+   from the repo root of the same worktree you're editing. A second worktree or a
    container backend serves its own `dist`.
-4. **[verify] Is the browser cache in the way?** Static responses carry
+4. **[verify] Is the browser cache in the way?** Static responses send
    `Cache-Control: public, no-transform` with no `max-age`, so the browser may reuse an
    old file. Hard-reload, or tick **Disable cache** in DevTools > Network while working.
 5. **[verify] Is it compiled into the server binary?** `web/dist/standalone/loading/startup.html`,
-   `web/robots.txt` and `web/security.txt` are embedded with `include_str!`. Changing them
-   needs a Rust rebuild (restart `make run`), not just a web rebuild.
+   `web/robots.txt` and `web/security.txt` are embedded with `include_str!`. A change to them
+   needs a Rust rebuild (restart `make run`) as well as a web rebuild.
 6. **[verify] Is it an API change?** New serializer fields reach the UI only after
    `make gen` regenerates `packages/client-ts` (`@goauthentik/api`). The client resolves to
    its TypeScript source, so no separate client build is needed after regenerating.
 
 ## Gotchas
 
-- **The dev server is Rust, not Go.** `ak server` / `ak allinone` run the Rust binary;
-  `cmd/server/` and `internal/web/` are no longer launched. Look in `src/server/` for
+- **The dev server is Rust.** `ak server` / `ak allinone` run the Rust binary.
+  `cmd/server/` and `internal/web/` (Go) are no longer launched. Look in `src/server/` for
   static-serving behavior.
 - **A fresh clone needs `web/dist/` before the Rust server compiles**, because of the
   `include_str!` files above. Run `make web-build` once. (CI's Rust job writes placeholder
@@ -97,5 +97,5 @@ Work down this list. Each step rules out one layer.
 - **`make web-build` runs `node-install`, not `web-install`.** After a `web/pnpm-lock.yaml`
   change, run `make web-install` too or the build uses stale packages.
 - **Don't point `@goauthentik/api` back at `dist/`.** `packages/client-ts/package.json`
-  points `main`/`types` at `src/index.ts` on purpose; every consumer is a bundler.
+  points `main`/`types` at `src/index.ts` on purpose, because every consumer is a bundler.
 - **Storybook** for visual work: `make web-storybook-watch` (port 6006).

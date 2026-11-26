@@ -4,7 +4,7 @@ description: >
     Route an authentik question to the right place and frame it so it gets answered: a bug
     goes to a GitHub Issue, a security problem to a private advisory, a usage question or
     early idea to GitHub Discussions or Discord, a docs problem to the docs issue form, and
-    paid support to the Customer Portal. Use when someone says "where do I report this",
+    paid support to the Customer Portal. Use when someone asks "where do I report this",
     "is this a bug or am I holding it wrong", "I think I found a vulnerability", "I have a
     feature idea", "how do I get help", or "draft an issue for this". Opening a pull request
     belongs to contributing.
@@ -16,7 +16,7 @@ description: >
 
 Each venue has one job. Issues are for defects and well-formed requests that maintainers
 will act on. Questions go to Discussions or Discord. Vulnerabilities go to a private
-advisory and nowhere public. Picking the wrong one wastes maintainer time or, for security,
+advisory and nowhere public. The wrong venue wastes maintainer time or, for security,
 exposes users before a fix exists.
 
 Sources: `.github/ISSUE_TEMPLATE/`, `SECURITY.md`, `CONTRIBUTING.md`, `AI_POLICY.md`,
@@ -32,7 +32,7 @@ Sources: `.github/ISSUE_TEMPLATE/`, `SECURITY.md`, `CONTRIBUTING.md`, `AI_POLICY
    first: expressions running Python, blueprints reading files, unescaped prompt HTML,
    token-free open redirects and unfiltered outgoing requests are by design.
 2. **Is it a paid Enterprise customer needing support?** Customer Portal ticket at
-   <https://customers.goauthentik.io/>. Never for vulnerabilities; those still go to step 1.
+   <https://customers.goauthentik.io/>. Never for vulnerabilities. Those still go to step 1.
 3. **Is the documentation wrong, unclear or broken?** Issue with the
    "Documentation suggestion/problem" form.
 4. **Does authentik do something wrong that you can reproduce on a supported version?**
@@ -56,7 +56,7 @@ Discussions and Discord.
 - Impact: how it can be exploited and what it affects.
 - Logs, configuration and suggested mitigations if you have them.
 - Don't disclose publicly until the team has confirmed and fixed it. Don't request a CVE
-  from another CNA; GitHub assigns it through the advisory.
+  from another CNA. GitHub assigns it through the advisory.
 
 **Bug report** (the form's fields):
 
@@ -76,7 +76,7 @@ considered, and any context.
 **Discussions or Discord question:**
 
 - Version and deployment method.
-- What you're trying to achieve, not only the step that failed.
+- What you're trying to achieve overall, as well as the step that failed.
 - What you tried, what you expected, and what you saw, with logs.
 - Relevant config (flow, provider or blueprint YAML) with secrets removed.
 
@@ -86,9 +86,9 @@ considered, and any context.
   unsupported version should be retested on the latest patch release before filing.
 - **AI-assisted reports need a human edit.** `AI_POLICY.md` requires that a person review
   and edit any AI-generated issue or discussion text, and maintainers close reports that
-  look fully AI-driven. Trim generic text, verify every claim, and keep it short. If you
-  are drafting for someone, hand them the draft to edit and submit; don't file it for
-  them.
+  look fully AI-driven. Trim generic text, check each claim against your own setup, and keep
+  it short. If you're drafting for someone, hand them the draft to edit and submit. Don't
+  file it for them.
 
 - **Security announcements** come through the mailing list linked in `SECURITY.md` and the
   Discord server. Point people there instead of asking about an embargoed fix in public.

@@ -2,11 +2,11 @@
 name: backend
 description: >
     Run authentik's Django backend while you work on it and take a model change to a
-    committed migration. Use when someone says "run the server", "restart on save",
+    committed migration. Use when someone asks to "run the server", "restart on save",
     "start the worker", "my tasks aren't running", "I changed a model, make the migration",
-    "CI says migrations are missing", "open a Django shell", or "run an ak command".
-    First-time setup and resets live in dev-environment; the web UI in frontend; test
-    suites in testing; lint and mypy in linting; docs in docs; PRs in contributing.
+    "CI reports missing migrations", "open a Django shell", or "run an ak command".
+    First-time setup and resets live in dev-environment. The web UI is in frontend, test
+    suites in testing, lint and mypy in linting, docs in docs, and PRs in contributing.
 ---
 
 # authentik backend development
@@ -18,7 +18,7 @@ worker that uses Postgres as its broker. Day to day you run both, change code, a
 models, migrations and the generated API schema in sync. CI fails a PR on any of the
 three drifting. Setup is in the
 [full development environment](../../../website/docs/developer-docs/setup/full-dev-environment.mdx)
-doc; debugger setup is in [debugging](../../../website/docs/developer-docs/setup/debugging.mdx).
+doc. Debugger setup is in [debugging](../../../website/docs/developer-docs/setup/debugging.mdx).
 
 ## When to invoke
 
@@ -33,11 +33,11 @@ Not this skill: a fresh clone or a reset database (dev-environment).
 
 `ak` is the console script from `lifecycle/ak.py`. `allinone`, `server`, `worker`,
 `healthcheck`, `test-all` and a few others go to the Rust `authentik` binary (built from
-`src/`); `ak` falls back to `cargo run --` when no binary is on `PATH`. Anything else becomes
+`src/`). `ak` falls back to `cargo run --` when no binary is on `PATH`. Anything else becomes
 `authentik manage -- <args>`, which runs `python -m manage <args>`. So
 `uv run ak makemigrations` is plain Django `manage.py makemigrations`. The old Go server in
-`cmd/server/` and `internal/web/` is no longer launched by anything; server-side changes
-there do nothing. Go is only the outposts.
+`cmd/server/` and `internal/web/` is no longer launched by any command. Server-side changes
+there have no effect at runtime. Go is only the outposts.
 
 ## Workflow
 
@@ -62,19 +62,20 @@ moving on. Run from the repo root.
    apps). The command is overridden in `authentik/commands/` with a pgtrigger-aware
    autodetector, so always use it rather than a stock Django one.
 3. **[verify]** Read the new `authentik/<app>/migrations/NNNN_*.py`. Give it a descriptive
-   name (`--name`), check that renames weren't generated as drop + add, and that nothing
-   from someone else's unmigrated model slipped in.
+   name (`--name`), check that renames weren't generated as drop + add, and that the file
+   holds only your app's changes, with no fields from someone else's unmigrated model.
 4. **[shell]** `make migrate`.
 5. **[shell]** `make test authentik/<app>` (runs with `--keepdb`).
 6. **[shell]** If a serializer, viewset or model field the API exposes changed: `make gen`.
    It rebuilds `schema.yml` and `blueprints/schema.json` and the Go, Rust and TS clients.
-   Commit `schema.yml` and `blueprints/schema.json`; never hand-edit either.
-7. **[verify]** `make check-gen` reports nothing stale: missing migrations, `schema.yml`,
-   `blueprints/schema.json`, locales, and API clients that probably need regenerating. It
-   runs the same checks as CI's `test-gen` and `pending-migrations` jobs without writing
-   anything. From an agent, the `akdev_generated` tool does the same.
-   `make ci-lint-pending-migrations` (`makemigrations --check`) is the single CI check. `make ci-lint-migrations` lints the migrations added since `origin/main`
-   (override with `MIGRATIONS_BASE=`).
+   Commit `schema.yml` and `blueprints/schema.json`. Never hand-edit either.
+7. **[verify]** `make check-gen` passes with every generated file current. It checks missing
+   migrations, `schema.yml`, `blueprints/schema.json`, locales, and API clients that probably
+   need regenerating. It runs the same checks as CI's `test-gen` and `pending-migrations` jobs
+   and writes no files. From an agent, the `akdev_generated` tool does the same.
+   `make ci-lint-pending-migrations` (`makemigrations --check`) is the single CI check.
+   `make ci-lint-migrations` lints the migrations added since `origin/main` (override with
+   `MIGRATIONS_BASE=`).
 8. Commit the model change and its migration together.
 
 ### 3. Django shell and management commands
@@ -93,7 +94,7 @@ moving on. Run from the repo root.
 ## Gotchas
 
 - **Tests or the worker hang, printing "connection is closed ... will be retried in 5
-  seconds".** Not Redis (there is none) and not a test failure. Scroll up: a task hit a
+  seconds".** Not Redis (there's none) and not a test failure. Scroll up: a task hit a
   column the dev database doesn't have yet (`ProgrammingError: column ... does not exist`),
   which poisoned the connection, and Dramatiq retries forever. Run `make migrate`.
 - **After a rebase, `make migrate` fails with `column "<x>" already exists`.** Your branch's
@@ -106,9 +107,9 @@ moving on. Run from the repo root.
   migration, or reset the database (dev-environment).
 - **Two branches added the same migration number.** Rerun `uv run ak makemigrations --merge`,
   or renumber yours and fix its `dependencies`.
-- **Rust changes need a rebuild.** `make run-watch` restarts on `.rs` saves; under plain
-  `make run`, restart it. Running Rust tests with `cargo` on macOS may abort at launch with
-  `Library not loaded: @rpath/Python3.framework/Versions/3.9`; set `PYO3_PYTHON` to the
+- **Rust changes need a rebuild.** `make run-watch` restarts on `.rs` saves. Under plain
+  `make run`, restart it. On macOS, Rust tests run with `cargo` may abort at launch with
+  `Library not loaded: @rpath/Python3.framework/Versions/3.9`. Set `PYO3_PYTHON` to the
   project's Python 3.14 interpreter.
 - **Homebrew's `cargo` shadows rustup** if `/opt/homebrew/bin` comes first on `PATH`, so
   you build with a different Rust than `rust-toolchain.toml` pins. Clippy then reports

@@ -5,10 +5,10 @@ description: >
     locally. Maps every CI lint job to the local command: Python (black, ruff, mypy, bandit),
     Go (golangci-lint), Rust (rustfmt, clippy, cargo deny, cargo machete), web (oxlint, oxfmt,
     tsc, lit-analyse), docs, spelling (cspell), pnpm catalogs, locales, pending migrations and
-    the generated schema. Use when someone says "fix the lint", "CI lint failed", "mypy is
+    the generated schema. Use when someone asks "fix the lint", "CI lint failed", "mypy is
     red", "clippy fails locally but not in CI", "cspell flagged a word", or "schema is out of
-    date". Running tests belongs to testing; setting up tools to dev-environment; PR
-    conventions to contributing; release builds to release.
+    date". Other skills cover the rest: testing for test runs, dev-environment for tool setup,
+    contributing for PR conventions, and release for release builds.
 ---
 
 # authentik linting and type checks
@@ -40,9 +40,8 @@ Steps are tagged: `[shell]` local command, `[verify]` check before moving on.
 `make all` chains `lint-fix lint gen web test`. It is the PR template's checklist item,
 but it runs the whole Python test suite, so it is slow.
 
-Note what the fixers don't cover: `make lint` does not run `black --check`, `ruff check`,
-clippy or rustfmt in check mode. Run those CI targets directly when they are the ones
-failing.
+The fixers leave a gap: `make lint` doesn't run `black --check`, `ruff check`, clippy or
+rustfmt in check mode. Run those CI targets directly when they're the ones failing.
 
 ## 2. Reproduce a failing CI job
 
@@ -78,18 +77,18 @@ For a quick read-only web check, `make web-check` runs `lint:check` and `format:
 
 ## Web tooling
 
-The web UI uses **oxlint** and **oxfmt**, not ESLint or Prettier. Configs are
+The web UI uses **oxlint** and **oxfmt** in place of ESLint and Prettier. Configs are
 `oxlint.config.ts` and `oxfmt.config.ts` at the root, built from
 `packages/oxlint-config` and `packages/oxfmt-config`. The root `package.json` lints only
-`scripts/node` and root config files; `pnpm run check` at the root runs every workspace's
+`scripts/node` and root config files. `pnpm run check` at the root runs every workspace's
 `check`, plus `build:types`, catalogs and spellcheck.
 
-Read the diff after `oxlint --fix`. Its autofix can change meaning; it once stripped
+Read the diff after `oxlint --fix`. Its autofix can change meaning. It once stripped
 `[...typedArray]` spreads in tests.
 
 ## Gotchas
 
-- **Spelling runs in typo-only mode.** `cspell.config.jsonc` sets
+- **cspell runs in typo-only mode.** `cspell.config.jsonc` sets
   `unknownWords: "report-common-typos"`. Unknown words pass, so product names and jargon
   need no dictionary entry. Only common misspellings (shown with a `fix:`) and
   `flagWords` (British spellings) fail. If the flagged word is real, for example an
@@ -112,23 +111,23 @@ rustfmt`. Never run bare `cargo fmt`: without `--config-path .cargo/rustfmt.toml
   `lifecycle/container/proxy.Dockerfile` builds with `--no-default-features --features
 proxy`, and this once broke a release candidate. If you touch `src/`
   or `packages/ak-*`, also run
-  `cargo clippy --workspace --no-default-features --features proxy -- -D warnings`. Gate
+  `cargo clippy --workspace --no-default-features --features proxy -- -D warnings`. Put
   server-only code behind `#[cfg(feature = "core")]`.
 - **mypy is `--strict`.** New Python needs full annotations. A `# type: ignore` needs a
   specific error code and a reason a reviewer will accept.
 - **`pending-migrations` needs the runtime.** It imports Django, so it needs a working
   config and database (`make gen-dev-config`, Postgres up).
-- **`lint-migrations` compares against a base.** CI uses the previous stable tag; locally
+- **`lint-migrations` compares against a base.** CI uses the previous stable tag. Locally,
   it defaults to `origin/main`. Fetch first or it diffs against a stale ref.
 - **`ci-lint-*` targets print tool versions first** (`ci--meta-debug`). A missing `uv`,
-  `cargo` or `node` shows up there, not as a lint error.
+  `cargo` or `node` shows up there as a missing version line, before any lint output.
 
 ## Style that lint won't catch
 
 Reviewers also ask for:
 
-- Code comments that are one short line stating a non-obvious fact. The story goes in the
-  commit message.
+- Code comments that are one short line stating a non-obvious fact. The reasoning and history
+  go in the commit message.
 - In TypeScript: multiline JSDoc only, explicit `public`/`protected` on class members,
   braces on every `if` body, `parseInt(x, 10)` over `Number(x)`, and a well-known library
   over hand-rolled parsing of standard formats.

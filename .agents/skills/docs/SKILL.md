@@ -2,12 +2,12 @@
 name: docs
 description: >
     Preview an authentik docs or integration-guide change locally with live reload, then
-    run the same build, link and lint checks CI runs before you open a PR. Also says which
-    site owns which content. Use when someone says "preview the docs", "start the docs
-    server", "where does this page live", "the docs build fails on a broken link", "add an
-    integration guide", or "check the docs before my PR". Writing style and site structure
-    are in website/AGENTS.md; the product web UI belongs to frontend; spelling and lint
-    tooling to linting; PR conventions to contributing.
+    run the same build, link and lint checks CI runs before you open a PR. Also maps each
+    kind of content to the site that publishes it. Use when someone asks to "preview the docs",
+    "start the docs server", "where does this page live", "the docs build fails on a broken
+    link", "add an integration guide", or "check the docs before my PR". Writing style and
+    site structure are in website/AGENTS.md. The product web UI belongs to frontend, spelling
+    and lint tooling to linting, and PR conventions to contributing.
 ---
 
 # authentik docs preview and checks
@@ -18,7 +18,7 @@ description: >
 a change on screen quickly and through the checks that fail PRs. Site structure, authoring
 rules, redirects and spelling policy live in [`website/AGENTS.md`](../../../website/AGENTS.md)
 and the style guide at `website/docs/developer-docs/docs/style-guide.mdx`. Read those for
-anything about content; this skill doesn't repeat them.
+anything about content. This skill doesn't repeat them.
 
 ## Which site owns what
 
@@ -33,7 +33,7 @@ Never hand-edit API reference pages. Change the Python API, run `make gen`, then
 ## When to invoke
 
 - "Preview my docs change."
-- "Where is the source for this page?"
+- "Where's the source for this page?"
 - "The docs build fails with a broken link / anchor."
 - "Run the docs checks before I push."
 
@@ -51,17 +51,17 @@ moving on. Run commands from the repo root. The package manager is **pnpm**.
    which checks your Node and pnpm versions against `package.json`, then installs
    `website/`).
 2. **[shell]** Start the site you're editing: `make docs-watch` or `make integrations-watch`.
-   Docusaurus prints the local URL (port 3000 by default; it offers another port if 3000 is
-   taken).
+   Docusaurus prints the local URL (port 3000 by default, or another port it offers if 3000
+   is taken).
 3. **[edit]** Save the `.mdx` file. The page reloads.
 4. **[verify]** A new Topics page also needs an entry in `website/docs/sidebar.mjs` or it
-   won't show in the navigation. Integration guides must not touch a sidebar; theirs is
+   won't show in the navigation. Integration guides mustn't touch a sidebar. Theirs is
    generated from `website/integrations/categories.mjs`.
 
 ### 2. Check before opening a PR
 
 1. **[shell]** `make docs` (spellcheck, oxlint, oxfmt, then a production build), or
-   `make integrations` for integration guides. Both rewrite files; commit what they change.
+   `make integrations` for integration guides. Both rewrite files. Commit what they change.
 2. **[shell]** `make docs-check` reproduces CI's non-mutating lint job (`lint:check`,
    `build:types`, `format:check`).
 3. **[verify]** The build passes. The shared config sets `onBrokenLinks`,
@@ -72,13 +72,13 @@ moving on. Run commands from the repo root. The package manager is **pnpm**.
 ## Gotchas
 
 - **The dev server doesn't catch broken links.** Only the production build does. A page that
-  looks fine in `docs-watch` can still fail CI; run `make docs` before pushing.
+  looks fine in `docs-watch` can still fail CI. Run `make docs` before pushing.
 - **`.md` pages fail the build.** All three sites accept only `.mdx`. Non-page partials may
   stay `.md` if their name starts with `_`.
-- **Moving or renaming a page breaks published URLs.** Add a rule to that site's
-  `static/_redirects`; see "URLs and redirects" in `website/AGENTS.md`.
-- **cspell runs in typo-only mode.** New product names need no dictionary entry; only
-  common misspellings and British spellings are flagged. Intentional ones go in
+- **A moved or renamed page breaks published URLs.** Add a rule to that site's
+  `static/_redirects`. See "URLs and redirects" in `website/AGENTS.md`.
+- **cspell runs in typo-only mode.** New product names need no dictionary entry. It flags
+  only common misspellings and British spellings. Intentional ones go in
   `locale/en/dictionaries/overrides.txt`.
 - **`make docs-build` stops early on a Node or pnpm mismatch** (`scripts/node/lint-runtime.ts`).
   Switch to the version in `package.json` `engines` rather than bypassing it.
