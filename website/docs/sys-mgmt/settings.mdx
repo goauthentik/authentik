@@ -28,6 +28,7 @@ Default: `gravatar,initials`
 - Any URL: If you want to use images hosted on another server, you can set any URL.
 
     Additionally, these placeholders can be used:
+
     - `%(username)s`: The user's username
     - `%(mail_hash)s`: The email address, md5 hashed
     - `%(upn)s`: The user's UPN, if set (otherwise an empty string)
@@ -82,7 +83,11 @@ Require administrators to provide a reason for impersonating a user. Defaults to
 
 ### Default token duration
 
-Default duration for generated tokens. Defaults to `minutes=30`.
+How long generated tokens remain valid when no expiry is specified. Defaults to `days=1`.
+
+:::info Upgraded installations
+Installations created before authentik 2024.6 use a default value of `minutes=30` unless an administrator changes it.
+:::
 
 ### Default token length
 
