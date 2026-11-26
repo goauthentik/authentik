@@ -49,6 +49,18 @@ class TestTasks(APITestCase):
         token.refresh_from_db()
         self.assertNotEqual(key, token.key)
 
+    def test_token_expire_without_date(self):
+        """Test Token expire task expires tokens that are expiring without a date"""
+        token: Token = Token.objects.create(
+            user=get_anonymous_user(), intent=TokenIntents.INTENT_API
+        )
+        # save() fills in a default expiry
+        Token.objects.filter(pk=token.pk).update(expires=None)
+        key = token.key
+        clean_expired_models.send()
+        token.refresh_from_db()
+        self.assertNotEqual(key, token.key)
+
     def test_token_expire_actor(self):
         """Test Token expire task deletes (rather than rotates) an actor's token"""
         actor = Actor.for_user(None, ActorPolicyInheritance.NONE)

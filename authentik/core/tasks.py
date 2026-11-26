@@ -26,15 +26,17 @@ LOGGER = get_logger()
 def clean_expired_models():
     self = CurrentTask.get_task()
     for cls in ExpiringModel.__subclasses__():
-        # A plain range on expires lets Postgres stop the index scan at now() instead of
-        # filtering every row once fewer than a batch's worth have expired.
-        objects = cls.objects.including_expired().filter(expiring=True, expires__lte=now())
-        if cls.expire_action is ExpiringModel.expire_action:
-            amount = delete_in_batches(objects, order_by="expires")
-        else:
-            amount = objects.count()
-            for obj in chunked_queryset(objects):
-                obj.expire_action()
+        objects = cls.objects.including_expired().filter(expiring=True)
+        amount = 0
+        # Separate queries, because with an OR Postgres can no longer stop the index scan at
+        # now() and filters every row once fewer than a batch's worth have expired.
+        for expired in (objects.filter(expires__lte=now()), objects.filter(expires=None)):
+            if cls.expire_action is ExpiringModel.expire_action:
+                amount += delete_in_batches(expired, order_by="expires")
+            else:
+                amount += expired.count()
+                for obj in chunked_queryset(expired):
+                    obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
     clear_expired_cache()
