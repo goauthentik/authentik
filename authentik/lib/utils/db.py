@@ -40,6 +40,18 @@ def chunked_queryset[T: Model](queryset: QuerySet[T], chunk_size: int = 1_000) -
         yield from chunk.iterator(chunk_size=chunk_size)
 
 
+def _is_index_leading(model: type[Model], field_name: str) -> bool:
+    """Whether a full (not partial) index starts with `field_name`, so Postgres can read rows in
+    that order instead of sorting every match"""
+    field = model._meta.get_field(field_name) if field_name != "pk" else model._meta.pk
+    if field.primary_key or field.unique or field.db_index:
+        return True
+    return any(
+        index.fields and index.fields[0].lstrip("-") == field.name and index.condition is None
+        for index in model._meta.indexes
+    )
+
+
 def delete_in_batches[T: Model](
     queryset: QuerySet[T], batch_size: int = 1_000, order_by: str = "pk"
 ) -> int:
@@ -52,6 +64,8 @@ def delete_in_batches[T: Model](
     """
     if batch_size < 1:
         raise ValueError("batch_size must be positive")
+    if not _is_index_leading(queryset.model, order_by):
+        raise ValueError(f"{queryset.model._meta.label} has no index starting with {order_by}")
 
     # SELECT FOR UPDATE also selects the write database when routers are configured.
     queryset = queryset.select_for_update(skip_locked=True, of=("self",))

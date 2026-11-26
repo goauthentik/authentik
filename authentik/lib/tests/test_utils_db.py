@@ -56,6 +56,10 @@ class TestDeleteInBatches(TransactionTestCase):
             with self.subTest(batch_size=batch_size), self.assertRaises(ValueError):
                 delete_in_batches(self.expired(), batch_size=batch_size)
 
+    def test_unindexed_order_by(self):
+        with self.assertRaises(ValueError):
+            delete_in_batches(self.expired(), order_by="value")
+
     def test_multiple_batches_preserve_unexpired(self):
         self.create_entries(5)
         CacheEntry.objects.create(cache_key="future", value="value", expires=self.future)
