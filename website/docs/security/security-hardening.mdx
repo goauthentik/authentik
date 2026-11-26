@@ -55,6 +55,7 @@ Combine these controls to slow down credential stuffing:
 - Add a CAPTCHA stage unconditionally, either standalone or inline on the Identification stage, if you would rather not make it reputation-dependent.
 - Bind a [GeoIP policy](../customize/policies/types/geoip.mdx) to restrict sign-ins to expected countries, or to require extra verification elsewhere.
 - Configure [notification rules](../sys-mgmt/events/notifications.mdx) on `login_failed` and `suspicious_request` so spikes surface instead of only being recorded.
+- Create [honey users](./honey-user.mdx), decoy accounts that alert on any login attempt. A single attempt against a decoy is a stronger signal than a spike in `login_failed`, which also includes users who mistype their password.
 
 ## Sessions
 
