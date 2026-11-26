@@ -189,7 +189,7 @@ To remove the Platform SSO registration of a Mac:
 To retrieve the logs of the Platform SSO extension, run the following command on the Mac:
 
 ```sh
-log show --predicate 'subsystem BEGINSWITH "io.goauthentik.platform"'
+log stream --level debug --predicate 'process == "ak-sysd" || process == "PSSO" || process == "AppSSOAgent"'
 ```
 
 If users are not prompted to register, or cannot log in, check that:
