@@ -95,6 +95,16 @@ fn prometheus_dir() -> Result<PathBuf> {
     Ok(dir)
 }
 
+fn clear_prometheus_dir(dir: &Path) -> Result<()> {
+    for entry in fs::read_dir(dir)? {
+        let path = entry?.path();
+        if path.is_file() && path.extension().is_some_and(|ext| ext == "db") {
+            fs::remove_file(&path)?;
+        }
+    }
+    Ok(())
+}
+
 /// Replace this process with `cmd`. Only returns when that fails.
 fn exec(mut cmd: Command) -> Result<()> {
     let err = cmd.exec();
@@ -256,6 +266,7 @@ fn run_migrations() -> Result<()> {
 /// Get the process ready to run the server or the worker.
 pub(crate) fn bootstrap() -> Result<()> {
     let prometheus_dir = prometheus_dir()?;
+    clear_prometheus_dir(&prometheus_dir)?;
     let mut env = Vec::new();
     if std::env::var_os(PROMETHEUS_MULTIPROC_DIR).as_deref() != Some(prometheus_dir.as_os_str()) {
         env.push((PROMETHEUS_MULTIPROC_DIR, prometheus_dir.clone()));
@@ -351,5 +362,22 @@ mod tests {
     fn shell_flags_are_kept() {
         let bash = Bash::from_args(&["bash"], &["--", "-c", "echo hi"]).expect("failed to parse");
         assert_eq!(bash.args, ["-c", "echo hi"]);
+    }
+
+    #[test]
+    fn prometheus_dir_is_cleared_of_metric_files_only() {
+        let dir = tempfile::tempdir().expect("failed to create tempdir");
+        let stale = dir.path().join("gauge_livemostrecent_2.db");
+        let other = dir.path().join("notes.txt");
+        let nested = dir.path().join("nested");
+        fs::write(&stale, b"stale").expect("failed to write");
+        fs::write(&other, b"keep").expect("failed to write");
+        fs::create_dir_all(&nested).expect("failed to create dir");
+
+        clear_prometheus_dir(dir.path()).expect("failed to clear");
+
+        assert!(!stale.exists());
+        assert!(other.exists());
+        assert!(nested.exists());
     }
 }
