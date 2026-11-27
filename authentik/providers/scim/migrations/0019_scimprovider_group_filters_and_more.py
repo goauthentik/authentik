@@ -96,6 +96,7 @@ class Migration(migrations.Migration):
                     ("gitlab", "GitLab"),
                     ("webex", "Webex"),
                     ("vcenter", "vCenter"),
+                    ("zulip", "Zulip"),
                 ],
                 default="default",
                 help_text="Alter authentik behavior for vendor-specific SCIM implementations.",

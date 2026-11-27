@@ -84,6 +84,7 @@ class SCIMCompatibilityMode(models.TextChoices):
     GITLAB = "gitlab", _("GitLab")
     WEBEX = "webex", _("Webex")
     VCENTER = "vcenter", _("vCenter")
+    ZULIP = "zulip", _("Zulip")
 
 
 class SCIMProvider(OutgoingSyncObjectQueryMixin, OutgoingSyncProvider, BackchannelProvider):

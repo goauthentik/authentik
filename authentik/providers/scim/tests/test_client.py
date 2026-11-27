@@ -10,7 +10,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.base import SCIMClient
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider
+from authentik.providers.scim.models import SCIMCompatibilityMode, SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
 
 
@@ -134,6 +134,18 @@ class SCIMClientTests(TestCase):
             self.assertEqual(mock.call_count, 1)
             self.assertEqual(mock.request_history[0].method, "GET")
             self.assertTrue(client._config.is_fallback)
+
+    def test_config_zulip_skips_service_provider_config(self):
+        """Zulip mode does not request ServiceProviderConfig, which Zulip answers with 501"""
+        self.provider.compatibility_mode = SCIMCompatibilityMode.ZULIP
+        self.provider.save()
+        with Mocker() as mock:
+            mock.get("https://localhost/ServiceProviderConfig", status_code=501)
+            client = SCIMClient(self.provider)
+            self.assertEqual(mock.call_count, 0)
+            self.assertTrue(client._config.is_fallback)
+            self.assertFalse(client._config.patch.supported)
+            self.assertFalse(client._config.filter.supported)
 
     def test_scim_sync(self):
         """test scim_sync task"""
