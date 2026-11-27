@@ -175,7 +175,11 @@ export default /** @type {import("@docusaurus/types").Config} */ (
 
             //#region Theme
 
-            themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
+            themes: [
+                "@goauthentik/docusaurus-theme",
+                "@docusaurus/theme-mermaid",
+                "@goauthentik/docusaurus-theme/toc",
+            ],
 
             themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
                 algolia: createAlgoliaConfig({
