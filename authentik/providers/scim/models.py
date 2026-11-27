@@ -194,6 +194,7 @@ class SCIMProvider(OutgoingSyncObjectQueryMixin, OutgoingSyncProvider, Backchann
 
         cache_key = f"goauthentik.io/providers/scim/{self.pk}/service_provider_config"
         cache.delete(cache_key)
+        cache.delete(f"goauthentik.io/providers/scim/{self.pk}/resource_types")
         super().save(*args, **kwargs)
 
     @classmethod
