@@ -15,6 +15,137 @@
     }
 }
 
+/*
+ * Article styles. Generated API reference pages also render inside
+ * .theme-doc-markdown, but keep the OpenAPI theme's denser layout. code.css uses
+ * the same scope.
+ */
+.theme-doc-markdown:not(:has(.theme-api-markdown)) {
+    font-size: 1.0625rem;
+
+    /* Infima's 1.65 body line height, 20px leading, and 40px H2 spacing stay unchanged. */
+    --ifm-heading-vertical-rhythm-bottom: 0.6;
+    --ifm-h3-vertical-rhythm-top: 1.6;
+
+    /* Keep title spacing on the header rather than stacking H1 and title-row margins. */
+    & > header {
+        --ifm-h1-vertical-rhythm-bottom: 0;
+        margin-bottom: 1rem;
+    }
+
+    & > header > :last-child {
+        margin-bottom: 0;
+    }
+
+    /* Headings right under the title, or first in a tab panel or list item, use their container's spacing. */
+    & > header + :is(h2, h3, h4, h5, h6)[id],
+    & :is(h2, h3, h4, h5, h6)[id]:first-child {
+        margin-top: 0;
+    }
+
+    /* Use the same rhythm for MDX headings inside tab panels and procedural lists. */
+    & :is(h2, h3, h4, h5, h6)[id] {
+        margin-bottom: calc(var(--ifm-heading-vertical-rhythm-bottom) * var(--ifm-leading));
+    }
+
+    & h2[id] {
+        --ifm-h2-font-size: 2rem;
+        margin-top: calc(var(--ifm-h2-vertical-rhythm-top) * var(--ifm-leading));
+    }
+
+    & h3[id] {
+        --ifm-h3-font-size: 1.5rem;
+        margin-top: calc(var(--ifm-h3-vertical-rhythm-top) * var(--ifm-leading));
+    }
+
+    & :is(h4, h5, h6)[id] {
+        margin-top: 1.5rem;
+    }
+
+    & h4[id] {
+        font-size: 1.25rem;
+    }
+
+    & h5[id] {
+        font-size: 1.125rem;
+    }
+
+    & h6[id] {
+        font-size: 1.0625rem;
+    }
+
+    @media (max-width: 576px) {
+        & h2[id] {
+            --ifm-h2-font-size: 1.5rem;
+        }
+
+        & h3[id] {
+            --ifm-h3-font-size: 1.25rem;
+        }
+
+        & h4[id] {
+            font-size: 1.125rem;
+        }
+
+        & h5[id] {
+            font-size: 1.0625rem;
+        }
+
+        & h6[id] {
+            font-size: 1rem;
+        }
+    }
+
+    /* Prose lists only: do not add space to tabs or component/navigation lists. */
+    & :where(ul, ol):not([class]) {
+        --ifm-list-item-margin: 0.375rem;
+        --ifm-list-paragraph-margin: 0.5rem;
+    }
+
+    & :where(ul, ol):not([class]) :where(ul, ol) {
+        --ifm-list-item-margin: 0.25rem;
+    }
+
+    & .theme-tabs-container {
+        --ifm-tabs-padding-vertical: 0.75rem;
+    }
+
+    & .theme-tabs-container > .tabs {
+        border-bottom: 1px solid var(--ifm-color-emphasis-200);
+    }
+
+    & .tabs__item--active {
+        background-color: var(--ifm-color-emphasis-100);
+    }
+
+    /* The primary color is 3.1:1 on the light active tab; the darkest shade is 5:1. */
+    html[data-theme="light"] & .tabs__item--active {
+        color: var(--ifm-color-primary-darkest);
+    }
+
+    & table {
+        --ifm-table-cell-padding: 0.625rem 0.875rem;
+        --ifm-table-border-color: var(--ifm-color-emphasis-200);
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    & :is(th, td) {
+        vertical-align: top;
+    }
+
+    & .theme-admonition {
+        --ifm-alert-border-left-width: 4px;
+        --ifm-alert-shadow: none;
+        margin-bottom: var(--ifm-leading);
+    }
+
+    /* Replaces Docusaurus's 0.3rem gap under the callout heading; a heading-only callout has one child. */
+    & .theme-admonition > :first-child:not(:last-child) {
+        margin-bottom: 0.5rem;
+    }
+}
+
 .contains-task-list {
     input[type="checkbox"] {
         appearance: none;
