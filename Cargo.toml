@@ -7,7 +7,7 @@ members = [
 resolver = "3"
 
 [workspace.package]
-version = "2026.11.0-rc1"
+version = "2027.2.0-rc1"
 authors = ["authentik Team <hello@goauthentik.io>"]
 description = "Making authentication simple."
 edition = "2024"
@@ -64,7 +64,7 @@ metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
 moka = { version = "= 0.12.16", default-features = false, features = [
   "future",
 ] }
-nix = { version = "= 0.31.4", features = [
+nix = { version = "= 0.32.0", features = [
   "fs",
   "hostname",
   "signal",
@@ -73,7 +73,7 @@ nix = { version = "= 0.31.4", features = [
 notify = "= 8.2.2"
 pem = "= 4.0.0"
 percent-encoding = "= 2.3.2"
-pin-project-lite = "= 0.2.17"
+pin-project-lite = "= 0.2.18"
 pyo3 = "= 0.30.1"
 pyo3-build-config = "= 0.30.1"
 rand = "= 0.10.4"
@@ -81,7 +81,7 @@ rcgen = { version = "= 0.14.10", default-features = false, features = [
   "aws_lc_rs",
   "fips",
 ] }
-regex = "= 1.13.1"
+regex = "= 1.13.2"
 reqwest = { version = "= 0.13.5", features = [
   "form",
   "json",
@@ -114,7 +114,7 @@ serde_repr = "= 0.1.21"
 serde_with = { version = "= 3.24.0", default-features = false, features = [
   "base64",
 ] }
-sqlx = { version = "= 0.9.0", default-features = false, features = [
+sqlx = { version = "= 0.9.1", default-features = false, features = [
   "runtime-tokio",
   "tls-rustls-aws-lc-rs",
   "postgres",
@@ -150,12 +150,12 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "local-time",
   "tracing-log",
 ] }
-url = "= 2.5.8"
+url = "= 2.5.9"
 uuid = { version = "= 1.29.3", features = ["serde", "v4"] }
 
-ak-axum = { package = "authentik-axum", version = "2026.11.0-rc1", path = "./packages/ak-axum" }
-ak-client = { package = "authentik-client", version = "2026.11.0-rc1", path = "./packages/client-rust" }
-ak-common = { package = "authentik-common", version = "2026.11.0-rc1", path = "./packages/ak-common", default-features = false }
+ak-axum = { package = "authentik-axum", version = "2027.2.0-rc1", path = "./packages/ak-axum" }
+ak-client = { package = "authentik-client", version = "2027.2.0-rc1", path = "./packages/client-rust" }
+ak-common = { package = "authentik-common", version = "2027.2.0-rc1", path = "./packages/ak-common", default-features = false }
 
 [workspace.lints.rust]
 ambiguous_negative_literals = "warn"

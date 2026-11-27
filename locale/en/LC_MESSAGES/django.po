@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-20 00:13+0000\n"
+"POT-Creation-Date: 2026-11-26 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1288,6 +1288,104 @@ msgstr ""
 
 #: authentik/enterprise/endpoints/connectors/microsoft_intune/models.py
 msgid "Microsoft Intune Connector Certificate Authorities"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Select at least one user type."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Internal service accounts cannot be expired."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Inactivity duration must be positive."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Warning period must be positive."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "A warning period is required for notifications."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/api.py
+msgid "Warning period must be shorter than the inactivity duration."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Last login"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Last activity"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Measure inactivity from the last login or successful user activity."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Only expire members of this group (including descendant groups). Leave empty "
+"to apply to every user."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Only expire users of these types. Service accounts are excluded by default."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "How long a user may be inactive before they are expired."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Schedule the offboarding and notify the user this long before they expire. "
+"Leave empty to expire users without warning."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid ""
+"Select which transports should be used to warn the user. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "Never expire members of a superuser group."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rule"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rules"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+#, python-format
+msgid ""
+"User %(username)s will be offboarded (%(action)s) on %(scheduled_at)s due to "
+"inactivity"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rule Notification Transport"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/models.py
+msgid "User Expiration Rule Notification Transports"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/tasks.py
+msgid "Apply all enabled user expiration rules."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/expiration/tasks.py
+msgid "Apply user expiration rule."
 msgstr ""
 
 #: authentik/enterprise/lifecycle/offboarding/actions.py
@@ -5720,6 +5818,12 @@ msgstr ""
 msgid ""
 "Password: Masked input, multiple inputs of this type on the same prompt need "
 "to be identical."
+msgstr ""
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password with show button: Masked input w/show button, multiple inputs of "
+"this type on the same prompt need to be identical."
 msgstr ""
 
 #: authentik/stages/prompt/models.py

@@ -4,7 +4,6 @@ from typing import Any, Self
 from uuid import uuid4
 
 from django.db import models
-from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
@@ -12,13 +11,11 @@ from requests.auth import AuthBase
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.apps import AppAccessWithoutBindings
-from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
+from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.sync.outgoing.models import OutgoingSyncObjectQueryMixin, OutgoingSyncProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.policies.engine import FilterPolicyEngine
 from authentik.providers.scim.clients.auth import SCIMBasicAuth, SCIMTokenAuth
 
 LOGGER = get_logger()
@@ -89,7 +86,7 @@ class SCIMCompatibilityMode(models.TextChoices):
     VCENTER = "vcenter", _("vCenter")
 
 
-class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
+class SCIMProvider(OutgoingSyncObjectQueryMixin, OutgoingSyncProvider, BackchannelProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
     exclude_users_service_account = models.BooleanField(default=False)
@@ -198,39 +195,6 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         cache_key = f"goauthentik.io/providers/scim/{self.pk}/service_provider_config"
         cache.delete(cache_key)
         super().save(*args, **kwargs)
-
-    def get_object_qs(self, type: type[User | Group], **kwargs) -> QuerySet[User | Group]:
-        if type == User:
-            # Get queryset of all users with consistent ordering
-            # according to the provider's settings
-            base = User.objects.all().exclude_anonymous().filter(**kwargs)
-            if self.exclude_users_service_account:
-                base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
-                    type=UserTypes.INTERNAL_SERVICE_ACCOUNT
-                )
-
-            # Filter users by their access to the backchannel application if an application is set
-            if self.backchannel_application:
-                engine = FilterPolicyEngine(self.backchannel_application, base)
-                engine.empty_result = AppAccessWithoutBindings.get()
-                base = engine.build().result
-            return base.order_by("pk")
-
-        if type == Group:
-            # Get queryset of all groups with consistent ordering
-            # according to the provider's settings.
-            # Note: a previous prefetch_related on scimprovidergroup_set was removed
-            # because the data was never accessed during sync iteration; .write() does
-            # its own per-object connection lookup, and .values_list() (used by cleanup)
-            # bypasses prefetches entirely.
-            base = Group.objects.all().filter(**kwargs)
-
-            # Filter groups by group_filters if set
-            if self.group_filters.exists():
-                base = base.filter(pk__in=self.group_filters.values_list("pk", flat=True))
-
-            return base.order_by("pk")
-        raise ValueError(f"Invalid type {type}")
 
     @classmethod
     def get_object_mappings(cls, obj: User | Group) -> list[tuple[str, str]]:

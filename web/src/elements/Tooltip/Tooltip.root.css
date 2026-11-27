@@ -1,0 +1,48 @@
+/**
+ * @file Document-level CSS Custom Properties for Tooltip components.
+ */
+
+:root {
+    --ak-c-tooltip--MaxWidth: fit-content;
+    --ak-c-tooltip--BoxShadow: var(--pf-global--BoxShadow--md);
+    --ak-c-tooltip__content--PaddingTop: var(--pf-global--spacer--sm);
+    --ak-c-tooltip__content--PaddingRight: var(--pf-global--spacer--sm);
+    --ak-c-tooltip__content--PaddingBottom: var(--pf-global--spacer--sm);
+    --ak-c-tooltip__content--PaddingLeft: var(--pf-global--spacer--sm);
+    --ak-c-tooltip__content--Color: var(--pf-global--Color--light-100);
+    --ak-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
+    --ak-c-tooltip__content--FontFamily: var(--pf-global--FontFamily--sans-serif);
+    --ak-c-tooltip__content--FontSize: var(--pf-global--FontSize--sm);
+    --ak-c-tooltip__arrow--Width: 0.9375rem;
+    --ak-c-tooltip__arrow--Height: 0.9375rem;
+    --ak-c-tooltip__arrow--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
+    --ak-c-tooltip__arrow--BoxShadow: var(--pf-global--BoxShadow--md);
+    --ak-c-tooltip__arrow--m-top--TranslateX: -50%;
+    --ak-c-tooltip__arrow--m-top--TranslateY: 50%;
+    --ak-c-tooltip__arrow--m-top--Rotate: 45deg;
+    --ak-c-tooltip__arrow--m-right--TranslateX: -50%;
+    --ak-c-tooltip__arrow--m-right--TranslateY: -50%;
+    --ak-c-tooltip__arrow--m-right--Rotate: 45deg;
+    --ak-c-tooltip__arrow--m-bottom--TranslateX: -50%;
+    --ak-c-tooltip__arrow--m-bottom--TranslateY: -50%;
+    --ak-c-tooltip__arrow--m-bottom--Rotate: 45deg;
+    --ak-c-tooltip__arrow--m-left--TranslateX: 50%;
+    --ak-c-tooltip__arrow--m-left--TranslateY: -50%;
+    --ak-c-tooltip__arrow--m-left--Rotate: 45deg;
+
+    --ak-c-tooltip--ShowDelay: 100ms;
+    --ak-c-tooltip--HideDelay: 150ms;
+    --ak-c-tooltip--Offset: 0.4rem;
+    --ak-c-tooltip__arrow--Size: 0.5rem;
+    --ak-c-tooltip__arrow--Width: var(--ak-c-tooltip__arrow--Size);
+    --ak-c-tooltip__arrow--Height: var(--ak-c-tooltip__arrow--Size);
+
+    --ak-c-tooltip--TimingFunction: var(--pf-global--TimingFunction);
+    --ak-c-tooltip--TransitionDuration: var(--pf-global--TransitionDuration);
+}
+
+html[theme="dark"],
+html[data-theme="dark"] {
+    --ak-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--300);
+    --ak-c-tooltip__arrow--BackgroundColor: var(--pf-global--BackgroundColor--300);
+}

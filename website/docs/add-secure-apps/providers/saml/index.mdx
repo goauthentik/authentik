@@ -183,7 +183,7 @@ By default, authentik honors this attribute. When an incoming `AuthnRequest` set
 
 This requires no configuration on the provider, and it applies to any SP that sets the attribute. If users of an existing application are prompted to sign in again more often after upgrading to 2026.8, check whether that SP sets `ForceAuthn`.
 
-### Ignoring ForceAuthn :ak-version[2026.11]
+### Ignoring ForceAuthn :ak-version[2026.11] {#ignoring-forceauthn}
 
 For SPs that always set `ForceAuthn="true"` and provide no way to disable it, enable **Ignore ForceAuthn** under the SAML provider's **Advanced protocol settings**. This allows reuse of a valid authentik session by handling requests as if `ForceAuthn` were absent.
 

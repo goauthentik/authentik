@@ -13,7 +13,9 @@ use eyre::{Result as EyreResult, eyre};
 use tracing::instrument;
 use url::Url;
 
-use crate::outpost::proxy::{application::Application, auth::Authenticated, oauth};
+use crate::outpost::proxy::{
+    allowlist::has_dot_segment, application::Application, auth::Authenticated, oauth,
+};
 
 fn header_str<'a>(headers: &'a HeaderMap, name: &str) -> Option<&'a str> {
     headers.get(name)?.to_str().ok()
@@ -32,6 +34,20 @@ pub(super) fn nginx_forward_url(headers: &HeaderMap) -> EyreResult<Url> {
     let original =
         header_str(headers, "x-original-url").ok_or_else(|| eyre!("no forward URL found"))?;
     Ok(Url::parse(original)?)
+}
+
+fn is_outpost_endpoint(path: &str) -> bool {
+    matches!(
+        path,
+        "/outpost.goauthentik.io/start"
+            | "/outpost.goauthentik.io/callback"
+            | "/outpost.goauthentik.io/sign_out"
+            | "/outpost.goauthentik.io/ping"
+            | "/outpost.goauthentik.io/auth/caddy"
+            | "/outpost.goauthentik.io/auth/envoy"
+            | "/outpost.goauthentik.io/auth/nginx"
+            | "/outpost.goauthentik.io/auth/traefik"
+    )
 }
 
 /// Path prefix Envoy's external authorization filter sends requests under.
@@ -115,7 +131,10 @@ async fn forward_header_auth(
             request.headers(),
         ));
     }
-    if app.is_allowlisted(&fwd) {
+    if app.is_allowlisted(
+        header_str(request.headers(), "x-forwarded-uri").unwrap_or_default(),
+        &fwd,
+    ) {
         return Ok(StatusCode::OK.into_response());
     }
 
@@ -184,11 +203,17 @@ pub(crate) async fn handle_nginx(
             request.headers(),
         ));
     }
-    if app.is_allowlisted(&fwd) {
+    let received = header_str(request.headers(), "x-original-url").unwrap_or_default();
+    // Parsing the URL drops `.` and `..` segments that the upstream still receives, so neither
+    // the allowlist nor the outpost endpoints below may let such a URL through.
+    if has_dot_segment(received) {
+        return Ok((StatusCode::UNAUTHORIZED, "unauthorized request").into_response());
+    }
+    if app.is_allowlisted(received, &fwd) {
         return Ok(StatusCode::OK.into_response());
     }
     // Let the outpost's own endpoints (callback, start, ...) through unauthenticated.
-    if fwd.path().starts_with("/outpost.goauthentik.io") {
+    if is_outpost_endpoint(fwd.path()) {
         return Ok(StatusCode::OK.into_response());
     }
 
@@ -227,7 +252,8 @@ mod tests {
     use url::Url;
 
     use super::{
-        ENVOY_PREFIX, envoy_forward_target, handle_envoy, nginx_forward_url, traefik_forward_url,
+        ENVOY_PREFIX, envoy_forward_target, handle_envoy, is_outpost_endpoint, nginx_forward_url,
+        traefik_forward_url,
     };
     use crate::outpost::proxy::{
         application::Application,
@@ -371,5 +397,71 @@ mod tests {
             .expect("state token")
             .redirect;
         assert_eq!(redirect, "//app.example.com/page?x=1");
+    }
+
+    const NON_ENDPOINT_PATHS: &[&str] = &[
+        "/outpost.goauthentik.io//../private",
+        "/outpost.goauthentik.io/%2f../private",
+        "/outpost.goauthentik.io/%2F../private",
+        "/outpost.goauthentik.io/..%2fprivate",
+        "/outpost.goauthentik.io%2f..%2fprivate",
+        "/outpost.goauthentik.io%2F%2e%2e%2Fprivate",
+        "/outpost.goauthentik.io%2fanything%2f..%2f..%2fprivate",
+        "/x/../outpost.goauthentik.io%2f..%2fprivate",
+        "/foo\\..\\outpost.goauthentik.io/boundary",
+        "/\toutpost.goauthentik.io/..%2fprivate",
+        "/outpost.goauthentik.io-spa/admin",
+        "/outpost.goauthentik.ioANYTHING",
+        "/outpost.goauthentik.io/auth/envoy/..%2f..%2fprivate",
+    ];
+
+    const ENDPOINT_PATHS: &[&str] = &[
+        "/outpost.goauthentik.io/start?rd=https%3A%2F%2Fapp.example.com%2F",
+        "/outpost.goauthentik.io/callback?state=state&code=code",
+        "/outpost.goauthentik.io/sign_out",
+        "/outpost.goauthentik.io/ping",
+        "/outpost.goauthentik.io/auth/caddy",
+        "/outpost.goauthentik.io/auth/envoy",
+        "/outpost.goauthentik.io/auth/nginx",
+        "/outpost.goauthentik.io/auth/traefik",
+    ];
+
+    fn forward_path(path: &str) -> String {
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            "x-original-url",
+            HeaderValue::from_str(&format!("http://app.example.com{path}")).expect("header value"),
+        );
+        nginx_forward_url(&headers)
+            .expect("forward url")
+            .path()
+            .to_owned()
+    }
+
+    // A forwarded path that only resembles an outpost endpoint still needs a session.
+    #[test]
+    fn non_endpoint_paths_are_not_exempt() {
+        let exempt: Vec<&str> = NON_ENDPOINT_PATHS
+            .iter()
+            .copied()
+            .filter(|path| is_outpost_endpoint(&forward_path(path)))
+            .collect();
+
+        assert!(exempt.is_empty(), "exempt without a session: {exempt:#?}");
+    }
+
+    // The outpost's own endpoints stay reachable without a session.
+    #[test]
+    fn outpost_endpoints_are_exempt() {
+        let denied: Vec<&str> = ENDPOINT_PATHS
+            .iter()
+            .copied()
+            .filter(|path| !is_outpost_endpoint(&forward_path(path)))
+            .collect();
+
+        assert!(
+            denied.is_empty(),
+            "outpost endpoint not exempt: {denied:#?}"
+        );
     }
 }

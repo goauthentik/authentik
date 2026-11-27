@@ -29,7 +29,6 @@ import { type SlottedTemplateResult } from "#elements/types";
 
 import {
     getClient,
-    SEMANTIC_ATTRIBUTE_SENTRY_SOURCE,
     type Span,
     startBrowserTracingNavigationSpan,
     startBrowserTracingPageLoadSpan,
@@ -103,7 +102,7 @@ export class RouterView extends AKElement {
                 startBrowserTracingPageLoadSpan(this.#sentryClient, {
                     name: window.location.pathname,
                     attributes: {
-                        [SEMANTIC_ATTRIBUTE_SENTRY_SOURCE]: "url",
+                        "sentry.segment.name.source": "url",
                     },
                 }) ?? null;
         }
@@ -249,14 +248,14 @@ export class RouterView extends AKElement {
 
         if (this.#pageLoadSpan) {
             this.#pageLoadSpan.updateName(name);
-            this.#pageLoadSpan.setAttribute(SEMANTIC_ATTRIBUTE_SENTRY_SOURCE, "route");
+            this.#pageLoadSpan.setAttribute("sentry.segment.name.source", "route");
             this.#pageLoadSpan = null;
         } else {
             startBrowserTracingNavigationSpan(this.#sentryClient, {
                 op: "navigation",
                 name,
                 attributes: {
-                    [SEMANTIC_ATTRIBUTE_SENTRY_SOURCE]: "route",
+                    "sentry.segment.name.source": "route",
                 },
             });
         }

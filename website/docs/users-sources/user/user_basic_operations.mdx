@@ -120,9 +120,11 @@ The example recovery flow includes an email stage. However, if you're manually s
 
 1. In the Admin interface, navigate to **Directory** > **Users** to display all users.
 2. Click the name of the user to display the full User details page.
-3. To generate a recovery link, which you can then send to the user, click **Create recovery link**.
+3. Click **Create recovery link**.
+4. Set **Token duration** to how long the link should remain valid, for example `hours=48`. See [Recovery link validity](#recovery-link-validity).
+5. Click **Create link**.
 
-A dialog displays the recovery link. Copy the link and send it to the user.
+authentik copies the recovery link to your clipboard. Send the link to the user.
 
 ### 2. Email a recovery link
 
@@ -134,9 +136,24 @@ You can email a password-reset link to the user. This option requires [configure
 
 1. In the Admin interface, navigate to **Directory** > **Users** to display all users.
 2. Click the name of the user to display the full User details page.
-3. To send the email to the user, click **Email recovery link**.
+3. Click **Email recovery link**.
+4. Select the **Email stage** to send the email with. The stage provides the subject, template, and connection settings.
+5. Set **Token duration** to how long the link should remain valid, for example `hours=48`. See [Recovery link validity](#recovery-link-validity).
+6. Click **Send link**.
 
 If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails.mdx).
+
+### Recovery link validity
+
+The **Token duration** that you set when creating or emailing a recovery link determines how long that link is valid. Use the format `hours=1;minutes=2;seconds=3`. If you leave the field empty, authentik uses the [**Default token duration**](../../sys-mgmt/settings.mdx#default-token-duration) system setting.
+
+The **Token expiration** setting of the [Email stage](../../add-secure-apps/flows-stages/stages/email/index.mdx) does not apply to recovery links that an administrator creates or emails. It only applies to emails that the stage sends when a user starts the recovery flow themselves.
+
+Be aware of the following behavior:
+
+- **Expired links do not show an error**: when a user opens an expired recovery link, authentik starts the recovery flow from the beginning. The user then needs to identify themselves and complete every stage of the flow.
+- **Created links are single-use**: a link from **Create recovery link** is invalidated the first time it is opened. A link sent with **Email recovery link** is invalidated after the user confirms that they want to continue.
+- **Each user has one recovery token**: creating or emailing another recovery link for the same user returns the same link and replaces its validity period with the new **Token duration**.
 
 ## Reset a password
 

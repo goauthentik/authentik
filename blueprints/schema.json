@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2026.11.0-rc1 Blueprint schema",
+    "title": "authentik 2027.2.0-rc1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -7559,10 +7559,15 @@
                     "type": "boolean",
                     "title": "Exclude users service account"
                 },
-                "filter_group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Filter group"
+                "group_filters": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Group filters used to define sync-scope for groups."
+                    },
+                    "title": "Group filters",
+                    "description": "Group filters used to define sync-scope for groups."
                 },
                 "user_delete_action": {
                     "type": "string",
@@ -7735,10 +7740,15 @@
                     "type": "boolean",
                     "title": "Exclude users service account"
                 },
-                "filter_group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Filter group"
+                "group_filters": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Group filters used to define sync-scope for groups."
+                    },
+                    "title": "Group filters",
+                    "description": "Group filters used to define sync-scope for groups."
                 },
                 "user_delete_action": {
                     "type": "string",
@@ -15893,6 +15903,7 @@
                         "username",
                         "email",
                         "password",
+                        "password_viewable",
                         "number",
                         "checkbox",
                         "radio-button-group",

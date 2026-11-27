@@ -29,17 +29,17 @@ nodeLinker: hoisted
 # these via `catalog:`, and overrides pin transitive deps to the same versions.
 # `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
-  "@playwright/test": "^1.62.1"
-  oxfmt: "0.78.0"
-  oxlint: "^1.93.0"
+  "@playwright/test": "^1.65.1"
+  oxfmt: "0.79.0"
+  oxlint: "^1.94.0"
   "@types/node": "^26.6.6"
-  "@vitest/browser": "^5.1.0"
-  "@vitest/browser-playwright": "^5.1.0"
+  "@vitest/browser": "^5.1.1"
+  "@vitest/browser-playwright": "^5.1.1"
   esbuild: "^0.28.2"
-  playwright: "^1.62.1"
+  playwright: "^1.65.1"
   typescript: "^6.0.3"
   vite: "^8.3.5"
-  vitest: "^5.1.0"
+  vitest: "^5.1.1"
 
 overrides:
   "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
@@ -74,8 +74,3 @@ allowBuilds:
   esbuild: true
   tree-sitter: true
   tree-sitter-json: true
-
-minimumReleaseAgeExclude:
-  - '@playwright/test@1.62.1'
-  - playwright-core@1.62.1
-  - playwright@1.62.1

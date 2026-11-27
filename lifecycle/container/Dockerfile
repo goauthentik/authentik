@@ -2,7 +2,7 @@
 
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.22.0@sha256:81346f048d668195928d441b80efc0df300474ed8bf81789e4554ec0079079d0 AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.23.0@sha256:349c846c6c9dab76b2f6fbf4b2df14d5a8c9b2a0fce92fc7e5c2eec3f437e801 AS pnpm
 
 # Stage: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.13.1-trixie-slim@sha256:e6bedef217677b276c591795e169840edd9096dbf13f29df8ef8d1856b8820bc AS node-builder
@@ -47,7 +47,7 @@ RUN pnpm run build && \
     pnpm run build:sfe
 
 # Stage: download Rust toolchain
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:8e1858c98028a50362f2918bb6435e5b7066e6aeb054328caf4aec1a318b3802 AS rust-toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:60e95718d3f089afbd729c330c0a39c3e2e24844621f43968a5c984f145eb73e AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -68,9 +68,9 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     cargo --version
 
 # Stage: Download uv
-FROM ghcr.io/astral-sh/uv:0.13.9@sha256:d3b601f0c7b118bc1753febf7c41cc80981df678445e0254284eecf84db79a7d AS uv
+FROM ghcr.io/astral-sh/uv:0.13.10@sha256:a3ea1357342c1a4bf9a0c53a3deb1b55379aefa037338d8113d5771efa01774f AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.10-p1-slim-trixie-fips@sha256:638ba00bbc65c58a4126cb1b99da7b6c7e8e0e962e574d0ecae32a1c8d8fd07c AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.10-p1-slim-trixie-fips@sha256:d56260f20b11202e98201522a439e682f544601e3274b97533c67568b36f5e89 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \

@@ -9,7 +9,7 @@ The authentik Agent connector allows device information to be reported by the [a
 
 Unlike other connectors, the agent connector is used directly by the agent itself, rather than communicating with external systems or APIs. As a result, its behavior and functionality differ from those of other connectors.
 
-The agent connector mainly holds configuration for the agent itself, as well as implementing certain platform-specific protocols like Apple's Platform SSO.
+The agent connector mainly holds configuration for the agent itself, as well as implementing certain platform-specific protocols like Apple's [Platform SSO](../../authentik-agent/device-authentication/local-device-login/macos.mdx).
 
 ## Configure the authentik Agent connector
 
@@ -22,6 +22,16 @@ Follow these instructions to configure the authentik Agent connector:
     - **Refresh interval**: select how often the agent updates its configuration.
     - **Enabled**: enable or disable the connector.
 4. Click **Finish**.
+
+## Configure local device login
+
+The Agent connector requires an **Authorization Flow** to be configured for [local device login](../../authentik-agent/device-authentication/local-device-login/index.mdx) on Windows, Linux, and macOS.
+
+1. Navigate to **Endpoint Devices** > **Connectors** and edit your Agent connector.
+2. Under **Authentication settings**, configure the following settings:
+    - **Authorization Flow**: select the flow that is used for users to authorize. Without an authorization flow, local device login is not available.
+    - **Session duration**: set how long an authenticated session is valid for.
+3. Click **Update**.
 
 ## Configure Challenge Key
 
