@@ -143,11 +143,10 @@ class SyncTasks:
             )
             for connection in stale:
                 try:
-                    identifier = getattr(connection, client.remote_id_field)
-                    client.delete(identifier)
+                    client.delete(connection.scim_id)
                     task.info(
                         f"Deleted out-of-scope {object_type._meta.verbose_name}",
-                        identifier=identifier,
+                        scim_id=connection.scim_id,
                     )
                 except NotFoundSyncException:
                     pass

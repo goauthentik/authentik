@@ -56,8 +56,6 @@ class BaseOutgoingSyncClient[
     provider: TProvider
     connection_type: type[TConnection]
     connection_type_query: str
-    # Field on ``connection_type`` that stores the remote object's identifier.
-    remote_id_field: str
     mapper: PropertyMappingManager
 
     can_discover = False
