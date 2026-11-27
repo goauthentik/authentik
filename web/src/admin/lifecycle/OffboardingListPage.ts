@@ -2,10 +2,12 @@ import "#components/ak-status-label";
 import "#components/ak-switch-input";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
+import "#elements/table/ak-table-filter-select";
 import "#elements/timestamp/ak-timestamp";
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
+import type { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -43,6 +45,9 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
     @state()
     showOnlyPending = true;
 
+    @state()
+    protected source: boolean | undefined = undefined;
+
     // Shared by the bulk and per-row cancel paths so they stay in sync.
     #cancelOffboarding = (item: UserOffboarding) =>
         aki(LifecycleApi).lifecycleUserOffboardingDestroy({ id: item.id });
@@ -56,11 +61,21 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         return aki(LifecycleApi).lifecycleUserOffboardingList({
             ...(await this.defaultEndpointConfig()),
             status: this.showOnlyPending ? OffboardingStatusEnum.Pending : undefined,
+            // `generated` stays set after the rule that scheduled the offboarding is deleted.
+            generated: this.source,
         });
     }
 
     protected togglePendingOffboardingFilter = (): void => {
         this.showOnlyPending = !this.showOnlyPending;
+        this.page = 1;
+        this.fetch();
+    };
+
+    protected sourceChangeListener = (
+        event: CustomEvent<FilterOption<boolean | undefined>>,
+    ): void => {
+        this.source = event.detail.value;
         this.page = 1;
         this.fetch();
     };
@@ -76,12 +91,38 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
             ${super.renderToolbar()}`;
     }
 
+    protected override renderToolbarAfter(): TemplateResult {
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <ak-table-filter-select
+                    .options=${[
+                        {
+                            label: msg("All", { id: "offboarding.source.all" }),
+                            value: undefined,
+                        },
+                        {
+                            label: msg("Manual", { id: "offboarding.source.manual" }),
+                            value: false,
+                        },
+                        {
+                            label: msg("Expiration rule", { id: "offboarding.source.automatic" }),
+                            value: true,
+                        },
+                    ]}
+                    group=${msg("Scheduled by", { id: "offboarding.column.scheduled-by" })}
+                    .value=${this.source}
+                    @change=${this.sourceChangeListener}
+                ></ak-table-filter-select>
+            </div>
+        </div>`;
+    }
+
     protected override columns: TableColumn[] = [
         [msg("User"), "user__username"],
         [msg("Action"), "action"],
         [msg("Scheduled for"), "scheduled_at"],
         [msg("Status"), "status"],
-        [msg("Scheduled by")],
+        [msg("Scheduled by", { id: "offboarding.column.scheduled-by" })],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
@@ -98,6 +139,28 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
                 ${msg("Cancel Offboardings")}
             </button>
         </ak-forms-delete-bulk>`;
+    }
+
+    /**
+     * An offboarding is either scheduled by an administrator or by an expiration rule;
+     * `createdBy` is only set in the first case, and `generated` only in the second.
+     * `rule` is cleared when the rule is deleted.
+     */
+    protected renderScheduledBy(item: UserOffboarding): SlottedTemplateResult {
+        if (item.rule) {
+            return html`<a href=${toAdminInterface("events/expiration-rules")}
+                >${
+                    item.ruleObj?.name ??
+                    msg("Expiration rule", { id: "offboarding.source.rule-fallback" })
+                }</a
+            >`;
+        }
+
+        if (item.generated) {
+            return msg("Expiration rule (deleted)", { id: "offboarding.source.rule-deleted" });
+        }
+
+        return item.createdByObj?.username ?? msg("-");
     }
 
     protected renderRowActions(item: UserOffboarding): SlottedTemplateResult {
@@ -128,7 +191,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
             offboardingActionLabel(item.action),
             html`<ak-timestamp .timestamp=${item.scheduledAt} datetime></ak-timestamp>`,
             OffboardingStatus({ status: item.status }),
-            item.createdByObj?.username ?? msg("-"),
+            this.renderScheduledBy(item),
             this.renderRowActions(item),
         ];
     }
