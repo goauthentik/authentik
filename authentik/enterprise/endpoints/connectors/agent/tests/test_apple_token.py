@@ -10,6 +10,7 @@ from jwcrypto.jwk import JWK
 from jwt import encode
 
 from authentik.blueprints.tests import reconcile_app
+from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_cert, create_test_user
 from authentik.crypto.builder import PrivateKeyAlg
 from authentik.endpoints.connectors.agent.models import (
@@ -23,10 +24,12 @@ from authentik.endpoints.connectors.agent.models import (
     DeviceToken,
     EnrollmentToken,
 )
-from authentik.endpoints.models import Device
+from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import JWTAlgorithms
+from authentik.stages.password.models import PasswordDevice
 
 
 class TestAppleToken(TestCase):
@@ -122,6 +125,143 @@ class TestAppleToken(TestCase):
         ).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["device"]["name"], self.device.name)
+
+    def _password_request(self, nonce: str, **claims) -> str:
+        """Login request of a password login"""
+        return encode(
+            {
+                "iss": str(self.connector.pk),
+                "aud": "http://testserver/endpoints/agent/psso/token/",
+                "request_nonce": nonce,
+                "grant_type": "password",
+                "amr": ["pwd"],
+                "username": self.user.username,
+                "jwe_crypto": {
+                    "apv": (
+                        "AAAABUFwcGxlAAAAQQTFgZOospN6KbkhXhx1lfa-AKYxjEfJhTJrkpdEY_srMmkPzS7VN0Bzt2AtNBEXE"
+                        "aphDONiP2Mq6Oxytv5JKOxHAAAAJDgyOThERkY5LTVFMUUtNEUwMS04OEUwLUI3QkQzOUM4QjA3Qw"
+                    )
+                },
+                **claims,
+            },
+            self.apple_sign_key.private_key,
+            headers={"kid": self.apple_sign_key.kid},
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+
+    def _post_password_request(self, assertion: str):
+        return self.client.post(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token"),
+            data={
+                "assertion": assertion,
+                "platform_sso_version": "1.0",
+                # macOS posts every Platform SSO login as jwt-bearer, password ones too
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            },
+        )
+
+    @reconcile_app("authentik_crypto")
+    def test_token_password(self):
+        """A password login authenticates with the credentials of the login request"""
+        password = generate_id()
+        PasswordDevice.set_password(self.user, password)
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+
+        res = self._post_password_request(self._password_request(nonce, password=password))
+
+        self.assertEqual(res.status_code, 200)
+        event = Event.objects.filter(
+            action=EventAction.LOGIN,
+            app="authentik.endpoints.connectors.agent",
+        ).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["device"]["name"], self.device.name)
+
+    @reconcile_app("authentik_crypto")
+    def test_token_password_binds_user(self):
+        """Platform SSO requests the user's keys after a password login without registering the
+        user first, so the login binds the user to the device"""
+        AgentDeviceUserBinding.objects.all().delete()
+        # Without a binding of their own, the user needs access through the device's group
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+        self.device.access_group = DeviceAccessGroup.objects.create(name=generate_id())
+        self.device.save()
+        PolicyBinding.objects.create(target=self.device.access_group, group=group, order=0)
+        password = generate_id()
+        PasswordDevice.set_password(self.user, password)
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+
+        res = self._post_password_request(self._password_request(nonce, password=password))
+
+        self.assertEqual(res.status_code, 200)
+        binding = AgentDeviceUserBinding.objects.get(target=self.device, user=self.user)
+        self.assertEqual(binding.connector.pk, self.connector.pk)
+        self.assertTrue(binding.is_primary)
+
+        # A wrong password doesn't bind anyone
+        AgentDeviceUserBinding.objects.all().delete()
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+        res = self._post_password_request(self._password_request(nonce, password=generate_id()))
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(AgentDeviceUserBinding.objects.filter(target=self.device).exists())
+
+    @reconcile_app("authentik_crypto")
+    def test_token_password_invalid(self):
+        """A wrong password is rejected as an invalid credential and issues no token"""
+        PasswordDevice.set_password(self.user, generate_id())
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+
+        res = self._post_password_request(self._password_request(nonce, password=generate_id()))
+
+        # macOS re-prompts for the password on a 401
+        self.assertEqual(res.status_code, 401)
+        self.assertJSONEqual(res.content, {"error": "invalid_grant"})
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.LOGIN,
+                app="authentik.endpoints.connectors.agent",
+            ).exists()
+        )
+
+    @reconcile_app("authentik_crypto")
+    def test_token_password_device_access_denied(self):
+        """Correct credentials of a user without access to the device issue no token"""
+        other_user = create_test_user()
+        password = generate_id()
+        PasswordDevice.set_password(other_user, password)
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+
+        res = self._post_password_request(
+            self._password_request(nonce, username=other_user.username, password=password)
+        )
+
+        # Not a 401, as macOS would re-prompt for a password that was correct
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.LOGIN,
+                app="authentik.endpoints.connectors.agent",
+            ).exists()
+        )
+
+    @reconcile_app("authentik_crypto")
+    def test_token_password_unknown_user(self):
+        """Unknown users get the same response as a wrong password"""
+        nonce = generate_id()
+        AppleNonce.objects.create(device_token=self.device_token, nonce=nonce)
+
+        res = self._post_password_request(
+            self._password_request(nonce, username=generate_id(), password=generate_id())
+        )
+
+        self.assertEqual(res.status_code, 401)
+        self.assertJSONEqual(res.content, {"error": "invalid_grant"})
 
     @reconcile_app("authentik_crypto")
     def test_token_unlock_ecdh(self):
