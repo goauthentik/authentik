@@ -274,7 +274,7 @@
 .ak-c-dialog__content ::part(toolbar) {
     position: var(--ak-c-dialog--toolbar--Position, sticky);
     inset-block-start: var(--ak-c-dialog--toolbar--InsetBlockStart, 0);
-    z-index: var(--ak-c-dialog--toolbar--ZIndex, 1);
+    z-index: var(--ak-c-dialog--toolbar--ZIndex, 2);
 }
 
 .ak-c-dialog__content [slot="before-body"] {
