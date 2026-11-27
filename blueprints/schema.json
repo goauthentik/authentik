@@ -13100,7 +13100,8 @@
                         "slack",
                         "twitch",
                         "twitter",
-                        "wechat"
+                        "wechat",
+                        "wechatserviceaccount"
                     ],
                     "title": "Provider type"
                 },
