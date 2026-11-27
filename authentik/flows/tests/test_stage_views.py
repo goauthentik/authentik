@@ -6,6 +6,7 @@ from unittest.mock import patch
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
+from authentik.brands.models import Brand
 from authentik.core.tests.utils import RequestFactory as AuthentikRequestFactory
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.models import Flow, FlowStageBinding
@@ -42,6 +43,37 @@ class TestViews(TestCase):
         self.assertEqual(
             challenge.initial_data["flow_info"]["background"],
             "/static/dist/assets/images/flow_background.jpg",
+        )
+
+    def test_challenge_stage_flow_info_uses_brand_background(self):
+        """Test challenge flow info falls back to the brand's default flow background."""
+        flow = create_test_flow()
+        stage = DummyStage.objects.create(name="dummy")
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=0)
+        request = self.authentik_factory.get("/")
+        request.brand = Brand(branding_default_flow_background="brand-background.png")
+
+        executor = FlowExecutorView(flow=flow, request=request)
+        executor.current_stage = stage
+
+        view = DummyStageView(executor)
+        view.request = request
+
+        flow_info = view._get_challenge().initial_data["flow_info"]
+        self.assertTrue(flow_info["background"].startswith("/files/media/"))
+        self.assertIn("brand-background.png?token=", flow_info["background"])
+
+        request.brand = Brand(
+            branding_default_flow_background="https://example.com/background-%(theme)s.png"
+        )
+        flow_info = view._get_challenge().initial_data["flow_info"]
+        self.assertEqual(flow_info["background"], "https://example.com/background-light.png")
+        self.assertEqual(
+            flow_info["background_themed_urls"],
+            {
+                "light": "https://example.com/background-light.png",
+                "dark": "https://example.com/background-dark.png",
+            },
         )
 
     def test_flow_interface_css_background_preserves_presigned_url_query(self):
