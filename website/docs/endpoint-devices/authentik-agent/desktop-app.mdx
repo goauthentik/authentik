@@ -13,7 +13,7 @@ Use the app to manage profiles, review which programs requested access to your a
 This page describes authentik Agent 0.73 and later.
 :::
 
-<!-- TODO: screenshot of the Authorizations page with a profile and recent authorizations -->
+![The Authorizations page of the authentik Agent app, showing the active profile and three allowed requests](./desktop-app-authorizations.png)
 
 ## Start and open the app
 
@@ -92,8 +92,6 @@ Each profile shows its username, when its token was last renewed and when it's r
 | **Renewal Failed** | The token couldn't be renewed. [Add the profile again](#add-a-profile) with the same name to log in again.       |
 | **Key-bound**      | The profile's tokens are bound to a key on this device. Refer to [Key binding](./configuration.mdx#key-binding). |
 
-<!-- TODO: screenshot of the Profiles page with two profiles -->
-
 ### Add a profile
 
 1. Open the **Profiles** page and click **Add profile**.
@@ -113,8 +111,6 @@ Alternatively, add a profile from the command line:
 ```sh
 ak config setup --authentik-url https://authentik.company --profile work
 ```
-
-<!-- TODO: screenshot of the Add profile dialog -->
 
 ### Switch the active profile
 
@@ -150,8 +146,6 @@ The page has the following sections:
 - **SSH Agent**: the `IdentityAgent` line to add to `~/.ssh/config` and the `SSH_AUTH_SOCK` variable to set for the current shell.
 - **Profile agents**: an `IdentityAgent` line for each profile. Refer to [Use a specific profile for a host](./device-authentication/ssh-authentication.mdx#use-a-specific-profile-for-a-host).
 - **Fallback agent**: another SSH agent to use for hosts that aren't managed by authentik. Refer to [Use other SSH keys with a fallback agent](./device-authentication/ssh-authentication.mdx#use-other-ssh-keys-with-a-fallback-agent).
-
-<!-- TODO: screenshot of the SSH Agent page -->
 
 ## MCP Server
 
