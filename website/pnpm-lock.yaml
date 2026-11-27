@@ -386,8 +386,8 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
       openapi-to-postmanv2:
-        specifier: ^6.4.4
-        version: 6.4.4
+        specifier: ^6.4.5
+        version: 6.4.5
       postman-code-generators:
         specifier: ^2.1.1
         version: 2.1.1
@@ -5933,8 +5933,8 @@ packages:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
     engines: {node: '>=12'}
 
-  openapi-to-postmanv2@6.4.4:
-    resolution: {integrity: sha512-WyWImfIPs6Zn6k14FljuAMvQbC6Nv4ucArHy+YirYKT3fAg7JWVhFdmiWpNWLAAjd41gP5EWX9kFmWoDMI7qXg==}
+  openapi-to-postmanv2@6.4.5:
+    resolution: {integrity: sha512-hPuXVc8a62DLt5DZxFmURrzC5F1uaK51NGDfpuJY0os5bGfA9Vo39YG5ewD5zE57M6k4s9LUsUn2Pj8TswkJ+A==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -12602,7 +12602,7 @@ snapshots:
       json5: 2.2.3
       lodash: 4.18.1
       mustache: 4.2.0
-      openapi-to-postmanv2: 6.4.4
+      openapi-to-postmanv2: 6.4.5
       postman-collection: 5.3.1
       react: 19.3.1
       slugify: 1.6.9
@@ -14810,7 +14810,7 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openapi-to-postmanv2@6.4.4:
+  openapi-to-postmanv2@6.4.5:
     dependencies:
       ajv: 8.20.0
       ajv-draft-04: 1.0.0(ajv@8.20.0)
