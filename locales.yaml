@@ -47,7 +47,7 @@ locales:
   - { tag: ro-RO, django: ro_RO, transifex: ro_RO, ship: false }
   - { tag: ru-RU, django: ru_RU, transifex: ru_RU, ship: true }
   - { tag: sl-SI, django: sl_SI, transifex: sl_SI, ship: false }
-  - { tag: sv-SE, django: sv_SE, transifex: sv_SE, ship: false }
+  - { tag: sv-SE, django: sv_SE, transifex: sv_SE, ship: true }
   - { tag: th-TH, django: th_TH, transifex: th_TH, ship: false }
   - { tag: tr-TR, django: tr_TR, transifex: tr_TR, ship: true }
   - { tag: uk-UA, django: uk_UA, transifex: uk_UA, ship: false }
