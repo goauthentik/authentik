@@ -27,7 +27,13 @@ The app is installed with the authentik Agent:
 
 On Linux, the `authentik-agent-desktop` package replaces the headless `authentik-agent` package. The two packages can't be installed together.
 
-The authentik system service (`ak-sysd`) starts the app for the logged-in user when the service starts and whenever a user logs in to the device with authentik credentials.
+The authentik system service (`ak-sysd`) starts the app when the service starts, if a user is already logged in.
+
+On Linux and Windows, the app usually isn't running after the device restarts, because the service starts before anyone logs in. Start the app yourself:
+
+- **Windows**: run `C:\Program Files\Authentik Security Inc\agent\ak-agent-desktop.exe`. The app has no Start menu entry.
+- **Linux**: open **authentik Agent** from the application menu, or run `ak-agent-desktop`.
+- **macOS**: open **authentik Agent** from Finder or Launchpad, or run `open -a "authentik Agent"`.
 
 The app starts without a window and is only visible as an icon in the menu bar, notification area, or system tray:
 
@@ -165,4 +171,4 @@ The app starts in the background. Click its icon in the menu bar, notification a
 
 ### `ak` can't connect to the Agent
 
-The app isn't running. Open it and run the command again.
+The app isn't running. [Start the app](#start-and-open-the-app) and run the command again.
