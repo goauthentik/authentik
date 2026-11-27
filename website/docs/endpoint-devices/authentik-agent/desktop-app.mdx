@@ -35,7 +35,7 @@ The app starts without a window and is only visible as an icon in the menu bar, 
 - Closing the window doesn't quit the app. It keeps running in the background so that `ak`, SSH, and the browser extension continue to work.
 - To quit the app on macOS, select **authentik Agent** > **Quit** from the menu bar. **Hide to Tray** only closes the window.
 - To quit the app on Linux, click the tray icon and select **Quit**. The tray icon requires a desktop environment with AppIndicator support.
-- On Windows, the app has no quit option. To stop it, end the `ak-agent-desktop.exe` process.
+- To quit the app on Windows, right-click the icon in the notification area and select **Quit**.
 
 ### Open the app with a link
 
@@ -55,7 +55,7 @@ The window has four pages: **Authorizations**, **Profiles**, **SSH Agent**, and 
 
 The footer shows the version of the app (**Desktop**) and of the system service (**System**). **System: disconnected** means that the app can't reach `ak-sysd`. When a newer authentik Agent release exists, the footer also shows **Update available**, which links to the changelog. The app doesn't update itself.
 
-The app has no settings page. Settings are configured in a file or enforced by an administrator. Refer to [Agent settings and policies](./settings.mdx).
+The app has no general settings page. The SSH fallback agent is configured on the [**SSH Agent**](#ssh-agent) page. All other settings are configured in a file or enforced by an administrator. Refer to [Agent settings and policies](./settings.mdx).
 
 ## Authorizations
 
@@ -119,6 +119,8 @@ Profiles can't be switched in the app. Use the following command; the app update
 ```sh
 ak switch-profile work
 ```
+
+The command can be shortened to `ak s`, for example `ak s work`.
 
 ### Delete a profile
 

@@ -48,6 +48,12 @@ The Agent requires a serial number be presented by macOS. Some hypervisors don't
 
     You should see output that starts with: `authentik Agent CLI: <version_number>`
 
+Alternatively, install the authentik Agent with [Homebrew](https://brew.sh/) instead of downloading the installer, and then confirm the installation as described in step 6:
+
+```sh
+brew install goauthentik/tap/authentik-agent
+```
+
 ## Join the device to an authentik domain
 
 Joining the device to an authentik domain is what enrolls it with your authentik deployment and issues it a device token. This step is required for [device compliance features](../../device-compliance/index.mdx) and for every other feature that authenticates as the device, including Platform SSO.

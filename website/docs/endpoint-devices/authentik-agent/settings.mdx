@@ -81,6 +81,10 @@ The Agent stores your profiles in the same file, under `active_profile` and `pro
 
 In this example, `profiles` is empty. In your file, it contains the profiles that the Agent created.
 
+:::warning Don't manage this file with deployment tools
+The configuration file belongs to the user, and the Agent writes to it, for example when a profile is added. Don't deploy or overwrite it with MDM or configuration management tools. To configure settings for the users of a device, [enforce them with a policy](#enforce-settings-with-a-policy) instead.
+:::
+
 Note the following:
 
 - The Agent applies changes to the file immediately, except for `ssh.enabled`.
