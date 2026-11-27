@@ -8,7 +8,11 @@
 import * as fs from "node:fs/promises";
 import path from "node:path";
 
-import { groupPluralUnits, PluralRuntimeLitLocalizer } from "./xliff-plurals.ts";
+import {
+    groupPluralUnits,
+    PluralRuntimeLitLocalizer,
+    ungroupPluralUnits,
+} from "./xliff-plurals.ts";
 
 import { ConsoleLogger } from "#logger/node";
 import { PackageRoot } from "#paths/node";
@@ -42,10 +46,25 @@ if (errors.length) {
 
 logger.info(`Extracted ${messages.length.toLocaleString()} messages`);
 
-await localizer.writeInterchangeFiles();
-
 const xliffDirectory = path.resolve(PackageRoot, config.interchange.xliffDir);
 const locales = [config.sourceLocale, ...config.targetLocales];
+
+// Read the existing translations while the plural groups are intact.
+localizer.readTranslationsSync();
+
+await Promise.all(
+    [...new Set(locales)].map(async (locale) => {
+        const filePath = path.join(xliffDirectory, `${locale}.xlf`);
+        const xml = await fs.readFile(filePath, "utf8").catch(() => null);
+        const ungrouped = xml && ungroupPluralUnits(xml);
+
+        if (ungrouped && ungrouped !== xml) {
+            await fs.writeFile(filePath, ungrouped, "utf8");
+        }
+    }),
+);
+
+await localizer.writeInterchangeFiles();
 
 await Promise.all(
     [...new Set(locales)].map(async (locale) => {
