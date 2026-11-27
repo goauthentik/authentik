@@ -12,6 +12,7 @@ packages:
   # them as workspace importers, committing phantom entries that every local
   # `pnpm install` prunes right back out.
   - "!packages/fonts"
+  - "!packages/lexicon-audit"
   - "!packages/oxfmt-config"
   - "!packages/oxlint-config"
   - "!packages/theme"
