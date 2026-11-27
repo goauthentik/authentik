@@ -249,12 +249,14 @@ class TokenError(OAuth2Error):
             "The requested scope is invalid, unknown, malformed, or exceeds the scope "
             "granted by the resource owner"
         ),
+        # https://datatracker.ietf.org/doc/html/rfc9449#section-5
+        "invalid_dpop_proof": "The DPoP proof is invalid",
     }
 
-    def __init__(self, error: str):
+    def __init__(self, error: str, description: str | None = None):
         super().__init__()
         self.error = error
-        self.description = self.errors[error]
+        self.description = description or self.errors[error]
 
 
 class TokenExchangeError(TokenError):

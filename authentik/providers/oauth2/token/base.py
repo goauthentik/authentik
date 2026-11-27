@@ -174,7 +174,7 @@ class TokenRequest:
             )
         except DPoPError as exc:
             self.logger.warning("DPoP validation failed", flow_name=flow_name, exc=str(exc))
-            raise TokenError("invalid_request") from exc
+            raise TokenError("invalid_dpop_proof", description=str(exc)) from exc
 
     def check_redirect_uri(self, request: HttpRequest):
         allowed_redirect_urls = self.provider.authorization_redirect_uris

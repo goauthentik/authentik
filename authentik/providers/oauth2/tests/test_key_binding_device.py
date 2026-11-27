@@ -96,7 +96,7 @@ class TestKeyBindingDevice(OAuthTestCase):
         self.assertEqual(refresh.dpop_jkt, self.dpop_builder.jkt)
 
     def test_device_wrong_c_s256_fails(self):
-        """DPoP proof with wrong c_s256 in device flow = invalid_request"""
+        """DPoP proof with wrong c_s256 in device flow = invalid_dpop_proof"""
         device_token = DeviceToken.objects.create(
             provider=self.provider,
             user=self.user,
@@ -115,7 +115,8 @@ class TestKeyBindingDevice(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 400)
         body = loads(response.content.decode())
-        self.assertEqual(body["error"], "invalid_request")
+        self.assertEqual(body["error"], "invalid_dpop_proof")
+        self.assertEqual(body["error_description"], "DPoP proof c_s256 mismatch")
 
     def test_device_missing_dpop_fails(self):
         """key bound scope but no DPoP header in device flow = invalid_request"""
