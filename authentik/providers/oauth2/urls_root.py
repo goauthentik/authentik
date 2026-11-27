@@ -1,7 +1,7 @@
 """authentik oauth_provider urls"""
 
 from django.contrib.auth.decorators import login_required
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
 from authentik.providers.oauth2.views.device_init import DeviceEntryView
@@ -41,8 +41,11 @@ urlpatterns = [
         ),
         name="device-login",
     ),
-    path(
-        ".well-known/oauth-authorization-server/application/o/<slug:application_slug>/",
+    # RFC 8414 section 3.1 removes the issuer's terminating "/" before inserting the well-known
+    # path, so the metadata of the issuer ".../application/o/<slug>/" is served without a
+    # trailing slash. The trailing-slash form, the only one served before, keeps working.
+    re_path(
+        r"^\.well-known/oauth-authorization-server/application/o/(?P<application_slug>[-a-zA-Z0-9_]+)/?$",
         ProviderInfoView.as_view(),
         name="providers-oauth2-authorization-server-metadata",
     ),

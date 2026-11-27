@@ -138,3 +138,18 @@ class TestProviderInfo(OAuthTestCase):
         one = count_queries()
         self.provider.property_mappings.add(mapping(), mapping(), mapping())
         self.assertEqual(count_queries(), one)
+
+    def test_authorization_server_metadata_path(self):
+        """Test RFC 8414 metadata, at the path that removes the issuer's trailing slash"""
+        issuer = self.get_info()["issuer"]
+        url = reverse(
+            "authentik_providers_oauth2_root:providers-oauth2-authorization-server-metadata",
+            kwargs={"application_slug": self.app.slug},
+        )
+        self.assertEqual(
+            url, f"/.well-known/oauth-authorization-server/application/o/{self.app.slug}"
+        )
+        for path in (url, f"{url}/"):
+            response = self.client.get(path)
+            self.assertEqual(response.status_code, 200, path)
+            self.assertEqual(response.json()["issuer"], issuer)
