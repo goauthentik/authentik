@@ -23,7 +23,7 @@ class SyncMiddleware(Middleware):
             return
 
         with transaction.atomic():
-            sync = self.SyncModel.objects.filter(tasks=message_id).first()
+            sync = self.SyncModel.objects.filter(tasks__contains=[message_id]).first()
             if sync is None:
                 return
             sync.persist_status()
