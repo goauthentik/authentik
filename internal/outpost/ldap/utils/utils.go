@@ -56,6 +56,18 @@ func AttributesToLDAP(
 	for attrKey, attrValue := range attrs {
 		entry := &ldap.EntryAttribute{Name: keyFormatter(attrKey)}
 		switch t := attrValue.(type) {
+		case map[string]any:
+			// When finding a nested map: generate prefixed entries in the form of
+			// key--subkey.
+			prefixedFormatter := func(key string) string {
+				return keyFormatter(attrKey + "--" + key)
+			}
+			nestedAttrs := AttributesToLDAP(t, prefixedFormatter, valueFormatter)
+			for _, attr := range nestedAttrs {
+				if len(attr.Values) > 0 {
+					attrList = append(attrList, attr)
+				}
+			}
 		case []string:
 			entry.Values = valueFormatter(t)
 		case *[]string:
@@ -75,7 +87,11 @@ func AttributesToLDAP(
 				entry.Values = valueFormatter([]string{*v})
 			}
 		}
-		attrList = append(attrList, entry)
+		// Nested map produce empty entries (as a result of recursion, skip adding
+		// empty entries to the resultset)
+		if len(entry.Values) > 0 {
+			attrList = append(attrList, entry)
+		}
 	}
 	return attrList
 }
