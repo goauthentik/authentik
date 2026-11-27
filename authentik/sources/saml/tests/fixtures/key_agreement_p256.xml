@@ -1,0 +1,22 @@
+<xenc:EncryptedData xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xenc11="http://www.w3.org/2009/xmlenc11#" Type="http://www.w3.org/2001/04/xmlenc#Element">
+  <xenc:EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#aes256-gcm"/>
+  <ds:KeyInfo>
+    <xenc:EncryptedKey>
+      <xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#kw-aes256"/>
+      <ds:KeyInfo>
+        <xenc:AgreementMethod Algorithm="http://www.w3.org/2009/xmlenc11#ECDH-ES">
+          <xenc11:KeyDerivationMethod Algorithm="http://www.w3.org/2009/xmlenc11#ConcatKDF">
+            <xenc11:ConcatKDFParams AlgorithmID="0000">
+              <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+            </xenc11:ConcatKDFParams>
+          </xenc11:KeyDerivationMethod>
+          <xenc:OriginatorKeyInfo><ds:KeyValue><dsig11:ECKeyValue xmlns:dsig11="http://www.w3.org/2009/xmldsig11#"><dsig11:NamedCurve URI="urn:oid:1.2.840.10045.3.1.7"/><dsig11:PublicKey>BNhCYSIr537aoskreHIVK0IBZoM/8NXpG1RxQw+6TjoS6Q5XuUSY00kS8ONc7kjWxpMqM7ROdchDbqIyNqTDNt0=</dsig11:PublicKey></dsig11:ECKeyValue></ds:KeyValue></xenc:OriginatorKeyInfo>
+          <xenc:RecipientKeyInfo><ds:KeyName>recipient</ds:KeyName></xenc:RecipientKeyInfo>
+        </xenc:AgreementMethod>
+      </ds:KeyInfo>
+      <xenc:CipherData><xenc:CipherValue>TcimtciRAYq5x6TEI5pAv5lXWP6QX5PJg7T0OG3qidW570HtOzaORA==</xenc:CipherValue></xenc:CipherData>
+    </xenc:EncryptedKey>
+  </ds:KeyInfo>
+  <xenc:CipherData><xenc:CipherValue>BYuP31vIz4d3wpRXwLFw9v26ekX4/y+g47oEf/8Chm1374fzB7uQ6dxyJt9QTQrO
+9BsI9XxIJ4QatCx/Ky/ky01LKWZZGOeBOB7s+QQNSduSi/dcSqXE/g==</xenc:CipherValue></xenc:CipherData>
+</xenc:EncryptedData>

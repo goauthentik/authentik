@@ -5,6 +5,7 @@ from hashlib import sha256
 from types import GeneratorType
 
 import xmlsec
+from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.timezone import now
@@ -24,6 +25,10 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
+)
+from authentik.common.saml.key_agreement import (
+    build_encrypted_key,
+    generate_content_encryption_key,
 )
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
@@ -394,20 +399,30 @@ class AssertionProcessor:
         # Remove the original element from the tree since we're replacing it with encrypted version
         parent.remove(element)
 
-        manager = xmlsec.KeysManager()
-        key = xmlsec.Key.from_memory(
-            self.provider.encryption_kp.certificate_data,
-            xmlsec.constants.KeyDataFormatCertPem,
-        )
-
-        manager.add_key(key)
-        encryption_context = xmlsec.EncryptionContext(manager)
         transform, key_bits = ENCRYPTION_ALGORITHM_TRANSLATION_MAP[
             self.provider.encryption_algorithm
         ]
-        encryption_context.key = xmlsec.Key.generate(
-            xmlsec.constants.KeyDataAes, key_bits, xmlsec.constants.KeyDataTypeSession
-        )
+        certificate = self.provider.encryption_kp.certificate
+        # RSA certificates get the content encryption key through key transport, which libxmlsec
+        # does for us. EC certificates can't encrypt, so the key is wrapped using key agreement.
+        key_agreement = isinstance(certificate.public_key(), EllipticCurvePublicKey)
+        if key_agreement:
+            content_encryption_key = generate_content_encryption_key(key_bits)
+            encryption_context = xmlsec.EncryptionContext()
+            encryption_context.key = xmlsec.Key.from_binary_data(
+                xmlsec.constants.KeyDataAes, content_encryption_key
+            )
+        else:
+            manager = xmlsec.KeysManager()
+            key = xmlsec.Key.from_memory(
+                self.provider.encryption_kp.certificate_data,
+                xmlsec.constants.KeyDataFormatCertPem,
+            )
+            manager.add_key(key)
+            encryption_context = xmlsec.EncryptionContext(manager)
+            encryption_context.key = xmlsec.Key.generate(
+                xmlsec.constants.KeyDataAes, key_bits, xmlsec.constants.KeyDataTypeSession
+            )
 
         container = SubElement(parent, f"{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         enc_data = xmlsec.template.encrypted_data_create(
@@ -415,13 +430,19 @@ class AssertionProcessor:
         )
         xmlsec.template.encrypted_data_ensure_cipher_value(enc_data)
         key_info = xmlsec.template.encrypted_data_ensure_key_info(enc_data, ns="ds")
-        enc_key = xmlsec.template.add_encrypted_key(key_info, xmlsec.Transform.RSA_OAEP)
-        xmlsec.template.encrypted_data_ensure_cipher_value(enc_key)
+        if not key_agreement:
+            enc_key = xmlsec.template.add_encrypted_key(key_info, xmlsec.Transform.RSA_OAEP)
+            xmlsec.template.encrypted_data_ensure_cipher_value(enc_key)
 
         try:
             enc_data = encryption_context.encrypt_xml(enc_data, standalone_element)
         except xmlsec.Error as exc:
             raise InvalidEncryption() from exc
+
+        if key_agreement:
+            enc_data.find(f"{{{xmlsec.constants.DSigNs}}}KeyInfo").append(
+                build_encrypted_key(certificate, content_encryption_key)
+            )
 
         container.append(enc_data)
 

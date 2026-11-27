@@ -1,11 +1,13 @@
 """SAML Service Provider Metadata Processor"""
 
+from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePublicKey
 from django.http import HttpRequest
 from django.urls import reverse
 from lxml.etree import Element, SubElement, tostring  # nosec
 
 from authentik.common.saml.constants import (
     ENCRYPTION_METHODS_ADVERTISED,
+    ENCRYPTION_METHODS_ADVERTISED_EC,
     NS_MAP,
     NS_SAML_METADATA,
     NS_SIGNATURE,
@@ -47,7 +49,12 @@ class MetadataProcessor:
             x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
             x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
             x509_certificate.text = x509_certificate_b64(self.source.encryption_kp.certificate)
-            for algorithm in ENCRYPTION_METHODS_ADVERTISED:
+            methods = ENCRYPTION_METHODS_ADVERTISED
+            if isinstance(
+                self.source.encryption_kp.certificate.public_key(), EllipticCurvePublicKey
+            ):
+                methods = ENCRYPTION_METHODS_ADVERTISED_EC
+            for algorithm in methods:
                 encryption_method = SubElement(
                     key_descriptor, f"{{{NS_SAML_METADATA}}}EncryptionMethod"
                 )

@@ -19,6 +19,7 @@ from authentik.common.saml.constants import (
     AES128_GCM,
     AES256_CBC,
     AES256_GCM,
+    KW_AES256,
     NS_MAP,
     SAML_BINDING_POST,
     SAML_NAME_ID_FORMAT_EMAIL,
@@ -29,6 +30,7 @@ from authentik.common.saml.exceptions import (
     ERROR_CANNOT_DECODE_REQUEST,
     CannotHandleAssertion,
 )
+from authentik.common.saml.key_agreement import ECDH_ES
 from authentik.core.models import Application
 from authentik.core.tests.utils import (
     RequestFactory,
@@ -36,6 +38,7 @@ from authentik.core.tests.utils import (
     create_test_cert,
     create_test_flow,
 )
+from authentik.crypto.builder import PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.flows.apps import ContinuousLogin
@@ -243,6 +246,65 @@ class TestAuthNRequest(TestCase):
                         namespaces=NS_MAP,
                     ),
                     [algorithm],
+                )
+
+                # Now parse the response (source), which decrypts the assertion
+                http_request.POST = QueryDict(mutable=True)
+                http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
+
+                response_parser = ResponseProcessor(self.source, http_request)
+                response_parser.parse()
+
+    def test_request_encrypt_ecdsa(self):
+        """Test full SAML Request/Response flow, signed and encrypted for an elliptic curve
+        certificate, which uses ECDH-ES key agreement instead of RSA key transport"""
+        cert = create_test_cert(PrivateKeyAlg.ECDSA)
+        self.source.encryption_kp = cert
+        self.source.signed_response = True
+        self.source.save()
+        for algorithm in (AES128_CBC, AES256_CBC, AES128_GCM, AES256_GCM):
+            with self.subTest(algorithm=algorithm):
+                self.provider.encryption_kp = cert
+                self.provider.encryption_algorithm = algorithm
+                self.provider.sign_assertion = True
+                self.provider.sign_response = True
+                self.provider.save()
+                http_request = self.request_factory.get("/", user=get_anonymous_user())
+
+                # First create an AuthNRequest
+                request_proc = RequestProcessor(self.source, http_request, "test_state")
+                request = request_proc.build_auth_n()
+
+                # To get an assertion we need a parsed request (parsed by provider)
+                parsed_request = AuthNRequestParser(self.provider).parse(
+                    b64encode(request.encode()).decode(), "test_state"
+                )
+                # Now create a response and convert it to string (provider)
+                response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+                response = response_proc.build_response()
+
+                response_xml = lxml_from_string(response.encode())
+                self.assertEqual(
+                    response_xml.xpath(
+                        "//xenc:EncryptedData/xenc:EncryptionMethod/@Algorithm",
+                        namespaces=NS_MAP,
+                    ),
+                    [algorithm],
+                )
+                # The content encryption key is wrapped using key agreement
+                self.assertEqual(
+                    response_xml.xpath(
+                        "//xenc:EncryptedKey/ds:KeyInfo/xenc:AgreementMethod/@Algorithm",
+                        namespaces=NS_MAP,
+                    ),
+                    [ECDH_ES],
+                )
+                self.assertEqual(
+                    response_xml.xpath(
+                        "//xenc:EncryptedKey/xenc:EncryptionMethod/@Algorithm",
+                        namespaces=NS_MAP,
+                    ),
+                    [KW_AES256],
                 )
 
                 # Now parse the response (source), which decrypts the assertion
