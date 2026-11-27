@@ -1,0 +1,38 @@
+{
+    "name": "@goauthentik/tile-worker",
+    "version": "1.0.0",
+    "description": "Cloudflare Worker that serves PMTiles archives from R2 for authentik",
+    "license": "MIT",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/tile-worker"
+    },
+    "type": "module",
+    "main": "./src/worker.ts",
+    "scripts": {
+        "build": "wrangler deploy --dry-run --outdir=dist",
+        "check": "tsc -p .",
+        "dev": "wrangler dev",
+        "deploy": "wrangler deploy",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check ."
+    },
+    "dependencies": {
+        "pmtiles": "^3.2.1"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^4.20251010.0",
+        "@goauthentik/prettier-config": "../prettier-config",
+        "@goauthentik/tsconfig": "../tsconfig",
+        "typescript": "^6.0.2",
+        "wrangler": "^4.51.0"
+    },
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.10.1"
+    }
+}
