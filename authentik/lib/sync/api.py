@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import NotRequired, TypedDict
+from typing import Any
 
 from dramatiq.actor import Actor
 from drf_spectacular.utils import extend_schema
@@ -23,12 +22,6 @@ class SyncStatusSerializer(PassiveSerializer):
     last_sync_status = ChoiceField(required=False, choices=TaskStatus.choices)
 
 
-class SyncStatusData(TypedDict):
-    is_running: bool
-    last_successful_sync: NotRequired[datetime]
-    last_sync_status: NotRequired[str]
-
-
 class SyncStatusMixin:
     """Mixin to add a sync status endpoint"""
 
@@ -47,7 +40,7 @@ class SyncStatusMixin:
         target = self.get_object()
         with target.sync_lock as lock_acquired:
             # If we could not acquire the lock, a task holds it and a sync is running.
-            status: SyncStatusData = {"is_running": not lock_acquired}
+            status: dict[str, Any] = {"is_running": not lock_acquired}
 
         sync_schedule: Schedule | None = None
         for schedule in target.schedules.all():
