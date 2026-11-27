@@ -62,7 +62,7 @@ class SeleniumTestMixin(E2ETestMixin):
                 driver.maximize_window()
                 return driver
             except WebDriverException as exc:
-                self.logger.warning("Failed to setup webdriver", exc=exc)
+                self.logger.warning("Failed to setup webdriver", exc=str(exc))
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
