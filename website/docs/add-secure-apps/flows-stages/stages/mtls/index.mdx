@@ -114,3 +114,120 @@ After the reverse proxy or brand is configured to pass client certificates throu
 ### Matching behavior
 
 The stage does not authenticate on certificate presence alone. It extracts the selected certificate attribute and compares it to the selected user attribute, so correctness of that mapping matters as much as trust-chain validation.
+
+## Automatic certificate selection
+
+When a server requests a client certificate, most browsers ask the user to choose a certificate, even when only one certificate matches. On managed devices, you can configure the browser to select the certificate without prompting the user.
+
+These settings are browser policies. Deploy them with your device management tooling, such as Group Policy on Windows or a configuration profile on macOS.
+
+### Google Chrome and Microsoft Edge
+
+Chrome and Edge use the `AutoSelectCertificateForUrls` policy. The policy is a list of strings, and each string is a JSON object with a URL pattern and a certificate filter:
+
+```json
+{ "pattern": "https://authentik.company", "filter": { "ISSUER": { "CN": "<issuer_common_name>" } } }
+```
+
+- `pattern`: the URL of your authentik instance. If you use several [brands](../../../../customize/branding/index.mdx), add an entry for each domain.
+- `filter`: restricts which certificates the browser selects from. `ISSUER` and `SUBJECT` each accept the `CN`, `L`, `O`, and `OU` fields. Set `ISSUER` to match the certificate authority that issues your client certificates. If you set the filter to `{}`, the browser does not restrict the selection any further.
+
+Regardless of the filter, the browser only selects certificates that match the certificate request sent by the server.
+
+:::info Mobile browsers
+On Android and iOS, Chrome can only select client certificates that it has provisioned itself. It cannot access certificates that are installed at the operating system level.
+:::
+
+#### Windows
+
+Install the administrative templates for [Chrome](https://support.google.com/chrome/a/answer/187202) or [Edge](https://learn.microsoft.com/en-us/deployedge/configure-microsoft-edge), then configure the policy with Group Policy:
+
+1. Open the Group Policy Management Editor.
+2. Navigate to **Computer Configuration** > **Administrative Templates** > **Google** > **Google Chrome** > **Content settings**. For Edge, navigate to **Computer Configuration** > **Administrative Templates** > **Microsoft Edge** > **Content settings**.
+3. Open **Automatically select client certificates for these sites** and select **Enabled**.
+4. Click **Show** and add an entry for each URL pattern.
+5. Click **OK**.
+
+Alternatively, add each entry as a string value named `1`, `2`, and so on, under one of the following registry keys:
+
+- Chrome: `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\AutoSelectCertificateForUrls`
+- Edge: `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge\AutoSelectCertificateForUrls`
+
+#### macOS
+
+Deploy a configuration profile that sets `AutoSelectCertificateForUrls` in the `com.google.Chrome` preference domain. For Edge, use `com.microsoft.Edge`.
+
+```xml title="chrome-auto-select-certificate.mobileconfig"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadType</key>
+            <string>com.google.Chrome</string>
+            <key>PayloadIdentifier</key>
+            <string>company.authentik.chrome.auto-select-certificate</string>
+            <key>PayloadUUID</key>
+            <string><payload_uuid></string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>AutoSelectCertificateForUrls</key>
+            <array>
+                <string>{"pattern":"https://authentik.company","filter":{"ISSUER":{"CN":"<issuer_common_name>"}}}</string>
+            </array>
+        </dict>
+    </array>
+    <key>PayloadDisplayName</key>
+    <string>Chrome: automatic client certificate selection</string>
+    <key>PayloadIdentifier</key>
+    <string>company.authentik.chrome</string>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string><profile_uuid></string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>
+```
+
+Replace `<payload_uuid>` and `<profile_uuid>` with two different UUIDs, which you can generate with `uuidgen`.
+
+#### Linux
+
+Save the policy as a JSON file in `/etc/opt/chrome/policies/managed/`. Because each list entry is itself a JSON string, escape the inner quotation marks:
+
+```json title="/etc/opt/chrome/policies/managed/authentik.json"
+{
+    "AutoSelectCertificateForUrls": [
+        "{\"pattern\":\"https://authentik.company\",\"filter\":{\"ISSUER\":{\"CN\":\"<issuer_common_name>\"}}}"
+    ]
+}
+```
+
+#### Verify the policy
+
+Open `chrome://policy` or `edge://policy` and confirm that `AutoSelectCertificateForUrls` is listed with the status **OK**. Then run the flow that contains the Mutual TLS stage and confirm that the browser no longer prompts for a certificate.
+
+### Mozilla Firefox
+
+Firefox has no per-site policy for certificate selection. Instead, use the [`Preferences` policy](https://firefox-admin-docs.mozilla.org/reference/policies/preferences/) to set `security.default_personal_cert` to `Select Automatically`:
+
+```json title="policies.json"
+{
+    "policies": {
+        "Preferences": {
+            "security.default_personal_cert": {
+                "Value": "Select Automatically",
+                "Status": "locked"
+            }
+        }
+    }
+}
+```
+
+:::warning
+This preference applies to every site that requests a client certificate, not only to authentik.
+:::
