@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from inspect import currentframe
 from pathlib import Path
+from unittest import SkipTest
 
 from django.db import connection
 from django.db.models import Model
@@ -63,7 +64,7 @@ def table_row_counts(model: type[Model]) -> Generator[RowCounts]:
     min_postgres_version = 15
     # https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQSERVERVERSION
     if connection.pg_version // 10000 < min_postgres_version:
-        yield counts
+        raise SkipTest(f"Row counts need PostgreSQL {min_postgres_version} or newer")
     with connection.cursor() as cursor:
         cursor.execute(f"ANALYZE {model._meta.db_table}")
     read, deleted = _table_counts(model)
