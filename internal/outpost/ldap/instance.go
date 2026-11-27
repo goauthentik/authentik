@@ -41,10 +41,16 @@ type ProviderInstance struct {
 	uidStartNumber int32
 	gidStartNumber int32
 	mfaSupport     bool
+
+	limitSearchToApplicationAccess bool
 }
 
 func (pi *ProviderInstance) GetAPIClient() *api.APIClient {
 	return pi.s.ac.Client
+}
+
+func (pi *ProviderInstance) GetLimitSearchToApplicationAccess() bool {
+	return pi.limitSearchToApplicationAccess
 }
 
 func (pi *ProviderInstance) GetBaseDN() string {

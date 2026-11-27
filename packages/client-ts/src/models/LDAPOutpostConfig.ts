@@ -58,6 +58,11 @@ export interface LDAPOutpostConfig {
      * rejected if it contains a semicolon.
      */
     mfaSupport?: boolean;
+    /**
+     * When enabled, searches only return users who have access to the application according to its
+     * policy bindings, and the groups those users are members of.
+     */
+    limitSearchToApplicationAccess?: boolean;
 }
 
 /**
@@ -124,6 +129,10 @@ export function LDAPOutpostConfigFromJSONTyped(
         bindMode:
             json["bind_mode"] == null ? undefined : LDAPAPIAccessModeFromJSON(json["bind_mode"]),
         mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
+        limitSearchToApplicationAccess:
+            json["limit_search_to_application_access"] == null
+                ? undefined
+                : json["limit_search_to_application_access"],
     };
 }
 
@@ -150,5 +159,6 @@ export function LDAPOutpostConfigToJSONTyped(
         search_mode: LDAPAPIAccessModeToJSON(value["searchMode"]),
         bind_mode: LDAPAPIAccessModeToJSON(value["bindMode"]),
         mfa_support: value["mfaSupport"],
+        limit_search_to_application_access: value["limitSearchToApplicationAccess"],
     };
 }
