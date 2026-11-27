@@ -4,14 +4,20 @@ from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 from requests.exceptions import ConnectionError, HTTPError
+from requests_mock import Mocker
 
 from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_EMAIL
 from authentik.core.tests.utils import create_test_cert, create_test_flow
-from authentik.providers.saml.models import SAMLProvider
+from authentik.crypto.models import CertificateKeyPair
+from authentik.events.models import Event, EventAction
+from authentik.lib.generators import generate_id
+from authentik.lib.tests.utils import load_fixture
+from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.tasks import (
     send_post_logout_request,
     send_saml_logout_request,
     send_saml_logout_response,
+    update_saml_provider_metadata,
 )
 
 
@@ -292,3 +298,109 @@ class TestSendPostLogoutRequest(TestCase):
 
         with self.assertRaises(ConnectionError):
             send_post_logout_request(self.provider, processor)
+
+
+class TestUpdateSAMLProviderMetadata(TestCase):
+    """Tests for update_saml_provider_metadata task"""
+
+    url = "http://sp.example.com/saml/metadata"
+
+    def setUp(self):
+        self.provider = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            acs_url="https://sp.example.com/old-acs",
+            sp_binding=SAMLBindings.REDIRECT,
+            metadata_url=self.url,
+        )
+
+    @Mocker()
+    def test_updates_changed_settings(self, mock: Mocker):
+        """Test that settings defined by the metadata are updated"""
+        mock.get(self.url, text=load_fixture("fixtures/simple.xml"))
+        update_saml_provider_metadata.send(self.provider.pk)
+        self.provider.refresh_from_db()
+        self.assertEqual(self.provider.acs_url, "http://localhost:8080/saml/acs")
+        self.assertEqual(self.provider.sp_binding, SAMLBindings.POST)
+        self.assertEqual(self.provider.audience, "http://localhost:8080/saml/metadata")
+
+    @Mocker()
+    def test_updates_all_providers(self, mock: Mocker):
+        """Test that the task updates every provider with a metadata URL when run without
+        arguments, and leaves providers without a URL alone"""
+        other_url = "http://sp2.example.com/saml/metadata"
+        other = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            acs_url="https://sp2.example.com/old-acs",
+            metadata_url=other_url,
+        )
+        plain = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            acs_url="https://sp3.example.com/acs",
+        )
+        mock.get(self.url, text=load_fixture("fixtures/simple.xml"))
+        mock.get(other_url, text=load_fixture("fixtures/simple.xml"))
+        update_saml_provider_metadata.send()
+        self.provider.refresh_from_db()
+        other.refresh_from_db()
+        plain.refresh_from_db()
+        self.assertEqual(self.provider.acs_url, "http://localhost:8080/saml/acs")
+        self.assertEqual(other.acs_url, "http://localhost:8080/saml/acs")
+        self.assertEqual(plain.acs_url, "https://sp3.example.com/acs")
+
+    @Mocker()
+    def test_unchanged(self, mock: Mocker):
+        """Test that an unchanged metadata does not touch the provider"""
+        mock.get(self.url, text=load_fixture("fixtures/simple.xml"))
+        update_saml_provider_metadata.send(self.provider.pk)
+        self.provider.refresh_from_db()
+        with patch("authentik.providers.saml.models.SAMLProvider.save") as save:
+            update_saml_provider_metadata.send(self.provider.pk)
+            save.assert_not_called()
+
+    @Mocker()
+    def test_updates_certificate_in_place(self, mock: Mocker):
+        """Test that a rotated certificate updates the existing keypair instead of
+        creating a new one"""
+        old_cert = create_test_cert()
+        self.provider.verification_kp = old_cert
+        self.provider.save()
+        keypair_count = CertificateKeyPair.objects.count()
+        mock.get(self.url, text=load_fixture("fixtures/cert.xml"))
+        update_saml_provider_metadata.send(self.provider.pk)
+        self.provider.refresh_from_db()
+        self.assertEqual(self.provider.verification_kp.pk, old_cert.pk)
+        self.assertEqual(
+            self.provider.verification_kp.certificate_data, load_fixture("fixtures/cert.pem")
+        )
+        self.assertEqual(CertificateKeyPair.objects.count(), keypair_count)
+
+    @Mocker()
+    def test_fetch_failure_creates_event(self, mock: Mocker):
+        """Test that a failed download leaves the provider untouched and logs an event"""
+        mock.get(self.url, status_code=404)
+        update_saml_provider_metadata.send(self.provider.pk)
+        self.provider.refresh_from_db()
+        self.assertEqual(self.provider.acs_url, "https://sp.example.com/old-acs")
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.CONFIGURATION_ERROR,
+                context__message__icontains="Failed to update SAML provider",
+            ).exists()
+        )
+
+    @Mocker()
+    def test_invalid_metadata_creates_event(self, mock: Mocker):
+        """Test that invalid metadata leaves the provider untouched and logs an event"""
+        mock.get(self.url, text="<foo></foo>")
+        update_saml_provider_metadata.send(self.provider.pk)
+        self.provider.refresh_from_db()
+        self.assertEqual(self.provider.acs_url, "https://sp.example.com/old-acs")
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.CONFIGURATION_ERROR,
+                context__message__icontains="Failed to update SAML provider",
+            ).exists()
+        )

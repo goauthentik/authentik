@@ -54,7 +54,7 @@ export interface SAMLProviderRequest {
      */
     invalidationFlow: string;
     propertyMappings?: Array<string>;
-    acsUrl: string;
+    acsUrl?: string;
     /**
      * Single Logout Service URL where the logout response should be sent.
      */
@@ -150,6 +150,11 @@ export interface SAMLProviderRequest {
      * exchange.
      */
     jwtFederationProviders?: Array<number>;
+    /**
+     * URL of the Service Provider's metadata. When set, the provider's settings are periodically
+     * updated from this metadata.
+     */
+    metadataUrl?: string;
 }
 
 /**
@@ -169,13 +174,6 @@ export function instanceOfSAMLProviderRequest(value: object): value is SAMLProvi
             !("invalidation_flow" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["invalidationFlow"] === undefined &&
             (value as Record<string, any>)["invalidation_flow"] === undefined)
-    )
-        return false;
-    if (
-        (!("acsUrl" in (value as Record<string, any>)) &&
-            !("acs_url" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["acsUrl"] === undefined &&
-            (value as Record<string, any>)["acs_url"] === undefined)
     )
         return false;
     return true;
@@ -203,7 +201,7 @@ export function SAMLProviderRequestFromJSONTyped(
         authorizationFlow: json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
-        acsUrl: json["acs_url"],
+        acsUrl: json["acs_url"] == null ? undefined : json["acs_url"],
         slsUrl: json["sls_url"] == null ? undefined : json["sls_url"],
         audience: json["audience"] == null ? undefined : json["audience"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
@@ -285,6 +283,7 @@ export function SAMLProviderRequestFromJSONTyped(
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
         jwtFederationProviders:
             json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
+        metadataUrl: json["metadata_url"] == null ? undefined : json["metadata_url"],
     };
 }
 
@@ -332,5 +331,6 @@ export function SAMLProviderRequestToJSONTyped(
         default_relay_state: value["defaultRelayState"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
         jwt_federation_providers: value["jwtFederationProviders"],
+        metadata_url: value["metadataUrl"],
     };
 }

@@ -150,6 +150,11 @@ export interface PatchedSAMLProviderRequest {
      * exchange.
      */
     jwtFederationProviders?: Array<number>;
+    /**
+     * URL of the Service Provider's metadata. When set, the provider's settings are periodically
+     * updated from this metadata.
+     */
+    metadataUrl?: string;
 }
 
 /**
@@ -266,6 +271,7 @@ export function PatchedSAMLProviderRequestFromJSONTyped(
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
         jwtFederationProviders:
             json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
+        metadataUrl: json["metadata_url"] == null ? undefined : json["metadata_url"],
     };
 }
 
@@ -313,5 +319,6 @@ export function PatchedSAMLProviderRequestToJSONTyped(
         default_relay_state: value["defaultRelayState"],
         default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
         jwt_federation_providers: value["jwtFederationProviders"],
+        metadata_url: value["metadataUrl"],
     };
 }
