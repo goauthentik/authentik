@@ -1,4 +1,5 @@
 import "#admin/policies/PolicyTestForm";
+import "#elements/Label";
 import "#admin/policies/ak-policy-wizard";
 import "#admin/policies/dummy/DummyPolicyForm";
 import "#admin/policies/event_matcher/EventMatcherPolicyForm";
@@ -17,7 +18,6 @@ import { plural } from "#common/ui/locale/plurals";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -69,7 +69,7 @@ export class PolicyListPage extends TablePage<Policy> {
             html`<div>${item.name}</div>
                 ${
                     (item.boundTo || 0) > 0
-                        ? html`<ak-label color=${PFColor.Green} compact>
+                        ? html`<ak-label status="success" compact>
                               ${plural(item.boundTo, {
                                   one: (formattedCount) =>
                                       msg(str`Assigned to ${formattedCount} object.`, {
@@ -81,7 +81,7 @@ export class PolicyListPage extends TablePage<Policy> {
                                       }),
                               })}
                           </ak-label>`
-                        : html`<ak-label color=${PFColor.Orange} compact>
+                        : html`<ak-label status="warning" compact>
                               ${msg("Warning: Policy is not assigned.")}
                           </ak-label>`
                 }`,

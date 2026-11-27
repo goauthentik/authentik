@@ -11,10 +11,8 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import { aki } from "#common/api/client";
 
-import { AKSearchSelect } from "#components/ak-search-select-field";
-
-import { groupSource } from "#admin/common/search-sources";
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
+import { AKSyncedGroupsField } from "#admin/providers/components/synced-groups-field";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
@@ -156,24 +154,14 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     ></ak-switch-input>
                 </div>
             </ak-form-group>
-            <ak-form-group open label="${msg("User filtering")}">
+            <ak-form-group open label="${msg("Filtering")}">
                 <div class="pf-c-form">
                     <ak-switch-input
                         name="excludeUsersServiceAccount"
                         label=${msg("Exclude service accounts")}
                         ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("Group")} name="filterGroup">
-                        ${AKSearchSelect({
-                            name: "filterGroup",
-                            source: groupSource,
-                            value: this.instance?.filterGroup,
-                            blankable: true,
-                        })}
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Only sync users within the selected group.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${AKSyncedGroupsField({ groupFilters: this.instance?.groupFilters })}
                 </div>
             </ak-form-group>
             <ak-form-group open label="${msg("Attribute mapping")}">

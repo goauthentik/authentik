@@ -1,0 +1,61 @@
+---
+title: Release 2027.2
+slug: "/releases/2027.2"
+draft: true
+---
+
+import Changelog from "./_changelog.mdx";
+import APIChanges from "./_api-changes.mdx";
+
+## Highlights
+
+## Breaking changes
+
+### Google Workspace and Entra ID sync scope :ak-enterprise
+
+Google Workspace and Entra ID providers now choose users and groups the same way [SCIM providers](../../../add-secure-apps/providers/scim/index.mdx#filter-the-sync-scope) do.
+
+- Users are limited by the policies bound to the application the provider is assigned to. If that application has no bindings, all users are synchronized. **Exclude service accounts** still applies.
+- The single **Group** field (`filter_group`) is removed. Use **Synced groups** (`group_filters`, a list of group primary keys in the API) to choose which groups are synchronized. It does not limit users. If none are selected, all groups are synchronized.
+- When a provider had a group selected, that group is copied to **Synced groups**, dry-run mode is turned on, and a configuration warning is logged. Review the provider, then turn dry-run mode off. Until you do, the provider does not change Google Workspace or Entra ID.
+- On a full sync, authentik applies the provider's deletion action to a linked user or group that is no longer in scope.
+
+## New features and improvements
+
+## Upgrading
+
+This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../../install-config/upgrade.mdx).
+
+:::warning Upgrade in order and upgrade all components
+Upgrades MUST be performed sequentially by major version. If you are two or more major releases behind, you must first upgrade to each intermediate major release before upgrading to this one. Refer to our [Upgrade documentation](../../../install-config/upgrade.mdx) for more information on upgrade sequence.
+
+The version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
+:::
+
+### Docker Compose
+
+To upgrade, download the new compose file and update the Docker stack with the new version, using these commands:
+
+```shell
+wget -O compose.yml https://goauthentik.io/version/2027.2/lifecycle/container/compose.yml
+docker compose up -d
+```
+
+The `-O` flag retains the downloaded file's name, overwriting any existing local file with the same name.
+
+### Kubernetes
+
+Upgrade the Helm Chart to the new version, using the following commands:
+
+```shell
+helm repo update
+helm upgrade authentik authentik/authentik -f values.yaml --version ^2027.2
+```
+
+## Minor changes/fixes
+
+<Changelog />
+
+## API Changes
+
+<APIChanges />

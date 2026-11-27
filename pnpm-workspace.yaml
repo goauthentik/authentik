@@ -15,17 +15,17 @@ packages:
 # these via `catalog:`.
 # `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
-  "@playwright/test": "^1.62.1"
+  "@playwright/test": "^1.65.1"
   "@types/node": "^26.6.6"
-  "@vitest/browser": "^5.1.0"
-  "@vitest/browser-playwright": "^5.1.0"
+  "@vitest/browser": "^5.1.1"
+  "@vitest/browser-playwright": "^5.1.1"
   esbuild: "^0.28.2"
-  oxfmt: "0.78.0"
-  oxlint: "^1.93.0"
-  playwright: "^1.62.1"
+  oxfmt: "0.79.0"
+  oxlint: "^1.94.0"
+  playwright: "^1.65.1"
   typescript: "^6.0.3"
   vite: "^8.3.5"
-  vitest: "^5.1.0"
+  vitest: "^5.1.1"
 
 # Allow-list of dependencies whose install/postinstall scripts may run.
 # Everything else is blocked, replacing the prior `ignore-scripts=true` +
@@ -41,7 +41,3 @@ onlyBuiltDependencies:
 allowBuilds:
   core-js: false
   esbuild: true
-
-minimumReleaseAgeExclude:
-  - playwright-core@1.62.1
-  - playwright@1.62.1

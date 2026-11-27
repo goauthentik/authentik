@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2026.11.0-rc1
+  version: 2027.2.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -18352,10 +18352,14 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: filter_group
+        name: group_filters
         schema:
-          type: string
-          format: uuid
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -19102,10 +19106,14 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: filter_group
+        name: group_filters
         schema:
-          type: string
-          format: uuid
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -43323,10 +43331,12 @@ components:
           type: string
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         user_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
@@ -43505,10 +43515,12 @@ components:
           minLength: 1
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         user_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
@@ -46430,10 +46442,12 @@ components:
           type: string
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         user_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
@@ -46608,10 +46622,12 @@ components:
           minLength: 1
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         user_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
@@ -52804,10 +52820,12 @@ components:
           minLength: 1
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         user_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
@@ -53537,10 +53555,12 @@ components:
           minLength: 1
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         user_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
@@ -56804,6 +56824,7 @@ components:
       - username
       - email
       - password
+      - password_viewable
       - number
       - checkbox
       - radio-button-group

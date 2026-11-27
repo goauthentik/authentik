@@ -27,7 +27,7 @@ When an email cannot be delivered immediately, authentik retries delivery throug
 - **Account Recovery Max Attempts**: maximum number of recovery emails allowed in the configured time window.
 - **Account Recovery Cache Timeout**: time window used for recovery-email rate limiting.
 - **Activate user on success**: set the identified user's `is_active` state to `True` after they return with a valid email token. In a recovery flow, this setting allows an inactive user to reactivate their account through email verification. Disable this setting if reactivation must remain an administrative action. Disabling it does not prevent the user from receiving a recovery email or changing their password.
-- **Token expiry**: how long the email token remains valid.
+- **Token expiration**: how long the token in an email sent by this stage remains valid. This setting does not apply to recovery links that an administrator [creates or emails for a user](../../../../users-sources/user/user_basic_operations.mdx#recovery-link-validity).
 - **Subject**: subject line used for the email.
 - **Template**: template used to render the email body.
 
