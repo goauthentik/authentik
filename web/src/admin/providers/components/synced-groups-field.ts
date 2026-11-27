@@ -65,7 +65,7 @@ export interface SyncedGroupsFieldProps {
  * This only scopes groups. Which users sync is decided by access to the provider's application.
  */
 export const AKSyncedGroupsField: LitFC<SyncedGroupsFieldProps> = ({ groupFilters }) =>
-    html`<ak-form-element-horizontal label=${msg("Group Filter")} name="groupFilters">
+    html`<ak-form-element-horizontal label=${msg("Synced groups")} name="groupFilters">
         <ak-dual-select-dynamic-selected
             .provider=${groupsProvider}
             .selector=${groupsSelector(groupFilters)}
@@ -73,6 +73,8 @@ export const AKSyncedGroupsField: LitFC<SyncedGroupsFieldProps> = ({ groupFilter
             selected-label=${msg("Selected Groups")}
         ></ak-dual-select-dynamic-selected>
         <p class="pf-c-form__helper-text">
-            ${msg("Groups to be synced. If empty, all groups will be synced.")}
+            ${msg(
+                "Only these groups are synced. If empty, all groups are synced. This does not limit which users are synced; users are synced based on access to the application.",
+            )}
         </p>
     </ak-form-element-horizontal>`;

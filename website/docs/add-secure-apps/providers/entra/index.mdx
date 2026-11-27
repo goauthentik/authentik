@@ -18,7 +18,7 @@ Upon creating the Entra ID provider, it will run a discovery task to query your 
 
 Users are matched on their email address. Groups are matched based on their names.
 
-This discovery also takes into consideration the provider's sync scope: the application's access policies, selected group filters, and excluded service accounts. This discovery process occurs each time a [full sync](#full-sync) is initiated.
+This discovery also takes into consideration the provider's sync scope: the application's access policies, synced groups, and excluded service accounts. This discovery process occurs each time a [full sync](#full-sync) is initiated.
 
 ## Synchronization
 
@@ -50,13 +50,13 @@ On a full sync, authentik applies the provider's **User deletion action** to a l
 
 Use **Exclude service accounts** when service accounts should not be synchronized.
 
-### Group filters
+### Synced groups
 
-**Group filters** define which groups are synchronized. They do not limit which users are synchronized.
+**Synced groups** define which groups are synchronized. They do not limit which users are synchronized.
 
-If no group filters are selected, the provider synchronizes all groups.
+If no groups are selected under **Synced groups**, the provider synchronizes all groups.
 
-If group filters are selected, only the selected groups are synchronized.
+If groups are selected, only those groups are synchronized.
 
 On a full sync, authentik applies the provider's **Group deletion action** to a linked group that is no longer selected.
 
