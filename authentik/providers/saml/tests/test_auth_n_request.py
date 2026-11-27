@@ -27,6 +27,7 @@ from authentik.common.saml.constants import (
 from authentik.common.saml.exceptions import (
     ERROR_ACS_URL_MISMATCH,
     ERROR_CANNOT_DECODE_REQUEST,
+    ERROR_ISSUER_MISMATCH,
     CannotHandleAssertion,
 )
 from authentik.core.models import Application
@@ -626,7 +627,7 @@ class TestAuthNRequest(TestCase):
             name="samltool",
             authorization_flow=create_test_flow(),
             acs_url="https://10.120.20.200/saml-sp/SAML2/POST",
-            audience="https://10.120.20.200/saml-sp/SAML2/POST",
+            audience="https://10.120.20.200/saml-sp",
             issuer_override="https://10.120.20.200/saml-sp/SAML2/POST",
             signing_kp=static_keypair,
             verification_kp=static_keypair,
@@ -647,7 +648,7 @@ class TestAuthNRequest(TestCase):
                 "https://eu-central-1.signin.aws.amazon.com/platform/"
                 "saml/acs/2d737f96-55fb-4035-953e-5e24134eb778"
             ),
-            audience="https://10.120.20.200/saml-sp/SAML2/POST",
+            audience="https://eu-central-1.signin.aws.amazon.com/platform/saml/d-99672f8278",
             issuer_override="https://10.120.20.200/saml-sp/SAML2/POST",
             signing_kp=create_test_cert(),
         )
@@ -867,6 +868,58 @@ class TestAuthNRequest(TestCase):
         self.assertNotIn("evil.example.com", str(ctx.exception))
         self.assertIn("https://evil.example.com/acs", ctx.exception.detail)
         self.assertIn(self.provider.acs_url, ctx.exception.detail)
+
+    def _issuer_request(self, issuer: str) -> str:
+        """Unsigned AuthnRequest containing `issuer` as its child elements"""
+        request = (
+            '<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" '
+            'ID="_1" Version="2.0" IssueInstant="2026-05-19T01:01:53.461Z">'
+            f"{issuer}</samlp:AuthnRequest>"
+        )
+        return b64encode(request.encode()).decode()
+
+    def test_issuer_matches_audience(self):
+        """Test that a request whose Issuer is the Audience of the provider is accepted"""
+        self.provider.verification_kp = None
+        self.provider.audience = "https://sp.example.com"
+        self.provider.save()
+        request = self._issuer_request("<saml:Issuer>https://sp.example.com</saml:Issuer>")
+
+        parsed_request = AuthNRequestParser(self.provider).parse(request)
+        self.assertEqual(parsed_request.id, "_1")
+
+    def test_issuer_mismatch(self):
+        """Test that a request whose Issuer isn't the Audience of the provider is rejected
+        without echoing either value to the user"""
+        self.provider.verification_kp = None
+        self.provider.audience = "https://sp.example.com"
+        self.provider.save()
+        request = self._issuer_request("<saml:Issuer>https://evil.example.com</saml:Issuer>")
+
+        with self.assertRaises(CannotHandleAssertion) as ctx:
+            AuthNRequestParser(self.provider).parse(request)
+        self.assertEqual(str(ctx.exception), str(ERROR_ISSUER_MISMATCH))
+        self.assertNotIn("example.com", str(ctx.exception))
+        self.assertIn("https://evil.example.com", ctx.exception.detail)
+        self.assertIn(self.provider.audience, ctx.exception.detail)
+
+    def test_issuer_missing(self):
+        """Test that a request without an Issuer is rejected when the provider has an
+        Audience, and accepted when there is nothing to compare against"""
+        self.provider.verification_kp = None
+        self.provider.audience = "https://sp.example.com"
+        self.provider.save()
+        request = self._issuer_request("")
+
+        with self.assertRaises(CannotHandleAssertion) as ctx:
+            AuthNRequestParser(self.provider).parse(request)
+        self.assertEqual(str(ctx.exception), str(ERROR_ISSUER_MISMATCH))
+
+        self.provider.audience = ""
+        self.provider.save()
+        parsed_request = AuthNRequestParser(self.provider).parse(request)
+        self.assertEqual(parsed_request.id, "_1")
 
     def test_malformed_unsigned(self):
         """Test that malformed requests to a provider without a verification certificate are

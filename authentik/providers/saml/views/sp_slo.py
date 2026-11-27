@@ -16,6 +16,7 @@ from authentik.common.saml.parsers.logout_response import LogoutResponseParser
 from authentik.common.saml.parsers.verify import (
     verify_detached_signature,
     verify_enveloped_signature,
+    verify_issuer,
 )
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.events.models import Event, EventAction
@@ -298,6 +299,7 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
                     request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
                     provider.verification_kp,
                 )
+            verify_issuer(logout_response.issuer, provider.audience)
         except CannotHandleAssertion as exc:
             LOGGER.warning("Failed to verify SAML LogoutResponse", exc=exc, detail=exc.detail)
             return redirect("authentik_core:root-redirect")
@@ -327,6 +329,7 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
                     self.request.GET.get(REQUEST_KEY_SAML_SIG_ALG),
                     self.provider.verification_kp,
                 )
+            verify_issuer(logout_request.issuer, self.provider.audience)
             self.plan_context[PLAN_CONTEXT_SAML_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:
             return self.saml_request_error(exc)
@@ -371,6 +374,7 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
                     provider.verification_kp,
                     "/samlp:LogoutResponse/ds:Signature",
                 )
+            verify_issuer(logout_response.issuer, provider.audience)
         except CannotHandleAssertion as exc:
             LOGGER.warning("Failed to verify SAML LogoutResponse", exc=exc, detail=exc.detail)
             return redirect("authentik_core:root-redirect")
@@ -398,6 +402,7 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
                     self.provider.verification_kp,
                     "/samlp:LogoutRequest/ds:Signature",
                 )
+            verify_issuer(logout_request.issuer, self.provider.audience)
             self.plan_context[PLAN_CONTEXT_SAML_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:
             return self.saml_request_error(exc)
