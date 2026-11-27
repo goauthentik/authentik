@@ -36,6 +36,7 @@ export interface PatchedBrandRequest {
     brandingMapTiles?: string;
     flowAuthentication?: string | null;
     flowUserSwitch?: string | null;
+    flowProviderAuthorization?: string;
     flowInvalidation?: string | null;
     flowRecovery?: string | null;
     flowUnenrollment?: string | null;
@@ -102,6 +103,10 @@ export function PatchedBrandRequestFromJSONTyped(
                 : json["flow_user_switch"] === null
                   ? null
                   : json["flow_user_switch"],
+        flowProviderAuthorization:
+            json["flow_provider_authorization"] == null
+                ? undefined
+                : json["flow_provider_authorization"],
         flowInvalidation:
             json["flow_invalidation"] === undefined
                 ? undefined
@@ -185,6 +190,7 @@ export function PatchedBrandRequestToJSONTyped(
         branding_map_tiles: value["brandingMapTiles"],
         flow_authentication: value["flowAuthentication"],
         flow_user_switch: value["flowUserSwitch"],
+        flow_provider_authorization: value["flowProviderAuthorization"],
         flow_invalidation: value["flowInvalidation"],
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
