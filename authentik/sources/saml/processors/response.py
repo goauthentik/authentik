@@ -47,6 +47,7 @@ from authentik.sources.saml.exceptions import (
     InvalidTime,
     MismatchedAudience,
     MismatchedBinding,
+    MismatchedIssuer,
     MismatchedRequestID,
     MissingNameID,
     MissingSAMLResponse,
@@ -111,6 +112,7 @@ class ResponseProcessor:
 
         self._verify_request_id()
         self._verify_status()
+        self._verify_issuer()
         self._verify_conditions()
         self._verify_destination()
         self._verify_subject_confirmation()
@@ -148,6 +150,32 @@ class ResponseProcessor:
             decrypted_assertion,
         )
         self._assertion = decrypted_assertion
+
+    def _verify_issuer(self):
+        """Verify that the Response and its assertion were issued by the identity provider
+        configured for this source. The Issuer may be omitted from the Response, but the
+        assertion has to carry one (SAML 2.0 profiles §4.1.4.2)."""
+        entity_id = self._source.idp_entity_id.strip()
+        if not entity_id:
+            return
+        issuers: list[str | None] = []
+        response_issuer = self._root.find(f"{{{NS_SAML_ASSERTION}}}Issuer")
+        if response_issuer is not None:
+            issuers.append(get_element_text(response_issuer).strip())
+        assertion = self.get_assertion()
+        assertion_issuer = (
+            assertion.find(f"{{{NS_SAML_ASSERTION}}}Issuer") if assertion is not None else None
+        )
+        issuers.append(
+            get_element_text(assertion_issuer).strip() if assertion_issuer is not None else None
+        )
+        if any(issuer != entity_id for issuer in issuers):
+            LOGGER.warning(
+                "Issuer does not match the entity ID of the identity provider",
+                entity_id=entity_id,
+                issuers=issuers,
+            )
+            raise MismatchedIssuer()
 
     def _verify_conditions(self):
         conditions = self.get_assertion().find(f"{{{NS_SAML_ASSERTION}}}Conditions")

@@ -88,6 +88,11 @@ export interface PatchedSAMLSourceRequest {
      */
     issuerOverride?: string;
     /**
+     * Entity ID of the identity provider. When set, the Issuer of responses and assertions from the
+     * identity provider must match it. When left empty, the Issuer is not verified.
+     */
+    idpEntityId?: string;
+    /**
      * URL that the initial Login request is sent to.
      */
     ssoUrl?: string;
@@ -195,6 +200,7 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
         preAuthenticationFlow:
             json["pre_authentication_flow"] == null ? undefined : json["pre_authentication_flow"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
+        idpEntityId: json["idp_entity_id"] == null ? undefined : json["idp_entity_id"],
         ssoUrl: json["sso_url"] == null ? undefined : json["sso_url"],
         sloUrl:
             json["slo_url"] === undefined
@@ -276,6 +282,7 @@ export function PatchedSAMLSourceRequestToJSONTyped(
         group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
         pre_authentication_flow: value["preAuthenticationFlow"],
         issuer_override: value["issuerOverride"],
+        idp_entity_id: value["idpEntityId"],
         sso_url: value["ssoUrl"],
         slo_url: value["sloUrl"],
         allow_idp_initiated: value["allowIdpInitiated"],

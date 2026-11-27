@@ -38,6 +38,15 @@ class MismatchedAudience(SAMLException):
     default_message = "The SAML assertion audience does not match the entity ID of this source."
 
 
+class MismatchedIssuer(SAMLException):
+    """Exception raised when the Response or its assertion was not issued by the identity
+    provider configured for the source."""
+
+    default_message = (
+        "The SAML Response was not issued by the identity provider configured for this source."
+    )
+
+
 class MismatchedRequestID(SAMLException):
     """Exception raised when the returned request ID doesn't match the saved ID."""
 
