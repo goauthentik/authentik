@@ -10,18 +10,15 @@ import "#elements/LicenseNotice";
 import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
-import {
-    groupsProvider,
-    groupsSelector,
-    propertyMappingsProvider,
-    propertyMappingsSelector,
-} from "./SCIMProviderFormHelpers.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
 
 import { aki } from "#common/api/client";
 
 import { SearchSelectSource, withQuery } from "#elements/forms/SearchSelect/shared";
 
 import { AKSearchSelect } from "#components/ak-search-select-field";
+
+import { AKSyncedGroupsField } from "#admin/providers/components/synced-groups-field";
 
 import {
     CompatibilityModeEnum,
@@ -289,17 +286,7 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                 >
                 </ak-switch-input>
 
-                <ak-form-element-horizontal label=${msg("Group Filter")} name="groupFilters">
-                    <ak-dual-select-dynamic-selected
-                        .provider=${groupsProvider}
-                        .selector=${groupsSelector(provider?.groupFilters, null)}
-                        available-label=${msg("Available Groups")}
-                        selected-label=${msg("Selected Groups")}
-                    ></ak-dual-select-dynamic-selected>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Groups to be synced. If empty, all groups will be synced.")}
-                    </p>
-                </ak-form-element-horizontal>
+                ${AKSyncedGroupsField({ groupFilters: provider?.groupFilters })}
             </div>
         </ak-form-group>
 
