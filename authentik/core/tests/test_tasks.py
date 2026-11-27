@@ -3,6 +3,7 @@
 from datetime import timedelta
 from time import mktime
 
+from django.apps import apps
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.utils.timezone import now
@@ -27,6 +28,7 @@ from authentik.core.tasks import (
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
+from authentik.lib.models import ExpiringModel
 
 
 class TestTasks(APITestCase):
@@ -84,6 +86,21 @@ class TestTasks(APITestCase):
             clean_expired_models.send()
         self.assertFalse(Event.objects.including_expired().exists())
         self.assertLessEqual(len(ctx.captured_queries), 500)
+
+    def test_expiring_models_keep_indexes(self):
+        """Models that override Meta.indexes must keep ExpiringModel's, or cleanup, which
+        orders by expires, scans the whole table"""
+        expected = {tuple(index.fields) for index in ExpiringModel.Meta.indexes}
+        for model in apps.get_models():
+            # Under multi-table inheritance the fields and their indexes live on the parent
+            if (
+                not issubclass(model, ExpiringModel)
+                or model._meta.get_field("expires").model != model
+            ):
+                continue
+            with self.subTest(model=model._meta.label):
+                indexes = {tuple(index.fields) for index in model._meta.indexes}
+                self.assertLessEqual(expected, indexes)
 
     def test_clean_temporary_users(self):
         """Test clean_temporary_users task"""

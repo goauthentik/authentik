@@ -5,7 +5,6 @@ use std::{
 };
 
 use ak_axum::{
-    accept::tls::TlsState,
     error::Result,
     extract::{client_ip::ClientIp, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
     router::wrap_router,
@@ -25,6 +24,7 @@ use axum::{
     response::{IntoResponse as _, Response},
     routing::any,
 };
+use axum_server::tls::TlsInfo;
 use http_body_util::BodyExt as _;
 use hyper::body::Incoming;
 use serde_json::json;
@@ -150,15 +150,14 @@ async fn forward_request(
     Scheme(scheme): Scheme,
     State(server): State<Arc<Server>>,
     TrustedProxy(trusted_proxy): TrustedProxy,
-    tls_state: Option<Extension<TlsState>>,
+    tls_info: Option<Extension<Arc<TlsInfo>>>,
     OriginalUri(uri): OriginalUri,
     mut request: Request,
 ) -> Result<Response> {
     let accept_header = request
         .headers()
         .get(ACCEPT)
-        .map(|v| v.to_str().unwrap_or_default().to_owned())
-        .unwrap_or_default();
+        .map_or_default(|v| v.to_str().unwrap_or_default().to_owned());
 
     if !GUNICORN_READY.load(Ordering::Relaxed) {
         return Ok(startup_response(&accept_header));
@@ -170,7 +169,7 @@ async fn forward_request(
     let uri = Uri::builder()
         .scheme("http")
         .authority("localhost:8000")
-        .path_and_query(uri.path_and_query().map(|x| x.as_str()).unwrap_or_default())
+        .path_and_query(uri.path_and_query().map_or_default(|x| x.as_str()))
         .build()?;
     *request.uri_mut() = uri;
 
@@ -206,13 +205,14 @@ async fn forward_request(
         return handle_websocket_upgrade(request, &server.socket_path).await;
     }
 
-    if let Some(tls_state) = tls_state
-        && let Some(peer_certificates) = &tls_state.peer_certificates
+    if let Some(Extension(tls_info)) = tls_info
+        && !tls_info.peer_certificates.is_empty()
     {
-        let xfcc = peer_certificates
+        let xfcc = tls_info
+            .peer_certificates
             .iter()
             .map(|cert| {
-                let pem_encoded = pem::encode(&pem::Pem::new("CERTIFICATE", cert.as_ref()));
+                let pem_encoded = pem::encode(&pem::Pem::new("CERTIFICATE", cert.as_slice()));
                 let url_encoded: String =
                     url::form_urlencoded::byte_serialize(pem_encoded.as_bytes()).collect();
                 format!("Cert={url_encoded}")
@@ -450,16 +450,31 @@ pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
 #[cfg(test)]
 mod tests {
     use std::{
+        convert::Infallible,
+        net::{IpAddr, Ipv4Addr},
         path::{Path, PathBuf},
         sync::atomic::AtomicUsize,
+        time::Duration,
     };
 
+    use ak_common::tls::self_signed;
+    use arc_swap::ArcSwapOption;
+    use axum::http::{
+        header::{SEC_WEBSOCKET_KEY, SEC_WEBSOCKET_VERSION},
+        uri,
+    };
+    use futures::stream;
+    use http_body_util::StreamBody;
+    use hyper::body::{Bytes, Frame};
     use hyper_unix_socket::UnixSocketConnector;
     use hyper_util::{client::legacy::Client, rt::TokioExecutor};
     use tempfile::TempDir;
     use tokio::{
         io::{AsyncReadExt as _, AsyncWriteExt as _},
         net::{UnixListener, UnixStream},
+        process::Command,
+        sync::{Mutex, oneshot},
+        time::timeout,
     };
 
     use super::*;
@@ -666,6 +681,349 @@ mod tests {
         assert_eq!(headers.len(), 1);
         assert!(headers.contains_key("x-end-to-end"));
     }
+
+    #[tokio::test]
+    async fn forward_drops_non_websocket_upgrade() {
+        let dir = TempDir::new().expect("failed to create temp dir");
+        let socket_path = dir.path().join("authentik.sock");
+        let listener = UnixListener::bind(&socket_path).expect("failed to bind upstream socket");
+        let (head_tx, head_rx) = oneshot::channel();
+        tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.expect("failed to accept");
+            let mut head = Vec::new();
+            let mut byte = [0_u8; 1];
+            while !head.ends_with(b"\r\n\r\n") {
+                if stream.read(&mut byte).await.expect("failed to read") == 0 {
+                    break;
+                }
+                head.extend_from_slice(&byte);
+            }
+            stream
+                .write_all(b"HTTP/1.1 404 Not Found\r\ncontent-length: 0\r\n\r\n")
+                .await
+                .expect("failed to write response");
+            drop(head_tx.send(String::from_utf8(head).expect("request head is not UTF-8")));
+        });
+        let server = Arc::new(Server {
+            gunicorn: Mutex::new(Command::new("true").spawn().expect("failed to spawn")),
+            socket_path: socket_path.clone(),
+            client: Client::builder(TokioExecutor::new())
+                .set_host(false)
+                .build(UnixSocketConnector::new(socket_path.clone())),
+            retry_client: Client::builder(TokioExecutor::new())
+                .set_host(false)
+                .build(UnixSocketConnector::new(socket_path)),
+            workers: ArcSwapOption::empty(),
+            proxy_outpost: Arc::new(ArcSwapOption::empty()),
+            brand_cert_resolver: ArcSwapOption::empty(),
+            fallback_cert: Arc::new(
+                self_signed::generate_certifiedkey().expect("failed to generate certificate"),
+            ),
+        });
+        GUNICORN_READY.store(true, Ordering::Relaxed);
+        let request = Request::builder()
+            .uri("/api/v3/root/config/")
+            .header(HOST, "authentik.company")
+            .header(CONNECTION, "upgrade")
+            .header(UPGRADE, "h2c")
+            .body(Body::empty())
+            .expect("failed to build request");
+
+        let response = forward_request(
+            ClientIp(IpAddr::V4(Ipv4Addr::new(192, 0, 2, 10))),
+            Host("authentik.company".to_owned()),
+            Scheme(uri::Scheme::HTTPS),
+            State(server),
+            TrustedProxy(false),
+            None,
+            OriginalUri(Uri::from_static("/api/v3/root/config/")),
+            request,
+        )
+        .await
+        .expect("failed to forward request");
+
+        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+        let head = timeout(Duration::from_secs(5), head_rx)
+            .await
+            .expect("upstream received no request")
+            .expect("upstream dropped the request");
+        assert!(!head.contains("\r\nupgrade: h2c\r\n"), "{head}");
+        assert!(!head.contains("\r\nconnection: upgrade\r\n"), "{head}");
+    }
+
+    #[tokio::test]
+    async fn forward_drops_headers_named_in_connection() {
+        let dir = TempDir::new().expect("failed to create temp dir");
+        let socket_path = dir.path().join("authentik.sock");
+        let listener = UnixListener::bind(&socket_path).expect("failed to bind upstream socket");
+        let (head_tx, head_rx) = oneshot::channel();
+        tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.expect("failed to accept");
+            let mut head = Vec::new();
+            let mut byte = [0_u8; 1];
+            while !head.ends_with(b"\r\n\r\n") {
+                if stream.read(&mut byte).await.expect("failed to read") == 0 {
+                    break;
+                }
+                head.extend_from_slice(&byte);
+            }
+            stream
+                .write_all(b"HTTP/1.1 404 Not Found\r\ncontent-length: 0\r\n\r\n")
+                .await
+                .expect("failed to write response");
+            drop(head_tx.send(String::from_utf8(head).expect("request head is not UTF-8")));
+        });
+        let server = Arc::new(Server {
+            gunicorn: Mutex::new(Command::new("true").spawn().expect("failed to spawn")),
+            socket_path: socket_path.clone(),
+            client: Client::builder(TokioExecutor::new())
+                .set_host(false)
+                .build(UnixSocketConnector::new(socket_path.clone())),
+            retry_client: Client::builder(TokioExecutor::new())
+                .set_host(false)
+                .build(UnixSocketConnector::new(socket_path)),
+            workers: ArcSwapOption::empty(),
+            proxy_outpost: Arc::new(ArcSwapOption::empty()),
+            brand_cert_resolver: ArcSwapOption::empty(),
+            fallback_cert: Arc::new(
+                self_signed::generate_certifiedkey().expect("failed to generate certificate"),
+            ),
+        });
+        GUNICORN_READY.store(true, Ordering::Relaxed);
+        let request = Request::builder()
+            .uri("/api/v3/root/config/")
+            .header(HOST, "authentik.company")
+            .header(CONNECTION, "x-hop")
+            .header("x-hop", "1")
+            .body(Body::empty())
+            .expect("failed to build request");
+
+        forward_request(
+            ClientIp(IpAddr::V4(Ipv4Addr::new(192, 0, 2, 10))),
+            Host("authentik.company".to_owned()),
+            Scheme(uri::Scheme::HTTPS),
+            State(server),
+            TrustedProxy(false),
+            None,
+            OriginalUri(Uri::from_static("/api/v3/root/config/")),
+            request,
+        )
+        .await
+        .expect("failed to forward request");
+
+        let head = timeout(Duration::from_secs(5), head_rx)
+            .await
+            .expect("upstream received no request")
+            .expect("upstream dropped the request");
+        assert!(!head.contains("\r\nx-hop: 1\r\n"), "{head}");
+    }
+
+    #[tokio::test]
+    async fn forward_keeps_forwarding_headers_named_in_connection() {
+        let dir = TempDir::new().expect("failed to create temp dir");
+        let socket_path = dir.path().join("authentik.sock");
+        let listener = UnixListener::bind(&socket_path).expect("failed to bind upstream socket");
+        let (head_tx, head_rx) = oneshot::channel();
+        tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.expect("failed to accept");
+            let mut head = Vec::new();
+            let mut byte = [0_u8; 1];
+            while !head.ends_with(b"\r\n\r\n") {
+                if stream.read(&mut byte).await.expect("failed to read") == 0 {
+                    break;
+                }
+                head.extend_from_slice(&byte);
+            }
+            stream
+                .write_all(b"HTTP/1.1 404 Not Found\r\ncontent-length: 0\r\n\r\n")
+                .await
+                .expect("failed to write response");
+            drop(head_tx.send(String::from_utf8(head).expect("request head is not UTF-8")));
+        });
+        let server = Arc::new(Server {
+            gunicorn: Mutex::new(Command::new("true").spawn().expect("failed to spawn")),
+            socket_path: socket_path.clone(),
+            client: Client::builder(TokioExecutor::new())
+                .set_host(false)
+                .build(UnixSocketConnector::new(socket_path.clone())),
+            retry_client: Client::builder(TokioExecutor::new())
+                .set_host(false)
+                .build(UnixSocketConnector::new(socket_path)),
+            workers: ArcSwapOption::empty(),
+            proxy_outpost: Arc::new(ArcSwapOption::empty()),
+            brand_cert_resolver: ArcSwapOption::empty(),
+            fallback_cert: Arc::new(
+                self_signed::generate_certifiedkey().expect("failed to generate certificate"),
+            ),
+        });
+        GUNICORN_READY.store(true, Ordering::Relaxed);
+        let request = Request::builder()
+            .uri("/api/v3/root/config/")
+            .header(HOST, "authentik.company")
+            .header(CONNECTION, "x-forwarded-for, host, x-forwarded-proto")
+            .body(Body::empty())
+            .expect("failed to build request");
+
+        forward_request(
+            ClientIp(IpAddr::V4(Ipv4Addr::new(192, 0, 2, 10))),
+            Host("authentik.company".to_owned()),
+            Scheme(uri::Scheme::HTTPS),
+            State(server),
+            TrustedProxy(false),
+            None,
+            OriginalUri(Uri::from_static("/api/v3/root/config/")),
+            request,
+        )
+        .await
+        .expect("failed to forward request");
+
+        let head = timeout(Duration::from_secs(5), head_rx)
+            .await
+            .expect("upstream received no request")
+            .expect("upstream dropped the request");
+        assert!(
+            head.contains("\r\nx-forwarded-for: 192.0.2.10\r\n"),
+            "{head}"
+        );
+        assert!(head.contains("\r\nhost: authentik.company\r\n"), "{head}");
+        assert!(head.contains("\r\nx-forwarded-proto: https\r\n"), "{head}");
+    }
+
+    #[tokio::test]
+    async fn forward_drops_request_trailers() {
+        let dir = TempDir::new().expect("failed to create temp dir");
+        let socket_path = dir.path().join("authentik.sock");
+        let listener = UnixListener::bind(&socket_path).expect("failed to bind upstream socket");
+        let (request_tx, request_rx) = oneshot::channel();
+        tokio::spawn(async move {
+            let (mut stream, _) = listener.accept().await.expect("failed to accept");
+            let mut request = Vec::new();
+            let mut byte = [0_u8; 1];
+            // The last chunk is "0", followed by the trailer section and a blank line.
+            while !(request.ends_with(b"\r\n\r\n")
+                && request.windows(5).any(|window| window == b"\r\n0\r\n"))
+            {
+                if stream.read(&mut byte).await.expect("failed to read") == 0 {
+                    break;
+                }
+                request.extend_from_slice(&byte);
+            }
+            stream
+                .write_all(b"HTTP/1.1 404 Not Found\r\ncontent-length: 0\r\n\r\n")
+                .await
+                .expect("failed to write response");
+            drop(request_tx.send(String::from_utf8(request).expect("request is not UTF-8")));
+        });
+        let server = Arc::new(Server {
+            gunicorn: Mutex::new(Command::new("true").spawn().expect("failed to spawn")),
+            socket_path: socket_path.clone(),
+            client: Client::builder(TokioExecutor::new())
+                .set_host(false)
+                .build(UnixSocketConnector::new(socket_path.clone())),
+            retry_client: Client::builder(TokioExecutor::new())
+                .set_host(false)
+                .build(UnixSocketConnector::new(socket_path)),
+            workers: ArcSwapOption::empty(),
+            proxy_outpost: Arc::new(ArcSwapOption::empty()),
+            brand_cert_resolver: ArcSwapOption::empty(),
+            fallback_cert: Arc::new(
+                self_signed::generate_certifiedkey().expect("failed to generate certificate"),
+            ),
+        });
+        GUNICORN_READY.store(true, Ordering::Relaxed);
+        let mut trailers = HeaderMap::new();
+        trailers.insert("x-checksum", HeaderValue::from_static("1"));
+        let frames: [Result<Frame<Bytes>, Infallible>; 2] = [
+            Ok(Frame::data(Bytes::from_static(b"{}"))),
+            Ok(Frame::trailers(trailers)),
+        ];
+        let request = Request::builder()
+            .method(Method::POST)
+            .uri("/api/v3/root/config/")
+            .header(HOST, "authentik.company")
+            .header(TRANSFER_ENCODING, "chunked")
+            .header(TRAILER, "x-checksum")
+            .body(Body::new(StreamBody::new(stream::iter(frames))))
+            .expect("failed to build request");
+
+        timeout(
+            Duration::from_secs(5),
+            forward_request(
+                ClientIp(IpAddr::V4(Ipv4Addr::new(192, 0, 2, 10))),
+                Host("authentik.company".to_owned()),
+                Scheme(uri::Scheme::HTTPS),
+                State(server),
+                TrustedProxy(false),
+                None,
+                OriginalUri(Uri::from_static("/api/v3/root/config/")),
+                request,
+            ),
+        )
+        .await
+        .expect("upstream did not answer")
+        .expect("failed to forward request");
+
+        let request = timeout(Duration::from_secs(5), request_rx)
+            .await
+            .expect("upstream received no request")
+            .expect("upstream dropped the request");
+        assert!(!request.contains("\r\nx-checksum: 1\r\n"), "{request:?}");
+    }
+
+    #[tokio::test]
+    async fn forward_upgrades_websocket() {
+        let dir = TempDir::new().expect("failed to create temp dir");
+        let socket_path = dir.path().join("authentik.sock");
+        let listener = UnixListener::bind(&socket_path).expect("failed to bind upstream socket");
+        tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.expect("failed to accept");
+            let _upstream = tokio_tungstenite::accept_async(stream)
+                .await
+                .expect("upstream handshake failed");
+            std::future::pending::<()>().await;
+        });
+        let server = Arc::new(Server {
+            gunicorn: Mutex::new(Command::new("true").spawn().expect("failed to spawn")),
+            socket_path: socket_path.clone(),
+            client: Client::builder(TokioExecutor::new())
+                .set_host(false)
+                .build(UnixSocketConnector::new(socket_path.clone())),
+            retry_client: Client::builder(TokioExecutor::new())
+                .set_host(false)
+                .build(UnixSocketConnector::new(socket_path)),
+            workers: ArcSwapOption::empty(),
+            proxy_outpost: Arc::new(ArcSwapOption::empty()),
+            brand_cert_resolver: ArcSwapOption::empty(),
+            fallback_cert: Arc::new(
+                self_signed::generate_certifiedkey().expect("failed to generate certificate"),
+            ),
+        });
+        GUNICORN_READY.store(true, Ordering::Relaxed);
+        let request = Request::builder()
+            .uri("/ws/client/")
+            .header(HOST, "authentik.company")
+            .header(UPGRADE, "websocket")
+            .header(CONNECTION, "upgrade")
+            .header(SEC_WEBSOCKET_KEY, "dGhlIHNhbXBsZSBub25jZQ==")
+            .header(SEC_WEBSOCKET_VERSION, "13")
+            .body(Body::empty())
+            .expect("failed to build request");
+
+        let response = forward_request(
+            ClientIp(IpAddr::V4(Ipv4Addr::new(192, 0, 2, 10))),
+            Host("authentik.company".to_owned()),
+            Scheme(uri::Scheme::HTTPS),
+            State(server),
+            TrustedProxy(false),
+            None,
+            OriginalUri(Uri::from_static("/ws/client/")),
+            request,
+        )
+        .await
+        .expect("failed to forward request");
+
+        assert_eq!(response.status(), StatusCode::SWITCHING_PROTOCOLS);
+    }
 }
 
 mod websockets {
@@ -735,8 +1093,7 @@ mod websockets {
         let path_q = request
             .uri()
             .path_and_query()
-            .map(|x| x.as_str())
-            .unwrap_or_default();
+            .map_or_default(|x| x.as_str());
         let uri = format!("ws://localhost:8000{path_q}");
 
         let mut ws_request =

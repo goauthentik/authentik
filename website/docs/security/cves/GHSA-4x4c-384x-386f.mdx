@@ -1,0 +1,29 @@
+# GHSA-4x4c-384x-386f
+
+_Reported by [@chndlrx](https://github.com/chndlrx), [@QwesiRED](https://github.com/QwesiRED), [@cipher-creator](https://github.com/cipher-creator), [@Viv3kGupt4](https://github.com/Viv3kGupt4)_
+
+## Webhook responses disclosed by notification transport tests
+
+### Summary
+
+Testing a webhook notification transport returned the receiving server's response, not just its status.
+
+### Patches
+
+authentik 2026.5.9 and 2026.8.7 fix this issue.
+
+### Impact
+
+**Only deployments where users other than superusers can add and change notification transports are affected.**
+
+Such users can read responses from internal web services reachable from the server.
+
+### Workarounds
+
+None. We recommend letting only superusers add and change notification transports until upgrading.
+
+### For more information
+
+If you have any questions or comments about this advisory:
+
+- Email us at [security@goauthentik.io](mailto:security@goauthentik.io)

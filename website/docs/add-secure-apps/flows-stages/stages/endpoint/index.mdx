@@ -14,11 +14,22 @@ This stage integrates with [Endpoint Devices](../../../../endpoint-devices/index
 - **Connector**: which endpoint connector should be used to gather device information.
 - **Mode**: whether endpoint verification is optional or required.
 
+## Supported connectors
+
+How the stage identifies the device depends on the selected connector:
+
+| Connector                                                                                          | How the device is identified                                                                                                                                                      |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [authentik Agent](../../../../endpoint-devices/device-compliance/connectors/authentik-agent.mdx)   | The [browser extension](../../../../endpoint-devices/device-compliance/browser-extension.mdx) answers a challenge through the authentik Agent.                                    |
+| [Fleet](../../../../endpoint-devices/device-compliance/connectors/fleetdm.mdx)                     | The browser presents a client certificate issued by Fleet. Refer to [Fleet conditional access](../../../../endpoint-devices/device-compliance/fleet-conditional-access.mdx).      |
+| [Google Chrome](../../../../endpoint-devices/device-compliance/connectors/google-chrome.mdx)       | Chrome answers a Chrome Enterprise Device Trust challenge.                                                                                                                        |
+| [Microsoft Intune](../../../../endpoint-devices/device-compliance/connectors/microsoft-intune.mdx) | The browser presents a client certificate deployed by Intune. Refer to [Intune conditional access](../../../../endpoint-devices/device-compliance/intune-conditional-access.mdx). |
+
 ## Flow integration
 
 Use this stage in authentication or authorization flows where device posture should influence access decisions.
 
-The device facts gathered by this stage can then be consumed by policies or by later flow logic.
+The device identified by this stage is added to the flow context as `device`. Its facts can then be consumed by policies or by later flow logic. Refer to [Device compliance policy](../../../../endpoint-devices/device-compliance/device-compliance-policy.mdx) for examples.
 
 ## Notes
 

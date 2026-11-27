@@ -1,0 +1,121 @@
+---
+title: Microsoft Intune connector
+sidebar_label: Microsoft Intune connector
+tags: [device compliance, compliance, connectors, microsoft, intune]
+authentik_enterprise: true
+authentik_version: "2026.11"
+---
+
+[Microsoft Intune](https://learn.microsoft.com/en-us/intune/) is Microsoft's endpoint management service.
+
+The Microsoft Intune connector imports all devices that are managed by Intune into authentik through the Microsoft Graph API, including their operating system, disk encryption status, and Intune compliance state. Devices are synchronized every 15 minutes, and whenever the connector is saved.
+
+After the connector is configured, you can:
+
+- Use information about Intune-managed devices in [policies](../device-compliance-policy.mdx).
+- Identify devices by a certificate that Intune deployed to them, and only allow access from devices that are compliant in Intune. Refer to [Intune conditional access](../intune-conditional-access.mdx).
+
+:::info No user mapping
+The connector does not map Intune users to authentik users, and does not grant access to devices through the authentik Agent.
+:::
+
+## Prerequisites
+
+- An active Microsoft Intune license in your tenant. Microsoft requires this to access Intune data through the Microsoft Graph API.
+- An Entra ID account that can create app registrations and grant admin consent for application permissions.
+
+## Configure Entra ID
+
+The connector authenticates to Microsoft Graph with an app registration and a client secret.
+
+1. Log in to the [Entra ID admin center](https://entra.microsoft.com).
+2. Navigate to **App registrations**, click **New registration**, and set the following configurations:
+    - Provide a **Name** for the app registration (e.g. `authentik Intune connector`)
+    - Under **Supported account types**, select **Accounts in this organizational directory only**
+    - Leave **Redirect URI** empty
+3. Click **Register**.
+4. On the app detail page, take note of the **Application (client) ID** and **Directory (tenant) ID**. These values are required when you [configure the connector](#configure-the-microsoft-intune-connector) in authentik.
+5. Next, in the near-left navigation pane, click on **Certificates and Secrets**.
+6. On the **Client secrets** tab, click **New client secret** and set the following configuration:
+    - Provide a **Description** for the client secret
+    - Set an expiry period for the secret
+7. Click **Add**.
+8. The **Value** of the client secret is shown only once. Take note of the value as it is required when you [configure the connector](#configure-the-microsoft-intune-connector) in authentik.
+9. Next, in the near-left navigation pane, click on **API permissions**.
+10. Click **Add a permission** and select **Microsoft Graph** as the API.
+11. Select **Application permissions** as the permission type and assign the following permission:
+    - `DeviceManagementManagedDevices.Read.All`
+12. Click **Add permissions**.
+13. Click **Grant admin consent for _tenant name_** and confirm. The status of the permission must show as granted.
+
+:::warning Client secret expiry
+When the client secret expires, the connector can no longer synchronize devices. Rotate the secret in Entra ID and update it on the connector in authentik before it expires.
+:::
+
+## Configure the Microsoft Intune connector
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors** and click **New Endpoint Connector**.
+3. Select **Microsoft Intune Connector** as the connector type, click **Next**, and configure the following settings:
+    - **Connector name**: provide a descriptive name for the connector.
+    - **Enabled**: enable or disable the connector. Devices are not synchronized while the connector is disabled.
+    - **Client ID**: enter the **Application (client) ID** of the app registration.
+    - **Client Secret**: enter the **Value** of the client secret.
+    - **Tenant ID**: enter the **Directory (tenant) ID** of the app registration.
+    - **Certificate authorities** _(optional)_: select the certificate authorities that issue device certificates through Intune. This is only required for [Intune conditional access](../intune-conditional-access.mdx).
+4. Click **Finish**.
+
+The first synchronization starts when the connector is created. After it completes, the imported devices are shown under **Endpoint Devices** > **Devices**.
+
+## Synchronized devices
+
+authentik creates one device for each device that is managed by Intune, regardless of its operating system or ownership.
+
+### Device matching
+
+An Intune device is identified by its serial number, or by its Intune device ID if Intune does not report a serial number. If a device with the same serial number or the same name already exists in authentik, for example because it is also enrolled with the [authentik Agent](./authentik-agent.mdx), the Intune device is added to the existing device as another connection. The device then has facts from all of its connectors.
+
+:::warning Device names must be unique
+Because devices are also matched by name, two Intune devices with the same name, such as two phones that are both named `iPhone`, are imported as a single device in authentik. That device has the facts of whichever of the two was synchronized last.
+
+Ensure that device names are unique in Intune, for example by using a device name template that includes the serial number. Refer to [Devices from multiple connectors](./index.mdx#devices-from-multiple-connectors) for more information.
+:::
+
+Devices that are removed from Intune are not removed from authentik. They keep the facts from their last synchronization until you delete them under **Endpoint Devices** > **Devices**.
+
+### Device facts
+
+The following information from Intune is available as device facts:
+
+| Device fact                      | Intune property                     | Notes                                                                   |
+| -------------------------------- | ----------------------------------- | ----------------------------------------------------------------------- |
+| `os.name`                        | Operating system                    | For example `Windows`, `macOS`, `iOS`, or `Android`.                    |
+| `os.version`                     | Operating system version            |                                                                         |
+| `os.family`                      | Derived from the operating system   | ChromeOS devices are reported as `linux`.                               |
+| `disks`                          | Encryption status                   | A single disk with `encryption_enabled` set to the device's status.     |
+| `network.hostname`               | Device name                         |                                                                         |
+| `hardware.manufacturer`          | Manufacturer                        |                                                                         |
+| `hardware.model`                 | Model                               |                                                                         |
+| `hardware.serial`                | Serial number                       |                                                                         |
+| `vendor["intune.microsoft.com"]` | All properties of the Intune device | Property names are converted to snake case, such as `compliance_state`. |
+
+The amount of memory and the installed software of a device are not available from Intune.
+
+The following vendor facts are commonly used in policies:
+
+- `id`: the Intune device ID.
+- `azure_a_d_device_id`: the Entra ID device ID.
+- `compliance_state`: the compliance state of the device in Intune, such as `compliant`, `noncompliant`, or `inGracePeriod`.
+- `managed_device_owner_type`: whether the device is owned by the organization (`company`) or by the user (`personal`).
+- `is_encrypted`: whether the device is encrypted.
+- `user_principal_name`: the user principal name of the device's primary user.
+
+For the full list of vendor facts, refer to the [Microsoft Graph documentation for listing managed devices](https://learn.microsoft.com/en-us/graph/api/intune-devices-manageddevice-list?view=graph-rest-1.0). In authentik, the property names are converted to snake case, so `complianceState` becomes `compliance_state`.
+
+For example, the following expression reads the Intune compliance state of a device:
+
+```python
+device.facts.data.get("vendor", {}).get("intune.microsoft.com", {}).get("compliance_state")
+```
+
+Refer to [Device compliance policy](../device-compliance-policy.mdx) for more information on using device facts in a flow.

@@ -250,7 +250,7 @@ export class UserListPage extends WithLicenseSummary(
                         ? html`<div slot="notice" class="pf-c-form__alert">
                               <div class="pf-c-alert pf-m-inline pf-m-warning">
                                   <div class="pf-c-alert__icon">
-                                      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                                      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                                   </div>
                                   <h4 class="pf-c-alert__title">
                                       ${msg(

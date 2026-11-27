@@ -16,7 +16,7 @@ export class DeviceCodeFinish extends BaseStage<
 > {
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <ak-empty-state icon="fas fa-check">
+            <ak-empty-state icon="fas fa-check-circle pf-m-success">
                 <span>${msg("You may close this page now.")}</span>
                 <span slot="body"> ${msg("You've successfully authenticated your device.")}</span>
             </ak-empty-state>
