@@ -12,9 +12,8 @@ import "#elements/forms/Radio";
 import { aki } from "#common/api/client";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
+import { AKSyncedGroupsField } from "#admin/providers/components/synced-groups-field";
 import {
-    groupsProvider,
-    groupsSelector,
     propertyMappingsProvider,
     propertyMappingsSelector,
 } from "#admin/providers/google_workspace/GoogleWorkspaceProviderFormHelpers";
@@ -169,17 +168,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         label=${msg("Exclude service accounts")}
                         ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("Group Filter")} name="groupFilters">
-                        <ak-dual-select-dynamic-selected
-                            .provider=${groupsProvider}
-                            .selector=${groupsSelector(this.instance?.groupFilters)}
-                            available-label=${msg("Available Groups")}
-                            selected-label=${msg("Selected Groups")}
-                        ></ak-dual-select-dynamic-selected>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Groups to be synced. If empty, all groups will be synced.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${AKSyncedGroupsField({ groupFilters: this.instance?.groupFilters })}
                 </div>
             </ak-form-group>
             <ak-form-group open label="${msg("Attribute mapping")}">
