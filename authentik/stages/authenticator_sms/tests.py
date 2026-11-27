@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.urls import reverse
 from requests_mock import Mocker
 
+from authentik.admin.models import SystemSettings
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import FlowPlan
@@ -225,6 +226,56 @@ class AuthenticatorSMSStageTests(APIFlowTestCase):
         )
         plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
         self.assertEqual(plan.context[PLAN_CONTEXT_PROMPT], {})
+
+    def test_sms_uses_established_number(self):
+        """A request-supplied phone number does not replace a number already set by the flow."""
+        SystemSettings.objects.update(avatars="none")
+        self.stage.account_sid = generate_id()
+        self.stage.auth = generate_id()
+        self.stage.from_number = generate_id()
+        self.stage.save()
+        self.client.get(
+            reverse("authentik_flows:configure", kwargs={"stage_uuid": self.stage.stage_uuid}),
+        )
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            PLAN_CONTEXT_PHONE: "+12025550101",
+        }
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        with Mocker() as mocker:
+            mocker.post(
+                (
+                    "https://api.twilio.com/2010-04-01/Accounts/"
+                    f"{self.stage.account_sid}/Messages.json"
+                ),
+                json={},
+            )
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            )
+            self.assertStageResponse(
+                response,
+                self.flow,
+                self.user,
+                component="ak-stage-authenticator-sms",
+                phone_number_required=False,
+            )
+            self.assertEqual(mocker.call_count, 1)
+            self.assertEqual(dict(parse_qsl(mocker.request_history[0].body))["To"], "+12025550101")
+
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                data={"component": "ak-stage-authenticator-sms", "phone_number": "+12025550102"},
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(mocker.call_count, 2)
+            self.assertEqual(dict(parse_qsl(mocker.request_history[1].body))["To"], "+12025550101")
+
+        device: SMSDevice = self.get_flow_plan().context[PLAN_CONTEXT_SMS_DEVICE]
+        self.assertEqual(device.phone_number, "+12025550101")
 
     def test_stage_submit_full(self):
         """test stage (submit)"""

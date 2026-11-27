@@ -360,9 +360,35 @@ pub(super) async fn handle_sign_out(
 
 #[cfg(test)]
 mod tests {
-    use axum::http::Uri;
+    use std::{net::Ipv4Addr, sync::Arc};
 
-    use super::requested_url;
+    use ak_axum::extract::{client_ip::ClientIp, host::Host};
+    use ak_client::{
+        apis::configuration::Configuration,
+        models::{OpenIdConnectConfiguration, ProxyMode, ProxyOutpostConfig},
+    };
+    use arc_swap::ArcSwapOption;
+    use axum::{
+        Router,
+        body::Body,
+        extract::{Request, State},
+        http::{StatusCode, Uri},
+    };
+    use moka::future::Cache;
+
+    use super::{
+        forward::{handle_envoy, handle_nginx, handle_traefik},
+        proxy, requested_url,
+    };
+    use crate::outpost::proxy::{
+        allowlist::compile_skip_regex,
+        application::Application,
+        backchannel::BackchannelClient,
+        cookie::SessionCookie,
+        endpoint::OidcEndpoint,
+        session::{SessionStore, filesystem::FsSessionStore},
+        upstream,
+    };
 
     #[test]
     fn requested_url_keeps_query() {
@@ -380,5 +406,388 @@ mod tests {
             requested_url("https://app.example.com", &uri),
             "https://app.example.com/some/path"
         );
+    }
+
+    // Allowlist tests send requests through the real handlers, because each one must pass the path
+    // as sent to the allowlist check: parsing the URL drops `.` and `..` segments.
+    const ALLOWLISTED_PATHS: &[&str] = &[
+        "/public",
+        "/public/",
+        "/public/ok",
+        "/public/a%20b",
+        "/public/a..b",
+        "/public/a%2Fb",
+        "/public/a;b",
+        "/public//ok",
+    ];
+
+    const NOT_ALLOWLISTED_PATHS: &[&str] = &[
+        "/public/./ok",
+        "/public/../private",
+        "/public/./../private",
+        "/public/%2e%2e/private",
+        "/public/%2E%2E/private",
+        "/public/..%2fprivate",
+        "/public/%2e%2e%2fprivate",
+        "/public/%2f../private",
+        "/public/%2F../private",
+        "/public/%2F..%2Fprivate",
+        "/public%2F..%2Fprivate",
+        "/public//../private",
+        "/public/..;/private",
+        "/public/..%5cprivate",
+        "//private/public/ok",
+    ];
+
+    const NOT_EXEMPT_PATHS: &[&str] = &[
+        "/x\\..\\outpost.goauthentik.io/ping",
+        "/.\\outpost.goauthentik.io/ping",
+        "/x\\%2e%2e\\outpost.goauthentik.io/ping",
+        "/x/..\\outpost.goauthentik.io/ping",
+    ];
+
+    fn application(mode: ProxyMode, skip_path_regex: &str) -> Arc<Application> {
+        let oidc = OpenIdConnectConfiguration::new(
+            "https://authentik.example.com/application/o/app/".to_owned(),
+            "https://authentik.example.com/application/o/authorize/".to_owned(),
+            "https://authentik.example.com/application/o/token/".to_owned(),
+            "https://authentik.example.com/application/o/userinfo/".to_owned(),
+            "https://authentik.example.com/application/o/app/end-session/".to_owned(),
+            "https://authentik.example.com/application/o/introspect/".to_owned(),
+            "https://authentik.example.com/application/o/app/jwks/".to_owned(),
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
+            Vec::new(),
+        );
+        let mut provider = ProxyOutpostConfig::new(
+            1,
+            "app".to_owned(),
+            "https://app.example.com".to_owned(),
+            oidc,
+            None,
+            Vec::new(),
+            "app".to_owned(),
+            "app".to_owned(),
+        );
+        provider.mode = Some(mode);
+        provider.skip_path_regex = Some(skip_path_regex.to_owned());
+        provider.client_id = Some("client-id".to_owned());
+        provider.cookie_secret = Some("0123456789abcdef0123456789abcdef".to_owned());
+
+        Arc::new(Application {
+            host: "app.example.com".to_owned(),
+            router: Router::new(),
+            cert: None,
+            endpoint: OidcEndpoint::new(&provider.oidc_configuration, None, None, false),
+            session_store: SessionStore::Filesystem(
+                FsSessionStore::new(std::env::temp_dir()).expect("session store"),
+            ),
+            session_cookie: SessionCookie::new(
+                "client-id",
+                "0123456789abcdef0123456789abcdef",
+                true,
+                None,
+            )
+            .expect("session cookie"),
+            api_config: Configuration::default(),
+            backchannel_client: BackchannelClient::new(reqwest::ClientBuilder::new())
+                .expect("backchannel client"),
+            token_host: None,
+            auth_cache: Cache::builder().build(),
+            outpost_name: "outpost".to_owned(),
+            unauthenticated_regex: compile_skip_regex(provider.skip_path_regex.as_deref()),
+            upstream_client: upstream::build_client(false).expect("upstream client"),
+            jwks_cache: ArcSwapOption::empty(),
+            provider,
+        })
+    }
+
+    async fn nginx_allowlisted(app: &Arc<Application>, path: &str) -> bool {
+        let request = Request::builder()
+            .uri("/outpost.goauthentik.io/auth/nginx")
+            .header("x-original-url", format!("https://app.example.com{path}"))
+            .body(Body::empty())
+            .expect("request");
+        let response = handle_nginx(
+            State(Arc::clone(app)),
+            ClientIp(Ipv4Addr::LOCALHOST.into()),
+            request,
+        )
+        .await
+        .expect("response");
+        response.status() == StatusCode::OK
+    }
+
+    async fn traefik_allowlisted(app: &Arc<Application>, path: &str) -> bool {
+        let request = Request::builder()
+            .uri("/outpost.goauthentik.io/auth/traefik")
+            .header("x-forwarded-proto", "https")
+            .header("x-forwarded-host", "app.example.com")
+            .header("x-forwarded-uri", path)
+            .body(Body::empty())
+            .expect("request");
+        let response = handle_traefik(
+            State(Arc::clone(app)),
+            ClientIp(Ipv4Addr::LOCALHOST.into()),
+            request,
+        )
+        .await
+        .expect("response");
+        response.status() == StatusCode::OK
+    }
+
+    async fn envoy_allowlisted(app: &Arc<Application>, path: &str) -> bool {
+        let request = Request::builder()
+            .uri(format!("/outpost.goauthentik.io/auth/envoy{path}"))
+            .body(Body::empty())
+            .expect("request");
+        let response = handle_envoy(
+            State(Arc::clone(app)),
+            Host("app.example.com".to_owned()),
+            request,
+        )
+        .await
+        .expect("response");
+        response.status() == StatusCode::OK
+    }
+
+    async fn proxy_allowlisted(app: &Arc<Application>, path: &str) -> bool {
+        let request = Request::builder()
+            .uri(path)
+            .body(Body::empty())
+            .expect("request");
+        let response = proxy::handle(
+            State(Arc::clone(app)),
+            ClientIp(Ipv4Addr::LOCALHOST.into()),
+            Host("app.example.com".to_owned()),
+            request,
+        )
+        .await
+        .expect("response");
+        // Requests that are not allowlisted are redirected to the login flow.
+        response.status() != StatusCode::FOUND
+    }
+
+    #[tokio::test]
+    async fn nginx_single_canonical_paths_are_allowlisted() {
+        let app = application(ProxyMode::ForwardSingle, "^/public(/.*)?$");
+        let mut denied = Vec::new();
+        for path in ALLOWLISTED_PATHS {
+            if !nginx_allowlisted(&app, path).await {
+                denied.push(*path);
+            }
+        }
+
+        assert!(denied.is_empty(), "not allowlisted: {denied:#?}");
+    }
+
+    #[tokio::test]
+    async fn nginx_single_non_canonical_paths_are_not_allowlisted() {
+        let app = application(ProxyMode::ForwardSingle, "^/public(/.*)?$");
+        let mut allowed = Vec::new();
+        for path in NOT_ALLOWLISTED_PATHS {
+            if nginx_allowlisted(&app, path).await {
+                allowed.push(*path);
+            }
+        }
+
+        assert!(allowed.is_empty(), "allowlisted: {allowed:#?}");
+    }
+
+    #[tokio::test]
+    async fn nginx_domain_canonical_paths_are_allowlisted() {
+        let app = application(
+            ProxyMode::ForwardDomain,
+            "^https://app\\.example\\.com/public(/.*)?$",
+        );
+        let mut denied = Vec::new();
+        for path in ALLOWLISTED_PATHS {
+            if !nginx_allowlisted(&app, path).await {
+                denied.push(*path);
+            }
+        }
+
+        assert!(denied.is_empty(), "not allowlisted: {denied:#?}");
+    }
+
+    #[tokio::test]
+    async fn nginx_domain_non_canonical_paths_are_not_allowlisted() {
+        let app = application(
+            ProxyMode::ForwardDomain,
+            "^https://app\\.example\\.com/public(/.*)?$",
+        );
+        let mut allowed = Vec::new();
+        for path in NOT_ALLOWLISTED_PATHS {
+            if nginx_allowlisted(&app, path).await {
+                allowed.push(*path);
+            }
+        }
+
+        assert!(allowed.is_empty(), "allowlisted: {allowed:#?}");
+    }
+
+    // The outpost's own endpoints stay reachable without a session.
+    #[tokio::test]
+    async fn nginx_outpost_endpoint_is_exempt() {
+        let app = application(ProxyMode::ForwardSingle, "");
+
+        assert!(nginx_allowlisted(&app, "/outpost.goauthentik.io/ping").await);
+    }
+
+    // A forwarded path that only resembles an outpost endpoint still needs a session.
+    #[tokio::test]
+    async fn nginx_non_canonical_paths_are_not_exempt() {
+        let app = application(ProxyMode::ForwardSingle, "");
+        let mut exempt = Vec::new();
+        for path in NOT_EXEMPT_PATHS {
+            if nginx_allowlisted(&app, path).await {
+                exempt.push(*path);
+            }
+        }
+
+        assert!(exempt.is_empty(), "exempt: {exempt:#?}");
+    }
+
+    #[tokio::test]
+    async fn traefik_single_canonical_paths_are_allowlisted() {
+        let app = application(ProxyMode::ForwardSingle, "^/public(/.*)?$");
+        let mut denied = Vec::new();
+        for path in ALLOWLISTED_PATHS {
+            if !traefik_allowlisted(&app, path).await {
+                denied.push(*path);
+            }
+        }
+
+        assert!(denied.is_empty(), "not allowlisted: {denied:#?}");
+    }
+
+    #[tokio::test]
+    async fn traefik_single_non_canonical_paths_are_not_allowlisted() {
+        let app = application(ProxyMode::ForwardSingle, "^/public(/.*)?$");
+        let mut allowed = Vec::new();
+        for path in NOT_ALLOWLISTED_PATHS {
+            if traefik_allowlisted(&app, path).await {
+                allowed.push(*path);
+            }
+        }
+
+        assert!(allowed.is_empty(), "allowlisted: {allowed:#?}");
+    }
+
+    #[tokio::test]
+    async fn traefik_domain_canonical_paths_are_allowlisted() {
+        let app = application(
+            ProxyMode::ForwardDomain,
+            "^https://app\\.example\\.com/public(/.*)?$",
+        );
+        let mut denied = Vec::new();
+        for path in ALLOWLISTED_PATHS {
+            if !traefik_allowlisted(&app, path).await {
+                denied.push(*path);
+            }
+        }
+
+        assert!(denied.is_empty(), "not allowlisted: {denied:#?}");
+    }
+
+    #[tokio::test]
+    async fn traefik_domain_non_canonical_paths_are_not_allowlisted() {
+        let app = application(
+            ProxyMode::ForwardDomain,
+            "^https://app\\.example\\.com/public(/.*)?$",
+        );
+        let mut allowed = Vec::new();
+        for path in NOT_ALLOWLISTED_PATHS {
+            if traefik_allowlisted(&app, path).await {
+                allowed.push(*path);
+            }
+        }
+
+        assert!(allowed.is_empty(), "allowlisted: {allowed:#?}");
+    }
+
+    #[tokio::test]
+    async fn envoy_single_canonical_paths_are_allowlisted() {
+        let app = application(ProxyMode::ForwardSingle, "^/public(/.*)?$");
+        let mut denied = Vec::new();
+        for path in ALLOWLISTED_PATHS {
+            if !envoy_allowlisted(&app, path).await {
+                denied.push(*path);
+            }
+        }
+
+        assert!(denied.is_empty(), "not allowlisted: {denied:#?}");
+    }
+
+    #[tokio::test]
+    async fn envoy_single_non_canonical_paths_are_not_allowlisted() {
+        let app = application(ProxyMode::ForwardSingle, "^/public(/.*)?$");
+        let mut allowed = Vec::new();
+        for path in NOT_ALLOWLISTED_PATHS {
+            if envoy_allowlisted(&app, path).await {
+                allowed.push(*path);
+            }
+        }
+
+        assert!(allowed.is_empty(), "allowlisted: {allowed:#?}");
+    }
+
+    #[tokio::test]
+    async fn envoy_domain_canonical_paths_are_allowlisted() {
+        let app = application(
+            ProxyMode::ForwardDomain,
+            "^//app\\.example\\.com/public(/.*)?$",
+        );
+        let mut denied = Vec::new();
+        for path in ALLOWLISTED_PATHS {
+            if !envoy_allowlisted(&app, path).await {
+                denied.push(*path);
+            }
+        }
+
+        assert!(denied.is_empty(), "not allowlisted: {denied:#?}");
+    }
+
+    #[tokio::test]
+    async fn envoy_domain_non_canonical_paths_are_not_allowlisted() {
+        let app = application(
+            ProxyMode::ForwardDomain,
+            "^//app\\.example\\.com/public(/.*)?$",
+        );
+        let mut allowed = Vec::new();
+        for path in NOT_ALLOWLISTED_PATHS {
+            if envoy_allowlisted(&app, path).await {
+                allowed.push(*path);
+            }
+        }
+
+        assert!(allowed.is_empty(), "allowlisted: {allowed:#?}");
+    }
+
+    #[tokio::test]
+    async fn proxy_canonical_paths_are_allowlisted() {
+        let app = application(ProxyMode::Proxy, "^/public(/.*)?$");
+        let mut denied = Vec::new();
+        for path in ALLOWLISTED_PATHS {
+            if !proxy_allowlisted(&app, path).await {
+                denied.push(*path);
+            }
+        }
+
+        assert!(denied.is_empty(), "not allowlisted: {denied:#?}");
+    }
+
+    #[tokio::test]
+    async fn proxy_non_canonical_paths_are_not_allowlisted() {
+        let app = application(ProxyMode::Proxy, "^/public(/.*)?$");
+        let mut allowed = Vec::new();
+        for path in NOT_ALLOWLISTED_PATHS {
+            if proxy_allowlisted(&app, path).await {
+                allowed.push(*path);
+            }
+        }
+
+        assert!(allowed.is_empty(), "allowlisted: {allowed:#?}");
     }
 }

@@ -35,6 +35,8 @@
 @import "#elements/Breadcrumbs_impl/Breadcrumbs.root.css" layer(components);
 @import "#elements/Crontab_impl/Crontab.root.css" layer(components);
 @import "#elements/Divider_impl/Divider.root.css" layer(components);
+@import "#elements/Expand_impl/Expand.root.css" layer(components);
+@import "#elements/ExpansionToggle_impl/ExpansionToggle.root.css" layer(components);
 @import "#elements/Label_impl/Label.root.css" layer(components);
 @import "#elements/Paginator_impl/Paginator.root.css" layer(components);
 @import "#elements/Progress_impl/Progress.root.css" layer(components);

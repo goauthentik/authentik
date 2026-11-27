@@ -40,7 +40,7 @@
     },
     "devDependencies": {
         "@types/mdast": "^4.0.4",
-        "mdast-util-from-markdown": "^2.0.3",
+        "mdast-util-from-markdown": "^2.1.0",
         "mdast-util-mdx": "^3.0.0",
         "mdast-util-to-markdown": "^2.1.2",
         "oxfmt": "catalog:",
