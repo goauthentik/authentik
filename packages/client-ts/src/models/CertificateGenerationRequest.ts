@@ -24,6 +24,12 @@ export interface CertificateGenerationRequest {
     subjectAltName?: string;
     validityDays: number;
     alg?: AlgEnum;
+    /**
+     * Size of the private key in bits. Supported for RSA (2048, 3072, 4096) and ECDSA (256, 384,
+     * 521, selecting the curve), defaults to 4096 for RSA and 256 for ECDSA. All other algorithms
+     * have a fixed key size.
+     */
+    keySize?: number | null;
 }
 
 /**
@@ -65,6 +71,12 @@ export function CertificateGenerationRequestFromJSONTyped(
         subjectAltName: json["subject_alt_name"] == null ? undefined : json["subject_alt_name"],
         validityDays: json["validity_days"],
         alg: json["alg"] == null ? undefined : AlgEnumFromJSON(json["alg"]),
+        keySize:
+            json["key_size"] === undefined
+                ? undefined
+                : json["key_size"] === null
+                  ? null
+                  : json["key_size"],
     };
 }
 
@@ -85,5 +97,6 @@ export function CertificateGenerationRequestToJSONTyped(
         subject_alt_name: value["subjectAltName"],
         validity_days: value["validityDays"],
         alg: AlgEnumToJSON(value["alg"]),
+        key_size: value["keySize"],
     };
 }

@@ -1,11 +1,10 @@
 """OAuth Provider Models"""
 
 import base64
-import binascii
 import json
 from dataclasses import asdict, dataclass
 from functools import cached_property
-from hashlib import sha256
+from hashlib import sha256, sha384, sha512
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse, urlunparse
 
@@ -189,6 +188,22 @@ class JWTAlgorithms(models.TextChoices):
         if isinstance(public_key, Ed25519PublicKey | Ed448PublicKey):
             return cls.EDDSA
         raise ValueError(f"Invalid key type: {type(public_key)}")
+
+
+# Hash used for the `at_hash` and `c_hash` ID Token claims, which has to match the hash of the
+# algorithm the ID Token is signed with. Algorithms not listed here use SHA-256.
+# https://openid.net/specs/openid-connect-core-1_0.html#CodeIDToken
+ID_TOKEN_HASH_ALGORITHMS = {
+    JWTAlgorithms.ES384: sha384,
+    JWTAlgorithms.ES512: sha512,
+}
+
+
+def id_token_hash(value: str, alg: str) -> str:
+    """base64url encoding of the left-most half of the hash of `value`, as used for the
+    `at_hash` and `c_hash` claims of an ID Token signed with `alg`"""
+    digest = ID_TOKEN_HASH_ALGORITHMS.get(alg, sha256)(value.encode("ascii")).digest()
+    return base64.urlsafe_b64encode(digest[: len(digest) // 2]).rstrip(b"=").decode("ascii")
 
 
 class ScopeMapping(PropertyMapping):
@@ -635,12 +650,8 @@ class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, 
     @property
     def c_hash(self):
         """https://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
-        hashed_code = sha256(self.code.encode("ascii")).hexdigest().encode("ascii")
-        return (
-            base64.urlsafe_b64encode(binascii.unhexlify(hashed_code[: len(hashed_code) // 2]))
-            .rstrip(b"=")
-            .decode("ascii")
-        )
+        _, alg = self.provider.jwt_key
+        return id_token_hash(self.code, alg)
 
 
 class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
@@ -675,14 +686,8 @@ class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGr
     @property
     def at_hash(self):
         """Get hashed access_token"""
-        hashed_access_token = sha256(self.token.encode("ascii")).hexdigest().encode("ascii")
-        return (
-            base64.urlsafe_b64encode(
-                binascii.unhexlify(hashed_access_token[: len(hashed_access_token) // 2])
-            )
-            .rstrip(b"=")
-            .decode("ascii")
-        )
+        _, alg = self.provider.jwt_key
+        return id_token_hash(self.token, alg)
 
     @property
     def serializer(self) -> Serializer:
