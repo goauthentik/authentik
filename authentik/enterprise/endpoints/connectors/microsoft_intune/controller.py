@@ -35,7 +35,7 @@ class MicrosoftIntuneController(BaseController):
         return "intune.microsoft.com"
 
     def capabilities(self) -> list[Capabilities]:
-        return [Capabilities.ENROLL_AUTOMATIC_API]
+        return [Capabilities.ENROLL_AUTOMATIC_API, Capabilities.STAGE_ENDPOINTS]
 
     def client(self):
         return GraphServiceClient(**self.credentials)
@@ -47,8 +47,8 @@ class MicrosoftIntuneController(BaseController):
         while next_link:
             for dev in devices.value:
                 serial = dev.serial_number or dev.id
-                device, _ = Device.objects.get_or_create(
-                    identifier=serial, defaults={"name": dev.device_name, "expiring": False}
+                device = Device.get_or_create(
+                    identifier=serial, name=dev.device_name, defaults={"expiring": False}
                 )
                 connection, _ = DeviceConnection.objects.update_or_create(
                     device=device,

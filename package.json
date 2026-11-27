@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/authentik",
-    "version": "2026.11.0-rc1",
+    "version": "2027.2.0-rc1",
     "private": true,
     "type": "module",
     "imports": {
@@ -31,14 +31,18 @@
         "@goauthentik/oxlint-config": "workspace:*",
         "@goauthentik/tsconfig": "workspace:*",
         "@types/node": "catalog:",
-        "cspell": "^10.3.6",
+        "cspell": "^10.5.2",
         "npm-run-all": "^4.1.5",
-        "pino": "^10.3.1",
-        "pino-pretty": "^13.1.3",
+        "pino": "^10.4.0",
+        "pino-pretty": "^13.2.0",
         "typescript": "catalog:",
         "yaml": "^2.9.1"
     },
     "devDependencies": {
+        "@types/mdast": "^4.0.4",
+        "mdast-util-from-markdown": "^2.1.0",
+        "mdast-util-mdx": "^3.0.0",
+        "mdast-util-to-markdown": "^2.1.2",
         "oxfmt": "catalog:",
         "oxlint": "catalog:"
     },
@@ -53,5 +57,5 @@
         "node": "^24.22.3 || >=26.13.1",
         "pnpm": ">=12.4.0"
     },
-    "packageManager": "pnpm@12.22.0+sha512.894940a3d9a57dfa6fd373990fb4e41e09c2f2d76d982ed1d75275d39267f988fb4e2d40900cbe9921c68d97c67aa1a1096d276633db248f7b34927ac9ddb7a4"
+    "packageManager": "pnpm@12.23.0+sha512.02da94ffaf133f46074322afe552f90d40b5f71ae259aefbccdacc5085b1d617e98d65e0131f5748b9b67445978ee5055d7d59a473f1eef0d504854fefcd5975"
 }

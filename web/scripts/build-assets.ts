@@ -1,8 +1,8 @@
 import "@goauthentik/core/environment/load/node";
 import { existsSync } from "node:fs";
-import * as fs from "node:fs/promises";
+import { mkdir, cp } from "node:fs/promises";
 import { createRequire } from "node:module";
-import * as path from "node:path";
+import { join, dirname, resolve } from "node:path";
 
 import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
@@ -16,10 +16,10 @@ type SourceDestinationPair = [from: string, to: string];
 
 const assets: SourceDestinationPair[] = [
     [
-        path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup"),
-        path.dirname(EntryPoint.StandaloneLoading.out),
+        join(dirname(EntryPoint.StandaloneLoading.in), "startup"),
+        dirname(EntryPoint.StandaloneLoading.out),
     ],
-    [path.resolve(PackageRoot, "src", "assets", "images"), "./assets/images"],
+    [resolve(PackageRoot, "src", "assets", "images"), "./assets/images"],
     [require.resolve("@goauthentik/brand-assets/brand.png"), "./assets/icons/brand.png"],
     [require.resolve("@goauthentik/brand-assets/brand.svg"), "./assets/icons/brand.svg"],
     [require.resolve("@goauthentik/brand-assets/icon.png"), "./assets/icons/icon.png"],
@@ -48,17 +48,21 @@ const assets: SourceDestinationPair[] = [
         require.resolve("@goauthentik/brand-assets/icon_top_brand.svg"),
         "./assets/icons/icon_top_brand.svg",
     ],
+    [
+        require.resolve("maplibre-gl/dist/maplibre-gl-worker.mjs"),
+        "./assets/maps/maplibre-gl-worker.mjs",
+    ],
 ];
 
 // Bundled hexworld basemap. Both the archive and the Latin Noto Sans glyph
 // ranges (SIL OFL, see packages/geo/tiles/fonts/OFL.txt) are committed to git,
 // so the copy is a pure filesystem step — the build never reaches the
 // network for basemap assets.
-const HEXWORLD_SRC = path.resolve(MonoRepoRoot, "packages", "geo", "tiles");
-const HEXWORLD_DEST = path.resolve(DistDirectory, "assets", "maps");
+const HEXWORLD_SRC = resolve(MonoRepoRoot, "packages", "geo", "tiles");
+const HEXWORLD_DEST = resolve(DistDirectory, "assets", "maps");
 
 async function copyHexworld() {
-    const archive = path.resolve(HEXWORLD_SRC, "hexworld.pmtiles");
+    const archive = resolve(HEXWORLD_SRC, "hexworld.pmtiles");
 
     if (!existsSync(archive)) {
         throw new Error(
@@ -68,7 +72,7 @@ async function copyHexworld() {
         );
     }
 
-    const fonts = path.resolve(HEXWORLD_SRC, "fonts");
+    const fonts = resolve(HEXWORLD_SRC, "fonts");
 
     if (!existsSync(fonts)) {
         throw new Error(
@@ -77,25 +81,24 @@ async function copyHexworld() {
         );
     }
 
-    await fs.mkdir(HEXWORLD_DEST, { recursive: true });
-    await fs.cp(archive, path.resolve(HEXWORLD_DEST, "hexworld.pmtiles"));
-    await fs.cp(fonts, path.resolve(HEXWORLD_DEST, "fonts"), { recursive: true });
+    await mkdir(HEXWORLD_DEST, { recursive: true });
+    await cp(archive, resolve(HEXWORLD_DEST, "hexworld.pmtiles"));
+    await cp(fonts, resolve(HEXWORLD_DEST, "fonts"), { recursive: true });
+
     logger.debug("📋 Bundled hexworld basemap");
 }
 
 export async function copyAssets() {
     const copy = ([from, to]: SourceDestinationPair) => {
-        const resolvedDestination = path.resolve(DistDirectory, to);
+        const resolvedDestination = resolve(DistDirectory, to);
 
         logger.debug(`📋 Copying assets from ${from} to ${to}`);
 
-        return fs
-            .cp(from, resolvedDestination, {
-                recursive: true,
-            })
-            .catch((error) => {
-                logger.error(`Failed to copy assets from ${from} to ${to}: ${error}`);
-            });
+        return cp(from, resolvedDestination, {
+            recursive: true,
+        }).catch((error) => {
+            logger.error(`Failed to copy assets from ${from} to ${to}: ${error}`);
+        });
     };
 
     return await Promise.all([...assets.map(copy), copyHexworld()]);

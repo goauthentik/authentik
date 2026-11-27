@@ -4,13 +4,13 @@ description: "Features included in authentik Enterprise"
 sidebar_position: 2
 ---
 
-authentik Enterprise adds features for identity provisioning, security, compliance, and device access. These features are included with both Enterprise plans.
+authentik Enterprise and Enterprise Plus include the same product features. The plans differ in support and purchase options.
 
 ## Enterprise and Enterprise Plus
 
-Enterprise includes all the product features on this page and [ticket-based support](./enterprise-support.mdx) for qualifying subscriptions.
+Qualifying Enterprise subscriptions include [ticket-based support](./enterprise-support.mdx).
 
-Enterprise Plus includes everything in Enterprise, with additional options for organizations that need a customized agreement:
+Enterprise Plus offers additional options for organizations that need a customized agreement:
 
 - Dedicated support channels (Slack and/or scheduled calls)
 - Assistance with onboarding best practices
@@ -26,17 +26,23 @@ See the [pricing page](https://goauthentik.io/pricing/) for current plan details
 ### Identity and provisioning
 
 - [Agent accounts](../users-sources/user/account-types/agent-accounts.mdx) act on behalf of a parent user when accessing the authentik API.
-- [Scheduled user offboarding](../sys-mgmt/user-offboarding.mdx) deactivates or deletes users at a scheduled time, with optional session and token revocation. This feature is in preview.
-- [Google Workspace integration](../add-secure-apps/providers/gws/index.mdx) synchronizes users and groups from authentik to Google Workspace.
-- [Microsoft Entra ID integration](../add-secure-apps/providers/entra/index.mdx) synchronizes users and groups from authentik to Microsoft Entra ID.
-- [External OAuth and SAML sources](../add-secure-apps/flows-stages/stages/source/index.mdx) embed an external identity provider in a flow for migration or additional verification. For example, dynamically redirect users to authenticate against Entra ID or GWS before continuing with a flow.
-- The [Shared Signals Framework provider](../add-secure-apps/providers/ssf/index.mdx) sends security events to subscribed applications, including Apple Business Manager.
-- [OAuth authentication for SCIM](../add-secure-apps/providers/scim/index.mdx#oauth-token) uses short-lived OAuth tokens instead of a static token for SCIM provisioning.
-- The [WS-Federation provider](../add-secure-apps/providers/wsfed/index.mdx) connects applications that use WS-Federation to authentik for single sign-on.
+- The [Google Workspace provider](../add-secure-apps/providers/gws/index.mdx) synchronizes users and groups from authentik to Google Workspace.
+- The [Microsoft Entra ID provider](../add-secure-apps/providers/entra/index.mdx) synchronizes users and groups from authentik to Microsoft Entra ID. It does not sync devices.
+- The [Source stage](../add-secure-apps/flows-stages/stages/source/index.mdx) sends users to an external OAuth or SAML identity provider within a flow. For example, users can authenticate with Microsoft Entra ID or Google Workspace before returning to the flow during a migration.
+- The [Shared Signals Framework provider](../add-secure-apps/providers/ssf/index.mdx) sends security events to subscribed applications. It supports [federated sign-in with Apple Business Manager](/integrations/device-management/apple/).
+- [OAuth authentication for SCIM](../add-secure-apps/providers/scim/index.mdx#oauth-token) uses short-lived OAuth tokens instead of a static token for SCIM provisioning. It supports both silent OAuth and an interactive authorization during setup.
+- The [WS-Federation provider](../add-secure-apps/providers/wsfed/index.mdx) connects applications that use WS-Federation to authentik for single sign-on, including [Microsoft 365](/integrations/platforms/microsoft-ws-federation/).
+
+### Lifecycle and governance
+
+- [Access requests](../add-secure-apps/access-requests/index.mdx) support privileged access management by letting users request access to applications and entitlements, with approval rules and time-limited grants. :ak-preview
+- [Scheduled user offboarding](../sys-mgmt/user-offboarding.mdx) deactivates or deletes users at a scheduled time, with optional session and token revocation. :ak-preview
+- [User expiration](../sys-mgmt/user-expiration.mdx) automatically schedules offboarding after a configurable period of inactivity and can warn users before their accounts expire. :ak-preview
+- [Object lifecycle management](../sys-mgmt/object-lifecycle-management.mdx) schedules periodic reviews of applications, groups, and roles, assigns reviewers, and tracks overdue reviews. :ak-preview
 
 ### Authentication and network access
 
-- [Privileged access management](../add-secure-apps/access-requests/index.mdx) lets users request access to applications and entitlements, with approval rules and time-limited grants. This feature is in preview.
+- [Required actions](../users-sources/user/required_actions.mdx) require users to complete flows before continuing to authentik or an application. For example, you can require a password change or authenticator setup.
 - [Password history compliance](../customize/policies/types/password-uniqueness.mdx) prevents users from reusing previous passwords.
 - [Client certificate authentication](../add-secure-apps/flows-stages/stages/mtls/index.mdx) authenticates or enrolls users with client certificates from devices, smart cards, PIV cards, or hardware tokens.
 - [RADIUS EAP-TLS](../add-secure-apps/providers/radius/index.mdx#eap) authenticates network clients with EAP-TLS and client certificates.
@@ -46,15 +52,26 @@ See the [pricing page](https://goauthentik.io/pricing/) for current plan details
 ### Audit and reporting
 
 - [Enhanced audit logging](../sys-mgmt/events/logging-events.mdx#enhanced-audit-logging) records detailed object changes and shows before-and-after values for compliance review.
-- [Event maps and charts](../sys-mgmt/events/logging-events.mdx#viewing-events-in-maps-and-charts) visualize recent events by location, type, and volume.
+- The [event map](../sys-mgmt/events/index.mdx#event-map) shows recent events by location, type, and volume. The bundled map works offline, and each brand can use a self-hosted map instead.
 - [CSV data exports](../sys-mgmt/data-exports.mdx) export user and event data for analysis, reporting, or backup.
-- [Object Lifecycle Management](../sys-mgmt/object-lifecycle-management.mdx) schedules periodic reviews of applications, groups, and roles, assigns reviewers, and tracks overdue reviews. This feature is in preview.
 
 ### Device security
 
-- The [Fleet connector](../endpoint-devices/device-compliance/connectors/fleetdm.mdx) uses device information from Fleet in device-aware access decisions. This feature is in preview.
-- The [Google Chrome connector](../endpoint-devices/device-compliance/connectors/google-chrome.mdx) uses Chrome Enterprise Device Trust signals in device-aware access decisions.
-- [Local device login](../endpoint-devices/authentik-agent/device-authentication/local-device-login/index.mdx) enables users to sign in to Windows and Linux devices with authentik credentials. This feature is in preview.
-- Advanced device compliance adds device facts and integrations to device-aware access decisions. This feature is in development; see the [Endpoint Devices feature overview](../endpoint-devices/index.mdx#features-overview).
+#### Device compliance and conditional access
 
-Feature availability can change as preview features mature. Refer to the linked technical documentation for current platform support and configuration requirements.
+- The [Fleet connector](../endpoint-devices/device-compliance/connectors/fleetdm.mdx) imports device data and can map Fleet users and teams to device access. It also supports [certificate-based conditional access for Apple devices](../endpoint-devices/device-compliance/fleet-conditional-access.mdx) without the authentik Agent. :ak-preview
+- The [Google Chrome connector](../endpoint-devices/device-compliance/connectors/google-chrome.mdx) uses Chrome Enterprise Device Trust signals from Chrome browsers and ChromeOS devices. Use it with the Endpoint stage instead of the [deprecated Google Chrome Device Trust stage](../add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index.mdx).
+- The [Microsoft Intune connector](../endpoint-devices/device-compliance/connectors/microsoft-intune.mdx) imports information about Intune-managed devices through Microsoft Graph. The Endpoint stage can match a client certificate to an imported device, which supports [conditional access for Intune-managed devices](../endpoint-devices/device-compliance/intune-conditional-access.mdx).
+
+[Advanced device facts](../endpoint-devices/device-compliance/device-reporting.mdx#advanced-device-facts-) and the following [connectors](../endpoint-devices/device-compliance/connectors/index.mdx#connectors-in-development) are in development:
+
+- **Microsoft Entra ID** has a device connector in development, separate from the provider that synchronizes users and groups.
+- **Cloudflare WARP** has a device connector in development.
+
+#### Device sign-in
+
+- [Local device login](../endpoint-devices/authentik-agent/device-authentication/local-device-login/index.mdx) lets users sign in to Windows and Linux devices with authentik credentials. Linux also supports [WebAuthn authenticators for local login](../endpoint-devices/authentik-agent/release-notes/v0.40.mdx#highlights). :ak-preview
+- [Platform SSO on macOS](../endpoint-devices/authentik-agent/device-authentication/local-device-login/macos.mdx) lets users register their Mac with authentik and unlock the macOS lock screen. On macOS 27, users can sign in to their Mac through an authentik flow in the browser. It requires the [authentik Agent for macOS](../endpoint-devices/authentik-agent/agent-deployment/macos.mdx). :ak-preview
+- [Tap-to-login with Apple Secure Enclave](../releases/2026/v2026.5.mdx#tap-to-login-secure-enclave-support-) can bind iPhone and Apple Watch credentials directly to a user without first pairing them with a specific endpoint. :ak-preview
+
+See the [endpoint devices feature overview](../endpoint-devices/index.mdx#features-overview) for platform support and preview status.

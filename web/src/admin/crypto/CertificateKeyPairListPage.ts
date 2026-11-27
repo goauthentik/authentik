@@ -11,7 +11,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import { aki } from "#common/api/client";
 
 import { ModalInvokerButton } from "#elements/dialogs";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -99,7 +98,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             managedSubText = msg("Managed by authentik (Discovered)");
         }
 
-        let color = PFColor.Green;
+        let color = "green";
 
         if (item.certExpiry) {
             const now = new Date();
@@ -107,11 +106,11 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             inAMonth.setDate(inAMonth.getDate() + 30);
 
             if (item.certExpiry <= inAMonth) {
-                color = PFColor.Orange;
+                color = "orange";
             }
 
             if (item.certExpiry <= now) {
-                color = PFColor.Red;
+                color = "red";
             }
         }
 

@@ -17,8 +17,9 @@ describe("ak-toggle-group", () => {
 
     afterEach(() => host.remove());
 
-    const options = () => html`<option value="a">A</option>
-        <option value="b">B</option>`;
+    const options = () =>
+        html`<option value="a">A</option>
+            <option value="b">B</option>`;
 
     async function mount(template: TemplateResult) {
         render(template, host);

@@ -16,7 +16,6 @@
  * Property will be applied when the browser paint phase begins.
  */
 
-@import "@patternfly/patternfly/components/BackgroundImage/background-image.css" layer(vendor);
 @import "@patternfly/patternfly/components/Button/button.css" layer(vendor);
 @import "@patternfly/patternfly/components/Form/form.css" layer(vendor);
 @import "@patternfly/patternfly/components/Drawer/drawer.css" layer(vendor);
@@ -35,7 +34,10 @@
 @import "#styles/authentik/components/Fieldset/fieldset.css" layer(components);
 @import "#styles/authentik/components/Icon/icon.css" layer(components);
 @import "#elements/Divider_impl/Divider.root.css" layer(components);
+@import "#elements/Expand_impl/Expand.root.css" layer(components);
+@import "#elements/ExpansionToggle_impl/ExpansionToggle.root.css" layer(components);
 @import "#elements/Progress_impl/Progress.root.css" layer(components);
+@import "#elements/Tooltip/Tooltip.root.css" layer(components);
 @import "#elements/ak-drawer/ak-drawer.root.css" layer(components);
 @import "#elements/locale/ak-locale-select.css" layer(components);
 @import "#styles/if/flow/tokens.css" layer(components);

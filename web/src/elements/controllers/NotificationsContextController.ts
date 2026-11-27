@@ -3,6 +3,7 @@ import { isAPIResultReady } from "#common/api/responses";
 import { actionToLabel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
 import { isGuest } from "#common/users";
+import { isHTTPURL } from "#common/utils";
 import { AKNotificationEvent } from "#common/ws/events";
 
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
@@ -126,7 +127,7 @@ export class NotificationsContextController extends ReactiveContextController<No
             message: actionToLabel(notification.event?.action) ?? notification.body,
             description: html`${notification.body}
             ${
-                notification.hyperlink
+                notification.hyperlink && isHTTPURL(notification.hyperlink)
                     ? html`<br /><a href=${notification.hyperlink}
                               >${notification.hyperlinkLabel}</a
                           >`
