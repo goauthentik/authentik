@@ -26,10 +26,12 @@
         "lint:check": "oxlint --max-warnings=0 scripts/node dev *.config.ts *.json *.jsonc",
         "lint:runtime": "node ./scripts/node/lint-runtime.ts",
         "lint:spellcheck": "cspell . --config cspell.config.jsonc --no-progress",
+        "lint:lexicon": "lexicon-audit audit --source-locale en-US ./locale ./web/xliff",
         "test:dev-mcp": "vitest run --config dev/mcp/vite.config.ts"
     },
     "dependencies": {
         "@goauthentik/docusaurus-config": "workspace:*",
+        "@goauthentik/lexicon-audit": "workspace:*",
         "@goauthentik/logger-js": "workspace:*",
         "@goauthentik/oxfmt-config": "workspace:*",
         "@goauthentik/oxlint-config": "workspace:*",
