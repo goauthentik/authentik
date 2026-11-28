@@ -1,7 +1,6 @@
 """Test and debug Blueprints"""
 
 import atexit
-import readline
 from pathlib import Path
 from pprint import pformat
 from sys import exit as sysexit
@@ -10,6 +9,13 @@ from textwrap import indent
 from django.core.management.base import BaseCommand, no_translations
 from structlog.stdlib import get_logger
 from yaml import load
+
+try:
+    import readline
+except ImportError:  # pragma: no cover
+    # The production image ships no libreadline. Line editing and history are a
+    # convenience for this interactive command, so degrade instead of failing.
+    readline = None
 
 from authentik.blueprints.v1.common import BlueprintLoader, EntryInvalidError
 from authentik.core.management.commands.shell import get_banner_text
@@ -25,6 +31,8 @@ class Command(BaseCommand):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        if readline is None:
+            return
         histfolder = Path("~").expanduser() / Path(".local/share/authentik")
         histfolder.mkdir(parents=True, exist_ok=True)
         histfile = histfolder / Path("blueprint_shell_history")

@@ -198,4 +198,5 @@ zxcvbn
 ~uuid
 ~uuids
 wreply
+execvpe
 Infima
