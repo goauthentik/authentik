@@ -12,6 +12,8 @@
 import { expect, test } from "#e2e";
 import { setInstanceFlag } from "#e2e/utils/settings";
 
+import type { Page } from "@playwright/test";
+
 const CONTINUOUS_LOGIN_FLAG = "Continuous Login";
 
 const FLOW_PATHNAME = "/if/flow/default-authentication-flow/";
@@ -21,6 +23,10 @@ const USER_INTERFACE_PATHNAME = "/if/user/";
 const FLOW_WITH_NEXT = `${FLOW_PATHNAME}?next=${encodeURIComponent(USER_INTERFACE_PATHNAME)}`;
 
 const IDENTIFICATION_STAGE = "ak-stage-identification";
+
+// Seeded by `test/blueprints/test-continuous-login-source.yaml`: a single unreachable source and
+// no user fields, so the identification stage redirects to the source on its own.
+const SOURCE_FLOW_WITH_NEXT = `/if/flow/test-continuous-login-source/?next=${encodeURIComponent(USER_INTERFACE_PATHNAME)}`;
 
 test.describe.configure({ mode: "serial" });
 
@@ -100,6 +106,65 @@ test.describe("Continuous login", () => {
                 follower.locator(IDENTIFICATION_STAGE),
                 "Follower has left the identification stage",
             ).toBeHidden();
+        });
+    });
+
+    test("sends only one tab to a single auto-redirecting source", async ({
+        baseURL,
+        context,
+        page,
+        session,
+    }) => {
+        const tabs = await test.step("Open three tabs on the source flow at once", async () => {
+            let opened: Page[] = [];
+
+            // System settings are cached per server process, so retry until every tab was
+            // rendered with the flag on.
+            await expect(async () => {
+                await Promise.all(opened.map((tab) => tab.close()));
+
+                opened = await Promise.all([0, 1, 2].map(() => context.newPage()));
+
+                const responses = await Promise.all(
+                    opened.map((tab) => tab.goto(SOURCE_FLOW_WITH_NEXT)),
+                );
+
+                for (const response of responses) {
+                    expect(await response?.text()).toMatch(/"flows_continuous_login":\s*true/);
+                }
+            }, "Every tab renders with continuous login enabled").toPass({ timeout: 35_000 });
+
+            return opened;
+        });
+
+        const waiting = await test.step("Only one tab leaves for the source", async () => {
+            const isAway = (tab: Page) => !tab.url().startsWith(baseURL!);
+
+            await expect
+                .poll(() => tabs.filter(isAway).length, { message: "One tab leaves" })
+                .toBe(1);
+
+            const remaining = tabs.filter((tab) => !isAway(tab));
+
+            for (const tab of remaining) {
+                await expect(
+                    tab.locator(IDENTIFICATION_STAGE),
+                    "Waiting tab stays on the identification stage",
+                ).toBeVisible();
+            }
+
+            return remaining;
+        });
+
+        await test.step("Authenticate in another tab", async () => {
+            await page.goto(FLOW_WITH_NEXT);
+            await session.login({ to: USER_INTERFACE_PATHNAME });
+        });
+
+        await test.step("Waiting tabs resume without signing in", async () => {
+            for (const tab of waiting) {
+                await tab.waitForURL(`**${USER_INTERFACE_PATHNAME}**`, { timeout: 20_000 });
+            }
         });
     });
 });

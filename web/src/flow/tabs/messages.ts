@@ -3,6 +3,7 @@ export enum BroadcastMessageType {
     Continue = "continue",
     Exit = "exit",
     DiscoverReply = "discoverReply",
+    SignInStarted = "signInStarted",
 }
 
 export interface BroadcastMessageDiscover {
@@ -15,6 +16,18 @@ export interface BroadcastMessageDiscover {
 
 export interface BroadcastMessageDiscoverReply {
     type: BroadcastMessageType.DiscoverReply;
+    /**
+     * The tab ID of the sender. This is used to prevent responding to your own messages.
+     */
+    sender: string;
+    /**
+     * Whether the sender is waiting on another tab's source sign-in.
+     */
+    awaitingSignIn?: boolean;
+}
+
+export interface BroadcastMessageSignInStarted {
+    type: BroadcastMessageType.SignInStarted;
     /**
      * The tab ID of the sender. This is used to prevent responding to your own messages.
      */
@@ -53,4 +66,5 @@ export type BroadcastMessage =
     | BroadcastMessageDiscover
     | BroadcastMessageDiscoverReply
     | BroadcastMessageExit
-    | BroadcastMessageContinue;
+    | BroadcastMessageContinue
+    | BroadcastMessageSignInStarted;
