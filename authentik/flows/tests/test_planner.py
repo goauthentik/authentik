@@ -26,6 +26,7 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.flows.planner import (
+    PLAN_CONTEXT_IS_REAUTHENTICATION,
     PLAN_CONTEXT_IS_REDIRECTED,
     PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
@@ -87,6 +88,22 @@ class TestFlowPlanner(TestCase):
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         planner.plan(request)
+
+    def test_authentication_reauthentication(self):
+        """Test flow authentication (require_unauthenticated, when logging in again)"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        request.user = create_test_admin_user()
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+
+        with self.assertRaises(FlowNonApplicableException):
+            planner.plan(request)
+
+        planner.plan(request, {PLAN_CONTEXT_IS_REAUTHENTICATION: True})
 
     def test_authentication_redirect_required(self):
         """Test flow authentication (redirect required)"""
