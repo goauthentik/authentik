@@ -44,6 +44,7 @@ from authentik.stages.authenticator_webauthn.algorithms import supported_pub_key
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     AuthenticatorWebAuthnStage,
+    UserVerification,
     WebAuthnDevice,
     WebAuthnDeviceType,
 )
@@ -90,6 +91,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                     self.request, stage.additional_accepted_origins
                 ),
                 supported_pub_key_algs=supported_pub_key_algs(),
+                require_user_verification=stage.user_verification == UserVerification.REQUIRED,
             )
         # py_webauthn does not wrap cryptography's ValueError when an attestation certificate
         # fails to parse, which happens with authenticators that ship non-DER certificates
