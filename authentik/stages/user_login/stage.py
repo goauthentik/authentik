@@ -12,6 +12,7 @@ from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
 from authentik.core import user_switching
+from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import AuthenticatedSession, Session, User, UserTypes
 from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
@@ -199,27 +200,32 @@ class UserLoginStageView(ChallengeStageView):
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")
             return self.executor.stage_invalid()
+        # The switching session records "Add user" too, in case the plan lost its marker.
+        is_add_user = PLAN_CONTEXT_USER_SWITCH_ADD_USER in self.executor.plan.context or (
+            user_switching.is_adding_user(self.request)
+        )
         # The account switcher is only available in the User interface, which non-internal
         # users can't access, so adding them would leave the other logins unreachable.
-        if (
-            PLAN_CONTEXT_USER_SWITCH_ADD_USER in self.executor.plan.context
-            and user.type != UserTypes.INTERNAL
-        ):
+        if is_add_user and user.type != UserTypes.INTERNAL:
             message = _("Only internal users can be added to user switching.")
             self.logger.warning(message, user=user.username)
             return self.executor.stage_invalid(message)
         is_user_switch_login = (
-            PLAN_CONTEXT_USER_SWITCH_ADD_USER in self.executor.plan.context
-            or PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION in self.executor.plan.context
+            is_add_user or PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION in self.executor.plan.context
         )
+        if is_add_user:
+            user_switching.clear_add_user(self.request)
         user_switching_token = getattr(self.request, "user_switching_token", None)
-        if (
-            is_user_switch_login
-            and self.request.user.is_authenticated
-            and self.request.user.pk != user.pk
+        if self.request.user.is_authenticated and (
+            self.request.user.pk != user.pk or SESSION_KEY_IMPERSONATE_USER in self.request.session
         ):
+            # Start a new session for a different user, or to end an impersonation.
+            previous_session_key = self.request.session.session_key
             self._start_new_session()
-            if user_switching_token:
+            if not is_user_switch_login:
+                # A plain login replaces the previous user's login.
+                Session.objects.filter(session_key=previous_session_key).delete()
+            elif user_switching_token:
                 Session.objects.filter(
                     authenticatedsession__user=user,
                     authenticatedsession__user_switching_session_id=user_switching_token,

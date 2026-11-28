@@ -74,7 +74,7 @@ class BrandDefaultRedirectView(InterfaceView):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Returning to an interface abandons an unfinished "Add user".
-        request.session.pop(user_switching.SESSION_KEY_ADD_USER, None)
+        user_switching.clear_add_user(request)
         if request.user.is_authenticated and request.user.type in (
             UserTypes.EXTERNAL,
             UserTypes.SERVICE_ACCOUNT,
