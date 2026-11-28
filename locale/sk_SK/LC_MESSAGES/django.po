@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 00:10+0000\n"
+"POT-Creation-Date: 2026-11-28 00:12+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Marc Schmitt, 2026\n"
 "Language-Team: Slovak (Slovakia) (https://app.transifex.com/authentik/teams/119923/sk_SK/)\n"
@@ -1715,6 +1715,13 @@ msgstr "Skupiny poskytovateľa Google Workspace"
 #: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr ""
+"Filtre skupín používané na definovanie rozsahu synchronizácie pre skupiny."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr "Mapovania vlastností používané pri vytváraní/aktualizácii skupiny."
 
@@ -1725,6 +1732,14 @@ msgstr "Poskytovateľ Google Workspace"
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Providers"
 msgstr "Poskytovatelia Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group Filter"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group Filters"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Property Mappings Group"
@@ -1810,6 +1825,14 @@ msgstr "Poskytovateľ Microsoft Entra"
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Providers"
 msgstr "Poskytovatelia Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group Filter"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group Filters"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Property Mappings Group"
@@ -4126,11 +4149,6 @@ msgid "vCenter"
 msgstr "vCenter"
 
 #: authentik/providers/scim/models.py
-msgid "Group filters used to define sync-scope for groups."
-msgstr ""
-"Filtre skupín používané na definovanie rozsahu synchronizácie pre skupiny."
-
-#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "Základná adresa na požiadavky SCIM, zvyčajne končí /v2"
 
@@ -6230,6 +6248,12 @@ msgid ""
 msgstr ""
 "Heslo: Maskovaný vstup, viacero vstupov tohto typu na rovnakej výzve musia "
 "byť identické."
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password with show button: Masked input w/show button, multiple inputs of "
+"this type on the same prompt need to be identical."
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Fixed choice field rendered as a group of radio buttons."
