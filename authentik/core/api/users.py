@@ -766,8 +766,13 @@ class UserViewSet(
         if token_duration:
             timedelta_string_validator(token_duration)
             expires = now() + timedelta_from_string(token_duration)
+        identifier = f"{user.uid}-password-reset"
+        # Delete an expired token that wasn't cleaned up yet, so a new key is generated
+        FlowToken.objects.including_expired().filter(
+            identifier=identifier, expiring=True, expires__lt=now()
+        ).delete()
         token, __ = FlowToken.objects.update_or_create(
-            identifier=f"{user.uid}-password-reset",
+            identifier=identifier,
             defaults={
                 "user": user,
                 "flow": flow,
