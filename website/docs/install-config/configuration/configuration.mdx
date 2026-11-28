@@ -913,6 +913,70 @@ Defaults to `60s`
 
 Defaults to `120s`
 
+## Untrusted fetch settings:ak-version[2027.2]
+
+authentik sometimes has to fetch a URL that a remote party controls, such as an OAuth 2.0 client metadata document or its JWKS. These requests use a hardened fetcher that:
+
+- accepts `https` URLs only, and verifies the certificate and hostname;
+- never follows redirects, never sends credentials or cookies, and never uses a proxy;
+- connects only to a public IP address that it has already checked, so a DNS answer cannot change between the check and the connection;
+- limits the response size, the total time per request, and the number of concurrent requests and DNS lookups.
+
+Loopback, link-local, and cloud metadata addresses (such as `169.254.169.254` and `fd00:ec2::254`) are always blocked, even when you list them in `AUTHENTIK_UNTRUSTED_FETCH__ALLOWED_PRIVATE_DESTINATIONS`. Single-label hostnames, such as `intranet`, are blocked unless you list them explicitly, because their resolution depends on the search domains of the resolver.
+
+:::info
+The fetcher does not support an egress proxy. It does not read `HTTP_PROXY`, `HTTPS_PROXY`, or `NO_PROXY`. If your network only allows outbound traffic through a proxy, these fetches fail with a connection error. Allow direct outbound HTTPS from authentik to the hosts you need instead.
+:::
+
+### `AUTHENTIK_UNTRUSTED_FETCH__TIMEOUT`
+
+The total time, in seconds, that a single fetch can take, including DNS resolution, connecting, and reading the response. The value is clamped to between `0.5` and `30`.
+
+Defaults to `5`.
+
+### `AUTHENTIK_UNTRUSTED_FETCH__MAX_CONCURRENCY`
+
+The maximum number of fetches that can run at once in each server or worker process. When all slots are in use, further fetches fail after at most 100 milliseconds instead of waiting.
+
+Defaults to `10`.
+
+### `AUTHENTIK_UNTRUSTED_FETCH__DNS_CONCURRENCY`
+
+The maximum number of DNS lookups that can run at once in each process. This pool is separate from, and larger than, the fetch limit, so that a slow or unreachable nameserver cannot use up the capacity for other fetches. When all lookups are in use, further fetches fail after at most 100 milliseconds.
+
+Defaults to `32`.
+
+### `AUTHENTIK_UNTRUSTED_FETCH__ALLOWED_PRIVATE_DESTINATIONS`
+
+A list of non-public destinations that authentik may fetch from. Each entry is a CIDR range, a single IP address, or an exact hostname. Provide a comma-separated list in an environment variable, or a YAML list in a configuration file.
+
+```yaml
+untrusted_fetch:
+    allowed_private_destinations:
+        - 10.20.0.0/24
+        - idp-metadata.internal.example.com
+```
+
+- A CIDR or IP address entry allows any hostname that resolves only to addresses in that range.
+- A hostname entry allows that exact name (and no subdomains) to resolve to any private address that is not always blocked. Use it for single-label names.
+- Invalid entries are logged and ignored.
+
+Keep this list as narrow as possible. Every client that can register or present a metadata URL can make authentik send an HTTPS request to the destinations you list, so a broad range such as `10.0.0.0/8` or `0.0.0.0/0` exposes every internal HTTPS service in that range to server-side requests. Prefer the smallest CIDR that covers the hosts that serve client metadata, or list their hostnames. Do not list the address of an internal service that must not be reachable by clients, such as a database admin interface or a secrets store.
+
+Defaults to an empty list.
+
+#### Local development
+
+When `AUTHENTIK_DEBUG` is `true`, authentik also allows fetching from loopback addresses (`127.0.0.0/8` and `::1`) and from the name `localhost`. Link-local and cloud metadata addresses stay blocked, and the URL must still use `https`.
+
+To fetch a client metadata document from your own machine:
+
+1. Set `AUTHENTIK_DEBUG=true` in your development configuration. Never set it in production.
+2. Serve the document over HTTPS with a certificate that authentik trusts, for example one issued by a local development CA that you add to the trust store of the authentik process. Certificate verification stays on.
+3. Use the URL `https://localhost:8443/client.json` or `https://127.0.0.1:8443/client.json`.
+
+To reach a service on a private network instead, add its CIDR or hostname to `AUTHENTIK_UNTRUSTED_FETCH__ALLOWED_PRIVATE_DESTINATIONS`.
+
 ## Advanced settings
 
 ##### `AUTHENTIK_SKIP_MIGRATIONS`
