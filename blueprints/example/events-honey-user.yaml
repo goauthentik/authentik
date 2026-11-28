@@ -7,19 +7,17 @@ metadata:
     blueprints.goauthentik.io/description: |
       Creates decoy users without a password and alerts administrators whenever someone tries to log in as one of them. See the [honey user documentation](https://docs.goauthentik.io/docs/security/honey-user).
 context:
-  # Pick names that look valuable to an attacker and do not match a real user.
+  # Pick usernames that an attacker would try and that no real user has.
   username: svc-backup-admin
-  # A second decoy that looks like a directory administrator, attractive to
-  # anyone enumerating the LDAP provider. Set to "" to skip it.
+  # A second decoy, named like a directory administrator. Set to "" to skip it.
   ldap_admin_username: ldap-admin
-  # Users in this group receive the notification.
+  # The members of this group receive the alerts.
   group_name: authentik Admins
-  # Optional webhook (for example a Slack incoming webhook or a SIEM endpoint).
-  # Leave empty to only notify through the authentik UI and email.
+  # Optional webhook URL, such as a Slack incoming webhook or a SIEM endpoint.
   webhook_url: ""
 entries:
-  # Reuse the default local transport and admin group. "created" adds them only
-  # if they are missing and never changes existing ones.
+  # Entries with "state: created" are added only if they are missing, and keep
+  # any later edits when the blueprint is applied again.
   - model: authentik_events.notificationtransport
     id: local-transport
     state: created
@@ -27,9 +25,8 @@ entries:
       name: default-local-transport
     attrs:
       mode: local
-  # A dedicated email transport, so the subject says this is a honey user alert
-  # and not an ordinary failed login. authentik appends the event action to the
-  # prefix, so subjects read "[authentik] honey_user_login_failed".
+  # authentik appends the event action to the prefix, so subjects read
+  # "[authentik] honey_user_login_failed".
   - model: authentik_events.notificationtransport
     id: email-transport
     identifiers:
@@ -37,7 +34,6 @@ entries:
     attrs:
       mode: email
       email_subject_prefix: "[authentik] honey_user_"
-  # "created" keeps your edits to the message when the blueprint is applied again.
   - model: authentik_events.notificationwebhookmapping
     id: webhook-mapping
     state: created
@@ -48,27 +44,23 @@ entries:
     attrs:
       expression: |
         event = notification.event
-        username = (event.user or {}).get("username") or event.context.get("username")
+        username = event.user["username"]
         geo = event.context.get("geo") or {}
-        asn = event.context.get("asn") or {}
-        location = ", ".join(part for part in [geo.get("city"), geo.get("country")] if part)
-        if event.action == "login":
-            what = "Successful login"
-        else:
-            what = "Login attempt"
+        location = ", ".join(filter(None, [geo.get("city"), geo.get("country")]))
+        what = "Successful login" if event.action == "login" else "Login attempt"
         text = f"Honey user alert: {what} as decoy account {username} from {event.client_ip}"
         if location:
             text += f" ({location})"
         text += ". No legitimate user owns this account."
-        # "text" is the message field of Slack incoming webhooks. The other keys
-        # are for SIEMs and other tools that parse the payload.
+        # Slack incoming webhooks show "text". The other keys are for tools
+        # that parse the payload.
         return {
             "text": text,
             "action": event.action,
             "username": username,
             "client_ip": event.client_ip,
             "geo": geo,
-            "asn": asn,
+            "asn": event.context.get("asn") or {},
             "user_agent": event.context.get("http_request", {}).get("user_agent"),
             "created": event.created.isoformat(),
         }
@@ -82,15 +74,15 @@ entries:
       mode: webhook
       webhook_url: !Context webhook_url
       webhook_mapping_body: !KeyOf webhook-mapping
-      # Post once per event, not once per member of the group.
+      # Post once per event, not once per group member.
       send_once: true
   - model: authentik_core.group
     id: notify-group
     state: created
     identifiers:
       name: !Context group_name
-  # The users have no password, so no login attempt can succeed. Every attempt
-  # fails at the password stage and creates a `login_failed` event.
+  # Without a password, every login attempt fails at the password stage and
+  # creates a login_failed event.
   - model: authentik_core.user
     id: honey-user
     state: created
@@ -118,8 +110,8 @@ entries:
     attrs:
       action: login_failed
       query: !Format ['user.username = "%s" or user.username = "%s"', !Context username, !Context ldap_admin_username]
-  # The users have no password, so a successful login means a decoy was changed
-  # or another authentication method was linked to it.
+  # A successful login means someone changed a decoy or linked
+  # another authentication method to it.
   - model: authentik_policies_event_matcher.eventmatcherpolicy
     id: honey-user-login
     identifiers:
@@ -138,7 +130,7 @@ entries:
         - !Context webhook_url
         - [!KeyOf local-transport, !KeyOf email-transport, !KeyOf webhook-transport]
         - [!KeyOf local-transport, !KeyOf email-transport]
-  # The rule uses the default policy engine mode "any", so either policy triggers it.
+  # The rule's policy engine mode defaults to "any", so either policy triggers it.
   - model: authentik_policies.policybinding
     identifiers:
       order: 0
