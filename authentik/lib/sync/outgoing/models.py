@@ -9,7 +9,7 @@ from django.db.models import Model, QuerySet, TextChoices
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
 
-from authentik.core.models import Group, User
+from authentik.core.models import Group, User, UserTypes
 from authentik.lib.config import advisory_lock_db_alias
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.utils.time import fqdn_rand, timedelta_from_string, timedelta_string_validator
@@ -124,3 +124,41 @@ class OutgoingSyncProvider(ScheduledModel, Model):
                 crontab=f"{fqdn_rand(self.pk)} */4 * * *",
             ),
         ]
+
+
+class OutgoingSyncObjectQueryMixin:
+    """Select the users and groups an outgoing provider synchronizes.
+
+    Users are whoever can access the provider's backchannel application.
+    Groups are every group, or only ``group_filters`` when that list is set.
+    """
+
+    exclude_users_service_account: bool
+    backchannel_application: Any
+    group_filters: Any
+
+    def get_object_qs[T: User | Group](self, type: type[T], **kwargs) -> QuerySet[T]:
+        if type == User:
+            # Get queryset of all users with consistent ordering
+            # according to the provider's settings
+            base = User.objects.all().exclude_anonymous().filter(**kwargs)
+            if self.exclude_users_service_account:
+                base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
+                    type=UserTypes.INTERNAL_SERVICE_ACCOUNT
+                )
+            # Filter users by their access to the backchannel application if an application is set
+            if self.backchannel_application:
+                from authentik.core.apps import AppAccessWithoutBindings
+                from authentik.policies.engine import FilterPolicyEngine
+
+                engine = FilterPolicyEngine(self.backchannel_application, base)
+                engine.empty_result = AppAccessWithoutBindings.get()
+                base = engine.build().result
+            return base.order_by("pk")
+        if type == Group:
+            # Get queryset of all groups with consistent ordering
+            base = Group.objects.all().filter(**kwargs)
+            if self.group_filters.exists():
+                base = base.filter(pk__in=self.group_filters.values_list("pk", flat=True))
+            return base.order_by("pk")
+        raise ValueError(f"Invalid type {type}")

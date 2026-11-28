@@ -87,7 +87,8 @@ The following example allows authentication only through Apple devices.
         ```python
         flow_plan = request.context.get("flow_plan")
         device = flow_plan.context.get("device")
-        if device.manufacturer.lower() != "apple":
+        manufacturer = device.facts.data.get("hardware", {}).get("manufacturer", "")
+        if manufacturer.lower() != "apple":
             return True
         return False
         ```

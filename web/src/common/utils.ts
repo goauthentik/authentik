@@ -61,3 +61,16 @@ export function assertEveryPresent<T>(
         throw new TypeError(errorMessage);
     }
 }
+
+/**
+ * Whether the address, resolved against the document, is an HTTP or HTTPS URL.
+ */
+export function isHTTPURL(href: string): boolean {
+    if (!URL.canParse(href, document.baseURI)) {
+        return false;
+    }
+
+    const { protocol } = new URL(href, document.baseURI);
+
+    return protocol === "http:" || protocol === "https:";
+}

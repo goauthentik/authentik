@@ -1,5 +1,6 @@
 """logout request tests"""
 
+import tracemalloc
 from base64 import b64encode
 
 from django.test import TestCase
@@ -96,3 +97,19 @@ class TestLogoutRequest(TestCase):
                     CannotHandleAssertion, str(ERROR_CANNOT_DECODE_REQUEST)
                 ):
                     method("%%%not-base64%%%", None)
+
+    def test_redirect_over_size_limit(self):
+        """Test that a redirect-binding request that inflates beyond the size limit is refused"""
+        request = deflate_and_base64_encode(
+            '<samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" '
+            'ID="_1" Version="2.0" IssueInstant="2022-02-21T22:50:33.999Z"/>'
+            + " " * (32 * 1024 * 1024)
+        )
+
+        tracemalloc.start()
+        self.addCleanup(tracemalloc.stop)
+        with self.assertRaises(CannotHandleAssertion):
+            LogoutRequestParser().parse_detached(request)
+        _, peak = tracemalloc.get_traced_memory()
+
+        self.assertLess(peak, 32 * 1024 * 1024)

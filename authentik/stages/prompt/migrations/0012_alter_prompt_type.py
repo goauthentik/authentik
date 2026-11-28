@@ -37,6 +37,11 @@ class Migration(migrations.Migration):
                         "password",
                         "Password: Masked input, multiple inputs of this type on the same prompt need to be identical.",
                     ),
+                    (
+                        "password_viewable",
+                        "Password with show button: Masked input w/show button, multiple inputs of this type"
+                        " on the same prompt need to be identical.",
+                    ),
                     ("number", "Number"),
                     ("checkbox", "Checkbox"),
                     (

@@ -33,7 +33,7 @@ class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializ
             "client_secret",
             "tenant_id",
             "exclude_users_service_account",
-            "filter_group",
+            "group_filters",
             "user_delete_action",
             "group_delete_action",
             "sync_page_size",
@@ -52,7 +52,7 @@ class MicrosoftEntraProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin
     filterset_fields = [
         "name",
         "exclude_users_service_account",
-        "filter_group",
+        "group_filters",
     ]
     search_fields = ["name"]
     ordering = ["name"]

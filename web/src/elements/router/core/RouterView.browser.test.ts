@@ -3,8 +3,8 @@ import { formatSpanName, RouterView } from "./RouterView.js";
 import { getRouterConfig, initRouter, resetRouterConfig } from "#elements/router/core/config";
 import { Route } from "#elements/router/core/Route";
 
-import { page } from "@vitest/browser/context";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { page } from "vitest/browser";
 
 import { html } from "lit";
 
