@@ -8,7 +8,12 @@ from django.template.response import TemplateResponse
 from authentik.events.models import Event, EventAction
 from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.views import bad_request_message
-from authentik.providers.oauth2.models import GrantType, RedirectURI, ResponseMode
+from authentik.providers.oauth2.models import (
+    GrantType,
+    OAuth2Provider,
+    RedirectURI,
+    ResponseMode,
+)
 
 
 class OAuth2Error(TracingIgnoredException):
@@ -158,6 +163,8 @@ class AuthorizeError(OAuth2Error):
         state: str | None,
         response_mode: str | None = None,
         description: str | None = None,
+        *,
+        provider: OAuth2Provider | None,
     ):
         super().__init__()
         self.error = error
@@ -169,6 +176,20 @@ class AuthorizeError(OAuth2Error):
         self.grant_type = grant_type
         self.state = state
         self.response_mode = response_mode
+        # Provider whose issuer identifies the authorization server in the response (RFC 9207).
+        # Required so that no client-facing error can leave out the issuer by accident.
+        self.provider = provider
+
+    def create_params(self, request: HttpRequest) -> dict[str, str]:
+        """Parameters returned to the client, in the order they are encoded"""
+        params = {"error": self.error, "error_description": str(self.description)}
+        if self.state is not None:
+            params["state"] = self.state
+        if self.provider:
+            issuer = self.provider.get_authorization_response_issuer(request)
+            if issuer:
+                params["iss"] = issuer
+        return params
 
     def get_response(self, request: HttpRequest) -> HttpResponse:
         """Return a valid HTTP Response carrying the error to the client, using the response mode
@@ -181,13 +202,10 @@ class AuthorizeError(OAuth2Error):
         # an auto-submitting form POST to the redirect URI.
         # See https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html
         if self.response_mode == ResponseMode.FORM_POST:
-            attrs = {"error": self.error, "error_description": self.description}
-            if self.state is not None:
-                attrs["state"] = self.state
             return TemplateResponse(
                 request,
                 "if/oauth_form_post.html",
-                {"redirect_uri": self.redirect_uri, "attrs": attrs},
+                {"redirect_uri": self.redirect_uri, "attrs": self.create_params(request)},
             )
         # Deferred import, utils imports BearerTokenError from this module
         from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
@@ -196,10 +214,10 @@ class AuthorizeError(OAuth2Error):
         # with a private-use scheme (RFC 8252) get the error instead of a bare 400.
         # The redirect URI is already validated against the provider when this is raised.
         return HttpResponseRedirectScheme(
-            self.create_uri(), allowed_schemes=[urlparse(self.redirect_uri).scheme]
+            self.create_uri(request), allowed_schemes=[urlparse(self.redirect_uri).scheme]
         )
 
-    def create_uri(self) -> str:
+    def create_uri(self, request: HttpRequest) -> str:
         """Get a redirect URI with the error message"""
         uri = urlsplit(self.redirect_uri)
         response_mode = self.response_mode
@@ -210,11 +228,7 @@ class AuthorizeError(OAuth2Error):
                 else ResponseMode.QUERY
             )
 
-        params = {"error": self.error, "error_description": str(self.description)}
-        if self.state is not None:
-            params["state"] = self.state
-
-        encoded = urlencode(params, quote_via=quote)
+        encoded = urlencode(self.create_params(request), quote_via=quote)
         if response_mode == ResponseMode.FRAGMENT:
             return urlunsplit(uri._replace(fragment=encoded))
         # Preserve the callback query, including its original encoding.
