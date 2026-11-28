@@ -21,6 +21,7 @@ export * from "./ReportsApi.js";
 export * from "./RequestsApi.js";
 export * from "./RootApi.js";
 export * from "./SchemaApi.js";
+export * from "./SecretsApi.js";
 export * from "./SourcesApi.js";
 export * from "./SsfApi.js";
 export * from "./StagesApi.js";

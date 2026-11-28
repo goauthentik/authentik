@@ -129,7 +129,7 @@ class TransactionApplicationSerializer(PassiveSerializer):
                     identifiers=binding,
                 )
             )
-        importer = Importer(blueprint, {})
+        importer = Importer(blueprint, {}, self.context["request"].user)
         try:
             valid, _ = importer.validate(raise_validation_errors=True)
             if not valid:
@@ -166,7 +166,7 @@ class TransactionalApplicationView(APIView):
         """Convert data into a blueprint, validate it and apply it"""
         blueprint: Blueprint = body.validated_data
         check_blueprint_perms(blueprint, request.user, explicit_action="add")
-        importer = Importer(blueprint, {})
+        importer = Importer(blueprint, {}, request.user)
         applied = importer.apply()
         response = {"applied": False, "logs": []}
         response["applied"] = applied
