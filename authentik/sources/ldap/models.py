@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
 import pglock
-from django.db import connection, models
+from django.db import connection, connections, models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
@@ -380,14 +380,31 @@ class LDAPSource(IncomingSyncSource):
         raise LDAPException("Failed to bind")
 
     @property
+    def sync_lock_id(self) -> str:
+        return f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}"
+
+    @property
     def sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
         return pglock.advisory(
-            lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
+            lock_id=self.sync_lock_id,
             timeout=0,
             side_effect=pglock.Return,
             using=advisory_lock_db_alias(),
         )
+
+    def is_sync_running(self) -> bool:
+        """Whether a sync holds the sync lock, checked without taking the lock"""
+        classid, objid = pglock.advisory_id(self.sync_lock_id)
+        with connections[advisory_lock_db_alias()].cursor() as cursor:
+            # A bigint advisory key shows up in pg_locks as two unsigned 32-bit halves
+            cursor.execute(
+                "SELECT EXISTS (SELECT 1 FROM pg_locks WHERE locktype = 'advisory' AND granted"
+                " AND database = (SELECT oid FROM pg_database WHERE datname = current_database())"
+                " AND classid = %s AND objid = %s AND objsubid = 1)",
+                [classid & 0xFFFFFFFF, objid],
+            )
+            return cursor.fetchone()[0]
 
     def get_ldap_server_info(self, srv: Server) -> dict[str, str]:
         info = {

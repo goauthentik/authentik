@@ -1,8 +1,9 @@
 """LDAP Source tests"""
 
 from datetime import UTC, datetime, timedelta
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
+from django.core.cache import cache
 from django.db.models import Q
 from django.test import TestCase
 from ldap3.core.exceptions import LDAPInvalidFilterError
@@ -36,7 +37,12 @@ from authentik.sources.ldap.sync.membership import (
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
-from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_page
+from authentik.sources.ldap.tasks import (
+    CACHE_KEY_SYNC_REQUESTED,
+    ldap_sync,
+    ldap_sync_page,
+    ldap_sync_paginator,
+)
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_freeipa import mock_freeipa_connection
 from authentik.sources.ldap.tests.mock_slapd import (
@@ -662,6 +668,87 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             ldap_sync.send(self.source.pk)
+
+    def _sync_with_a_request_made_during_it(self, fail=False):
+        """Run a sync; while it holds the lock, another sync is requested once (and skipped)"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.save()
+        held_lock = MagicMock()
+        held_lock.__enter__.return_value = False
+        requested = []
+
+        def paginate_and_request_another_sync(*args, **kwargs):
+            if not requested:
+                requested.append(True)
+                with patch(
+                    "authentik.sources.ldap.models.LDAPSource.sync_lock",
+                    new_callable=PropertyMock,
+                    return_value=held_lock,
+                ):
+                    ldap_sync.send(self.source.pk)
+                self.assertTrue(cache.get(CACHE_KEY_SYNC_REQUESTED + self.source.slug))
+                if fail:
+                    raise ValueError("sync failed")
+            return ldap_sync_paginator(*args, **kwargs)
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with (
+            patch("authentik.sources.ldap.models.LDAPSource.connection", connection),
+            patch(
+                "authentik.sources.ldap.tasks.ldap_sync_paginator",
+                side_effect=paginate_and_request_another_sync,
+            ),
+            patch.object(
+                ldap_sync, "send_with_options", wraps=ldap_sync.send_with_options
+            ) as send_with_options,
+        ):
+            ldap_sync.send(self.source.pk)
+        return self._follow_up_runs(send_with_options)
+
+    @staticmethod
+    def _follow_up_runs(send_with_options):
+        # send() goes through send_with_options too; only the follow-up run passes rel_obj
+        return [call for call in send_with_options.call_args_list if "rel_obj" in call.kwargs]
+
+    def test_sync_requested_while_running(self):
+        """A sync requested while another one runs is run again afterwards, not dropped"""
+        follow_ups = self._sync_with_a_request_made_during_it()
+
+        self.assertEqual(len(follow_ups), 1)
+        self.assertEqual(follow_ups[0].kwargs["args"], (self.source.pk,))
+        self.assertIsNone(cache.get(CACHE_KEY_SYNC_REQUESTED + self.source.slug))
+
+    def test_sync_requested_while_running_runs_after_a_failed_sync(self):
+        """The requested sync still runs when the sync holding the lock fails"""
+        follow_ups = self._sync_with_a_request_made_during_it(fail=True)
+
+        self.assertEqual(len(follow_ups), 1)
+        self.assertIsNone(cache.get(CACHE_KEY_SYNC_REQUESTED + self.source.slug))
+
+    def test_sync_not_requested_runs_once(self):
+        """Without a request made during the sync, it does not run again"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.save()
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with (
+            patch("authentik.sources.ldap.models.LDAPSource.connection", connection),
+            patch.object(
+                ldap_sync, "send_with_options", wraps=ldap_sync.send_with_options
+            ) as send_with_options,
+        ):
+            ldap_sync.send(self.source.pk)
+        self.assertEqual(self._follow_up_runs(send_with_options), [])
+        self.assertIsNone(cache.get(CACHE_KEY_SYNC_REQUESTED + self.source.slug))
+
+    def test_is_sync_running(self):
+        """The sync status reads the lock without taking it"""
+        self.assertFalse(self.source.is_sync_running())
+        with self.source.sync_lock as lock_acquired:
+            self.assertTrue(lock_acquired)
+            self.assertTrue(self.source.is_sync_running())
+        self.assertFalse(self.source.is_sync_running())
 
     def test_user_deletion(self):
         """Test user deletion"""
