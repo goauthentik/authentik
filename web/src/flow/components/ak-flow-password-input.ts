@@ -6,8 +6,8 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import { AKElement } from "#elements/Base";
 import { isActiveElement, isFocusable } from "#elements/utils/focus";
 
-import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
+import { AKFormErrors, ErrorProp } from "#components/renderFormErrors";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";

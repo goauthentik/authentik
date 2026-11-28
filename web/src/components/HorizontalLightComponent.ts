@@ -4,8 +4,8 @@ import { SlottedTemplateResult } from "../elements/types";
 import { AKElement, type AKElementProps } from "#elements/Base";
 import { FocusTarget } from "#elements/utils/focus";
 
-import { ErrorProp } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
+import { ErrorProp } from "#components/renderFormErrors";
 
 import { IDGenerator } from "@goauthentik/core/id";
 

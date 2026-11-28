@@ -1,8 +1,8 @@
 import "#flow/components/ak-flow-card";
 import { formatDeviceChallengeMessage } from "#common/labels";
 
-import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
+import { AKFormErrors } from "#components/renderFormErrors";
 
 import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";

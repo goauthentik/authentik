@@ -13,8 +13,8 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 import { renderSourceIcon } from "#elements/sources/utils";
 
-import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
+import { AKFormErrors } from "#components/renderFormErrors";
 
 import { BaseStage } from "#flow/stages/base";
 import AutoRedirect from "#flow/stages/identification/controllers/AutoRedirectController";

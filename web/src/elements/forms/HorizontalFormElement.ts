@@ -6,8 +6,8 @@ import { isControlElement } from "#elements/ControlElement";
 import { FormField, isFormField } from "#elements/forms/form-associated-element";
 import { isNameableElement, NamedElement } from "#elements/utils/inputs";
 
-import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
+import { AKFormErrors, ErrorProp } from "#components/renderFormErrors";
 
 import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";

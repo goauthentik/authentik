@@ -1,6 +1,6 @@
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 
-import { ErrorProp } from "#components/ak-field-errors";
+import { ErrorProp } from "#components/renderFormErrors";
 
 import { ValidationError } from "@goauthentik/api";
 

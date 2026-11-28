@@ -15,8 +15,8 @@ import "#flow/components/ak-prompt-showable-password";
 
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
+import { AKFormErrors } from "#components/renderFormErrors";
 
 import { ShowablePasswordStyles } from "#flow/components/ak-prompt-showable-password";
 import { BaseStage } from "#flow/stages/base";
