@@ -2,7 +2,7 @@
 
 from base64 import b64encode
 from datetime import timedelta
-from json import dumps
+from json import dumps, loads
 from urllib.parse import quote
 
 from django.test import RequestFactory
@@ -18,11 +18,13 @@ from authentik.common.oauth.constants import (
     TOKEN_TYPE,
 )
 from authentik.core.models import Application
+from authentik.core.tasks import clean_expired_models
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
+    REVOKED_REFRESH_TOKEN_RETENTION,
     AccessToken,
     AuthorizationCode,
     GrantType,
@@ -535,6 +537,126 @@ class TestToken(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertTrue(Event.objects.filter(action=EventAction.SUSPICIOUS_REQUEST).exists())
+
+    def _create_refresh_token_provider(self) -> tuple[OAuth2Provider, str]:
+        """Create a provider with the refresh token grant, returns the provider and its
+        basic auth header"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.REFRESH_TOKEN],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
+            signing_key=self.keypair,
+            refresh_token_validity="days=30",
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-email",
+                    "goauthentik.io/providers/oauth2/scope-profile",
+                    "goauthentik.io/providers/oauth2/scope-offline_access",
+                ]
+            )
+        )
+        # Needs to be assigned to an application for iss to be set
+        self.app.provider = provider
+        self.app.save()
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        return provider, header
+
+    def _refresh(self, header: str, refresh_token: str):
+        """Send a refresh token grant request"""
+        return self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            data={
+                "grant_type": GRANT_TYPE_REFRESH_TOKEN,
+                "refresh_token": refresh_token,
+                "redirect_uri": "http://testserver",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_refresh_token_rotation_shortens_expiry(self):
+        """Rotated refresh token expires after the retention period, new token is unaffected"""
+        provider, header = self._create_refresh_token_provider()
+        user = create_test_admin_user()
+        with freeze_time():
+            token = RefreshToken.objects.create(
+                provider=provider,
+                user=user,
+                token=generate_id(),
+                _id_token=dumps({}),
+                auth_time=now(),
+                _scope="offline_access",
+                expires=now() + timedelta(days=30),
+            )
+            response = self._refresh(header, token.token)
+            self.assertEqual(response.status_code, 200)
+            new_token = RefreshToken.objects.get(user=user, provider=provider, revoked=False)
+            self.assertEqual(loads(response.content.decode())["refresh_token"], new_token.token)
+            token.refresh_from_db()
+            self.assertTrue(token.revoked)
+            self.assertEqual(token.expires, now() + REVOKED_REFRESH_TOKEN_RETENTION)
+            self.assertEqual(new_token.expires, now() + timedelta(days=30))
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_refresh_token_rotation_keeps_shorter_expiry(self):
+        """Rotated refresh token which expires before the retention period keeps its expiry"""
+        provider, header = self._create_refresh_token_provider()
+        user = create_test_admin_user()
+        expires = now() + timedelta(hours=1)
+        token = RefreshToken.objects.create(
+            provider=provider,
+            user=user,
+            token=generate_id(),
+            _id_token=dumps({}),
+            auth_time=now(),
+            _scope="offline_access",
+            expires=expires,
+        )
+        response = self._refresh(header, token.token)
+        self.assertEqual(response.status_code, 200)
+        token.refresh_from_db()
+        self.assertTrue(token.revoked)
+        self.assertEqual(token.expires, expires)
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_refresh_token_reuse_after_retention(self):
+        """Reuse of a rotated refresh token is detected within the retention period, after that
+        the token is expired and gets cleaned up"""
+        provider, header = self._create_refresh_token_provider()
+        user = create_test_admin_user()
+        # Rotate the token far enough in the past that the retention period has passed by now
+        rotated_at = now() - REVOKED_REFRESH_TOKEN_RETENTION - timedelta(hours=1)
+        with freeze_time(rotated_at):
+            token = RefreshToken.objects.create(
+                provider=provider,
+                user=user,
+                token=generate_id(),
+                _id_token=dumps({}),
+                auth_time=now(),
+                _scope="offline_access",
+                expires=now() + timedelta(days=30),
+            )
+            response = self._refresh(header, token.token)
+            self.assertEqual(response.status_code, 200)
+        # Within the retention period, reuse is detected
+        with freeze_time(rotated_at + REVOKED_REFRESH_TOKEN_RETENTION - timedelta(minutes=1)):
+            response = self._refresh(header, token.token)
+            self.assertEqual(response.status_code, 400)
+            self.assertEqual(Event.objects.filter(action=EventAction.SUSPICIOUS_REQUEST).count(), 1)
+        # After the retention period, the token is expired
+        response = self._refresh(header, token.token)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(loads(response.content.decode())["error"], "invalid_grant")
+        self.assertEqual(Event.objects.filter(action=EventAction.SUSPICIOUS_REQUEST).count(), 1)
+        clean_expired_models.send()
+        self.assertFalse(RefreshToken.objects.including_expired().filter(pk=token.pk).exists())
+        self.assertTrue(
+            RefreshToken.objects.filter(user=user, provider=provider, revoked=False).exists()
+        )
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_refresh_token_view_threshold(self):
