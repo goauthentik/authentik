@@ -26,21 +26,19 @@ interface InvitationSendEmailRequestWithTemplate {
 
 @customElement("ak-invitation-send-email-form")
 export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWithTemplate> {
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+
     public override submitLabel = msg("Send");
     public override headline = msg("Send Invitation via Email");
 
-    static get styles(): CSSResult[] {
-        return [...super.styles, PFDescriptionList];
-    }
-
     @property({ attribute: false })
-    invitation?: Invitation;
+    public invitation: Invitation | null = null;
 
     @state()
-    availableTemplates: TypeCreate[] = [];
+    protected availableTemplates: TypeCreate[] = [];
 
     @state()
-    selectedTemplate = "email/invitation.html";
+    protected selectedTemplate = "email/invitation.html";
 
     fetchAvailableTemplates = async (): Promise<void> => {
         try {
@@ -127,6 +125,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
                 label=${msg("To")}
                 name="emailAddresses"
                 required
+                placeholder=${msg("jessie.lorem@example.com, kelly.ipsum@example.com...")}
                 help=${msg(
                     "One email address per line, or comma/semicolon separated. Each recipient will receive a separate email with an invitation link.",
                 )}
@@ -134,6 +133,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
             </ak-textarea-input>
             <ak-textarea-input
                 label=${msg("CC")}
+                placeholder=${msg("Type optional CC addresses...")}
                 name="ccAddresses"
                 help=${msg(
                     "A comma-separated list of addresses to receive copies of the invitation. Recipients will receive the full list of other addresses in this list.",
@@ -142,6 +142,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
             </ak-textarea-input>
             <ak-textarea-input
                 label=${msg("BCC")}
+                placeholder=${msg("Type optional BCC addresses...")}
                 name="bccAddresses"
                 help=${msg(
                     "A comma-separated list of addresses to receive copies of the invitation. Recipients will not receive the addresses of other recipients.",
