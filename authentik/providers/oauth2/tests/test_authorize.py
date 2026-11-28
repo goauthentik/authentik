@@ -1,5 +1,6 @@
 """Test authorize view"""
 
+import pickle  # nosec
 from datetime import timedelta
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs, urlparse
@@ -1294,3 +1295,35 @@ class TestAuthorize(OAuthTestCase):
         with self.assertRaises(AuthorizeError) as cm:
             OAuthAuthorizationParams.from_request(request)
         self.assertEqual(cm.exception.error, "invalid_request")
+
+    def test_params_unpickle_without_client(self):
+        """Params pickled into a flow plan before `client` existed restore with client=None"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+        )
+        request = self.factory.get(
+            "/",
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "redirect_uri": "http://local.invalid/Foo",
+                "scope": "openid",
+            },
+        )
+        params = OAuthAuthorizationParams.from_request(request)
+        self.assertIsNotNone(params.client)
+        # Round trip keeps the client
+        restored = pickle.loads(pickle.dumps(params))  # nosec
+        self.assertEqual(restored.client, params.client)
+        self.assertEqual(restored.provider, provider)
+        # Legacy state: default slot state without the `client` slot
+        legacy_state = {k: v for k, v in params.__getstate__().items() if k != "client"}
+        for state in (legacy_state, (None, legacy_state)):
+            legacy = OAuthAuthorizationParams.__new__(OAuthAuthorizationParams)
+            legacy.__setstate__(state)
+            self.assertIsNone(legacy.client)
+            self.assertEqual(legacy.client_id, "test")
