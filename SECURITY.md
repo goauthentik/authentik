@@ -28,8 +28,8 @@ GitHub reviews each request, so assignment can take several weeks. We publish th
 
 | Version   | Supported |
 | --------- | --------- |
-| 2026.5.x  | ✅        |
 | 2026.8.x  | ✅        |
+| 2026.11.x | ✅        |
 
 ## Reporting a Vulnerability
 
