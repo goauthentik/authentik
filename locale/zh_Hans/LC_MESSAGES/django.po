@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 00:10+0000\n"
+"POT-Creation-Date: 2026-11-28 00:12+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Jens L. <jens@goauthentik.io>, 2026\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/"
@@ -1673,6 +1673,12 @@ msgstr "Google Workspace 提供程序组"
 #: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr "用于定义组同步范围的组过滤器。"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr "用于创建/更新组的属性映射。"
 
@@ -1683,6 +1689,14 @@ msgstr "Google Workspace 提供程序"
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Providers"
 msgstr "Google Workspace 提供程序"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group Filter"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group Filters"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Property Mappings Group"
@@ -1757,6 +1771,14 @@ msgstr "Microsoft Entra 提供程序"
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Providers"
 msgstr "Microsoft Entra 提供程序"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group Filter"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group Filters"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Property Mappings Group"
@@ -3949,10 +3971,6 @@ msgid "vCenter"
 msgstr ""
 
 #: authentik/providers/scim/models.py
-msgid "Group filters used to define sync-scope for groups."
-msgstr "用于定义组同步范围的组过滤器。"
-
-#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "SCIM 请求的基础 URL，通常以 /v2 结尾"
 
@@ -5966,6 +5984,12 @@ msgid ""
 msgstr ""
 "密码：屏蔽显示输入内容，多个此类型的输入如果在同一个输入项下，则内容需要相"
 "同。"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password with show button: Masked input w/show button, multiple inputs of "
+"this type on the same prompt need to be identical."
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Fixed choice field rendered as a group of radio buttons."
