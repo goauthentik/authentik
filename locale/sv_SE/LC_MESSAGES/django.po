@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 00:10+0000\n"
+"POT-Creation-Date: 2026-11-28 00:12+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Teffen Ellis, 2026\n"
 "Language-Team: Swedish (Sweden) (https://app.transifex.com/authentik/teams/119923/sv_SE/)\n"
@@ -1394,86 +1394,78 @@ msgstr "Certifikatutfärdare för Microsoft Intune-anslutning"
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Select at least one user type."
-msgstr "Välj minst en användartyp."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Internal service accounts cannot be expired."
-msgstr "Interna tjänstkonton kan inte avslutas."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Inactivity duration must be positive."
-msgstr "Inaktivitetsperioden måste vara positiv."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Warning period must be positive."
-msgstr "Varningsperioden måste vara positiv."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "A warning period is required for notifications."
-msgstr "En varningsperiod krävs för notifikationer."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Warning period must be shorter than the inactivity duration."
-msgstr "Varningsperioden måste vara kortare än inaktivitetsperioden."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Last login"
-msgstr "Senaste inloggning"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Last activity"
-msgstr "Senaste aktivitet"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Measure inactivity from the last login or successful user activity."
 msgstr ""
-"Mät inaktivitet från senaste inloggning eller lyckad användaraktivitet."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Only expire members of this group (including descendant groups). Leave empty"
 " to apply to every user."
 msgstr ""
-"Avsluta endast medlemmar i den här gruppen (inklusive undergrupper). Lämna "
-"tomt för att gälla alla användare."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Only expire users of these types. Service accounts are excluded by default."
 msgstr ""
-"Avsluta endast användare av dessa typer. Tjänstkonton undantas som standard."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "How long a user may be inactive before they are expired."
-msgstr "Hur länge en användare får vara inaktiv innan användaren avslutas."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Schedule the offboarding and notify the user this long before they expire. "
 "Leave empty to expire users without warning."
 msgstr ""
-"Schemalägg avvecklingen och meddela användaren så lång tid före "
-"avslutningen. Lämna tomt för att avsluta användare utan varning."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Select which transports should be used to warn the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
-"Välj vilka transporter som ska användas för att varna användaren. Om ingen "
-"väljs visas notifikationen endast i authentik-gränssnittet."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Never expire members of a superuser group."
-msgstr "Avsluta aldrig medlemmar i en superanvändargrupp."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rule"
-msgstr "Regel för användarutgång"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rules"
-msgstr "Regler för användarutgång"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 #, python-format
@@ -1481,24 +1473,22 @@ msgid ""
 "User %(username)s will be offboarded (%(action)s) on %(scheduled_at)s due to"
 " inactivity"
 msgstr ""
-"Användaren %(username)s kommer att avvecklas (%(action)s) den "
-"%(scheduled_at)s på grund av inaktivitet"
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rule Notification Transport"
-msgstr "Notifikationstransport för regel för användarutgång"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rule Notification Transports"
-msgstr "Notifikationstransporter för regler för användarutgång"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/tasks.py
 msgid "Apply all enabled user expiration rules."
-msgstr "Tillämpa alla aktiverade regler för användarutgång."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/tasks.py
 msgid "Apply user expiration rule."
-msgstr "Tillämpa regel för användarutgång."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/offboarding/actions.py
 #, python-format
@@ -1767,6 +1757,14 @@ msgstr "Grupper för Google Workspace-leverantörer"
 #: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr ""
+"Gruppfilter som används för att definiera synkroniseringsomfattning för "
+"grupper."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr ""
 "Egenskapsmappningar som används för att skapa eller uppdatera grupper."
@@ -1778,6 +1776,14 @@ msgstr "Google Workspace-leverantör"
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Providers"
 msgstr "Google Workspace-leverantörer"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group Filter"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group Filters"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Property Mappings Group"
@@ -1863,6 +1869,14 @@ msgstr "Microsoft Entra-leverantör"
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Providers"
 msgstr "Microsoft Entra-leverantörer"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group Filter"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group Filters"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Property Mappings Group"
@@ -4203,12 +4217,6 @@ msgid "vCenter"
 msgstr "vCenter"
 
 #: authentik/providers/scim/models.py
-msgid "Group filters used to define sync-scope for groups."
-msgstr ""
-"Gruppfilter som används för att definiera synkroniseringsomfattning för "
-"grupper."
-
-#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "Bas-URL för SCIM-begäranden, slutar vanligtvis på /v2"
 
@@ -6336,6 +6344,12 @@ msgid ""
 msgstr ""
 "Lösenord: maskerad inmatning; flera inmatningar av denna typ i samma prompt "
 "måste vara identiska."
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password with show button: Masked input w/show button, multiple inputs of "
+"this type on the same prompt need to be identical."
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Fixed choice field rendered as a group of radio buttons."
