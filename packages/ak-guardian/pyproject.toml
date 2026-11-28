@@ -21,6 +21,8 @@ classifiers = [
     'Framework :: Django :: 5.0',
     'Framework :: Django :: 5.1',
     'Framework :: Django :: 5.2',
+    'Framework :: Django :: 6.0',
+    'Framework :: Django :: 6.1',
     'Programming Language :: Python',
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.9",
@@ -34,7 +36,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "django>=5.2,<6.0",
+    "django>=5.2,<7.0",
     "typing_extensions>=4.12.0; python_version<'3.15'",
 ]
 
