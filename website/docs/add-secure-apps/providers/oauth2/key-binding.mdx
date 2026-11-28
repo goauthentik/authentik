@@ -313,13 +313,17 @@ Supply the missing thumbprint, enable and request `bound_key`, or correct the th
 
 ### Token exchange or refresh fails
 
-Key-binding validation failures at the token endpoint return HTTP 400 with:
+Key-binding validation failures at the token endpoint return HTTP 400. If the proof is missing, the error is `invalid_request`. If a proof is present but invalid, the error is `invalid_dpop_proof`, and `error_description` names the check that failed:
 
 ```json
-{ "error": "invalid_request" }
+{
+    "error": "invalid_dpop_proof",
+    "error_description": "DPoP proof iat outside acceptable clock skew",
+    "request_id": "..."
+}
 ```
 
-Inspect authentik's logs for `DPoP validation failed` or `Missing DPoP proof for key-bound token`. Check the following:
+authentik's logs show the same reason as `DPoP validation failed` or `Missing DPoP proof for key-bound token`. Check the following:
 
 | Cause                                 | Correction                                                                                                                  |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |

@@ -165,7 +165,7 @@ class TestKeyBindingAuthCode(OAuthTestCase):
         self.assertEqual(body["error"], "invalid_request")
 
     def test_wrong_c_s256_fails(self):
-        """DPoP proof with wrong c_s256 so invalid_request"""
+        """DPoP proof with wrong c_s256 so invalid_dpop_proof"""
         code = AuthorizationCode.objects.create(
             code="foobar",
             provider=self.provider,
@@ -189,7 +189,8 @@ class TestKeyBindingAuthCode(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 400)
         body = loads(response.content.decode())
-        self.assertEqual(body["error"], "invalid_request")
+        self.assertEqual(body["error"], "invalid_dpop_proof")
+        self.assertEqual(body["error_description"], "DPoP proof c_s256 mismatch")
 
     def test_refresh_with_same_key_succeeds(self):
         """Refresh with matching DPoP key so new ID Token with same cnf"""
@@ -253,7 +254,7 @@ class TestKeyBindingAuthCode(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 400)
         body = loads(response.content.decode())
-        self.assertEqual(body["error"], "invalid_request")
+        self.assertEqual(body["error"], "invalid_dpop_proof")
 
     def test_refresh_without_dpop_when_bound_fails(self):
         """Key-bound refresh token used without DPoP header"""
