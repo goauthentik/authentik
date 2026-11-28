@@ -8,6 +8,7 @@ use ak_common::{
     arbiter::{Arbiter, Tasks},
     config,
 };
+#[cfg(feature = "core")]
 use arc_swap::ArcSwapOption;
 use axum::{Router, routing::any};
 use eyre::Result;
@@ -29,12 +30,24 @@ pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik-metrics.sock")
 }
 
-pub(crate) struct Metrics {
+#[cfg(feature = "core")]
+static SERVER: ArcSwapOption<Server> = ArcSwapOption::const_empty();
+
+#[cfg(feature = "core")]
+static WORKERS: ArcSwapOption<Workers> = ArcSwapOption::const_empty();
+
+#[cfg(feature = "core")]
+pub(crate) fn register_server(server: Arc<Server>) {
+    SERVER.store(Some(server));
+}
+
+#[cfg(feature = "core")]
+pub(crate) fn register_workers(workers: Arc<Workers>) {
+    WORKERS.store(Some(workers));
+}
+
+struct Metrics {
     prometheus: PrometheusHandle,
-    #[cfg(feature = "core")]
-    pub(crate) server: ArcSwapOption<Server>,
-    #[cfg(feature = "core")]
-    pub(crate) workers: ArcSwapOption<Workers>,
 }
 
 impl Metrics {
@@ -43,13 +56,7 @@ impl Metrics {
         let prometheus = PrometheusBuilder::new()
             .with_recommended_naming(true)
             .install_recorder()?;
-        Ok(Self {
-            prometheus,
-            #[cfg(feature = "core")]
-            server: ArcSwapOption::empty(),
-            #[cfg(feature = "core")]
-            workers: ArcSwapOption::empty(),
-        })
+        Ok(Self { prometheus })
     }
 }
 
@@ -77,7 +84,7 @@ fn build_router(state: Arc<Metrics>) -> Router {
     .layer(make_request_body_limit_layer())
 }
 
-pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
+pub(crate) fn start(tasks: &mut Tasks) -> Result<()> {
     let arbiter = tasks.arbiter();
     let metrics = Arc::new(Metrics::new()?);
     let router = build_router(Arc::clone(&metrics));
@@ -98,5 +105,5 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         unix::net::SocketAddr::from_pathname(socket_path())?,
     )?;
 
-    Ok(metrics)
+    Ok(())
 }

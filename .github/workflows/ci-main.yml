@@ -106,6 +106,8 @@ jobs:
             deps: rust
           - job: clippy
             deps: rust
+          - job: clippy-proxy
+            deps: rust
           - job: rustfmt
             deps: rust-nightly
     runs-on: ubuntu-26.04

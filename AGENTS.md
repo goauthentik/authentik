@@ -113,6 +113,8 @@ make lint-locales      # translation files + generated locale lists match locale
 
 CI mirrors these as `ci-lint-*` / `ci-test` targets. Run the matching `make lint` / `make test` (plus `make web` / `make docs` for those subtrees) before pushing — CI runs the same checks.
 
+CI also lints the proxy outpost build (`make ci-lint-clippy-proxy`, which runs `cargo clippy --no-default-features --features proxy`) because the release ships it without the `core` feature. Gate code that only `core` uses behind `#[cfg(feature = "core")]`, or the `clippy-proxy` job fails on unused-code warnings.
+
 ## API schema & clients
 
 The REST API is the contract between the Django core and everything else, and it is **generated, not authored**:

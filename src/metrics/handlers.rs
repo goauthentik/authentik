@@ -1,12 +1,16 @@
 use std::sync::Arc;
 
 use ak_axum::error::Result;
+#[cfg(feature = "core")]
 use ak_common::mode::Mode;
 use axum::{body::Body, extract::State, http::StatusCode, response::Response};
+#[cfg(feature = "core")]
 use tokio::task::spawn_blocking;
 use tracing::instrument;
 
 use super::Metrics;
+#[cfg(feature = "core")]
+use super::{SERVER, WORKERS};
 
 #[instrument(skip_all)]
 pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result<Response> {
@@ -16,17 +20,17 @@ pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result
     #[cfg(feature = "core")]
     if Mode::is_core() {
         match Mode::get() {
-            Mode::Server if let Some(server) = state.server.load_full() => {
+            Mode::Server if let Some(server) = SERVER.load_full() => {
                 server.notify_metrics().await?;
                 metrics.extend(spawn_blocking(python::get_python_metrics).await??);
             }
-            Mode::Worker if let Some(workers) = state.workers.load_full() => {
+            Mode::Worker if let Some(workers) = WORKERS.load_full() => {
                 workers.notify_metrics().await?;
                 metrics.extend(spawn_blocking(python::get_python_metrics).await??);
             }
             Mode::AllInOne
-                if let Some(server) = state.server.load_full()
-                    && let Some(workers) = state.workers.load_full() =>
+                if let Some(server) = SERVER.load_full()
+                    && let Some(workers) = WORKERS.load_full() =>
             {
                 tokio::try_join!(server.notify_metrics(), workers.notify_metrics())?;
                 metrics.extend(spawn_blocking(python::get_python_metrics).await??);
