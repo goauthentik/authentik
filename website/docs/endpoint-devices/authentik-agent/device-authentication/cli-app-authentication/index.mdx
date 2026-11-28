@@ -1,7 +1,7 @@
 ---
 title: CLI application authentication
 sidebar_label: CLI application authentication
-tags: [authentik Agent, authentik cli, kubernetes, k8s, aws, cli]
+tags: [authentik Agent, authentik cli, kubernetes, k8s, aws, vault, openbao, cli]
 authentik_version: "2025.12.0"
 ---
 
@@ -11,11 +11,12 @@ The authentik Agent can authenticate to CLI applications such as:
 
 - [the AWS CLI (`aws`)](./aws.mdx)
 - [the Kubernetes CLI (`kubectl`)](./k8s.mdx)
+- [the HashiCorp Vault and OpenBao CLIs (`vault` and `bao`)](./vault.mdx)
 - [Claude Code](/integrations/development/claude-code/), by exchanging the developer's authentik token for a short-lived Anthropic access token
 
 ## How CLI authentication works
 
-First, `authentik-agent` and `authentik-cli` request an authentik token from the [authentik-cli OAuth Provider](../../configuration.mdx#create-an-application-and-provider-in-authentik-for-cli) and exchange it for a token from the specified Kubernetes or AWS provider.
+First, `authentik-agent` and `authentik-cli` request an authentik token from the [authentik-cli OAuth Provider](../../configuration.mdx#create-an-application-and-provider-in-authentik-for-cli) and exchange it for a token from the provider of the target application, such as Kubernetes, AWS, or Vault.
 
 This token is cached until expiration. This improves performance by eliminating repeated token requests.
 

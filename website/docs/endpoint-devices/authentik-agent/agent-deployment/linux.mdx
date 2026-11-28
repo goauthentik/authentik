@@ -13,6 +13,7 @@ import Tabs from "@theme/Tabs";
 - Retrieve host information and report it to authentik for [device compliance](../../device-compliance/index.mdx).
 - Connect to Linux hosts with authentik credentials through [SSH authentication](../../authentik-agent/device-authentication/ssh-authentication.mdx).
 - Authenticate to CLI applications with authentik credentials through [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx).
+- Log in to the device with authentik credentials through [local device login](../device-authentication/local-device-login/linux.mdx).
 
 ## Prerequisites
 
@@ -33,6 +34,15 @@ If you already have an enrollment token, skip to [Install the authentik Agent on
 6. _(Optional)_ Click the **Copy** icon in the **Actions** column. You need this value to [join the device to an authentik domain](#join-the-device-to-an-authentik-domain).
 
 ## Install the authentik Agent on Linux
+
+The authentik Agent is available in two packages. Install one of them, depending on the device:
+
+| Package                   | For                                   | Contents                                                                                                               |
+| ------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `authentik-agent-desktop` | Workstations with a graphical desktop | The [authentik Agent app](../desktop-app.mdx), which runs the user agent. Requires WebKitGTK, GTK 3, and AppIndicator. |
+| `authentik-agent`         | Servers and devices without a desktop | The user agent, run as a systemd user service.                                                                         |
+
+The two packages can't be installed together. Installing one removes the other.
 
 Follow these steps to install the authentik Agent on your Linux device:
 
@@ -55,8 +65,10 @@ echo "deb [signed-by=/usr/share/keyrings/authentik-keyring.gpg] https://pkg.goau
 
 ```sh
 sudo apt update
-sudo apt install authentik-cli authentik-agent authentik-sysd
+sudo apt install authentik-cli authentik-sysd authentik-agent-desktop
 ```
+
+On a server, install `authentik-agent` instead of `authentik-agent-desktop`.
 
 4. _(Optional)_ To enable [SSH server authentication and local device login](#join-the-device-to-an-authentik-domain), install two additional packages:
 
@@ -64,15 +76,15 @@ sudo apt install authentik-cli authentik-agent authentik-sysd
 sudo apt install libnss-authentik libpam-authentik
 ```
 
-5. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
+5. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak version`
 
-    You should see a response that starts with: `authentik CLI v<version_number>`
+    You should see output that starts with: `authentik Agent CLI: <version_number>`
 
 :::note Headless server
-On a headless server, the system agent (sysd) does not start the user agent (ak-agent). Start the user agent manually:
+With the `authentik-agent` package, start the user agent for your user:
 
 ```bash
-systemctl start --user ak-agent
+systemctl --user enable --now ak-agent
 ```
 
 :::
@@ -97,8 +109,10 @@ EOF
 2. Run the following commands to refresh metadata and install the authentik Agent packages:
 
 ```bash
-sudo yum install -y authentik-cli authentik-agent authentik-sysd
+sudo yum install -y authentik-cli authentik-sysd authentik-agent-desktop
 ```
+
+On a server, install `authentik-agent` instead of `authentik-agent-desktop`.
 
 3. _(Optional)_ To enable [SSH server authentication and local device login](#join-the-device-to-an-authentik-domain), install two additional packages:
 
@@ -106,15 +120,43 @@ sudo yum install -y authentik-cli authentik-agent authentik-sysd
 sudo yum install -y libnss-authentik libpam-authentik
 ```
 
-4. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
+4. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak version`
 
-    You should see a response that starts with: `authentik CLI v<version_number>`
+    You should see output that starts with: `authentik Agent CLI: <version_number>`
 
 :::note Headless server
-On a headless server, the system agent (sysd) does not start the user agent (ak-agent). Start the user agent manually:
+With the `authentik-agent` package, start the user agent for your user:
 
 ```bash
-systemctl start --user ak-agent
+systemctl --user enable --now ak-agent
+```
+
+:::
+
+</TabItem>
+<TabItem value="Arch Linux">
+
+The authentik Agent is available as Arch Linux packages, but not from a pacman repository.
+
+1. Download the packages for the latest version and your architecture from [pkg.goauthentik.io](https://pkg.goauthentik.io) or from the [GitHub releases](https://github.com/goauthentik/platform/releases): `authentik-cli`, `authentik-sysd`, and `authentik-agent-desktop` (or `authentik-agent` on a server).
+2. Install the packages:
+
+```sh
+sudo pacman -U authentik-cli-*.pkg.tar.zst authentik-sysd-*.pkg.tar.zst authentik-agent-desktop-*.pkg.tar.zst
+```
+
+3. _(Optional)_ To enable [SSH server authentication and local device login](#join-the-device-to-an-authentik-domain), also download and install `libnss-authentik` and `libpam-authentik`, then [configure PAM](#configure-nss-and-pam).
+4. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak version`
+
+    You should see output that starts with: `authentik Agent CLI: <version_number>`
+
+To update the authentik Agent, download and install the packages for the new version.
+
+:::note Headless server
+With the `authentik-agent` package, start the user agent for your user:
+
+```bash
+systemctl --user enable --now ak-agent
 ```
 
 :::
@@ -138,34 +180,76 @@ sudo ak-sysd domains join <deployment_name> --authentik-url https://authentik.co
 2. Enter your [enrollment token](#create-an-enrollment-token) when prompted.
 3. After you enter the token, authentik enrolls the device. The device appears on the [Devices page](../../manage-devices.mdx) after it [checks in](../../device-compliance/device-reporting.mdx).
 
-### Configure device login on non-Debian systems
+## Configure NSS and PAM
 
-On non-Debian Linux distributions, you currently need to manually configure NSS and PAM:
+SSH server authentication and local device login need the `libnss-authentik` and `libpam-authentik` packages, and NSS and PAM must use them.
 
-1. Edit `/etc/nsswitch.conf` to include `authentik` for `passwd`, `group`, and `shadow`:
+<Tabs defaultValue="Debian-based">
+<TabItem value="Debian-based">
 
-```bash title="/etc/nsswitch.conf"
-...
+The packages configure NSS and PAM when they're installed. No further steps are needed.
+
+</TabItem>
+<TabItem value="RedHat-based">
+
+Select the `authentik` authselect profile, which the `libpam-authentik` package installs:
+
+```sh
+sudo authselect select authentik
+```
+
+The profile supports the usual authselect features. For example, to create home directories when users log in for the first time, select `authentik with-mkhomedir` instead. This requires the `oddjob-mkhomedir` package.
+
+</TabItem>
+<TabItem value="Other distributions">
+
+On Arch Linux, the `libnss-authentik` package configures NSS. On other distributions, edit `/etc/nsswitch.conf` to include `authentik` for `passwd`, `group`, and `shadow`:
+
+```text title="/etc/nsswitch.conf"
 passwd:         files systemd authentik
 group:          files systemd authentik
 shadow:         files systemd authentik
-gshadow:        files systemd
-...
 ```
 
-2. Edit the following two files in the `/etc/pam.d/` directory. The order matters, both of these lines should be located above `pam_unix` in the respective files.
+Then configure PAM. Add the following lines to the PAM configuration that your login and SSH services include, for example `/etc/pam.d/system-auth` on Arch Linux. Add the `auth` line before `pam_unix.so` in the `auth` section, and the `session` line before `pam_unix.so` in the `session` section.
 
-```bash title="/etc/pam.d/common-auth"
-...
-auth    [success=2 default=ignore]      pam_authentik.so
-...
+```text
+auth      [success=done default=ignore]   pam_authentik.so
+session   [success=ok default=ignore]     pam_authentik.so
 ```
 
-```bash title="/etc/pam.d/common-session"
-...
-session required                        pam_authentik.so
-...
+:::warning
+Keep a root shell open while you edit PAM configuration, so that you can undo a change that prevents logins.
+:::
+
+</TabItem>
+</Tabs>
+
+`pam_authentik` only handles authentik users. Local users continue to log in with their local password.
+
+## User names and IDs
+
+The authentik Agent makes authentik users and groups available on the device. Their names and IDs are derived as follows:
+
+- **User names**: authentik usernames are converted to lowercase, and `@`, `/`, and `:` are replaced with `-`. For example, `Jane.Doe@Company.com` becomes `jane.doe-company.com`. Users log in with the converted name.
+- **User IDs**: the value of the user's `uidNumber` attribute, or the connector's **NSS User ID offset** plus the user's ID in authentik.
+- **Primary group IDs**: the value of the user's `gidNumber` attribute, or the same value as the user ID.
+- **Group IDs**: the value of the group's `gidNumber` attribute, or the connector's **NSS Group ID offset** plus the group's ID in authentik.
+
+Set `uidNumber` and `gidNumber` as strings, for example:
+
+```yaml
+uidNumber: "20001"
+gidNumber: "20001"
 ```
+
+Users and groups with an ID below 1000 aren't made available. Home directories are `/home/<user name>`, and the shell is `/bin/bash`.
+
+:::warning Conflicting users
+If two or more authentik users have the same converted user name or the same user ID, none of them are made available on the device, and they can't log in. For example, this happens for users named `Alice` and `alice`. Rename one of the users, or set unique `uidNumber` attributes.
+:::
+
+To check whether a user is available, run `getent passwd <user name>`.
 
 ## Enable SSH client authentication and CLI application authentication
 
@@ -189,7 +273,10 @@ ak version
 
 ## View logs
 
-authentik Agent logs are available via the systemd journal (`journalctl`) or `syslog`, depending on the distribution.
+authentik Agent logs are available via the systemd journal (`journalctl`) or `syslog`, depending on the distribution. For example:
+
+- System agent: `journalctl -u ak-sysd`
+- User agent from the `authentik-agent` package: `journalctl --user -u ak-agent`
 
 ## Report issues
 

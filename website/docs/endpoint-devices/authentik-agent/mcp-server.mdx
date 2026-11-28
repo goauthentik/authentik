@@ -1,0 +1,228 @@
+---
+title: authentik Agent MCP server
+sidebar_label: MCP server
+tags: [authentik Agent, authentik cli, mcp, model context protocol, ai, agents]
+sidebar_position: 3.5
+authentik_enterprise: true
+authentik_version: "2026.8.0"
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+The authentik Agent includes a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, `ak mcp`. It lets AI clients such as Claude Code, Codex, or Cursor call applications protected by authentik and the authentik API on your behalf, without access to your credentials.
+
+The AI client doesn't act as you. It acts as an [agent account](../../users-sources/user/account-types/agent-accounts.mdx) that it creates for you and that only gets access to applications after you approve it.
+
+:::info Agent accounts and the authentik Agent
+Agent accounts are a type of user account in authentik. The authentik Agent is the software that runs on your device. The MCP server is part of the authentik Agent and creates agent accounts.
+:::
+
+## How it works
+
+1. The AI client creates an agent account. You're its owner. It expires after the default token duration of your authentik deployment (1 day by default) and has no access to anything.
+2. The AI client requests access to one or more applications for the agent account.
+3. You approve or deny the request in authentik. Only the owner of an agent account can approve its requests, and only for applications that the owner can access.
+4. The MCP server exchanges your token for a token for the application, with the agent account as the actor.
+5. The MCP server sends HTTP requests to the application with that token. The AI client never sees the token.
+
+Events for these requests are logged with the agent account and its owner.
+
+## Prerequisites
+
+- authentik 2026.8 or later with an Enterprise license.
+- authentik Agent 0.73 or later on the device, with a profile configured. Refer to [Configure your authentik deployment](./configuration.mdx) and [Deploy the authentik Agent](./agent-deployment/index.mdx). With authentik 2026.11, older versions of the authentik Agent can't create agent accounts.
+- `ak` must be on your `PATH`. On Windows, keep **Include CLI in PATH** selected when you install the authentik Agent.
+- Users must be internal users and have the **Add an agent user (self-service)** permission, for example through a role. Refer to [Permissions for managing agent accounts](../../users-sources/user/account-types/agent-accounts.mdx#permissions-for-managing-agent-accounts).
+
+## Prepare an application
+
+To be reachable through the MCP server, an application must meet the following requirements:
+
+- It uses an **OAuth2/OpenID Connect** provider with the `authentik-cli` provider in **Federated OAuth2/OpenID Providers**, under **Machine-to-Machine authentication settings**. This is the same configuration as for [Kubernetes](./device-authentication/cli-app-authentication/k8s.mdx#create-an-application-and-provider-in-authentik-for-kubernetes).
+- It has a **Launch URL**. The MCP server only sends requests to hosts in the same domain as the launch URL. For example, a launch URL of `https://app.company` allows requests to `https://app.company` and `https://api.app.company:8443`.
+- The user can access it.
+
+## Add the MCP server to an AI client
+
+The **MCP Server** page of the [authentik Agent app](./desktop-app.mdx#mcp-server) shows the same instructions, with buttons to install the server in Cursor and VS Code.
+
+<Tabs defaultValue="claude-code">
+<TabItem value="claude-code" label="Claude Code">
+
+```sh
+claude mcp add authentik -- ak mcp
+```
+
+Check the connection with `/mcp` in Claude Code.
+
+</TabItem>
+<TabItem value="claude-desktop" label="Claude Desktop">
+
+Open **Settings** > **Developer** > **Edit Config** and add the server to `claude_desktop_config.json`, then restart Claude Desktop:
+
+```json
+{
+    "mcpServers": {
+        "authentik": {
+            "command": "ak",
+            "args": ["mcp"]
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="codex" label="Codex CLI">
+
+```sh
+codex mcp add authentik -- ak mcp
+```
+
+Alternatively, add the server to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.authentik]
+command = "ak"
+args = ["mcp"]
+```
+
+</TabItem>
+<TabItem value="cursor" label="Cursor">
+
+Open **Cursor Settings** > **MCP**, select **New MCP Server**, and add the server:
+
+```json
+{
+    "mcpServers": {
+        "authentik": {
+            "command": "ak",
+            "args": ["mcp"]
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="vscode" label="VS Code">
+
+Run **MCP: Add Server** from the command palette, select **Command (stdio)**, enter `ak mcp`, and name the server `authentik`. Alternatively, add the server to `.vscode/mcp.json`:
+
+```json
+{
+    "servers": {
+        "authentik": {
+            "type": "stdio",
+            "command": "ak",
+            "args": ["mcp"]
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="gemini" label="Gemini CLI">
+
+Add the server to `~/.gemini/settings.json`, then restart Gemini CLI:
+
+```json
+{
+    "mcpServers": {
+        "authentik": {
+            "command": "ak",
+            "args": ["mcp"]
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="zed" label="Zed">
+
+Add the server to the Zed settings:
+
+```json
+{
+    "context_servers": {
+        "authentik": {
+            "command": "ak",
+            "args": ["mcp"]
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="opencode" label="OpenCode">
+
+Add the server to `~/.config/opencode/opencode.json`, then restart OpenCode:
+
+```json
+{
+    "$schema": "https://opencode.ai/config.json",
+    "mcp": {
+        "authentik": {
+            "type": "local",
+            "command": ["ak", "mcp"]
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+The MCP server uses the active profile. To use a specific profile, add `-p <profile>` to the command, for example `ak -p work mcp`.
+
+## Approve access requests
+
+When the AI client requests access to an application, it shows you a link to the request. AI clients that support [MCP Apps](https://modelcontextprotocol.io/) show the request as a card with an **Open** button instead.
+
+1. Open the link. The request opens in the authentik user interface.
+2. Approve or deny the request.
+
+Requests from agent accounts also appear on the **Discover** page under **For My Review**. A request expires if it isn't approved within 1 hour. Approved access lasts 1 hour, and never longer than the agent account. For more information, refer to [Access requests](../../add-secure-apps/access-requests/index.mdx).
+
+## Tools
+
+| Tool                 | Description                                                                                       | Acts as           |
+| -------------------- | ------------------------------------------------------------------------------------------------- | ----------------- |
+| `list_applications`  | Lists the applications that you can access, with their IDs and launch URLs.                       | You               |
+| `create_agent`       | Creates an agent account owned by you.                                                            | You               |
+| `request_access`     | Requests access to applications for an agent account.                                             | The agent account |
+| `grant_status`       | Checks whether an access request was approved or denied.                                          | You               |
+| `token_exchange`     | Gets a token for an application on your behalf, with the agent account as the actor.              | You and the agent |
+| `http_fetch`         | Sends a `GET` or `HEAD` request to an application.                                                | The agent account |
+| `http_send`          | Sends a `POST`, `PUT`, `PATCH`, or `DELETE` request to an application.                            | The agent account |
+| `api_search`         | Searches the authentik API commands that `ak api` provides.                                       | Nobody (local)    |
+| `api_describe`       | Shows the arguments of an authentik API command.                                                  | Nobody (local)    |
+| `api_call`           | Runs an authentik API command.                                                                    | The agent account |
+| `api_call_dangerous` | Runs an authentik API command with your permissions. Only available with `--allow-dangerous-api`. | You               |
+
+`token_exchange` takes the application's `pbm_uuid` from `list_applications`.
+
+`http_fetch` and `http_send` only send requests to hosts in the domain of the application's launch URL, and only after a successful `token_exchange` for that application. They don't follow redirects, and they don't accept the `Authorization`, `Cookie`, `Host`, or `Proxy-Authorization` headers.
+
+Agent accounts created by `create_agent` have no permissions in authentik, so `api_call` can only run commands that an agent account is allowed to run. Refer to [Grant access for an agent](../../users-sources/user/account-types/agent-accounts.mdx#grant-access-for-an-agent).
+
+The MCP server also provides two skills, `authentik-app-access` and `authentik-api`, that describe how to use these tools. AI clients that support MCP skills load them automatically.
+
+## Security considerations
+
+- The AI client never receives your authentik token or the tokens for applications. The MCP server adds them to requests itself.
+- Agent accounts only get access that you approve, for applications that you can access, for at most 1 hour per approval.
+- `--allow-dangerous-api` adds the `api_call_dangerous` tool, which can do anything your authentik account can do. Only use it in sessions that you trust.
+- The authentik Agent asks you to approve the MCP server's use of your account. Refer to [Authorization prompts](./settings.mdx#authorization-prompts). To restrict the applications that tokens can be exchanged for, use the `authorization.allowed_exchange_audiences` setting.
+- Agent accounts are only known to the MCP server while it runs. If the AI client restarts, it creates new agent accounts. Previous agent accounts remain until they expire. You can delete them on the **Agents** page of the user interface.
+
+## Troubleshooting
+
+| Error                                            | Solution                                                                                             |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `Self-service agent creation is not enabled.`    | Give the user the **Add an agent user (self-service)** permission.                                   |
+| `Only internal user accounts can create agents.` | Only internal users can create agent accounts.                                                       |
+| `You can only create agents for yourself.`       | Update the authentik Agent to 0.73 or later.                                                         |
+| `Cannot request access to '<application>'`       | You don't have access to the application.                                                            |
+| `Unknown agent` or `Agent identity not found`    | The MCP server restarted. Ask the AI client to create a new agent account.                           |
+| `No launch URL could be resolved`                | Set a **Launch URL** for the application, and pass the application's `pbm_uuid` to `token_exchange`. |
+| `<url> is not adjacent to any application`       | The URL isn't in the domain of the application's launch URL.                                         |

@@ -137,6 +137,14 @@ Administrators can view all access requests via the access requests page (**Appl
 
 If the administrator account is set as a reviewer in the associated request rule, they can click **Fulfill** and approve or deny the access request.
 
+## Requests from agent accounts
+
+[Agent accounts](../../users-sources/user/account-types/agent-accounts.mdx) can request access to applications through the API, for example through the [authentik Agent MCP server](../../endpoint-devices/authentik-agent/mcp-server.mdx). These requests work differently from requests by users:
+
+- An agent account can only request access to applications that its owner can access.
+- Request rules, reviewers, and request flows don't apply. Only the owner of the agent account can approve or deny the request, under **For My Review** on the **Discover** page.
+- A request expires if it isn't approved within 1 hour, and approved access lasts at most 1 hour and never longer than the agent account.
+
 ## Events and auditing
 
 Each stage of a request is recorded as an event and can be matched in event matcher policies:
