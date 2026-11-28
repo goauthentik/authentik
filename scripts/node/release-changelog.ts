@@ -22,10 +22,9 @@ import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { parseArgs, promisify } from "node:util";
 
-import { reportAndExit } from "./utils/commands.ts";
-import { resolveRepoRoot } from "./utils/git.ts";
-import { compareVersions } from "./utils/node.ts";
-
+import { reportAndExit } from "#dev/lib/commands";
+import { resolveRepoRoot } from "#dev/lib/git";
+import { compareVersions } from "#dev/lib/packages";
 import { ConsoleLogger } from "#logger";
 
 import type { List, ListItem, Nodes, PhrasingContent } from "mdast";
@@ -101,8 +100,10 @@ const CHERRY_PICK = /cherry-pick (#\d+)/g;
 const EXCLUDED_ENTRY = /^- (ci:|website)/;
 const KEPT_ENTRY = /^- security:|\b(CVE-\d{4}-\d+|GHSA(-[\w]{4}){3})\b/;
 const DEPENDABOT_ENTRY = /^- (revert: )?([^:]+: )?bump (\S+ from \S+ to \S+|the \S+ group)\b/;
+
 const TRANSLATION_ENTRY =
     /^- (translate: Updates for project authentik and language (?<locale>\S+)|core, web: update translations) \(#\d+\)$/;
+
 const PULL_REQUEST_SUFFIX = / \((#\d+)\)$/;
 const DIFF_VERSION_HEADING = /^(#+ authentik \(v )\S+\)/m;
 
@@ -387,6 +388,7 @@ async function main(): Promise<void> {
 
     if (review) {
         process.stdout.write(content);
+
         return;
     }
 

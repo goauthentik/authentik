@@ -35,6 +35,7 @@ test.describe("Sources", () => {
                 await click("New Group", "button");
                 await expect(dialog, "Group dialog opens").toBeVisible();
                 await fill(/^Group Name/, group, dialog);
+                await form.markAsTestData(dialog);
                 await click("Create Group", "button", dialog);
                 await expect(dialog, "Group dialog closes after creation").toBeHidden();
             }

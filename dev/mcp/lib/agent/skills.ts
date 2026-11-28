@@ -1,0 +1,56 @@
+/**
+ * @file Read repository skills for clients that do not load them directly.
+ */
+
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
+
+import { ROOT } from "#dev/lib/git";
+import { delegateImportError } from "#dev/lib/optional";
+
+export const SKILLS_DIR = join(ROOT, ".agents", "skills");
+
+export interface SkillSummary {
+    name: string;
+    description: string;
+}
+
+/** Skill names, from their directories. Works before any install. */
+export function skillNames(): string[] {
+    return readdirSync(SKILLS_DIR)
+        .filter((name) => {
+            try {
+                return statSync(join(SKILLS_DIR, name, "SKILL.md")).isFile();
+            } catch {
+                return false;
+            }
+        })
+        .sort();
+}
+
+export async function listSkills(): Promise<SkillSummary[]> {
+    const yaml = await import("yaml").catch(delegateImportError);
+
+    return skillNames().map((name) => {
+        const text = readFileSync(join(SKILLS_DIR, name, "SKILL.md"), "utf8");
+        const front = /^---\n([\s\S]*?)\n---/.exec(text)?.[1];
+        const meta: unknown = front && yaml ? yaml.parse(front) : {};
+
+        const description =
+            meta && typeof meta === "object" ? (meta as { description?: unknown }).description : "";
+
+        return {
+            name,
+            description: String(description ?? "")
+                .replace(/\s+/g, " ")
+                .trim(),
+        };
+    });
+}
+
+/** A skill's SKILL.md by name. Only names of skill directories resolve, so paths can't escape. */
+export function readSkill(name: string): string | null {
+    if (!/^[a-z0-9-]+$/.test(name) || !skillNames().includes(name)) return null;
+
+    return readFileSync(join(SKILLS_DIR, name, "SKILL.md"), "utf8");
+}

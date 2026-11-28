@@ -56,6 +56,13 @@ pnpm-workspace.yaml                     @goauthentik/frontend
 /locale/                                @goauthentik/backend @goauthentik/frontend
 /locale/*/dictionaries                  @goauthentik/frontend @goauthentik/docs
 /web/xliff/                             @goauthentik/backend @goauthentik/frontend
+# Agent skills
+/.agents/                               @goauthentik/backend @goauthentik/frontend
+/.claude/skills                         @goauthentik/backend @goauthentik/frontend
+/.claude/settings.json                  @goauthentik/backend @goauthentik/frontend
+/.codex/                                @goauthentik/backend @goauthentik/frontend
+/.mcp.json                              @goauthentik/backend @goauthentik/frontend
+/dev/                                   @goauthentik/backend @goauthentik/frontend
 # Docs
 /website/                               @goauthentik/docs
 CODE_OF_CONDUCT.md                      @goauthentik/docs

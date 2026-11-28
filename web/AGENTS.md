@@ -19,23 +19,23 @@ All three share three core context objects:
 ### Development
 
 ```bash
-npm run watch          # Build + watch locales and bundler (main dev workflow)
-npm run storybook      # Storybook dev server on port 6006
+pnpm run watch         # Build + watch locales and bundler (main dev workflow)
+pnpm run storybook     # Storybook dev server on port 6006
 ```
 
 ### Build
 
 ```bash
-npm run build          # Production build to dist/
-npm run build-locales  # Compile i18n translations
+pnpm run build         # Production build to dist/
+pnpm run build-locales # Compile i18n translations
 ```
 
 ### Testing
 
 ```bash
-npm test               # Vitest: unit tests (Node) + browser tests (Chromium/Playwright)
-npm run test:e2e       # Playwright E2E tests against a running authentik instance
-npm run test:visual    # Screenshot diffs against the base branch (see test/visual/AGENTS.md)
+pnpm test              # Vitest: unit tests (Node) + browser tests (Chromium/Playwright)
+pnpm run test:e2e      # Playwright E2E tests against a running authentik instance
+pnpm run test:visual   # Screenshot diffs against the base branch (see test/visual/AGENTS.md)
 ```
 
 To run a single test file:
@@ -47,12 +47,12 @@ npx vitest run path/to/file.test.ts
 ### Linting & Formatting
 
 ```bash
-npm run lint           # Oxlint with --fix
-npm run lint:check     # Oxlint, no fixes (CI mode, max-warnings: 0)
-npm run build:types    # TypeScript type checking (tsc --noEmit)
-npm run format         # Oxfmt with auto-fixes
-npm run format:check   # Oxfmt in check-only mode
-npm run precommit      # Full pre-commit check (format, lint, types, etc.)
+pnpm run lint          # Oxlint with --fix
+pnpm run lint:check    # Oxlint, no fixes (CI mode, max-warnings: 0)
+pnpm run build:types   # TypeScript type checking (tsc --noEmit)
+pnpm run format        # Oxfmt with auto-fixes
+pnpm run format:check  # Oxfmt in check-only mode
+pnpm run precommit     # Full pre-commit check (format, lint, types, etc.)
 ```
 
 ## Architecture
@@ -130,8 +130,8 @@ In no case are you to use Fetch, Axios, or other methods.
 Translatable strings use `msg()` from `@lit/localize`. To add new strings, use `msg()` and run:
 
 ```bash
-npm run extract-locales   # Extract new strings to XLIFF files
-npm run pseudolocalize    # Generate pseudo-locales for layout testing
+pnpm run extract-locales  # Extract new strings to XLIFF files
+pnpm run pseudolocalize   # Generate pseudo-locales for layout testing
 ```
 
 Never edit files in `src/locales/` directly — they are auto-generated.
@@ -170,6 +170,6 @@ plural(count, {
 - **Interpolate `formattedCount` in every category form**, including `one`. It is the count formatted for the locale (`1,234`, `1 234`). CLDR categories are not numbers: Russian's `one` covers 21 and French's covers 0, so "one object" is wrong there.
 - **Numeric keys match a count exactly** and win over its category, like MF2's `0 {{…}}`. Use them when a count needs its own wording, such as zero. Their IDs must not end in a CLDR suffix.
 - **Options are `Intl.PluralRules` options plus `locale`**: `{ type: "ordinal" }` for "1st/2nd", digit options for decimals.
-- **Write only the forms English needs.** Extraction (`npm run extract-locales`) turns every message with an `.other` form into a Transifex plural group, and each translator fills in the forms their own language has. At runtime, a category the source doesn't write uses that language's translation for it.
+- **Write only the forms English needs.** Extraction (`pnpm run extract-locales`) turns every message with an `.other` form into a Transifex plural group, and each translator fills in the forms their own language has. At runtime, a category the source doesn't write uses that language's translation for it.
 - **Pluralize even when English does not change**, such as `${formattedCount} unread`, so translators can word each form differently.
 - **Bulk actions on table rows use `<ak-forms-delete-bulk>`**, which already pluralizes its heading, prompt, and toasts. Set `action` to `delete`, `remove`, or `cancel`, and give the table `static verboseName` and `verboseNamePlural`; the form reads them from the table that renders it. Pass `verbose-name` and `verbose-name-plural` when it is rendered outside a table, or when the noun must keep its capitals (`SCIM Users`): `Table` lowercases its names for the search placeholder and empty state.

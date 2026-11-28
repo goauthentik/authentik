@@ -5,7 +5,9 @@
 import * as fs from "node:fs/promises";
 import { dirname, join } from "node:path";
 
-import { $ } from "./commands.ts";
+import { $ } from "#dev/lib/commands";
+
+export { compareVersions, satisfiesRange } from "#dev/lib/versions";
 
 /**
  * Find the nearest directory containing both package.json and pnpm-lock.yaml,
@@ -25,6 +27,7 @@ export async function findNPMPackage(
 
         try {
             await Promise.all([fs.access(packageJSONPath), fs.access(packageLockPath)]);
+
             return {
                 packageJSONPath,
                 packageLockPath,
@@ -92,29 +95,6 @@ export function pluckDependencyFields(
 //#region Versioning
 
 /**
- * Compares two semantic version strings (e.g., "14.17.0").
- *
- * A missing part counts as zero, so "24" and "24.0.0" compare equal.
- *
- * @param a The first version string.
- * @param b The second version string.
- */
-export function compareVersions(a: string, b: string): number {
-    const pa = a.split(".").map(Number);
-    const pb = b.split(".").map(Number);
-
-    for (let i = 0; i < 3; i++) {
-        const left = pa[i] ?? 0;
-        const right = pb[i] ?? 0;
-
-        if (left > right) return 1;
-        if (left < right) return -1;
-    }
-
-    return 0;
-}
-
-/**
  * Runs a Node.js command and returns its stdout output as a string.
  */
 export const node = $.bind("node");
@@ -123,32 +103,6 @@ export const node = $.bind("node");
  * Runs a pnpm command and returns its stdout output as a string.
  */
 export const pnpm = $.bind("pnpm");
-
-/**
- * Checks a version against a range of `||`-separated comparators.
- *
- * Supports `>=1.2.3`, `^1.2.3`, and exact versions; missing parts count as zero.
- */
-export function satisfiesRange(version: string, range: string): boolean {
-    return range.split("||").some((part) => {
-        const comparator = part.trim();
-
-        if (comparator.startsWith(">=")) {
-            return compareVersions(version, comparator.slice(2)) >= 0;
-        }
-
-        if (comparator.startsWith("^")) {
-            const required = comparator.slice(1);
-
-            return (
-                version.split(".")[0] === required.split(".")[0] &&
-                compareVersions(version, required) >= 0
-            );
-        }
-
-        return compareVersions(version, comparator) === 0;
-    });
-}
 
 //#endregion
 
@@ -176,7 +130,7 @@ interface PackageManagerSpec {
     version: string;
 
     /**
-     * The `sha512.<hex>` suffix, if the pin carries one.
+     * The `sha512.<hex>` suffix, if the pin has one.
      */
     hash: string | null;
 }
@@ -184,8 +138,8 @@ interface PackageManagerSpec {
 const PACKAGE_MANAGER_PATTERN = /^(?<name>@?[^@]+)@(?<version>[^+]+)(?:\+(?<hash>.+))?$/;
 
 /**
- * The named groups of {@linkcode PACKAGE_MANAGER_PATTERN}. Only `hash` is optional
- * in the pattern, so a match always carries the other two.
+ * The capture groups of {@linkcode PACKAGE_MANAGER_PATTERN}. Only `hash` is optional
+ * in the pattern, so a match always includes the other two.
  */
 interface PackageManagerGroups {
     name: string;

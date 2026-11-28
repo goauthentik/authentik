@@ -1,0 +1,8 @@
+{
+    "mcpServers": {
+        "authentik-dev": {
+            "command": "node",
+            "args": ["dev/mcp/main.ts", "serve"]
+        }
+    }
+}

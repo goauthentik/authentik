@@ -139,6 +139,27 @@ Consequences:
 - **Translations** (`locale/`) and web locales are extracted, not edited by hand — see `make i18n-extract`.
 - When you change a documented workflow (a command, a path, a convention), update this file **and** the relevant sub-`AGENTS.md` / developer doc so they don't drift.
 
+## Agent skills
+
+Task-specific workflows live as [Agent Skills](https://agentskills.io) in `.agents/skills/<name>/SKILL.md` (read by Codex). `.claude/skills` is a symlink to the same directory for Claude Code. Add new skills under `.agents/skills/`.
+
+Before answering a question that one of these skills covers, load the skill and answer from it. Don't answer from memory or from this file alone.
+
+The `authentik-dev` MCP server (`dev/mcp/`, configured in `.mcp.json` and `.codex/config.toml`) checks a change the way CI will: `akdev_generated` for stale migrations, schemas, locales and clients, `akdev_lint` for the CI lint jobs covering the change. It holds no credentials and only touches a local dev database. Without MCP, `make check-gen`, `make lint-changed` and `make dev-status` run the same checks. Results list what they skipped or couldn't tell; repeat that when you report.
+
+| Skill             | Use it to                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| `install`         | Self-host authentik with Docker Compose, Kubernetes, or AWS, up to the first login |
+| `dev-environment` | Go from a fresh clone to a running stack you can log into, or reset a broken one   |
+| `backend`         | Run the server and worker, and take a model change to a committed migration        |
+| `frontend`        | Run the web UI with live reload, build it, and find why an edit doesn't show       |
+| `docs`            | Preview docs or integration guides and run the checks CI runs                      |
+| `testing`         | Run only the tests near your change, watch an e2e test, chase a flaky one          |
+| `linting`         | Fix lint before pushing and reproduce a failing CI lint job locally                |
+| `contributing`    | Take a branch to a well-formed PR: title, description, backports, licensing        |
+| `community`       | Route a bug, security report, idea, or question to the right venue                 |
+| `release`         | Run a release as release manager: branch-off, changelog, RCs, publish, follow-up   |
+
 ## Documentation pointers
 
 Authoritative contributor docs live under `website/docs/developer-docs/` and are published at <https://docs.goauthentik.io/docs/developer-docs/>:

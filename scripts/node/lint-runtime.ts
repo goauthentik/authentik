@@ -8,9 +8,9 @@
 import * as assert from "node:assert/strict";
 import { parseArgs } from "node:util";
 
-import { parseCWD, reportAndExit } from "./utils/commands.ts";
-import { resolveRepoRoot } from "./utils/git.ts";
-import type { PackageJSON } from "./utils/node.ts";
+import { parseCWD, reportAndExit } from "#dev/lib/commands";
+import { resolveRepoRoot } from "#dev/lib/git";
+import type { PackageJSON } from "#dev/lib/packages";
 import {
     findNPMPackage,
     formatPackageManager,
@@ -20,8 +20,7 @@ import {
     pnpm,
     resolvePackageManagerHash,
     satisfiesRange,
-} from "./utils/node.ts";
-
+} from "#dev/lib/packages";
 import { ConsoleLogger } from "#logger";
 
 const logger = ConsoleLogger.prefix("lint-runtime");
@@ -55,6 +54,7 @@ async function main() {
 
     const pnpmVersion = await pnpm`--version`({ cwd }).catch((error) => {
         logger.warn(`Failed to read pnpm version: ${error.message}`);
+
         return null;
     });
 
@@ -114,11 +114,13 @@ async function lintPackageManager(packageManager: string, requiredPnpmVersion?: 
 
     if (!spec.hash) {
         logger.warn("packageManager has no integrity suffix; skipping hash check.");
+
         return;
     }
 
     const expectedHash = await resolvePackageManagerHash(spec.name, spec.version).catch((error) => {
         logger.warn(`Skipping integrity check: ${error.message}`);
+
         return null;
     });
 

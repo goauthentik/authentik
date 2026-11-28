@@ -1,4 +1,4 @@
-.PHONY: gen dev-reset all test web docs core-install i18n-extract gen-locales locales-normalize install bump gen-changelog integrations
+.PHONY: gen dev-reset all test web docs core-install i18n-extract gen-locales locales-normalize install bump gen-changelog integrations dev-status check-gen lint-changed
 
 SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
@@ -158,6 +158,15 @@ dev-create-db:
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the authentik PostgreSQL instance to a "fresh install" state.
+
+dev-status:  ## Show how this machine runs Postgres and containers, and whether the dev MCP database guard passes
+	node dev/mcp/main.ts status
+
+check-gen:  ## Check migrations, schemas, locales and API clients are up to date, like CI's test-gen (`json=1` for JSON)
+	node dev/mcp/main.ts check-gen $(if $(json),--json)
+
+lint-changed:  ## Run the CI lint jobs that cover files changed since origin/main (`fix=1` applies fixes, `json=1` for JSON)
+	node dev/mcp/main.ts lint-changed $(if $(json),--json) $(if $(fix),--fix)
 
 make-migrations:  ## Create Django migrations for model changes (pgtrigger-aware)
 	$(UV) run ak makemigrations
@@ -366,7 +375,7 @@ ci-lint-spellcheck: ci--meta-debug
 ci-lint-bandit: ci--meta-debug
 	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
-ci-lint-pending-migrations: ci--meta-debug
+ci-lint-pending-migrations: ci--meta-debug  ## Fail if a model change has no migration (`makemigrations --check`)
 	$(UV) run python -m manage makemigrations --check
 
 ci-lint-migrations: ci--meta-debug  ## Lint migrations added since MIGRATIONS_BASE (default: origin/main)
@@ -396,6 +405,10 @@ ci-lint-oxlint-fixtures: ci--meta-debug
 
 ci-lint-check-types: ci--meta-debug
 	pnpm run build:types
+
+ci-lint-scripts: ci--meta-debug
+	pnpm run lint:check
+	pnpm run format:check
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik

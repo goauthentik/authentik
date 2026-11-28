@@ -30,7 +30,8 @@ services:
     # Only run when explicitly invoked (e.g. `make gen-diff`), never on `docker compose up`.
     profiles:
       - diff
-    restart: no
+    # Quote `no` so YAML parsers keep it as a string.
+    restart: "no"
     network_mode: none
     volumes:
       - ../:/local
