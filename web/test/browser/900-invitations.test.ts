@@ -77,9 +77,131 @@ test.describe("Invitation form", () => {
                 "Send via Email action is available",
             ).toBeVisible();
 
+            await expect(
+                $successDialog.getByRole("textbox", { name: "Invitation Link" }),
+                "Link points at the invitation's own flow",
+            ).toHaveValue(/\/if\/flow\/default-source-enrollment\/\?itoken=/);
+
+            await expect(
+                $successDialog.getByRole("combobox", { name: "Enrollment Flow" }),
+                "Flow picker is hidden when the invitation has a flow",
+            ).toBeHidden();
+        });
+
+        await test.step("Send via Email opens the email form", async () => {
+            const $emailDialog = page.getByRole("dialog", { name: "Send Invitation via Email" });
+
+            await click("Send via Email", "button", $successDialog);
+
+            await expect($emailDialog, "Email form opens").toBeVisible();
+
+            await expect(
+                $emailDialog.getByRole("textbox", { name: "To" }),
+                "Recipient field is visible",
+            ).toBeVisible();
+
+            await page.keyboard.press("Escape");
+
+            await expect($emailDialog, "Email form closes").toBeHidden();
+        });
+
+        await test.step("Close the success modal", async () => {
             await $successDialog.getByRole("button", { name: "Close", exact: true }).click();
 
             await expect($successDialog, "Success modal closes").toBeHidden();
+        });
+    });
+
+    test("Pick an enrollment flow for an invitation whose flow was deleted", async ({
+        page,
+        form,
+        pointer,
+        navigator,
+    }, testInfo) => {
+        test.setTimeout(120_000);
+
+        const name = invitationNames.get(testInfo.testId)!;
+        const seed = name.replace("invite-", "");
+        const flowSlug = `invite-flow-${seed}`;
+        const { fill, search, selectSearchValue } = form;
+        const { click } = pointer;
+
+        const $dialog = page.getByRole("dialog", { name: "New Invitation" });
+        const $flowDialog = page.getByRole("dialog", { name: "New Enrollment Flow" });
+        const $successDialog = page.getByRole("dialog", { name: "Invitation Details" });
+
+        await test.step("Create an invitation with its own enrollment flow", async () => {
+            await click("New Invitation", "button");
+            await selectSearchValue("Flow", /Create a new enrollment flow/, $dialog);
+
+            await fill("Flow Name", `Invite Flow ${seed}`, $flowDialog);
+            await fill("Flow Slug", flowSlug, $flowDialog);
+            await fill("Invitation Stage Name", `invite-stage-${seed}`, $flowDialog);
+            await click("Create Enrollment Flow", "button", $flowDialog);
+
+            await expect($flowDialog, "Flow form closes after creation").toBeHidden({
+                timeout: 20_000,
+            });
+
+            await fill("Invitation Name", name, $dialog);
+            await click("Create Invitation", "button", $dialog);
+
+            await expect($successDialog, "Success modal opens").toBeVisible();
+
+            await $successDialog.getByRole("button", { name: "Close", exact: true }).click();
+        });
+
+        await test.step("Delete the invitation's flow", async () => {
+            await navigator.navigate("/if/admin/flow/flows");
+
+            const $row = await search(flowSlug);
+
+            await $row.getByRole("checkbox").check();
+            await page.getByRole("button", { name: "Delete", exact: true }).first().click();
+
+            const $confirm = page.locator("ak-forms-delete-bulk");
+
+            await $confirm.getByRole("button", { name: "Delete", exact: true }).last().click();
+
+            await expect(page.getByText(/Successfully deleted/), "Flow is deleted").toBeVisible({
+                timeout: 15_000,
+            });
+        });
+
+        await test.step("Flow picker drives the invitation link", async () => {
+            await navigator.navigate("/if/admin/flow/stages/invitations");
+
+            const $row = await search(name);
+
+            await $row.getByRole("button", { name: /expand/i }).click();
+
+            const $details = page.locator("ak-stage-invitation-list-link");
+            const $link = $details.getByRole("textbox", { name: "Invitation Link" });
+            const $picker = $details.getByRole("combobox", { name: "Enrollment Flow" });
+
+            await expect($picker, "Flow picker is shown once the flow is gone").toBeVisible();
+
+            await expect($picker.locator("option").first(), "Flow picker loads").not.toHaveText(
+                /Loading/,
+            );
+
+            await expect($link, "Link never points at a null flow").not.toHaveValue(
+                /\/if\/flow\/null\//,
+            );
+
+            const slugs = await $picker
+                .locator("option")
+                .evaluateAll((options) =>
+                    options.map((option) => (option as HTMLOptionElement).value),
+                );
+
+            const slug = slugs.at(-1)!;
+
+            await $picker.selectOption(slug);
+
+            await expect($link, "Link follows the picked flow").toHaveValue(
+                new RegExp(`/if/flow/${slug}/\\?itoken=`),
+            );
         });
     });
 
