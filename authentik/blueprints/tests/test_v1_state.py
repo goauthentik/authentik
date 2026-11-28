@@ -81,3 +81,16 @@ class TestBlueprintsV1State(TransactionTestCase):
         self.assertTrue(importer.apply())
         flow: Flow = Flow.objects.filter(slug=flow_slug).first()
         self.assertIsNone(flow)
+
+    def test_state_absent_missing(self):
+        """Test absent state with identifiers that match no existing object"""
+        flow_slug = generate_id()
+        import_yaml = load_fixture("fixtures/state_absent_missing.yaml", id=flow_slug)
+
+        importer = Importer.from_string(import_yaml)
+        self.assertTrue(importer.validate()[0])
+        self.assertTrue(importer.apply())
+        # The absent entry matched no object, so nothing was deleted...
+        self.assertFalse(Flow.objects.filter(slug=f"{flow_slug}-missing").exists())
+        # ...and subsequent entries were still applied
+        self.assertTrue(Flow.objects.filter(slug=flow_slug).exists())
