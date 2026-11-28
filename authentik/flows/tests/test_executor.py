@@ -22,9 +22,10 @@ from authentik.flows.models import (
     FlowStageBinding,
     FlowToken,
     InvalidResponseAction,
+    in_memory_stage,
 )
 from authentik.flows.planner import FlowPlan, FlowPlanner
-from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, RedirectStage, StageView
 from authentik.flows.tests import APIFlowTestCase
 from authentik.flows.views.executor import (
     NEXT_ARG_NAME,
@@ -208,6 +209,21 @@ class TestFlowExecutor(APIFlowTestCase):
             to=dest,
             final_redirect=True,
         )
+
+    def test_redirect_stage_response(self):
+        """Test that a response to a redirect stage, like one inserted by `FlowPlan.redirect()`,
+        gets the redirect again"""
+        flow = create_test_flow()
+        dest = "/unique-string"
+        plan = FlowPlan(flow_pk=flow.pk.hex)
+        plan.append_stage(in_memory_stage(RedirectStage, destination=dest))
+        self.set_flow_plan(plan)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertStageResponse(response, flow, component="xak-flow-redirect", to=dest)
+        self.assertEqual(len(self.get_flow_plan().bindings), 1)
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",
