@@ -49,19 +49,16 @@ def retry(max_retires=RETRIES, exceptions=None):
 
     def retry_actual(func: Callable):
         """Retry test multiple times"""
-        count = 1
 
         @wraps(func)
-        def wrapper(self: TransactionTestCase, *args, **kwargs):
+        def wrapper(self: TransactionTestCase, *args, _count: int = 1, **kwargs):
             """Run test again if we're below max_retries, including tearDown and
             setUp. Otherwise raise the error"""
-            nonlocal count
             try:
                 return func(self, *args, **kwargs)
 
             except tuple(exceptions) as exc:
-                count += 1
-                if count > max_retires:
+                if _count >= max_retires:
                     logger.debug("Exceeded retry count", exc=exc, test=self)
 
                     raise exc
@@ -70,7 +67,7 @@ def retry(max_retires=RETRIES, exceptions=None):
                 self._post_teardown()
                 self._pre_setup()
                 self.setUp()
-                return wrapper(self, *args, **kwargs)
+                return wrapper(self, *args, _count=_count + 1, **kwargs)
 
         return wrapper
 

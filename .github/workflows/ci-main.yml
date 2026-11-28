@@ -391,6 +391,11 @@ jobs:
           uv run coverage run manage.py test ${{ matrix.job.glob }}
           uv run coverage combine
           uv run coverage xml
+      - name: Selenium logs
+        if: ${{ failure() && contains(matrix.job.profiles, 'selenium') }}
+        env:
+          COMPOSE_PROFILES: selenium
+        run: docker compose -f tests/e2e/compose.yml logs chromium
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
         with:
@@ -480,6 +485,11 @@ jobs:
           uv run coverage run manage.py test ${{ matrix.job.glob }}
           uv run coverage combine
           uv run coverage xml
+      - name: Selenium logs
+        if: ${{ failure() }}
+        env:
+          COMPOSE_PROFILES: selenium
+        run: docker compose -f tests/e2e/compose.yml logs chromium
       - uses: ./.github/actions/test-results
         if: ${{ always() }}
         with:

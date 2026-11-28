@@ -2,13 +2,10 @@
 
 from functools import cached_property
 from json import JSONDecodeError, dumps, loads
-from pathlib import Path
-from tempfile import gettempdir
 from time import sleep
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from docker.models.containers import Container
-from requests import RequestException
 from selenium import webdriver
 from selenium.common.exceptions import (
     DetachedShadowRootException,
@@ -28,7 +25,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
-from authentik.lib.utils.http import get_http_session
 from tests.decorators import IS_CI, RETRIES, SHADOW_ROOT_RETRIES, JSONType
 from tests.live import ChannelsE2ETestCase, E2ETestMixin
 
@@ -49,7 +45,6 @@ class SeleniumTestMixin(E2ETestMixin):
         opts = webdriver.ChromeOptions()
         opts.accept_insecure_certs = True
         opts.add_argument("--disable-search-engine-choice-screen")
-        opts.add_extension(self._get_chrome_extension())
         # This breaks selenium when running remotely...?
         # opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
         opts.add_experimental_option(
@@ -67,30 +62,9 @@ class SeleniumTestMixin(E2ETestMixin):
                 driver.maximize_window()
                 return driver
             except WebDriverException as exc:
-                self.logger.warning("Failed to setup webdriver", exc=exc)
+                self.logger.warning("Failed to setup webdriver", exc=str(exc))
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
-
-    def _get_chrome_extension(self):
-        path = Path(gettempdir()) / "ak-chrome.crx"
-        try:
-            self.logger.info("Downloading chrome extension...", path=path)
-            res = get_http_session().get(
-                "https://pkg.goauthentik.io/packages/authentik_browser-ext/browser-ext/authentik_chrome.zip",
-                stream=True,
-            )
-            with open(path, "w+b") as _ext:
-                for chunk in res.iter_content(chunk_size=1024):
-                    if chunk:
-                        _ext.write(chunk)
-        except RequestException as exc:
-            if path.exists() and not IS_CI:
-                self.logger.info(
-                    "Failed to download chrome extension, using cached copy", path=path
-                )
-                return path
-            raise exc
-        return path
 
     @cached_property
     def driver_container(self) -> Container:

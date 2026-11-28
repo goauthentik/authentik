@@ -130,9 +130,10 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys("password")
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
-
-        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
+        # The login form has its own submit button, so match the approval page's button
+        approve = (By.CSS_SELECTOR, "button.theme-btn--success")
+        self.wait.until(ec.element_to_be_clickable(approve))
+        self.driver.find_element(*approve).click()
 
         self.wait.until(ec.url_changes(initial_provider_url))
 
