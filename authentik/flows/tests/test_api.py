@@ -19,7 +19,7 @@ from authentik.flows.models import (
 from authentik.flows.planner import cache_key
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
-from authentik.policies.models import PolicyBinding
+from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.stages.dummy.models import DummyStage
 
 
@@ -230,6 +230,68 @@ class TestFlowsAPI(APITestCase):
                 ),
                 ("flow_start", "stage_0", "proceed"),
                 ("stage_0", "done", "proceed"),
+            },
+        )
+
+    def test_api_diagram_flow_policies_any_mode_are_alternatives(self):
+        flow = self.diagram_flow(policy_engine_mode=PolicyEngineMode.MODE_ANY)
+        self.policy(flow, "flow-policy-1", order=0)
+        self.policy(flow, "flow-policy-2", order=1)
+
+        self.assertEqual(
+            edge_set(self.diagram(flow)),
+            {
+                ("flow_pre", "flow_policy_0", "binding"),
+                ("flow_pre", "flow_policy_1", "binding"),
+                ("flow_policy_0", "flow_start", "proceed"),
+                ("flow_policy_1", "flow_start", "proceed"),
+                ("flow_policy_0", "done", "policy-denied"),
+                ("flow_policy_1", "done", "policy-denied"),
+                ("flow_start", "done", "proceed"),
+            },
+        )
+
+    def test_api_diagram_flow_policies_all_mode_are_chained(self):
+        flow = self.diagram_flow(policy_engine_mode=PolicyEngineMode.MODE_ALL)
+        self.policy(flow, "flow-policy-1", order=0)
+        self.policy(flow, "flow-policy-2", order=1)
+
+        self.assertEqual(
+            edge_set(self.diagram(flow)),
+            {
+                ("flow_pre", "flow_policy_0", "binding"),
+                ("flow_policy_0", "flow_policy_1", "policy-passed"),
+                ("flow_policy_1", "flow_start", "proceed"),
+                ("flow_policy_0", "done", "policy-denied"),
+                ("flow_policy_1", "done", "policy-denied"),
+                ("flow_start", "done", "proceed"),
+            },
+        )
+
+    def test_api_diagram_stage_policies_all_mode_are_chained(self):
+        flow = self.diagram_flow()
+        binding = FlowStageBinding.objects.create(
+            target=flow,
+            stage=DummyStage.objects.create(name="dummy1"),
+            order=0,
+            policy_engine_mode=PolicyEngineMode.MODE_ALL,
+        )
+        self.policy(binding, "dummy1-policy-1", order=0)
+        self.policy(binding, "dummy1-policy-2", order=1)
+        FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name="dummy2"), order=1
+        )
+
+        self.assertEqual(
+            edge_set(self.diagram(flow)),
+            {
+                ("flow_start", "stage_0_policy_0", "proceed"),
+                ("stage_0_policy_0", "stage_0_policy_1", "policy-passed"),
+                ("stage_0_policy_1", "stage_0", "policy-passed"),
+                ("stage_0", "stage_1", "proceed"),
+                ("stage_0_policy_0", "stage_1", "policy-denied"),
+                ("stage_0_policy_1", "stage_1", "policy-denied"),
+                ("stage_1", "done", "proceed"),
             },
         )
 
