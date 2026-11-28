@@ -1,8 +1,10 @@
 import "#elements/EmptyState";
 import "#user/requests/RequestEntitlementModal";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 
 import { aki } from "#common/api/client";
 import { LayoutType } from "#common/ui/config";
@@ -17,19 +19,22 @@ import Styles from "#user/LibraryPage/ak-library-impl.css";
 import { AKLibraryApplicationList } from "#user/LibraryPage/ApplicationList";
 import AKLibraryApplicationListStyles from "#user/LibraryPage/ApplicationList.css";
 import { ViewMode } from "#user/LibraryPage/types";
+import { RequestApplicationForm } from "#user/requests/RequestApplicationForm";
 
-import { Application, CoreApi, RequestsApi } from "@goauthentik/api";
+import { Application, ApplicationTemplate, CoreApi, RequestsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-browse-requestable")
 export class BrowseRequestable extends AKElement {
     static styles: CSSResult[] = [
+        PFButton,
         PFCard,
         PFContent,
         PFPage,
+        PFGallery,
         AKLibraryApplicationListStyles,
         Styles,
     ];
@@ -39,6 +44,9 @@ export class BrowseRequestable extends AKElement {
 
     @state()
     protected applications: Application[] = [];
+
+    @state()
+    protected templates: ApplicationTemplate[] = [];
 
     @state()
     protected loading = true;
@@ -52,11 +60,13 @@ export class BrowseRequestable extends AKElement {
         this.loading = true;
 
         try {
-            const applications = await this.#coreApi.coreApplicationsRequestableList({
-                pageSize: 100,
-            });
+            const [applications, templates] = await Promise.all([
+                this.#coreApi.coreApplicationsRequestableList({ pageSize: 100 }),
+                this.#requestsApi.requestsApplicationTemplatesRequestableList({ pageSize: 100 }),
+            ]);
 
             this.applications = applications.results;
+            this.templates = templates.results;
         } catch (error) {
             showAPIErrorMessage(error);
         } finally {
@@ -107,13 +117,21 @@ export class BrowseRequestable extends AKElement {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
 
-        if (this.applications.length < 1) {
+        if (this.applications.length < 1 && this.templates.length < 1) {
             return html`<ak-empty-state icon="pf-icon-catalog"
                 ><span>${msg("Nothing available to request.")}</span>
                 <div slot="body">
                     ${msg("There's currently nothing you're eligible to request access to.")}
                 </div>
             </ak-empty-state>`;
+        }
+
+        return html`${this.renderApplications()}${this.renderTemplates()}`;
+    }
+
+    protected renderApplications(): SlottedTemplateResult {
+        if (this.applications.length < 1) {
+            return nothing;
         }
 
         return html`<div class="pf-c-page__header pf-c-content">
@@ -128,6 +146,50 @@ export class BrowseRequestable extends AKElement {
                 groupedApps: groupBy(this.applications, (app) => app.group || ""),
                 onAppClick: this.#onAppClick,
             })}`;
+    }
+
+    protected renderTemplates(): SlottedTemplateResult {
+        if (this.templates.length < 1) {
+            return nothing;
+        }
+
+        return html`<div class="pf-c-page__header pf-c-content">
+                <h1 class="pf-c-page__title">
+                    ${msg("New applications", { id: "requests.browse.templates.header" })}
+                </h1>
+            </div>
+            <div class="pf-c-content">
+                <p>
+                    ${msg(
+                        "Request a new application for your team. Once approved, you get its client credentials under My Requests.",
+                        { id: "requests.browse.templates.description" },
+                    )}
+                </p>
+            </div>
+            <div class="pf-l-gallery pf-m-gutter">
+                ${this.templates.map(
+                    (template) =>
+                        html`<div class="pf-c-card">
+                            <div class="pf-c-card__title">${template.name}</div>
+                            <div class="pf-c-card__footer">
+                                <button
+                                    class="pf-c-button pf-m-primary"
+                                    type="button"
+                                    @click=${() => {
+                                        const form = new RequestApplicationForm();
+                                        form.template = template;
+
+                                        return form.showModal();
+                                    }}
+                                >
+                                    ${msg("Request", {
+                                        id: "requests.request-application.submit-verb",
+                                    })}
+                                </button>
+                            </div>
+                        </div>`,
+                )}
+            </div>`;
     }
 }
 

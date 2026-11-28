@@ -1,3 +1,4 @@
+from authentik.enterprise.requests.api.application_templates import ApplicationTemplateViewSet
 from authentik.enterprise.requests.api.grant_requests import GrantRequestViewSet
 from authentik.enterprise.requests.api.request_rule_bindings import RequestRuleBindingViewSet
 from authentik.enterprise.requests.api.request_rule_child_bindings import (
@@ -10,4 +11,5 @@ api_urlpatterns = [
     ("requests/rule-bindings", RequestRuleBindingViewSet),
     ("requests/rule-child-bindings", RequestRuleChildBindingViewSet),
     ("requests/grant-requests", GrantRequestViewSet),
+    ("requests/application-templates", ApplicationTemplateViewSet),
 ]

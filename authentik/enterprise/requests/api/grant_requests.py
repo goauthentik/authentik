@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
 from rest_framework.fields import BooleanField, CharField, ChoiceField, SerializerMethodField
 from rest_framework.mixins import (
     DestroyModelMixin,
@@ -33,18 +33,22 @@ from authentik.core.models import User
 from authentik.core.sources.flow_manager import MessageStage
 from authentik.enterprise.agents.models import Agent
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
+from authentik.enterprise.requests.api.application_templates import BindableGroupSerializer
 from authentik.enterprise.requests.api.apps import (
     RequestableTargetSerializer,
     granting_rule_bindings,
     user_can_request,
 )
+from authentik.enterprise.requests.applications import check_requested_application
 from authentik.enterprise.requests.grants import (
     GrantExpiry,
     create_grant_request,
     fulfill_url,
 )
 from authentik.enterprise.requests.models import (
+    ApplicationTemplate,
     GrantRequest,
+    RequestedApplication,
     RequestRule,
     RequestRuleBinding,
     RequestStatus,
@@ -52,6 +56,7 @@ from authentik.enterprise.requests.models import (
 from authentik.enterprise.requests.stage import (
     PLAN_CONTEXT_GRANT_MAX_EXPIRY,
     PLAN_CONTEXT_GRANT_PENDING_EXPIRY,
+    PLAN_CONTEXT_GRANT_REQUESTED_APPLICATION,
     PLAN_CONTEXT_GRANT_REQUESTED_EXPIRY,
     PLAN_CONTEXT_GRANT_REQUESTED_PBMS,
     GrantRequestFinalStageView,
@@ -62,6 +67,8 @@ from authentik.lib.utils.time import timedelta_from_string, timedelta_string_val
 from authentik.policies.api.bindings import PolicyBindingModelForeignKey
 from authentik.policies.engine import ListPolicyEngine
 from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
+from authentik.providers.oauth2.api.providers import OAuth2ProviderSetupURLs, get_setup_urls
+from authentik.providers.oauth2.models import ClientType, OAuth2Provider
 from authentik.rbac.decorators import permission_required
 
 
@@ -92,12 +99,39 @@ def _binding_default(field_name: str) -> timedelta:
     return timedelta_from_string(RequestRuleBinding._meta.get_field(field_name).default)
 
 
+class RequestedApplicationSerializer(ModelSerializer):
+    """The application an application request asks for, and once approved, the one created"""
+
+    groups_obj = BindableGroupSerializer(source="groups", many=True, read_only=True)
+
+    class Meta:
+        model = RequestedApplication
+        fields = [
+            "name",
+            "meta_description",
+            "meta_launch_url",
+            "client_type",
+            "redirect_uris",
+            "grant_types",
+            "groups",
+            "groups_obj",
+            "application",
+        ]
+        extra_kwargs = {
+            "application": {"read_only": True},
+            # Clients using only client_credentials have none; check_requested_application
+            # decides when one is needed.
+            "redirect_uris": {"allow_empty": True},
+        }
+
+
 class GrantRequestSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
     created_by = PartialUserSerializer(read_only=True)
     revoked_by = PartialUserSerializer(read_only=True, allow_null=True)
     agent_owner = PartialUserSerializer(read_only=True, allow_null=True)
     is_active = BooleanField(read_only=True)
+    requested_application = RequestedApplicationSerializer(read_only=True, allow_null=True)
 
     target_objs = SerializerMethodField()
 
@@ -119,6 +153,7 @@ class GrantRequestSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "status",
             "targets",
             "target_objs",
+            "requested_application",
             "uuid",
         ]
         extra_kwargs = {
@@ -129,7 +164,7 @@ class GrantRequestSerializer(EnterpriseRequiredMixin, ModelSerializer):
 class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
 
     # All requests are visible to users even if they're expired
-    queryset = GrantRequest.objects.including_expired()
+    queryset = GrantRequest.objects.including_expired().select_related("requested_application")
     serializer_class = GrantRequestSerializer
     filterset_fields = ["created_by", "agent_owner", "status"]
     rbac_allow_create_without_perm = True
@@ -151,6 +186,11 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
                 "Clamped to the granting rule binding(s)' expiry_granted_max."
             ),
         )
+        application = RequestedApplicationSerializer(
+            required=False,
+            help_text="The application to create. Required when requesting from an application "
+            "template, and only then.",
+        )
 
         def validate_pbms(self, pbms: list[PolicyBindingModel]) -> list[PolicyBindingModel]:
             request = self.context["request"]
@@ -163,6 +203,44 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
                 if not user_can_request(pbm, request.user, request):
                     raise ValidationError(f"Cannot request access to '{pbm.requestable_label}'")
             return deduped
+
+        def validate(self, attrs: dict) -> dict:
+            pbms = attrs["pbms"]
+            application = attrs.get("application")
+            templates = [pbm for pbm in pbms if isinstance(pbm, ApplicationTemplate)]
+            if not templates:
+                if application:
+                    raise ValidationError(
+                        {"application": _("Only requests from an application template take one.")}
+                    )
+                return attrs
+            if len(pbms) > 1:
+                raise ValidationError(
+                    {"pbms": _("An application request targets one application template only.")}
+                )
+            if not application:
+                raise ValidationError(
+                    {"application": _("Required when requesting from an application template.")}
+                )
+            try:
+                check_requested_application(
+                    templates[0],
+                    application["client_type"],
+                    application.get("redirect_uris", []),
+                    application["grant_types"],
+                    application["groups"],
+                    application.get("meta_launch_url", ""),
+                )
+            except ValidationError as exc:
+                raise ValidationError({"application": exc.detail}) from None
+            return attrs
+
+    class ApplicationCredentialsSerializer(PassiveSerializer):
+        """What a client of the application an application request created is configured with"""
+
+        client_id = CharField(read_only=True)
+        client_secret = CharField(read_only=True, allow_null=True)
+        urls = OAuth2ProviderSetupURLs(read_only=True)
 
     class AgentGrantRequestCreateSerializer(PassiveSerializer):
         """Body for an agent requesting access for itself. Deliberately narrower than
@@ -180,6 +258,9 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             for pbm in deduped:
                 if not isinstance(pbm, RequestableModel | RequestableChildModel):
                     raise ValidationError(f"'{pbm}' is not requestable")
+                # An agent delegates access its owner holds; it cannot ask for new applications.
+                if isinstance(pbm, ApplicationTemplate):
+                    raise ValidationError(f"Agents cannot request from '{pbm.requestable_label}'")
             return deduped
 
     class GrantRequestFulfillSerializer(PassiveSerializer):
@@ -288,13 +369,18 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
                 PLAN_CONTEXT_GRANT_PENDING_EXPIRY: pending_binding.expiry_pending,
                 PLAN_CONTEXT_GRANT_MAX_EXPIRY: max_binding.expiry_granted_max,
                 PLAN_CONTEXT_GRANT_REQUESTED_EXPIRY: body.validated_data.get("expiry") or None,
+                PLAN_CONTEXT_GRANT_REQUESTED_APPLICATION: body.validated_data.get("application"),
             },
         )
         plan.append_stage(in_memory_stage(GrantRequestFinalStageView))
         plan.append_stage(
             in_memory_stage(
                 MessageStage,
-                message=_("Successfully requested access!"),
+                message=(
+                    _("Successfully requested the application!")
+                    if body.validated_data.get("application")
+                    else _("Successfully requested access!")
+                ),
             )
         )
         return Response({"link": plan.to_redirect(request, flow).url})
@@ -391,5 +477,42 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         approve it in the first place."""
         grant: GrantRequest = self.get_object()
         self._assert_reviewer(request, grant)
+        if RequestedApplication.objects.filter(request=grant).exists():
+            raise ValidationError(
+                _("An application request has nothing to revoke. Delete the application instead.")
+            )
         grant.revoke(request, request.user)
         return Response(status=204)
+
+    @extend_schema(
+        responses={
+            200: ApplicationCredentialsSerializer,
+            404: OpenApiResponse(description="The request created no application"),
+        },
+    )
+    @action([HTTPMethod.GET], detail=True)
+    def credentials(self, request: Request, *args, **kwargs) -> Response:
+        """Client ID, client secret and setup URLs of the application an approved application
+        request created. Only for the requester: anyone else reads them from the provider, which
+        shows the client secret only to users who may change it."""
+        grant: GrantRequest = self.get_object()
+        if request.user.pk != grant.created_by_id:
+            raise PermissionDenied(_("Only the requester can read the application's credentials."))
+        provider = OAuth2Provider.objects.filter(
+            pk__in=RequestedApplication.objects.filter(request=grant).values("provider")
+        ).first()
+        if not provider:
+            raise NotFound()
+        return Response(
+            self.ApplicationCredentialsSerializer(
+                {
+                    "client_id": provider.client_id,
+                    "client_secret": (
+                        provider.client_secret
+                        if provider.client_type == ClientType.CONFIDENTIAL
+                        else None
+                    ),
+                    "urls": get_setup_urls(provider, request),
+                }
+            ).data
+        )

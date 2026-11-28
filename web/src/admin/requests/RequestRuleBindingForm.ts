@@ -51,6 +51,13 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
     @property({ type: String })
     public targetPk = "";
 
+    /**
+     * Whether the target has entitlements to grant alongside it. Only applications do; an
+     * application template's request creates a new application instead.
+     */
+    @property({ type: Boolean })
+    public entitlements = true;
+
     @state()
     protected selectedEntitlementPairs: DualSelectPair[] = [];
 
@@ -62,7 +69,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
     }
 
     #loadChildBindings = async (bindingPk: string): Promise<void> => {
-        if (!this.targetPk) {
+        if (!this.targetPk || !this.entitlements) {
             this.selectedEntitlementPairs = [];
 
             return;
@@ -198,7 +205,7 @@ export class RequestRuleBindingForm extends ModelForm<RequestRuleBinding, string
     }
 
     protected renderEntitlementsSelection(): SlottedTemplateResult {
-        if (!this.targetPk) {
+        if (!this.targetPk || !this.entitlements) {
             return nothing;
         }
 
