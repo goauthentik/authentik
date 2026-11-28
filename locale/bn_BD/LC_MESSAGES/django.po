@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 00:10+0000\n"
+"POT-Creation-Date: 2026-11-28 00:12+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Azharul Haque, 2026\n"
 "Language-Team: Bengali (Bangladesh) (https://app.transifex.com/authentik/teams/119923/bn_BD/)\n"
@@ -1732,6 +1732,12 @@ msgstr "Google Workspace প্রোভাইডার গ্রুপসমূ
 #: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr "গ্রুপের জন্য সিঙ্ক-স্কোপ নির্ধারণ করতে ব্যবহৃত গ্রুপ ফিল্টার।"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr "গ্রুপ তৈরি/আপডেট করার জন্য ব্যবহৃত প্রপার্টি ম্যাপিং।"
 
@@ -1742,6 +1748,14 @@ msgstr "Google Workspace প্রোভাইডার"
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Providers"
 msgstr "Google Workspace প্রোভাইডারসমূহ"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group Filter"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group Filters"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Property Mappings Group"
@@ -1827,6 +1841,14 @@ msgstr "Microsoft Entra প্রোভাইডার"
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Providers"
 msgstr "Microsoft Entra প্রোভাইডারসমূহ"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group Filter"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group Filters"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Property Mappings Group"
@@ -4164,10 +4186,6 @@ msgid "vCenter"
 msgstr "vCenter"
 
 #: authentik/providers/scim/models.py
-msgid "Group filters used to define sync-scope for groups."
-msgstr "গ্রুপের জন্য সিঙ্ক-স্কোপ নির্ধারণ করতে ব্যবহৃত গ্রুপ ফিল্টার।"
-
-#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "SCIM রিকোয়েস্টের বেস URL, সাধারণত /v2 দিয়ে শেষ হয়"
 
@@ -6280,6 +6298,12 @@ msgid ""
 msgstr ""
 "পাসওয়ার্ড: মাস্কড ইনপুট, একই প্রম্পটে এই টাইপের একাধিক ইনপুট অভিন্ন হতে "
 "হবে।"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password with show button: Masked input w/show button, multiple inputs of "
+"this type on the same prompt need to be identical."
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Fixed choice field rendered as a group of radio buttons."
