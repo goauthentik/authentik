@@ -40,7 +40,7 @@ class ErrorDetailSerializer(PassiveSerializer):
     """Serializer for rest_framework's error messages"""
 
     string = CharField()
-    code = CharField()
+    code = CharField(default="invalid")
 
 
 FLOW_MESSAGE_LEVELS = list(DEFAULT_TAGS.values())
