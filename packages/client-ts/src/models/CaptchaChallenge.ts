@@ -28,6 +28,8 @@ export interface CaptchaChallenge {
     pendingUserAvatar: string;
     siteKey: string;
     jsUrl: string;
+    capWasmUrl?: string;
+    capHashwxWasmUrl?: string;
     interactive: boolean;
 }
 
@@ -87,6 +89,9 @@ export function CaptchaChallengeFromJSONTyped(
         pendingUserAvatar: json["pending_user_avatar"],
         siteKey: json["site_key"],
         jsUrl: json["js_url"],
+        capWasmUrl: json["cap_wasm_url"] == null ? undefined : json["cap_wasm_url"],
+        capHashwxWasmUrl:
+            json["cap_hashwx_wasm_url"] == null ? undefined : json["cap_hashwx_wasm_url"],
         interactive: json["interactive"],
     };
 }
@@ -111,6 +116,8 @@ export function CaptchaChallengeToJSONTyped(
         pending_user_avatar: value["pendingUserAvatar"],
         site_key: value["siteKey"],
         js_url: value["jsUrl"],
+        cap_wasm_url: value["capWasmUrl"],
+        cap_hashwx_wasm_url: value["capHashwxWasmUrl"],
         interactive: value["interactive"],
     };
 }
