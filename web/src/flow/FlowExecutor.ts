@@ -204,10 +204,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 : this.ownerDocument.body;
 
         applyBackgroundImageProperty(background, { target });
-
-        for (const message of flowMessages(this.challenge?.flowInfo?.messages)) {
-            showMessage(message);
-        }
     }
 
     //#region Listeners
@@ -273,7 +269,14 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
 
-        if (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) {
+        // Shown once per challenge, so a theme change doesn't repeat them.
+        if (changedProperties.has("challenge")) {
+            for (const message of flowMessages(this.challenge?.flowInfo?.messages)) {
+                showMessage(message);
+            }
+        }
+
+        if (changedProperties.has("challenge") || changedProperties.has("activeTheme")) {
             this.#synchronizeFlowInfo();
         }
     }
