@@ -45,7 +45,6 @@ import { match, P } from "ts-pattern";
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { classMap } from "lit/directives/class-map.js";
 
 const _submitStates = ["reviewing", "running", "submitted"] as const;
 
@@ -314,11 +313,9 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
     renderInfo(
         state: string,
         label: string,
-        icons: string[],
+        icon: string,
         extraInfo: SlottedTemplateResult = null,
     ) {
-        const icon = classMap(icons.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}));
-
         return html`<div data-ouid-component-state=${this.state} class="ak-wizard-main-content">
             <div class="pf-l-bullseye">
                 <div class="pf-c-empty-state pf-m-lg">
@@ -509,19 +506,23 @@ export class ApplicationWizardSubmitStep extends ApplicationWizardStep {
                 this.renderInfo(
                     "success",
                     msg("Your application has been saved"),
-                    ["fa-check-circle", "pf-m-success"],
+                    "fa-check-circle pf-m-success",
                     this.renderNextSteps(),
                 ),
             )
             .with(["running", P._], () =>
-                this.renderInfo("running", msg("Saving application..."), ["fa-cogs", "pf-m-info"]),
+                this.renderInfo(
+                    "running",
+                    msg("Saving application..."),
+                    "fas fa-spinner fa-spin pf-m-info",
+                ),
             )
             .with(["reviewing", []], () => this.renderReview(app, provider))
             .with(["reviewing", [P.any, ...P.array()]], () =>
                 this.renderInfo(
                     "error",
                     msg("authentik was unable to complete this process."),
-                    ["fa-times-circle", "pf-m-danger"],
+                    "fa-times-circle pf-m-danger",
                     this.renderError(),
                 ),
             )

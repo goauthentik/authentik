@@ -38,15 +38,13 @@ const Style = css`
     li {
         word-break: normal;
         flex-wrap: nowrap;
-        align-items: flex-start;
+        align-items: center;
         display: flex;
         flex-direction: row;
         gap: var(--ak-c-permissions-list--item--InnerGap);
     }
 
     li i {
-        text-align: center;
-        margin-top: 0.33ex;
         width: 1.75ch;
     }
 
@@ -101,7 +99,9 @@ export class RbacModelPermissionsList extends AKElement {
                                   ><ak-label compact status="info">${tag}</ak-label>
                               `
                             : html`
-                                  <i class="fas fa-times pf-m-danger" aria-hidden="true"></i>
+                                  <small
+                                      ><i class="fas fa-ban pf-m-danger" aria-hidden="true"></i
+                                  ></small>
                                   <span>${name}</span>
                               `
                     }

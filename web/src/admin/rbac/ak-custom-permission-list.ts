@@ -37,7 +37,7 @@ export class CustomPermissionListPage extends TablePage<CustomPermission> {
     public override pageDescription = msg(
         "Define your own permissions on models, assign them to roles, and test them in permission checks.",
     );
-    public override pageIcon = "fa fa-key";
+    public override pageIcon = "fa fa-lock-open";
 
     public override order = "codename";
 
