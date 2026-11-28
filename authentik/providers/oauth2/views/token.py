@@ -138,6 +138,7 @@ class TokenView(View):
             auth_time=self.params.authorization_code.auth_time,
             session=self.params.authorization_code.session,
         )
+        access_token.bind_client(self.client)
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -171,6 +172,7 @@ class TokenView(View):
                 session=self.params.authorization_code.session,
                 dpop_jkt=self.params.authorization_code.dpop_jkt,
             )
+            refresh_token.bind_client(self.client)
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
@@ -205,6 +207,7 @@ class TokenView(View):
             auth_time=self.params.refresh_token.auth_time,
             session=self.params.refresh_token.session,
         )
+        access_token.bind_client(self.client)
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -241,6 +244,7 @@ class TokenView(View):
                 session=self.params.refresh_token.session,
                 dpop_jkt=self.params.refresh_token.dpop_jkt,
             )
+            refresh_token.bind_client(self.client)
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
@@ -276,6 +280,7 @@ class TokenView(View):
             scope=self.params.scope,
             auth_time=now,
         )
+        access_token.bind_client(self.client)
         access_token.id_token = IDToken.new(
             self.provider,
             access_token,
@@ -307,6 +312,7 @@ class TokenView(View):
             auth_time=auth_event.created if auth_event else now,
             session=self.params.device_code.session,
         )
+        access_token.bind_client(self.client)
         access_id_token = IDToken.new(
             self.provider,
             access_token,
@@ -338,6 +344,7 @@ class TokenView(View):
                 auth_time=auth_event.created if auth_event else now,
                 dpop_jkt=self.params.device_code.dpop_jkt,
             )
+            refresh_token.bind_client(self.client)
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
@@ -386,6 +393,11 @@ class TokenView(View):
             expires=access_token_expiry,
             scope=self.params.scope,
             auth_time=now,
+        )
+        # A token issued on another provider (`audience`) is issued as that provider's
+        # registered client, as it always has been
+        access_token.bind_client(
+            self.client if provider == self.provider else OAuthClientContext.for_provider(provider)
         )
         access_token.id_token = IDToken.new(
             provider,
