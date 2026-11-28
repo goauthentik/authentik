@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 00:10+0000\n"
+"POT-Creation-Date: 2026-11-28 00:12+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Ivars Strazdins <ivars.strazdins@gmail.com>, 2026\n"
 "Language-Team: Latvian (Latvia) (https://app.transifex.com/authentik/teams/119923/lv_LV/)\n"
@@ -1732,6 +1732,12 @@ msgstr "Google Workspace pakalpojuma sniedzēja grupas"
 #: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr "Grupu filtri, kas nosaka grupu sinhronizācijas tvērumu."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr "Rekvizītu kartējumi, ko izmanto grupu izveidei un atjaunināšanai."
 
@@ -1742,6 +1748,14 @@ msgstr "Google Workspace pakalpojuma sniedzējs"
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Providers"
 msgstr "Google Workspace pakalpojuma sniedzēji"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group Filter"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group Filters"
+msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Property Mappings Group"
@@ -1827,6 +1841,14 @@ msgstr "Microsoft Entra pakalpojuma sniedzējs"
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Providers"
 msgstr "Microsoft Entra pakalpojuma sniedzēji"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group Filter"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group Filters"
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Property Mappings Group"
@@ -4162,10 +4184,6 @@ msgid "vCenter"
 msgstr "vCenter"
 
 #: authentik/providers/scim/models.py
-msgid "Group filters used to define sync-scope for groups."
-msgstr "Grupu filtri, kas nosaka grupu sinhronizācijas tvērumu."
-
-#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "SCIM pieprasījumu bāzes URL, parasti beidzas ar /v2"
 
@@ -6264,6 +6282,12 @@ msgid ""
 msgstr ""
 "Parole: maskēta ievade; vairākām šī veida ievadēm vienā uzvednē jābūt "
 "vienādām."
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password with show button: Masked input w/show button, multiple inputs of "
+"this type on the same prompt need to be identical."
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Fixed choice field rendered as a group of radio buttons."
