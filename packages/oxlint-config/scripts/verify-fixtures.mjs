@@ -1,6 +1,6 @@
 /**
  * @file Fixture verification for the bundled oxlint plugin. Runs oxlint over deliberately-violating
- *   fixtures and asserts each padding rule fires — and only where expected. The rules ship as
+ *   fixtures and asserts each rule fires — and only where expected. The padding rules ship as
  *   autofixes that rewrite source, so "fires where expected" is not enough on its own: this also
  *   runs `--fix` over a copy of each violating fixture and checks the result equals the matching
  *   `clean` fixture. That is what proves the fix converges instead of inserting a second blank line
@@ -26,8 +26,9 @@ const binRelative =
     typeof oxlintPackage.bin === "string" ? oxlintPackage.bin : oxlintPackage.bin.oxlint;
 const oxlintBin = resolve(dirname(oxlintPackageJson), binRelative);
 
-// Build the config from the factory, with the padding rules switched on and `fixtures/` reachable.
-// The shipped config ignores `fixtures/**`, which would switch off the very rules under test.
+// Build the config from the factory, with the padding and lit-html rules switched on and
+// `fixtures/` reachable. The shipped config ignores `fixtures/**`, which would switch off the very
+// rules under test.
 const configPath = resolve(packageRoot, ".oxlintrc.generated.json");
 
 writeFileSync(
@@ -35,6 +36,7 @@ writeFileSync(
     JSON.stringify(
         createOxlintConfig({
             padding: true,
+            lit: true,
             ignorePatterns: ["**/node_modules", "**/out", "**/dist"],
         }),
         null,
@@ -42,7 +44,10 @@ writeFileSync(
     ),
 );
 
-/** Every fixture, paired with the rule it exercises and whether it should be flagged. */
+/**
+ * Every fixture, paired with the rule it exercises and whether it should be flagged. A number
+ * asks for exactly that many violations.
+ */
 const expectations = [
     { file: "fixtures/padding/needs-padding.ts", rule: "padding-lines", expect: true },
     { file: "fixtures/padding/clean.ts", rule: "padding-lines", expect: false },
@@ -60,6 +65,9 @@ const expectations = [
     // Statements on one line cannot be separated by a blank line; asking is asking the impossible.
     { file: "fixtures/multiline/asi-guard.ts", rule: "padding-lines", expect: false },
     { file: "fixtures/multiline/asi-guard.ts", rule: "multiline-statement-padding", expect: false },
+    // One iframe or DOM call per case, so the count shows that every case was flagged.
+    { file: "fixtures/iframe/flagged.ts", rule: "iframe-sandbox", expect: 15 },
+    { file: "fixtures/iframe/clean.ts", rule: "iframe-sandbox", expect: false },
 ];
 
 /** Violating fixtures paired with the formatted result their autofix must produce. */
@@ -80,7 +88,7 @@ try {
         { cwd: packageRoot, encoding: "utf8" },
     );
 } catch (error) {
-    // oxlint exits non-zero on error-severity diagnostics; these rules are warnings, but be safe.
+    // oxlint exits non-zero on error-severity diagnostics, which iframe-sandbox reports.
     stdout = error.stdout ?? "";
 }
 
@@ -96,13 +104,21 @@ const flaggedBy = (rule) =>
 const failures = [];
 
 for (const { file, rule, expect } of expectations) {
-    const found = [...flaggedBy(rule)].some((flagged) => flagged.endsWith(file));
+    const found = diagnostics.filter(
+        (diagnostic) =>
+            diagnostic.code.includes(rule) &&
+            diagnostic.filename.replaceAll("\\", "/").endsWith(file),
+    ).length;
 
-    if (expect && !found) {
+    if (typeof expect === "number" && found !== expect) {
+        failures.push(`expected ${expect} ${rule} violations in ${file}, found ${found}`);
+    }
+
+    if (expect === true && !found) {
         failures.push(`expected a ${rule} violation in ${file}, found none`);
     }
 
-    if (!expect && found) {
+    if (expect === false && found) {
         failures.push(`unexpected ${rule} violation in ${file}`);
     }
 }
@@ -176,6 +192,7 @@ if (failures.length) {
 console.log(
     `fixtures OK (${flaggedBy("padding-lines").size} padding-lines + ` +
         `${flaggedBy("console-padding").size} console-padding + ` +
-        `${flaggedBy("multiline-statement-padding").size} multiline-statement-padding ` +
+        `${flaggedBy("multiline-statement-padding").size} multiline-statement-padding + ` +
+        `${flaggedBy("iframe-sandbox").size} iframe-sandbox ` +
         `violations, ${fixPairs.length} autofixes converged)`,
 );

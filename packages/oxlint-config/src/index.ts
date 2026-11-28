@@ -1,6 +1,6 @@
 import { PaddingRules } from "./padding-rules.js";
 import { createRuntimeOverrides } from "./restrictions.js";
-import { WebComponentJsPlugins, WebComponentRules } from "./web-components.js";
+import { LitTemplateRules, WebComponentJsPlugins, WebComponentRules } from "./web-components.js";
 
 import type { DummyRuleMap, ExternalPluginEntry, OxlintConfig } from "oxlint";
 
@@ -15,7 +15,8 @@ export interface OxlintConfigOptions {
     react?: boolean;
     /**
      * Enable the lit-html and Web Component lint rules (`eslint-plugin-lit` + `eslint-plugin-wc`,
-     * loaded as `jsPlugins`). Off by default; the web UI turns it on.
+     * loaded as `jsPlugins`, and `goauthentik/iframe-sandbox`). Off by default; the web UI turns it
+     * on.
      */
     lit?: boolean;
     /**
@@ -117,6 +118,7 @@ export function createOxlintConfig(options: OxlintConfigOptions = {}): OxlintCon
         "typescript/no-require-imports": "off",
         ...(padding ? PaddingRules : {}),
         ...(lit ? WebComponentRules : {}),
+        ...(lit ? LitTemplateRules : {}),
     };
 
     const { rules: ruleOverrides, overrides: fileOverrides, ...configOverrides } = overrides;

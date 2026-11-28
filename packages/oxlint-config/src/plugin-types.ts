@@ -29,10 +29,28 @@ export interface AstNode {
     declaration?: AstNode | null;
     /** A call expression's callee. */
     callee?: AstNode;
+    /** A call expression's arguments. */
+    arguments?: AstNode[];
     /** A member expression's object. */
     object?: AstNode;
+    /** A member expression's property. */
+    property?: AstNode;
+    /** Whether a member expression's property is computed (`a[b]`) rather than named (`a.b`). */
+    computed?: boolean;
+    /** An assignment expression's target. */
+    left?: AstNode;
+    /** A tagged template's tag. */
+    tag?: AstNode;
     /** An identifier's name. */
     name?: string;
+    /** A literal's value. */
+    value?: unknown;
+}
+
+/** A line (1-based) and column (0-based) span, as ESLint reports it. */
+export interface SourceLocation {
+    start: { line: number; column: number };
+    end: { line: number; column: number };
 }
 
 export interface SourceCode {
@@ -50,7 +68,13 @@ export interface RuleContext {
     options: unknown[];
     sourceCode?: SourceCode;
     getSourceCode?(): SourceCode;
-    report(descriptor: { node: unknown; message: string; fix?(fixer: Fixer): unknown }): void;
+    /** `loc`, when given, places the report instead of `node`. */
+    report(descriptor: {
+        node: unknown;
+        loc?: SourceLocation;
+        message: string;
+        fix?(fixer: Fixer): unknown;
+    }): void;
 }
 
 export interface Rule {

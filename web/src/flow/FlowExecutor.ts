@@ -427,6 +427,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
             if (!src) return null;
 
+            // An admin sets the background: an uploaded file, which authentik serves with a sandbox
+            // CSP, or an external page.
+            /* oxlint-disable goauthentik/iframe-sandbox */
             return html`
                 <div class="ak-c-login__content" part="content">
                     <iframe
@@ -437,6 +440,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                     ></iframe>
                 </div>
             `;
+            /* oxlint-enable goauthentik/iframe-sandbox */
         });
     }
 
