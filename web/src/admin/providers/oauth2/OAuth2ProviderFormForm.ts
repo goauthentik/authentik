@@ -442,6 +442,17 @@ export function renderForm({
                     help=${msg("Configure how the issuer field of the ID Token should be filled.")}
                 >
                 </ak-radio-input>
+                <ak-switch-input
+                    name="includeIssuerInAuthorizationResponse"
+                    label=${msg("Include issuer in authorization responses", {
+                        id: "providers.oauth2.authorization-response-issuer.label",
+                    })}
+                    ?checked=${provider.includeIssuerInAuthorizationResponse ?? true}
+                    help=${msg(
+                        "Return the issuer as the iss parameter in authorization responses (RFC 9207), so clients can detect mix-up attacks. Only enable this when authentik produces the same issuer URL for every URL it's accessed with.",
+                        { id: "providers.oauth2.authorization-response-issuer.description" },
+                    )}
+                ></ak-switch-input>
             </div>
         </ak-form-group>
 
