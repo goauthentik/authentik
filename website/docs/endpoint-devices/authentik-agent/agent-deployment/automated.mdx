@@ -7,6 +7,8 @@ authentik_version: "2025.12.0"
 
 The authentik Agent can be deployed at scale to multiple devices via Mobile Device Management (MDM) and automation tools.
 
+To enforce authentik Agent settings on devices, refer to [Agent settings and policies](../settings.mdx#enforce-settings-with-a-policy).
+
 ## Prerequisites
 
 You must [configure your authentik deployment](../configuration.mdx) to support the authentik Agent.
@@ -23,6 +25,46 @@ If you have already created an enrollment token, skip to the next section.
     - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
     - **Expiring _(optional)_**: set whether the enrollment token expires.
 5. Click **Create**.
+
+## How automated enrollment works
+
+Each of the following sections deploys an enrollment configuration to a device. The configuration contains the URL of your authentik deployment and an enrollment token. The authentik system service (`ak-sysd`) reads the configuration when it starts and joins the device to an authentik domain named `ak-mdm-managed`.
+
+With authentik Agent 0.73.1 and later:
+
+- If the device was also joined to a domain manually, the domain from the enrollment configuration takes priority.
+- If the enrollment configuration is removed from the device, the system service removes the `ak-mdm-managed` domain the next time it starts.
+- You can list the domains that a device has joined, and which one is active, with the `ak-sysd domains list` command. Run the command with administrative privileges and use the path of `ak-sysd` for your platform. For example, on Linux:
+
+```sh
+sudo ak-sysd domains list
+```
+
+## Linux
+
+Automated enrollment on Linux requires authentik Agent 0.70 or later.
+
+1. Create the file `/etc/authentik/managed.json` with the following content:
+
+```json
+{
+    "url": "https://authentik.company",
+    "registration_token": "<enrollment_token>"
+}
+```
+
+2. Ensure that the file is owned by `root` and that only `root` can read it. The system service ignores the file if the group or others have any permissions on it.
+
+```sh
+sudo chown root:root /etc/authentik/managed.json
+sudo chmod 0400 /etc/authentik/managed.json
+```
+
+3. [Install the authentik Agent packages](./linux.mdx#install-the-authentik-agent-on-linux). If the packages are already installed, restart the system service:
+
+```sh
+sudo systemctl restart ak-sysd
+```
 
 ## Windows
 

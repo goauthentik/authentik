@@ -1,0 +1,168 @@
+---
+title: authentik Agent app
+sidebar_label: Agent app
+tags: [authentik Agent, desktop, app, tray, profiles]
+sidebar_position: 2.5
+---
+
+The authentik Agent app is the desktop application of the [authentik Agent](./index.mdx) on Linux, macOS, and Windows. It runs the user agent, which means that the [`ak` CLI](./authentik-cli.mdx), the SSH agent, and the browser extension only work while the app is running.
+
+Use the app to manage profiles, review which programs requested access to your authentik account, and set up SSH and MCP clients.
+
+:::info Agent version
+This page describes authentik Agent 0.73 and later.
+:::
+
+![The Authorizations page of the authentik Agent app, showing the active profile and three allowed requests](./desktop-app-authorizations.png)
+
+## Start and open the app
+
+The app is installed with the authentik Agent:
+
+- **macOS**: `/Applications/authentik Agent.app`
+- **Windows**: `C:\Program Files\Authentik Security Inc\agent\ak-agent-desktop.exe`. The app has no Start menu entry.
+- **Linux**: `/usr/bin/ak-agent-desktop`, from the `authentik-agent-desktop` package. Install either this package or the headless `authentik-agent` package. The two packages can't be installed together.
+
+The authentik system service (`ak-sysd`) starts the app when the service starts, if a user is already logged in to the desktop, and when a user logs in to the device through authentik. In other cases, for example after the device restarts and you log in with a local account, start the app yourself:
+
+- **macOS**: open **authentik Agent** from Finder or Launchpad, or run `open -a "authentik Agent"`.
+- **Windows**: run `ak-agent-desktop.exe` from the location above.
+- **Linux**: open **authentik Agent** from the application menu, or run `ak-agent-desktop`.
+
+The app starts without a window and is only visible as an icon in the menu bar, notification area, or system tray:
+
+- To open the window on macOS or Windows, click the icon. On Linux, click the tray icon and select **Open authentik Agent**. On Linux and Windows, starting the app again also opens the window.
+- Closing the window doesn't quit the app. It keeps running in the background so that `ak`, SSH, and the browser extension continue to work.
+- To quit the app on macOS, select **authentik Agent** > **Quit** from the menu bar. **Hide to Tray** only closes the window.
+- To quit the app on Linux, click the tray icon and select **Quit**. The tray icon requires a desktop environment with AppIndicator support.
+- To quit the app on Windows, right-click the icon in the notification area and select **Quit**.
+
+### Open the app with a link
+
+The app registers the `io.goauthentik.platform://` URL scheme, which you can use in internal documentation or scripts to open the app on a specific page:
+
+| Link                                                 | Opens              |
+| ---------------------------------------------------- | ------------------ |
+| `io.goauthentik.platform://open`                     | The app window     |
+| `io.goauthentik.platform://open?page=authorizations` | **Authorizations** |
+| `io.goauthentik.platform://open?page=profiles`       | **Profiles**       |
+| `io.goauthentik.platform://open?page=ssh`            | **SSH Agent**      |
+| `io.goauthentik.platform://open?page=mcp`            | **MCP Server**     |
+
+## Window layout
+
+The window has four pages: **Authorizations**, **Profiles**, **SSH Agent**, and **MCP Server**.
+
+The footer shows the version of the app (**Desktop**) and of the system service (**System**). **System: disconnected** means that the app can't reach `ak-sysd`. When a newer authentik Agent release exists, the footer also shows **Update available** with the new version, which links to the changelog, unless the update check is disabled. The app doesn't update itself.
+
+The app has no general settings page. The SSH fallback agent is configured on the [**SSH Agent**](#ssh-agent) page. All other settings are configured in a file or enforced by an administrator. Refer to [Agent settings and policies](./settings.mdx).
+
+## Authorizations
+
+When the active profile doesn't exist, for example because no profile was added yet, this page shows **Connect to authentik** with an **Add profile** button. Refer to [Add a profile](#add-a-profile).
+
+Otherwise, the page shows the active profile and the requests that programs on the device made to the authentik Agent:
+
+- The summary shows your name, username, authentik host, and profile name, whether the profile's token is valid, and whether the profile is **Key-bound**. The **Allowed** and **Denied** counters summarize the list below. **Denied** also counts failed requests.
+- **Recent authorizations** lists the latest 100 requests since the app started. The list is cleared when the app quits.
+
+Each entry in the list shows:
+
+| Column  | Description                                                                                                                                                                                                                                        |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Outcome | **Allowed**, **Denied**, or **Failed**. **Failed** means that the authorization prompt couldn't be shown.                                                                                                                                          |
+| Action  | What was requested and for which target: `Account info`, `Access token`, `Token exchange`, `SSH`, or `Login`.                                                                                                                                      |
+| Program | The requesting program, or its parent program such as your shell, and the process ID of the requesting program. Hover over the program to see the full command lines. **remembered** means that an earlier answer was reused without a new prompt. |
+| Time    | When the request was made.                                                                                                                                                                                                                         |
+
+For details on when the authentik Agent prompts you and how long it remembers your answer, refer to [Authorization prompts](./settings.mdx#authorization-prompts).
+
+## Profiles
+
+A profile is a login to one authentik deployment. You can have several profiles, for example `default` and `work`. One profile is the active profile, which is used by `ak`, the browser extension, and the shared SSH agent socket.
+
+Each profile shows its username, when its token was last renewed, when it's renewed next, and the following badges:
+
+| Badge              | Meaning                                                                                                          |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| **Active Profile** | The profile that is currently in use.                                                                            |
+| **Valid**          | The token is valid and is renewed automatically.                                                                 |
+| **Expiring soon**  | The token expires within 30 minutes and is about to be renewed.                                                  |
+| **Needs renewal**  | The token has expired.                                                                                           |
+| **Renewal Failed** | The token couldn't be renewed. [Add the profile again](#add-a-profile) with the same name to log in again.       |
+| **Key-bound**      | The profile's tokens are bound to a key on this device. Refer to [Key binding](./configuration.mdx#key-binding). |
+
+### Add a profile
+
+1. Open the **Profiles** page and click **Add profile**.
+2. Configure the following settings:
+    - **authentik URL**: the URL of your authentik deployment, for example `https://authentik.company`.
+    - **Profile name**: a name for the profile. Use only letters, digits, `-`, and `_`, so that the profile gets its own [SSH agent socket](./device-authentication/ssh-authentication.mdx#use-a-specific-profile-for-a-host).
+    - **Client ID** and **Application slug**: keep `authentik-cli` unless your administrator provided different values.
+3. Click **Continue**. Your default browser opens authentik. If it doesn't, click **open this link** in the dialog.
+4. Log in to authentik and confirm the request. The dialog closes and the profile is listed.
+
+The active profile is `default` until you switch to another profile. If you add a profile with another name, [switch to it](#switch-the-active-profile).
+
+Adding a profile with the name of an existing profile replaces that profile. Use this to log in again or to change an existing profile to a key-bound profile.
+
+Alternatively, add a profile from the command line:
+
+```sh
+ak config setup --authentik-url https://authentik.company --profile work
+```
+
+### Switch the active profile
+
+Profiles can't be switched in the app. Use the following command; the app updates immediately:
+
+```sh
+ak switch-profile work
+```
+
+The command can be shortened to `ak s`, for example `ak s work`.
+
+### Delete a profile
+
+Click **Delete** next to the profile, then click **Click again to delete**. Alternatively, run `ak config delete-profile <profile>`.
+
+Your administrator can prevent profiles from being deleted with the `profile_management.allow_delete` setting. Refer to [Agent settings and policies](./settings.mdx).
+
+## SSH Agent
+
+This page shows whether your SSH client uses the authentik Agent and how to configure it. For details, refer to [SSH authentication](./device-authentication/ssh-authentication.mdx).
+
+The badge next to the page title shows the current status:
+
+| Badge       | Meaning                                                                            |
+| ----------- | ---------------------------------------------------------------------------------- |
+| **Active**  | Your SSH client uses the authentik Agent for all hosts.                            |
+| **Partial** | Your SSH configuration only uses the authentik Agent for some hosts.               |
+| **Off**     | Your SSH configuration doesn't use the authentik Agent.                            |
+| **Stopped** | The SSH agent socket doesn't exist, for example because the SSH agent is disabled. |
+
+The **Partial** status is based only on `~/.ssh/config` and doesn't take files included with `Include` into account.
+
+The page has the following sections:
+
+- **SSH Agent**: the `IdentityAgent` line to add to `~/.ssh/config` and the `SSH_AUTH_SOCK` variable to set for the current shell.
+- **Profile agents**: an `IdentityAgent` line for each profile. Refer to [Use a specific profile for a host](./device-authentication/ssh-authentication.mdx#use-a-specific-profile-for-a-host).
+- **Fallback agent**: another SSH agent to use for hosts that aren't managed by authentik. Refer to [Use other SSH keys with a fallback agent](./device-authentication/ssh-authentication.mdx#use-other-ssh-keys-with-a-fallback-agent).
+
+## MCP Server
+
+This page shows how to add the authentik Agent's MCP server (`ak mcp`) to AI clients. It has instructions for Claude Code, Claude Desktop, Codex CLI, Cursor, VS Code, Gemini CLI, Zed, and OpenCode.
+
+## Troubleshooting
+
+### The footer shows "System: disconnected"
+
+The app can't reach the system service (`ak-sysd`). Check that the service is running and review its logs. Refer to the deployment documentation for your platform: [Linux](./agent-deployment/linux.mdx), [macOS](./agent-deployment/macos.mdx), or [Windows](./agent-deployment/windows.mdx).
+
+### No window appears
+
+The app starts in the background. Click its icon in the menu bar, notification area, or system tray, or open the app again.
+
+### `ak` can't connect to the Agent
+
+The app isn't running. [Start the app](#start-and-open-the-app) and run the command again.

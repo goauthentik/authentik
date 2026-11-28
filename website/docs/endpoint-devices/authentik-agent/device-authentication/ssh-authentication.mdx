@@ -10,7 +10,7 @@ import Tabs from "@theme/Tabs";
 
 You can use the [authentik Agent](../index.mdx) to authenticate SSH connections between endpoint devices using authentik credentials.
 
-Currently, only [Linux](../agent-deployment/linux.mdx) devices can serve as SSH endpoints. See [Configure SSH authentication on an endpoint device](#configure-ssh-authentication-on-an-endpoint-device) section for more details.
+Linux, macOS, and Windows devices can initiate SSH connections. Currently, only [Linux](../agent-deployment/linux.mdx) devices can serve as SSH endpoints. See [Configure SSH authentication on an endpoint device](#configure-ssh-authentication-on-an-endpoint-device) section for more details.
 
 When connected to an endpoint device in this way, sudo authorization can be handled by the authentik agent.
 
@@ -18,6 +18,9 @@ When connected to an endpoint device in this way, sudo authorization can be hand
 
 - The [authentik Agent must be deployed](../agent-deployment/index.mdx) on both the source and SSH target devices.
 - The target device needs to be configured, see the [Configure SSH authentication on an endpoint device](#configure-ssh-authentication-on-an-endpoint-device) section below.
+- The SSH client on the source device must be OpenSSH 8.9 or later. Check the version with `ssh -V`. Older clients don't send the target host's key to the SSH agent, so the authentik Agent can't request a certificate from authentik.
+- A profile must exist on the source device. Add one in the [authentik Agent app](../desktop-app.mdx#add-a-profile) or with `ak config setup`.
+- On Windows source devices, Windows Hello must be set up. The authentik Agent uses it for [authorization prompts](../settings.mdx#authorization-prompts).
 
 ## How to SSH to an endpoint device
 
@@ -47,7 +50,19 @@ Host *
 ```
 
 </TabItem>
+<TabItem value="Windows">
+
+Edit `%USERPROFILE%\.ssh\config` and add the following:
+
+```shell
+Host *
+    IdentityAgent "//./pipe/authentik/socket-ssh"
+```
+
+</TabItem>
 </Tabs>
+
+The **SSH Agent** page of the [authentik Agent app](../desktop-app.mdx#ssh-agent) shows these settings for your device and whether your SSH client uses the authentik Agent.
 
 2. Open a Terminal session and run the following command:
 
@@ -55,8 +70,69 @@ Host *
 ssh <hostname>
 ```
 
-2. If you are not already authenticated, enter your authentik credentials when prompted.
-3. After authentication, the SSH session connects.
+3. When the authentik Agent prompts you, approve the login. The Agent remembers your answer for a limited time. Refer to [Authorization prompts](../settings.mdx#authorization-prompts).
+4. After authentication, the SSH session connects.
+
+## Use a specific profile for a host
+
+The SSH agent socket in the previous section uses the active profile, which changes when you run `ak switch-profile`. authentik Agent 0.72 and later also provides a socket for each profile, which always uses that profile regardless of the active profile.
+
+| Platform | `IdentityAgent` value for the profile `<profile>`                  |
+| -------- | ------------------------------------------------------------------ |
+| Linux    | `~/.local/share/authentik/agent-ssh-<profile>.sock`                |
+| macOS    | `~/Library/Application Support/authentik/agent-ssh-<profile>.sock` |
+| Windows  | `//./pipe/authentik/socket-ssh-<profile>`                          |
+
+A profile only has its own socket if its name consists of letters, digits, `-`, and `_`.
+
+For example, to use the `work` profile for some hosts and the active profile for all other hosts on macOS:
+
+```shell
+Host *.work.company
+    IdentityAgent "~/Library/Application Support/authentik/agent-ssh-work.sock"
+
+Host *
+    IdentityAgent "~/Library/Application Support/authentik/agent-ssh.sock"
+```
+
+SSH uses the first `IdentityAgent` value that matches a host, so add specific hosts before `Host *`.
+
+## Use other SSH keys with a fallback agent
+
+When `IdentityAgent` points to the authentik Agent, your SSH client no longer uses your other SSH agent, such as the system SSH agent, 1Password, or a hardware key agent. Connections to hosts that aren't managed by authentik, such as Git hosting services, then fail.
+
+To continue using your other keys, configure a fallback agent. The `ssh_fallback_agent` setting requires authentik Agent 0.63 or later, and the **Fallback agent** form in the app requires 0.70 or later. The authentik Agent then handles connections as follows:
+
+1. If the host is a passthrough host, the Agent sends the request directly to the fallback agent, without a prompt.
+2. Otherwise, the Agent prompts you to approve the login and requests a certificate from authentik.
+3. If the Agent doesn't get a certificate, for example because authentik doesn't manage the host or you denied the prompt, the Agent sends the request to the fallback agent.
+
+By default, github.com and gitlab.com are passthrough hosts. To avoid prompts for other hosts that aren't managed by authentik, add them as passthrough hosts.
+
+To configure a fallback agent:
+
+1. Open the [authentik Agent app](../desktop-app.mdx) and open the **SSH Agent** page.
+2. Under **Fallback agent**, configure the following settings:
+    - **Fallback agent socket**: the absolute path of the other SSH agent's socket. The field suggests the SSH agent that was in use when the app started.
+    - **Extra passthrough hosts** _(optional)_: one `known_hosts` line per host, for example the output of `ssh-keyscan git.company`.
+3. Click **Save**.
+
+Passthrough hosts are matched by their host key. If the host key of a passthrough host changes, update its line.
+
+To stop using a fallback agent, clear **Fallback agent socket** and click **Save**.
+
+Alternatively, configure the fallback agent with the `ssh_fallback_agent` setting. Refer to [Agent settings and policies](../settings.mdx). If your administrator enforces this setting, the form is read-only.
+
+## Agent forwarding
+
+With `ForwardAgent yes`, the SSH agent of the authentik Agent is available on the host that you connect to. This allows you to:
+
+- Connect from that host to other hosts that are managed by authentik.
+- Run `ak` commands on that host without creating a profile there, if the authentik Agent isn't running on that host. The requests are sent to the authentik Agent on your device, which prompts you for approval.
+
+Only forward the agent to hosts that you trust. Anyone with administrative access to a host can use a forwarded agent for as long as you're connected.
+
+To prevent `ak` on remote hosts from reaching the authentik Agent on a device, set `ssh.agent_tunnel` to `false`. Refer to [Agent settings and policies](../settings.mdx).
 
 ## Configure SSH authentication on an endpoint device
 
