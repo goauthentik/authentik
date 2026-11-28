@@ -171,9 +171,9 @@ class GroupMember(BaseGroupMember):
 
 
 class Bulk(BaseBulk):
-    # RFC 7644 Section 5 only defines the bulk limits alongside bulk support, so a
-    # service provider that answers `"bulk": {"supported": false}` and nothing else is
-    # conforming. Requiring the field made that response fail validation, which sent
+    # RFC 7643 Section 5 marks the bulk limits as REQUIRED, but a service provider
+    # that answers `"bulk": {"supported": false}` and nothing else is common in
+    # practice. Requiring the field made that response fail validation, which sent
     # `get_service_provider_config()` to its fallback and reported `patch` and `filter`
     # as unsupported regardless of what the provider actually advertised.
     #
