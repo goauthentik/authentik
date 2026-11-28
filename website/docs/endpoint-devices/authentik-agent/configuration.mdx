@@ -77,6 +77,6 @@ To enable key binding on an existing provider:
 3. Under **Advanced protocol settings**, add the `authentik default OAuth Mapping: OpenID 'bound_key'` scope to **Selected Scopes**.
 4. Click **Update**.
 
-Profiles that are added after this change are key-bound, which is shown by the **Key-bound** badge in the [authentik Agent app](./desktop-app.mdx#profiles). Existing profiles remain unbound until the user [adds the profile again](./desktop-app.mdx#add-a-profile) with the same name. Agents older than 0.70 continue to work without key binding.
+Profiles that are added after this change are key-bound, and the [authentik Agent app](./desktop-app.mdx#profiles) shows a **Key-bound** badge for them. Existing profiles remain unbound until the user [adds the profile again](./desktop-app.mdx#add-a-profile) with the same name. Agents older than 0.70 continue to work without key binding.
 
-To only allow key-bound profiles on a device, enforce the `profile_management.require_dpop` setting. Refer to [Agent settings and policies](./settings.mdx).
+To allow only key-bound profiles on a device, enforce the `profile_management.require_dpop` setting. Refer to [Agent settings and policies](./settings.mdx).

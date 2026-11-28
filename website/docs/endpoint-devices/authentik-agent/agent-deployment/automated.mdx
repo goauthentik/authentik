@@ -28,13 +28,13 @@ If you have already created an enrollment token, skip to the next section.
 
 ## How automated enrollment works
 
-Each of the following sections deploys an enrollment configuration to a device. It contains the URL of your authentik deployment and an enrollment token. The authentik system service (`ak-sysd`) reads the configuration when it starts and joins the device to an authentik domain named `ak-mdm-managed`.
+Each of the following sections deploys an enrollment configuration to a device. The configuration contains the URL of your authentik deployment and an enrollment token. The authentik system service (`ak-sysd`) reads the configuration when it starts and joins the device to an authentik domain named `ak-mdm-managed`.
 
 With authentik Agent 0.73.1 and later:
 
 - If the device was also joined to a domain manually, the domain from the enrollment configuration takes priority.
 - If the enrollment configuration is removed from the device, the system service removes the `ak-mdm-managed` domain the next time it starts.
-- You can list the domains that a device has joined, and which one is active, with the `ak-sysd domains list` command. Run the command with administrative privileges and use the path of `ak-sysd` for your platform, for example on Linux:
+- You can list the domains that a device has joined, and which one is active, with the `ak-sysd domains list` command. Run the command with administrative privileges and use the path of `ak-sysd` for your platform. For example, on Linux:
 
 ```sh
 sudo ak-sysd domains list

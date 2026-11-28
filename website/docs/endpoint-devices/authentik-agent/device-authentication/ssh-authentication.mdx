@@ -18,6 +18,7 @@ When connected to an endpoint device in this way, sudo authorization can be hand
 
 - The [authentik Agent must be deployed](../agent-deployment/index.mdx) on both the source and SSH target devices.
 - The target device needs to be configured, see the [Configure SSH authentication on an endpoint device](#configure-ssh-authentication-on-an-endpoint-device) section below.
+- The SSH client on the source device must be OpenSSH 8.9 or later. Check the version with `ssh -V`. Older clients don't send the target host's key to the SSH agent, so the authentik Agent can't request a certificate from authentik.
 - A profile must exist on the source device. Add one in the [authentik Agent app](../desktop-app.mdx#add-a-profile) or with `ak config setup`.
 - On Windows source devices, Windows Hello must be set up. The authentik Agent uses it for [authorization prompts](../settings.mdx#authorization-prompts).
 
@@ -100,17 +101,13 @@ SSH uses the first `IdentityAgent` value that matches a host, so add specific ho
 
 When `IdentityAgent` points to the authentik Agent, your SSH client no longer uses your other SSH agent, such as the system SSH agent, 1Password, or a hardware key agent. Connections to hosts that aren't managed by authentik, such as Git hosting services, then fail.
 
-To continue using your other keys, configure a fallback agent. This requires authentik Agent 0.63 or later. The authentik Agent then handles connections as follows:
+To continue using your other keys, configure a fallback agent. The `ssh_fallback_agent` setting requires authentik Agent 0.63 or later, and the **Fallback agent** form in the app requires 0.70 or later. The authentik Agent then handles connections as follows:
 
 1. If the host is a passthrough host, the Agent sends the request directly to the fallback agent, without a prompt.
 2. Otherwise, the Agent prompts you to approve the login and requests a certificate from authentik.
-3. If authentik doesn't manage the host, the Agent sends the request to the fallback agent.
+3. If the Agent doesn't get a certificate, for example because authentik doesn't manage the host or you denied the prompt, the Agent sends the request to the fallback agent.
 
-github.com and gitlab.com are passthrough hosts by default. To avoid prompts for other hosts that aren't managed by authentik, add them as passthrough hosts.
-
-:::info OpenSSH version
-The authentik Agent identifies a host by its host key, which SSH clients only send from OpenSSH 8.9. With older clients, passthrough hosts are handled like all other hosts.
-:::
+By default, github.com and gitlab.com are passthrough hosts. To avoid prompts for other hosts that aren't managed by authentik, add them as passthrough hosts.
 
 To configure a fallback agent:
 
@@ -120,18 +117,18 @@ To configure a fallback agent:
     - **Extra passthrough hosts** _(optional)_: one `known_hosts` line per host, for example the output of `ssh-keyscan git.company`.
 3. Click **Save**.
 
+Passthrough hosts are matched by their host key. If the host key of a passthrough host changes, update its line.
+
 To stop using a fallback agent, clear **Fallback agent socket** and click **Save**.
 
 Alternatively, configure the fallback agent with the `ssh_fallback_agent` setting. Refer to [Agent settings and policies](../settings.mdx). If your administrator enforces this setting, the form is read-only.
-
-Passthrough hosts are matched by their host key. If the host key of a passthrough host changes, update its line.
 
 ## Agent forwarding
 
 With `ForwardAgent yes`, the SSH agent of the authentik Agent is available on the host that you connect to. This allows you to:
 
 - Connect from that host to other hosts that are managed by authentik.
-- Run `ak` commands on that host without creating a profile there. The requests are sent to the authentik Agent on your device, which prompts you for approval.
+- Run `ak` commands on that host without creating a profile there, if the authentik Agent isn't running on that host. The requests are sent to the authentik Agent on your device, which prompts you for approval.
 
 Only forward the agent to hosts that you trust. Anyone with administrative access to a host can use a forwarded agent for as long as you're connected.
 

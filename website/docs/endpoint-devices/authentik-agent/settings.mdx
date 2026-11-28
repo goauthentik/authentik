@@ -24,7 +24,7 @@ Settings and policies require authentik Agent 0.73 or later.
 | Setting                                      | Type            | Default | Description                                                                                                                                                                                                                                    |
 | -------------------------------------------- | --------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `debug`                                      | Boolean         | `false` | Log at trace level instead of info level.                                                                                                                                                                                                      |
-| `ssh.enabled`                                | Boolean         | `true`  | Provide the SSH agent. A change takes effect after the Agent restarts.                                                                                                                                                                         |
+| `ssh.enabled`                                | Boolean         | `true`  | Provide the SSH agent.                                                                                                                                                                                                                         |
 | `ssh.agent_tunnel`                           | Boolean         | `true`  | Allow `ak` on remote hosts to reach this Agent through a forwarded SSH agent. Refer to [Agent forwarding](./device-authentication/ssh-authentication.mdx#agent-forwarding).                                                                    |
 | `ssh.builtin_passthrough_hosts`              | Boolean         | `true`  | Send connections to github.com and gitlab.com directly to the fallback agent.                                                                                                                                                                  |
 | `ssh_fallback_agent.socket_path`             | String          | Not set | Absolute path of the socket of another SSH agent that is used for hosts that aren't managed by authentik. `~` isn't expanded.                                                                                                                  |
@@ -36,8 +36,8 @@ Settings and policies require authentik Agent 0.73 or later.
 | `authorization.remember.<operation>.allow`   | Integer         | Varies  | Number of seconds that an allowed request is remembered. Refer to [Authorization prompts](#authorization-prompts) for the operations and their defaults.                                                                                       |
 | `authorization.remember.<operation>.deny`    | Integer         | Varies  | Number of seconds that a denied request is remembered.                                                                                                                                                                                         |
 | `authorization.allowed_exchange_audiences`   | List of strings | Any     | Client IDs of the applications that tokens can be exchanged for, for example with `ak auth`.                                                                                                                                                   |
-| `telemetry.update_check`                     | Boolean         | `true`  | Check daily whether a newer authentik Agent release exists.                                                                                                                                                                                    |
-| `telemetry.error_reporting`                  | Boolean         | `true`  | Send errors and performance traces of the authentik Agent app to authentik's Sentry.                                                                                                                                                           |
+| `telemetry.update_check`                     | Boolean         | `true`  | Check at most once a day whether a newer authentik Agent release exists.                                                                                                                                                                       |
+| `telemetry.error_reporting`                  | Boolean         | `true`  | Send errors and performance traces of the user agent, including the authentik Agent app, to authentik's Sentry.                                                                                                                                |
 
 In addition, the following environment variables can be set to `true` for the authentik Agent app:
 
@@ -87,21 +87,21 @@ The configuration file belongs to the user, and the Agent writes to it, for exam
 
 Note the following:
 
-- The Agent applies changes to the file immediately, except for `ssh.enabled`.
-- The Agent doesn't start if the file isn't valid JSON.
+- The Agent reads the file when it starts, and rewrites it while it runs, for example when it renews a token. Quit the authentik Agent app before you edit the file, and start it again afterwards. On Linux devices without the app, use `systemctl --user stop ak-agent` and `systemctl --user start ak-agent` instead.
+- The Agent doesn't start if the file isn't valid JSON or if a setting has a value of the wrong type.
 - Settings with an unknown name are ignored and are removed the next time the Agent saves the file. Check the spelling of setting names.
 
 ## Authorization prompts
 
 When a program requests access to your authentik account, the authentik Agent asks you to approve the request. The Agent remembers your answer for the same program and the same target for a limited time. The time depends on the operation:
 
-| Operation        | Requested by                                                             | Allowed answer remembered for | Denied answer remembered for |
-| ---------------- | ------------------------------------------------------------------------ | ----------------------------- | ---------------------------- |
-| `whoami`         | Programs that read your account information, such as `ak whoami`         | Not remembered                | Not remembered               |
-| `current_token`  | Programs that use your authentik session token, such as `ak api`         | 5 minutes                     | 15 minutes                   |
-| `token_exchange` | Programs that request a token for another application, such as `ak auth` | 30 minutes                    | 1 second                     |
-| `ssh_login`      | SSH connections to hosts that are managed by authentik                   | 30 minutes                    | 5 minutes                    |
-| `authorize`      | Approval requests for a service, such as a login on another device       | 2 hours                       | 5 minutes                    |
+| Operation        | Requested by                                                                                                | Allowed answer remembered for | Denied answer remembered for |
+| ---------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------- | ---------------------------- |
+| `whoami`         | Programs that read your account information, such as `ak whoami`                                            | Not remembered                | Not remembered               |
+| `current_token`  | Programs that use your authentik session token, such as `ak api`                                            | 5 minutes                     | 15 minutes                   |
+| `token_exchange` | Programs that request a token for another application, such as `ak auth`                                    | 30 minutes                    | 1 second                     |
+| `ssh_login`      | SSH connections to hosts that are managed by authentik                                                      | 30 minutes                    | 5 minutes                    |
+| `authorize`      | The authentik PAM module, for example for `sudo` on a Linux device, including through a forwarded SSH agent | 2 hours                       | 5 minutes                    |
 
 To change these times, set `authorization.remember.<operation>.allow` and `authorization.remember.<operation>.deny` in seconds. A value of `0` means that the Agent always prompts.
 
@@ -147,7 +147,7 @@ polkit.addRule(function (action, subject) {
 A polkit rule can't distinguish which program made a request or which application a token is requested for.
 
 :::warning polkit is required
-If the system D-Bus or polkit isn't available on a Linux device, the authentik Agent allows all requests without a prompt. Ensure that polkit is installed and running on devices where prompts are required.
+If the authentik Agent can't connect to polkit over the system D-Bus on a Linux device, it allows all requests without a prompt. Ensure that polkit is installed and running on devices where prompts are required.
 :::
 
 ## Enforce settings with a policy
@@ -157,10 +157,10 @@ A policy uses the same settings as the user's configuration file and is applied 
 - A setting in the policy overrides the user's setting. Settings that aren't in the policy remain under the user's control.
 - For `authorization.remember` times, the shorter time applies. Users can shorten a time that is set in the policy but can't extend it.
 - When the policy configures `ssh_fallback_agent`, it replaces the user's fallback agent configuration, including the user's passthrough hosts. The **Fallback agent** form in the authentik Agent app becomes read-only.
-- The policy is read when the Agent starts. After you change a policy, users need to quit and reopen the authentik Agent app, or log out and back in.
+- The policy is read when the Agent starts. After you change a policy, users need to quit and reopen the authentik Agent app, or log out and back in. On Linux devices without the app, run `systemctl --user restart ak-agent`.
 
 :::warning Test a policy before deploying it
-If a policy exists but can't be read, for example because it's invalid or has the wrong permissions, the authentik Agent doesn't start.
+If a policy exists but can't be read, for example because it's invalid or has the wrong permissions, the authentik Agent doesn't start and logs an error that starts with `failed to load agent policy`.
 :::
 
 The following examples configure the same policy:
@@ -216,7 +216,7 @@ sudo install -o root -g root -m 0644 agent-policy.json /etc/authentik/agent-poli
 
 Use your MDM tool to deploy a configuration profile for the preference domain `io.goauthentik.platform.agent`. Settings with nested names are dictionaries.
 
-The Agent only uses values from a configuration profile that is installed by an MDM tool. Values that are set with `defaults write` are ignored.
+The Agent only uses values from an installed configuration profile. Values that are set with `defaults write` are ignored.
 
 The following payload contains the policy. Add it to the `PayloadContent` of a configuration profile, or upload its settings as custom settings for the `io.goauthentik.platform.agent` domain if your MDM tool supports that. Generate your own `PayloadUUID` values with `uuidgen`.
 
@@ -324,11 +324,10 @@ New-ItemProperty -Path "$base\telemetry" -Name update_check -PropertyType DWord 
 
 The authentik Agent doesn't show which settings are enforced by a policy, apart from the read-only **Fallback agent** form in the authentik Agent app. Users see one of the following messages when a policy prevents an action:
 
-| Message                                                                         | Cause                                                                                                                       |
-| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `authentik URL '<url>' is not allowed by policy`                                | The URL isn't listed in `profile_management.allowed_urls`.                                                                  |
-| `key binding (DPoP) is required by policy, but the provider doesn't support it` | `profile_management.require_dpop` is set, but [key binding](./configuration.mdx#key-binding) isn't enabled on the provider. |
-| `profile is not key-bound (DPoP), which is required by policy`                  | The profile was created without key binding. Add the profile again with the same name.                                      |
-| `deleting profiles is disabled by policy`                                       | `profile_management.allow_delete` is set to `false`.                                                                        |
-| `token exchange for '<client_id>' is not allowed by policy`                     | The client ID isn't listed in `authorization.allowed_exchange_audiences`.                                                   |
-| `failed to load agent policy`                                                   | The policy can't be read. The Agent doesn't start.                                                                          |
+| Message                                                                         | Cause                                                                                                                                                                                                             |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `authentik URL '<url>' is not allowed by policy`                                | The URL isn't listed in `profile_management.allowed_urls`.                                                                                                                                                        |
+| `key binding (DPoP) is required by policy, but the provider doesn't support it` | `profile_management.require_dpop` is set, but [key binding](./configuration.mdx#key-binding) isn't enabled on the provider.                                                                                       |
+| `profile is not key-bound (DPoP), which is required by policy`                  | The profile isn't key-bound, for example because it was added before [key binding](./configuration.mdx#key-binding) was enabled on the provider. Enable key binding and add the profile again with the same name. |
+| `deleting profiles is disabled by policy`                                       | `profile_management.allow_delete` is set to `false`.                                                                                                                                                              |
+| `token exchange for '<client_id>' is not allowed by policy`                     | The client ID isn't listed in `authorization.allowed_exchange_audiences`.                                                                                                                                         |
