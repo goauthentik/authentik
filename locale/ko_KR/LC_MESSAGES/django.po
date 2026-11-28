@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-26 00:09+0000\n"
+"POT-Creation-Date: 2026-11-23 00:10+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Daeho Ro, 2026\n"
 "Language-Team: Korean (Korea) (https://app.transifex.com/authentik/teams/119923/ko_KR/)\n"
@@ -1316,78 +1316,78 @@ msgstr "Microsoft Intune 커넥터 인증 기관"
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Select at least one user type."
-msgstr "사용자 유형을 하나 이상 선택하세요."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Internal service accounts cannot be expired."
-msgstr "내부 서비스 계정은 만료시킬 수 없습니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Inactivity duration must be positive."
-msgstr "비활성 기간은 양수여야 합니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Warning period must be positive."
-msgstr "경고 기간은 양수여야 합니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "A warning period is required for notifications."
-msgstr "알림을 보내려면 경고 기간이 필요합니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Warning period must be shorter than the inactivity duration."
-msgstr "경고 기간은 비활성 기간보다 짧아야 합니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Last login"
-msgstr "마지막 로그인"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Last activity"
-msgstr "마지막 활동"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Measure inactivity from the last login or successful user activity."
-msgstr "마지막 로그인 또는 마지막으로 성공한 사용자 활동부터 비활성 기간을 계산합니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Only expire members of this group (including descendant groups). Leave empty"
 " to apply to every user."
-msgstr "이 그룹(하위 그룹 포함)의 구성원만 만료시킵니다. 모든 사용자에게 적용하려면 비워 두세요."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Only expire users of these types. Service accounts are excluded by default."
-msgstr "이 유형의 사용자만 만료시킵니다. 서비스 계정은 기본적으로 제외됩니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "How long a user may be inactive before they are expired."
-msgstr "사용자가 만료되기 전까지 비활성 상태로 있을 수 있는 기간입니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Schedule the offboarding and notify the user this long before they expire. "
 "Leave empty to expire users without warning."
-msgstr "사용자가 만료되기 이 기간 전에 오프보딩을 예약하고 사용자에게 알립니다. 경고 없이 만료시키려면 비워 두세요."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Select which transports should be used to warn the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
-msgstr "사용자에게 경고할 때 사용할 전송 방식을 선택합니다. 아무것도 선택하지 않으면 알림은 authentik UI에만 표시됩니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Never expire members of a superuser group."
-msgstr "슈퍼유저 그룹의 구성원은 만료시키지 않습니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rule"
-msgstr "사용자 만료 규칙"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rules"
-msgstr "사용자 만료 규칙"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 #, python-format
@@ -1395,23 +1395,22 @@ msgid ""
 "User %(username)s will be offboarded (%(action)s) on %(scheduled_at)s due to"
 " inactivity"
 msgstr ""
-"비활성으로 인해 사용자 %(username)s이(가) %(scheduled_at)s에 오프보딩될 예정입니다(%(action)s)"
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rule Notification Transport"
-msgstr "사용자 만료 규칙 알림 전송 방식"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rule Notification Transports"
-msgstr "사용자 만료 규칙 알림 전송 방식"
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/tasks.py
 msgid "Apply all enabled user expiration rules."
-msgstr "활성화된 모든 사용자 만료 규칙을 적용합니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/expiration/tasks.py
 msgid "Apply user expiration rule."
-msgstr "사용자 만료 규칙을 적용합니다."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/offboarding/actions.py
 #, python-format
@@ -5964,14 +5963,6 @@ msgid ""
 "Password: Masked input, multiple inputs of this type on the same prompt need"
 " to be identical."
 msgstr "비밀번호: 마스킹된 입력입니다. 같은 프롬프트에 이 유형의 입력이 여러 개 있으면 값이 모두 같아야 합니다."
-
-#: authentik/stages/prompt/models.py
-msgid ""
-"Password with show button: Masked input w/show button, multiple inputs of "
-"this type on the same prompt need to be identical."
-msgstr ""
-"표시 버튼이 있는 비밀번호: 표시 버튼이 있는 마스킹된 입력입니다. 같은 프롬프트에 이 유형의 입력이 여러 개 있으면 값이 모두 같아야 "
-"합니다."
 
 #: authentik/stages/prompt/models.py
 msgid "Fixed choice field rendered as a group of radio buttons."
