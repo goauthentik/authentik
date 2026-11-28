@@ -17,13 +17,17 @@
         "#commands/*": "./commands/*.ts",
         "#test/*": "./test/*.ts",
         "#*": {
-            "types": "./out/*.d.ts",
+            "types": "./lib/*.ts",
             "node": "./lib/*.ts",
             "default": "./out/*.js"
         }
     },
     "exports": {
-        "./package.json": "./package.json"
+        "./package.json": "./package.json",
+        "./translation/*": {
+            "types": "./lib/translation/*.ts",
+            "default": "./lib/translation/*.ts"
+        }
     },
     "scripts": {
         "build": "node ./lib/cli.ts build",

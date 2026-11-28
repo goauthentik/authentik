@@ -154,6 +154,7 @@ The `authentik-dev` MCP server (`dev/mcp/`, configured in `.mcp.json` and `.code
 | `backend`         | Run the server and worker, and take a model change to a committed migration        |
 | `frontend`        | Run the web UI with live reload, build it, and find why an edit doesn't show       |
 | `docs`            | Preview docs or integration guides and run the checks CI runs                      |
+| `locales`         | Ship a UI language: enable it, fill its missing strings, review them               |
 | `testing`         | Run only the tests near your change, watch an e2e test, chase a flaky one          |
 | `linting`         | Fix lint before pushing and reproduce a failing CI lint job locally                |
 | `contributing`    | Take a branch to a well-formed PR: title, description, backports, licensing        |

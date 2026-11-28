@@ -152,6 +152,41 @@ export class PluralRuntimeLitLocalizer extends RuntimeLitLocalizer {
 }
 
 const TransUnitPattern = /<trans-unit id="([^"]+)">\n([\s\S]*?)<\/trans-unit>\n/g;
+const GroupPattern = /<group id="([^"]+)" restype="x-gettext-plurals">\n([\s\S]*?)<\/group>\n/g;
+
+const GroupedUnitPattern =
+    /  <trans-unit id="[^"]+\[(\d+)\]" xml:space="preserve">\n([\s\S]*?)  <\/trans-unit>\n/g;
+
+/**
+ * Undo {@linkcode groupPluralUnits}, so lit-localize recognizes the existing
+ * plural units when it rewrites the file.
+ *
+ * @param xml An XLIFF file as written by {@linkcode groupPluralUnits}.
+ *
+ * @returns The file with one unit per category and no plural groups.
+ */
+export function ungroupPluralUnits(xml: string): string {
+    const locale = TargetLanguagePattern.exec(xml)?.[1];
+
+    if (!locale) {
+        throw new TypeError("XLIFF file has no target-language");
+    }
+
+    const categories = pluralCategoriesOf(locale);
+
+    return xml.replace(GroupPattern, (_group, base: string, body: string) =>
+        [...body.matchAll(GroupedUnitPattern)]
+            .map(([, index, unit]) => {
+                const category = categories[Number(index)];
+
+                if (!category) return "";
+
+                return `<trans-unit id="${base}.${category}">\n${unit.replace(/^ {2}/gm, "")}</trans-unit>\n`;
+            })
+            .join(""),
+    );
+}
+
 const TargetLanguagePattern = /target-language="([^"]+)"/;
 
 /**

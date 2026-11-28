@@ -569,6 +569,9 @@ importers:
       '@esbuild/linux-x64':
         specifier: ^0.28.1
         version: 0.28.2
+      '@goauthentik/lexicon-audit':
+        specifier: link:../packages/lexicon-audit
+        version: link:../packages/lexicon-audit
       '@goauthentik/oxfmt-config-dev':
         specifier: link:../packages/oxfmt-config
         version: link:../packages/oxfmt-config
