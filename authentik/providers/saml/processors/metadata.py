@@ -4,6 +4,7 @@ from collections.abc import Iterator
 from hashlib import sha256
 
 import xmlsec  # nosec
+from cryptography.x509 import load_pem_x509_certificate
 from django.http import HttpRequest
 from django.urls import reverse
 from lxml.etree import Element, SubElement, _Element, tostring  # nosec
@@ -21,6 +22,7 @@ from authentik.common.saml.constants import (
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 from authentik.common.saml.utils import x509_certificate_b64
+from authentik.crypto.keyring import candidate_cert_pems
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.signature import sign_xml_element
 
@@ -53,16 +55,24 @@ class MetadataProcessor:
 
     # Using type unions doesn't work with cython types (which is what lxml is)
     def get_signing_key_descriptor(self) -> Element | None:
-        """Get Signing KeyDescriptor, if enabled for the provider"""
-        if not self.provider.signing_kp:
-            return None
-        key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
-        key_descriptor.attrib["use"] = "signing"
-        key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
-        x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
-        x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
-        x509_certificate.text = x509_certificate_b64(self.provider.signing_kp.certificate)
-        return key_descriptor
+        return next(self.iter_signing_key_descriptors(), None)
+
+    def iter_signing_key_descriptors(self) -> Iterator[Element]:
+        """Yield signing KeyDescriptor entries (single KP first, else ring order)."""
+        for pem in candidate_cert_pems(
+            kp=self.provider.signing_kp,
+            ring=getattr(self.provider, "signing_kp_ring", None),
+        ):
+            key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
+            key_descriptor.attrib["use"] = "signing"
+            key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
+            x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
+            x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
+            # Only the leaf is published, even when the keypair holds a chain
+            x509_certificate.text = x509_certificate_b64(
+                load_pem_x509_certificate(pem.encode("utf-8"))
+            )
+            yield key_descriptor
 
     def get_name_id_formats(self) -> Iterator[Element]:
         """Get compatible NameID Formats"""
@@ -131,12 +141,11 @@ class MetadataProcessor:
             entity_descriptor, f"{{{NS_SAML_METADATA}}}IDPSSODescriptor"
         )
         idp_sso_descriptor.attrib["protocolSupportEnumeration"] = NS_SAML_PROTOCOL
-        if self.provider.verification_kp:
+        if self.provider.verification_kp or getattr(self.provider, "verification_kp_ring", None):
             idp_sso_descriptor.attrib["WantAuthnRequestsSigned"] = "true"
 
-        signing_descriptor = self.get_signing_key_descriptor()
-        if signing_descriptor is not None:
-            idp_sso_descriptor.append(signing_descriptor)
+        for kd in self.iter_signing_key_descriptors():
+            idp_sso_descriptor.append(kd)
 
         for binding in self.get_slo_bindings():
             idp_sso_descriptor.append(binding)
@@ -153,12 +162,15 @@ class MetadataProcessor:
         entity_descriptor.attrib["ID"] = self.xml_id
         entity_descriptor.attrib["entityID"] = self._get_issuer_value()
 
-        if self.provider.signing_kp:
+        signing = bool(self.provider.signing_kp) or bool(
+            getattr(self.provider, "signing_kp_ring", None)
+        )
+        if signing:
             self._prepare_signature(entity_descriptor)
 
         self.add_children(entity_descriptor)
 
-        if self.provider.signing_kp:
+        if signing:
             self._sign(entity_descriptor)
 
         return tostring(entity_descriptor).decode()

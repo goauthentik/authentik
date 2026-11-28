@@ -16,6 +16,7 @@ from authentik.common.saml.constants import (
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 from authentik.core.models import User
+from authentik.crypto.keyring import pick_private_key_pem
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.signature import sign_xml_element
 from authentik.providers.saml.utils import get_random_id
@@ -103,7 +104,8 @@ class LogoutRequestProcessor:
     def encode_post(self) -> str:
         """Encode LogoutRequest for POST binding"""
         logout_request = self.build()
-        if self.provider.signing_kp and self.provider.sign_logout_request:
+        signing = bool(self.provider.signing_kp) or bool(self.provider.signing_kp_ring)
+        if signing and self.provider.sign_logout_request:
             self._sign_logout_request(logout_request)
         return base64.b64encode(etree.tostring(logout_request)).decode()
 
@@ -124,8 +126,9 @@ class LogoutRequestProcessor:
 
         if self.relay_state:
             params["RelayState"] = self.relay_state
+        signing = bool(self.provider.signing_kp) or bool(self.provider.signing_kp_ring)
 
-        if self.provider.signing_kp and self.provider.sign_logout_request:
+        if signing and self.provider.sign_logout_request:
             sig_alg = self.provider.signature_algorithm
             params["SigAlg"] = sig_alg
 
@@ -189,8 +192,11 @@ class LogoutRequestProcessor:
             self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha256
         )
 
+        key_pem, _ = pick_private_key_pem(
+            kp=self.provider.signing_kp, ring=self.provider.signing_kp_ring
+        )
         key = xmlsec.Key.from_memory(
-            self.provider.signing_kp.key_data,
+            key_pem,
             xmlsec.constants.KeyDataFormatPem,
             None,
         )

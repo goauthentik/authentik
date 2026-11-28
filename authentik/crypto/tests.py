@@ -18,6 +18,8 @@ from cryptography.x509 import (
 )
 from cryptography.x509.extensions import SubjectAlternativeName
 from cryptography.x509.general_name import DNSName
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
 from prometheus_client import REGISTRY
@@ -31,10 +33,14 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
-from authentik.crypto.api import CertificateKeyPairSerializer
+from authentik.crypto.api import CertificateKeyPairRingSerializer, CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
+from authentik.crypto.keyring import candidate_private_key_pems, pick_private_key_pem
 from authentik.crypto.models import (
     CertificateKeyPair,
+    CertificateKeyPairRing,
+    CertificateKeyPairRingBinding,
+    KeyPairRef,
     KeyType,
     _load_certificate,
     _load_private_key,
@@ -720,6 +726,125 @@ class TestCrypto(APITestCase):
         self.assertNotEqual(cert.kid, legacy_kid)
         self.assertEqual(cert.kid, generate_key_id(cert.key_data))
 
+    def test_keypair_ring_set_bindings_replace(self):
+        """Test set-bindings replaces ring membership in order."""
+        self.client.force_login(create_test_admin_user())
+
+        kp1 = create_test_cert()
+        kp2 = create_test_cert()
+        kp3 = create_test_cert()
+
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+        CertificateKeyPairRingBinding.objects.create(ring=ring, keypair=kp1, order=0)
+
+        response = self.client.put(
+            reverse(
+                "authentik_api:certificatekeypairring-set-bindings",
+                kwargs={"ring_uuid": ring.ring_uuid},
+            ),
+            data={
+                "bindings": [
+                    {"keypair": str(kp2.pk), "order": 0},
+                    {"keypair": str(kp3.pk), "order": 1},
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        ring.refresh_from_db()
+        bindings = list(
+            ring.bindings.select_related("keypair").order_by("order", "keypair__kp_uuid")
+        )
+
+        self.assertEqual(len(bindings), 2)
+        self.assertEqual(bindings[0].keypair.pk, kp2.pk)
+        self.assertEqual(bindings[0].order, 0)
+        self.assertEqual(bindings[1].keypair.pk, kp3.pk)
+        self.assertEqual(bindings[1].order, 1)
+
+        body = response.json()
+        self.assertEqual(body["ring_uuid"], str(ring.ring_uuid))
+        self.assertEqual(len(body["bindings"]), 2)
+        self.assertEqual(body["bindings"][0]["keypair"], str(kp2.pk))
+        self.assertEqual(body["bindings"][0]["order"], 0)
+        self.assertEqual(body["bindings"][1]["keypair"], str(kp3.pk))
+        self.assertEqual(body["bindings"][1]["order"], 1)
+
+    def test_keypair_ring_set_bindings_empty_clears(self):
+        """Test set-bindings with an empty list clears all bindings."""
+        self.client.force_login(create_test_admin_user())
+
+        kp1 = create_test_cert()
+        kp2 = create_test_cert()
+
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+        CertificateKeyPairRingBinding.objects.create(ring=ring, keypair=kp1, order=0)
+        CertificateKeyPairRingBinding.objects.create(ring=ring, keypair=kp2, order=1)
+
+        response = self.client.put(
+            reverse(
+                "authentik_api:certificatekeypairring-set-bindings",
+                kwargs={"ring_uuid": ring.ring_uuid},
+            ),
+            data={"bindings": []},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        ring.refresh_from_db()
+        self.assertEqual(ring.bindings.count(), 0)
+        self.assertEqual(response.json()["bindings"], [])
+
+    def test_keypair_ring_set_bindings_duplicate_order(self):
+        """Test set-bindings rejects duplicate order values."""
+        self.client.force_login(create_test_admin_user())
+
+        kp1 = create_test_cert()
+        kp2 = create_test_cert()
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+
+        response = self.client.put(
+            reverse(
+                "authentik_api:certificatekeypairring-set-bindings",
+                kwargs={"ring_uuid": ring.ring_uuid},
+            ),
+            data={
+                "bindings": [
+                    {"keypair": str(kp1.pk), "order": 0},
+                    {"keypair": str(kp2.pk), "order": 0},
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("bindings", response.json())
+        self.assertIn("Duplicate order=0.", str(response.json()["bindings"]))
+
+    def test_keypair_ring_set_bindings_duplicate_keypair(self):
+        """Test set-bindings rejects duplicate keypair entries."""
+        self.client.force_login(create_test_admin_user())
+
+        kp1 = create_test_cert()
+        ring = CertificateKeyPairRing.objects.create(name=generate_id())
+
+        response = self.client.put(
+            reverse(
+                "authentik_api:certificatekeypairring-set-bindings",
+                kwargs={"ring_uuid": ring.ring_uuid},
+            ),
+            data={
+                "bindings": [
+                    {"keypair": str(kp1.pk), "order": 0},
+                    {"keypair": str(kp1.pk), "order": 1},
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("bindings", response.json())
+        self.assertIn("Duplicate keypair in bindings.", str(response.json()["bindings"]))
+
 
 class TestCryptoMetrics(APITestCase):
     """Certificate expiry metric tests"""
@@ -743,3 +868,103 @@ class TestCryptoMetrics(APITestCase):
         kp.delete()
         monitoring_set.send_robust(self)
         self.assertTrue(isnan(REGISTRY.get_sample_value(self.METRIC, labels)))
+
+
+def certificate_pem() -> str:
+    """A new self-signed certificate, without a keypair in the database"""
+    builder = CertificateBuilder(generate_id())
+    builder.build(subject_alt_names=[], validity_days=3)
+    return builder.certificate
+
+
+class TestCertificateKeyPairRing(TestCase):
+    """Certificate-Key Pair Ring membership tests"""
+
+    def setUp(self) -> None:
+        self.ring = CertificateKeyPairRing.objects.create(name=generate_id())
+
+    def keypairs(self) -> list[CertificateKeyPair]:
+        return [binding.keypair for binding in self.ring.ordered_bindings()]
+
+    def test_serializer(self):
+        """Test the ring is serialized with its own serializer, e.g. for blueprint exports"""
+        self.assertEqual(self.ring.serializer, CertificateKeyPairRingSerializer)
+
+    def test_sync_membership(self):
+        """Test known certificates reuse their keypair and unknown ones are imported, in order"""
+        existing = create_test_cert()
+        new = certificate_pem()
+
+        self.ring.sync_membership([(1, new), (0, existing.certificate_data)])
+
+        first, second = self.keypairs()
+        self.assertEqual(first, existing)
+        self.assertEqual(second.certificate_data.strip(), new.strip())
+        self.assertEqual(second.key_data, "")
+        self.assertTrue(second.name.startswith(f"Imported {second.fingerprint_sha256} "))
+
+    def test_sync_membership_invalid(self):
+        """Test invalid memberships are rejected and leave the ring unchanged"""
+        current = create_test_cert()
+        self.ring.sync_bindings([KeyPairRef(keypair=current, order=0)])
+        pem = certificate_pem()
+        cases = {
+            "negative order": [(-1, pem)],
+            "duplicate order": [(0, pem), (0, certificate_pem())],
+            "empty certificate": [(0, "")],
+            "invalid certificate": [(0, "not a certificate")],
+            "duplicate certificate": [(0, pem), (1, pem)],
+        }
+        for case, items in cases.items():
+            with self.subTest(case):
+                with self.assertRaises(DjangoValidationError):
+                    self.ring.sync_membership(items)
+                self.assertEqual(self.keypairs(), [current])
+
+    def test_sync_bindings_invalid(self):
+        """Test invalid bindings are rejected and leave the ring unchanged"""
+        first, second = create_test_cert(), create_test_cert()
+        self.ring.sync_bindings([KeyPairRef(keypair=first, order=0)])
+        cases = {
+            "negative order": [KeyPairRef(keypair=second, order=-1)],
+            "duplicate order": [
+                KeyPairRef(keypair=first, order=0),
+                KeyPairRef(keypair=second, order=0),
+            ],
+            "duplicate keypair": [
+                KeyPairRef(keypair=second, order=0),
+                KeyPairRef(keypair=second, order=1),
+            ],
+        }
+        for case, items in cases.items():
+            with self.subTest(case):
+                with self.assertRaises(DjangoValidationError):
+                    self.ring.sync_bindings(items)
+                self.assertEqual(self.keypairs(), [first])
+
+    def test_sync_bindings_unchanged(self):
+        """Test syncing the same bindings again keeps the existing rows"""
+        keypair = create_test_cert()
+        self.ring.sync_bindings([KeyPairRef(keypair=keypair, order=0)])
+        binding = self.ring.bindings.get()
+
+        self.ring.sync_bindings([KeyPairRef(keypair=keypair, order=0)])
+
+        self.assertEqual(self.ring.bindings.get().pk, binding.pk)
+
+    def test_private_key_skips_certificate_only(self):
+        """Test keypairs without a private key are skipped when signing or decrypting"""
+        certificate_only = CertificateKeyPair.objects.create(
+            name=generate_id(), certificate_data=certificate_pem(), key_data=""
+        )
+        with_key = create_test_cert()
+        self.ring.sync_bindings(
+            [
+                KeyPairRef(keypair=certificate_only, order=0),
+                KeyPairRef(keypair=with_key, order=1),
+            ]
+        )
+        expected = (with_key.key_data.strip(), with_key.certificate_data.strip())
+
+        self.assertEqual(pick_private_key_pem(ring=self.ring), expected)
+        self.assertEqual(candidate_private_key_pems(ring=self.ring), [expected])

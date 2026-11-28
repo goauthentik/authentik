@@ -13,7 +13,7 @@ from authentik.common.saml.constants import (
     NS_MAP,
     NS_SAML_METADATA,
 )
-from authentik.crypto.models import CertificateKeyPair, format_cert
+from authentik.crypto.models import CertificateKeyPair, CertificateKeyPairRing, format_cert
 from authentik.flows.models import Flow
 from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
@@ -40,8 +40,9 @@ class ServiceProviderMetadata:
     assertion_signed: bool
     name_id_policy: SAMLNameIDPolicy
 
-    signing_keypair: CertificateKeyPair | None = None
-    encryption_keypair: CertificateKeyPair | None = None
+    # Every certificate advertised in the metadata, as PEM, in the order they're listed
+    signing_cert_pems: list[str] | None = None
+    encryption_cert_pems: list[str] | None = None
     encryption_algorithm: str | None = None
 
     # Single Logout Service (optional)
@@ -54,38 +55,70 @@ class ServiceProviderMetadata:
         """Create a SAMLProvider instance from the details. `name` is required,
         as depending on the metadata CertificateKeypairs might have to be created."""
         provider = SAMLProvider.objects.create(
-            name=name, authorization_flow=authorization_flow, invalidation_flow=invalidation_flow
+            name=name,
+            authorization_flow=authorization_flow,
+            invalidation_flow=invalidation_flow,
         )
+        if self.assertion_signed:
+            provider.signing_kp = CertificateKeyPair.objects.exclude(key_data__iexact="").first()
+        self.apply_to_provider(provider, create_missing_rings=True)
+        return provider
+
+    def apply_to_provider(
+        self, provider: SAMLProvider, *, create_missing_rings: bool = False
+    ) -> None:
         provider.sp_binding = self.acs_binding
         provider.acs_url = self.acs_location
         provider.audience = self.entity_id
         provider.default_name_id_policy = self.name_id_policy
-        # Single Logout Service
+
         if self.sls_location:
             provider.sls_url = self.sls_location
         if self.sls_binding:
             provider.sls_binding = self.sls_binding
-        if self.signing_keypair and self.auth_n_request_signed:
-            self.signing_keypair.name = f"Provider {name} - SAML Signing Certificate"
-            self.signing_keypair.save()
-            provider.verification_kp = self.signing_keypair
-        if self.encryption_keypair:
-            self.encryption_keypair.name = f"Provider {name} - SAML Encryption Certificate"
-            self.encryption_keypair.save()
-            provider.encryption_kp = self.encryption_keypair
-            if self.encryption_algorithm:
-                provider.encryption_algorithm = self.encryption_algorithm
-        if self.assertion_signed:
-            provider.signing_kp = CertificateKeyPair.objects.exclude(key_data__iexact="").first()
-        # Set all auto-generated Property-mappings as defaults
-        # They should provide a sane default for most applications:
-        provider.property_mappings.set(SAMLPropertyMapping.objects.exclude(managed__isnull=True))
+
+        # --- verification (remote SP signing certs) ---
+        # Only when the SP signs its requests: a verification certificate makes authentik
+        # require a signature on every AuthnRequest.
+        if self.signing_cert_pems and self.auth_n_request_signed and not provider.verification_kp:
+            if provider.verification_kp_ring is None and create_missing_rings:
+                provider.verification_kp_ring = CertificateKeyPairRing.objects.create(
+                    name=f"Provider {provider.name} - SAML Verification Ring",
+                )
+            if provider.verification_kp_ring is not None:
+                provider.verification_kp_ring.sync_membership(
+                    [(i, pem) for i, pem in enumerate(self.signing_cert_pems)]
+                )
+
+        # --- encryption (remote SP encryption certs) ---
+        if self.encryption_cert_pems and not provider.encryption_kp:
+            if provider.encryption_kp_ring is None and create_missing_rings:
+                provider.encryption_kp_ring = CertificateKeyPairRing.objects.create(
+                    name=f"Provider {provider.name} - SAML Encryption Ring",
+                )
+            if provider.encryption_kp_ring is not None:
+                provider.encryption_kp_ring.sync_membership(
+                    [(i, pem) for i, pem in enumerate(self.encryption_cert_pems)]
+                )
+        if self.encryption_cert_pems and self.encryption_algorithm:
+            provider.encryption_algorithm = self.encryption_algorithm
+
+        if provider.property_mappings.count() == 0:
+            # Set all auto-generated Property-mappings as defaults
+            # They should provide a sane default for most applications:
+            provider.property_mappings.set(
+                SAMLPropertyMapping.objects.exclude(managed__isnull=True)
+            )
+
         provider.save()
-        return provider
 
 
 class ServiceProviderMetadataParser:
     """Service-Provider Metadata Parser"""
+
+    def __init__(self, signing_certificate: CertificateKeyPair | None = None):
+        """Optionally use an external certificate to verify metadata signatures."""
+        self.signing_certificate = signing_certificate
 
     def get_signing_cert(self, root: etree.Element) -> CertificateKeyPair | None:
         """Extract signing X509Certificate from metadata, when given."""
@@ -139,6 +172,35 @@ class ServiceProviderMetadataParser:
                 return algorithm
         return None
 
+    def get_keydescriptor_cert_pems(
+        self,
+        root: etree.Element,
+        *,
+        use: str | None,
+    ) -> list[str]:
+        """Extract every X509Certificate for a given KeyDescriptor use as PEM strings.
+
+        `use="signing"`/`"encryption"` select the respective KeyDescriptors, while `use=None`
+        selects KeyDescriptors with no `use` attribute (usable for either purpose)."""
+        if use == "signing":
+            xp = "//md:SPSSODescriptor/md:KeyDescriptor[@use='signing']//ds:X509Certificate/text()"
+        elif use == "encryption":
+            xp = (
+                "//md:SPSSODescriptor/md:KeyDescriptor[@use='encryption']"
+                "//ds:X509Certificate/text()"
+            )
+        elif use is None:
+            xp = "//md:SPSSODescriptor/md:KeyDescriptor[not(@use)]//ds:X509Certificate/text()"
+        else:
+            raise ValueError("Invalid use")
+
+        out: list[str] = []
+        for b64 in root.xpath(xp, namespaces=NS_MAP):
+            pem = format_cert(b64).strip()
+            load_pem_x509_certificate(pem.encode("utf-8"), default_backend())  # sanity check
+            out.append(pem)
+        return out
+
     def select_endpoint(
         self, endpoints: list[etree.Element]
     ) -> tuple[SAMLBindings, str] | tuple[None, None]:
@@ -174,7 +236,6 @@ class ServiceProviderMetadataParser:
         xmlsec.tree.add_ids(root, ["ID"])
         signature_nodes = root.xpath("/md:EntityDescriptor/ds:Signature", namespaces=NS_MAP)
         if len(signature_nodes) != 1:
-            # No Signature
             return
 
         signature_node = signature_nodes[0]
@@ -189,11 +250,22 @@ class ServiceProviderMetadataParser:
                 )
                 ctx.key = key
                 ctx.verify(signature_node)
-            except xmlsec.Error as exc:
+            except Exception as exc:
                 raise ValueError("Failed to verify Metadata signature") from exc
 
     def parse(self, raw_xml: str) -> ServiceProviderMetadata:
         """Parse raw XML to ServiceProviderMetadata"""
+
+        def _dedupe_keep_order(items: list[str]) -> list[str]:
+            seen: set[str] = set()
+            out: list[str] = []
+            for s in items:
+                if s in seen:
+                    continue
+                seen.add(s)
+                out.append(s)
+            return out
+
         root = lxml_from_string(raw_xml.encode())
 
         entity_id = root.attrib["entityID"]
@@ -222,10 +294,21 @@ class ServiceProviderMetadataParser:
                 "Only HTTP-POST and HTTP-Redirect are supported."
             )
 
+        # Collect every advertised signing/encryption cert as PEMs so the provider can hold them
+        # in a keyring. Signing certs include KeyDescriptors with no explicit `use`, which are
+        # valid for either purpose.
+        signing_pems = _dedupe_keep_order(
+            self.get_keydescriptor_cert_pems(root, use="signing")
+            + self.get_keydescriptor_cert_pems(root, use=None)
+        )
+        encryption_pems = _dedupe_keep_order(
+            self.get_keydescriptor_cert_pems(root, use="encryption")
+        )
+
+        # Verify the metadata signature, if present, against the advertised signing cert.
         signing_keypair = self.get_signing_cert(root)
         if signing_keypair:
             self.check_signature(root, signing_keypair)
-        encryption_keypair = self.get_encryption_cert(root)
         encryption_algorithm = self.get_encryption_algorithm(root)
 
         # Use the first NameIDFormat we support, formats we don't know are skipped
@@ -246,10 +329,10 @@ class ServiceProviderMetadataParser:
             acs_location=acs_location,
             auth_n_request_signed=auth_n_request_signed,
             assertion_signed=assertion_signed,
-            signing_keypair=signing_keypair,
-            encryption_keypair=encryption_keypair,
             encryption_algorithm=encryption_algorithm,
             name_id_policy=name_id_policy,
             sls_binding=sls_binding,
             sls_location=sls_location,
+            signing_cert_pems=signing_pems or None,
+            encryption_cert_pems=encryption_pems or None,
         )

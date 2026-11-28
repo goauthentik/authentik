@@ -26,6 +26,7 @@ from authentik.common.saml.constants import (
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.crypto.keyring import pick_cert_pem
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.lib.utils.time import timedelta_from_string
@@ -328,7 +329,8 @@ class AssertionProcessor:
         assertion.attrib["IssueInstant"] = self._issue_instant
         assertion.append(self.get_issuer())
 
-        if self.provider.signing_kp and self.provider.sign_assertion:
+        signing = bool(self.provider.signing_kp) or bool(self.provider.signing_kp_ring)
+        if signing and self.provider.sign_assertion:
             sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
                 self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
             )
@@ -359,7 +361,8 @@ class AssertionProcessor:
 
         response.append(self.get_issuer())
 
-        if self.provider.signing_kp and self.provider.sign_response:
+        signing_pem = pick_cert_pem(kp=self.provider.signing_kp, ring=self.provider.signing_kp_ring)
+        if signing_pem and self.provider.sign_response:
             sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
                 self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
             )
@@ -394,9 +397,12 @@ class AssertionProcessor:
         # Remove the original element from the tree since we're replacing it with encrypted version
         parent.remove(element)
 
+        encryption_pem = pick_cert_pem(
+            kp=self.provider.encryption_kp, ring=self.provider.encryption_kp_ring
+        )
         manager = xmlsec.KeysManager()
         key = xmlsec.Key.from_memory(
-            self.provider.encryption_kp.certificate_data,
+            encryption_pem,
             xmlsec.constants.KeyDataFormatCertPem,
         )
 
@@ -429,15 +435,17 @@ class AssertionProcessor:
         """Build string XML Response and sign if signing is enabled."""
         root_response = self.get_response()
         # Sign assertion first (before encryption)
-        if self.provider.signing_kp and self.provider.sign_assertion:
+        signing = bool(self.provider.signing_kp) or bool(self.provider.signing_kp_ring)
+        if signing and self.provider.sign_assertion:
             assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
             self._sign(assertion)
         # Encrypt assertion (this replaces Assertion with EncryptedAssertion)
-        if self.provider.encryption_kp:
+        encryption = bool(self.provider.encryption_kp) or bool(self.provider.encryption_kp_ring)
+        if encryption:
             assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
             self._encrypt(assertion, root_response)
         # Sign response AFTER encryption so signature covers the encrypted content
-        if self.provider.signing_kp and self.provider.sign_response:
+        if signing and self.provider.sign_response:
             response = root_response.xpath("//samlp:Response", namespaces=NS_MAP)[0]
             self._sign(response)
         return etree.tostring(root_response).decode("utf-8")  # nosec
