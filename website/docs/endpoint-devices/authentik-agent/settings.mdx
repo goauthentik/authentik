@@ -1,0 +1,333 @@
+---
+title: authentik Agent settings and policies
+sidebar_label: Settings and policies
+tags: [authentik Agent, settings, policy, mdm, polkit, authorization]
+sidebar_position: 2.6
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+The authentik Agent has settings that control its SSH agent, authorization prompts, profiles, and telemetry. They can be configured in two places:
+
+- **User settings**: each user sets them in the Agent's configuration file on their device.
+- **Policy**: an administrator enforces them on a device. A setting that is enforced by a policy overrides the user's setting.
+
+Both use the same setting names. Only the [SSH fallback agent](./device-authentication/ssh-authentication.mdx#use-other-ssh-keys-with-a-fallback-agent) can also be configured in the [authentik Agent app](./desktop-app.mdx).
+
+:::info Agent version
+Settings and policies require authentik Agent 0.73 or later.
+:::
+
+## Settings reference
+
+| Setting                                      | Type            | Default | Description                                                                                                                                                                                                                                    |
+| -------------------------------------------- | --------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `debug`                                      | Boolean         | `false` | Log at trace level instead of info level.                                                                                                                                                                                                      |
+| `ssh.enabled`                                | Boolean         | `true`  | Provide the SSH agent.                                                                                                                                                                                                                         |
+| `ssh.agent_tunnel`                           | Boolean         | `true`  | Allow `ak` on remote hosts to reach this Agent through a forwarded SSH agent. Refer to [Agent forwarding](./device-authentication/ssh-authentication.mdx#agent-forwarding).                                                                    |
+| `ssh.builtin_passthrough_hosts`              | Boolean         | `true`  | Send connections to github.com and gitlab.com directly to the fallback agent.                                                                                                                                                                  |
+| `ssh_fallback_agent.socket_path`             | String          | Not set | Absolute path of the socket of another SSH agent that is used for hosts that aren't managed by authentik. `~` isn't expanded.                                                                                                                  |
+| `ssh_fallback_agent.extra_passthrough_hosts` | List of strings | Empty   | Additional hosts that are always sent directly to the fallback agent, as `known_hosts` lines, for example the output of `ssh-keyscan git.company`.                                                                                             |
+| `profile_management.allowed_urls`            | List of strings | Any URL | authentik URLs that profiles can be created for. A URL must match exactly; case and a trailing `/` are ignored.                                                                                                                                |
+| `profile_management.allow_delete`            | Boolean         | `true`  | Allow profiles to be deleted.                                                                                                                                                                                                                  |
+| `profile_management.allow_plaintext_tokens`  | Boolean         | `true`  | Allow tokens to be stored in the configuration file when the device has no keyring. When set to `false` on a device without a keyring, profiles can't be created.                                                                              |
+| `profile_management.require_dpop`            | Boolean         | `false` | Only allow profiles whose tokens are bound to a key on the device. Requires [key binding](./configuration.mdx#key-binding) to be enabled on the provider. Existing profiles that aren't key-bound stop working until the user adds them again. |
+| `authorization.remember.<operation>.allow`   | Integer         | Varies  | Number of seconds that an allowed request is remembered. Refer to [Authorization prompts](#authorization-prompts) for the operations and their defaults.                                                                                       |
+| `authorization.remember.<operation>.deny`    | Integer         | Varies  | Number of seconds that a denied request is remembered.                                                                                                                                                                                         |
+| `authorization.allowed_exchange_audiences`   | List of strings | Any     | Client IDs of the applications that tokens can be exchanged for, for example with `ak auth`.                                                                                                                                                   |
+| `telemetry.update_check`                     | Boolean         | `true`  | Check at most once a day whether a newer authentik Agent release exists.                                                                                                                                                                       |
+| `telemetry.error_reporting`                  | Boolean         | `true`  | Send errors and performance traces of the user agent, including the authentik Agent app, to authentik's Sentry.                                                                                                                                |
+
+In addition, the following environment variables can be set to `true` for the authentik Agent app:
+
+- `AUTHENTIK_DISABLE_UPDATE_CHECK`: disables the update check.
+- `AUTHENTIK_DISABLE_STARTUP_ANALYTICS`: disables the anonymous analytics request that the app sends when it starts. No setting exists for this request.
+
+## User settings
+
+User settings are stored in the Agent's configuration file:
+
+| Platform | File                                                  |
+| -------- | ----------------------------------------------------- |
+| Linux    | `~/.config/authentik/config.json`                     |
+| macOS    | `~/Library/Application Support/authentik/config.json` |
+| Windows  | `%APPDATA%\authentik\config.json`                     |
+
+The Agent stores your profiles in the same file, under `active_profile` and `profiles`. Add settings as top-level keys next to `profiles`, and don't remove or replace the existing content:
+
+```json
+{
+    "active_profile": "default",
+    "profiles": {},
+    "ssh_fallback_agent": {
+        "socket_path": "/Users/jdoe/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock",
+        "extra_passthrough_hosts": [
+            "git.company ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOaqAd1R5Dj3tCCRFK1Mlud+OVuLltFYXfOnCBdGM8ck"
+        ]
+    },
+    "authorization": {
+        "remember": {
+            "token_exchange": {
+                "allow": 300
+            }
+        }
+    },
+    "telemetry": {
+        "error_reporting": false
+    }
+}
+```
+
+In this example, `profiles` is empty. In your file, it contains the profiles that the Agent created.
+
+:::warning Don't manage this file with deployment tools
+The configuration file belongs to the user, and the Agent writes to it, for example when a profile is added. Don't deploy or overwrite it with MDM or configuration management tools. To configure settings for the users of a device, [enforce them with a policy](#enforce-settings-with-a-policy) instead.
+:::
+
+Note the following:
+
+- The Agent reads the file when it starts, and rewrites it while it runs, for example when it renews a token. Quit the authentik Agent app before you edit the file, and start it again afterwards. On Linux devices without the app, use `systemctl --user stop ak-agent` and `systemctl --user start ak-agent` instead.
+- The Agent doesn't start if the file isn't valid JSON or if a setting has a value of the wrong type.
+- Settings with an unknown name are ignored and are removed the next time the Agent saves the file. Check the spelling of setting names.
+
+## Authorization prompts
+
+When a program requests access to your authentik account, the authentik Agent asks you to approve the request. The Agent remembers your answer for the same program and the same target for a limited time. The time depends on the operation:
+
+| Operation        | Requested by                                                                                                | Allowed answer remembered for | Denied answer remembered for |
+| ---------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------- | ---------------------------- |
+| `whoami`         | Programs that read your account information, such as `ak whoami`                                            | Not remembered                | Not remembered               |
+| `current_token`  | Programs that use your authentik session token, such as `ak api`                                            | 5 minutes                     | 15 minutes                   |
+| `token_exchange` | Programs that request a token for another application, such as `ak auth`                                    | 30 minutes                    | 1 second                     |
+| `ssh_login`      | SSH connections to hosts that are managed by authentik                                                      | 30 minutes                    | 5 minutes                    |
+| `authorize`      | The authentik PAM module, for example for `sudo` on a Linux device, including through a forwarded SSH agent | 2 hours                       | 5 minutes                    |
+
+To change these times, set `authorization.remember.<operation>.allow` and `authorization.remember.<operation>.deny` in seconds. A value of `0` means that the Agent always prompts.
+
+Remembered answers are cleared when the Agent restarts. The [authentik Agent app](./desktop-app.mdx#authorizations) lists recent requests and shows which ones were answered from a remembered answer.
+
+The prompt depends on the platform:
+
+| Platform | Prompt                                                                                                                             |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| macOS    | A system dialog that asks for Touch ID, Apple Watch, or your login password.                                                       |
+| Windows  | Windows Hello, using a PIN, fingerprint, or face recognition. Windows Hello must be set up; otherwise, all requests are denied.    |
+| Linux    | The authentication dialog of your desktop environment, provided by polkit. The dialog doesn't show which program made the request. |
+
+### Linux and polkit
+
+On Linux, the authentik Agent checks each request with polkit, using one of the following actions:
+
+| Operation        | polkit action                            |
+| ---------------- | ---------------------------------------- |
+| `whoami`         | `io.goauthentik.platform.whoami`         |
+| `current_token`  | `io.goauthentik.platform.current-token`  |
+| `token_exchange` | `io.goauthentik.platform.token-exchange` |
+| `ssh_login`      | `io.goauthentik.platform.ssh-login`      |
+| `authorize`      | `io.goauthentik.platform.authorize`      |
+
+By default, polkit itself keeps an approval for about five minutes. During that time, further requests for the same action from any program are approved without a prompt.
+
+Administrators can use polkit rules to allow an action without a prompt. For example, the following rule in `/etc/polkit-1/rules.d/50-authentik-agent.rules` allows the programs of the user `alice` to request tokens for other applications:
+
+```js
+polkit.addRule(function (action, subject) {
+    if (
+        action.id == "io.goauthentik.platform.token-exchange" &&
+        subject.user == "alice" &&
+        subject.local &&
+        subject.active
+    ) {
+        return polkit.Result.YES;
+    }
+});
+```
+
+A polkit rule can't distinguish which program made a request or which application a token is requested for.
+
+:::warning polkit is required
+If the authentik Agent can't connect to polkit over the system D-Bus on a Linux device, it allows all requests without a prompt. Ensure that polkit is installed and running on devices where prompts are required.
+:::
+
+## Enforce settings with a policy
+
+A policy uses the same settings as the user's configuration file and is applied as follows:
+
+- A setting in the policy overrides the user's setting. Settings that aren't in the policy remain under the user's control.
+- For `authorization.remember` times, the shorter time applies. Users can shorten a time that is set in the policy but can't extend it.
+- When the policy configures `ssh_fallback_agent`, it replaces the user's fallback agent configuration, including the user's passthrough hosts. The **Fallback agent** form in the authentik Agent app becomes read-only.
+- The policy is read when the Agent starts. After you change a policy, users need to quit and reopen the authentik Agent app, or log out and back in. On Linux devices without the app, run `systemctl --user restart ak-agent`.
+
+:::warning Test a policy before deploying it
+If a policy exists but can't be read, for example because it's invalid or has the wrong permissions, the authentik Agent doesn't start and logs an error that starts with `failed to load agent policy`.
+:::
+
+The following examples configure the same policy:
+
+- Profiles can only be created for `https://authentik.company`, can't be deleted, and must be key-bound. Tokens are never stored in plain text.
+- An allowed request for the session token is remembered for at most 60 seconds, and an allowed SSH login for at most 15 minutes.
+- Tokens can only be exchanged for the application with the client ID `internal-tools`.
+- Remote hosts can't reach the Agent through a forwarded SSH agent, and the update check is disabled.
+
+These examples are also available in the [authentik Platform GitHub repository](https://github.com/goauthentik/platform/tree/main/docs/agent-settings).
+
+<Tabs defaultValue="Linux">
+<TabItem value="Linux">
+
+Create the file `/etc/authentik/agent-policy.json`. The file must be owned by `root` and must not be writable by the group or by others. Users need to be able to read it, so use the permissions `0644`.
+
+```json
+{
+    "profile_management": {
+        "allowed_urls": ["https://authentik.company"],
+        "allow_delete": false,
+        "allow_plaintext_tokens": false,
+        "require_dpop": true
+    },
+    "authorization": {
+        "remember": {
+            "current_token": {
+                "allow": 60
+            },
+            "ssh_login": {
+                "allow": 900
+            }
+        },
+        "allowed_exchange_audiences": ["internal-tools"]
+    },
+    "ssh": {
+        "agent_tunnel": false
+    },
+    "telemetry": {
+        "update_check": false
+    }
+}
+```
+
+For example, to install the file with the correct owner and permissions:
+
+```sh
+sudo install -o root -g root -m 0644 agent-policy.json /etc/authentik/agent-policy.json
+```
+
+</TabItem>
+<TabItem value="macOS">
+
+Use your MDM tool to deploy a configuration profile for the preference domain `io.goauthentik.platform.agent`. Settings with nested names are dictionaries.
+
+The Agent only uses values from an installed configuration profile. Values that are set with `defaults write` are ignored.
+
+The following payload contains the policy. Add it to the `PayloadContent` of a configuration profile, or upload its settings as custom settings for the `io.goauthentik.platform.agent` domain if your MDM tool supports that. Generate your own `PayloadUUID` values with `uuidgen`.
+
+```xml
+<dict>
+    <key>PayloadDisplayName</key>
+    <string>authentik Agent settings</string>
+    <key>PayloadIdentifier</key>
+    <string>io.goauthentik.platform.agent.F34E104B-C14C-4BB5-A72A-1AC16F03DF49</string>
+    <key>PayloadType</key>
+    <string>io.goauthentik.platform.agent</string>
+    <key>PayloadUUID</key>
+    <string>F34E104B-C14C-4BB5-A72A-1AC16F03DF49</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+    <key>profile_management</key>
+    <dict>
+        <key>allowed_urls</key>
+        <array>
+            <string>https://authentik.company</string>
+        </array>
+        <key>allow_delete</key>
+        <false/>
+        <key>allow_plaintext_tokens</key>
+        <false/>
+        <key>require_dpop</key>
+        <true/>
+    </dict>
+    <key>authorization</key>
+    <dict>
+        <key>remember</key>
+        <dict>
+            <key>current_token</key>
+            <dict>
+                <key>allow</key>
+                <integer>60</integer>
+            </dict>
+            <key>ssh_login</key>
+            <dict>
+                <key>allow</key>
+                <integer>900</integer>
+            </dict>
+        </dict>
+        <key>allowed_exchange_audiences</key>
+        <array>
+            <string>internal-tools</string>
+        </array>
+    </dict>
+    <key>ssh</key>
+    <dict>
+        <key>agent_tunnel</key>
+        <false/>
+    </dict>
+    <key>telemetry</key>
+    <dict>
+        <key>update_check</key>
+        <false/>
+    </dict>
+</dict>
+```
+
+</TabItem>
+<TabItem value="Windows">
+
+Create the settings as registry values under the following key:
+
+```text
+HKEY_LOCAL_MACHINE\SOFTWARE\Policies\authentik Security Inc.\Platform\Agent
+```
+
+- Each group of settings is a subkey, for example `profile_management` or `authorization\remember\ssh_login`.
+- Boolean settings are `REG_DWORD` values, with `1` for `true` and `0` for `false`.
+- Integer settings are `REG_DWORD` values.
+- String settings are `REG_SZ` values.
+- Lists are `REG_MULTI_SZ` values.
+
+Deploy the values with Group Policy, a script from your MDM tool, or a `.reg` file. For example, with PowerShell:
+
+```powershell
+$base = 'HKLM:\SOFTWARE\Policies\authentik Security Inc.\Platform\Agent'
+
+New-Item -Path "$base\profile_management" -Force | Out-Null
+New-ItemProperty -Path "$base\profile_management" -Name allowed_urls -PropertyType MultiString -Value @('https://authentik.company') -Force | Out-Null
+New-ItemProperty -Path "$base\profile_management" -Name allow_delete -PropertyType DWord -Value 0 -Force | Out-Null
+New-ItemProperty -Path "$base\profile_management" -Name allow_plaintext_tokens -PropertyType DWord -Value 0 -Force | Out-Null
+New-ItemProperty -Path "$base\profile_management" -Name require_dpop -PropertyType DWord -Value 1 -Force | Out-Null
+
+New-Item -Path "$base\authorization\remember\current_token" -Force | Out-Null
+New-ItemProperty -Path "$base\authorization\remember\current_token" -Name allow -PropertyType DWord -Value 60 -Force | Out-Null
+New-Item -Path "$base\authorization\remember\ssh_login" -Force | Out-Null
+New-ItemProperty -Path "$base\authorization\remember\ssh_login" -Name allow -PropertyType DWord -Value 900 -Force | Out-Null
+New-ItemProperty -Path "$base\authorization" -Name allowed_exchange_audiences -PropertyType MultiString -Value @('internal-tools') -Force | Out-Null
+
+New-Item -Path "$base\ssh" -Force | Out-Null
+New-ItemProperty -Path "$base\ssh" -Name agent_tunnel -PropertyType DWord -Value 0 -Force | Out-Null
+
+New-Item -Path "$base\telemetry" -Force | Out-Null
+New-ItemProperty -Path "$base\telemetry" -Name update_check -PropertyType DWord -Value 0 -Force | Out-Null
+```
+
+</TabItem>
+</Tabs>
+
+### Policy error messages
+
+The authentik Agent doesn't show which settings are enforced by a policy, apart from the read-only **Fallback agent** form in the authentik Agent app. Users see one of the following messages when a policy prevents an action:
+
+| Message                                                                         | Cause                                                                                                                                                                                                             |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `authentik URL '<url>' is not allowed by policy`                                | The URL isn't listed in `profile_management.allowed_urls`.                                                                                                                                                        |
+| `key binding (DPoP) is required by policy, but the provider doesn't support it` | `profile_management.require_dpop` is set, but [key binding](./configuration.mdx#key-binding) isn't enabled on the provider.                                                                                       |
+| `profile is not key-bound (DPoP), which is required by policy`                  | The profile isn't key-bound, for example because it was added before [key binding](./configuration.mdx#key-binding) was enabled on the provider. Enable key binding and add the profile again with the same name. |
+| `deleting profiles is disabled by policy`                                       | `profile_management.allow_delete` is set to `false`.                                                                                                                                                              |
+| `token exchange for '<client_id>' is not allowed by policy`                     | The client ID isn't listed in `authorization.allowed_exchange_audiences`.                                                                                                                                         |
