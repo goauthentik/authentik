@@ -1394,78 +1394,86 @@ msgstr "Certifikatutfärdare för Microsoft Intune-anslutning"
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Select at least one user type."
-msgstr ""
+msgstr "Välj minst en användartyp."
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Internal service accounts cannot be expired."
-msgstr ""
+msgstr "Interna tjänstkonton kan inte avslutas."
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Inactivity duration must be positive."
-msgstr ""
+msgstr "Inaktivitetsperioden måste vara positiv."
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Warning period must be positive."
-msgstr ""
+msgstr "Varningsperioden måste vara positiv."
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "A warning period is required for notifications."
-msgstr ""
+msgstr "En varningsperiod krävs för notifikationer."
 
 #: authentik/enterprise/lifecycle/expiration/api.py
 msgid "Warning period must be shorter than the inactivity duration."
-msgstr ""
+msgstr "Varningsperioden måste vara kortare än inaktivitetsperioden."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Last login"
-msgstr ""
+msgstr "Senaste inloggning"
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Last activity"
-msgstr ""
+msgstr "Senaste aktivitet"
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Measure inactivity from the last login or successful user activity."
 msgstr ""
+"Mät inaktivitet från senaste inloggning eller lyckad användaraktivitet."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Only expire members of this group (including descendant groups). Leave empty"
 " to apply to every user."
 msgstr ""
+"Avsluta endast medlemmar i den här gruppen (inklusive undergrupper). Lämna "
+"tomt för att gälla alla användare."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Only expire users of these types. Service accounts are excluded by default."
 msgstr ""
+"Avsluta endast användare av dessa typer. Tjänstkonton undantas som standard."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "How long a user may be inactive before they are expired."
-msgstr ""
+msgstr "Hur länge en användare får vara inaktiv innan användaren avslutas."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Schedule the offboarding and notify the user this long before they expire. "
 "Leave empty to expire users without warning."
 msgstr ""
+"Schemalägg avvecklingen och meddela användaren så lång tid före "
+"avslutningen. Lämna tomt för att avsluta användare utan varning."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid ""
 "Select which transports should be used to warn the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
+"Välj vilka transporter som ska användas för att varna användaren. Om ingen "
+"väljs visas notifikationen endast i authentik-gränssnittet."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "Never expire members of a superuser group."
-msgstr ""
+msgstr "Avsluta aldrig medlemmar i en superanvändargrupp."
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rule"
-msgstr ""
+msgstr "Regel för användarutgång"
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rules"
-msgstr ""
+msgstr "Regler för användarutgång"
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 #, python-format
@@ -1473,22 +1481,24 @@ msgid ""
 "User %(username)s will be offboarded (%(action)s) on %(scheduled_at)s due to"
 " inactivity"
 msgstr ""
+"Användaren %(username)s kommer att avvecklas (%(action)s) den "
+"%(scheduled_at)s på grund av inaktivitet"
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rule Notification Transport"
-msgstr ""
+msgstr "Notifikationstransport för regel för användarutgång"
 
 #: authentik/enterprise/lifecycle/expiration/models.py
 msgid "User Expiration Rule Notification Transports"
-msgstr ""
+msgstr "Notifikationstransporter för regler för användarutgång"
 
 #: authentik/enterprise/lifecycle/expiration/tasks.py
 msgid "Apply all enabled user expiration rules."
-msgstr ""
+msgstr "Tillämpa alla aktiverade regler för användarutgång."
 
 #: authentik/enterprise/lifecycle/expiration/tasks.py
 msgid "Apply user expiration rule."
-msgstr ""
+msgstr "Tillämpa regel för användarutgång."
 
 #: authentik/enterprise/lifecycle/offboarding/actions.py
 #, python-format

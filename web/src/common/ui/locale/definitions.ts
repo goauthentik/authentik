@@ -54,6 +54,7 @@ export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleM
     "pl-PL": () => import("#locales/pl-PL"),
     "pt-BR": () => import("#locales/pt-BR"),
     "ru-RU": () => import("#locales/ru-RU"),
+    "sv-SE": () => import("#locales/sv-SE"),
     "tr-TR": () => import("#locales/tr-TR"),
     "zh-Hans": () => import("#locales/zh-Hans"),
     "zh-Hant": () => import("#locales/zh-Hant"),
