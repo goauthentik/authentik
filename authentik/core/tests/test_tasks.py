@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 from time import mktime
+from unittest.mock import patch
 
 from django.apps import apps
 from django.db import connection
@@ -17,6 +18,7 @@ from authentik.core.models import (
     USER_ATTRIBUTE_GENERATED,
     Actor,
     ActorPolicyInheritance,
+    Session,
     Token,
     TokenIntents,
     User,
@@ -29,6 +31,9 @@ from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.models import ExpiringModel
+from authentik.lib.tests.utils import table_row_counts
+from authentik.lib.utils.db import delete_in_batches
+from authentik.tasks.models import Task
 
 
 class TestTasks(APITestCase):
@@ -45,6 +50,18 @@ class TestTasks(APITestCase):
         token: Token = Token.objects.create(
             expires=now(), user=get_anonymous_user(), intent=TokenIntents.INTENT_API
         )
+        key = token.key
+        clean_expired_models.send()
+        token.refresh_from_db()
+        self.assertNotEqual(key, token.key)
+
+    def test_token_expire_without_date(self):
+        """Test Token expire task expires tokens that are expiring without a date"""
+        token: Token = Token.objects.create(
+            user=get_anonymous_user(), intent=TokenIntents.INTENT_API
+        )
+        # save() fills in a default expiry
+        Token.objects.filter(pk=token.pk).update(expires=None)
         key = token.key
         clean_expired_models.send()
         token.refresh_from_db()
@@ -85,7 +102,55 @@ class TestTasks(APITestCase):
         with CaptureQueriesContext(connection) as ctx:
             clean_expired_models.send()
         self.assertFalse(Event.objects.including_expired().exists())
-        self.assertLessEqual(len(ctx.captured_queries), 500)
+        # Only count event queries, other expiring models add their own
+        event_queries = [q for q in ctx.captured_queries if Event._meta.db_table in q["sql"]]
+        # 3 batches and an empty probe, measured at 32
+        self.assertLessEqual(len(event_queries), 40)
+
+    def test_expire_scan_stops_at_cutoff(self):
+        """Cleanup batches must not scan live events. If they do, every batch once fewer
+        than a batch's worth have expired reads the whole table, and cleanup of large
+        installs falls behind as new events keep expiring."""
+        Event.objects.all().delete()
+        Event.objects.bulk_create(
+            Event(action=EventAction.CUSTOM_PREFIX, app="test", expires=now() + timedelta(days=1))
+            for _ in range(5_000)
+        )
+        Event.objects.bulk_create(
+            Event(action=EventAction.CUSTOM_PREFIX, app="test", expires=now() - timedelta(days=1))
+            for _ in range(10)
+        )
+        with table_row_counts(Event) as rows:
+            clean_expired_models.send()
+        self.assertEqual(rows.deleted, 10)
+        self.assertEqual(Event.objects.including_expired().count(), 5_000)
+        # Finding and deleting a row reads it about 3 times (measured 30 for 10 rows).
+        # The old exclude() predicate, an unsorted select and sorting by pk each read all
+        # 5,000 live events, twice (measured 10,030).
+        self.assertLessEqual(rows.read, rows.deleted * 4)
+
+    def test_expire_failure_is_isolated(self):
+        """A failure to expire one kind of object does not prevent expiring the others"""
+        Event.objects.all().delete()
+        Event.objects.create(action=EventAction.CUSTOM_PREFIX, app="test", expires=now())
+        cache_entry = CacheEntry.objects.create(
+            cache_key="cleanup-test", value="value", expires=now() - timedelta(hours=1)
+        )
+
+        def fail_sessions(queryset, *args, **kwargs):
+            if queryset.model is Session:
+                raise RuntimeError("Failed to expire sessions")
+            return delete_in_batches(queryset, *args, **kwargs)
+
+        with patch("authentik.core.tasks.delete_in_batches", side_effect=fail_sessions):
+            clean_expired_models.send()
+        # Events are expired after sessions
+        self.assertFalse(Event.objects.including_expired().filter(app="test").exists())
+        self.assertFalse(CacheEntry.objects.filter(pk=cache_entry.pk).exists())
+        task = Task.objects.filter(actor_name=clean_expired_models.actor_name).latest("mtime")
+        self.assertTrue(task.tasklogs.filter(event__icontains="Failed to expire").exists())
+        # The task itself still fails once everything has been attempted
+        self.assertTrue(task.tasklogs.filter(log_level="error").exists())
 
     def test_expiring_models_keep_indexes(self):
         """Models that override Meta.indexes must keep ExpiringModel's, or cleanup, which

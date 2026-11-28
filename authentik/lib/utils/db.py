@@ -6,6 +6,7 @@ from collections.abc import Generator
 from django.core.exceptions import EmptyResultSet, FullResultSet
 from django.db import connections, reset_queries, transaction
 from django.db.models import Model, QuerySet
+from django.db.models.deletion import Collector
 
 
 def chunked_queryset[T: Model](queryset: QuerySet[T], chunk_size: int = 1_000) -> Generator[T]:
@@ -40,7 +41,36 @@ def chunked_queryset[T: Model](queryset: QuerySet[T], chunk_size: int = 1_000) -
         yield from chunk.iterator(chunk_size=chunk_size)
 
 
-def delete_in_batches[T: Model](queryset: QuerySet[T], batch_size: int = 1_000) -> int:
+def _is_index_leading(model: type[Model], field_name: str) -> bool:
+    """Whether a full (not partial) index starts with `field_name`, so Postgres can read rows in
+    that order instead of sorting every match"""
+    field = model._meta.get_field(field_name) if field_name != "pk" else model._meta.pk
+    if field.primary_key or field.unique or field.db_index:
+        return True
+    return any(
+        index.fields and index.fields[0].lstrip("-") == field.name and index.condition is None
+        for index in model._meta.indexes
+    )
+
+
+class LockingCollector(Collector):
+    """Collector that locks the rows it cascades to before collecting what references them.
+
+    Django collects the rows referencing a deleted row before it deletes it. A row that starts
+    referencing it in between is not collected, and the deferred foreign key check then fails
+    the deleting transaction on commit. With the referenced row locked first, the transaction
+    adding the reference either committed before and is collected, or waits for the deletion
+    and fails its own foreign key check instead."""
+
+    def collect(self, objs, *args, **kwargs):
+        if isinstance(objs, QuerySet) and not self.can_fast_delete(objs):
+            objs = objs.select_for_update(of=("self",))
+        return super().collect(objs, *args, **kwargs)
+
+
+def delete_in_batches[T: Model](
+    queryset: QuerySet[T], batch_size: int = 1_000, order_by: str = "pk"
+) -> int:
     """Delete matching rows in short transactions, returning the target model's count.
 
     Call outside an enclosing transaction to release locks after each batch. Use only
@@ -50,6 +80,8 @@ def delete_in_batches[T: Model](queryset: QuerySet[T], batch_size: int = 1_000) 
     """
     if batch_size < 1:
         raise ValueError("batch_size must be positive")
+    if not _is_index_leading(queryset.model, order_by):
+        raise ValueError(f"{queryset.model._meta.label} has no index starting with {order_by}")
 
     # SELECT FOR UPDATE also selects the write database when routers are configured.
     queryset = queryset.select_for_update(skip_locked=True, of=("self",))
@@ -58,12 +90,17 @@ def delete_in_batches[T: Model](queryset: QuerySet[T], batch_size: int = 1_000) 
     deleted_total = 0
     while True:
         with transaction.atomic(using=database):
-            pks = list(queryset.order_by("pk").values_list("pk", flat=True)[:batch_size])
+            # Order by the column the filter ranges over, so Postgres scans just that index
+            # range. Without an order, Postgres may pick a sequential scan that reads most of
+            # the table when matching rows aren't spread evenly through it.
+            pks = list(queryset.order_by(order_by).values_list("pk", flat=True)[:batch_size])
             if not pks:
                 return deleted_total
-            # Hold the locks through Django's collector and DELETE so that a cache
-            # refresh cannot race with deletion after the expiration check.
-            _, counts = queryset.filter(pk__in=pks).delete()
+            # Hold the locks through the collector and DELETE so that a cache refresh
+            # cannot race with deletion after the expiration check.
+            collector = LockingCollector(using=database, origin=queryset)
+            collector.collect(queryset.model._base_manager.using(database).filter(pk__in=pks))
+            _, counts = collector.delete()
             deleted_total += counts.get(queryset.model._meta.label, 0)
 
 

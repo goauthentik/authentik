@@ -668,7 +668,8 @@ class _PostgresConsumer(Consumer):
                     state__in=(TaskState.DONE, TaskState.REJECTED),
                     mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
                     result_expiry__lte=timezone.now(),
-                )
+                ),
+                order_by="mtime",
             )
         except Error:
             self.logger.warning(
