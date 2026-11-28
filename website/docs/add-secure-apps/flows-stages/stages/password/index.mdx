@@ -55,6 +55,16 @@ This stage is typically bound after an [Identification](../identification/index.
 
 If the [Identification stage](../identification/index.mdx) has its **Password stage** option set, the password prompt is rendered as part of the identification step and the Password stage should not also be bound separately in the same flow.
 
+### Change password URL
+
+authentik supports the [well-known URL for changing passwords](https://w3c.github.io/webappsec-change-password-url/). Password managers and browsers can send users to `https://authentik.company/.well-known/change-password`, which starts the **Configuration flow** of a Password stage. Users who aren't logged in are asked to log in first. After the flow completes, users are returned to their user settings.
+
+If more than one Password stage has a **Configuration flow** set, the stage that sorts first by name is used. If no Password stage has a **Configuration flow** set, the URL returns a 404 error.
+
+:::info
+Browsers look for this URL at the root of the domain. If authentik is served under a subpath (see [`AUTHENTIK_WEB__PATH`](../../../../install-config/configuration/configuration.mdx#authentik_web__path)), it is only available under that subpath, for example `https://authentik.company/authentik/.well-known/change-password`.
+:::
+
 ## Notes
 
 :::tip
