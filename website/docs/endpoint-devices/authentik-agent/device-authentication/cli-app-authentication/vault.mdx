@@ -1,0 +1,131 @@
+---
+title: HashiCorp Vault and OpenBao CLI authentication
+sidebar_label: Vault and OpenBao
+tags: [authentik Agent, authentik cli, vault, openbao, hashicorp, cli]
+authentik_version: "2025.12.0"
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+You can use the authentik Agent to run the HashiCorp Vault CLI (`vault`) or the OpenBao CLI (`bao`) with a short-lived token from your authentik login, without running `vault login`.
+
+`ak auth vault` exchanges your authentik token for a token for the Vault application, logs in to Vault's JWT auth method with it, and runs the CLI with the resulting Vault token.
+
+## Prerequisites
+
+- The authentik Agent 0.73 or later must be [deployed on your device](../../agent-deployment/index.mdx) with its [`authentik-cli` OAuth2 provider configured](../../configuration.mdx#create-an-application-and-provider-in-authentik-for-cli).
+- Vault or OpenBao must be able to reach authentik to fetch its signing keys.
+
+## authentik configuration
+
+### Create an application and provider in authentik for Vault
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+    - **Application**: provide a descriptive name (e.g. `vault`), an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application slug.
+    - **Choose a Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **Client Type** to `Public`.
+        - Set the **Client ID** to `vault`.
+        - Select any available signing key.
+        - Under **Machine-to-Machine authentication settings** add the `authentik-cli` provider to **Federated OAuth2/OpenID Providers**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](../../../../add-secure-apps/bindings-overview/index.mdx) (policy, group, or user) to manage access to the application.
+
+3. Click **Submit** to save the new application and provider.
+
+## Vault configuration
+
+Configure a JWT auth method in Vault or OpenBao. The commands are the same for both CLIs.
+
+:::warning Use the JWT mode
+Configure the auth method with `oidc_discovery_url` only. If `oidc_client_id` or `oidc_client_secret` is set, the auth method runs in OIDC mode and rejects the token. If you already use an OIDC auth method for browser logins, enable a separate auth method for the authentik Agent.
+:::
+
+<Tabs defaultValue="vault">
+<TabItem value="vault" label="Vault">
+
+```sh
+vault auth enable jwt
+vault write auth/jwt/config \
+    oidc_discovery_url="https://authentik.company/application/o/<application_slug>/"
+vault write auth/jwt/role/authentik \
+    role_type="jwt" \
+    bound_audiences="vault" \
+    user_claim="preferred_username" \
+    groups_claim="groups" \
+    token_policies="default" \
+    token_ttl="1h"
+```
+
+</TabItem>
+<TabItem value="openbao" label="OpenBao">
+
+```sh
+bao auth enable jwt
+bao write auth/jwt/config \
+    oidc_discovery_url="https://authentik.company/application/o/<application_slug>/"
+bao write auth/jwt/role/authentik \
+    role_type="jwt" \
+    bound_audiences="vault" \
+    user_claim="preferred_username" \
+    groups_claim="groups" \
+    token_policies="default" \
+    token_ttl="1h"
+```
+
+</TabItem>
+</Tabs>
+
+- `bound_audiences` must match the **Client ID** of the provider.
+- Set `token_policies` to the policies that users of this role should get. To map authentik groups to Vault policies, use [external groups](/integrations/security/hashicorp-vault/#external-groups) with the accessor of this auth method.
+
+## Configure the CLI
+
+Run `ak auth vault` with the following options, followed by `--` and the arguments for the Vault CLI:
+
+| Option              | Required | Description                                                           |
+| ------------------- | -------- | --------------------------------------------------------------------- |
+| `-c`, `--client-id` | Yes      | The **Client ID** of the authentik provider, for example `vault`.     |
+| `-r`, `--role`      | Yes      | The JWT role, for example `authentik`.                                |
+| `-a`, `--address`   | Yes      | The Vault address. Defaults to the `VAULT_ADDR` environment variable. |
+| `-m`, `--mount`     | No       | The path of the JWT auth method. Defaults to `jwt`.                   |
+| `-b`, `--bin`       | No       | The CLI to run. Defaults to `vault`. Use `bao` for OpenBao.           |
+
+To use the command in place of the Vault CLI, add an alias to your shell configuration, for example in `~/.bashrc` or `~/.zshrc`:
+
+<Tabs defaultValue="vault">
+<TabItem value="vault" label="Vault">
+
+```sh
+alias vault='ak auth vault -c vault -r authentik -a https://vault.company --'
+```
+
+</TabItem>
+<TabItem value="openbao" label="OpenBao">
+
+```sh
+alias bao='ak auth vault -c vault -r authentik -a https://openbao.company -b bao --'
+```
+
+</TabItem>
+</Tabs>
+
+To verify, run `vault token lookup` (or `bao token lookup`). The output should show a token for your authentik username.
+
+The CLI runs with `VAULT_ADDR`, `VAULT_TOKEN`, `BAO_ADDR`, and `BAO_TOKEN` set. The Vault token is cached on the device until it expires, so later commands don't log in to Vault again.
+
+## Troubleshooting
+
+### `unsupported config type`
+
+The auth method is configured for OIDC logins. Remove `oidc_client_id` and `oidc_client_secret` from its configuration, or use a separate auth method. Refer to [Vault configuration](#vault-configuration).
+
+### `error validating claims`
+
+`bound_audiences` doesn't match the **Client ID** of the authentik provider.
+
+### `failed to exchange token`
+
+The `authentik-cli` provider isn't listed in **Federated OAuth2/OpenID Providers** of the Vault provider, or a binding denies the user access to the application.

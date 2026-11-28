@@ -43,17 +43,18 @@ Supported keys and signing algorithms are:
 
 - EC P-256 with `ES256`, P-384 with `ES384`, or P-521 with `ES512`.
 - RSA with a key size from 2048 through 8192 bits and `RS256`, `RS384`, `RS512`, `PS256`, `PS384`, or `PS512`.
+- ML-DSA (key type `AKP`, [RFC 9964](https://www.rfc-editor.org/rfc/rfc9964)) with `ML-DSA-44`, `ML-DSA-65`, or `ML-DSA-87`, in authentik 2026.11 and later. The JWK must include `alg`, and it must match the proof's `alg`. ML-DSA keys are rejected when authentik runs in FIPS mode.
 
 Symmetric keys, `HS256`, `none`, and OKP keys such as Ed25519 are not supported for these proofs.
 
 Compute `dpop_jkt` as the [RFC 7638 SHA-256 JWK thumbprint](https://www.rfc-editor.org/rfc/rfc7638):
 
-1. Take only the required public JWK members: `crv`, `kty`, `x`, and `y` for EC, or `e`, `kty`, and `n` for RSA.
+1. Take only the required public JWK members: `crv`, `kty`, `x`, and `y` for EC, `e`, `kty`, and `n` for RSA, or `alg`, `kty`, and `pub` for ML-DSA.
 2. Serialize them as JSON with lexicographically sorted member names and no whitespace.
 3. Hash the UTF-8 bytes with SHA-256.
 4. Base64url-encode the full digest without `=` padding.
 
-The result is a 43-character string. Do not hash a PEM file or include optional JWK members such as `kid`, `alg`, or `use` in the thumbprint input.
+The result is a 43-character string. Do not hash a PEM file or include optional JWK members such as `kid`, `alg`, or `use` in the thumbprint input. For ML-DSA keys, `alg` is required and is part of the thumbprint.
 
 ## Request authorization
 

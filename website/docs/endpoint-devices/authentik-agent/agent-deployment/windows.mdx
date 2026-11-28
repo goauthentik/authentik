@@ -12,7 +12,7 @@ authentik_version: "2025.12.0"
 - Authenticate to CLI applications with authentik credentials through [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx).
 
 :::warning Supported Windows versions
-The authentik Agent is currently only tested on Windows 11 and Windows Server 2022. Other versions may work but are untested.
+The authentik Agent is currently only tested on Windows 11 and Windows Server 2025. Other versions may work but are untested.
 :::
 
 ## Windows Credential Provider
@@ -30,9 +30,18 @@ It currently only supports local login; RDP login is not supported.
 
 :::
 
+### Credential provider service account
+
+When you install the Windows Credential Provider, the installer creates a local user account named `ak-wcp-browser`. The authentik login window runs as this account. The account can only log on as a service, and its password is generated and managed by the Windows Credential Provider. The installer removes the account when you uninstall the authentik Agent.
+
+:::warning
+Don't delete or disable the `ak-wcp-browser` account, and make sure that it keeps the **Log on as a service** right. A Group Policy or security baseline that sets **Log on as a service** can remove the right from the account. Without it, the authentik login window doesn't open.
+:::
+
 ## Prerequisites
 
-You must [configure your authentik deployment](../configuration.mdx) to support the authentik Agent.
+- You must [configure your authentik deployment](../configuration.mdx) to support the authentik Agent.
+- The device needs the Microsoft Edge WebView2 Runtime, which is included in Windows 11. If it's missing, for example on Windows Server or custom images, the installer downloads it from Microsoft, and the installation fails if the device can't reach Microsoft's servers. For devices without internet access, install the [WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/) first.
 
 ## Create an enrollment token
 
@@ -59,10 +68,10 @@ It's recommended to deploy the Agent via [MDM or automation tools](./automated.m
 3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.mdx) to support the authentik agent.
 4. Under **Setup**, click **Windows** to download the authentik Agent installer.
 5. After the download completes, install the MSI file.
-6. _(Optional)_ During installation, select [Windows Credential Provider](#windows-credential-provider) if you want to log in to the Windows device using authentik credentials.
-7. Confirm that the authentik Agent is installed by opening a PowerShell or Terminal window and entering the following command: `ak`
+6. _(Optional)_ During installation, select **Credential provider** if you want to log in to the Windows device using authentik credentials. Refer to [Windows Credential Provider](#windows-credential-provider). Keep **Include CLI in PATH** selected to use `ak` in a terminal and with the [MCP server](../mcp-server.mdx).
+7. Confirm that the authentik Agent is installed by opening a PowerShell or Terminal window and entering the following command: `ak version`
 
-    You should see a response that starts with: `authentik CLI v<version_number>`
+    You should see output that starts with: `authentik Agent CLI: <version_number>`
 
 ## Join the device to an authentik domain
 

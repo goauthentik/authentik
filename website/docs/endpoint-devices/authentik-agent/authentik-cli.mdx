@@ -7,12 +7,17 @@ sidebar_position: 3
 
 The following commands are available when interacting with the authentik Agent via the command line.
 
-:::info Flags
-Most of the CLI commands have a `-v`/`--verbose` flag for verbose output.
-Use the `-h`/`--help` flag to access help information.
-:::
-
 ## authentik-cli commands
+
+The following flags can be used with any `ak` command:
+
+| Flag                     | Description                                                  |
+| ------------------------ | ------------------------------------------------------------ |
+| `-p`, `--profile <name>` | Use the specified profile instead of the active profile.     |
+| `-j`, `--json`           | Output JSON, for commands that support it, such as `whoami`. |
+| `-s`, `--socket <path>`  | Connect to the authentik Agent on a different socket.        |
+| `-v`, `--verbose`        | Enable debug logging.                                        |
+| `-h`, `--help`           | Show help for a command.                                     |
 
 ### api
 
@@ -22,7 +27,9 @@ Directly interact with the authentik API, authenticated as the active profile's 
 ak api <command>
 ```
 
-The subcommands are generated from the authentik API schema. Run `ak api --help` to list the ones available in your version.
+The subcommands are generated from the authentik API schema. Run `ak api --help` to list the ones available in your version. Responses are printed as JSON.
+
+To authenticate with an API token instead of the profile, use `--api-token <token>` or set the `AK_CLI_TOKEN` environment variable.
 
 ### auth
 
@@ -37,19 +44,17 @@ ak auth <command>
 - `claude` - Authenticate to [Claude Code](/integrations/development/claude-code/) with the authentik profile.
 - `kubectl` - Authenticate to a [Kubernetes cluster](./device-authentication/cli-app-authentication/k8s.mdx) with the authentik profile.
 - `raw` - Authenticate to arbitrary API calls.
+- `vault` - Run the [HashiCorp Vault or OpenBao CLI](./device-authentication/cli-app-authentication/vault.mdx) with a token from the authentik profile.
 
 ### completion
 
 Generate the autocompletion script for the specified shell.
 
 ```bash
-ak completion <command>
+ak completion <shell>
 ```
 
-- `bash` - Generate the autocompletion script for bash.
-- `fish` - Generate the autocompletion script for fish.
-- `powershell` - Generate the autocompletion script for PowerShell.
-- `zsh` - Generate the autocompletion script for zsh.
+Where `<shell>` is `bash`, `elvish`, `fish`, `powershell`, or `zsh`.
 
 ### config
 
@@ -59,8 +64,14 @@ Configure authentik CLI
 ak config <command>
 ```
 
-- `list-profiles` - List profiles that are enabled on the device. Each profile is associated with a separate authentik deployment.
-- `setup` - Configure authentik CLI.
+- `list-profiles` - List the profiles on the device, with their user, authentik URL, token renewal times, and whether they're key-bound (`DPoP bound`).
+- `delete-profile <profile>` - Delete a profile.
+- `setup` - Add a profile by logging in to authentik. Options:
+    - `-a`, `--authentik-url <url>` (required): the URL of your authentik deployment.
+    - `-i`, `--client-id <id>`: the client ID of the OAuth2 provider. Defaults to `authentik-cli`.
+    - `-d`, `--app-slug <slug>`: the slug of the application. Defaults to `authentik-cli`.
+
+    Use the global `-p` flag to name the profile, for example `ak -p work config setup -a https://authentik.company`.
 
 ### help
 
@@ -72,6 +83,16 @@ ak help <command>
 
 Where `<command>` is any authentik CLI command you want help with, for example: `ak help whoami`
 
+### mcp
+
+Run the [authentik Agent MCP server](./mcp-server.mdx) over standard input and output, for use by AI clients.
+
+```bash
+ak mcp
+```
+
+`--allow-dangerous-api` adds a tool that calls the authentik API with your own permissions. Refer to [Security considerations](./mcp-server.mdx#security-considerations).
+
 ### switch-profile
 
 Switch to a different active profile. Can be shortened to `ak s`.
@@ -80,7 +101,7 @@ Switch to a different active profile. Can be shortened to `ak s`.
 ak switch-profile <profile>
 ```
 
-Where `<profile>` is the name of a profile reported by `ak config list-profiles`.
+Where `<profile>` is the name of a profile reported by `ak config list-profiles`. Without `<profile>`, the command prints the active profile.
 
 ### version
 
@@ -88,6 +109,14 @@ Shows the version of all installed authentik components.
 
 ```bash
 ak version
+```
+
+The output shows the version of the CLI, the user agent, and the system agent, and the version of the authentik server that each agent is connected to:
+
+```text
+authentik Agent CLI: <version>
+Agent: <version> (Server <authentik version>)
+System: <version> (Server <authentik version>)
 ```
 
 ### whoami
@@ -100,39 +129,32 @@ ak whoami
 
 ## authentik-sysd commands
 
+The following flags can be used with any `ak-sysd` command, before the command name:
+
+| Flag                    | Description                                           |
+| ----------------------- | ----------------------------------------------------- |
+| `-c`, `--config <path>` | Use a different configuration file.                   |
+| `-d`                    | Enable debug logging, for example `ak-sysd -d agent`. |
+| `-V`, `--version`       | Show the version of `ak-sysd`.                        |
+| `-h`, `--help`          | Show help for a command.                              |
+
 ### agent
 
-Used to run the authentik system agent
+Run the authentik system agent. The system agent is normally run by the operating system's service manager.
 
 ```bash
 ak-sysd agent
 ```
-
-`-d` for debug
-`--disable-component` to disable a component, can be used multiple times.
-
-**Components**:
-
-- `agent_starter`: Responsible for starting the authentik user agent
-- `auth`: Authentication components for interactive and token-based authentication
-- `ctrl`: Provides a control socket for the CLI to join domains, etc
-- `device`: Handles device compliance checkins and validations
-- `directory`: Provides directory services on linux system
-- `ping`: Provides a ping service for healthchecking
-- `session`: Handles sessions created with local device authentication/SSH
 
 ### completion
 
 Generate the autocompletion script for the specified shell.
 
 ```bash
-ak-sysd completion <command>
+ak-sysd completion <shell>
 ```
 
-- `bash` - Generate the autocompletion script for bash.
-- `fish` - Generate the autocompletion script for fish.
-- `powershell` - Generate the autocompletion script for powershell.
-- `zsh` - Generate the autocompletion script for zsh.
+Where `<shell>` is `bash`, `elvish`, `fish`, `powershell`, or `zsh`.
 
 ### domains
 
@@ -140,7 +162,8 @@ ak-sysd completion <command>
 ak-sysd domains <command>
 ```
 
-- `join` - Join an authentik domain, for example `ak-sysd domains join <name_for_authentik_domain> -a <authentik_URL>`
+- `join` - Join an authentik domain, for example `ak-sysd domains join <name_for_authentik_domain> -a <authentik_URL>`. The command prompts for the enrollment token, or reads it from the `AK_SYS_INSECURE_ENV_TOKEN` environment variable.
+- `list` - List the domains that the device has joined, and which one is active.
 
 ### help
 
@@ -156,6 +179,14 @@ Where `<command>` is any authentik CLI command you want help with, for example: 
 ak-sysd troubleshoot <command>
 ```
 
-- `check` - Check status of authentik agent components. Useful on Linux as there are various components being used.
+- `check` - Check the NSS and PAM configuration and whether the system agent is reachable. Useful on Linux as there are various components being used.
 - `inspect` - Outputs the state database that the agent has.
 - `facts` - Outputs device facts. These are the facts that are sent to authentik for device reporting.
+
+### version
+
+Shows the version of all installed authentik components.
+
+```bash
+ak-sysd version
+```

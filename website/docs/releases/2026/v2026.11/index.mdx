@@ -200,7 +200,7 @@ When a file that a blueprint references with `!File` changes, such as a rotated 
 authentik now supports ML-DSA, a post-quantum signature algorithm, and stronger SAML encryption:
 
 - **Certificates**: authentik can generate and store ML-DSA certificates for TLS between components that you control, such as outposts and mutual TLS with a private certificate authority. Browsers and public certificate authorities do not accept them yet, and outposts must run authentik 2026.11 or newer to verify them.
-- **OAuth2/OIDC**: Providers can sign tokens with an ML-DSA certificate, and OAuth sources and the proxy outpost can verify them.
+- **OAuth2/OIDC**: Providers can sign tokens with an ML-DSA certificate, and OAuth sources and the proxy outpost can verify them. [Key binding](../../../add-secure-apps/providers/oauth2/key-binding.mdx) accepts ML-DSA client keys.
 - **Passkeys**: WebAuthn accepts ML-DSA credentials, although no authenticator supports them yet.
 - **SAML**: New SAML and WS-Federation providers encrypt assertions with AES-256-GCM by default. Existing providers keep AES-128-CBC until you change them.
 - **FIPS**: authentik's ML-DSA support is ahead of the FIPS-validated modules that FedRAMP environments require, which do not include ML-DSA yet. Until they do, ML-DSA key generation is unavailable when FIPS mode is enabled. As soon as a validated module with ML-DSA is released, we will enable it, and authentik's post-quantum cryptography will be fully FIPS compliant for FedRAMP environments.

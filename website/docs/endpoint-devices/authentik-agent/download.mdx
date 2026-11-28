@@ -1,8 +1,8 @@
 ---
 title: Download the authentik Agent
 sidebar_label: Download
-description: Download the authentik Agent installer for macOS or Windows, or install it on Linux from the APT or RPM repository.
-tags: [authentik Agent, download, install, packages, macos, windows, linux]
+description: Download the authentik Agent installer for macOS or Windows, or install it on Linux from the APT or RPM repository or as Arch Linux packages.
+tags: [authentik Agent, download, install, packages, macos, windows, linux, homebrew, arch linux]
 authentik_version: "2025.12.0"
 sidebar_position: 0.5
 ---
@@ -18,13 +18,19 @@ The [authentik Agent](./index.mdx) is a service that you install on Linux, macOS
 
 <DownloadButtons />
 
+On macOS, you can also install the authentik Agent with [Homebrew](https://brew.sh/):
+
+```sh
+brew install --cask goauthentik/tap/authentik-agent
+```
+
 :::info
 Downloading the installer is only the first step. To create an enrollment token, install the package, and join the device to an authentik domain, follow the [macOS](./agent-deployment/macos.mdx) or [Windows](./agent-deployment/windows.mdx) deployment guide. For more than a handful of devices, use [MDM or automated deployment](./agent-deployment/automated.mdx) instead.
 :::
 
 ## Install on Linux
 
-On Linux, install the authentik Agent from the authentik package repository rather than downloading a file.
+On Linux, install the authentik Agent from the authentik package repository rather than downloading a file. On workstations with a graphical desktop, install `authentik-agent-desktop`, which includes the [authentik Agent app](./desktop-app.mdx). On servers, install `authentik-agent` instead.
 
 <Tabs
     groupId="platform"
@@ -32,6 +38,7 @@ On Linux, install the authentik Agent from the authentik package repository rath
     values={[
         { label: "Debian-based", value: "debian" },
         { label: "Red Hat-based", value: "rhel" },
+        { label: "Arch Linux", value: "arch" },
     ]}
 >
 <TabItem value="debian">
@@ -52,7 +59,7 @@ echo "deb [signed-by=/usr/share/keyrings/authentik-keyring.gpg] https://pkg.goau
 
 ```sh
 sudo apt update
-sudo apt install authentik-cli authentik-agent authentik-sysd
+sudo apt install authentik-cli authentik-sysd authentik-agent-desktop
 ```
 
 4. _(Optional)_ To enable SSH server authentication and local device login, install two additional packages:
@@ -81,7 +88,7 @@ EOF
 2. Install the authentik Agent packages:
 
 ```bash
-sudo yum install -y authentik-cli authentik-agent authentik-sysd
+sudo yum install -y authentik-cli authentik-sysd authentik-agent-desktop
 ```
 
 3. _(Optional)_ To enable SSH server authentication and local device login, install two additional packages:
@@ -89,6 +96,18 @@ sudo yum install -y authentik-cli authentik-agent authentik-sysd
 ```sh
 sudo yum install -y libnss-authentik libpam-authentik
 ```
+
+</TabItem>
+<TabItem value="arch">
+
+1. Download the packages for the latest version and your architecture from [pkg.goauthentik.io](https://pkg.goauthentik.io) or from the [GitHub releases](https://github.com/goauthentik/platform/releases): `authentik-cli`, `authentik-sysd`, and `authentik-agent-desktop`.
+2. Install the packages:
+
+```sh
+sudo pacman -U authentik-cli-*.pkg.tar.zst authentik-sysd-*.pkg.tar.zst authentik-agent-desktop-*.pkg.tar.zst
+```
+
+3. _(Optional)_ To enable SSH server authentication and local device login, also download and install `libnss-authentik` and `libpam-authentik`.
 
 </TabItem>
 </Tabs>
@@ -105,7 +124,7 @@ Check the version of all installed authentik components by running the following
 ak version
 ```
 
-You should see a response that starts with `authentik CLI v<version_number>`.
+You should see output that starts with `authentik Agent CLI: <version_number>`.
 
 ## Next steps
 

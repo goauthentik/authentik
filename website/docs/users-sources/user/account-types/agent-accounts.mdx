@@ -24,6 +24,10 @@ An agent account is a non-human identity with:
 - A configurable policy inheritance behavior.
 - Audit events that identify the parent user.
 
+:::tip AI clients
+The [authentik Agent MCP server](../../../endpoint-devices/authentik-agent/mcp-server.mdx) creates self-service agent accounts for AI clients and requests access to applications for them.
+:::
+
 For authorization, authentik treats an agent like any other service account. You can grant them access through groups, roles, object permissions, application bindings, and policies.
 
 ## Permissions for managing agent accounts
