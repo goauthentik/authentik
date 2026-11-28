@@ -5,12 +5,20 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile, mkdtemp
 from unittest.mock import patch
 
+from django.db import DEFAULT_DB_ALIAS, OperationalError, connection, connections
 from django.test import TransactionTestCase
 from django.utils.crypto import salted_hmac
+from watchdog.events import FileModifiedEvent
 from yaml import dump
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
-from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_discovery, blueprints_find
+from authentik.blueprints.v1.tasks import (
+    BlueprintEventHandler,
+    apply_blueprint,
+    blueprints_discovery,
+    blueprints_find,
+)
+from authentik.events.logs import capture_logs
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 
@@ -422,3 +430,57 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 blueprints_discovery.send()
                 instance.refresh_from_db()
                 self.assertNotEqual(instance.last_applied_hash, before)
+
+    def _terminate_connection(self):
+        """Close the database connection server-side, like a pooler idle timeout or a failover
+        would, so the client only finds out on its next query"""
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT pg_backend_pid()")
+            pid = cursor.fetchone()[0]
+        terminator = connections.create_connection(DEFAULT_DB_ALIAS)
+        try:
+            with terminator.cursor() as cursor:
+                # Wait for the backend to exit so the next query cannot race the termination
+                cursor.execute("SELECT pg_terminate_backend(%s, 5000)", [pid])
+        finally:
+            terminator.close()
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_watcher_dead_connection(self):
+        """Test the file watcher survives a persistent connection that died while idle"""
+        # A persistent connection without health checks, so nothing replaces it before the query
+        self.enterContext(
+            patch.dict(
+                connection.settings_dict, {"CONN_MAX_AGE": None, "CONN_HEALTH_CHECKS": False}
+            )
+        )
+        self.addCleanup(connection.close)
+        connection.close()
+        instance = BlueprintInstance.objects.create(
+            name=generate_id(),
+            path="watcher.yaml",
+            enabled=True,
+        )
+        self._terminate_connection()
+        handler = BlueprintEventHandler()
+        event = FileModifiedEvent(str(Path(TMP) / "watcher.yaml"))
+        with patch.object(apply_blueprint, "send_with_options") as send:
+            with capture_logs() as logs:
+                handler.on_modified(event)
+            send.assert_not_called()
+            self.assertTrue(any("Failed to process file event" in log.event for log in logs))
+            handler.on_modified(event)
+            send.assert_called_once_with(args=(instance.pk,), rel_obj=instance)
+
+    @CONFIG.patch("blueprints_dir", TMP)
+    def test_watcher_database_error(self):
+        """Test the file watcher drops its connection after a database error"""
+        handler = BlueprintEventHandler()
+        event = FileModifiedEvent(str(Path(TMP) / "watcher.yaml"))
+        with (
+            patch.object(BlueprintInstance.objects, "filter", side_effect=OperationalError("boom")),
+            capture_logs() as logs,
+        ):
+            handler.on_modified(event)
+        self.assertTrue(any("Failed to process file event" in log.event for log in logs))
+        self.assertIsNone(connection.connection)
