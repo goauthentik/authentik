@@ -4,10 +4,12 @@ import base64
 import binascii
 import json
 from dataclasses import asdict, dataclass
+from datetime import datetime
 from functools import cached_property
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse, urlunparse
+from uuid import uuid4
 
 from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP256R1,
@@ -24,6 +26,7 @@ from dacite.core import from_dict
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import HashIndex
 from django.db import models
+from django.db.models import Exists, F, OuterRef, Q
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
@@ -77,6 +80,12 @@ LOGGER = get_logger()
 def generate_client_secret() -> str:
     """Generate client secret with adequate length"""
     return generate_id(128)
+
+
+def hash_refresh_token(raw: str) -> str:
+    """Hash a refresh token for storage. Refresh tokens are long random values, so an unsalted
+    SHA-256 is sufficient; a slow password hash would only make every refresh more expensive."""
+    return sha256(raw.encode("utf-8")).hexdigest()
 
 
 class ClientType(models.TextChoices):
@@ -307,6 +316,26 @@ class OAuth2Provider(WebfingerProvider, Provider):
             "When refreshing a token, if the refresh token is valid for less than "
             "this duration, it will be renewed. "
             "When set to seconds=0, token will always be renewed. "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+    refresh_token_revoke_family_on_reuse = models.BooleanField(
+        default=True,
+        db_default=True,
+        help_text=_(
+            "When a refresh token which has already been rotated is used again, revoke all "
+            "refresh and access tokens issued from the same authorization. Reuse indicates "
+            "that the token may have been stolen."
+        ),
+    )
+    refresh_token_reuse_grace_period = models.TextField(
+        default="seconds=30",
+        db_default="seconds=30",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "Allow the most recently rotated refresh token to be used again for this duration "
+            "without revoking its family, for clients which retry or send concurrent refresh "
+            "requests. Only applies when revoking the family on reuse is enabled. "
             "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )
@@ -648,10 +677,20 @@ class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGr
 
     token = models.TextField()
     _id_token = models.TextField()
+    # Family of the refresh token issued alongside this token, so the access tokens are revoked
+    # together with the refresh tokens when reuse is detected
+    family = models.UUIDField(null=True, default=None)
 
     class Meta:
         indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["token"]),
+            # Most access tokens have no family (no refresh token was issued), so only index the
+            # ones that do. This keeps the index small and cheap to maintain on insert
+            models.Index(
+                fields=["family"],
+                name="authentik_p_at_family_idx",
+                condition=Q(family__isnull=False),
+            ),
         ]
         verbose_name = _("OAuth2 Access Token")
         verbose_name_plural = _("OAuth2 Access Tokens")
@@ -692,9 +731,19 @@ class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGr
 
 
 class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
-    """OAuth2 Refresh Token, opaque"""
+    """OAuth2 Refresh Token, opaque. Only a hash of the token is stored, see `token`."""
 
-    token = models.TextField(default=generate_client_secret)
+    # Plaintext token column from before refresh tokens were hashed at rest. New tokens don't
+    # write it; it is only used as a lookup fallback for tokens issued by an older authentik
+    # version (for example during a rolling upgrade). It will be removed in a future release.
+    legacy_token = models.TextField(db_column="token", null=True, default=None)
+    # Tokens issued by an older version have no hash until they are next saved
+    token_hash = models.TextField(null=True, default=None)
+    # All refresh tokens rotated from the same authorization share a family, so that reuse of a
+    # rotated token can revoke the whole chain (RFC 9700 Section 4.14.2). Tokens issued by an
+    # older version have no family until they are refreshed.
+    family = models.UUIDField(null=True, default=uuid4)
+    rotated_at = models.DateTimeField(null=True, default=None)
     _id_token = models.TextField(verbose_name=_("ID Token"))
     dpop_jkt = models.CharField(
         max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
@@ -705,15 +754,125 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
         AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
     )
 
+    _raw_token: str | None = None
+
     class Meta:
         indexes = ExpiringModel.Meta.indexes + [
-            HashIndex(fields=["token"]),
+            HashIndex(fields=["legacy_token"]),
+            HashIndex(fields=["token_hash"]),
+            # Tokens issued by an older version have no family, only index the ones that do
+            models.Index(
+                fields=["family"],
+                name="authentik_p_rt_family_idx",
+                condition=Q(family__isnull=False),
+            ),
         ]
         verbose_name = _("OAuth2 Refresh Token")
         verbose_name_plural = _("OAuth2 Refresh Tokens")
 
     def __str__(self):
         return f"Refresh Token for {self.provider_id} for user {self.user_id}"
+
+    def save(self, *args, **kwargs):
+        if not self.token_hash:
+            if self.legacy_token:
+                # Issued by an older version, hash it so lookups don't need the fallback
+                self.token_hash = hash_refresh_token(self.legacy_token)
+            else:
+                self.token = generate_client_secret()
+        return super().save(*args, **kwargs)
+
+    @property
+    def token(self) -> str | None:
+        """The raw token value. Only its hash is stored, so this is only set on a token created
+        in this process (to return it to the client), never on one loaded from the database."""
+        return self._raw_token
+
+    @token.setter
+    def token(self, value: str | None):
+        self._raw_token = value
+        self.token_hash = hash_refresh_token(value) if value else None
+
+    @staticmethod
+    def token_query(raw: str | None) -> Q:
+        """Query matching the refresh token with the raw value `raw`"""
+        if not raw:
+            # Never fall through to `legacy_token=None`, which matches every hashed token
+            return Q(pk__in=[])
+        return Q(token_hash=hash_refresh_token(raw)) | Q(legacy_token=raw)
+
+    def start_family(self) -> None:
+        """Start a family for a token issued before refresh token families existed, and hash it.
+        Concurrent requests presenting the same token may race here, so only the first one sets
+        the family, and all of them use that one."""
+        if self.family:
+            return
+        update: dict[str, Any] = {"family": uuid4()}
+        if not self.token_hash and self.legacy_token:
+            update["token_hash"] = hash_refresh_token(self.legacy_token)
+        RefreshToken.objects.filter(pk=self.pk, family__isnull=True).update(**update)
+        self.refresh_from_db(fields=["family", "token_hash"])
+
+    def consume(self, now: datetime) -> bool:
+        """Rotate this token: mark it as revoked, keeping it so its reuse can be detected.
+
+        This is a single conditional update, so of several requests presenting this token
+        concurrently, exactly one gets True and may issue a successor. The others get False and
+        must treat the request as reuse. When called inside a transaction, the row stays locked
+        until it commits, so a concurrent request blocks until the successor is visible."""
+        consumed = (
+            RefreshToken.objects.filter(pk=self.pk, revoked=False).update(
+                revoked=True, rotated_at=now
+            )
+            == 1
+        )
+        if consumed:
+            self.revoked = True
+            self.rotated_at = now
+        return consumed
+
+    def claim_reuse_grace(self, rotated_after: datetime) -> bool:
+        """Check whether this rotated token may be used again within the reuse grace period,
+        because it is the most recently rotated token of a family which still has an active
+        token, and it was rotated after `rotated_after`.
+
+        Like `consume`, this is a single conditional update (which doesn't change the row), so
+        the check is evaluated atomically and the row stays locked until the transaction issuing
+        the new token commits. The rotation time is kept, so that repeated reuse can't extend
+        the grace period.
+
+        This doesn't serialize with a concurrent family revocation, which doesn't touch this
+        (already revoked) row, so a token issued in the grace period could escape a revocation
+        committed between this check and the transaction's commit."""
+        if not self.family:
+            # Never compare with `family=None`, which would match every token without a family
+            return False
+        family = RefreshToken.objects.filter(family=OuterRef("family"))
+        return (
+            RefreshToken.objects.filter(
+                pk=self.pk,
+                revoked=True,
+                rotated_at__gt=rotated_after,
+            )
+            .filter(
+                # Another token was rotated since, so this one isn't the most recently rotated
+                ~Exists(family.filter(rotated_at__gt=OuterRef("rotated_at"))),
+                # The family has been revoked (or its active token revoked via RFC 7009)
+                Exists(family.filter(revoked=False)),
+            )
+            .update(rotated_at=F("rotated_at"))
+            == 1
+        )
+
+    def revoke_family(self):
+        """Revoke all refresh and access tokens of this token's family"""
+        if not self.family:
+            # Never filter by `family=None`, which would match every token without a family
+            self.revoked = True
+            self.save()
+            return
+        RefreshToken.objects.filter(family=self.family, revoked=False).update(revoked=True)
+        AccessToken.objects.filter(family=self.family, revoked=False).update(revoked=True)
 
     @property
     def id_token(self) -> IDToken:

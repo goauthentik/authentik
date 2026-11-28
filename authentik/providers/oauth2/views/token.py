@@ -2,8 +2,11 @@
 
 from base64 import b64encode
 from copy import copy
+from datetime import datetime
 from typing import Any
+from uuid import uuid4
 
+from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -122,6 +125,8 @@ class TokenView(View):
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        # Shared by the access and refresh token, so both are revoked when reuse is detected
+        family = uuid4() if SCOPE_OFFLINE_ACCESS in self.params.authorization_code.scope else None
         access_token = AccessToken(
             provider=self.provider,
             user=self.params.authorization_code.user,
@@ -130,6 +135,7 @@ class TokenView(View):
             scope=self.params.authorization_code.scope,
             auth_time=self.params.authorization_code.auth_time,
             session=self.params.authorization_code.session,
+            family=family,
         )
         access_id_token = IDToken.new(
             self.provider,
@@ -163,6 +169,7 @@ class TokenView(View):
                 auth_time=self.params.authorization_code.auth_time,
                 session=self.params.authorization_code.session,
                 dpop_jkt=self.params.authorization_code.dpop_jkt,
+                family=family,
             )
             id_token = IDToken.new(
                 self.provider,
@@ -187,16 +194,37 @@ class TokenView(View):
             raise TokenError("invalid_scope")
         if SCOPE_OFFLINE_ACCESS not in self.params.scope:
             raise TokenError("invalid_scope")
+        old_token = self.params.refresh_token
         now = timezone.now()
+        refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
+        rotate = (
+            refresh_token_threshold.total_seconds() == 0
+            or (old_token.expires - now) < refresh_token_threshold
+        )
+        # Consuming the old token and issuing the new ones happen in one transaction, so that a
+        # concurrent request presenting the same token waits for this one to commit and then
+        # sees the successor (or that nothing was issued)
+        with transaction.atomic():
+            if self.params.claim(now, rotate):
+                return self._issue_refresh_response(old_token, now, rotate)
+        # Outside of the transaction, so that the family revocation is kept
+        self.params.reject_reuse(self.request)
+
+    def _issue_refresh_response(
+        self, old_token: RefreshToken, now: datetime, rotate: bool
+    ) -> dict[str, Any]:
+        """Issue a new access token, and a new refresh token if `rotate` is set, for a refresh
+        token which has been claimed"""
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         access_token = AccessToken(
             provider=self.provider,
-            user=self.params.refresh_token.user,
+            user=old_token.user,
             expires=access_token_expiry,
             # Keep same scopes as previous token
-            scope=self.params.refresh_token.scope,
-            auth_time=self.params.refresh_token.auth_time,
-            session=self.params.refresh_token.session,
+            scope=old_token.scope,
+            auth_time=old_token.auth_time,
+            session=old_token.session,
+            family=old_token.family,
         )
         access_id_token = IDToken.new(
             self.provider,
@@ -219,35 +247,29 @@ class TokenView(View):
             "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
         }
 
-        refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
-        if (
-            refresh_token_threshold.total_seconds() == 0
-            or (self.params.refresh_token.expires - now) < refresh_token_threshold
-        ):
+        if rotate:
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(
-                user=self.params.refresh_token.user,
-                scope=self.params.refresh_token.scope,
+                user=old_token.user,
+                scope=old_token.scope,
                 expires=refresh_token_expiry,
                 provider=self.provider,
-                auth_time=self.params.refresh_token.auth_time,
-                session=self.params.refresh_token.session,
-                dpop_jkt=self.params.refresh_token.dpop_jkt,
+                auth_time=old_token.auth_time,
+                session=old_token.session,
+                dpop_jkt=old_token.dpop_jkt,
+                family=old_token.family,
             )
             id_token = IDToken.new(
                 self.provider,
                 refresh_token,
                 self.request,
             )
-            id_token.nonce = self.params.refresh_token.id_token.nonce
+            id_token.nonce = old_token.id_token.nonce
             id_token.at_hash = access_token.at_hash
             self._add_cnf_to_id_token(id_token)
             refresh_token.id_token = id_token
             refresh_token.save()
-
-            # Mark old token as revoked
-            self.params.refresh_token.revoked = True
-            self.params.refresh_token.save()
+            # The old token was already marked as rotated by `claim`
             response["refresh_token"] = refresh_token.token
 
         # Refreshes come from the client without a browser session, so check the session
@@ -292,6 +314,8 @@ class TokenView(View):
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         auth_event = get_login_event(self.params.device_code.session)
+        # Shared by the access and refresh token, so both are revoked when reuse is detected
+        family = uuid4() if SCOPE_OFFLINE_ACCESS in self.params.device_code.scope else None
         access_token = AccessToken(
             provider=self.provider,
             user=self.params.device_code.user,
@@ -299,6 +323,7 @@ class TokenView(View):
             scope=self.params.device_code.scope,
             auth_time=auth_event.created if auth_event else now,
             session=self.params.device_code.session,
+            family=family,
         )
         access_id_token = IDToken.new(
             self.provider,
@@ -330,6 +355,7 @@ class TokenView(View):
                 provider=self.provider,
                 auth_time=auth_event.created if auth_event else now,
                 dpop_jkt=self.params.device_code.dpop_jkt,
+                family=family,
             )
             id_token = IDToken.new(
                 self.provider,

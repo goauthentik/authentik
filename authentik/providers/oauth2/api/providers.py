@@ -88,6 +88,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "access_token_validity",
             "refresh_token_validity",
             "refresh_token_threshold",
+            "refresh_token_revoke_family_on_reuse",
+            "refresh_token_reuse_grace_period",
             "include_claims_in_id_token",
             "signing_key",
             "encryption_key",
