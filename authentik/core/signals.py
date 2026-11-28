@@ -92,9 +92,13 @@ def post_save_application(sender: type[Model], instance, created: bool, **_):
 
 @receiver(user_logged_in)
 def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
-    """Create an AuthenticatedSession from request"""
+    """Create an AuthenticatedSession and refresh the user's application list."""
+    from authentik.core.api.applications import user_app_cache_key
 
     AuthenticatedSession.create_from_request(request, user)
+    # Clear every cached application-list variant for this user, including
+    # client-IP-specific, launch-only, and paginated keys.
+    cache.delete_many(cache.keys(f"{user_app_cache_key(user.pk)}/*"))
 
 
 @receiver(post_save, sender=User)
