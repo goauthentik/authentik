@@ -7,6 +7,8 @@
 .pf-c-page__main {
     min-height: 100dvh;
     overflow: unset;
+    /* Without the overflow, keep the tab row from widening the page past the viewport. */
+    min-width: 0;
 }
 
 @media screen and (min-width: 1200px) {

@@ -5,6 +5,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { globalAK } from "#common/global";
 import { resolveThemedUrl } from "#common/theme";
@@ -49,6 +50,7 @@ export class AKPageNavbar
         PFDrawer,
         PFNotificationBadge,
         PFContent,
+        PFDisplay,
         Styles,
     ];
 

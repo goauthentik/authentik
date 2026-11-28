@@ -58,8 +58,24 @@ export class Tabs extends AKElement {
     @property({ type: String })
     public pageIdentifier = "page";
 
+    /**
+     * Lay the tabs out in a column beside the panel. Narrow viewports always
+     * get a row above the panel, since a column leaves the panel too little width.
+     */
     @property({ type: Boolean, useDefault: true })
     public vertical = false;
+
+    /**
+     * Whether the viewport is wide enough for {@linkcode vertical} tabs.
+     * Matches the `@media` query in `Tabs.css`.
+     */
+    @state()
+    protected wideViewport = true;
+
+    #wideViewportMatcher = matchMedia("(width >= 768px)");
+    #wideViewportMediaQueryListener = (event: MediaQueryListEvent) => {
+        this.wideViewport = event.matches;
+    };
 
     @state()
     protected activeTabName: string | null = null;
@@ -224,6 +240,12 @@ export class Tabs extends AKElement {
 
         this.addEventListener("focus", this.#delegateFocusListener);
 
+        this.wideViewport = this.#wideViewportMatcher.matches;
+
+        this.#wideViewportMatcher.addEventListener("change", this.#wideViewportMediaQueryListener, {
+            passive: true,
+        });
+
         window.addEventListener("popstate", this.#onNavigate);
         window.addEventListener(RouterNavigateEvent.eventName, this.#onNavigate);
 
@@ -265,6 +287,11 @@ export class Tabs extends AKElement {
     public override disconnectedCallback(): void {
         this.#observer?.disconnect();
         this.#commands.clear();
+
+        this.#wideViewportMatcher.removeEventListener(
+            "change",
+            this.#wideViewportMediaQueryListener,
+        );
 
         window.removeEventListener("popstate", this.#onNavigate);
         window.removeEventListener(RouterNavigateEvent.eventName, this.#onNavigate);
@@ -407,14 +434,16 @@ export class Tabs extends AKElement {
             return html`<h1>${msg("no tabs defined")}</h1>`;
         }
 
+        const vertical = this.vertical && this.wideViewport;
+
         return html`<div
-                class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}"
-                part="container ${this.vertical ? "column" : "row"}"
+                class="pf-c-tabs ${vertical ? "pf-m-vertical pf-m-box" : ""}"
+                part="container ${vertical ? "column" : "row"}"
             >
                 <ul
                     class="pf-c-tabs__list"
                     role="tablist"
-                    aria-orientation=${this.vertical ? "vertical" : "horizontal"}
+                    aria-orientation=${vertical ? "vertical" : "horizontal"}
                     aria-label=${ifPresent(this.ariaLabel)}
                 >
                     ${Array.from(this.tabs, ([slotName, tabPanel]) =>
