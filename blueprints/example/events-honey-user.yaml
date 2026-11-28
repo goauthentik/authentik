@@ -1,0 +1,143 @@
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+version: 1
+metadata:
+  name: Example - Honey user login alert
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
+    blueprints.goauthentik.io/description: |
+      Creates decoy users without a password and alerts administrators whenever someone tries to log in as one of them. See the [honey user documentation](https://docs.goauthentik.io/docs/security/honey-user).
+context:
+  # Pick usernames that an attacker would try and that no real user has.
+  username: svc-backup-admin
+  # A second decoy, named like a directory administrator. Set to "" to skip it.
+  ldap_admin_username: ldap-admin
+  # The members of this group receive the alerts.
+  group_name: authentik Admins
+  # Optional webhook URL, such as a Slack incoming webhook or a SIEM endpoint.
+  webhook_url: ""
+entries:
+  # Entries with "state: created" are added only if they are missing, and keep
+  # any later edits when the blueprint is applied again.
+  - model: authentik_events.notificationtransport
+    id: local-transport
+    state: created
+    identifiers:
+      name: default-local-transport
+    attrs:
+      mode: local
+  # authentik appends the event action to the prefix, so subjects read
+  # "[authentik] honey_user_login_failed".
+  - model: authentik_events.notificationtransport
+    id: email-transport
+    identifiers:
+      name: !Format [honey-user-email-%s, !Context username]
+    attrs:
+      mode: email
+      email_subject_prefix: "[authentik] honey_user_"
+  - model: authentik_events.notificationwebhookmapping
+    id: webhook-mapping
+    state: created
+    conditions:
+      - !Context webhook_url
+    identifiers:
+      name: !Format [honey-user-webhook-%s, !Context username]
+    attrs:
+      expression: |
+        event = notification.event
+        username = event.user["username"]
+        geo = event.context.get("geo") or {}
+        location = ", ".join(filter(None, [geo.get("city"), geo.get("country")]))
+        what = "Successful login" if event.action == "login" else "Login attempt"
+        text = f"Honey user alert: {what} as decoy account {username} from {event.client_ip}"
+        if location:
+            text += f" ({location})"
+        text += ". No legitimate user owns this account."
+        # Slack incoming webhooks show "text". The other keys are for tools
+        # that parse the payload.
+        return {
+            "text": text,
+            "action": event.action,
+            "username": username,
+            "client_ip": event.client_ip,
+            "geo": geo,
+            "asn": event.context.get("asn") or {},
+            "user_agent": event.context.get("http_request", {}).get("user_agent"),
+            "created": event.created.isoformat(),
+        }
+  - model: authentik_events.notificationtransport
+    id: webhook-transport
+    conditions:
+      - !Context webhook_url
+    identifiers:
+      name: !Format [honey-user-webhook-%s, !Context username]
+    attrs:
+      mode: webhook
+      webhook_url: !Context webhook_url
+      webhook_mapping_body: !KeyOf webhook-mapping
+      # Post once per event, not once per group member.
+      send_once: true
+  - model: authentik_core.group
+    id: notify-group
+    state: created
+    identifiers:
+      name: !Context group_name
+  # Without a password, every login attempt fails at the password stage and
+  # creates a login_failed event.
+  - model: authentik_core.user
+    id: honey-user
+    state: created
+    identifiers:
+      username: !Context username
+    attrs:
+      name: Backup Service
+      type: internal
+      is_active: true
+  - model: authentik_core.user
+    id: honey-ldap-admin
+    state: created
+    conditions:
+      - !Context ldap_admin_username
+    identifiers:
+      username: !Context ldap_admin_username
+    attrs:
+      name: LDAP Administrator
+      type: internal
+      is_active: true
+  - model: authentik_policies_event_matcher.eventmatcherpolicy
+    id: honey-user-login-failed
+    identifiers:
+      name: !Format [honey-user-login-failed-%s, !Context username]
+    attrs:
+      action: login_failed
+      query: !Format ['user.username = "%s" or user.username = "%s"', !Context username, !Context ldap_admin_username]
+  # A successful login means someone changed a decoy or linked
+  # another authentication method to it.
+  - model: authentik_policies_event_matcher.eventmatcherpolicy
+    id: honey-user-login
+    identifiers:
+      name: !Format [honey-user-login-%s, !Context username]
+    attrs:
+      action: login
+      query: !Format ['user.username = "%s" or user.username = "%s"', !Context username, !Context ldap_admin_username]
+  - model: authentik_events.notificationrule
+    id: honey-user-rule
+    identifiers:
+      name: !Format [honey-user-notify-%s, !Context username]
+    attrs:
+      severity: alert
+      destination_group: !KeyOf notify-group
+      transports: !If
+        - !Context webhook_url
+        - [!KeyOf local-transport, !KeyOf email-transport, !KeyOf webhook-transport]
+        - [!KeyOf local-transport, !KeyOf email-transport]
+  # The rule's policy engine mode defaults to "any", so either policy triggers it.
+  - model: authentik_policies.policybinding
+    identifiers:
+      order: 0
+      policy: !KeyOf honey-user-login-failed
+      target: !KeyOf honey-user-rule
+  - model: authentik_policies.policybinding
+    identifiers:
+      order: 1
+      policy: !KeyOf honey-user-login
+      target: !KeyOf honey-user-rule
