@@ -16,7 +16,7 @@ from rest_framework.test import APITestCase
 
 from authentik.admin.models import SystemSettings
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application, Group, User
+from authentik.core.models import Application, Group, User, UserTypes
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProvider,
@@ -649,3 +649,42 @@ class MicrosoftEntraUserTests(APITestCase):
             )
             self.assertEqual(response.status_code, 201)
             user_get.assert_called_once()
+
+    def test_sync_cleanup_stale_user_delete(self):
+        """Stale (out-of-scope) users are deleted during full sync cleanup"""
+        self.provider.discovery_enabled = False
+        self.provider.save()
+        uid = generate_id()
+        user = User.objects.create(
+            username=uid,
+            email=f"{uid}@goauthentik.io",
+            type=UserTypes.SERVICE_ACCOUNT,
+        )
+        MicrosoftEntraProviderUser.objects.create(
+            provider=self.provider, user=user, microsoft_id=generate_id()
+        )
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
+                "msgraph.generated.users.item.user_item_request_builder.UserItemRequestBuilder.delete",
+                AsyncMock(),
+            ) as user_delete,
+        ):
+            microsoft_entra_sync.send(self.provider.pk).get_result()
+        user_delete.assert_called_once()
+        self.assertFalse(
+            MicrosoftEntraProviderUser.objects.filter(provider=self.provider, user=user).exists()
+        )

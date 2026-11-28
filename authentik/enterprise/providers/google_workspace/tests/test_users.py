@@ -7,7 +7,7 @@ from django.test import TestCase
 
 from authentik.admin.models import SystemSettings
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application, Group, User
+from authentik.core.models import Application, Group, User, UserTypes
 from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
 from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProvider,
@@ -457,3 +457,41 @@ class GoogleWorkspaceUserTests(TestCase):
                 ).exists()
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+
+    def test_sync_cleanup_stale_user_delete(self):
+        """Stale (out-of-scope) users are deleted during full sync cleanup"""
+        self.provider.discovery_enabled = False
+        self.provider.save()
+        uid = generate_id()
+        user = User.objects.create(
+            username=uid,
+            email=f"{uid}@goauthentik.io",
+            type=UserTypes.SERVICE_ACCOUNT,
+        )
+        GoogleWorkspaceProviderUser.objects.create(
+            provider=self.provider, user=user, google_id=f"{uid}@goauthentik.io"
+        )
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}",
+            method="DELETE",
+        )
+        with patch(
+            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        ):
+            google_workspace_sync.send(self.provider.pk).get_result()
+        self.assertIn(
+            (
+                f"https://admin.googleapis.com/admin/directory/v1/users/{uid}%40goauthentik.io?key={self.api_key}",
+                "DELETE",
+            ),
+            [(uri, method) for uri, method, _, _ in http.requests()],
+        )
+        self.assertFalse(
+            GoogleWorkspaceProviderUser.objects.filter(provider=self.provider, user=user).exists()
+        )

@@ -37,6 +37,7 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
 ):
     """SCIM Client"""
 
+    remote_id_field = "scim_id"
     base_url: str
 
     _session: Session
