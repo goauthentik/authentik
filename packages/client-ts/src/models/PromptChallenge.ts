@@ -25,6 +25,7 @@ import { StagePromptFromJSON, StagePromptToJSON } from "./StagePrompt.js";
 export interface PromptChallenge {
     flowInfo?: ContextualFlowInfo;
     component?: string;
+    stageBinding?: string;
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     fields: Array<StagePrompt>;
 }
@@ -52,6 +53,7 @@ export function PromptChallengeFromJSONTyped(
         flowInfo:
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
+        stageBinding: json["stage_binding"] == null ? undefined : json["stage_binding"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         fields: (json["fields"] as Array<any>).map(StagePromptFromJSON),
     };
@@ -72,6 +74,7 @@ export function PromptChallengeToJSONTyped(
     return {
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
+        stage_binding: value["stageBinding"],
         response_errors: value["responseErrors"],
         fields: (value["fields"] as Array<any>).map(StagePromptToJSON),
     };

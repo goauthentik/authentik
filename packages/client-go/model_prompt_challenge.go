@@ -23,6 +23,7 @@ var _ MappedNullable = &PromptChallenge{}
 type PromptChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
+	StageBinding         *string                   `json:"stage_binding,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
 	Fields               []StagePrompt             `json:"fields"`
 	AdditionalProperties map[string]interface{}
@@ -116,6 +117,38 @@ func (o *PromptChallenge) SetComponent(v string) {
 	o.Component = &v
 }
 
+// GetStageBinding returns the StageBinding field value if set, zero value otherwise.
+func (o *PromptChallenge) GetStageBinding() string {
+	if o == nil || IsNil(o.StageBinding) {
+		var ret string
+		return ret
+	}
+	return *o.StageBinding
+}
+
+// GetStageBindingOk returns a tuple with the StageBinding field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptChallenge) GetStageBindingOk() (*string, bool) {
+	if o == nil || IsNil(o.StageBinding) {
+		return nil, false
+	}
+	return o.StageBinding, true
+}
+
+// HasStageBinding returns a boolean if a field has been set.
+func (o *PromptChallenge) HasStageBinding() bool {
+	if o != nil && !IsNil(o.StageBinding) {
+		return true
+	}
+
+	return false
+}
+
+// SetStageBinding gets a reference to the given string and assigns it to the StageBinding field.
+func (o *PromptChallenge) SetStageBinding(v string) {
+	o.StageBinding = &v
+}
+
 // GetResponseErrors returns the ResponseErrors field value if set, zero value otherwise.
 func (o *PromptChallenge) GetResponseErrors() map[string][]ErrorDetail {
 	if o == nil || IsNil(o.ResponseErrors) {
@@ -188,6 +221,9 @@ func (o PromptChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Component) {
 		toSerialize["component"] = o.Component
 	}
+	if !IsNil(o.StageBinding) {
+		toSerialize["stage_binding"] = o.StageBinding
+	}
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
@@ -237,6 +273,7 @@ func (o *PromptChallenge) UnmarshalJSON(data []byte) (err error) {
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
+		delete(additionalProperties, "stage_binding")
 		delete(additionalProperties, "response_errors")
 		delete(additionalProperties, "fields")
 		o.AdditionalProperties = additionalProperties

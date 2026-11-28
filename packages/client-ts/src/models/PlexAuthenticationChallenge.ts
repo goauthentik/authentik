@@ -23,6 +23,7 @@ import type { ErrorDetail } from "./ErrorDetail.js";
 export interface PlexAuthenticationChallenge {
     flowInfo?: ContextualFlowInfo;
     component?: string;
+    stageBinding?: string;
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     clientId: string;
     slug: string;
@@ -60,6 +61,7 @@ export function PlexAuthenticationChallengeFromJSONTyped(
         flowInfo:
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
+        stageBinding: json["stage_binding"] == null ? undefined : json["stage_binding"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         clientId: json["client_id"],
         slug: json["slug"],
@@ -81,6 +83,7 @@ export function PlexAuthenticationChallengeToJSONTyped(
     return {
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
+        stage_binding: value["stageBinding"],
         response_errors: value["responseErrors"],
         client_id: value["clientId"],
         slug: value["slug"],

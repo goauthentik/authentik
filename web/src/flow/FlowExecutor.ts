@@ -57,6 +57,7 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
+import { keyed } from "lit/directives/keyed.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
@@ -486,9 +487,18 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 </div>
                 ${overlaysVisible ? this.#overlayCardSlot : null}
                 ${guard([challenge], () => {
-                    return challenge?.component
-                        ? until(this.renderChallenge(challenge))
-                        : this.renderLoading();
+                    if (!challenge?.component) {
+                        return this.renderLoading();
+                    }
+
+                    // Consecutive stages can use the same component, which would reuse the
+                    // previous stage's element and its state. Each stage binding gets its own
+                    // element, while a stage shown again, such as after a validation error,
+                    // keeps it.
+                    return keyed(
+                        challenge.stageBinding ?? challenge.component,
+                        until(this.renderChallenge(challenge)),
+                    );
                 })}
             </main>
             ${overlaysVisible ? this.#overlayViewportSlot : null} ${this.renderFooter()}

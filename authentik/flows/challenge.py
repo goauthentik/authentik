@@ -70,6 +70,9 @@ class Challenge(PassiveSerializer):
 
     flow_info = ContextualFlowInfo(required=False)
     component = CharField(default="")
+    # The flow stage binding this challenge belongs to, so the client can tell the next stage
+    # apart from the same stage shown again, even when both use the same component.
+    stage_binding = CharField(required=False)
 
     response_errors = DictField(
         child=ErrorDetailSerializer(many=True), allow_empty=True, required=False

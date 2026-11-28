@@ -22,6 +22,7 @@ var _ MappedNullable = &OAuthDeviceCodeFinishChallenge{}
 type OAuthDeviceCodeFinishChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
+	StageBinding         *string                   `json:"stage_binding,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -113,6 +114,38 @@ func (o *OAuthDeviceCodeFinishChallenge) SetComponent(v string) {
 	o.Component = &v
 }
 
+// GetStageBinding returns the StageBinding field value if set, zero value otherwise.
+func (o *OAuthDeviceCodeFinishChallenge) GetStageBinding() string {
+	if o == nil || IsNil(o.StageBinding) {
+		var ret string
+		return ret
+	}
+	return *o.StageBinding
+}
+
+// GetStageBindingOk returns a tuple with the StageBinding field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OAuthDeviceCodeFinishChallenge) GetStageBindingOk() (*string, bool) {
+	if o == nil || IsNil(o.StageBinding) {
+		return nil, false
+	}
+	return o.StageBinding, true
+}
+
+// HasStageBinding returns a boolean if a field has been set.
+func (o *OAuthDeviceCodeFinishChallenge) HasStageBinding() bool {
+	if o != nil && !IsNil(o.StageBinding) {
+		return true
+	}
+
+	return false
+}
+
+// SetStageBinding gets a reference to the given string and assigns it to the StageBinding field.
+func (o *OAuthDeviceCodeFinishChallenge) SetStageBinding(v string) {
+	o.StageBinding = &v
+}
+
 // GetResponseErrors returns the ResponseErrors field value if set, zero value otherwise.
 func (o *OAuthDeviceCodeFinishChallenge) GetResponseErrors() map[string][]ErrorDetail {
 	if o == nil || IsNil(o.ResponseErrors) {
@@ -161,6 +194,9 @@ func (o OAuthDeviceCodeFinishChallenge) ToMap() (map[string]interface{}, error) 
 	if !IsNil(o.Component) {
 		toSerialize["component"] = o.Component
 	}
+	if !IsNil(o.StageBinding) {
+		toSerialize["stage_binding"] = o.StageBinding
+	}
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
@@ -188,6 +224,7 @@ func (o *OAuthDeviceCodeFinishChallenge) UnmarshalJSON(data []byte) (err error) 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
+		delete(additionalProperties, "stage_binding")
 		delete(additionalProperties, "response_errors")
 		o.AdditionalProperties = additionalProperties
 	}

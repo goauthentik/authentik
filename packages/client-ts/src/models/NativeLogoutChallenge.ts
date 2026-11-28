@@ -25,6 +25,7 @@ import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindings
 export interface NativeLogoutChallenge {
     flowInfo?: ContextualFlowInfo;
     component?: string;
+    stageBinding?: string;
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     providerName?: string;
     isComplete?: boolean;
@@ -58,6 +59,7 @@ export function NativeLogoutChallengeFromJSONTyped(
         flowInfo:
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
+        stageBinding: json["stage_binding"] == null ? undefined : json["stage_binding"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         providerName: json["provider_name"] == null ? undefined : json["provider_name"],
         isComplete: json["is_complete"] == null ? undefined : json["is_complete"],
@@ -88,6 +90,7 @@ export function NativeLogoutChallengeToJSONTyped(
     return {
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
+        stage_binding: value["stageBinding"],
         response_errors: value["responseErrors"],
         provider_name: value["providerName"],
         is_complete: value["isComplete"],

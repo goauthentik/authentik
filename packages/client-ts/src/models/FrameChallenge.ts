@@ -23,6 +23,7 @@ import type { ErrorDetail } from "./ErrorDetail.js";
 export interface FrameChallenge {
     flowInfo?: ContextualFlowInfo;
     component?: string;
+    stageBinding?: string;
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     url: string;
     loadingOverlay?: boolean;
@@ -59,6 +60,7 @@ export function FrameChallengeFromJSONTyped(
         flowInfo:
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
+        stageBinding: json["stage_binding"] == null ? undefined : json["stage_binding"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         url: json["url"],
         loadingOverlay: json["loading_overlay"] == null ? undefined : json["loading_overlay"],
@@ -81,6 +83,7 @@ export function FrameChallengeToJSONTyped(
     return {
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
+        stage_binding: value["stageBinding"],
         response_errors: value["responseErrors"],
         url: value["url"],
         loading_overlay: value["loadingOverlay"],

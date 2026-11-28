@@ -23,6 +23,7 @@ import type { ErrorDetail } from "./ErrorDetail.js";
 export interface AccessDeniedChallenge {
     flowInfo?: ContextualFlowInfo;
     component?: string;
+    stageBinding?: string;
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     pendingUser: string;
     pendingUserAvatar: string;
@@ -65,6 +66,7 @@ export function AccessDeniedChallengeFromJSONTyped(
         flowInfo:
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
+        stageBinding: json["stage_binding"] == null ? undefined : json["stage_binding"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         pendingUser: json["pending_user"],
         pendingUserAvatar: json["pending_user_avatar"],
@@ -87,6 +89,7 @@ export function AccessDeniedChallengeToJSONTyped(
     return {
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
+        stage_binding: value["stageBinding"],
         response_errors: value["responseErrors"],
         pending_user: value["pendingUser"],
         pending_user_avatar: value["pendingUserAvatar"],

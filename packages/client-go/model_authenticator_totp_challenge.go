@@ -23,6 +23,7 @@ var _ MappedNullable = &AuthenticatorTOTPChallenge{}
 type AuthenticatorTOTPChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
+	StageBinding         *string                   `json:"stage_binding,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
 	PendingUser          string                    `json:"pending_user"`
 	PendingUserAvatar    string                    `json:"pending_user_avatar"`
@@ -118,6 +119,38 @@ func (o *AuthenticatorTOTPChallenge) HasComponent() bool {
 // SetComponent gets a reference to the given string and assigns it to the Component field.
 func (o *AuthenticatorTOTPChallenge) SetComponent(v string) {
 	o.Component = &v
+}
+
+// GetStageBinding returns the StageBinding field value if set, zero value otherwise.
+func (o *AuthenticatorTOTPChallenge) GetStageBinding() string {
+	if o == nil || IsNil(o.StageBinding) {
+		var ret string
+		return ret
+	}
+	return *o.StageBinding
+}
+
+// GetStageBindingOk returns a tuple with the StageBinding field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AuthenticatorTOTPChallenge) GetStageBindingOk() (*string, bool) {
+	if o == nil || IsNil(o.StageBinding) {
+		return nil, false
+	}
+	return o.StageBinding, true
+}
+
+// HasStageBinding returns a boolean if a field has been set.
+func (o *AuthenticatorTOTPChallenge) HasStageBinding() bool {
+	if o != nil && !IsNil(o.StageBinding) {
+		return true
+	}
+
+	return false
+}
+
+// SetStageBinding gets a reference to the given string and assigns it to the StageBinding field.
+func (o *AuthenticatorTOTPChallenge) SetStageBinding(v string) {
+	o.StageBinding = &v
 }
 
 // GetResponseErrors returns the ResponseErrors field value if set, zero value otherwise.
@@ -240,6 +273,9 @@ func (o AuthenticatorTOTPChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Component) {
 		toSerialize["component"] = o.Component
 	}
+	if !IsNil(o.StageBinding) {
+		toSerialize["stage_binding"] = o.StageBinding
+	}
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
@@ -293,6 +329,7 @@ func (o *AuthenticatorTOTPChallenge) UnmarshalJSON(data []byte) (err error) {
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
+		delete(additionalProperties, "stage_binding")
 		delete(additionalProperties, "response_errors")
 		delete(additionalProperties, "pending_user")
 		delete(additionalProperties, "pending_user_avatar")
